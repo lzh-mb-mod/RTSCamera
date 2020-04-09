@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <strings>
+    <string id="str_control_troop_tip" text="{=EnhancedMission_controltrooptip}Press F or F10 to control your troop after dead." />
+    <string id="str_switch_team_tip" text="{=EnhancedMission_switchteamtip}Press F9 to switch team." />
+    <string id="str_switch_free_camera_tip" text="{=EnhancedMission_switchfreecameratip}Press F10 to switch free camera." />
+    <string id="str_disable_death_tip" text="{=EnhancedMission_disabledeathtip}Press F11 to disable death." />
+    <string id="str_reset_mission_tip" text="{=EnhancedMission_resetmissiontip}Press F12 to reset mission." />
+    <string id="str_more_option_tip" text="{=EnhancedMission_moreoptiontip}Press O(letter) to adjust more settings." />
+    <string id="str_pause_tip" text="{=EnhancedMission_pausetip}Press P to pause game." />
+    <string id="str_leave_mission_tip" text="{=EnhancedMission_leavemissiontip}Hold TAB to leave the mission." />
+    <string id="str_read_position_tip" text="{=EnhancedMission_readpositiontip}Press `I` key to get player or camera position." />
+    <string id="str_teleport_tip" text="{=EnhancedMission_teleporttip}Press `L` key to teleport player when in free camera mode." />
+
+    <string id="str_create_default_config" text="{=EnhancedMission_createdefaultconfig}Create default config" />
+    <string id="str_found_old_config" text="{=EnhancedMission_foundoldconfig}Found old config file:" />
+    <string id="str_delete_old_config" text="{=EnhancedMission_deleteoldconfig}Delete the old config file." />
+    <string id="str_rename_old_config" text="{=EnhancedMission_renameoldconfig}Rename old config file to new name..." />
+    <string id="str_content_illegal" text="{=EnhancedMission_contentillegal}Content is illegal." />
+    <string id="str_content_outofrange" text="{=EnhancedMission_contentoutofrange}Content is out of range." />
+
+    <string id="str_control_troop" text="{=EnhancedMission_controltroop}Taking control of an ally troop." />
+    <string id="str_no_troop_to_control" text="{=EnhancedMission_notrooptocontrol}No ally troop to control." />
+    <string id="str_death_disabled" text="{=EnhancedMission_deathdisabled}Death Disabled." />
+    <string id="str_death_enabled" text="{=EnhancedMission_deathenabled}Death Enabled." />
+
+    <string id="str_config_incompatible" text="{=EnhancedMission_configincompatible}Config version not compatible.\nReset config." />
+    <string id="str_saved_config" text="{=EnhancedMission_savedconfig}Saving config succeeded." />
+    <string id="str_save_config_failed" text="{=EnhancedMission_saveconfigfailed}Saving config failed." />
+    <string id="str_exception_caught" text="{=EnhancedMission_exceptioncaught}Exception caught:" />
+    <string id="str_loaded_config" text="{=EnhancedMission_loadedconfig}Loading config succeeded." />
+    <string id="str_load_config_failed" text="{=EnhancedMission_loadconfigfailed}Loading config failed." />
+
+    <string id="str_use_realistic_blocking" text="{=EnhancedMission_userealisticblocking}Use Realistic Blocking" />
+    <string id="str_no_friendly_banner" text="{=EnhancedMission_nofriendlybannder}No Banner on Friendly Troops" />
+    <string id="str_no_kill_notification" text="{=EnhancedMission_nokillnotification}No Kill Notification" />
+    <string id="str_make_grunt_voice" text="{=EnhancedMission_makegruntvoice}Make Grunt Voice" />
+    <string id="str_has_boundary" text="{=EnhancedMission_hasboundary}Has Boundary" />
+
+    <string id="str_change_combat_ai" text="{=EnhancedMission_changecombatai}Change Combat AI" />
+    <string id="str_combat_ai" text="{=EnhancedMission_combatai}Combat AI(0-100)" />
+
+    <string id="str_switch_free_camera" text="{=EnhancedMission_switchfreecamera}Switch Free Camera" />
+    <string id="str_player_formation" text="{=EnhancedMission_playerformation}Player Formation" />
+    <string id="str_disable_death" text="{=EnhancedMission_disabledeath}Disable Death" />
+    <string id="str_toggle_pause" text="{=EnhancedMission_togglepause}Toggle Pause" />
+    <string id="str_reset_speed" text="{=EnhancedMission_resetspeed}Reset Speed" />
+    <string id="str_slow_motion_factor" text="{=EnhancedMission_slowmotionfactor}Slow Motion Factor" />
+
+    <string id="str_mission_paused" text="{=EnhancedMission_missionpaused}Mission paused." />
+    <string id="str_mission_continued" text="{=EnhancedMission_missioncontinue}Mission continued." />
+
+    <string id="str_slow_motion_enabled" text="{=EnhancedMission_slowmotionenabled}Slow Motion Mode Enabled." />
+    <string id="str_fast_forward_mode_enabled" text="{=EnhancedMission_fastfowardenabled}Fast Forward Mode Enabled." />
+    <string id="str_normal_mode_enabled" text="{=EnhancedMission_normalmodeenabled}Normal Mode Enabled." />
+
+    <string id="str_player_dead" text="{=EnhancedMission_playeragentdead}Player agent is dead." />
+    <string id="str_switch_to_player" text="{=EnhancedMission_switchtoplayer}Switch to player agent." />
+    <string id="str_switch_to_free_camera" text="{=EnhancedMission_switchtofreecamera}Switch to free camera." />
+  </strings>
+</base>
