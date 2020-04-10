@@ -167,6 +167,7 @@ namespace EnhancedMission
             if (base.Deserialize())
             {
                 _gameKeys = GameKeys.Select(serializedGameKey => serializedGameKey.ToGameKey()).ToArray();
+                return true;
             }
 
             return false;

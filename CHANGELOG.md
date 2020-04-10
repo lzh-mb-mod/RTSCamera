@@ -1,4 +1,7 @@
 # Changelog
+## [1.0.3-hotfix] - 2020-04-11
+- Fix bug that hot key config will be reset to default after each game start.
+
 ## [1.0.3] - 2020-04-11
 ### Fixed
 - Fix crash when new config for hot key is created.
