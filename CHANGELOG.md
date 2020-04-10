@@ -1,4 +1,11 @@
 # Changelog
+## [1.0.3] - 2020-04-11
+### Fixed
+- Fix crash when new config for hot key is created.
+
+### Changed
+- Enable smooth mode for rts camera.
+
 ## [e1.0.2] - 2020-04-10
 ### Fixed
 - Fix the bug that player can control enemy troop after player dead.

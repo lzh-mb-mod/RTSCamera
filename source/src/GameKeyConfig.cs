@@ -70,8 +70,6 @@ namespace EnhancedMission
             }
         }
 
-        private GameKey[] _gameKeys;
-
         [XmlIgnore]
         public IEnumerable<GameKeyEnum> GameKeyEnums
         {
@@ -84,6 +82,8 @@ namespace EnhancedMission
                 yield return GameKeyEnum.ControlTroop;
             }
         }
+
+        private GameKey[] _gameKeys;
 
 
         public SerializedGameKey[] GameKeys =
@@ -150,7 +150,9 @@ namespace EnhancedMission
         }
         private static GameKeyConfig CreateDefault()
         {
-            return new GameKeyConfig();
+            var newConfig = new GameKeyConfig();
+            newConfig._gameKeys = newConfig.GameKeys.Select(serializedGameKey => serializedGameKey.ToGameKey()).ToArray();
+            return newConfig;
         }
 
         public override bool Serialize()
@@ -173,6 +175,7 @@ namespace EnhancedMission
         protected override void CopyFrom(GameKeyConfig other)
         {
             this.GameKeys = other.GameKeys;
+            this._gameKeys = other._gameKeys;
         }
 
         protected override XmlSerializer serializer => new XmlSerializer(typeof(GameKeyConfig));

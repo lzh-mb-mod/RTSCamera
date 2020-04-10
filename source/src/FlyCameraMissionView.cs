@@ -44,7 +44,7 @@ namespace EnhancedMission
             this._cameraSpeedMultiplier = 1f;
             this._cameraHeightToAdd = 0.0f;
             this._cameraHeightLimit = 0.0f;
-            this._cameraSmoothMode = false;
+            this._cameraSmoothMode = true;
             this.ViewOrderPriorty = 25;
 
             _logic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
@@ -152,9 +152,9 @@ namespace EnhancedMission
             cameraFrame1.rotation.RotateAboutSide(this.CameraElevation);
             cameraFrame1.origin = this.CombatCamera.Frame.origin;
             this._cameraSpeed *= (float)(1.0 - 5.0 * (double)dt);
-            this._cameraSpeed.x = MBMath.ClampFloat(this._cameraSpeed.x, -20f, 20f);
-            this._cameraSpeed.y = MBMath.ClampFloat(this._cameraSpeed.y, -20f, 20f);
-            this._cameraSpeed.z = MBMath.ClampFloat(this._cameraSpeed.z, -20f, 20f);
+            this._cameraSpeed.x = MBMath.ClampFloat(this._cameraSpeed.x, -5f, 5f);
+            this._cameraSpeed.y = MBMath.ClampFloat(this._cameraSpeed.y, -5f, 5f);
+            this._cameraSpeed.z = MBMath.ClampFloat(this._cameraSpeed.z, -5f, 5f);
             if (this.DebugInput.IsHotKeyPressed("MissionScreenHotkeyIncreaseCameraSpeed"))
                 this._cameraSpeedMultiplier *= 1.5f;
             if (this.DebugInput.IsHotKeyPressed("MissionScreenHotkeyDecreaseCameraSpeed"))
@@ -169,11 +169,11 @@ namespace EnhancedMission
                 else if ((double)num < -0.00999999977648258)
                     this._cameraSpeedMultiplier *= 0.8f;
             }
-            float num1 = 10f * this._cameraSpeedMultiplier;
+            float num1 = 3f * this._cameraSpeedMultiplier;
             if (_classicMode)
             {
                 float heightAtPosition = this.Mission.Scene.GetGroundHeightAtPosition(cameraFrame1.origin, BodyFlags.CommonCollisionExcludeFlags, true);
-                num1 *= Math.Max(1f, (float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 5.0) / 10.0));
+                num1 *= MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 1.0) / 3.0), 1, 20);
             }
             if (MissionScreen.SceneLayer.Input.IsGameKeyDown(23))
                 num1 *= (float)this._shiftSpeedMultiplier;
