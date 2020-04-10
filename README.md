@@ -1,12 +1,12 @@
 # Enhanced Mission
 
-A mod for Mount&Blade Bannerlord that provides features in mission (the game state when you are in a scene rather than in a campaign map).
+A mod for Mount&Blade Bannerlord that provides features in mission such as RTS camera.
 
 ## Features
 
 - Switch to rts-style camera.
 
-- Controll your troops after dead.
+- Control your troops after you dead.
 
 - Undead mode. HP of All agents will not change after switched on.
 

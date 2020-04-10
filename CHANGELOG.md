@@ -1,4 +1,8 @@
 # Changelog
+## [e1.0.2] - 2020-04-10
+### Fixed
+- Fix the bug that player can control enemy troop after player dead.
+
 ## [e1.0.1] - 2020-04-10
 ### Added
 - Add key rebinding feature.

@@ -19,11 +19,14 @@ namespace EnhancedMission
             if (Utility.IsPlayerDead() && this.Mission.PlayerTeam != null && Utility.IsAgentDead(this.Mission.PlayerTeam.PlayerOrderController.Owner))
             {
                 var missionScreen = ScreenManager.TopScreen as MissionScreen;
-                Agent closestAllyAgent = missionScreen?.LastFollowedAgent?.IsActive() ?? false ? missionScreen?.LastFollowedAgent : 
-                                         this.Mission.GetClosestAllyAgent(this.Mission.PlayerTeam,
-                                             new WorldPosition(this.Mission.Scene,
-                                                 this.Mission.Scene.LastFinalRenderCameraPosition).GetGroundVec3(),
-                                             1000) ?? this.Mission.PlayerTeam.Leader;
+                Agent closestAllyAgent =
+                    (missionScreen?.LastFollowedAgent?.IsActive() ?? false) &&
+                    missionScreen?.LastFollowedAgent.Team == Mission.PlayerTeam
+                        ? missionScreen?.LastFollowedAgent
+                        : this.Mission.GetClosestAllyAgent(this.Mission.PlayerTeam,
+                            new WorldPosition(this.Mission.Scene,
+                                this.Mission.Scene.LastFinalRenderCameraPosition).GetGroundVec3(),
+                            1000) ?? this.Mission.PlayerTeam.Leader;
                 if (closestAllyAgent != null)
                 {
                     Utility.DisplayLocalizedText("str_control_troop");
