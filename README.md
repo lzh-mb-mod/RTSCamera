@@ -1,20 +1,36 @@
 # Enhanced Mission
 
-A mod for Mount&Blade Bannerlord that provides features in mission (the game state when you are in a scene rather than in a campain map).
+A mod for Mount&Blade Bannerlord that provides features in mission (the game state when you are in a scene rather than in a campaign map).
 
 ## Features
 
-- Switching to rts-style camera.
+- Switch to rts-style camera.
 
-- Controlling your troops after dead.
+- Controll your troops after dead.
 
 - Undead mode. HP of All agents will not change after switched on.
 
-- Adjusting combat AI between 0 and 100.
+- Realistic blocking.
+  
+  Realistic blocking is the blocking mechanism that introduced in Beta 0.8.1 and removed in Beta 0.8.4 in Multiplayer mode. Now in Single-player, It's only enabled for all the other characters except the player by default.
 
-- Pause game or adjusting time speed.
+  If you enable the option in this mod, then player will use it too.
 
-- Configuration saving. The battle configuration is saved in "(user directory)\Documents\Mount and Blade II Bannerlord\Configs\EnhancedMission\EnhancedMissionConfig.xml".
+- Adjust combat AI between 0 and 100.
+
+  By default combat AI is determined by the level of soldiers. If you set combat AI to "Good" in game option, soldiers with level of 40 will have highest combat AI.
+
+  In this mod, you can change all troops' combat AI using "combat AI" option. If you set the combat AI to "100", their combat AI will be as if they are at level 40.
+
+- Pause game and adjust time speed.
+
+- Hotkey rebinding.
+
+- Configuration saving. The battle configuration is saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\EnhancedMission\`.
+  
+  The main config is saved in file `EnhancedMissionConfig.xml`.
+
+  The hot key config is saved in file `GameKeyConfig.xml`.
 
   You can modify them manually, but if you edit it incorrectly or remove them, the configuration will be reset to default.
 
@@ -28,9 +44,9 @@ A mod for Mount&Blade Bannerlord that provides features in mission (the game sta
 
 - After entering a mission (scene):
 
-  - Press `O(letter)` to open menu of this mod. You can access the features of this mod in it.
+  - Press `O(letter)` (by default) to open menu of this mod. You can access the features of this mod in it.
 
-    Or you can use the following hotkeys:
+    Or you can use the following hotkeys by default:
 
   - Press `F10` to switch between rts-style camera and main agent camera.
 
@@ -44,13 +60,15 @@ A mod for Mount&Blade Bannerlord that provides features in mission (the game sta
 
   - In a mission, press `F10` to switch to rts camera.
 
-  - Your player character will be added to the formation choosed in mod menu.
+  - Your player character will be added to the formation chosen in mod menu.
 
   - Use `W`, `A`, `S`, `D`, `Space`, `Z` and mouse middle button to move the camera.
 
   - Use `shift` to speed up camera movement.
 
   - Move your mouse to rotate the camera, or when order panel is opened, drag right button to rotate the camera.
+
+  - Left click on the ground and drag to change the position, direction and width of the formation you selected.
 
 ## Troubleshoot
 - If the launcher can not start:
@@ -66,6 +84,10 @@ A mod for Mount&Blade Bannerlord that provides features in mission (the game sta
   - Please uncheck the mod in launcher and wait for mod update.
 
     Optionally you can tell me the step to reproduce the crash.
+
+- If you forget the hotkey you set for opening menu:
+
+  - you can remove the config file so that it will be reset to default.
 
 ## Contact with me
 * Please mail to: lizhenhuan1019@qq.com

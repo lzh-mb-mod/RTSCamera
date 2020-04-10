@@ -24,6 +24,7 @@ namespace EnhancedMission
 
                 new MissionMenuView(), 
                 new FlyCameraMissionView(),
+                new GameKeyConfigView(),
             };
 
             foreach (var missionBehaviour in array)

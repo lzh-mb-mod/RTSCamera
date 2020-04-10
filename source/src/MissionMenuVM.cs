@@ -111,6 +111,7 @@ namespace EnhancedMission
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private MissionSpeedLogic _missionSpeedLogic;
         private EnhancedMissionOrderUIHandler _orderUIHandler;
+        private GameKeyConfigView _gameKeyConfigView;
 
         private Action _closeMenu;
 
@@ -125,6 +126,8 @@ namespace EnhancedMission
 
         public string ChangeCombatAIString { get; } = GameTexts.FindText("str_change_combat_ai").ToString();
         public string CombatAIString { get; } = GameTexts.FindText("str_combat_ai").ToString();
+
+        public string ConfigKeyString { get; } = GameTexts.FindText("str_gamekey_config").ToString();
 
         public void SwitchFreeCamera()
         {
@@ -210,6 +213,11 @@ namespace EnhancedMission
         [DataSourceProperty]
         public NumericVM CombatAI { get; }
 
+        public void ConfigKey()
+        {
+            _gameKeyConfigView?.Activate();
+        }
+
         private void CloseMenu()
         {
             this._closeMenu?.Invoke();
@@ -224,18 +232,9 @@ namespace EnhancedMission
             this.PlayerFormation = new SelectionOptionDataVM(new SelectionOptionData(
                 (int i) =>
                 {
-                    _config.playerFormation = i;
-                    if (Mission.Current.MainAgent != null && Mission.Current.PlayerTeam != null)
-                    {
-                        var controller = Mission.Current.MainAgent.Controller;
-                        Mission.Current.MainAgent.Controller = Agent.ControllerType.AI;
-                        //_orderUIHandler?.dataSource.RemoveTroops(Mission.Current.MainAgent);
-                        Mission.Current.MainAgent.Formation =
-                            Mission.Current.PlayerTeam.GetFormation((FormationClass)_config.playerFormation);
-                        //_orderUIHandler?.dataSource.AddTroops(Mission.Current.MainAgent);
-                        Mission.Current.MainAgent.Controller = controller;
-                    }
-                }, () => _config.playerFormation,
+                    _config.PlayerFormation = i;
+                    Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
+                }, () => _config.PlayerFormation,
                 (int)FormationClass.NumberOfRegularFormations, new[]
                 {
                     new SelectionItem(true, "str_troop_group_name", "0"),
@@ -249,7 +248,7 @@ namespace EnhancedMission
                 }), GameTexts.FindText("str_player_formation"));
             this._missionSpeedLogic = _mission.GetMissionBehaviour<MissionSpeedLogic>();
             this.SpeedFactor = new NumericVM(GameTexts.FindText("str_slow_motion_factor").ToString(),
-                _mission.Scene.SlowMotionMode ? _mission.Scene.SlowMotionFactor : 1.0f, 0.01f, 2.0f, false,
+                _mission.Scene.SlowMotionMode ? _mission.Scene.SlowMotionFactor : 1.0f, 0.01f, 3.0f, false,
                 factor => { _missionSpeedLogic.SetSlowMotionFactor(factor); });
 
             this.ChangeCombatAI = this._config.ChangeCombatAI;
@@ -259,6 +258,8 @@ namespace EnhancedMission
                     this._config.CombatAI = (int)combatAI;
                     ApplyCombatAI();
                 }, 1, this._config.ChangeCombatAI);
+
+            this._gameKeyConfigView = Mission.Current.GetMissionBehaviour<GameKeyConfigView>();
         }
 
         private void ApplyCombatAI()

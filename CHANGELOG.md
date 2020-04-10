@@ -1,5 +1,9 @@
 # Changelog
-## [e1.0.0] - 2020-04-05
+## [e1.0.1] - 2020-04-10
+### Added
+- Add key rebinding feature.
+
+## [e1.0.0] - 2020-04-09
 ### Added
 - Switch to rts-style camera and issue orders.
 

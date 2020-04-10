@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.GauntletUI;
 
 namespace EnhancedMission
 {
     class SwitchFreeCameraLogic : MissionLogic
     {
         private EnhancedMissionConfig _config;
-        private EnhancedMissionOrderUIHandler _orderUIHandler;
+        private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
         public bool isSpectatorCamera = false;
 
         public event Action<bool> ToggleFreeCamera;
@@ -18,11 +16,12 @@ namespace EnhancedMission
         {
             _config = config;
         }
+
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
 
-            if (this.Mission.InputManager.IsKeyPressed(TaleWorlds.InputSystem.InputKey.F10))
+            if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.FreeCamera)))
             {
                 this.SwitchCamera();
             }
@@ -64,10 +63,8 @@ namespace EnhancedMission
             {
                 Mission.MainAgent.Controller = Agent.ControllerType.AI;
                 Mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
-                //_orderUIHandler?.dataSource.RemoveTroops(Mission.Current.MainAgent);
-                Mission.Current.MainAgent.Formation =
-                    Mission.Current.PlayerTeam?.GetFormation((FormationClass)_config.playerFormation);
-                //_orderUIHandler?.dataSource.AddTroops(Mission.Current.MainAgent);
+                if (Mission.MainAgent.Formation?.FormationIndex != (FormationClass)_config.PlayerFormation)
+                    Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
             }
             ToggleFreeCamera?.Invoke(true);
             Utility.DisplayLocalizedText("str_switch_to_free_camera");

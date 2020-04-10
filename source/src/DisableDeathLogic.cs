@@ -6,6 +6,7 @@ namespace EnhancedMission
     public class DisableDeathLogic : MissionLogic
     {
         private EnhancedMissionConfig _config;
+        private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         public DisableDeathLogic(EnhancedMissionConfig config)
         {
@@ -21,7 +22,7 @@ namespace EnhancedMission
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
-            if (this.Mission.InputManager.IsKeyPressed(InputKey.F11))
+            if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.DisableDeath)))
             {
                 this._config.DisableDeath = !this._config.DisableDeath;
                 SetDisableDeath(this._config.DisableDeath);

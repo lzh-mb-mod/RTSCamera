@@ -16,10 +16,22 @@ namespace EnhancedMission
 
     class MissionSpeedLogic : MissionLogic
     {
+        private EnhancedMissionConfig _config;
+        private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
+
+        public override void AfterStart()
+        {
+            base.AfterStart();
+
+            _config = EnhancedMissionConfig.Get();
+            if (Math.Abs(_config.SlowMotionFactor - 1.0) >= 0.01)
+                SetSlowMotionFactor(_config.SlowMotionFactor);
+        }
+
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
-            if (Input.IsKeyPressed(InputKey.P))
+            if (Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.Pause)))
             {
                 TogglePause();
             }
@@ -34,6 +46,7 @@ namespace EnhancedMission
 
         public void ResetSpeed()
         {
+            _config.SlowMotionFactor = 1.0f;
             Mission.Scene.SlowMotionFactor = 0.2f;
             SetSpeedMode(MissionSpeed.Normal);
         }
@@ -59,6 +72,7 @@ namespace EnhancedMission
             if (!Mission.Scene.SlowMotionMode)
                 SetSlowMotionMode();
             this.Mission.Scene.SlowMotionFactor = factor;
+            _config.SlowMotionFactor = factor;
         }
 
         public MissionSpeed CurrentSpeed

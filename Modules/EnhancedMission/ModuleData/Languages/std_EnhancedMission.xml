@@ -62,5 +62,14 @@
     <string id="EnhancedMission_playeragentdead" text="Player agent is dead." />
     <string id="EnhancedMission_switchtoplayer" text="Switch to player agent." />
     <string id="EnhancedMission_switchtofreecamera" text="Switch to free camera." />
+
+    <string id="EnhancedMission_gamekeyconfigtitle" text="Config Key" />
+
+    <string id="EnhancedMission_hotkeycategory" text="EnhancedMission Hot Key" />
+    <string id="EnhancedMission_openmenukey" text="Open Menu" />
+    <string id="EnhancedMission_pausekey" text="Pause" />
+    <string id="EnhancedMission_freecamerakey" text="Free Camera" />
+    <string id="EnhancedMission_disabledeathkey" text="Disable Death" />
+    <string id="EnhancedMission_controltroopkey" text="Control Troop" />
   </strings>
 </base>

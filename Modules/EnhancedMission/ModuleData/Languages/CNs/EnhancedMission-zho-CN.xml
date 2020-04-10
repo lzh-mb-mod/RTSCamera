@@ -62,5 +62,14 @@
     <string id="EnhancedMission_playeragentdead" text="玩家角色已死亡。" />
     <string id="EnhancedMission_switchtoplayer" text="切换到玩家角色。" />
     <string id="EnhancedMission_switchtofreecamera" text="切换到自由视角。" />
+
+    <string id="EnhancedMission_gamekeyconfigtitle" text="按键绑定" />
+
+    <string id="EnhancedMission_hotkeycategory" text="EnhancedMission热键" />
+    <string id="EnhancedMission_openmenukey" text="打开菜单" />
+    <string id="EnhancedMission_pausekey" text="暂停" />
+    <string id="EnhancedMission_freecamerakey" text="自由视角" />
+    <string id="EnhancedMission_disabledeathkey" text="禁用死亡" />
+    <string id="EnhancedMission_controltroopkey" text="控制下属部队" />
   </strings>
 </base>

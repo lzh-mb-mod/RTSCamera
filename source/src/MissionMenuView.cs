@@ -14,6 +14,7 @@ namespace EnhancedMission
         private GauntletLayer _gauntletLayer;
         private GauntletMovie _movie;
         private EnhancedMissionConfig _config;
+        private GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         public bool IsActivated { get; set; }
 
@@ -56,6 +57,7 @@ namespace EnhancedMission
         public void DeactivateMenu()
         {
             IsActivated = false;
+            this._dataSource.OnFinalize();
             this._dataSource = null;
             this._gauntletLayer.InputRestrictions.ResetInputRestrictions();
             this.MissionScreen.RemoveLayer(this._gauntletLayer);
@@ -71,11 +73,11 @@ namespace EnhancedMission
             if (IsActivated)
             {
                 if (this._gauntletLayer.Input.IsKeyReleased(InputKey.RightMouseButton) ||
-                    this._gauntletLayer.Input.IsKeyReleased(InputKey.O) ||
+                    this._gauntletLayer.Input.IsKeyReleased(_gameKeyConfig.GetKey(GameKeyEnum.OpenMenu)) ||
                     this._gauntletLayer.Input.IsHotKeyReleased("Exit"))
                     DeactivateMenu();
             }
-            else if (this.Input.IsKeyReleased(InputKey.O))
+            else if (this.Input.IsKeyReleased(_gameKeyConfig.GetKey(GameKeyEnum.OpenMenu)))
                 ActivateMenu();
         }
 

@@ -48,5 +48,27 @@ namespace EnhancedMission
         {
         }
 
+        public static void SetPlayerFormation(FormationClass formationClass)
+        {
+            if (Mission.Current.MainAgent != null && Mission.Current.PlayerTeam != null &&
+                Mission.Current.MainAgent.Formation?.FormationIndex != formationClass)
+            {
+                var mission = Mission.Current;
+                var controller = mission.MainAgent.Controller;
+                mission.MainAgent.Controller = Agent.ControllerType.AI;
+                var previousFormation = mission.MainAgent.Formation;
+                mission.MainAgent.Formation =
+                    mission.PlayerTeam.GetFormation(formationClass);
+                mission.MainAgent.Controller = controller;
+                if (previousFormation != null)
+                {
+                    mission.PlayerTeam.MasterOrderController.ClearSelectedFormations();
+                    mission.PlayerTeam.MasterOrderController.SelectFormation(previousFormation);
+                    mission.PlayerTeam.MasterOrderController.SetOrderWithFormationAndNumber(OrderType.Transfer,
+                        mission.MainAgent.Formation, 0);
+                }
+                mission.PlayerTeam.ExpireAIQuerySystem();
+            }
+        }
     }
 }

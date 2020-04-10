@@ -5,6 +5,7 @@ using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.GauntletUI.Mission;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.Missions;
 
@@ -111,6 +112,11 @@ namespace EnhancedMission
         private void OnToggleFreeCamera(bool freeCamera)
         {
             _orderUIHandler?.gauntletLayer.InputRestrictions.SetMouseVisibility(freeCamera && _isOrderViewOpen);
+            if (_missionMainAgentController != null)
+            {
+                _missionMainAgentController.IsDisabled = freeCamera;
+            }
+            
         }
 
         private void UpdateDragData()
@@ -140,8 +146,6 @@ namespace EnhancedMission
         {
             if (_orderUIHandler != null) 
                 UpdateDragData();
-            //if (_missionMainAgentController != null)
-            //    _missionMainAgentController.IsDisabled = true;
             MatrixFrame cameraFrame1 = MatrixFrame.Identity;
             cameraFrame1.rotation.RotateAboutSide(1.570796f);
             cameraFrame1.rotation.RotateAboutForward(this.CameraBearing);
