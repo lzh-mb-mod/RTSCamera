@@ -64,7 +64,6 @@ namespace EnhancedMission
             this._movie = null;
             this._gauntletLayer = null;
             UnpauseGame();
-            EnhancedMissionConfig.Get().Serialize();
         }
 
         public override void OnMissionScreenTick(float dt)

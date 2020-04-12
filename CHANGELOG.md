@@ -1,6 +1,10 @@
 # Changelog
+## [1.0.6] - 2020-04-12
+### Added
+- Save config for "change combat ai" and "use realistic blocking" options.
+
 ## [1.0.5] - 2020-04-12
-### Fix
+### Fixed
 - Support Bannerlord e1.1.0
 
 ### Changed

@@ -23,5 +23,7 @@ namespace EnhancedMission
         public abstract bool ChangeRangedAI { get; set; }
 
         public abstract int RangedAI { get; set; }
+
+        public abstract void SaveConfig();
     }
 }
