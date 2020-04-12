@@ -254,7 +254,7 @@ namespace EnhancedMission
         private void CloseMenu()
         {
             _config.Serialize();
-            _changeBodyProperties.SaveConfig();
+            _changeBodyProperties?.SaveConfig();
             this._closeMenu?.Invoke();
         }
 
