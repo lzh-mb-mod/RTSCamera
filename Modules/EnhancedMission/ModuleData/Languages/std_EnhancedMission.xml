@@ -42,8 +42,11 @@
     <string id="EnhancedMission_makegruntvoice" text="Make Grunt Voice" />
     <string id="EnhancedMission_hasboundary" text="Has Boundary" />
 
-    <string id="EnhancedMission_changecombatai" text="Change Combat AI" />
-    <string id="EnhancedMission_combatai" text="Combat AI(0-100)" />
+    <string id="EnhancedMission_changemeleeai" text="Change Melee AI" />
+    <string id="EnhancedMission_meleeai" text="Melee AI(0-100)" />
+
+    <string id="EnhancedMission_changerangedai" text="Change Ranged AI" />
+    <string id="EnhancedMission_rangedai" text="Ranged AI(0-100)" />
 
     <string id="EnhancedMission_usefreecamerabydefault" text="Use Free Camera By Default" />
     <string id="EnhancedMission_switchfreecamera" text="Switch Free Camera" />

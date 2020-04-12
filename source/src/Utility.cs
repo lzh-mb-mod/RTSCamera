@@ -8,7 +8,7 @@ using TaleWorlds.MountAndBlade;
 
 namespace EnhancedMission
 {
-    class Utility
+    public class Utility
     {
         public static void DisplayLocalizedText(string id, string variation = null)
         {

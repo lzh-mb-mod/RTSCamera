@@ -22,7 +22,7 @@ namespace EnhancedMission
                 new MainAgentChangedLogic(),
                 new CommanderLogic(),
 
-                new MissionMenuView(), 
+                new MissionMenuView(),
                 new FlyCameraMissionView(),
                 new GameKeyConfigView(),
                 new EnhancedOrderTroopPlacer()
@@ -35,6 +35,14 @@ namespace EnhancedMission
                     continue; // avoid accidentally add itself infinitely.
                 AddMissionBehaviour(missionBehaviour);
             }
+        }
+
+        public override void OnPreMissionTick(float dt)
+        {
+            var orderTroopPlacer = Mission.GetMissionBehaviour<OrderTroopPlacer>();
+            if (orderTroopPlacer != null)
+                Mission.RemoveMissionBehaviour(orderTroopPlacer);
+            Mission.RemoveMissionBehaviour(this);
         }
 
         private void AddMissionBehaviour(MissionBehaviour behaviour)

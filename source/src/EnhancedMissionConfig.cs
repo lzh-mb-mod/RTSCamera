@@ -31,15 +31,12 @@ namespace EnhancedMission
 
         public bool DisableDeath = false;
 
-        public bool UseRealisticBlocking = false;
-
-        public bool ChangeCombatAI = false;
-
-        public int CombatAI = 100;
-
         public float SlowMotionFactor = 1;
 
-
+        private static EnhancedMissionConfig CreateDefault()
+        {
+            return new EnhancedMissionConfig();
+        }
         public static EnhancedMissionConfig Get()
         {
             if (_instance == null)
@@ -51,11 +48,6 @@ namespace EnhancedMission
             return _instance;
         }
 
-        private static EnhancedMissionConfig CreateDefault()
-        {
-            return new EnhancedMissionConfig();
-        }
-
         protected override XmlSerializer serializer => new XmlSerializer(typeof(EnhancedMissionConfig));
 
         protected override void CopyFrom(EnhancedMissionConfig other)
@@ -64,9 +56,6 @@ namespace EnhancedMission
             this.UseFreeCameraByDefault = other.UseFreeCameraByDefault;
             this.PlayerFormation = other.PlayerFormation;
             this.DisableDeath = other.DisableDeath;
-            this.UseRealisticBlocking = other.UseRealisticBlocking;
-            this.ChangeCombatAI = other.ChangeCombatAI;
-            this.CombatAI = other.CombatAI;
         }
 
         public override void ResetToDefault()

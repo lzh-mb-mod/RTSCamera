@@ -38,8 +38,11 @@
     <string id="str_make_grunt_voice" text="{=EnhancedMission_makegruntvoice}Make Grunt Voice" />
     <string id="str_has_boundary" text="{=EnhancedMission_hasboundary}Has Boundary" />
 
-    <string id="str_change_combat_ai" text="{=EnhancedMission_changecombatai}Change Combat AI" />
-    <string id="str_combat_ai" text="{=EnhancedMission_combatai}Combat AI(0-100)" />
+    <string id="str_change_melee_ai" text="{=EnhancedMission_changemeleeai}Change Melee AI" />
+    <string id="str_melee_ai" text="{=EnhancedMission_meleeai}Melee AI(0-100)" />
+
+    <string id="str_change_ranged_ai" text="{=EnhancedMission_changerangedai}Change Ranged AI" />
+    <string id="str_ranged_ai" text="{=EnhancedMission_rangedai}Ranged AI(0-100)" />
 
     <string id="str_use_free_camera_by_default" text="{=EnhancedMission_usefreecamerabydefault}Use Free Camera By Default" />
     <string id="str_switch_free_camera" text="{=EnhancedMission_switchfreecamera}Switch Free Camera" />

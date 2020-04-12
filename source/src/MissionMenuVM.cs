@@ -111,6 +111,7 @@ namespace EnhancedMission
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private MissionSpeedLogic _missionSpeedLogic;
         private GameKeyConfigView _gameKeyConfigView;
+        private ChangeBodyPropertiesBase _changeBodyProperties = ChangeBodyPropertiesBase.Get();
 
         private Action _closeMenu;
 
@@ -124,8 +125,11 @@ namespace EnhancedMission
 
         public string UseRealisticBlockingString { get; } = GameTexts.FindText("str_use_realistic_blocking").ToString();
 
-        public string ChangeCombatAIString { get; } = GameTexts.FindText("str_change_combat_ai").ToString();
-        public string CombatAIString { get; } = GameTexts.FindText("str_combat_ai").ToString();
+        public string ChangeMeleeAIString { get; } = GameTexts.FindText("str_change_melee_ai").ToString();
+        public string MeleeAIString { get; } = GameTexts.FindText("str_melee_ai").ToString();
+
+        public string ChangeRangedAIString { get; } = GameTexts.FindText("str_change_ranged_ai").ToString();
+        public string RangedAIString { get; } = GameTexts.FindText("str_ranged_ai").ToString();
 
         public string ConfigKeyString { get; } = GameTexts.FindText("str_gamekey_config").ToString();
 
@@ -193,37 +197,54 @@ namespace EnhancedMission
         [DataSourceProperty]
         public NumericVM SpeedFactor { get; }
 
+        [DataSourceProperty] public bool EnableChangingBodyProperties => _changeBodyProperties != null;
+
         [DataSourceProperty]
         public bool UseRealisticBlocking
         {
-            get => this._config.UseRealisticBlocking;
+            get => _changeBodyProperties?.UseRealisticBlocking ?? false;
             set
             {
-                if (this._config.UseRealisticBlocking == value)
+                if (_changeBodyProperties == null || _changeBodyProperties.UseRealisticBlocking == value)
                     return;
-                this._config.UseRealisticBlocking = value;
-                ApplyUseRealisticBlocking();
+                _changeBodyProperties.UseRealisticBlocking = value;
                 this.OnPropertyChanged(nameof(UseRealisticBlocking));
             }
         }
 
         [DataSourceProperty]
-        public bool ChangeCombatAI
+        public bool ChangeMeleeAI
         {
-            get => this._config.ChangeCombatAI;
+            get => _changeBodyProperties?.ChangeMeleeAI ?? false;
             set
             {
-                if (this._config.ChangeCombatAI == value)
+                if (_changeBodyProperties == null || _changeBodyProperties.ChangeMeleeAI == value)
                     return;
-                this._config.ChangeCombatAI = value;
-                this.CombatAI.IsVisible = value;
-                ApplyCombatAI();
-                this.OnPropertyChanged(nameof(ChangeCombatAI));
+                _changeBodyProperties.ChangeMeleeAI = value;
+                this.MeleeAI.IsVisible = value;
+                OnPropertyChanged(nameof(ChangeMeleeAI));
             }
         }
 
         [DataSourceProperty]
-        public NumericVM CombatAI { get; }
+        public NumericVM MeleeAI { get; }
+
+        [DataSourceProperty]
+        public bool ChangeRangedAI
+        {
+            get => _changeBodyProperties?.ChangeRangedAI ?? false;
+            set
+            {
+                if (_changeBodyProperties == null || _changeBodyProperties.ChangeRangedAI == value)
+                    return;
+                _changeBodyProperties.ChangeRangedAI = value;
+                this.RangedAI.IsVisible = value;
+                OnPropertyChanged(nameof(ChangeRangedAI));
+            }
+        }
+
+        [DataSourceProperty]
+        public NumericVM RangedAI { get; }
 
         public void ConfigKey()
         {
@@ -266,56 +287,23 @@ namespace EnhancedMission
                 _mission.Scene.SlowMotionMode ? _mission.Scene.SlowMotionFactor : 1.0f, 0.01f, 3.0f, false,
                 factor => { _missionSpeedLogic.ApplySlowMotionFactor(factor); });
 
-            this.ChangeCombatAI = this._config.ChangeCombatAI;
-            this.CombatAI = new NumericVM(CombatAIString, _config.CombatAI, 0, 100, true,
+            this.MeleeAI = new NumericVM(MeleeAIString, _changeBodyProperties?.MeleeAI ?? 0, 0, 100, true,
                 combatAI =>
                 {
-                    this._config.CombatAI = (int)combatAI;
-                    ApplyCombatAI();
-                }, 1, this._config.ChangeCombatAI);
+                    if (_changeBodyProperties == null)
+                        return;
+                    _changeBodyProperties.MeleeAI = (int) combatAI;
+                }, 1, ChangeMeleeAI);
+
+            this.RangedAI = new NumericVM(RangedAIString, _changeBodyProperties?.RangedAI ?? 0, 0, 100, true,
+                combatAI =>
+                {
+                    if (_changeBodyProperties == null)
+                        return;
+                    _changeBodyProperties.RangedAI = (int)combatAI;
+                }, 1, ChangeRangedAI);
 
             this._gameKeyConfigView = Mission.Current.GetMissionBehaviour<GameKeyConfigView>();
-        }
-
-        private void ApplyCombatAI()
-        {
-            if (ChangeCombatAI)
-            {
-                foreach (var agent in _mission.Agents)
-                {
-                    AgentStatModel.SetAgentAIStat(agent, agent.AgentDrivenProperties, _config.CombatAI);
-                    agent.UpdateAgentProperties();
-                }
-            }
-            else
-            {
-                foreach (var agent in _mission.Agents)
-                {
-                    MissionGameModels.Current.AgentStatCalculateModel.InitializeAgentStats(agent, agent.SpawnEquipment,
-                        agent.AgentDrivenProperties, null);
-                    agent.UpdateAgentProperties();
-                }
-            }
-        }
-
-        private void ApplyUseRealisticBlocking()
-        {
-            if (UseRealisticBlocking)
-            {
-                foreach (var agent in _mission.Agents)
-                {
-                    AgentStatModel.SetUseRealisticBlocking(agent.AgentDrivenProperties, true);
-                    agent.UpdateAgentProperties();
-                }
-            }
-            else
-            {
-                foreach (var agent in _mission.Agents)
-                {
-                    agent.AgentDrivenProperties.SetStat(DrivenProperty.UseRealisticBlocking, agent.Controller != Agent.ControllerType.Player ? 1f : 0.0f);
-                    agent.UpdateAgentProperties();
-                }
-            }
         }
     }
 }

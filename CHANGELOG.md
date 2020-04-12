@@ -1,5 +1,12 @@
 # Changelog
-## [1.0.4]
+## [1.0.5] - 2020-04-12
+### Fix
+- Support Bannerlord e1.1.0
+
+### Changed
+- Move "use realistic blocking" and "change combat ai" feature to another mod called "EnhancedMission Change AI".
+
+## [1.0.4] - 2020-04-12
 ### Added
 - Add "use free camera by default" option.
 

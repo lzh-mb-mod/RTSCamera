@@ -1,4 +1,4 @@
-# Enhanced Mission
+# Enhanced Mission (RTS Camera)
 
 A mod for Mount&Blade Bannerlord that provides features in mission such as RTS camera.
 
@@ -10,21 +10,13 @@ A mod for Mount&Blade Bannerlord that provides features in mission such as RTS c
 
 - Undead mode. HP of All agents will not change after switched on.
 
-- Realistic blocking.
-  
-  Realistic blocking is the blocking mechanism that introduced in Beta 0.8.1 and removed in Beta 0.8.4 in Multiplayer mode. Now in Single-player, It's only enabled for all the other characters except the player by default.
-
-  If you enable the option in this mod, then player will use it too.
-
-- Adjust combat AI between 0 and 100.
-
-  By default combat AI is determined by the level of soldiers. If you set combat AI to "Good" in game option, soldiers with level of 40 will have highest combat AI.
-
-  In this mod, you can change all troops' combat AI using "combat AI" option. If you set the combat AI to "100", their combat AI will be as if they are at level 40.
-
 - Pause game and adjust time speed.
 
 - Hotkey rebinding.
+
+- Realistic blocking and adjusting combat AI are supported in another mod called ["Enhanced Mission Change AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/).
+
+  Because supporting them may cause the mod crash after beta update and break compatibility.
 
 - Configuration saving. The battle configuration is saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\EnhancedMission\`.
   
@@ -38,7 +30,7 @@ A mod for Mount&Blade Bannerlord that provides features in mission such as RTS c
 1. Copy `Modules` folder into Bannerlord installation folder(For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`). It should be merged with `Modules` of the game.
 
 ## How to use
-- Start the launcher and choose Single player mode. In `Mods` panel select `EnhancedMission` mod and click `PLAY`.
+- Start the launcher and choose Single player mode. In `Mods` panel select `EnhancedMission (RTS Camera)` mod and click `PLAY`.
 
   Then play the game as usual.
 

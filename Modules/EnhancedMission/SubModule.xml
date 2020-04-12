@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Module>
-	<Name value = "EnhancedMission (RTS Camera)"/>
+	<Name value = "Enhanced Mission (RTS Camera) for Beta"/>
 	<Id value = "EnhancedMission"/>
-	<Version value = "e1.0.4"/>
+	<Version value = "e1.0.5"/>
 	<SingleplayerModule value="true"/>
 	<MultiplayerModule value="false"/>
 	<DependedModules>

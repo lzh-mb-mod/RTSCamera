@@ -42,8 +42,11 @@
     <string id="EnhancedMission_makegruntvoice" text="下令后士兵回应" />
     <string id="EnhancedMission_hasboundary" text="地图边界" />
 
-    <string id="EnhancedMission_changecombatai" text="改变战斗AI" />
-    <string id="EnhancedMission_combatai" text="战斗AI（0-100）" />
+    <string id="EnhancedMission_changemeleeai" text="改变近战AI" />
+    <string id="EnhancedMission_meleeai" text="近战AI（0-100）" />
+
+    <string id="EnhancedMission_changerangedai" text="改变远程AI" />
+    <string id="EnhancedMission_rangedai" text="远程AI（0-100）" />
 
     <string id="EnhancedMission_usefreecamerabydefault" text="默认自由视角" />
     <string id="EnhancedMission_switchfreecamera" text="切换自由视角" />
