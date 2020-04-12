@@ -14,9 +14,17 @@ namespace EnhancedMission
         {
             InformationManager.DisplayMessage(new InformationMessage(GameTexts.FindText(id, variation).ToString()));
         }
+        public static void DisplayLocalizedText(string id, string variation, Color color)
+        {
+            InformationManager.DisplayMessage(new InformationMessage(GameTexts.FindText(id, variation).ToString(), color));
+        }
         public static void DisplayMessage(string msg)
         {
             InformationManager.DisplayMessage(new InformationMessage(new TaleWorlds.Localization.TextObject(msg).ToString()));
+        }
+        public static void DisplayMessage(string msg, Color color)
+        {
+            InformationManager.DisplayMessage(new InformationMessage(new TaleWorlds.Localization.TextObject(msg).ToString(), color));
         }
 
         public static bool IsAgentDead(Agent agent)
@@ -60,14 +68,14 @@ namespace EnhancedMission
                 mission.MainAgent.Formation =
                     mission.PlayerTeam.GetFormation(formationClass);
                 mission.MainAgent.Controller = controller;
-                if (previousFormation != null)
-                {
-                    mission.PlayerTeam.MasterOrderController.ClearSelectedFormations();
-                    mission.PlayerTeam.MasterOrderController.SelectFormation(previousFormation);
-                    mission.PlayerTeam.MasterOrderController.SetOrderWithFormationAndNumber(OrderType.Transfer,
-                        mission.MainAgent.Formation, 0);
-                }
-                mission.PlayerTeam.ExpireAIQuerySystem();
+                //if (previousFormation != null)
+                //{
+                //    mission.PlayerTeam.MasterOrderController.ClearSelectedFormations();
+                //    mission.PlayerTeam.MasterOrderController.SelectFormation(previousFormation);
+                //    mission.PlayerTeam.MasterOrderController.SetOrderWithFormationAndNumber(OrderType.Transfer,
+                //        mission.MainAgent.Formation, 0);
+                //}
+                //mission.PlayerTeam.ExpireAIQuerySystem();
             }
         }
     }

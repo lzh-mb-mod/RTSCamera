@@ -25,6 +25,8 @@ namespace EnhancedMission
 
         public string ConfigVersion { get; set; } = BinaryVersion.ToString();
 
+        public bool UseFreeCameraByDefault = false;
+
         public int PlayerFormation = 4;
 
         public bool DisableDeath = false;
@@ -59,6 +61,7 @@ namespace EnhancedMission
         protected override void CopyFrom(EnhancedMissionConfig other)
         {
             this.ConfigVersion = other.ConfigVersion;
+            this.UseFreeCameraByDefault = other.UseFreeCameraByDefault;
             this.PlayerFormation = other.PlayerFormation;
             this.DisableDeath = other.DisableDeath;
             this.UseRealisticBlocking = other.UseRealisticBlocking;

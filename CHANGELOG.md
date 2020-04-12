@@ -1,4 +1,16 @@
 # Changelog
+## [1.0.4]
+### Added
+- Add "use free camera by default" option.
+
+- Use mouse to move camera.
+
+### Changed
+- Now RTS camera will not be interrupted by player's death.
+
+### Fixed
+- Player can drag on the ground when game is paused or slow down, defictive though.
+
 ## [1.0.3-hotfix] - 2020-04-11
 - Fix bug that hot key config will be reset to default after each game start.
 

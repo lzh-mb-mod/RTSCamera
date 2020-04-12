@@ -18,6 +18,7 @@ namespace EnhancedMission
     {
         private EnhancedMissionConfig _config;
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
+        private bool _paused = false;
 
         public override void AfterStart()
         {
@@ -25,7 +26,7 @@ namespace EnhancedMission
 
             _config = EnhancedMissionConfig.Get();
             if (Math.Abs(_config.SlowMotionFactor - 1.0) >= 0.01)
-                SetSlowMotionFactor(_config.SlowMotionFactor);
+                ApplySlowMotionFactor(_config.SlowMotionFactor);
         }
 
         public override void OnMissionTick(float dt)
@@ -39,40 +40,57 @@ namespace EnhancedMission
 
         public void TogglePause()
         {
-            MissionState.Current.Paused = !MissionState.Current.Paused;
-            Utility.DisplayLocalizedText(MissionState.Current.Paused ? "str_mission_paused" : "str_mission_continued");
+            _paused = !_paused;
+            Utility.DisplayLocalizedText(_paused ? "str_mission_paused" : "str_mission_continued");
+            if (_paused)
+            {
+                Mission.Scene.SlowMotionFactor = 0.0001f;
+                Mission.Scene.SlowMotionMode = true;
+            }
+            else
+            {
+                ApplySlowMotionFactor();
+            }
         }
 
 
         public void ResetSpeed()
         {
             _config.SlowMotionFactor = 1.0f;
-            Mission.Scene.SlowMotionFactor = 0.2f;
-            SetSpeedMode(MissionSpeed.Normal);
+            SetNormalMode();
         }
 
-        public void SetSpeedMode(MissionSpeed speed)
+        public void ApplySlowMotionFactor(float factor)
         {
-            switch (speed)
+            _config.SlowMotionFactor = factor;
+            ApplySlowMotionFactor();
+        }
+
+        public void ApplySlowMotionFactor()
+        {
+            if (Math.Abs(_config.SlowMotionFactor - 1.0f) < 0.01f)
+                SetNormalMode();
+            else
             {
-                case MissionSpeed.Slow:
-                    SetSlowMotionMode();
-                    break;
-                case MissionSpeed.Normal:
-                    SetNormalMode();
-                    break;
-                case MissionSpeed.Fast:
-                    SetFastForwardMode();
-                    break;
+                SetFastForwardModeImpl(false);
+                SetSlowMotionModeImpl(_config.SlowMotionFactor);
+                SetFastForwardModeImpl(false);
+                Utility.DisplayLocalizedText("str_slow_motion_enabled");
             }
         }
 
-        public void SetSlowMotionFactor(float factor)
+        public void SetFastForwardMode()
         {
-            if (!Mission.Scene.SlowMotionMode)
-                SetSlowMotionMode();
-            this.Mission.Scene.SlowMotionFactor = factor;
-            _config.SlowMotionFactor = factor;
+            SetSlowMotionModeImpl(1.0f);
+            SetFastForwardModeImpl(false);
+            Utility.DisplayLocalizedText("str_fast_forward_mode_enabled");
+        }
+
+        public void SetNormalMode()
+        {
+            SetSlowMotionModeImpl(1.0f);
+            SetFastForwardModeImpl(false);
+            Utility.DisplayLocalizedText("str_normal_mode_enabled");
         }
 
         public MissionSpeed CurrentSpeed
@@ -86,31 +104,18 @@ namespace EnhancedMission
                 return MissionSpeed.Normal;
             }
         }
-
-        public void SetSlowMotionMode()
+        private void SetSlowMotionModeImpl(float factor)
         {
-            SetFastForwardModeImpl(false);
-            SetSlowMotionModeImpl(true);
-            Utility.DisplayLocalizedText("str_slow_motion_enabled");
-        }
-
-        public void SetFastForwardMode()
-        {
-            SetSlowMotionModeImpl(false);
-            SetFastForwardModeImpl(true);
-            Utility.DisplayLocalizedText("str_fast_forward_mode_enabled");
-        }
-
-        public void SetNormalMode()
-        {
-            SetSlowMotionModeImpl(false);
-            SetFastForwardModeImpl(false);
-            Utility.DisplayLocalizedText("str_normal_mode_enabled");
-        }
-
-        private void SetSlowMotionModeImpl(bool enabled)
-        {
-            Mission.Scene.SlowMotionMode = enabled;
+            if (Math.Abs(factor - 1.0) < 0.01)
+            {
+                Mission.Scene.SlowMotionFactor = 0.2f;
+                Mission.Scene.SlowMotionMode = false;
+            }
+            else
+            {
+                Mission.Scene.SlowMotionFactor = factor;
+                Mission.Scene.SlowMotionMode = true;
+            }
         }
 
         private void SetFastForwardModeImpl(bool enabled)

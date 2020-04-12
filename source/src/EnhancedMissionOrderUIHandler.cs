@@ -30,7 +30,7 @@ namespace EnhancedMission
         private const float DEPLOYMENT_ICON_SIZE = 75f;
         private List<DeploymentSiegeMachineVM> _deploymentPointDataSources;
         private Vec2 _deploymentPointWidgetSize;
-        private OrderTroopPlacer _orderTroopPlacer;
+        private EnhancedOrderTroopPlacer _orderTroopPlacer;
         public GauntletLayer gauntletLayer;
         public MissionOrderVM dataSource;
         private GauntletMovie _viewMovie;
@@ -68,7 +68,7 @@ namespace EnhancedMission
             base.OnMissionScreenInitialize();
             this.MissionScreen.SceneLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("MissionOrderHotkeyCategory"));
             this.MissionScreen.OrderFlag = new OrderFlag(this.Mission, this.MissionScreen);
-            this._orderTroopPlacer = this.Mission.GetMissionBehaviour<OrderTroopPlacer>();
+            this._orderTroopPlacer = this.Mission.GetMissionBehaviour<EnhancedOrderTroopPlacer>();
             this.MissionScreen.SetOrderFlagVisibility(false);
             this._siegeDeploymentHandler = this.Mission.GetMissionBehaviour<SiegeDeploymentHandler>();
             this.IsDeployment = this._siegeDeploymentHandler != null;

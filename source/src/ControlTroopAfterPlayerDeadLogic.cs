@@ -30,10 +30,11 @@ namespace EnhancedMission
                 if (closestAllyAgent != null)
                 {
                     Utility.DisplayLocalizedText("str_control_troop");
-                    closestAllyAgent.Controller = Agent.ControllerType.Player;
                     var switchCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
-                    if (switchCameraLogic != null && switchCameraLogic.isSpectatorCamera)
-                        switchCameraLogic.SwitchCamera();
+                    if (!switchCameraLogic.isSpectatorCamera) 
+                        closestAllyAgent.Controller = Agent.ControllerType.Player;
+                    else
+                        Mission.MainAgent = closestAllyAgent;
                     return true;
                 }
                 else

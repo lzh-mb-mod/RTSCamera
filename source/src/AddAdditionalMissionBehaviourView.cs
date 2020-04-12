@@ -13,7 +13,7 @@ namespace EnhancedMission
         {
             base.OnCreated();
             var config = EnhancedMissionConfig.Get();
-            MissionBehaviour[] array =
+            List<MissionBehaviour> list = new List<MissionBehaviour>
             {
                 new DisableDeathLogic(config),
                 new MissionSpeedLogic(),
@@ -25,9 +25,11 @@ namespace EnhancedMission
                 new MissionMenuView(), 
                 new FlyCameraMissionView(),
                 new GameKeyConfigView(),
+                new EnhancedOrderTroopPlacer()
             };
 
-            foreach (var missionBehaviour in array)
+
+            foreach (var missionBehaviour in list)
             {
                 if (missionBehaviour is AddAdditionalMissionBehaviourView)
                     continue; // avoid accidentally add itself infinitely.

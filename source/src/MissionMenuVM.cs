@@ -110,13 +110,13 @@ namespace EnhancedMission
         private Mission _mission;
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private MissionSpeedLogic _missionSpeedLogic;
-        private EnhancedMissionOrderUIHandler _orderUIHandler;
         private GameKeyConfigView _gameKeyConfigView;
 
         private Action _closeMenu;
 
         private SelectionOptionDataVM _playerFormation;
 
+        public string UseFreeCameraByDefaultString { get; } = GameTexts.FindText("str_use_free_camera_by_default").ToString();
         public string SwitchFreeCameraString { get; } = GameTexts.FindText("str_switch_free_camera").ToString();
         public string DisableDeathString { get; } = GameTexts.FindText("str_disable_death").ToString();
         public string TogglePauseString { get; } = GameTexts.FindText("str_toggle_pause").ToString();
@@ -128,6 +128,18 @@ namespace EnhancedMission
         public string CombatAIString { get; } = GameTexts.FindText("str_combat_ai").ToString();
 
         public string ConfigKeyString { get; } = GameTexts.FindText("str_gamekey_config").ToString();
+
+        [DataSourceProperty] public bool UseFreeCameraByDefault
+        {
+            get => _config.UseFreeCameraByDefault;
+            set
+            {
+                if (_config.UseFreeCameraByDefault == value)
+                    return;
+                _config.UseFreeCameraByDefault = value;
+                OnPropertyChanged(nameof(UseFreeCameraByDefault));
+            }
+        }
 
         public void SwitchFreeCamera()
         {
@@ -232,8 +244,11 @@ namespace EnhancedMission
             this.PlayerFormation = new SelectionOptionDataVM(new SelectionOptionData(
                 (int i) =>
                 {
-                    _config.PlayerFormation = i;
-                    Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
+                    if (i != _config.PlayerFormation)
+                    {
+                        _config.PlayerFormation = i;
+                        Utility.SetPlayerFormation((FormationClass) _config.PlayerFormation);
+                    }
                 }, () => _config.PlayerFormation,
                 (int)FormationClass.NumberOfRegularFormations, new[]
                 {
@@ -249,7 +264,7 @@ namespace EnhancedMission
             this._missionSpeedLogic = _mission.GetMissionBehaviour<MissionSpeedLogic>();
             this.SpeedFactor = new NumericVM(GameTexts.FindText("str_slow_motion_factor").ToString(),
                 _mission.Scene.SlowMotionMode ? _mission.Scene.SlowMotionFactor : 1.0f, 0.01f, 3.0f, false,
-                factor => { _missionSpeedLogic.SetSlowMotionFactor(factor); });
+                factor => { _missionSpeedLogic.ApplySlowMotionFactor(factor); });
 
             this.ChangeCombatAI = this._config.ChangeCombatAI;
             this.CombatAI = new NumericVM(CombatAIString, _config.CombatAI, 0, 100, true,

@@ -45,6 +45,7 @@
     <string id="EnhancedMission_changecombatai" text="Change Combat AI" />
     <string id="EnhancedMission_combatai" text="Combat AI(0-100)" />
 
+    <string id="EnhancedMission_usefreecamerabydefault" text="Use Free Camera By Default" />
     <string id="EnhancedMission_switchfreecamera" text="Switch Free Camera" />
     <string id="EnhancedMission_playerformation" text="Player Formation" />
     <string id="EnhancedMission_disabledeath" text="Disable Death" />
