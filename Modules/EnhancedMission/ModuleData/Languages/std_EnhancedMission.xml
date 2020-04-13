@@ -53,7 +53,7 @@
     <string id="EnhancedMission_playerformation" text="Player Formation" />
     <string id="EnhancedMission_disabledeath" text="Disable Death" />
     <string id="EnhancedMission_togglepause" text="Toggle Pause" />
-    <string id="EnhancedMission_resetspeed" text="Reset Speed" />
+    <string id="EnhancedMission_slowmotionmode" text="Slow Motion Mode" />
     <string id="EnhancedMission_slowmotionfactor" text="Slow Motion Factor" />
 
     <string id="EnhancedMission_missionpaused" text="Mission paused." />
@@ -67,11 +67,13 @@
     <string id="EnhancedMission_switchtoplayer" text="Switch to player agent." />
     <string id="EnhancedMission_switchtofreecamera" text="Switch to free camera." />
 
+    <string id="EnhancedMission_displaymodmessage" text="Display Mod Message" />
     <string id="EnhancedMission_gamekeyconfigtitle" text="Config Key" />
 
     <string id="EnhancedMission_hotkeycategory" text="EnhancedMission Hot Key" />
     <string id="EnhancedMission_openmenukey" text="Open Menu" />
     <string id="EnhancedMission_pausekey" text="Pause" />
+    <string id="EnhancedMission_slowmotionkey" text="Slow Motion" />
     <string id="EnhancedMission_freecamerakey" text="Free Camera" />
     <string id="EnhancedMission_disabledeathkey" text="Disable Death" />
     <string id="EnhancedMission_controltroopkey" text="Control Troop" />

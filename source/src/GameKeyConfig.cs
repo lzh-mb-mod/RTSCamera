@@ -17,6 +17,7 @@ namespace EnhancedMission
     {
         OpenMenu,
         Pause,
+        SlowMotion,
         FreeCamera,
         DisableDeath,
         ControlTroop,
@@ -54,7 +55,7 @@ namespace EnhancedMission
     }
     public class GameKeyConfig : EnhancedMissionConfigBase<GameKeyConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 0);
+        protected static Version BinaryVersion => new Version(1, 1);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -65,7 +66,7 @@ namespace EnhancedMission
                     ResetToDefault();
                     Serialize();
                     break;
-                case "1.0":
+                case "1.1":
                     break;
             }
         }
@@ -77,6 +78,7 @@ namespace EnhancedMission
             {
                 yield return GameKeyEnum.OpenMenu;
                 yield return GameKeyEnum.Pause;
+                yield return GameKeyEnum.SlowMotion;
                 yield return GameKeyEnum.FreeCamera;
                 yield return GameKeyEnum.DisableDeath;
                 yield return GameKeyEnum.ControlTroop;
@@ -85,29 +87,52 @@ namespace EnhancedMission
 
         private GameKey[] _gameKeys;
 
-
-        public SerializedGameKey[] GameKeys =
+        public SerializedGameKey OpenMenuGameKey = new SerializedGameKey
         {
-            new SerializedGameKey
-                {Id = ToId(GameKeyEnum.OpenMenu), StringId = "", GroupId = "EnhancedMissionHotKey", Key = InputKey.O},
-            new SerializedGameKey
-            {
-                Id = ToId(GameKeyEnum.Pause), StringId = "", GroupId = "EnhancedMissionHotKey",
-                Key = InputKey.OpenBraces
-            },
-            new SerializedGameKey
-            {
-                Id = ToId(GameKeyEnum.FreeCamera), StringId = "", GroupId = "EnhancedMissionHotKey", Key = InputKey.F10
-            },
-            new SerializedGameKey
-            {
-                Id = ToId(GameKeyEnum.DisableDeath), StringId = "", GroupId = "EnhancedMissionHotKey",
-                Key = InputKey.F11
-            },
-            new SerializedGameKey
-            {
-                Id = ToId(GameKeyEnum.ControlTroop), StringId = "", GroupId = "EnhancedMissionHotKey", Key = InputKey.F
-            },
+            Id = ToId(GameKeyEnum.OpenMenu),
+            StringId = "",
+            GroupId = "EnhancedMissionHotKey",
+            Key = InputKey.O
+        };
+
+        public SerializedGameKey PauseGameKey = new SerializedGameKey
+        {
+            Id = ToId(GameKeyEnum.Pause),
+            StringId = "",
+            GroupId = "EnhancedMissionHotKey",
+            Key = InputKey.OpenBraces
+        };
+
+        public SerializedGameKey SlowMotionGameKey = new SerializedGameKey
+        {
+            Id = ToId(GameKeyEnum.SlowMotion),
+            StringId = "",
+            GroupId = "EnhancedMissionHotKey",
+            Key = InputKey.Apostrophe
+        };
+
+        public SerializedGameKey FreeCameraGameKey = new SerializedGameKey
+        {
+            Id = ToId(GameKeyEnum.FreeCamera),
+            StringId = "",
+            GroupId = "EnhancedMissionHotKey",
+            Key = InputKey.F10
+        };
+
+        public SerializedGameKey DisableDeathGameKey = new SerializedGameKey
+        {
+            Id = ToId(GameKeyEnum.DisableDeath),
+            StringId = "",
+            GroupId = "EnhancedMissionHotKey",
+            Key = InputKey.F11
+        };
+
+        public SerializedGameKey ControlTroopGameKey = new SerializedGameKey
+        {
+            Id = ToId(GameKeyEnum.ControlTroop),
+            StringId = "",
+            GroupId = "EnhancedMissionHotKey",
+            Key = InputKey.F
         };
 
         private static GameKeyConfig _instance;
@@ -151,13 +176,13 @@ namespace EnhancedMission
         private static GameKeyConfig CreateDefault()
         {
             var newConfig = new GameKeyConfig();
-            newConfig._gameKeys = newConfig.GameKeys.Select(serializedGameKey => serializedGameKey.ToGameKey()).ToArray();
+            newConfig.FromSerializedGameKeys();
             return newConfig;
         }
 
         public override bool Serialize()
         {
-            GameKeys = _gameKeys.Select(SerializedGameKey.FromGameKey).ToArray();
+            ToSerializedGameKeys();
 
             return base.Serialize();
         }
@@ -166,7 +191,7 @@ namespace EnhancedMission
         {
             if (base.Deserialize())
             {
-                _gameKeys = GameKeys.Select(serializedGameKey => serializedGameKey.ToGameKey()).ToArray();
+                FromSerializedGameKeys();
                 return true;
             }
 
@@ -175,7 +200,12 @@ namespace EnhancedMission
 
         protected override void CopyFrom(GameKeyConfig other)
         {
-            this.GameKeys = other.GameKeys;
+            this.OpenMenuGameKey = other.OpenMenuGameKey;
+            this.PauseGameKey = other.PauseGameKey;
+            this.SlowMotionGameKey = other.SlowMotionGameKey;
+            this.FreeCameraGameKey = other.FreeCameraGameKey;
+            this.DisableDeathGameKey = other.DisableDeathGameKey;
+            this.ControlTroopGameKey = other.ControlTroopGameKey;
             this._gameKeys = other._gameKeys;
         }
 
@@ -184,6 +214,27 @@ namespace EnhancedMission
         public override void ResetToDefault()
         {
             CopyFrom(CreateDefault());
+        }
+
+        private void ToSerializedGameKeys()
+        {
+            OpenMenuGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.OpenMenu));
+            PauseGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.Pause));
+            SlowMotionGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.SlowMotion));
+            FreeCameraGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.FreeCamera));
+            DisableDeathGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.DisableDeath));
+            ControlTroopGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.ControlTroop));
+        }
+
+        private void FromSerializedGameKeys()
+        {
+            _gameKeys = new GameKey[(int)GameKeyEnum.NumberOfGameKeyEnums];
+            _gameKeys[(int) GameKeyEnum.OpenMenu] = OpenMenuGameKey.ToGameKey();
+            _gameKeys[(int)GameKeyEnum.Pause] = PauseGameKey.ToGameKey();
+            _gameKeys[(int)GameKeyEnum.SlowMotion] = SlowMotionGameKey.ToGameKey();
+            _gameKeys[(int)GameKeyEnum.FreeCamera] = FreeCameraGameKey.ToGameKey();
+            _gameKeys[(int)GameKeyEnum.DisableDeath] = DisableDeathGameKey.ToGameKey();
+            _gameKeys[(int)GameKeyEnum.ControlTroop] = ControlTroopGameKey.ToGameKey();
         }
 
         public string ConfigVersion { get; set; } = BinaryVersion.ToString();

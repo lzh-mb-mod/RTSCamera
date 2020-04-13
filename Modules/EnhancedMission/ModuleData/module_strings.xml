@@ -49,7 +49,7 @@
     <string id="str_player_formation" text="{=EnhancedMission_playerformation}Player Formation" />
     <string id="str_disable_death" text="{=EnhancedMission_disabledeath}Disable Death" />
     <string id="str_toggle_pause" text="{=EnhancedMission_togglepause}Toggle Pause" />
-    <string id="str_reset_speed" text="{=EnhancedMission_resetspeed}Reset Speed" />
+    <string id="str_slow_motion_mode" text="{=EnhancedMission_slowmotionmode}Slow Motion Mode" />
     <string id="str_slow_motion_factor" text="{=EnhancedMission_slowmotionfactor}Slow Motion Factor" />
 
     <string id="str_mission_paused" text="{=EnhancedMission_missionpaused}Mission paused." />
@@ -63,13 +63,15 @@
     <string id="str_switch_to_player" text="{=EnhancedMission_switchtoplayer}Switch to player agent." />
     <string id="str_switch_to_free_camera" text="{=EnhancedMission_switchtofreecamera}Switch to free camera." />
 
+    <string id="str_display_mod_message" text="{=EnhancedMission_displaymodmessage}Display Message" />
     <string id="str_gamekey_config" text="{=EnhancedMission_gamekeyconfigtitle}Config Key" />
 
     <string id="str_key_category_name.EnhancedMissionHotKey" text="{=EnhancedMission_hotkeycategory}EnhancedMission Hot Key" />
     <string id="str_key_name.EnhancedMissionHotKey_Up" text="{=EnhancedMission_openmenukey}Open Menu" />
     <string id="str_key_name.EnhancedMissionHotKey_Down" text="{=EnhancedMission_pausekey}Pause" />
-    <string id="str_key_name.EnhancedMissionHotKey_Left" text="{=EnhancedMission_freecamerakey}Free Camera" />
-    <string id="str_key_name.EnhancedMissionHotKey_Right" text="{=EnhancedMission_disabledeathkey}Disable Death" />
-    <string id="str_key_name.EnhancedMissionHotKey_Leave" text="{=EnhancedMission_controltroopkey}Control Troop" />
+    <string id="str_key_name.EnhancedMissionHotKey_Left" text="{=EnhancedMission_slowmotionkey}Slow Motion" />
+    <string id="str_key_name.EnhancedMissionHotKey_Right" text="{=EnhancedMission_freecamerakey}Free Camera" />
+    <string id="str_key_name.EnhancedMissionHotKey_Leave" text="{=EnhancedMission_disabledeathkey}Disable Death" />
+    <string id="str_key_name.EnhancedMissionHotKey_ShowIndicators" text="{=EnhancedMission_controltroopkey}Control Troop" />
   </strings>
 </base>

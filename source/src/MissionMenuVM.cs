@@ -121,7 +121,7 @@ namespace EnhancedMission
         public string SwitchFreeCameraString { get; } = GameTexts.FindText("str_switch_free_camera").ToString();
         public string DisableDeathString { get; } = GameTexts.FindText("str_disable_death").ToString();
         public string TogglePauseString { get; } = GameTexts.FindText("str_toggle_pause").ToString();
-        public string ResetSpeedString { get; } = GameTexts.FindText("str_reset_speed").ToString();
+        public string SlowMotionModeString { get; } = GameTexts.FindText("str_slow_motion_mode").ToString();
 
         public string UseRealisticBlockingString { get; } = GameTexts.FindText("str_use_realistic_blocking").ToString();
 
@@ -132,6 +132,8 @@ namespace EnhancedMission
         public string RangedAIString { get; } = GameTexts.FindText("str_ranged_ai").ToString();
 
         public string ConfigKeyString { get; } = GameTexts.FindText("str_gamekey_config").ToString();
+
+        public string DisplayMessageString { get; } = GameTexts.FindText("str_display_mod_message").ToString();
 
         [DataSourceProperty] public bool UseFreeCameraByDefault
         {
@@ -188,10 +190,18 @@ namespace EnhancedMission
 
         [DataSourceProperty] public bool AdjustSpeedEnabled => this._missionSpeedLogic != null;
 
-        public void ResetSpeed()
+
+        [DataSourceProperty]
+        public bool SlowMotionMode
         {
-            SpeedFactor.OptionValue = 1.0f;
-            _missionSpeedLogic?.ResetSpeed();
+            get => _mission.Scene.SlowMotionMode;
+            set
+            {
+                if (_mission.Scene.SlowMotionMode == value)
+                    return;
+                _missionSpeedLogic?.SetSlowMotionMode(value);
+                OnPropertyChanged(nameof(SlowMotionMode));
+            }
         }
 
         [DataSourceProperty]
@@ -246,6 +256,19 @@ namespace EnhancedMission
         [DataSourceProperty]
         public NumericVM RangedAI { get; }
 
+        [DataSourceProperty]
+        public bool DisplayMessage
+        {
+            get => _config.displayMessage;
+            set
+            {
+                if (_config.displayMessage == value)
+                    return;
+                _config.displayMessage = value;
+                OnPropertyChanged(nameof(DisplayMessage));
+            }
+        }
+
         public void ConfigKey()
         {
             _gameKeyConfigView?.Activate();
@@ -286,8 +309,8 @@ namespace EnhancedMission
                 }), GameTexts.FindText("str_player_formation"));
             this._missionSpeedLogic = _mission.GetMissionBehaviour<MissionSpeedLogic>();
             this.SpeedFactor = new NumericVM(GameTexts.FindText("str_slow_motion_factor").ToString(),
-                _mission.Scene.SlowMotionMode ? _mission.Scene.SlowMotionFactor : 1.0f, 0.01f, 3.0f, false,
-                factor => { _missionSpeedLogic.ApplySlowMotionFactor(factor); });
+                _mission.Scene.SlowMotionFactor, 0.01f, 3.0f, false,
+                factor => { _missionSpeedLogic.SetSlowMotionFactor(factor); });
 
             this.MeleeAI = new NumericVM(MeleeAIString, _changeBodyProperties?.MeleeAI ?? 0, 0, 100, true,
                 combatAI =>

@@ -53,7 +53,7 @@
     <string id="EnhancedMission_playerformation" text="玩家编队" />
     <string id="EnhancedMission_disabledeath" text="禁用死亡" />
     <string id="EnhancedMission_togglepause" text="切换暂停" />
-    <string id="EnhancedMission_resetspeed" text="重置速度" />
+    <string id="EnhancedMission_slowmotionmode" text="变速模式" />
     <string id="EnhancedMission_slowmotionfactor" text="速度倍率" />
 
     <string id="EnhancedMission_missionpaused" text="已暂停关卡。" />
@@ -67,11 +67,13 @@
     <string id="EnhancedMission_switchtoplayer" text="切换到玩家角色。" />
     <string id="EnhancedMission_switchtofreecamera" text="切换到自由视角。" />
 
+    <string id="EnhancedMission_displaymodmessage" text="显示mod消息" />
     <string id="EnhancedMission_gamekeyconfigtitle" text="按键绑定" />
 
     <string id="EnhancedMission_hotkeycategory" text="EnhancedMission热键" />
     <string id="EnhancedMission_openmenukey" text="打开菜单" />
     <string id="EnhancedMission_pausekey" text="暂停" />
+    <string id="EnhancedMission_slowmotionkey" text="变速模式" />
     <string id="EnhancedMission_freecamerakey" text="自由视角" />
     <string id="EnhancedMission_disabledeathkey" text="禁用死亡" />
     <string id="EnhancedMission_controltroopkey" text="控制下属部队" />

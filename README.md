@@ -18,7 +18,7 @@ A mod for Mount&Blade Bannerlord that provides features in mission such as RTS c
 
   Because supporting them may cause the mod crash after beta update and break compatibility.
 
-- Configuration saving. The battle configuration is saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\EnhancedMission\`.
+- Configuration saving. The configuration is saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\EnhancedMission\`.
   
   The main config is saved in file `EnhancedMissionConfig.xml`.
 
@@ -46,7 +46,9 @@ A mod for Mount&Blade Bannerlord that provides features in mission such as RTS c
 
   - Press `F11` to disable death.
 
-  - Press `P` key to pause game.
+  - Press `[` key to pause game.
+
+  - Press `'` key to toggle slow motion.
 
 - How to play in rts camera:
 

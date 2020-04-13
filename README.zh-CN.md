@@ -18,7 +18,7 @@
 
 - 自定义热键。
 
-- 保存配置：保存战斗配置的文件夹为`(user directory)\Documents\Mount and Blade II Bannerlord\Configs\EnhancedMission\`
+- 保存配置：保存配置的文件夹为`(user directory)\Documents\Mount and Blade II Bannerlord\Configs\EnhancedMission\`
 
   主要配置保存在文件`EnhancedMissionConfig.xml`中。
 
@@ -46,7 +46,9 @@
 
   - 按`F11`键来切换不死模式。
 
-  - 按`P`键来暂停游戏。
+  - 按`[`键来暂停游戏。
+
+  - 按`'`键来切换变速模式。
 
 - 如何在rts风格的相机中进行游戏：
 

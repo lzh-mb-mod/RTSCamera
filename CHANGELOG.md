@@ -1,4 +1,13 @@
 # Changelog
+## [1.0.7]
+### Changed
+- Change slow motion mode logic.
+
+### Add
+- Add hot key for slow motion mode. Default to ' key.
+
+- Add display message option.
+
 ## [1.0.6] - 2020-04-12
 ### Added
 - Save config for "change combat ai" and "use realistic blocking" options.
