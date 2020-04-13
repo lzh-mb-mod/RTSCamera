@@ -2,7 +2,7 @@
 <Module>
 	<Name value = "Enhanced Mission (RTS Camera)"/>
 	<Id value = "EnhancedMission"/>
-	<Version value = "e1.0.7"/>
+	<Version value = "e1.0.8"/>
 	<SingleplayerModule value="true"/>
 	<MultiplayerModule value="false"/>
 	<DependedModules>

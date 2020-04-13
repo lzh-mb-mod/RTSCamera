@@ -259,12 +259,12 @@ namespace EnhancedMission
         [DataSourceProperty]
         public bool DisplayMessage
         {
-            get => _config.displayMessage;
+            get => _config.DisplayMessage;
             set
             {
-                if (_config.displayMessage == value)
+                if (_config.DisplayMessage == value)
                     return;
-                _config.displayMessage = value;
+                _config.DisplayMessage = value;
                 OnPropertyChanged(nameof(DisplayMessage));
             }
         }

@@ -12,7 +12,7 @@ namespace EnhancedMission
     {
         public static void DisplayLocalizedText(string id, string variation = null)
         {
-            if (!EnhancedMissionConfig.Get().displayMessage)
+            if (!EnhancedMissionConfig.Get().DisplayMessage)
                 return;
             InformationManager.DisplayMessage(new InformationMessage(GameTexts.FindText(id, variation).ToString()));
         }
@@ -22,7 +22,7 @@ namespace EnhancedMission
         }
         public static void DisplayMessage(string msg)
         {
-            if (!EnhancedMissionConfig.Get().displayMessage)
+            if (!EnhancedMissionConfig.Get().DisplayMessage)
                 return;
             InformationManager.DisplayMessage(new InformationMessage(new TaleWorlds.Localization.TextObject(msg).ToString()));
         }

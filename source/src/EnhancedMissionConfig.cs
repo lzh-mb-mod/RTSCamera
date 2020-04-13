@@ -35,7 +35,7 @@ namespace EnhancedMission
 
         public float SlowMotionFactor = 0.2f;
 
-        public bool displayMessage = true;
+        public bool DisplayMessage = true;
 
         private static EnhancedMissionConfig CreateDefault()
         {
@@ -62,6 +62,7 @@ namespace EnhancedMission
             this.DisableDeath = other.DisableDeath;
             this.SlowMotionMode = other.SlowMotionMode;
             this.SlowMotionFactor = other.SlowMotionFactor;
+            this.DisplayMessage = other.DisplayMessage;
         }
 
         public override void ResetToDefault()
