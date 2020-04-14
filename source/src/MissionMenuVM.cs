@@ -275,6 +275,7 @@ namespace EnhancedMission
         public void ToggleUI()
         {
             _hideHudLogic?.ToggleUI();
+            CloseMenu();
         }
 
         public void ConfigKey()

@@ -1,5 +1,5 @@
 # Changelog
-## [1.0.9] - 2020-04
+## [1.0.9] - 2020-04-14
 ### Added
 - Add toggle HUD feature.
 
