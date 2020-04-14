@@ -64,6 +64,7 @@
     <string id="str_switch_to_free_camera" text="{=EnhancedMission_switchtofreecamera}Switch to free camera." />
 
     <string id="str_display_mod_message" text="{=EnhancedMission_displaymodmessage}Display Message" />
+    <string id="str_toggle_ui" text="{=EnhancedMission_toggleui}Toggle HUD" />
     <string id="str_gamekey_config" text="{=EnhancedMission_gamekeyconfigtitle}Config Key" />
 
     <string id="str_key_category_name.EnhancedMissionHotKey" text="{=EnhancedMission_hotkeycategory}EnhancedMission Hot Key" />
@@ -73,5 +74,7 @@
     <string id="str_key_name.EnhancedMissionHotKey_Right" text="{=EnhancedMission_freecamerakey}Free Camera" />
     <string id="str_key_name.EnhancedMissionHotKey_Leave" text="{=EnhancedMission_disabledeathkey}Disable Death" />
     <string id="str_key_name.EnhancedMissionHotKey_ShowIndicators" text="{=EnhancedMission_controltroopkey}Control Troop" />
+    <!-- same as str_toggle_ui -->
+    <string id="str_key_name.EnhancedMissionHotKey_InitiateAllChat" text="{=EnhancedMission_toggleui}Toggle HUD" />
   </strings>
 </base>

@@ -44,11 +44,13 @@ A mod for Mount&Blade Bannerlord that provides features in mission such as RTS c
 
   - Press `F` key or `F10` key to control one of your troops after you being killed.
 
-  - Press `F11` to disable death.
+  - Press `End` to disable death.
 
   - Press `[` key to pause game.
 
   - Press `'` key to toggle slow motion.
+
+  - Press `]` key to toggle HUD. Or if you rebind the key and forget what you have set, you can also press `Home` key to toggle UI, which always works.
 
 - How to play in rts camera:
 

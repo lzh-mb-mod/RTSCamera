@@ -68,6 +68,7 @@
     <string id="EnhancedMission_switchtofreecamera" text="Switch to free camera." />
 
     <string id="EnhancedMission_displaymodmessage" text="Display Mod Message" />
+    <string id="EnhancedMission_toggleui" text="Toggle HUD" />
     <string id="EnhancedMission_gamekeyconfigtitle" text="Config Key" />
 
     <string id="EnhancedMission_hotkeycategory" text="EnhancedMission Hot Key" />

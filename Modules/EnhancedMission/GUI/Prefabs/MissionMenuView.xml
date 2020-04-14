@@ -12,8 +12,8 @@
             <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy = "CoverChildren" HeightSizePolicy = "CoverChildren" HorizontalAlignment="Center" MarginTop="10">
               <Children>
 
-                <TextWidget Text="@UseFreeCameraByDefaultString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="200" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                <TextWidget Text="@UseFreeCameraByDefaultString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10"/>
+                <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
                   <Children>
                     <ButtonWidget IsSelected="@UseFreeCameraByDefault" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy = "Fixed" HeightSizePolicy = "Fixed" SuggestedWidth = "50" SuggestedHeight = "50" Brush = "SPOptions.Checkbox.Empty.Button">
                       <Children>
@@ -30,7 +30,7 @@
                 </ButtonWidget>
 
                 <TextWidget Text="@DisableDeathString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="200" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
                   <Children>
                     <ButtonWidget IsSelected="@DisableDeath" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy = "Fixed" HeightSizePolicy = "Fixed" SuggestedWidth = "50" SuggestedHeight = "50" Brush = "SPOptions.Checkbox.Empty.Button">
                       <Children>
@@ -61,8 +61,8 @@
                   </Children>
                 </ButtonWidget>
 
-                <TextWidget Text="@SlowMotionModeString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="200" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                <TextWidget Text="@SlowMotionModeString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10"/>
+                <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
                   <Children>
                     <ButtonWidget IsSelected="@SlowMotionMode" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy = "Fixed" HeightSizePolicy = "Fixed" SuggestedWidth = "50" SuggestedHeight = "50" Brush = "SPOptions.Checkbox.Empty.Button">
                       <Children>
@@ -102,11 +102,15 @@
                 <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10" MarginRight="20">
                   <Children>
                     <TextWidget Text="@UseRealisticBlockingString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                    <ButtonWidget IsSelected="@UseRealisticBlocking" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy = "Fixed" HeightSizePolicy = "Fixed" SuggestedWidth = "50" SuggestedHeight = "50" Brush = "SPOptions.Checkbox.Empty.Button">
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="80" HorizontalAlignment="Left" VerticalAlignment="Center">
                       <Children>
-                        <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                        <ButtonWidget IsSelected="@UseRealisticBlocking" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy = "Fixed" HeightSizePolicy = "Fixed" SuggestedWidth = "50" SuggestedHeight = "50" Brush = "SPOptions.Checkbox.Empty.Button">
+                          <Children>
+                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                          </Children>
+                        </ButtonWidget>
                       </Children>
-                    </ButtonWidget>
+                    </Widget>
                   </Children>
                 </ListPanel>
 
@@ -120,7 +124,7 @@
                   <Children>
 
                     <TextWidget Text="@ChangeMeleeAIString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="100" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="80" HorizontalAlignment="Left" VerticalAlignment="Center">
                       <Children>
                         <ButtonWidget IsSelected="@ChangeMeleeAI" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy = "Fixed" HeightSizePolicy = "Fixed" SuggestedWidth = "50" SuggestedHeight = "50" Brush = "SPOptions.Checkbox.Empty.Button">
                           <Children>
@@ -164,7 +168,7 @@
                   <Children>
 
                     <TextWidget Text="@ChangeRangedAIString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="100" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="80" HorizontalAlignment="Left" VerticalAlignment="Center">
                       <Children>
                         <ButtonWidget IsSelected="@ChangeRangedAI" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy = "Fixed" HeightSizePolicy = "Fixed" SuggestedWidth = "50" SuggestedHeight = "50" Brush = "SPOptions.Checkbox.Empty.Button">
                           <Children>
@@ -203,8 +207,9 @@
 
             <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy = "CoverChildren" HeightSizePolicy = "CoverChildren" HorizontalAlignment="Center" MarginTop="10">
               <Children>
+
                 <TextWidget Text="@DisplayMessageString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="200" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                <Widget WidthSizePolicy="Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
                   <Children>
                     <ButtonWidget IsSelected="@DisplayMessage" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy = "Fixed" HeightSizePolicy = "Fixed" SuggestedWidth = "50" SuggestedHeight = "50" Brush = "SPOptions.Checkbox.Empty.Button">
                       <Children>
@@ -213,6 +218,18 @@
                     </ButtonWidget>
                   </Children>
                 </Widget>
+                <ButtonWidget Command.Click="ToggleUI" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Done.Button">
+                  <Children>
+                    <TextWidget Text="@ToggleUIString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
+                  </Children>
+                </ButtonWidget>
+
+              </Children>
+            </ListPanel>
+
+            <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy = "CoverChildren" HeightSizePolicy = "CoverChildren" HorizontalAlignment="Center" MarginTop="10">
+              <Children>
+
                 <ButtonWidget Command.Click="ConfigKey" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Done.Button">
                   <Children>
                     <TextWidget Text="@ConfigKeyString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>

@@ -13,18 +13,13 @@ namespace EnhancedMission
             base.OnBehaviourInitialize();
 
             _scoreUI = Mission.GetMissionBehaviour<MissionGauntletBattleScoreUI>();
-        }
-
-        public override void EarlyStart()
-        {
-            base.EarlyStart();
 
             Mission.OnMainAgentChanged += OnMainAgentChanged;
         }
 
-        public override void HandleOnCloseMission()
+        public override void OnRemoveBehaviour()
         {
-            base.HandleOnCloseMission();
+            base.OnRemoveBehaviour();
 
             Mission.OnMainAgentChanged -= OnMainAgentChanged;
         }

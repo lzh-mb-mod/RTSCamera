@@ -18,6 +18,8 @@ namespace EnhancedMission
         }
         public static void DisplayLocalizedText(string id, string variation, Color color)
         {
+            if (!EnhancedMissionConfig.Get().DisplayMessage)
+                return;
             InformationManager.DisplayMessage(new InformationMessage(GameTexts.FindText(id, variation).ToString(), color));
         }
         public static void DisplayMessage(string msg)
@@ -28,6 +30,8 @@ namespace EnhancedMission
         }
         public static void DisplayMessage(string msg, Color color)
         {
+            if (!EnhancedMissionConfig.Get().DisplayMessage)
+                return;
             InformationManager.DisplayMessage(new InformationMessage(new TaleWorlds.Localization.TextObject(msg).ToString(), color));
         }
 

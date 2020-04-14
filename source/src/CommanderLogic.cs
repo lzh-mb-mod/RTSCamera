@@ -5,18 +5,18 @@ namespace EnhancedMission
 {
     class CommanderLogic : MissionLogic
     {
-        public override void EarlyStart()
+        public override void OnBehaviourInitialize()
         {
-            base.EarlyStart();
+            base.OnBehaviourInitialize();
 
             this.Mission.OnMainAgentChanged += OnMainAgentChanged;
         }
 
-        public override void HandleOnCloseMission()
+        public override void OnRemoveBehaviour()
         {
-            base.HandleOnCloseMission();
+            base.OnRemoveBehaviour();
 
-            this.Mission.OnMainAgentChanged -= OnMainAgentChanged;
+            Mission.OnMainAgentChanged -= OnMainAgentChanged;
         }
 
         private void OnMainAgentChanged(object sender, PropertyChangedEventArgs e)

@@ -68,6 +68,7 @@
     <string id="EnhancedMission_switchtofreecamera" text="切换到自由视角。" />
 
     <string id="EnhancedMission_displaymodmessage" text="显示mod消息" />
+    <string id="EnhancedMission_toggleui" text="切换HUD" />
     <string id="EnhancedMission_gamekeyconfigtitle" text="按键绑定" />
 
     <string id="EnhancedMission_hotkeycategory" text="EnhancedMission热键" />

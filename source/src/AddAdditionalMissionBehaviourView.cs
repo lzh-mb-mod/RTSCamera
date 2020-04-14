@@ -21,6 +21,7 @@ namespace EnhancedMission
                 new SwitchFreeCameraLogic(config),
                 new MainAgentChangedLogic(),
                 new CommanderLogic(),
+                new HideHUDLogic(),
 
                 new MissionMenuView(),
                 new FlyCameraMissionView(),
@@ -42,7 +43,6 @@ namespace EnhancedMission
             var orderTroopPlacer = Mission.GetMissionBehaviour<OrderTroopPlacer>();
             if (orderTroopPlacer != null)
                 Mission.RemoveMissionBehaviour(orderTroopPlacer);
-            Mission.RemoveMissionBehaviour(this);
         }
 
         private void AddMissionBehaviour(MissionBehaviour behaviour)

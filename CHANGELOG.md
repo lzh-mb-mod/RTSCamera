@@ -1,4 +1,18 @@
 # Changelog
+## [1.0.9] - 2020-04
+### Added
+- Add toggle HUD feature.
+
+  You can press `]` key to toggle HUD. Or if you rebind the key and forget what you have set it to, you can press `Home` key to toggle UI, which always works.
+
+### Changed
+- Change default key for disable death to `End`.
+
+### Fixed
+- Fix the problem that targeting reticule is shown when rts camera is enabled and player is using ranged weapon.
+
+- Fix a crash when switching to free camera after victory.
+
 ## [1.0.8] - 2020-04-13
 ### Fixed
 - Fixed the bug that display message option is not saved.

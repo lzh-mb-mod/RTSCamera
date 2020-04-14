@@ -111,6 +111,7 @@ namespace EnhancedMission
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private MissionSpeedLogic _missionSpeedLogic;
         private GameKeyConfigView _gameKeyConfigView;
+        private HideHUDLogic _hideHudLogic;
         private ChangeBodyPropertiesBase _changeBodyProperties = ChangeBodyPropertiesBase.Get();
 
         private Action _closeMenu;
@@ -131,9 +132,11 @@ namespace EnhancedMission
         public string ChangeRangedAIString { get; } = GameTexts.FindText("str_change_ranged_ai").ToString();
         public string RangedAIString { get; } = GameTexts.FindText("str_ranged_ai").ToString();
 
-        public string ConfigKeyString { get; } = GameTexts.FindText("str_gamekey_config").ToString();
-
         public string DisplayMessageString { get; } = GameTexts.FindText("str_display_mod_message").ToString();
+
+        public string ToggleUIString { get; } = GameTexts.FindText("str_toggle_ui").ToString();
+
+        public string ConfigKeyString { get; } = GameTexts.FindText("str_gamekey_config").ToString();
 
         [DataSourceProperty] public bool UseFreeCameraByDefault
         {
@@ -269,6 +272,11 @@ namespace EnhancedMission
             }
         }
 
+        public void ToggleUI()
+        {
+            _hideHudLogic?.ToggleUI();
+        }
+
         public void ConfigKey()
         {
             _gameKeyConfigView?.Activate();
@@ -327,7 +335,7 @@ namespace EnhancedMission
                         return;
                     _changeBodyProperties.RangedAI = (int)combatAI;
                 }, 1, ChangeRangedAI);
-
+            this._hideHudLogic = Mission.Current.GetMissionBehaviour<HideHUDLogic>();
             this._gameKeyConfigView = Mission.Current.GetMissionBehaviour<GameKeyConfigView>();
         }
     }

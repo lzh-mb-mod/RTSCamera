@@ -34,9 +34,9 @@ namespace EnhancedMission
             Mission.OnMainAgentChanged += OnMainAgentChanged;
         }
 
-        public override void HandleOnCloseMission()
+        public override void OnRemoveBehaviour()
         {
-            base.HandleOnCloseMission();
+            base.OnRemoveBehaviour();
 
             this.Mission.OnMainAgentChanged -= OnMainAgentChanged;
         }
@@ -140,6 +140,8 @@ namespace EnhancedMission
                 if (Mission.MainAgent.Formation == null || Mission.MainAgent.Formation.FormationIndex >=
                     FormationClass.NumberOfRegularFormations)
                     Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
+                if (Mission.MissionEnded())
+                    Mission.AllowAiTicking = false;
             }
 
             ToggleFreeCamera?.Invoke(true);

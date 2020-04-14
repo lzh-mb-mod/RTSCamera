@@ -21,6 +21,7 @@ namespace EnhancedMission
         FreeCamera,
         DisableDeath,
         ControlTroop,
+        ToggleHUD,
         NumberOfGameKeyEnums,
     }
 
@@ -55,7 +56,7 @@ namespace EnhancedMission
     }
     public class GameKeyConfig : EnhancedMissionConfigBase<GameKeyConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 1);
+        protected static Version BinaryVersion => new Version(1, 2);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -67,6 +68,16 @@ namespace EnhancedMission
                     Serialize();
                     break;
                 case "1.1":
+                    if (DisableDeathGameKey.Key == InputKey.F11)
+                    {
+                        DisableDeathGameKey.Key = InputKey.End;
+                        FromSerializedGameKeys();
+                        Serialize();
+                    }
+
+                    ConfigVersion = BinaryVersion.ToString(2);
+                    goto case "1.2";
+                case "1.2":
                     break;
             }
         }
@@ -82,6 +93,7 @@ namespace EnhancedMission
                 yield return GameKeyEnum.FreeCamera;
                 yield return GameKeyEnum.DisableDeath;
                 yield return GameKeyEnum.ControlTroop;
+                yield return GameKeyEnum.ToggleHUD;
             }
         }
 
@@ -124,7 +136,7 @@ namespace EnhancedMission
             Id = ToId(GameKeyEnum.DisableDeath),
             StringId = "",
             GroupId = "EnhancedMissionHotKey",
-            Key = InputKey.F11
+            Key = InputKey.End
         };
 
         public SerializedGameKey ControlTroopGameKey = new SerializedGameKey
@@ -133,6 +145,14 @@ namespace EnhancedMission
             StringId = "",
             GroupId = "EnhancedMissionHotKey",
             Key = InputKey.F
+        };
+
+        public SerializedGameKey ToggleHUDGameKey = new SerializedGameKey
+        {
+            Id = ToId(GameKeyEnum.ToggleHUD),
+            StringId = "",
+            GroupId = "EnhancedMissionHotKey",
+            Key = InputKey.CloseBraces
         };
 
         private static GameKeyConfig _instance;
@@ -200,12 +220,14 @@ namespace EnhancedMission
 
         protected override void CopyFrom(GameKeyConfig other)
         {
+            this.ConfigVersion = other.ConfigVersion;
             this.OpenMenuGameKey = other.OpenMenuGameKey;
             this.PauseGameKey = other.PauseGameKey;
             this.SlowMotionGameKey = other.SlowMotionGameKey;
             this.FreeCameraGameKey = other.FreeCameraGameKey;
             this.DisableDeathGameKey = other.DisableDeathGameKey;
             this.ControlTroopGameKey = other.ControlTroopGameKey;
+            this.ToggleHUDGameKey = other.ToggleHUDGameKey;
             this._gameKeys = other._gameKeys;
         }
 
@@ -224,20 +246,22 @@ namespace EnhancedMission
             FreeCameraGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.FreeCamera));
             DisableDeathGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.DisableDeath));
             ControlTroopGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.ControlTroop));
+            ToggleHUDGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.ToggleHUD));
         }
 
         private void FromSerializedGameKeys()
         {
             _gameKeys = new GameKey[(int)GameKeyEnum.NumberOfGameKeyEnums];
-            _gameKeys[(int) GameKeyEnum.OpenMenu] = OpenMenuGameKey.ToGameKey();
+            _gameKeys[(int)GameKeyEnum.OpenMenu] = OpenMenuGameKey.ToGameKey();
             _gameKeys[(int)GameKeyEnum.Pause] = PauseGameKey.ToGameKey();
             _gameKeys[(int)GameKeyEnum.SlowMotion] = SlowMotionGameKey.ToGameKey();
             _gameKeys[(int)GameKeyEnum.FreeCamera] = FreeCameraGameKey.ToGameKey();
             _gameKeys[(int)GameKeyEnum.DisableDeath] = DisableDeathGameKey.ToGameKey();
             _gameKeys[(int)GameKeyEnum.ControlTroop] = ControlTroopGameKey.ToGameKey();
+            _gameKeys[(int)GameKeyEnum.ToggleHUD] = ToggleHUDGameKey.ToGameKey();
         }
 
-        public string ConfigVersion { get; set; } = BinaryVersion.ToString();
+        public string ConfigVersion { get; set; } = BinaryVersion.ToString(2);
 
         protected override string SaveName => SavePath + nameof(GameKeyConfig) + ".xml";
         protected override string[] OldNames { get; } = { };
