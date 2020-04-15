@@ -75,7 +75,8 @@ namespace EnhancedMission
                 var previousFormation = mission.MainAgent.Formation;
                 mission.MainAgent.Formation =
                     mission.PlayerTeam.GetFormation(formationClass);
-                mission.MainAgent.Controller = controller;
+                if (controller != Agent.ControllerType.AI) 
+                    mission.MainAgent.Controller = controller;
                 //if (previousFormation != null)
                 //{
                 //    mission.PlayerTeam.MasterOrderController.ClearSelectedFormations();

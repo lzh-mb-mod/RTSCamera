@@ -1,14 +1,12 @@
-# Enhanced Mission (RTS Camera)
+# Enhanced Mission RTS Camera
 
-这是一个骑马与砍杀2：霸主的mod，提供了一些关卡中可用的功能，如RTS视角指挥。
+这是一个骑马与砍杀2：霸主的mod，提供了包括RTS视角指挥在内的一些功能。
 
 ## 功能
 
 - 可切换到rts风格的视角并指挥。
 
 - 玩家死后可以控制其小兵。该小兵将会成为当前队伍的领队。
-
-- 不死模式：开启后任何单位都不会掉血和死亡。
 
 - 调整战斗AI和可选择更真实的格挡功能放在了另一个mod中：["Enhanced Mission Change AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/).
 
@@ -25,6 +23,8 @@
   按键配置保存在文件`GameKeyConfig.xml`中。
 
   你可以修改配置，但如果你编辑有误或配置文件被移除，配置会被初始化为默认内容。
+
+- 不死模式：开启后任何单位都不会掉血和死亡。
 
 ## 如何安装
 1. 复制`Modules`文件夹到砍二的安装目录下（例如`C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`)，和砍二本体的Modules文件夹合并。
@@ -65,6 +65,12 @@
   - 移动鼠标来旋转相机。或者当命令面板打开后，右键拖动鼠标来旋转相机。
 
   - 选中部队后左键在地面上拖动来改变部队的位置，方向和宽度。
+
+    - 按住`ctrl`再拖动来让选中的多个编队前后排列。
+
+  - 按住`ctrl`再滚动鼠标中键来调整镜头移动速度。
+
+  - 当命令面板关闭后，单机左键或右键来切换镜头锁定的士兵，移动镜头来解除锁定。
 
 ## 解决问题
 - 若启动器无法启动：

@@ -13,7 +13,10 @@ namespace EnhancedMission
     {
         private GameKeyConfig _gameKeyConfig;
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
-        private bool _originallyDisplayTargetingReticule = true;
+        private bool _oldDisplayTargetingReticule = true;
+        private bool _hideUI = false;
+
+
         public override void OnBehaviourInitialize()
         {
             base.OnBehaviourInitialize();
@@ -24,7 +27,7 @@ namespace EnhancedMission
                 _switchFreeCameraLogic.ToggleFreeCamera += OnToggleFreeCamera;
             }
             _gameKeyConfig = GameKeyConfig.Get();
-            _originallyDisplayTargetingReticule = BannerlordConfig.DisplayTargetingReticule;
+            _oldDisplayTargetingReticule = BannerlordConfig.DisplayTargetingReticule;
         }
 
         public override void OnRemoveBehaviour()
@@ -33,8 +36,15 @@ namespace EnhancedMission
 
             if (_switchFreeCameraLogic != null)
                 _switchFreeCameraLogic.ToggleFreeCamera -= OnToggleFreeCamera;
-            BannerlordConfig.DisplayTargetingReticule = _originallyDisplayTargetingReticule;
+            BannerlordConfig.DisplayTargetingReticule = _oldDisplayTargetingReticule;
             MBDebug.DisableAllUI = false;
+        }
+
+        protected override void OnEndMission()
+        {
+            base.OnEndMission();
+            MBDebug.DisableAllUI = false;
+            BannerlordConfig.DisplayTargetingReticule = _oldDisplayTargetingReticule;
         }
 
         public override void OnMissionTick(float dt)
@@ -47,19 +57,31 @@ namespace EnhancedMission
 
         public void ToggleUI()
         {
-            CommandLineFunctionality.CallFunction("ui.toggle_ui", "");
+            MBDebug.DisableAllUI = !_hideUI && !MBDebug.DisableAllUI;
+            _hideUI = MBDebug.DisableAllUI;
+        }
+
+        public void BeginTemporarilyOpenUI()
+        {
+            _hideUI = MBDebug.DisableAllUI;
+            MBDebug.DisableAllUI = false;
+        }
+
+        public void EndTemporarilyOpenUI()
+        {
+            MBDebug.DisableAllUI = _hideUI;
         }
 
         private void OnToggleFreeCamera(bool freeCamera)
         {
             if (freeCamera)
             {
-                _originallyDisplayTargetingReticule = BannerlordConfig.DisplayTargetingReticule;
+                _oldDisplayTargetingReticule = BannerlordConfig.DisplayTargetingReticule;
                 BannerlordConfig.DisplayTargetingReticule = false;
             }
             else
             {
-                BannerlordConfig.DisplayTargetingReticule = _originallyDisplayTargetingReticule;
+                BannerlordConfig.DisplayTargetingReticule = _oldDisplayTargetingReticule;
             }
         }
     }

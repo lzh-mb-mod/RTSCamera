@@ -46,6 +46,7 @@
 
     <string id="str_use_free_camera_by_default" text="{=EnhancedMission_usefreecamerabydefault}Use Free Camera By Default" />
     <string id="str_switch_free_camera" text="{=EnhancedMission_switchfreecamera}Switch Free Camera" />
+    <string id="str_raised_height_after_switching_to_free_camera" text="{=EnhancedMission_raisedheightafterswitchingtofreecamera}Raised Height After Switching to Free Camera" />
     <string id="str_player_formation" text="{=EnhancedMission_playerformation}Player Formation" />
     <string id="str_disable_death" text="{=EnhancedMission_disabledeath}Disable Death" />
     <string id="str_toggle_pause" text="{=EnhancedMission_togglepause}Toggle Pause" />

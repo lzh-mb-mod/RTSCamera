@@ -1,4 +1,4 @@
-# Enhanced Mission (RTS Camera)
+# Enhanced Mission RTS Camera
 
 A mod for Mount&Blade Bannerlord that provides features in mission such as RTS camera.
 
@@ -6,9 +6,7 @@ A mod for Mount&Blade Bannerlord that provides features in mission such as RTS c
 
 - Switch to rts-style camera.
 
-- Control your troops after you dead.
-
-- Undead mode. HP of All agents will not change after switched on.
+- Control your troops after you die.
 
 - Pause game and adjust time speed.
 
@@ -25,6 +23,8 @@ A mod for Mount&Blade Bannerlord that provides features in mission such as RTS c
   The hot key config is saved in file `GameKeyConfig.xml`.
 
   You can modify them manually, but if you edit it incorrectly or remove them, the configuration will be reset to default.
+
+- Undead mode. HP of All agents will not change after switched on.
 
 ## How to install
 1. Copy `Modules` folder into Bannerlord installation folder(For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`). It should be merged with `Modules` of the game.
@@ -65,6 +65,12 @@ A mod for Mount&Blade Bannerlord that provides features in mission such as RTS c
   - Move your mouse to rotate the camera, or when order panel is opened, drag right button to rotate the camera.
 
   - Left click on the ground and drag to change the position, direction and width of the formation you selected.
+
+    - Hold `ctrl` when drag to arrange multiple formations vertically.
+
+  - Hold `ctrl` and scroll mouse to adjust camera movement speed.
+
+  - When order panel is closed, you can left click or right click to lock the camera to soldiers. Move the camera to unlock it.
 
 ## Troubleshoot
 - If the launcher can not start:

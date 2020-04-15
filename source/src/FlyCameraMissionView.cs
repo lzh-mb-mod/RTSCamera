@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using TaleWorlds.CampaignSystem.Conversation.Tags;
 using TaleWorlds.Core;
 using TaleWorlds.DotNet;
 using TaleWorlds.Engine;
@@ -12,8 +14,9 @@ using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace EnhancedMission
 {
-    class FlyCameraMissionView : MissionView
+    class FlyCameraMissionView : MissionView, ICameraModeLogic
     {
+        private EnhancedMissionConfig _config;
         private SwitchFreeCameraLogic _freeCameraLogic;
         private MissionMainAgentController _missionMainAgentController;
         private EnhancedMissionOrderUIHandler _orderUIHandler;
@@ -32,6 +35,11 @@ namespace EnhancedMission
         private Vec2 _clickedPositionPixel = Vec2.Zero;
         private bool _setCombatActionOnNextTick = false;
         private bool _levelToEdge = false;
+        private bool _lockToAgent = false;
+
+        private bool _forceMove = false;
+        private Vec3 _forceMoveVec;
+        private float _forceMoveInvertedProgress = 0;
 
         private float _cameraBearingDelta;
         private float _cameraElevationDelta;
@@ -61,6 +69,7 @@ namespace EnhancedMission
             this._cameraRotateSmoothMode = false;
             this.ViewOrderPriorty = 25;
 
+            _config = EnhancedMissionConfig.Get();
             _freeCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
             _missionMainAgentController = Mission.GetMissionBehaviour<MissionMainAgentController>();
             _orderUIHandler = Mission.GetMissionBehaviour<EnhancedMissionOrderUIHandler>();
@@ -79,6 +88,7 @@ namespace EnhancedMission
                 _freeCameraLogic.ToggleFreeCamera -= OnToggleFreeCamera;
             _freeCameraLogic = null;
             _missionMainAgentController = null;
+            _config = null;
         }
 
         public override void OnMissionScreenTick(float dt)
@@ -94,11 +104,22 @@ namespace EnhancedMission
 
         public override bool UpdateOverridenCamera(float dt)
         {
-            if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera)
+            if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || _lockToAgent)
                 return base.UpdateOverridenCamera(dt);
 
             UpdateFlyCamera(dt);
             return true;
+        }
+
+        public SpectatorCameraTypes GetMissionCameraLockMode(bool lockedToMainPlayer)
+        {
+            ICameraModeLogic otherCameraModeLogic =
+                this.Mission.MissionBehaviours.FirstOrDefault<MissionBehaviour>(
+                        (Func<MissionBehaviour, bool>)(b => !(b is FlyCameraMissionView) && b is ICameraModeLogic)) as
+                    ICameraModeLogic;
+            return _lockToAgent && (_freeCameraLogic?.isSpectatorCamera ?? false)
+                ? SpectatorCameraTypes.LockToAnyAgent
+                : otherCameraModeLogic?.GetMissionCameraLockMode(lockedToMainPlayer) ?? SpectatorCameraTypes.Invalid;
         }
 
         private void EndDrag()
@@ -120,7 +141,8 @@ namespace EnhancedMission
             _isOrderViewOpen = e.IsOrderEnabled;
             bool freeCamera = _freeCameraLogic != null && _freeCameraLogic.isSpectatorCamera;
             _orderUIHandler.gauntletLayer.InputRestrictions.SetMouseVisibility(freeCamera && _isOrderViewOpen);
-            _setCombatActionOnNextTick = true;
+            if (freeCamera && _isOrderViewOpen)
+                _setCombatActionOnNextTick = true;
         }
 
         private void OnToggleFreeCamera(bool freeCamera)
@@ -131,10 +153,12 @@ namespace EnhancedMission
                 _missionMainAgentController.IsDisabled = freeCamera;
             }
 
+            this._lockToAgent = false;
             if (freeCamera)
             {
                 this.CameraBearing = MissionScreen.CameraBearing;
                 this.CameraElevation = MissionScreen.CameraElevation;
+                BeginForcedMove(new Vec3(0, 0, _config.RaisedHeight));
             }
         }
 
@@ -163,26 +187,29 @@ namespace EnhancedMission
 
         private void UpdateFlyCamera(float dt)
         {
-            if (_orderUIHandler != null)
-                UpdateDragData();
+            HandleRotateInput(dt);
             MatrixFrame cameraFrame1 = MatrixFrame.Identity;
             cameraFrame1.rotation.RotateAboutSide(1.570796f);
             cameraFrame1.rotation.RotateAboutForward(this.CameraBearing);
             cameraFrame1.rotation.RotateAboutSide(this.CameraElevation);
             cameraFrame1.origin = CameraPosition;
+            if (_forceMove)
+                cameraFrame1.origin += ForcedMoveTick(dt);
             float heightAtPosition = this.Mission.Scene.GetGroundHeightAtPosition(cameraFrame1.origin, BodyFlags.CommonCollisionExcludeFlags, true);
             float heightFactorForHorizontalMove = 0.5f * MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 1.0) / 1), 1, 50);
-            float heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 1.0) / 3), 1, 20) / 40;
-            this._cameraSpeed *= (float)(1.0 - 5.0 * (double)dt);
-            this._cameraSpeed.x = MBMath.ClampFloat(this._cameraSpeed.x, -heightFactorForHorizontalMove, heightFactorForHorizontalMove);
-            this._cameraSpeed.y = MBMath.ClampFloat(this._cameraSpeed.y, -heightFactorForHorizontalMove, heightFactorForHorizontalMove);
-            this._cameraSpeed.z = MBMath.ClampFloat(this._cameraSpeed.z, -heightFactorForHorizontalMove, heightFactorForHorizontalMove);
+            float heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 1.0) / 3), 1, 20);
             if (this.DebugInput.IsHotKeyPressed("MissionScreenHotkeyIncreaseCameraSpeed"))
                 this._cameraSpeedMultiplier *= 1.5f;
             if (this.DebugInput.IsHotKeyPressed("MissionScreenHotkeyDecreaseCameraSpeed"))
                 this._cameraSpeedMultiplier *= 0.6666667f;
             if (this.DebugInput.IsHotKeyPressed("ResetCameraSpeed"))
                 this._cameraSpeedMultiplier = 1f;
+            this._cameraSpeed *= (float)(1.0 - 5.0 * (double)dt);
+            float horizontalLimit = heightFactorForHorizontalMove * _cameraSpeedMultiplier;
+            float verticalLimit = heightFactorForVerticalMove * _cameraSpeedMultiplier;
+            this._cameraSpeed.x = MBMath.ClampFloat(this._cameraSpeed.x, -horizontalLimit, horizontalLimit);
+            this._cameraSpeed.y = MBMath.ClampFloat(this._cameraSpeed.y, -horizontalLimit, horizontalLimit);
+            this._cameraSpeed.z = MBMath.ClampFloat(this._cameraSpeed.z, -verticalLimit, verticalLimit);
             if (this.DebugInput.IsControlDown())
             {
                 float num = MissionScreen.SceneLayer.Input.GetDeltaMouseScroll() * 0.008333334f;
@@ -222,7 +249,7 @@ namespace EnhancedMission
                     {
                         float x = MissionScreen.SceneLayer.Input.GetMousePositionRanged().x;
                         float y = MissionScreen.SceneLayer.Input.GetMousePositionRanged().y;
-                        if ( x <= 0.01 && (y < 0.01 || y > 0.25))
+                        if (x <= 0.01 && (y < 0.01 || y > 0.25))
                             --mouseInput.x;
                         else if (x >= 0.99 && (y < 0.01 || y > 0.25))
                             ++mouseInput.x;
@@ -251,8 +278,10 @@ namespace EnhancedMission
                 Vec3 vec3_4 = (float)y * vec3_3 * dt;
                 local = vec3_2 - vec3_4;
                 cameraFrame1.origin.z += this._cameraSpeed.z * dt;
-                this._cameraHeightToAdd -= (float)(3.0 * TaleWorlds.InputSystem.Input.DeltaMouseScroll / 120.0) * num1 *
-                                                    heightFactorForVerticalMove;
+                if (!MissionScreen.SceneLayer.Input.IsControlDown())
+                    this._cameraHeightToAdd -= (float)(3.0 * TaleWorlds.InputSystem.Input.DeltaMouseScroll / 120.0) * num1 *
+                                                        heightFactorForVerticalMove / 40f;
+                // hold middle button and move mouse vertically to adjust height
                 if (MissionScreen.SceneLayer.Input.IsHotKeyDown("DeploymentCameraIsActive"))
                 {
                     if (_levelToEdge == false)
@@ -304,9 +333,28 @@ namespace EnhancedMission
             this.Mission.SetCameraFrame(cameraFrame1, 65f / MissionScreen.CameraViewAngle);
         }
 
-        public override void OnPreDisplayMissionTick(float dt)
+        private void BeginForcedMove(Vec3 vec)
         {
-            base.OnPreDisplayMissionTick(dt);
+            _forceMove = true;
+            _forceMoveInvertedProgress = 1;
+            _forceMoveVec = vec;
+        }
+
+        private Vec3 ForcedMoveTick(float dt)
+        {
+            var previousProgress = _forceMoveInvertedProgress;
+            _forceMoveInvertedProgress *= (float)Math.Pow(0.00001, (double)dt);
+            if (Math.Abs(_forceMoveInvertedProgress) < 0.0001f)
+            {
+                _forceMove = false;
+                _forceMoveInvertedProgress = 1;
+                _forceMoveVec = Vec3.Zero;
+            }
+            return _forceMoveVec * (previousProgress - _forceMoveInvertedProgress);
+        }
+
+        private void HandleRotateInput(float dt)
+        {
 
             float mouseSensitivity = MissionScreen.SceneLayer.Input.GetMouseSensivity();
             float inputXRaw = 0.0f;
@@ -326,10 +374,10 @@ namespace EnhancedMission
                 {
                     if (!MissionScreen.SceneLayer.Input.GetIsMouseActive())
                     {
-                        double num3 = (double) dt / 0.000600000028498471;
-                        inputXRaw = (float) num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisX") +
+                        double num3 = (double)dt / 0.000600000028498471;
+                        inputXRaw = (float)num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisX") +
                                     MissionScreen.SceneLayer.Input.GetMouseMoveX();
-                        inputYRaw = (float) -num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisY") +
+                        inputYRaw = (float)-num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisY") +
                                     MissionScreen.SceneLayer.Input.GetMouseMoveY();
                     }
                     else
@@ -374,6 +422,31 @@ namespace EnhancedMission
             this.CameraBearing += this._cameraBearingDelta;
             this.CameraElevation += this._cameraElevationDelta;
             this.CameraElevation = MBMath.ClampFloat(this.CameraElevation, -1.36591f, 1.121997f);
+        }
+
+        public override void OnPreDisplayMissionTick(float dt)
+        {
+            base.OnPreDisplayMissionTick(dt);
+
+            if (_orderUIHandler != null)
+                UpdateDragData();
+            if (!_isOrderViewOpen &&
+                (Input.IsGameKeyReleased(8) ||
+                 (Input.IsGameKeyReleased(9) && !this._rightButtonDraggingMode)))
+            {
+                _lockToAgent = true;
+            }
+
+            if (_lockToAgent && (Math.Abs(Input.GetDeltaMouseScroll()) > 0.0001f ||
+                                 Input.IsGameKeyDown(0) || Input.IsGameKeyDown(1) ||
+                                 Input.IsGameKeyDown(2) || Input.IsGameKeyDown(3) || Input.GetIsControllerConnected() &&
+                                 (Input.GetKeyState(InputKey.ControllerLStick).y != 0.0 ||
+                                  Input.GetKeyState(InputKey.ControllerLStick).x != 0.0)))
+            {
+                _lockToAgent = false;
+                this.CameraBearing = MissionScreen.CameraBearing;
+                this.CameraElevation = MissionScreen.CameraElevation;
+            }
         }
     }
 }

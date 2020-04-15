@@ -36,7 +36,7 @@ namespace EnhancedMission
         public void ToggleMenu()
         {
             if (IsActivated)
-                DeactivateMenu();
+                OnCloseMenu();
             else
                 ActivateMenu();
         }
@@ -44,7 +44,7 @@ namespace EnhancedMission
         public void ActivateMenu()
         {
             IsActivated = true;
-            this._dataSource = new MissionMenuVM(this.DeactivateMenu);
+            this._dataSource = new MissionMenuVM(this.OnCloseMenu);
             this._gauntletLayer = new GauntletLayer(this.ViewOrderPriorty) { IsFocusLayer = true };
             this._gauntletLayer.InputRestrictions.SetInputRestrictions();
             this._gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
@@ -55,6 +55,10 @@ namespace EnhancedMission
         }
 
         public void DeactivateMenu()
+        {
+            _dataSource?.CloseMenu();
+        }
+        private void OnCloseMenu()
         {
             IsActivated = false;
             this._dataSource.OnFinalize();

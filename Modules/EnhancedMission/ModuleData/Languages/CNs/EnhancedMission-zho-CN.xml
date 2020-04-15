@@ -50,6 +50,7 @@
 
     <string id="EnhancedMission_usefreecamerabydefault" text="默认自由视角" />
     <string id="EnhancedMission_switchfreecamera" text="切换自由视角" />
+    <string id="EnhancedMission_raisedheightafterswitchingtofreecamera" text="切换到自由视角后相机提高的高度" />
     <string id="EnhancedMission_playerformation" text="玩家编队" />
     <string id="EnhancedMission_disabledeath" text="禁用死亡" />
     <string id="EnhancedMission_togglepause" text="切换暂停" />

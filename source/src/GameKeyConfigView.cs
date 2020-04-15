@@ -83,9 +83,9 @@ namespace EnhancedMission
 
         private void SetHotKey(Key key)
         {
-            if (_dataSource.Groups.First<GameKeyGroupVM>((g => g.GameKeys.Contains(this._currentGameKey))).GameKeys.Any<GameKeyOptionVM>(keyVM => keyVM.CurrentKey.InputKey == key.InputKey))
-                InformationManager.AddQuickInformation(new TextObject("{=n4UUrd1p}Already in use"));
-            else if (this._gauntletLayer.Input.IsHotKeyReleased("Exit"))
+            //if (_dataSource.Groups.First<GameKeyGroupVM>((g => g.GameKeys.Contains(this._currentGameKey))).GameKeys.Any<GameKeyOptionVM>(keyVM => keyVM.CurrentKey.InputKey == key.InputKey))
+            //    InformationManager.AddQuickInformation(new TextObject("{=n4UUrd1p}Already in use"));
+            /*else*/ if (this._gauntletLayer.Input.IsHotKeyReleased("Exit"))
             {
                 this._currentGameKey = null;
                 this._keybindingPopup.OnToggle(false);

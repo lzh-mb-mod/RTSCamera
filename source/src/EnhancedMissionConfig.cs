@@ -27,6 +27,8 @@ namespace EnhancedMission
 
         public bool UseFreeCameraByDefault = false;
 
+        public float RaisedHeight = 10;
+
         public int PlayerFormation = 4;
 
         public bool DisableDeath = false;
@@ -58,6 +60,7 @@ namespace EnhancedMission
         {
             this.ConfigVersion = other.ConfigVersion;
             this.UseFreeCameraByDefault = other.UseFreeCameraByDefault;
+            this.RaisedHeight = other.RaisedHeight;
             this.PlayerFormation = other.PlayerFormation;
             this.DisableDeath = other.DisableDeath;
             this.SlowMotionMode = other.SlowMotionMode;

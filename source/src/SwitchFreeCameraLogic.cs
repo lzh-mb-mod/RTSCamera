@@ -16,7 +16,8 @@ namespace EnhancedMission
         public bool isSpectatorCamera = false;
 
         private bool _isFirstTimeMainAgentChanged = true;
-        private bool _switchToFreeCameraNextTurn = false;
+        private bool _switchToFreeCameraNextTick = false;
+        private bool _setPlayerFormationNextTick = false;
 
         public event Action<bool> ToggleFreeCamera;
 
@@ -45,12 +46,18 @@ namespace EnhancedMission
         {
             base.OnMissionTick(dt);
 
-            if (_switchToFreeCameraNextTurn)
+            if (_switchToFreeCameraNextTick)
             {
-                _switchToFreeCameraNextTurn = false;
+                _switchToFreeCameraNextTick = false;
                 SwitchToFreeCamera();
             }
-            else if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.FreeCamera)))
+
+            if (_setPlayerFormationNextTick)
+            {
+                _setPlayerFormationNextTick = false;
+                Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
+            }
+            if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.FreeCamera)))
             {
                 this.SwitchCamera();
             }
@@ -74,7 +81,9 @@ namespace EnhancedMission
             {
                 _isFirstTimeMainAgentChanged = false;
                 if (_config.UseFreeCameraByDefault)
-                    _switchToFreeCameraNextTurn = true;
+                {
+                    _switchToFreeCameraNextTick = true;
+                }
             }
             else if (isSpectatorCamera)
             {

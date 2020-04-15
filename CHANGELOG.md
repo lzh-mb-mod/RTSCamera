@@ -1,4 +1,22 @@
 # Changelog
+## [1.0.11] - 2020-04-15
+### Added
+- When switch to rts camera, it will be raised to a configurable height.
+
+- Now rts camera can lock agents by left click or right click when order UI is closed.
+
+### Changed
+- Remove restriction that config key cannot conflict with each other.
+
+- Now opening mod menu will cause HUD temporarily enabled to show the menu.
+
+### Fixed
+- Fix the problems that when game is paused, the rts camera cannot be rotated by putting mouse on the edge on the screen.
+
+## [1.0.10] - 2020-04-14
+### Fixed
+- Fix the bug that after clicking "toggle HUD" button in mod menu, the mod menu is not closed.
+
 ## [1.0.9] - 2020-04-14
 ### Added
 - Add toggle HUD feature.

@@ -159,19 +159,6 @@ namespace EnhancedMission
         [DataSourceProperty] public bool SwitchFreeCameraEnabled => _switchFreeCameraLogic != null;
 
         [DataSourceProperty]
-        public SelectionOptionDataVM PlayerFormation
-        {
-            get => _playerFormation;
-            set
-            {
-                if (_playerFormation == value)
-                    return;
-                _playerFormation = value;
-                OnPropertyChanged(nameof(PlayerFormation));
-            }
-        }
-
-        [DataSourceProperty]
         public bool DisableDeath
         {
             get => _config.DisableDeath;
@@ -182,6 +169,22 @@ namespace EnhancedMission
                 _config.DisableDeath = !_config.DisableDeath;
                 _mission.GetMissionBehaviour<DisableDeathLogic>()?.SetDisableDeath(_config.DisableDeath);
                 this.OnPropertyChanged(nameof(DisableDeath));
+            }
+        }
+
+        [DataSourceProperty]
+        public NumericVM RaisedHeight { get; }
+
+        [DataSourceProperty]
+        public SelectionOptionDataVM PlayerFormation
+        {
+            get => _playerFormation;
+            set
+            {
+                if (_playerFormation == value)
+                    return;
+                _playerFormation = value;
+                OnPropertyChanged(nameof(PlayerFormation));
             }
         }
 
@@ -283,10 +286,11 @@ namespace EnhancedMission
             _gameKeyConfigView?.Activate();
         }
 
-        private void CloseMenu()
+        public void CloseMenu()
         {
             _config.Serialize();
             _changeBodyProperties?.SaveConfig();
+            _hideHudLogic?.EndTemporarilyOpenUI();
             this._closeMenu?.Invoke();
         }
 
@@ -316,6 +320,10 @@ namespace EnhancedMission
                     new SelectionItem(true, "str_troop_group_name", "6"),
                     new SelectionItem(true, "str_troop_group_name", "7"),
                 }), GameTexts.FindText("str_player_formation"));
+            this.RaisedHeight =
+                new NumericVM(GameTexts.FindText("str_raised_height_after_switching_to_free_camera").ToString(),
+                    _config.RaisedHeight, 0.0f, 50f, true,
+                    height => _config.RaisedHeight = height);
             this._missionSpeedLogic = _mission.GetMissionBehaviour<MissionSpeedLogic>();
             this.SpeedFactor = new NumericVM(GameTexts.FindText("str_slow_motion_factor").ToString(),
                 _mission.Scene.SlowMotionFactor, 0.01f, 3.0f, false,
@@ -337,6 +345,7 @@ namespace EnhancedMission
                     _changeBodyProperties.RangedAI = (int)combatAI;
                 }, 1, ChangeRangedAI);
             this._hideHudLogic = Mission.Current.GetMissionBehaviour<HideHUDLogic>();
+            _hideHudLogic?.BeginTemporarilyOpenUI();
             this._gameKeyConfigView = Mission.Current.GetMissionBehaviour<GameKeyConfigView>();
         }
     }

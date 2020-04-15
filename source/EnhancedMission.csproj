@@ -23,18 +23,6 @@
     <Reference Include="SandBox.ViewModelCollection">
       <HintPath>..\..\..\SandBox\bin\Win64_Shipping_Client\SandBox.ViewModelCollection.dll</HintPath>
     </Reference>
-    <Reference Include="StoryMode">
-      <HintPath>..\..\..\StoryMode\bin\Win64_Shipping_Client\StoryMode.dll</HintPath>
-    </Reference>
-    <Reference Include="StoryMode.GauntletUI">
-      <HintPath>..\..\..\StoryMode\bin\Win64_Shipping_Client\StoryMode.GauntletUI.dll</HintPath>
-    </Reference>
-    <Reference Include="StoryMode.View">
-      <HintPath>..\..\..\StoryMode\bin\Win64_Shipping_Client\StoryMode.View.dll</HintPath>
-    </Reference>
-    <Reference Include="StoryMode.ViewModelCollection">
-      <HintPath>..\..\..\StoryMode\bin\Win64_Shipping_Client\StoryMode.ViewModelCollection.dll</HintPath>
-    </Reference>
     <Reference Include="TaleWorlds.CampaignSystem">
       <HintPath>..\..\..\..\bin\Win64_Shipping_Client\TaleWorlds.CampaignSystem.dll</HintPath>
     </Reference>
