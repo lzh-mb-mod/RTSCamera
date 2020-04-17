@@ -1,5 +1,14 @@
 # Changelog
-## [1.0.11] - 2020-04-15
+## [e2.0.0]
+### Fixed
+- Fix the bug that the quit text may become "retreat" rather than done after victory.
+
+- Fix the bug that the targeting reticule may be hidden accidentally.
+
+### Changed
+- Overhaul the extension feature.
+
+## [e1.0.11] - 2020-04-15
 ### Added
 - When switch to rts camera, it will be raised to a configurable height.
 
@@ -13,11 +22,11 @@
 ### Fixed
 - Fix the problems that when game is paused, the rts camera cannot be rotated by putting mouse on the edge on the screen.
 
-## [1.0.10] - 2020-04-14
+## [e1.0.10] - 2020-04-14
 ### Fixed
 - Fix the bug that after clicking "toggle HUD" button in mod menu, the mod menu is not closed.
 
-## [1.0.9] - 2020-04-14
+## [e1.0.9] - 2020-04-14
 ### Added
 - Add toggle HUD feature.
 
@@ -31,11 +40,11 @@
 
 - Fix a crash when switching to free camera after victory.
 
-## [1.0.8] - 2020-04-13
+## [e1.0.8] - 2020-04-13
 ### Fixed
 - Fixed the bug that display message option is not saved.
 
-## [1.0.7] - 2020-04-13
+## [e1.0.7] - 2020-04-13
 ### Changed
 - Change slow motion mode logic.
 
@@ -44,18 +53,18 @@
 
 - Add display message option.
 
-## [1.0.6] - 2020-04-12
+## [e1.0.6] - 2020-04-12
 ### Added
 - Save config for "change combat ai" and "use realistic blocking" options.
 
-## [1.0.5] - 2020-04-12
+## [e1.0.5] - 2020-04-12
 ### Fixed
 - Support Bannerlord e1.1.0
 
 ### Changed
 - Move "use realistic blocking" and "change combat ai" feature to another mod called "EnhancedMission Change AI".
 
-## [1.0.4] - 2020-04-12
+## [e1.0.4] - 2020-04-12
 ### Added
 - Add "use free camera by default" option.
 
@@ -67,10 +76,10 @@
 ### Fixed
 - Player can drag on the ground when game is paused or slow down, defictive though.
 
-## [1.0.3-hotfix] - 2020-04-11
+## [e1.0.3-hotfix] - 2020-04-11
 - Fix bug that hot key config will be reset to default after each game start.
 
-## [1.0.3] - 2020-04-11
+## [e1.0.3] - 2020-04-11
 ### Fixed
 - Fix crash when new config for hot key is created.
 

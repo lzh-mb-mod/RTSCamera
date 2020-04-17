@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-16"?>
+<?xml version="1.0" encoding="utf-8"?>
 <base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
   <tags>
@@ -36,17 +36,10 @@
     <string id="EnhancedMission_loadedconfig" text="加载配置成功。" />
     <string id="EnhancedMission_loadconfigfailed" text="加载配置文件失败。" />
 
-    <string id="EnhancedMission_userealisticblocking" text="更真实的格挡机制" />
     <string id="EnhancedMission_nofriendlybannder" text="关闭队友标识" />
     <string id="EnhancedMission_nokillnotification" text="关闭击杀报告" />
     <string id="EnhancedMission_makegruntvoice" text="下令后士兵回应" />
     <string id="EnhancedMission_hasboundary" text="地图边界" />
-
-    <string id="EnhancedMission_changemeleeai" text="改变近战AI" />
-    <string id="EnhancedMission_meleeai" text="近战AI（0-100）" />
-
-    <string id="EnhancedMission_changerangedai" text="改变远程AI" />
-    <string id="EnhancedMission_rangedai" text="远程AI（0-100）" />
 
     <string id="EnhancedMission_usefreecamerabydefault" text="默认自由视角" />
     <string id="EnhancedMission_switchfreecamera" text="切换自由视角" />

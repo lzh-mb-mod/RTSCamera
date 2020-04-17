@@ -8,66 +8,14 @@ using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace EnhancedMission
 {
-    public class MissionMenuView : MissionView
+    public class MissionMenuView : MissionMenuViewBase
     {
-        private MissionMenuVM _dataSource;
-        private GauntletLayer _gauntletLayer;
-        private GauntletMovie _movie;
-        private EnhancedMissionConfig _config;
-        private GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
-
-        public bool IsActivated { get; set; }
+        private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         public MissionMenuView()
+            : base(24, nameof(MissionMenuView))
         {
-            this.ViewOrderPriorty = 24;
-            _config = EnhancedMissionConfig.Get();
-        }
-
-        public override void OnMissionScreenFinalize()
-        {
-            base.OnMissionScreenFinalize();
-            this._gauntletLayer = null;
-            this._dataSource?.OnFinalize();
-            this._dataSource = null;
-            this._movie = null;
-        }
-
-        public void ToggleMenu()
-        {
-            if (IsActivated)
-                OnCloseMenu();
-            else
-                ActivateMenu();
-        }
-
-        public void ActivateMenu()
-        {
-            IsActivated = true;
-            this._dataSource = new MissionMenuVM(this.OnCloseMenu);
-            this._gauntletLayer = new GauntletLayer(this.ViewOrderPriorty) { IsFocusLayer = true };
-            this._gauntletLayer.InputRestrictions.SetInputRestrictions();
-            this._gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
-            this._movie = this._gauntletLayer.LoadMovie(nameof(MissionMenuView), _dataSource);
-            this.MissionScreen.AddLayer(this._gauntletLayer);
-            ScreenManager.TrySetFocus(this._gauntletLayer);
-            PauseGame();
-        }
-
-        public void DeactivateMenu()
-        {
-            _dataSource?.CloseMenu();
-        }
-        private void OnCloseMenu()
-        {
-            IsActivated = false;
-            this._dataSource.OnFinalize();
-            this._dataSource = null;
-            this._gauntletLayer.InputRestrictions.ResetInputRestrictions();
-            this.MissionScreen.RemoveLayer(this._gauntletLayer);
-            this._movie = null;
-            this._gauntletLayer = null;
-            UnpauseGame();
+            this.GetDataSource = () => new MissionMenuVM(Mission, this.OnCloseMenu);
         }
 
         public override void OnMissionScreenTick(float dt)
@@ -75,28 +23,11 @@ namespace EnhancedMission
             base.OnMissionScreenTick(dt);
             if (IsActivated)
             {
-                if (this._gauntletLayer.Input.IsKeyReleased(InputKey.RightMouseButton) ||
-                    this._gauntletLayer.Input.IsKeyReleased(_gameKeyConfig.GetKey(GameKeyEnum.OpenMenu)) ||
-                    this._gauntletLayer.Input.IsHotKeyReleased("Exit"))
+                if (this.GauntletLayer.Input.IsKeyReleased(_gameKeyConfig.GetKey(GameKeyEnum.OpenMenu)))
                     DeactivateMenu();
             }
             else if (this.Input.IsKeyReleased(_gameKeyConfig.GetKey(GameKeyEnum.OpenMenu)))
                 ActivateMenu();
-        }
-
-        private static bool _oldGameStatusDisabledStatus = false;
-
-        private static void PauseGame()
-        {
-            MBCommon.PauseGameEngine();
-            _oldGameStatusDisabledStatus = Game.Current.GameStateManager.ActiveStateDisabledByUser;
-            Game.Current.GameStateManager.ActiveStateDisabledByUser = true;
-        }
-
-        private static void UnpauseGame()
-        {
-            MBCommon.UnPauseGameEngine();
-            Game.Current.GameStateManager.ActiveStateDisabledByUser = _oldGameStatusDisabledStatus;
         }
     }
 }

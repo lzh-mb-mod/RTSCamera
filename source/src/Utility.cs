@@ -67,10 +67,12 @@ namespace EnhancedMission
         public static void SetPlayerFormation(FormationClass formationClass)
         {
             if (Mission.Current.MainAgent != null && Mission.Current.PlayerTeam != null &&
+                !Mission.Current.PlayerTeam.IsPlayerSergeant &&
                 Mission.Current.MainAgent.Formation?.FormationIndex != formationClass)
             {
                 var mission = Mission.Current;
                 var controller = mission.MainAgent.Controller;
+                // to add player to unit card in order UI, the controller need to be set to AI.
                 mission.MainAgent.Controller = Agent.ControllerType.AI;
                 var previousFormation = mission.MainAgent.Formation;
                 mission.MainAgent.Formation =

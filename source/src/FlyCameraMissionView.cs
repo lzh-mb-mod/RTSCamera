@@ -196,20 +196,15 @@ namespace EnhancedMission
             if (_forceMove)
                 cameraFrame1.origin += ForcedMoveTick(dt);
             float heightAtPosition = this.Mission.Scene.GetGroundHeightAtPosition(cameraFrame1.origin, BodyFlags.CommonCollisionExcludeFlags, true);
-            float heightFactorForHorizontalMove = 0.5f * MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 1.0) / 1), 1, 50);
-            float heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 1.0) / 3), 1, 20);
+            float heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 0.5) / 1.5), 1, 50);
+            float heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 0.5) / 2), 1, 20);
             if (this.DebugInput.IsHotKeyPressed("MissionScreenHotkeyIncreaseCameraSpeed"))
                 this._cameraSpeedMultiplier *= 1.5f;
             if (this.DebugInput.IsHotKeyPressed("MissionScreenHotkeyDecreaseCameraSpeed"))
                 this._cameraSpeedMultiplier *= 0.6666667f;
             if (this.DebugInput.IsHotKeyPressed("ResetCameraSpeed"))
                 this._cameraSpeedMultiplier = 1f;
-            this._cameraSpeed *= (float)(1.0 - 5.0 * (double)dt);
-            float horizontalLimit = heightFactorForHorizontalMove * _cameraSpeedMultiplier;
-            float verticalLimit = heightFactorForVerticalMove * _cameraSpeedMultiplier;
-            this._cameraSpeed.x = MBMath.ClampFloat(this._cameraSpeed.x, -horizontalLimit, horizontalLimit);
-            this._cameraSpeed.y = MBMath.ClampFloat(this._cameraSpeed.y, -horizontalLimit, horizontalLimit);
-            this._cameraSpeed.z = MBMath.ClampFloat(this._cameraSpeed.z, -verticalLimit, verticalLimit);
+            this._cameraSpeed *= (float)(1.0 - 10 * (double)dt);
             if (this.DebugInput.IsControlDown())
             {
                 float num = MissionScreen.SceneLayer.Input.GetDeltaMouseScroll() * 0.008333334f;
@@ -266,6 +261,11 @@ namespace EnhancedMission
                     mouseInput.Normalize();
                 this._cameraSpeed += (keyInput + mouseInput) * num1 * heightFactorForHorizontalMove;
             }
+            float horizontalLimit = heightFactorForHorizontalMove * num1;
+            float verticalLimit = heightFactorForVerticalMove * num1;
+            this._cameraSpeed.x = MBMath.ClampFloat(this._cameraSpeed.x, -horizontalLimit, horizontalLimit);
+            this._cameraSpeed.y = MBMath.ClampFloat(this._cameraSpeed.y, -horizontalLimit, horizontalLimit);
+            this._cameraSpeed.z = MBMath.ClampFloat(this._cameraSpeed.z, -verticalLimit, verticalLimit);
             if (_classicMode)
             {
                 Vec2 asVec2 = cameraFrame1.origin.AsVec2;
@@ -279,8 +279,7 @@ namespace EnhancedMission
                 local = vec3_2 - vec3_4;
                 cameraFrame1.origin.z += this._cameraSpeed.z * dt;
                 if (!MissionScreen.SceneLayer.Input.IsControlDown())
-                    this._cameraHeightToAdd -= (float)(3.0 * TaleWorlds.InputSystem.Input.DeltaMouseScroll / 120.0) * num1 *
-                                                        heightFactorForVerticalMove / 40f;
+                    this._cameraHeightToAdd -= (float)(TaleWorlds.InputSystem.Input.DeltaMouseScroll / 200.0) * verticalLimit;
                 // hold middle button and move mouse vertically to adjust height
                 if (MissionScreen.SceneLayer.Input.IsHotKeyDown("DeploymentCameraIsActive"))
                 {
@@ -289,21 +288,22 @@ namespace EnhancedMission
                         _levelToEdge = true;
                         ScreenManager.FirstHitLayer.InputRestrictions.SetMouseVisibility(true);
                     }
-                    this._cameraHeightToAdd += 0.05f * TaleWorlds.InputSystem.Input.MouseMoveY;
+                    this._cameraHeightToAdd += 0.5f * TaleWorlds.InputSystem.Input.MouseMoveY;
                 }
                 else if (_levelToEdge == true)
                 {
                     _levelToEdge = false;
                     ScreenManager.FirstHitLayer.InputRestrictions.SetMouseVisibility(false);
                 }
+                this._cameraHeightToAdd = MathF.Clamp(this._cameraHeightToAdd, -verticalLimit, verticalLimit);
                 if ((double)MathF.Abs(this._cameraHeightToAdd) > 1.0 / 1000.0)
                 {
-                    cameraFrame1.origin.z += (float)((double)this._cameraHeightToAdd * (double)dt * 10.0);
-                    this._cameraHeightToAdd *= (float)(1.0 - (double)dt * 10.0);
+                    cameraFrame1.origin.z += (float)((double)this._cameraHeightToAdd * (double)dt);
+                    this._cameraHeightToAdd *= (float)(1.0 - dt * 5.0);
                 }
                 else
                 {
-                    cameraFrame1.origin.z += this._cameraHeightToAdd;
+                    cameraFrame1.origin.z += this._cameraHeightToAdd * dt;
                     this._cameraHeightToAdd = 0.0f;
                 }
                 if ((double)this._cameraHeightLimit > 0.0 && (double)cameraFrame1.origin.z > (double)this._cameraHeightLimit)
@@ -437,7 +437,7 @@ namespace EnhancedMission
                 _lockToAgent = true;
             }
 
-            if (_lockToAgent && (Math.Abs(Input.GetDeltaMouseScroll()) > 0.0001f ||
+            else if (_lockToAgent && (Math.Abs(Input.GetDeltaMouseScroll()) > 0.0001f ||
                                  Input.IsGameKeyDown(0) || Input.IsGameKeyDown(1) ||
                                  Input.IsGameKeyDown(2) || Input.IsGameKeyDown(3) || Input.GetIsControllerConnected() &&
                                  (Input.GetKeyState(InputKey.ControllerLStick).y != 0.0 ||

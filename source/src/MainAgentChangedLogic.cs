@@ -42,6 +42,12 @@ namespace EnhancedMission
 
             _scoreUI.DataSource.IsMainCharacterDead = false;
             _scoreUI.DataSource.RefreshValues();
+            bool isOver = _scoreUI.DataSource.IsOver;
+            if (isOver)
+            {
+                _scoreUI.DataSource.IsOver = false;
+                _scoreUI.DataSource.IsOver = true;
+            }
         }
     }
 }

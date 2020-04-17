@@ -30,7 +30,7 @@
 1. 复制`Modules`文件夹到砍二的安装目录下（例如`C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`)，和砍二本体的Modules文件夹合并。
 
 ## 如何使用
-- 启动游戏启动器，并选择单人模式(Singleplayer)。在Mods选项卡中勾选`EnhancedMission`并点击`Play`。
+- 启动游戏启动器，并选择单人模式(Singleplayer)。在Mods选项卡中勾选`EnhancedMission RTS Camera`并点击`Play`。
 
   之后正常进行游戏。
 

@@ -16,8 +16,8 @@ namespace EnhancedMission
         public bool isSpectatorCamera = false;
 
         private bool _isFirstTimeMainAgentChanged = true;
+        private bool _isFirstTimeSetToFreeCamera = true;
         private bool _switchToFreeCameraNextTick = false;
-        private bool _setPlayerFormationNextTick = false;
 
         public event Action<bool> ToggleFreeCamera;
 
@@ -52,11 +52,6 @@ namespace EnhancedMission
                 SwitchToFreeCamera();
             }
 
-            if (_setPlayerFormationNextTick)
-            {
-                _setPlayerFormationNextTick = false;
-                Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
-            }
             if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.FreeCamera)))
             {
                 this.SwitchCamera();
@@ -85,7 +80,7 @@ namespace EnhancedMission
                     _switchToFreeCameraNextTick = true;
                 }
             }
-            else if (isSpectatorCamera)
+            else if (isSpectatorCamera && Mission.MainAgent == null)
             {
                 DoNotDisturbRTS();
             }
@@ -93,17 +88,14 @@ namespace EnhancedMission
 
         private void DoNotDisturbRTS()
         {
-            if (Mission.MainAgent == null)
+            Utility.DisplayLocalizedText("str_player_dead", null, new Color(1, 0, 0));
+            if (_controlTroopAfterPlayerDeadLogic.ControlTroopAfterDead() && Mission.MainAgent != null)
             {
-                Utility.DisplayLocalizedText("str_player_dead", null, new Color(1, 0, 0));
-                if (_controlTroopAfterPlayerDeadLogic.ControlTroopAfterDead() && Mission.MainAgent != null)
+                Mission.MainAgent.Controller = Agent.ControllerType.AI;
+                Mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
+                if (Mission.MainAgent.Formation == null || Mission.MainAgent.Formation.FormationIndex >= FormationClass.NumberOfRegularFormations)
                 {
-                    Mission.MainAgent.Controller = Agent.ControllerType.AI;
-                    Mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
-                    if (Mission.MainAgent.Formation == null || Mission.MainAgent.Formation.FormationIndex >= FormationClass.NumberOfRegularFormations)
-                    {
-                        Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
-                    }
+                    Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
                 }
             }
         }
@@ -132,8 +124,8 @@ namespace EnhancedMission
             else
             {
                 Utility.DisplayLocalizedText("str_player_dead");
-                if (_controlTroopAfterPlayerDeadLogic.ControlTroopAfterDead() && Mission.MainAgent != null)
-                    ToggleFreeCamera?.Invoke(false);
+                _controlTroopAfterPlayerDeadLogic.ControlTroopAfterDead();
+                ToggleFreeCamera?.Invoke(false);
             }
         }
 
@@ -146,12 +138,18 @@ namespace EnhancedMission
             {
                 Mission.MainAgent.Controller = Agent.ControllerType.AI;
                 Mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
-                if (Mission.MainAgent.Formation == null || Mission.MainAgent.Formation.FormationIndex >=
+                if (_isFirstTimeSetToFreeCamera || Mission.MainAgent.Formation == null || Mission.MainAgent.Formation.FormationIndex >=
                     FormationClass.NumberOfRegularFormations)
-                    Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
+                {
+                    _isFirstTimeSetToFreeCamera = false;
+                    Utility.SetPlayerFormation((FormationClass) _config.PlayerFormation);
+                }
+                // avoid crash after victory. After victory, team ai decision won't be made so that current tactics won't be updated.
                 if (Mission.MissionEnded())
                     Mission.AllowAiTicking = false;
             }
+            else if (_isFirstTimeSetToFreeCamera)
+                _isFirstTimeSetToFreeCamera = false;
 
             ToggleFreeCamera?.Invoke(true);
             Utility.DisplayLocalizedText("str_switch_to_free_camera");

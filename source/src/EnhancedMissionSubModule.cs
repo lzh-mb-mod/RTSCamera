@@ -9,7 +9,7 @@ namespace EnhancedMission
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
-
+            EnhancedMissionExtension.Clear();
             Module.CurrentModule.GlobalTextManager.LoadGameTexts(BasePath.Name + "Modules/EnhancedMission/ModuleData/module_strings.xml");
         }
 
@@ -18,6 +18,12 @@ namespace EnhancedMission
             base.OnGameStart(game, gameStarterObject);
 
             game.GameTextManager.LoadGameTexts(BasePath.Name + "Modules/EnhancedMission/ModuleData/module_strings.xml");
+        }
+
+        protected override void OnSubModuleUnloaded()
+        {
+            base.OnSubModuleUnloaded();
+            EnhancedMissionExtension.Clear();
         }
     }
 }

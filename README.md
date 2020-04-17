@@ -1,6 +1,6 @@
 # Enhanced Mission RTS Camera
 
-A mod for Mount&Blade Bannerlord that provides features in mission such as RTS camera.
+A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
 
 ## Features
 
@@ -30,7 +30,7 @@ A mod for Mount&Blade Bannerlord that provides features in mission such as RTS c
 1. Copy `Modules` folder into Bannerlord installation folder(For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`). It should be merged with `Modules` of the game.
 
 ## How to use
-- Start the launcher and choose Single player mode. In `Mods` panel select `EnhancedMission (RTS Camera)` mod and click `PLAY`.
+- Start the launcher and choose Single player mode. In `Mods` panel select `EnhancedMission RTS Camera` mod and click `PLAY`.
 
   Then play the game as usual.
 
@@ -66,7 +66,7 @@ A mod for Mount&Blade Bannerlord that provides features in mission such as RTS c
 
   - Left click on the ground and drag to change the position, direction and width of the formation you selected.
 
-    - Hold `ctrl` when drag to arrange multiple formations vertically.
+    - Hold `ctrl` when dragging to arrange multiple formations vertically.
 
   - Hold `ctrl` and scroll mouse to adjust camera movement speed.
 

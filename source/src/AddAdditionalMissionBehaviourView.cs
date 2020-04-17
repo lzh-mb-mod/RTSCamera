@@ -36,6 +36,14 @@ namespace EnhancedMission
                     continue; // avoid accidentally add itself infinitely.
                 AddMissionBehaviour(missionBehaviour);
             }
+
+            foreach (var extension in EnhancedMissionExtension.Extensions)
+            {
+                foreach (var missionBehaviour in extension.CreateMissionBehaviours(Mission))
+                {
+                    AddMissionBehaviour(missionBehaviour);
+                }
+            }
         }
 
         public override void OnPreMissionTick(float dt)

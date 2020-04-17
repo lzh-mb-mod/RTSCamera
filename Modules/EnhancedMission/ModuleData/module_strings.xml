@@ -32,17 +32,10 @@
     <string id="str_loaded_config" text="{=EnhancedMission_loadedconfig}Loading config succeeded." />
     <string id="str_load_config_failed" text="{=EnhancedMission_loadconfigfailed}Loading config failed." />
 
-    <string id="str_use_realistic_blocking" text="{=EnhancedMission_userealisticblocking}Use Realistic Blocking" />
     <string id="str_no_friendly_banner" text="{=EnhancedMission_nofriendlybannder}No Banner on Friendly Troops" />
     <string id="str_no_kill_notification" text="{=EnhancedMission_nokillnotification}No Kill Notification" />
     <string id="str_make_grunt_voice" text="{=EnhancedMission_makegruntvoice}Make Grunt Voice" />
     <string id="str_has_boundary" text="{=EnhancedMission_hasboundary}Has Boundary" />
-
-    <string id="str_change_melee_ai" text="{=EnhancedMission_changemeleeai}Change Melee AI" />
-    <string id="str_melee_ai" text="{=EnhancedMission_meleeai}Melee AI(0-100)" />
-
-    <string id="str_change_ranged_ai" text="{=EnhancedMission_changerangedai}Change Ranged AI" />
-    <string id="str_ranged_ai" text="{=EnhancedMission_rangedai}Ranged AI(0-100)" />
 
     <string id="str_use_free_camera_by_default" text="{=EnhancedMission_usefreecamerabydefault}Use Free Camera By Default" />
     <string id="str_switch_free_camera" text="{=EnhancedMission_switchfreecamera}Switch Free Camera" />
