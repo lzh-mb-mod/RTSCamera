@@ -1,4 +1,8 @@
 # Changelog
+## [e3.0.0] - 2020-04-25
+### Fixed
+- Keep compatible with Bannerlord e1.3.0.
+
 ## [e2.0.1] - 2020-04-25
 ### Fixed
 - Fix the problem that change to target reticule during a battle will be reverted after battle.

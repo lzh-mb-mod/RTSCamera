@@ -14,7 +14,7 @@ using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace EnhancedMission
 {
-    class EnhancedOrderTroopPlacer : MissionView
+    public class EnhancedOrderTroopPlacer : MissionView
     {
         private bool _suspendTroopPlacer;
         private bool _isMouseDown;
@@ -31,7 +31,7 @@ namespace EnhancedMission
         private float? _formationDrawingStartingTime;
         private OrderController PlayerOrderController;
         private Team PlayerTeam;
-        private bool _initialized;
+        public bool Initialized;
         private Timer formationDrawTimer;
         public bool IsDrawingForced;
         public bool IsDrawingFacing;
@@ -99,7 +99,7 @@ namespace EnhancedMission
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
-            if (this._initialized)
+            if (this.Initialized)
                 return;
             MissionPeer missionPeer = GameNetwork.IsMyPeerReady
                 ? GameNetwork.MyPeer.GetComponent<MissionPeer>()
@@ -109,7 +109,7 @@ namespace EnhancedMission
                                                     missionPeer.Team != this.Mission.DefenderTeam))
                 return;
             this.InitializeInADisgustingManner();
-            this._initialized = true;
+            this.Initialized = true;
         }
 
         public void UpdateAttachVisuals(bool isVisible)
@@ -193,7 +193,7 @@ namespace EnhancedMission
             this.PlayerOrderController.SimulateNewCustomWidthOrder(orderFormCustomWidth, out simulationAgentFrames);
             Formation formation =
                 this.PlayerOrderController.SelectedFormations.MaxBy<Formation, int>(
-                    (Func<Formation, int>)(f => f.Units.Count<Agent>()));
+                    (Func<Formation, int>)(f => f.CountOfUnits));
             int entityIndex = 0;
             this.HideOrderPositionEntities();
             foreach ((Agent _, WorldFrame frame1) in simulationAgentFrames)
@@ -270,7 +270,6 @@ namespace EnhancedMission
             }
             else
                 worldPosition = this._formationDrawingStartingPosition.Value;
-
             if (!OrderFlag.IsPositionOnValidGround(worldPosition))
                 return;
             bool isFormationLayoutVertical = !this.DebugInput.IsControlDown();
@@ -380,7 +379,7 @@ namespace EnhancedMission
                     this._clickedFormation = this._mouseOverFormation;
                     break;
                 case EnhancedOrderTroopPlacer.CursorState.Rotation:
-                    if (this._mouseOverFormation.Units.IsEmpty<Agent>())
+                    if (this._mouseOverFormation.CountOfUnits <= 0)
                         break;
                     this.HideNonSelectedOrderRotationEntities(this._mouseOverFormation);
                     this.PlayerOrderController.ClearSelectedFormations();
@@ -409,7 +408,7 @@ namespace EnhancedMission
         {
             if (this._clickedFormation != null)
             {
-                if (!this._clickedFormation.Units.IsEmpty<Agent>() && this._clickedFormation.Team == this.PlayerTeam)
+                if (this._clickedFormation.CountOfUnits > 0 && this._clickedFormation.Team == this.PlayerTeam)
                 {
                     Formation clickedFormation = this._clickedFormation;
                     this._clickedFormation = (Formation)null;
@@ -642,7 +641,7 @@ namespace EnhancedMission
         [Conditional("DEBUG")]
         private void DebugTick(float dt)
         {
-            int num = this._initialized ? 1 : 0;
+            int num = this.Initialized ? 1 : 0;
         }
 
         private void Reset()
@@ -658,7 +657,7 @@ namespace EnhancedMission
 
         public override void OnMissionScreenTick(float dt)
         {
-            if (!this._initialized)
+            if (!this.Initialized)
                 return;
             base.OnMissionScreenTick(dt);
             if (!this.PlayerOrderController.SelectedFormations.Any<Formation>())
