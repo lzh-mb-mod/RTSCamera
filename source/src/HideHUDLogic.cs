@@ -36,7 +36,8 @@ namespace EnhancedMission
 
             if (_switchFreeCameraLogic != null)
                 _switchFreeCameraLogic.ToggleFreeCamera -= OnToggleFreeCamera;
-            BannerlordConfig.DisplayTargetingReticule = _oldDisplayTargetingReticule;
+            RecoverTargetingReticule();
+
             MBDebug.DisableAllUI = false;
         }
 
@@ -44,7 +45,7 @@ namespace EnhancedMission
         {
             base.OnEndMission();
             MBDebug.DisableAllUI = false;
-            BannerlordConfig.DisplayTargetingReticule = _oldDisplayTargetingReticule;
+            RecoverTargetingReticule();
         }
 
         public override void OnMissionTick(float dt)
@@ -80,6 +81,14 @@ namespace EnhancedMission
                 BannerlordConfig.DisplayTargetingReticule = false;
             }
             else
+            {
+                BannerlordConfig.DisplayTargetingReticule = _oldDisplayTargetingReticule;
+            }
+        }
+
+        private void RecoverTargetingReticule()
+        {
+            if (_switchFreeCameraLogic != null && _switchFreeCameraLogic.isSpectatorCamera && !BannerlordConfig.DisplayTargetingReticule)
             {
                 BannerlordConfig.DisplayTargetingReticule = _oldDisplayTargetingReticule;
             }

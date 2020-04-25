@@ -1,5 +1,12 @@
 # Changelog
-## [e2.0.0]
+## [e2.0.1] - 2020-04-25
+### Fixed
+- Fix the problem that change to target reticule during a battle will be reverted after battle.
+
+### Changed
+- Change mod name to RTS Camera.
+
+## [e2.0.0] - 2020-04-17
 ### Fixed
 - Fix the bug that the quit text may become "retreat" rather than done after victory.
 

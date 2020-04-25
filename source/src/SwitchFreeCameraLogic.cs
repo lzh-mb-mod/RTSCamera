@@ -7,7 +7,7 @@ using TaleWorlds.MountAndBlade;
 
 namespace EnhancedMission
 {
-    class SwitchFreeCameraLogic : MissionLogic
+    public class SwitchFreeCameraLogic : MissionLogic
     {
         private EnhancedMissionConfig _config;
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();

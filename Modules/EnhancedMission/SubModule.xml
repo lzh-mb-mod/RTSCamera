@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Module>
-	<Name value = "Enhanced Mission RTS Camera"/>
+	<Name value = "RTS Camera"/>
 	<Id value = "EnhancedMission"/>
 	<Version value = "e2.0.0"/>
 	<SingleplayerModule value="true"/>

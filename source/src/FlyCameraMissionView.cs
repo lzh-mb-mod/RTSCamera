@@ -196,7 +196,7 @@ namespace EnhancedMission
             if (_forceMove)
                 cameraFrame1.origin += ForcedMoveTick(dt);
             float heightAtPosition = this.Mission.Scene.GetGroundHeightAtPosition(cameraFrame1.origin, BodyFlags.CommonCollisionExcludeFlags, true);
-            float heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 0.5) / 1.5), 1, 50);
+            float heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 0.5) / 2), 1, 30);
             float heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 0.5) / 2), 1, 20);
             if (this.DebugInput.IsHotKeyPressed("MissionScreenHotkeyIncreaseCameraSpeed"))
                 this._cameraSpeedMultiplier *= 1.5f;
