@@ -4,7 +4,7 @@ using TaleWorlds.MountAndBlade.GauntletUI;
 
 namespace EnhancedMission
 {
-    class MainAgentChangedLogic : MissionLogic
+    class FixScoreBoardAfterPlayerDeadLogic : MissionLogic
     {
         private MissionGauntletBattleScoreUI _scoreUI;
 

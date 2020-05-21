@@ -50,10 +50,11 @@
     <string id="EnhancedMission_slowmotionmode" text="变速模式" />
     <string id="EnhancedMission_slowmotionfactor" text="速度倍率" />
 
-    <string id="EnhancedMission_afterdeathoptionsdescription" text="阵亡后" />
+    <string id="EnhancedMission_controlalliesoptionsdescription" text="控制队友" />
     <string id="EnhancedMission_controlalliesafterdeath" text="阵亡后控制队友" />
     <string id="EnhancedMission_prefertocontrolcompanions" text="优先控制同伴" />
     <string id="EnhancedMission_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
+    <string id="EnhancedMission_controlanotherhero" text="控制另一个英雄单位" />
 
     <string id="EnhancedMission_missionpaused" text="已暂停关卡。" />
     <string id="EnhancedMission_missioncontinue" text="关卡继续。" />

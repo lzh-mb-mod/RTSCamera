@@ -50,10 +50,11 @@
     <string id="EnhancedMission_slowmotionmode" text="Slow Motion Mode" />
     <string id="EnhancedMission_slowmotionfactor" text="Slow Motion Factor" />
 
-    <string id="EnhancedMission_afterdeathoptionsdescription" text="After Death" />
+    <string id="EnhancedMission_controlalliesoptionsdescription" text="Control Allies" />
     <string id="EnhancedMission_controlalliesafterdeath" text="Control Allies After Death" />
     <string id="EnhancedMission_prefertocontrolcompanions" text="Prefer To Control Companions" />
     <string id="EnhancedMission_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
+    <string id="EnhancedMission_controlanotherhero" text="Control Another Hero" />
 
     <string id="EnhancedMission_missionpaused" text="Mission paused." />
     <string id="EnhancedMission_missioncontinue" text="Mission continued." />

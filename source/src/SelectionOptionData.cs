@@ -8,10 +8,10 @@ namespace EnhancedMission
     public class SelectionOptionData
     {
         private Action<int> _setValue;
-        private Func<int> _getValue;
+        private readonly Func<int> _getValue;
         private int _value;
-        private int _limit;
-        private IEnumerable<SelectionItem> _data;
+        private readonly int _limit;
+        private readonly IEnumerable<SelectionItem> _data;
 
         public SelectionOptionData(Action<int> setValue, Func<int> getValue, int limit, IEnumerable<SelectionItem> data)
         {

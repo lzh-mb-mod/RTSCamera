@@ -18,8 +18,8 @@ namespace EnhancedMission
                 new DisableDeathLogic(config),
                 new MissionSpeedLogic(),
                 new SwitchFreeCameraLogic(config),
-                new ControlTroopAfterPlayerDeadLogic(),
-                new MainAgentChangedLogic(),
+                new ControlTroopLogic(),
+                new FixScoreBoardAfterPlayerDeadLogic(),
                 new CommanderLogic(),
                 new HideHUDLogic(),
 

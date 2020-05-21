@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -16,6 +17,7 @@ namespace EnhancedMission
         private readonly HideHUDLogic _hideHudLogic;
 
         private SelectionOptionDataVM _playerFormation;
+        private SelectionOptionDataVM _controlAnotherHero;
 
         public string UseFreeCameraByDefaultString { get; } = GameTexts.FindText("str_em_use_free_camera_by_default").ToString();
         public string SwitchFreeCameraString { get; } = GameTexts.FindText("str_em_switch_free_camera").ToString();
@@ -23,8 +25,8 @@ namespace EnhancedMission
         public string TogglePauseString { get; } = GameTexts.FindText("str_em_toggle_pause").ToString();
         public string SlowMotionModeString { get; } = GameTexts.FindText("str_em_slow_motion_mode").ToString();
 
-        public string AfterDeathOptionsDescriptionString { get; } =
-            GameTexts.FindText("str_em_after_death_options_description").ToString();
+        public string ControlAlliesOptionsDescriptionString { get; } =
+            GameTexts.FindText("str_em_control_allies_options_description").ToString();
 
         public string ControlAlliesAfterDeathString { get; } =
             GameTexts.FindText("str_em_control_allies_after_death").ToString();
@@ -157,6 +159,19 @@ namespace EnhancedMission
         }
 
         [DataSourceProperty]
+        public SelectionOptionDataVM ControlAnotherHero
+        {
+            get => _controlAnotherHero;
+            set
+            {
+                if (_controlAnotherHero == value)
+                    return;
+                _controlAnotherHero = value;
+                OnPropertyChanged(nameof(_controlAnotherHero));
+            }
+        }
+
+        [DataSourceProperty]
         public bool DisplayMessage
         {
             get => _config.DisplayMessage;
@@ -226,6 +241,11 @@ namespace EnhancedMission
                 factor => { _missionSpeedLogic.SetSlowMotionFactor(factor); });
             this._hideHudLogic = Mission.Current.GetMissionBehaviour<HideHUDLogic>();
             _hideHudLogic?.BeginTemporarilyOpenUI();
+
+            this.ControlAnotherHero = new SelectionOptionDataVM(
+                new ControlTroopsSelectionData().SelectionOptionData,
+                GameTexts.FindText("str_em_control_another_hero"));
+
             this.Extensions = new MBBindingList<ExtensionVM>();
             foreach (var extension in EnhancedMissionExtension.Extensions)
             {

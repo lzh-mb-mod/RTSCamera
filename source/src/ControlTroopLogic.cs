@@ -13,15 +13,14 @@ using TaleWorlds.MountAndBlade.View.Screen;
 
 namespace EnhancedMission
 {
-    class ControlTroopAfterPlayerDeadLogic : MissionLogic
+    class ControlTroopLogic : MissionLogic
     {
 
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
         private readonly EnhancedMissionConfig _config = EnhancedMissionConfig.Get();
         public bool ControlTroopAfterDead()
         {
-            // Mission.MainAgent may be null because of free camera mode.
-            if (Utility.IsPlayerDead() && this.Mission.PlayerTeam != null && Utility.IsAgentDead(this.Mission.PlayerTeam.PlayerOrderController.Owner))
+            if (this.Mission.PlayerTeam != null && Utility.IsAgentDead(this.Mission.PlayerTeam.PlayerOrderController.Owner))
             {
                 var missionScreen = ScreenManager.TopScreen as MissionScreen;
                 Agent closestAllyAgent =
@@ -29,49 +28,46 @@ namespace EnhancedMission
                     missionScreen?.LastFollowedAgent.Team == Mission.PlayerTeam
                         ? missionScreen?.LastFollowedAgent
                         : GetAgentToControl() ?? this.Mission.PlayerTeam.Leader;
-                if (closestAllyAgent != null)
-                {
-                    GameTexts.SetVariable("ControlledTroopName", closestAllyAgent.Name);
-                    Utility.DisplayLocalizedText("str_em_control_troop");
-                    var switchCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
-                    if (!switchCameraLogic.isSpectatorCamera)
-                        closestAllyAgent.Controller = Agent.ControllerType.Player;
-                    else
-                        Mission.MainAgent = closestAllyAgent;
-                    return true;
-                }
-                else
-                {
-                    Utility.DisplayLocalizedText("str_em_no_troop_to_control");
-                    return false;
-                }
+                return ControlAgent(closestAllyAgent);
             }
 
             return false;
         }
 
-        public Agent GetAgentToControl()
+        public bool ControlAgent(Agent agent)
+        {
+            if (agent != null)
+            {
+                if (!Utility.IsPlayerDead())
+                    Utility.AIControlMainAgent((FormationClass)_config.PlayerFormation);
+                GameTexts.SetVariable("ControlledTroopName", agent.Name);
+                Utility.DisplayLocalizedText("str_em_control_troop");
+                agent.Controller = Agent.ControllerType.Player;
+                return true;
+            }
+            else
+            {
+                Utility.DisplayLocalizedText("str_em_no_troop_to_control");
+                return false;
+            }
+        }
+
+        private Agent GetAgentToControl()
         {
             var agents = Mission.GetNearbyAllyAgents(
                 new WorldPosition(this.Mission.Scene, this.Mission.Scene.LastFinalRenderCameraPosition).AsVec2, 1E+7f,
                 Mission.PlayerTeam);
             var inPlayerPartyOnly = _config.ControlTroopsInPlayerPartyOnly;
-            if (_config.PreferToControlCompanions)
+            var preferHero = _config.PreferToControlCompanions;
+            Agent firstAgent = null;
+            var preferredAgent = agents.FirstOrDefault(agent =>
             {
-                Agent firstAgent = null;
-                var heroAgent = agents.FirstOrDefault(agent =>
-                {
-                    if (inPlayerPartyOnly && !Utility.IsInPlayerParty(agent)) return false;
-                    if (firstAgent != null)
-                        firstAgent = agent;
-                    return agent.IsHero;
-                });
-                return heroAgent ?? firstAgent;
-            }
-            else
-            {
-                return agents.FirstOrDefault(agent => !inPlayerPartyOnly || Utility.IsInPlayerParty(agent));
-            }
+                if (inPlayerPartyOnly && !Utility.IsInPlayerParty(agent)) return false;
+                if (firstAgent != null)
+                    firstAgent = agent;
+                return preferHero == agent.IsHero;
+            });
+            return preferredAgent ?? firstAgent;
         }
 
         public override void OnBehaviourInitialize()

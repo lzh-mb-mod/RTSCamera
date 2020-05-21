@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 	  <ProcessorArchitecture>amd64</ProcessorArchitecture>
 	  <BinPath>C:\game\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\</BinPath>
+	  <LangVersion>8</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

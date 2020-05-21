@@ -118,5 +118,20 @@ namespace EnhancedMission
             }
             return false;
         }
+
+        public static void AIControlMainAgent(FormationClass playerFormation)
+        {
+            var mission = Mission.Current;
+            mission.MainAgent.Controller = Agent.ControllerType.AI;
+            mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
+            if (mission.MainAgent.Formation == null || mission.MainAgent.Formation.FormationIndex >=
+                FormationClass.NumberOfRegularFormations)
+            {
+                Utility.SetPlayerFormation(playerFormation);
+            }
+            // avoid crash after victory. After victory, team ai decision won't be made so that current tactics won't be updated.
+            if (mission.MissionEnded())
+                mission.AllowAiTicking = false;
+        }
     }
 }

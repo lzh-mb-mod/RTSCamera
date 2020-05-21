@@ -170,7 +170,7 @@
 
                     <Widget Id="CollapseParent" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" UpdateChildrenStates="true">
                       <Children>
-                        <TextWidget Id="GroupTitle" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" Brush="SPOptions.GameKeysGroup.Title.Text" Text="@AfterDeathOptionsDescriptionString" ClipContents="false" MarginLeft="30">
+                        <TextWidget Id="GroupTitle" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" Brush="SPOptions.GameKeysGroup.Title.Text" Text="@ControlAlliesOptionsDescriptionString" ClipContents="false" MarginLeft="30">
                           <Children>
                             <ImageWidget Id="CollapseIndicator" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="19" SuggestedWidth="19" VerticalAlignment="Center" PositionXOffset="-26" PositionYOffset="-3" Brush="SPOptions.GameKeysgroup.ExpandIndicator" OverrideDefaultStateSwitchingEnabled="true" />
                           </Children>
@@ -230,6 +230,16 @@
                         </ButtonWidget>
                       </Children>
                     </Widget>
+                  </Children>
+                </ListPanel>
+
+                <ListPanel DataSource="{ControlAnotherHero}" LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                  <Children>
+
+                    <RichTextWidget Text="@Name" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+
+                    <Standard.DropdownWithHorizontalControl Id="StringOption" HorizontalAlignment="Center" VerticalAlignment="Center" Parameter.SelectorDataSource="{Selector}" />
+
                   </Children>
                 </ListPanel>
 
