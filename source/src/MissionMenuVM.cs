@@ -17,17 +17,30 @@ namespace EnhancedMission
 
         private SelectionOptionDataVM _playerFormation;
 
-        public string UseFreeCameraByDefaultString { get; } = GameTexts.FindText("str_use_free_camera_by_default").ToString();
-        public string SwitchFreeCameraString { get; } = GameTexts.FindText("str_switch_free_camera").ToString();
-        public string DisableDeathString { get; } = GameTexts.FindText("str_disable_death").ToString();
-        public string TogglePauseString { get; } = GameTexts.FindText("str_toggle_pause").ToString();
-        public string SlowMotionModeString { get; } = GameTexts.FindText("str_slow_motion_mode").ToString();
+        public string UseFreeCameraByDefaultString { get; } = GameTexts.FindText("str_em_use_free_camera_by_default").ToString();
+        public string SwitchFreeCameraString { get; } = GameTexts.FindText("str_em_switch_free_camera").ToString();
+        public string DisableDeathString { get; } = GameTexts.FindText("str_em_disable_death").ToString();
+        public string TogglePauseString { get; } = GameTexts.FindText("str_em_toggle_pause").ToString();
+        public string SlowMotionModeString { get; } = GameTexts.FindText("str_em_slow_motion_mode").ToString();
 
-        public string DisplayMessageString { get; } = GameTexts.FindText("str_display_mod_message").ToString();
+        public string AfterDeathOptionsDescriptionString { get; } =
+            GameTexts.FindText("str_em_after_death_options_description").ToString();
 
-        public string ToggleUIString { get; } = GameTexts.FindText("str_toggle_ui").ToString();
+        public string ControlAlliesAfterDeathString { get; } =
+            GameTexts.FindText("str_em_control_allies_after_death").ToString();
 
-        public string ConfigKeyString { get; } = GameTexts.FindText("str_gamekey_config").ToString();
+        public string PreferToControlCompanionsString { get; } =
+            GameTexts.FindText("str_em_prefer_to_control_companions").ToString();
+
+        public string ControlTroopsInPlayerPartyOnlyString { get; } =
+            GameTexts.FindText("str_em_control_troops_in_player_party_only").ToString();
+
+        public string DisplayMessageString { get; } = GameTexts.FindText("str_em_display_mod_message").ToString();
+
+        public string ToggleUIString { get; } = GameTexts.FindText("str_em_toggle_ui").ToString();
+
+        public string ConfigKeyString { get; } = GameTexts.FindText("str_em_gamekey_config").ToString();
+
 
         [DataSourceProperty] public bool UseFreeCameraByDefault
         {
@@ -105,6 +118,45 @@ namespace EnhancedMission
         public NumericVM SpeedFactor { get; }
 
         [DataSourceProperty]
+        public bool ControlAlliesAfterDeath
+        {
+            get => _config.ControlAlliesAfterDeath;
+            set
+            {
+                if (_config.ControlAlliesAfterDeath == value)
+                    return;
+                _config.ControlAlliesAfterDeath = !_config.ControlAlliesAfterDeath;
+                this.OnPropertyChanged(nameof(ControlAlliesAfterDeath));
+            }
+        }
+
+        [DataSourceProperty]
+        public bool PreferToControlCompanions
+        {
+            get => _config.PreferToControlCompanions;
+            set
+            {
+                if (_config.PreferToControlCompanions == value)
+                    return;
+                _config.PreferToControlCompanions = !_config.PreferToControlCompanions;
+                this.OnPropertyChanged(nameof(PreferToControlCompanions));
+            }
+        }
+
+        [DataSourceProperty]
+        public bool ControlTroopsInPlayerPartyOnly
+        {
+            get => _config.ControlTroopsInPlayerPartyOnly;
+            set
+            {
+                if (_config.ControlTroopsInPlayerPartyOnly == value)
+                    return;
+                _config.ControlTroopsInPlayerPartyOnly = !_config.ControlTroopsInPlayerPartyOnly;
+                this.OnPropertyChanged(nameof(ControlTroopsInPlayerPartyOnly));
+            }
+        }
+
+        [DataSourceProperty]
         public bool DisplayMessage
         {
             get => _config.DisplayMessage;
@@ -163,13 +215,13 @@ namespace EnhancedMission
                     new SelectionItem(true, "str_troop_group_name", "5"),
                     new SelectionItem(true, "str_troop_group_name", "6"),
                     new SelectionItem(true, "str_troop_group_name", "7"),
-                }), GameTexts.FindText("str_player_formation"));
+                }), GameTexts.FindText("str_em_player_formation"));
             this.RaisedHeight =
-                new NumericVM(GameTexts.FindText("str_raised_height_after_switching_to_free_camera").ToString(),
+                new NumericVM(GameTexts.FindText("str_em_raised_height_after_switching_to_free_camera").ToString(),
                     _config.RaisedHeight, 0.0f, 50f, true,
                     height => _config.RaisedHeight = height);
             this._missionSpeedLogic = _mission.GetMissionBehaviour<MissionSpeedLogic>();
-            this.SpeedFactor = new NumericVM(GameTexts.FindText("str_slow_motion_factor").ToString(),
+            this.SpeedFactor = new NumericVM(GameTexts.FindText("str_em_slow_motion_factor").ToString(),
                 _mission.Scene.SlowMotionFactor, 0.01f, 3.0f, false,
                 factor => { _missionSpeedLogic.SetSlowMotionFactor(factor); });
             this._hideHudLogic = Mission.Current.GetMissionBehaviour<HideHUDLogic>();

@@ -40,14 +40,14 @@ namespace EnhancedMission
         {
             var paused = !MissionState.Current.Paused;
             MissionState.Current.Paused = paused;
-            Utility.DisplayLocalizedText(paused ? "str_mission_paused" : "str_mission_continued");
+            Utility.DisplayLocalizedText(paused ? "str_em_mission_paused" : "str_em_mission_continued");
         }
 
         public void SetSlowMotionMode(bool slowMotionMode)
         {
             Mission.Scene.SlowMotionMode = slowMotionMode;
             _config.SlowMotionMode = slowMotionMode;
-            Utility.DisplayLocalizedText(slowMotionMode ? "str_slow_motion_enabled" : "str_normal_mode_enabled");
+            Utility.DisplayLocalizedText(slowMotionMode ? "str_em_slow_motion_enabled" : "str_em_normal_mode_enabled");
         }
 
         public void SetSlowMotionFactor(float factor)
@@ -65,14 +65,14 @@ namespace EnhancedMission
         //        SetFastForwardModeImpl(false);
         //        SetSlowMotionModeImpl(_config.SlowMotionFactor);
         //        SetFastForwardModeImpl(false);
-        //        Utility.DisplayLocalizedText("str_slow_motion_enabled");
+        //        Utility.DisplayLocalizedText("str_em_slow_motion_enabled");
         //    }
         //}
 
         public void SetFastForwardMode()
         {
             Mission.SetFastForwardingFromUI(true);
-            Utility.DisplayLocalizedText("str_fast_forward_mode_enabled");
+            Utility.DisplayLocalizedText("str_em_fast_forward_mode_enabled");
         }
     }
 }

@@ -12,7 +12,7 @@ namespace EnhancedMission
             switch (ConfigVersion?.ToString())
             {
                 default:
-                    Utility.DisplayLocalizedText("str_config_incompatible");
+                    Utility.DisplayLocalizedText("str_em_config_incompatible");
                     ResetToDefault();
                     Serialize();
                     break;
@@ -38,6 +38,12 @@ namespace EnhancedMission
         public float SlowMotionFactor = 0.2f;
 
         public bool DisplayMessage = true;
+
+        public bool ControlAlliesAfterDeath = false;
+
+        public bool PreferToControlCompanions = false;
+
+        public bool ControlTroopsInPlayerPartyOnly = true;
 
         private static EnhancedMissionConfig CreateDefault()
         {
@@ -66,6 +72,9 @@ namespace EnhancedMission
             this.SlowMotionMode = other.SlowMotionMode;
             this.SlowMotionFactor = other.SlowMotionFactor;
             this.DisplayMessage = other.DisplayMessage;
+            this.ControlAlliesAfterDeath = other.ControlAlliesAfterDeath;
+            this.PreferToControlCompanions = other.PreferToControlCompanions;
+            this.ControlTroopsInPlayerPartyOnly = other.ControlTroopsInPlayerPartyOnly;
         }
 
         public override void ResetToDefault()

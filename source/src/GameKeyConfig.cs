@@ -63,7 +63,7 @@ namespace EnhancedMission
             switch (ConfigVersion?.ToString())
             {
                 default:
-                    Utility.DisplayLocalizedText("str_config_incompatible");
+                    Utility.DisplayLocalizedText("str_em_config_incompatible");
                     ResetToDefault();
                     Serialize();
                     break;

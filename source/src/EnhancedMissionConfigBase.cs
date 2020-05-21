@@ -31,13 +31,13 @@ namespace EnhancedMission
                 {
                     serializer.Serialize(writer, this);
                 }
-                Utility.DisplayLocalizedText("str_saved_config");
+                Utility.DisplayLocalizedText("str_em_saved_config");
                 return true;
             }
             catch (Exception e)
             {
-                Utility.DisplayLocalizedText("str_save_config_failed");
-                Utility.DisplayLocalizedText("str_exception_caught");
+                Utility.DisplayLocalizedText("str_em_save_config_failed");
+                Utility.DisplayLocalizedText("str_em_exception_caught");
                 Utility.DisplayMessage(e.ToString());
                 Console.WriteLine(e);
             }
@@ -56,14 +56,14 @@ namespace EnhancedMission
                     var config = (T)deserializer.Deserialize(reader);
                     this.CopyFrom(config);
                 }
-                Utility.DisplayLocalizedText("str_loaded_config");
+                Utility.DisplayLocalizedText("str_em_loaded_config");
                 UpgradeToCurrentVersion();
                 return true;
             }
             catch (Exception e)
             {
-                Utility.DisplayLocalizedText("str_load_config_failed");
-                Utility.DisplayLocalizedText("str_exception_caught");
+                Utility.DisplayLocalizedText("str_em_load_config_failed");
+                Utility.DisplayLocalizedText("str_em_exception_caught");
                 Utility.DisplayMessage(e.ToString());
                 Console.WriteLine(e);
             }
@@ -81,7 +81,7 @@ namespace EnhancedMission
             MoveOldConfig();
             if (File.Exists(SaveName) && Deserialize())
                 return;
-            Utility.DisplayLocalizedText("str_create_default_config");
+            Utility.DisplayLocalizedText("str_em_create_default_config");
             ResetToDefault();
             Serialize();
         }
@@ -94,8 +94,8 @@ namespace EnhancedMission
             {
                 if (File.Exists(oldName))
                 {
-                    Utility.DisplayMessage(GameTexts.FindText("str_found_old_config").ToString() + $" \"{oldName}\".");
-                    Utility.DisplayLocalizedText("str_delete_old_config");
+                    Utility.DisplayMessage(GameTexts.FindText("str_em_found_old_config").ToString() + $" \"{oldName}\".");
+                    Utility.DisplayLocalizedText("str_em_delete_old_config");
                     File.Delete(oldName);
                 }
             }
@@ -106,7 +106,7 @@ namespace EnhancedMission
             string firstOldName = OldNames.FirstOrDefault(File.Exists);
             if (firstOldName != null && !firstOldName.IsEmpty())
             {
-                Utility.DisplayLocalizedText("str_rename_old_config");
+                Utility.DisplayLocalizedText("str_em_rename_old_config");
                 File.Move(firstOldName, SaveName);
             }
             RemoveOldConfig();

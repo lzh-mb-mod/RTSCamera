@@ -72,41 +72,53 @@ namespace EnhancedMission
 
         private void OnMainAgentChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_isFirstTimeMainAgentChanged && Mission.MainAgent != null && (Mission.Mode == MissionMode.Battle || Mission.Mode == MissionMode.Deployment))
+            if (Mission.MainAgent != null)
             {
-                _isFirstTimeMainAgentChanged = false;
-                if (_config.UseFreeCameraByDefault)
+                if (_isFirstTimeMainAgentChanged && (Mission.Mode == MissionMode.Battle || Mission.Mode == MissionMode.Deployment))
                 {
-                    _switchToFreeCameraNextTick = true;
+                    // try to switch to free camera by default.
+                    _isFirstTimeMainAgentChanged = false;
+                    if (_config.UseFreeCameraByDefault)
+                    {
+                        _switchToFreeCameraNextTick = true;
+                    }
+                }
+                else if (isSpectatorCamera)
+                {
+                    EnsureMainAgentControlledByAI();
                 }
             }
-            else if (isSpectatorCamera && Mission.MainAgent == null)
+            else if (isSpectatorCamera)
             {
                 DoNotDisturbRTS();
             }
         }
 
+        private void EnsureMainAgentControlledByAI()
+        {
+            Mission.MainAgent.Controller = Agent.ControllerType.AI;
+            Mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
+
+            // the game may crash if no formation has agents and there are agents controlled by AI.
+            if (Mission.MainAgent.Formation == null || Mission.MainAgent.Formation.FormationIndex >= FormationClass.NumberOfRegularFormations)
+            {
+                Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
+            }
+        }
+
         private void DoNotDisturbRTS()
         {
-            Utility.DisplayLocalizedText("str_player_dead", null, new Color(1, 0, 0));
-            if (_controlTroopAfterPlayerDeadLogic.ControlTroopAfterDead() && Mission.MainAgent != null)
-            {
-                Mission.MainAgent.Controller = Agent.ControllerType.AI;
-                Mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
-                if (Mission.MainAgent.Formation == null || Mission.MainAgent.Formation.FormationIndex >= FormationClass.NumberOfRegularFormations)
-                {
-                    Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
-                }
-            }
+            Utility.DisplayLocalizedText("str_em_player_dead", null, new Color(1, 0, 0));
+            _controlTroopAfterPlayerDeadLogic.ControlTroopAfterDead();
         }
 
         public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
         {
             base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
 
-            // mask code in Mission.OnAgentRemoved so that in spectator camera, formations will not be delegated to AI after player dead.
-            if (Mission.MainAgent == affectedAgent && isSpectatorCamera)
+            if (Mission.MainAgent == affectedAgent && (_config.ControlAlliesAfterDeath || isSpectatorCamera))
             {
+                // mask code in Mission.OnAgentRemoved so that formations will not be delegated to AI after player dead.
                 affectedAgent.OnMainAgentWieldedItemChange = (Agent.OnMainAgentWieldedItemChangeDelegate)null;
                 Mission.MainAgent = null;
             }
@@ -117,16 +129,15 @@ namespace EnhancedMission
             isSpectatorCamera = false;
             if (Mission.MainAgent != null)
             {
-                Utility.DisplayLocalizedText("str_switch_to_player");
+                Utility.DisplayLocalizedText("str_em_switch_to_player");
                 Mission.MainAgent.Controller = Agent.ControllerType.Player;
-                ToggleFreeCamera?.Invoke(false);
             }
             else
             {
-                Utility.DisplayLocalizedText("str_player_dead");
+                Utility.DisplayLocalizedText("str_em_player_dead");
                 _controlTroopAfterPlayerDeadLogic.ControlTroopAfterDead();
-                ToggleFreeCamera?.Invoke(false);
             }
+            ToggleFreeCamera?.Invoke(false);
         }
 
         private void SwitchToFreeCamera()
@@ -152,7 +163,7 @@ namespace EnhancedMission
                 _isFirstTimeSetToFreeCamera = false;
 
             ToggleFreeCamera?.Invoke(true);
-            Utility.DisplayLocalizedText("str_switch_to_free_camera");
+            Utility.DisplayLocalizedText("str_em_switch_to_free_camera");
         }
     }
 }

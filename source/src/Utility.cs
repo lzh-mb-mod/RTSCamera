@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
@@ -14,25 +15,35 @@ namespace EnhancedMission
         {
             if (!EnhancedMissionConfig.Get().DisplayMessage)
                 return;
-            InformationManager.DisplayMessage(new InformationMessage(GameTexts.FindText(id, variation).ToString()));
+            DisplayMessageImpl(GameTexts.FindText(id, variation).ToString());
         }
         public static void DisplayLocalizedText(string id, string variation, Color color)
         {
             if (!EnhancedMissionConfig.Get().DisplayMessage)
                 return;
-            InformationManager.DisplayMessage(new InformationMessage(GameTexts.FindText(id, variation).ToString(), color));
+            DisplayMessageImpl(GameTexts.FindText(id, variation).ToString(), color);
         }
         public static void DisplayMessage(string msg)
         {
             if (!EnhancedMissionConfig.Get().DisplayMessage)
                 return;
-            InformationManager.DisplayMessage(new InformationMessage(new TaleWorlds.Localization.TextObject(msg).ToString()));
+            DisplayMessageImpl(new TaleWorlds.Localization.TextObject(msg).ToString());
         }
         public static void DisplayMessage(string msg, Color color)
         {
             if (!EnhancedMissionConfig.Get().DisplayMessage)
                 return;
-            InformationManager.DisplayMessage(new InformationMessage(new TaleWorlds.Localization.TextObject(msg).ToString(), color));
+            DisplayMessageImpl(new TaleWorlds.Localization.TextObject(msg).ToString(), color);
+        }
+
+        private static void DisplayMessageImpl(string str)
+        {
+            InformationManager.DisplayMessage(new InformationMessage("RTS Camera: " + str));
+        }
+
+        private static void DisplayMessageImpl(string str, Color color)
+        {
+            InformationManager.DisplayMessage(new InformationMessage("RTS Camera: " + str, color));
         }
 
         public static bool IsAgentDead(Agent agent)
@@ -54,7 +65,7 @@ namespace EnhancedMission
             foreach (var formation in mission.PlayerTeam.FormationsIncludingEmpty)
             {
                 bool isAIControlled = formation.IsAIControlled;
-                if (formation.PlayerOwner != null) 
+                if (formation.PlayerOwner != null)
                     formation.PlayerOwner = mission.MainAgent;
                 formation.IsAIControlled = isAIControlled;
             }
@@ -77,7 +88,7 @@ namespace EnhancedMission
                 var previousFormation = mission.MainAgent.Formation;
                 mission.MainAgent.Formation =
                     mission.PlayerTeam.GetFormation(formationClass);
-                if (controller != Agent.ControllerType.AI) 
+                if (controller != Agent.ControllerType.AI)
                     mission.MainAgent.Controller = controller;
                 //if (previousFormation != null)
                 //{
@@ -88,6 +99,24 @@ namespace EnhancedMission
                 //}
                 //mission.PlayerTeam.ExpireAIQuerySystem();
             }
+        }
+
+        public static bool IsInPlayerParty(Agent agent)
+        {
+            if (Campaign.Current != null)
+            {
+
+                var mainPartyName = Campaign.Current.MainParty.Name;
+                if (agent.Origin is SimpleAgentOrigin simpleAgentOrigin && Equals(simpleAgentOrigin.Party.Name, mainPartyName) ||
+                    agent.Origin is PartyAgentOrigin partyAgentOrigin && Equals(partyAgentOrigin.Party.Name, mainPartyName) ||
+                    agent.Origin is PartyGroupAgentOrigin partyGroupAgentOrigin && Equals(partyGroupAgentOrigin.Party.Name, mainPartyName))
+                    return true;
+            }
+            else
+            {
+                return agent.Team == Mission.Current.PlayerTeam;
+            }
+            return false;
         }
     }
 }

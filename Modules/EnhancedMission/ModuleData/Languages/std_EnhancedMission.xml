@@ -24,7 +24,7 @@
     <string id="EnhancedMission_contentillegal" text="Content is illegal." />
     <string id="EnhancedMission_contentoutofrange" text="Content is out of range." />
 
-    <string id="EnhancedMission_controltroop" text="Taking control of an ally troop." />
+    <string id="EnhancedMission_controltroop" text="Controlling: {ControlledTroopName}." />
     <string id="EnhancedMission_notrooptocontrol" text="No ally troop to control." />
     <string id="EnhancedMission_deathdisabled" text="Death Disabled." />
     <string id="EnhancedMission_deathenabled" text="Death Enabled." />
@@ -49,6 +49,11 @@
     <string id="EnhancedMission_togglepause" text="Toggle Pause" />
     <string id="EnhancedMission_slowmotionmode" text="Slow Motion Mode" />
     <string id="EnhancedMission_slowmotionfactor" text="Slow Motion Factor" />
+
+    <string id="EnhancedMission_afterdeathoptionsdescription" text="After Death" />
+    <string id="EnhancedMission_controlalliesafterdeath" text="Control Allies After Death" />
+    <string id="EnhancedMission_prefertocontrolcompanions" text="Prefer To Control Companions" />
+    <string id="EnhancedMission_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
 
     <string id="EnhancedMission_missionpaused" text="Mission paused." />
     <string id="EnhancedMission_missioncontinue" text="Mission continued." />

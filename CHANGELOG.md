@@ -1,4 +1,8 @@
 # Changelog
+## [e3.1.0] - 2020-05-21
+### Added
+- Add options to control troops after player death automatically.
+
 ## [e3.0.0] - 2020-04-25
 ### Fixed
 - Keep compatible with Bannerlord e1.3.0.

@@ -16,7 +16,7 @@ namespace EnhancedMission
         public override void AfterStart()
         {
             base.AfterStart();
-            SetDisableDeath(_config.DisableDeath);
+            SetDisableDeath(_config.DisableDeath, true);
         }
 
         public override void OnMissionTick(float dt)
@@ -29,15 +29,17 @@ namespace EnhancedMission
             }
         }
 
-        public void SetDisableDeath(bool disableDeath)
+        public void SetDisableDeath(bool disableDeath, bool atStart = false)
         {
             Mission.DisableDying = disableDeath;
+            if (atStart && !disableDeath)
+                return;
             PrintDeathStatus(disableDeath);
         }
 
         private void PrintDeathStatus(bool disableDeath)
         {
-            Utility.DisplayLocalizedText(disableDeath ? "str_death_disabled" : "str_death_enabled");
+            Utility.DisplayLocalizedText(disableDeath ? "str_em_death_disabled" : "str_em_death_enabled");
         }
     }
 }
