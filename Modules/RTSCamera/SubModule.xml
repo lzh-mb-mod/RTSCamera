@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Module>
 	<Name value = "RTS Camera"/>
-	<Id value = "EnhancedMission"/>
-	<Version value = "e3.1.0"/>
+	<Id value = "RTSCamera"/>
+	<Version value = "e3.2.0"/>
 	<SingleplayerModule value="true"/>
 	<MultiplayerModule value="false"/>
 	<DependedModules>
@@ -13,9 +13,9 @@
 	</DependedModules>
 	<SubModules>
 		<SubModule>
-			<Name value = "EnhancedMissionSubModule"/>
-			<DLLName value = "EnhancedMission.dll"/>
-			<SubModuleClassType value = "EnhancedMission.EnhancedMissionSubModule"/>
+			<Name value = "RTSCameraSubModule"/>
+			<DLLName value = "RTSCamera.dll"/>
+			<SubModuleClassType value = "RTSCamera.RTSCameraSubModule"/>
 			<Tags>
 				<Tag key="DedicatedServerType" value ="none" />
 				<Tag key="IsNoRenderModeElement" value ="false" />

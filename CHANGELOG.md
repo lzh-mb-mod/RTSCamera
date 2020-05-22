@@ -1,4 +1,8 @@
 # Changelog
+## [e3.2.0] - 2020-05-23
+### Changed
+- rename Module folder to RTSCamera; rename project to RTS Camera.
+
 ## [e3.1.0] - 2020-05-21
 ### Added
 - Add options for controlling allies.
@@ -79,7 +83,7 @@
 - Support Bannerlord e1.1.0
 
 ### Changed
-- Move "use realistic blocking" and "change combat ai" feature to another mod called "EnhancedMission Change AI".
+- Move "use realistic blocking" and "change combat ai" feature to another mod called "EnhancedMission Change AI"(renamed to "Improved Combat AI" now).
 
 ## [e1.0.4] - 2020-04-12
 ### Added

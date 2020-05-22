@@ -9,7 +9,7 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     public class MissionMenuViewBase : MissionView
     {

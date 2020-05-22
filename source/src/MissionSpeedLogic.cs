@@ -5,19 +5,19 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
 
     class MissionSpeedLogic : MissionLogic
     {
-        private EnhancedMissionConfig _config;
+        private RTSCameraConfig _config;
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         public override void AfterStart()
         {
             base.AfterStart();
 
-            _config = EnhancedMissionConfig.Get();
+            _config = RTSCameraConfig.Get();
             Mission.Scene.SlowMotionFactor = _config.SlowMotionFactor;
             Mission.Scene.SlowMotionMode = _config.SlowMotionMode;
         }

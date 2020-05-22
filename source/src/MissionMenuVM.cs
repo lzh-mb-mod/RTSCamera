@@ -4,12 +4,12 @@ using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
 
     public class MissionMenuVM : MissionMenuVMBase
     {
-        private readonly EnhancedMissionConfig _config;
+        private readonly RTSCameraConfig _config;
         private readonly Mission _mission;
         private readonly SwitchFreeCameraLogic _switchFreeCameraLogic;
         private readonly MissionSpeedLogic _missionSpeedLogic;
@@ -208,7 +208,7 @@ namespace EnhancedMission
         public MissionMenuVM(Mission mission, Action closeMenu)
             : base(closeMenu)
         {
-            this._config = EnhancedMissionConfig.Get();
+            this._config = RTSCameraConfig.Get();
             this._mission = mission;
             this._switchFreeCameraLogic = _mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
             this.PlayerFormation = new SelectionOptionDataVM(new SelectionOptionData(
@@ -247,7 +247,7 @@ namespace EnhancedMission
                 GameTexts.FindText("str_em_control_another_hero"));
 
             this.Extensions = new MBBindingList<ExtensionVM>();
-            foreach (var extension in EnhancedMissionExtension.Extensions)
+            foreach (var extension in RTSCameraExtension.Extensions)
             {
                 Extensions.Add(new ExtensionVM(extension.ButtonName, () =>  extension.OpenExtensionMenu(_mission)));
             }

@@ -8,7 +8,7 @@ using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     public class SelectionOptionDataVM : ViewModel
     {

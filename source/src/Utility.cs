@@ -7,31 +7,31 @@ using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     public class Utility
     {
         public static void DisplayLocalizedText(string id, string variation = null)
         {
-            if (!EnhancedMissionConfig.Get().DisplayMessage)
+            if (!RTSCameraConfig.Get().DisplayMessage)
                 return;
             DisplayMessageImpl(GameTexts.FindText(id, variation).ToString());
         }
         public static void DisplayLocalizedText(string id, string variation, Color color)
         {
-            if (!EnhancedMissionConfig.Get().DisplayMessage)
+            if (!RTSCameraConfig.Get().DisplayMessage)
                 return;
             DisplayMessageImpl(GameTexts.FindText(id, variation).ToString(), color);
         }
         public static void DisplayMessage(string msg)
         {
-            if (!EnhancedMissionConfig.Get().DisplayMessage)
+            if (!RTSCameraConfig.Get().DisplayMessage)
                 return;
             DisplayMessageImpl(new TaleWorlds.Localization.TextObject(msg).ToString());
         }
         public static void DisplayMessage(string msg, Color color)
         {
-            if (!EnhancedMissionConfig.Get().DisplayMessage)
+            if (!RTSCameraConfig.Get().DisplayMessage)
                 return;
             DisplayMessageImpl(new TaleWorlds.Localization.TextObject(msg).ToString(), color);
         }

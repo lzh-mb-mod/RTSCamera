@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using TaleWorlds.MountAndBlade;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     class CommanderLogic : MissionLogic
     {

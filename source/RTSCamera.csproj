@@ -120,7 +120,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(BinPath)Modules\EnhancedMission\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)..\Modules\EnhancedMission\bin\Win64_Shipping_Client\&quot;" />
+    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(BinPath)Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;" />
   </Target>
 
 </Project>

@@ -5,11 +5,11 @@ using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     public class SwitchFreeCameraLogic : MissionLogic
     {
-        private EnhancedMissionConfig _config;
+        private RTSCameraConfig _config;
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         private ControlTroopLogic _controlTroopLogic;
@@ -21,7 +21,7 @@ namespace EnhancedMission
 
         public event Action<bool> ToggleFreeCamera;
 
-        public SwitchFreeCameraLogic(EnhancedMissionConfig config)
+        public SwitchFreeCameraLogic(RTSCameraConfig config)
         {
             _config = config;
         }

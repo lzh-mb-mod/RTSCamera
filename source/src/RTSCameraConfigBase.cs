@@ -6,16 +6,19 @@ using System.Text;
 using System.Xml.Serialization;
 using TaleWorlds.Core;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
-    public abstract class EnhancedMissionConfigBase<T> where T : EnhancedMissionConfigBase<T>
+    public abstract class RTSCameraConfigBase<T> where T : RTSCameraConfigBase<T>
     {
 
         private static string ApplicationName = "Mount and Blade II Bannerlord";
-        private static string ModuleName = "EnhancedMission";
+        private static string ModuleName = "RTSCamera";
 
-        protected static string SavePath => Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\" +
-                                            ApplicationName + "\\Configs\\" + ModuleName + "\\";
+        protected static string SavePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+            ApplicationName, "Configs", ModuleName);
+
+        protected static string OldSavePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+            ApplicationName, "Configs", "EnhancedMission");
 
         protected abstract void CopyFrom(T other);
         protected abstract void UpgradeToCurrentVersion();
@@ -98,6 +101,11 @@ namespace EnhancedMission
                     Utility.DisplayLocalizedText("str_em_delete_old_config");
                     File.Delete(oldName);
                 }
+
+                if (Directory.Exists(OldSavePath) && Directory.GetFileSystemEntries(OldSavePath).Length == 0)
+                {
+                    Directory.Delete(OldSavePath);
+                }
             }
         }
 
@@ -107,6 +115,7 @@ namespace EnhancedMission
             if (firstOldName != null && !firstOldName.IsEmpty())
             {
                 Utility.DisplayLocalizedText("str_em_rename_old_config");
+                EnsureSaveDirectory();
                 File.Move(firstOldName, SaveName);
             }
             RemoveOldConfig();

@@ -13,7 +13,7 @@ using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.ViewModelCollection.GameOptions;
 using TaleWorlds.MountAndBlade.ViewModelCollection.GameOptions.GameKeys;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     class GameKeyConfigView : MissionView
     {

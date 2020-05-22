@@ -2,28 +2,28 @@
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
-    public class EnhancedMissionSubModule : MBSubModuleBase
+    public class RTSCameraSubModule : MBSubModuleBase
     {
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
-            EnhancedMissionExtension.Clear();
-            Module.CurrentModule.GlobalTextManager.LoadGameTexts(BasePath.Name + "Modules/EnhancedMission/ModuleData/module_strings.xml");
+            RTSCameraExtension.Clear();
+            Module.CurrentModule.GlobalTextManager.LoadGameTexts(BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
         }
 
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
             base.OnGameStart(game, gameStarterObject);
 
-            game.GameTextManager.LoadGameTexts(BasePath.Name + "Modules/EnhancedMission/ModuleData/module_strings.xml");
+            game.GameTextManager.LoadGameTexts(BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
         }
 
         protected override void OnSubModuleUnloaded()
         {
             base.OnSubModuleUnloaded();
-            EnhancedMissionExtension.Clear();
+            RTSCameraExtension.Clear();
         }
     }
 }

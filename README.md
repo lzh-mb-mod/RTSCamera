@@ -14,9 +14,9 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
 
   Because supporting them may cause the mod crash after beta update and break compatibility.
 
-- Configuration saving. The configuration is saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\EnhancedMission\`.
+- Configuration saving. The configuration is saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\RTSCamera\`.
   
-  The main config is saved in file `EnhancedMissionConfig.xml`.
+  The main config is saved in file `RTSCameraConfig.xml`.
 
   The hot key config is saved in file `GameKeyConfig.xml`.
 
@@ -28,7 +28,7 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
 1. Copy `Modules` folder into Bannerlord installation folder(For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`). It should be merged with `Modules` of the game. Or use Vortex to install it automatically.
 
 ## How to use
-- Start the launcher and choose Single player mode. In `Mods` panel select `EnhancedMission RTS Camera` mod and click `PLAY`.
+- Start the launcher and choose Single player mode. In `Mods` panel select `RTS Camera` mod and click `PLAY`.
 
   Then play the game as usual.
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     public struct SelectionItem
     {

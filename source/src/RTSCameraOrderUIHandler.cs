@@ -18,10 +18,10 @@ using TaleWorlds.MountAndBlade.View.Screen;
 using TaleWorlds.MountAndBlade.ViewModelCollection;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     [OverrideView(typeof(MissionOrderUIHandler))]
-    public class EnhancedMissionOrderUIHandler : MissionView, ISiegeDeploymentView
+    public class RTSCameraOrderUIHandler : MissionView, ISiegeDeploymentView
     {
 
         public bool exitWithRightClick = true;
@@ -30,7 +30,7 @@ namespace EnhancedMission
         private const float DEPLOYMENT_ICON_SIZE = 75f;
         private List<DeploymentSiegeMachineVM> _deploymentPointDataSources;
         private Vec2 _deploymentPointWidgetSize;
-        private EnhancedOrderTroopPlacer _orderTroopPlacer;
+        private RTSCameraOrderTroopPlacer _orderTroopPlacer;
         public GauntletLayer gauntletLayer;
         public MissionOrderVM dataSource;
         private GauntletMovie _viewMovie;
@@ -39,7 +39,7 @@ namespace EnhancedMission
         private bool isInitialized;
         private bool _isTransferEnabled;
 
-        public EnhancedMissionOrderUIHandler()
+        public RTSCameraOrderUIHandler()
         {
             this.ViewOrderPriorty = 19;
         }
@@ -68,7 +68,7 @@ namespace EnhancedMission
             base.OnMissionScreenInitialize();
             this.MissionScreen.SceneLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("MissionOrderHotkeyCategory"));
             this.MissionScreen.OrderFlag = new OrderFlag(this.Mission, this.MissionScreen);
-            this._orderTroopPlacer = this.Mission.GetMissionBehaviour<EnhancedOrderTroopPlacer>();
+            this._orderTroopPlacer = this.Mission.GetMissionBehaviour<RTSCameraOrderTroopPlacer>();
             this.MissionScreen.SetOrderFlagVisibility(false);
             this._siegeDeploymentHandler = this.Mission.GetMissionBehaviour<SiegeDeploymentHandler>();
             this.IsDeployment = this._siegeDeploymentHandler != null;

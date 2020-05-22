@@ -12,14 +12,14 @@ using TaleWorlds.MountAndBlade.GauntletUI.Mission;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.Missions;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     public class FlyCameraMissionView : MissionView, ICameraModeLogic
     {
-        private EnhancedMissionConfig _config;
+        private RTSCameraConfig _config;
         private SwitchFreeCameraLogic _freeCameraLogic;
         private MissionMainAgentController _missionMainAgentController;
-        private EnhancedMissionOrderUIHandler _orderUIHandler;
+        private RTSCameraOrderUIHandler _orderUIHandler;
 
         private int _shiftSpeedMultiplier = 3;
         private Vec3 _cameraSpeed;
@@ -130,10 +130,10 @@ namespace EnhancedMission
             this._cameraSmoothMode = true;
             this.ViewOrderPriorty = 25;
 
-            _config = EnhancedMissionConfig.Get();
+            _config = RTSCameraConfig.Get();
             _freeCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
             _missionMainAgentController = Mission.GetMissionBehaviour<MissionMainAgentController>();
-            _orderUIHandler = Mission.GetMissionBehaviour<EnhancedMissionOrderUIHandler>();
+            _orderUIHandler = Mission.GetMissionBehaviour<RTSCameraOrderUIHandler>();
 
             Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
             if (_freeCameraLogic != null)

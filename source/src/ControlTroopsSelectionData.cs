@@ -4,12 +4,12 @@ using System.Text;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     public class ControlTroopsSelectionData
     {
         public SelectionOptionData SelectionOptionData;
-        private EnhancedMissionConfig _config = EnhancedMissionConfig.Get();
+        private RTSCameraConfig _config = RTSCameraConfig.Get();
         private ControlTroopLogic _logic = Mission.Current.GetMissionBehaviour<ControlTroopLogic>();
 
         public ControlTroopsSelectionData()

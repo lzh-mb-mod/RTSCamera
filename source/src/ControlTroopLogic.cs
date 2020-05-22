@@ -11,13 +11,13 @@ using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Screen;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     public class ControlTroopLogic : MissionLogic
     {
 
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
-        private readonly EnhancedMissionConfig _config = EnhancedMissionConfig.Get();
+        private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
 
         public event Action MainAgentWillBeChangedToAnotherOne; 
         public bool ControlTroop()

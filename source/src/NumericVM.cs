@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using TaleWorlds.Library;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     public class NumericVM : ViewModel
     {

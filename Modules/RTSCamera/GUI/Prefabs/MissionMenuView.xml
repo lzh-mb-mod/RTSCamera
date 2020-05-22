@@ -4,9 +4,9 @@
   <VisualDefinitions>
   </VisualDefinitions>
   <Window>
-    <ButtonWidget Command.Click="CloseMenu" WidthSizePolicy = "StretchToParent" HeightSizePolicy = "StretchToParent" Brush="EnhancedMission.TransparentBrush">
+    <ButtonWidget Command.Click="CloseMenu" WidthSizePolicy = "StretchToParent" HeightSizePolicy = "StretchToParent" Brush="RTSCamera.TransparentBrush">
       <Children>
-        <ListPanel LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="200" Brush="EnhancedMission.MissionMenuBrush">
+        <ListPanel LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="200" Brush="RTSCamera.MissionMenuBrush">
           <Children>
 
             <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy = "CoverChildren" HeightSizePolicy = "CoverChildren" HorizontalAlignment="Center" MarginTop="10">

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using TaleWorlds.MountAndBlade;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
-    public abstract class EnhancedMissionExtension
+    public abstract class RTSCameraExtension
     {
         public static event Action OnExtensionMenuClosed;
 
@@ -13,9 +13,9 @@ namespace EnhancedMission
         {
             OnExtensionMenuClosed?.Invoke();
         }
-        private static readonly List<EnhancedMissionExtension> _extensions = new List<EnhancedMissionExtension>();
-        public static IEnumerable<EnhancedMissionExtension> Extensions => _extensions;
-        public static void AddExtension(EnhancedMissionExtension extension)
+        private static readonly List<RTSCameraExtension> _extensions = new List<RTSCameraExtension>();
+        public static IEnumerable<RTSCameraExtension> Extensions => _extensions;
+        public static void AddExtension(RTSCameraExtension extension)
         {
             _extensions.Add(extension);
         }

@@ -4,7 +4,7 @@ using System.Text;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     [DefaultView]
     class AddAdditionalMissionBehaviourView : MissionView
@@ -12,7 +12,7 @@ namespace EnhancedMission
         public override void OnCreated()
         {
             base.OnCreated();
-            var config = EnhancedMissionConfig.Get();
+            var config = RTSCameraConfig.Get();
             List<MissionBehaviour> list = new List<MissionBehaviour>
             {
                 new DisableDeathLogic(config),
@@ -26,7 +26,7 @@ namespace EnhancedMission
                 new MissionMenuView(),
                 new FlyCameraMissionView(),
                 new GameKeyConfigView(),
-                new EnhancedOrderTroopPlacer()
+                new RTSCameraOrderTroopPlacer()
             };
 
 
@@ -37,7 +37,7 @@ namespace EnhancedMission
                 AddMissionBehaviour(missionBehaviour);
             }
 
-            foreach (var extension in EnhancedMissionExtension.Extensions)
+            foreach (var extension in RTSCameraExtension.Extensions)
             {
                 foreach (var missionBehaviour in extension.CreateMissionBehaviours(Mission))
                 {

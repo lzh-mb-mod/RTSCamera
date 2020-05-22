@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
@@ -7,11 +8,11 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     public static class GameKeyCategory
     {
-        public static string EnhancedMissionHotKey = nameof(EnhancedMissionHotKey);
+        public static string RTSCameraHotKey = nameof(RTSCameraHotKey);
     }
     public enum GameKeyEnum
     {
@@ -54,9 +55,9 @@ namespace EnhancedMission
             return new GameKey(Id, StringId, GroupId, Key, MainCategoryId);
         }
     }
-    public class GameKeyConfig : EnhancedMissionConfigBase<GameKeyConfig>
+    public class GameKeyConfig : RTSCameraConfigBase<GameKeyConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 2);
+        protected static Version BinaryVersion => new Version(1, 3);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -78,6 +79,9 @@ namespace EnhancedMission
                     ConfigVersion = BinaryVersion.ToString(2);
                     goto case "1.2";
                 case "1.2":
+                    ResetToDefault();
+                    goto case "1.3";
+                case "1.3":
                     break;
             }
         }
@@ -103,7 +107,7 @@ namespace EnhancedMission
         {
             Id = ToId(GameKeyEnum.OpenMenu),
             StringId = "",
-            GroupId = "EnhancedMissionHotKey",
+            GroupId = "RTSCameraHotKey",
             Key = InputKey.O
         };
 
@@ -111,7 +115,7 @@ namespace EnhancedMission
         {
             Id = ToId(GameKeyEnum.Pause),
             StringId = "",
-            GroupId = "EnhancedMissionHotKey",
+            GroupId = "RTSCameraHotKey",
             Key = InputKey.OpenBraces
         };
 
@@ -119,7 +123,7 @@ namespace EnhancedMission
         {
             Id = ToId(GameKeyEnum.SlowMotion),
             StringId = "",
-            GroupId = "EnhancedMissionHotKey",
+            GroupId = "RTSCameraHotKey",
             Key = InputKey.Apostrophe
         };
 
@@ -127,7 +131,7 @@ namespace EnhancedMission
         {
             Id = ToId(GameKeyEnum.FreeCamera),
             StringId = "",
-            GroupId = "EnhancedMissionHotKey",
+            GroupId = "RTSCameraHotKey",
             Key = InputKey.F10
         };
 
@@ -135,7 +139,7 @@ namespace EnhancedMission
         {
             Id = ToId(GameKeyEnum.DisableDeath),
             StringId = "",
-            GroupId = "EnhancedMissionHotKey",
+            GroupId = "RTSCameraHotKey",
             Key = InputKey.End
         };
 
@@ -143,7 +147,7 @@ namespace EnhancedMission
         {
             Id = ToId(GameKeyEnum.ControlTroop),
             StringId = "",
-            GroupId = "EnhancedMissionHotKey",
+            GroupId = "RTSCameraHotKey",
             Key = InputKey.F
         };
 
@@ -151,7 +155,7 @@ namespace EnhancedMission
         {
             Id = ToId(GameKeyEnum.ToggleHUD),
             StringId = "",
-            GroupId = "EnhancedMissionHotKey",
+            GroupId = "RTSCameraHotKey",
             Key = InputKey.CloseBraces
         };
 
@@ -263,7 +267,7 @@ namespace EnhancedMission
 
         public string ConfigVersion { get; set; } = BinaryVersion.ToString(2);
 
-        protected override string SaveName => SavePath + nameof(GameKeyConfig) + ".xml";
-        protected override string[] OldNames { get; } = { };
+        protected override string SaveName => Path.Combine(SavePath, nameof(GameKeyConfig) + ".xml");
+        protected override string[] OldNames { get; } = { Path.Combine(OldSavePath, "GameKeyConfig.xml") };
     }
 }

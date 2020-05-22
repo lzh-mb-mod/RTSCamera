@@ -2,7 +2,7 @@
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     class FixScoreBoardAfterPlayerDeadLogic : MissionLogic
     {

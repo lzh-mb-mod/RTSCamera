@@ -12,9 +12,9 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.Missions.Handlers;
 using TaleWorlds.MountAndBlade.View.Missions;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
-    public class EnhancedOrderTroopPlacer : MissionView
+    public class RTSCameraOrderTroopPlacer : MissionView
     {
         private bool _suspendTroopPlacer;
         private bool _isMouseDown;
@@ -351,7 +351,7 @@ namespace EnhancedMission
                 return;
             switch (this.GetCursorState())
             {
-                case EnhancedOrderTroopPlacer.CursorState.Normal:
+                case RTSCameraOrderTroopPlacer.CursorState.Normal:
                     this._formationDrawingMode = true;
                     Vec3 rayBegin;
                     Vec3 rayEnd;
@@ -374,11 +374,11 @@ namespace EnhancedMission
                     this._formationDrawingStartingPointOfMouse = new Vec2?();
                     this._formationDrawingStartingTime = new float?();
                     break;
-                case EnhancedOrderTroopPlacer.CursorState.Enemy:
-                case EnhancedOrderTroopPlacer.CursorState.Friend:
+                case RTSCameraOrderTroopPlacer.CursorState.Enemy:
+                case RTSCameraOrderTroopPlacer.CursorState.Friend:
                     this._clickedFormation = this._mouseOverFormation;
                     break;
-                case EnhancedOrderTroopPlacer.CursorState.Rotation:
+                case RTSCameraOrderTroopPlacer.CursorState.Rotation:
                     if (this._mouseOverFormation.CountOfUnits <= 0)
                         break;
                     this.HideNonSelectedOrderRotationEntities(this._mouseOverFormation);
@@ -421,7 +421,7 @@ namespace EnhancedMission
 
                 this._clickedFormation = (Formation)null;
             }
-            else if (this.GetCursorState() == EnhancedOrderTroopPlacer.CursorState.Ground)
+            else if (this.GetCursorState() == RTSCameraOrderTroopPlacer.CursorState.Ground)
             {
                 if (this.IsDrawingFacing || this._wasDrawingFacing)
                     this.UpdateFormationDrawingForFacingOrder(true);
@@ -444,9 +444,9 @@ namespace EnhancedMission
                 : this.Input.GetMousePositionRanged() + this._deltaMousePosition;
         }
 
-        private EnhancedOrderTroopPlacer.CursorState GetCursorState()
+        private RTSCameraOrderTroopPlacer.CursorState GetCursorState()
         {
-            EnhancedOrderTroopPlacer.CursorState cursorState = EnhancedOrderTroopPlacer.CursorState.Invisible;
+            RTSCameraOrderTroopPlacer.CursorState cursorState = RTSCameraOrderTroopPlacer.CursorState.Invisible;
             this.AttachTarget = (Formation)null;
             if (!this.PlayerOrderController.SelectedFormations.IsEmpty<Formation>() && this._clickedFormation == null)
             {
@@ -458,7 +458,7 @@ namespace EnhancedMission
                 if (!this.Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out collisionDistance,
                     out collidedEntity, 0.3f, BodyFlags.CommonFocusRayCastExcludeFlags))
                     collisionDistance = 1000f;
-                if (cursorState == EnhancedOrderTroopPlacer.CursorState.Invisible && (double)collisionDistance < 1000.0)
+                if (cursorState == RTSCameraOrderTroopPlacer.CursorState.Invisible && (double)collisionDistance < 1000.0)
                 {
                     if (!this._formationDrawingMode && (NativeObject)collidedEntity == (NativeObject)null)
                     {
@@ -471,16 +471,16 @@ namespace EnhancedMission
                                 this._mouseOverFormation =
                                     this.PlayerOrderController.SelectedFormations.ElementAt<Formation>(index / 2);
                                 this._mouseOverDirection = 1 - (index & 1);
-                                cursorState = EnhancedOrderTroopPlacer.CursorState.Rotation;
+                                cursorState = RTSCameraOrderTroopPlacer.CursorState.Rotation;
                                 break;
                             }
                         }
                     }
 
-                    if (cursorState == EnhancedOrderTroopPlacer.CursorState.Invisible &&
+                    if (cursorState == RTSCameraOrderTroopPlacer.CursorState.Invisible &&
                         this.MissionScreen.OrderFlag.FocusedOrderableObject != null)
-                        cursorState = EnhancedOrderTroopPlacer.CursorState.OrderableEntity;
-                    if (cursorState == EnhancedOrderTroopPlacer.CursorState.Invisible)
+                        cursorState = RTSCameraOrderTroopPlacer.CursorState.OrderableEntity;
+                    if (cursorState == RTSCameraOrderTroopPlacer.CursorState.Invisible)
                     {
                         cursorState = this.IsCursorStateGroundOrNormal();
                         this.UpdateAttachData();
@@ -488,17 +488,17 @@ namespace EnhancedMission
                 }
             }
 
-            if (cursorState != EnhancedOrderTroopPlacer.CursorState.Ground &&
-                cursorState != EnhancedOrderTroopPlacer.CursorState.Rotation)
+            if (cursorState != RTSCameraOrderTroopPlacer.CursorState.Ground &&
+                cursorState != RTSCameraOrderTroopPlacer.CursorState.Rotation)
                 this._mouseOverDirection = 0;
             return cursorState;
         }
 
-        private EnhancedOrderTroopPlacer.CursorState IsCursorStateGroundOrNormal()
+        private RTSCameraOrderTroopPlacer.CursorState IsCursorStateGroundOrNormal()
         {
             return !this._formationDrawingMode
-                ? EnhancedOrderTroopPlacer.CursorState.Normal
-                : EnhancedOrderTroopPlacer.CursorState.Ground;
+                ? RTSCameraOrderTroopPlacer.CursorState.Normal
+                : RTSCameraOrderTroopPlacer.CursorState.Ground;
         }
 
         private void UpdateAttachData()
@@ -579,13 +579,13 @@ namespace EnhancedMission
                 GameEntity empty = GameEntity.CreateEmpty(this.Mission.Scene, true);
                 empty.EntityFlags |= EntityFlags.NotAffectedBySeason;
                 MetaMesh copy = MetaMesh.GetCopy("order_flag_small", true, false);
-                if ((NativeObject)EnhancedOrderTroopPlacer._meshMaterial == (NativeObject)null)
+                if ((NativeObject)RTSCameraOrderTroopPlacer._meshMaterial == (NativeObject)null)
                 {
-                    EnhancedOrderTroopPlacer._meshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
-                    EnhancedOrderTroopPlacer._meshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
+                    RTSCameraOrderTroopPlacer._meshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+                    RTSCameraOrderTroopPlacer._meshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
                 }
 
-                copy.SetMaterial(EnhancedOrderTroopPlacer._meshMaterial);
+                copy.SetMaterial(RTSCameraOrderTroopPlacer._meshMaterial);
                 empty.AddComponent((GameEntityComponent)copy);
                 empty.SetVisibilityExcludeParents(false);
                 this._orderPositionEntities.Add(empty);
@@ -681,8 +681,8 @@ namespace EnhancedMission
                 if (this.formationDrawTimer.Check(MBCommon.GetTime(MBCommon.TimeType.Application)) &&
                     !this.IsDrawingFacing &&
                     (!this.IsDrawingForming &&
-                     this.IsCursorStateGroundOrNormal() == EnhancedOrderTroopPlacer.CursorState.Ground) &&
-                    this.GetCursorState() == EnhancedOrderTroopPlacer.CursorState.Ground)
+                     this.IsCursorStateGroundOrNormal() == RTSCameraOrderTroopPlacer.CursorState.Ground) &&
+                    this.GetCursorState() == RTSCameraOrderTroopPlacer.CursorState.Ground)
                     this.UpdateFormationDrawing(false);
             }
             else if (this.IsDrawingForced)

@@ -1,14 +1,14 @@
 ﻿using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     public class DisableDeathLogic : MissionLogic
     {
-        private EnhancedMissionConfig _config;
+        private RTSCameraConfig _config;
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
-        public DisableDeathLogic(EnhancedMissionConfig config)
+        public DisableDeathLogic(RTSCameraConfig config)
         {
             _config = config;
         }

@@ -8,7 +8,7 @@ using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade.ViewModelCollection.GameOptions;
 using TaleWorlds.MountAndBlade.ViewModelCollection.GameOptions.GameKeys;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
     class GameKeyConfigVM : ViewModel
     {
@@ -31,7 +31,7 @@ namespace EnhancedMission
             this._categories = new Dictionary<string, List<GameKey>>()
             {
                 {
-                    GameKeyCategory.EnhancedMissionHotKey,
+                    GameKeyCategory.RTSCameraHotKey,
                     _config.GameKeyEnums.Select(gameKeyEnum => _config.GetGameKey(gameKeyEnum)).ToList()
                 },
             };

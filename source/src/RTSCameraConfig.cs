@@ -1,9 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Xml.Serialization;
 
-namespace EnhancedMission
+namespace RTSCamera
 {
-    public class EnhancedMissionConfig : EnhancedMissionConfigBase<EnhancedMissionConfig>
+    public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
         protected static Version BinaryVersion => new Version(1, 0);
 
@@ -21,7 +22,7 @@ namespace EnhancedMission
             }
         }
 
-        private static EnhancedMissionConfig _instance;
+        private static RTSCameraConfig _instance;
 
         public string ConfigVersion { get; set; } = BinaryVersion.ToString();
 
@@ -45,11 +46,11 @@ namespace EnhancedMission
 
         public bool ControlTroopsInPlayerPartyOnly = true;
 
-        private static EnhancedMissionConfig CreateDefault()
+        private static RTSCameraConfig CreateDefault()
         {
-            return new EnhancedMissionConfig();
+            return new RTSCameraConfig();
         }
-        public static EnhancedMissionConfig Get()
+        public static RTSCameraConfig Get()
         {
             if (_instance == null)
             {
@@ -60,9 +61,9 @@ namespace EnhancedMission
             return _instance;
         }
 
-        protected override XmlSerializer serializer => new XmlSerializer(typeof(EnhancedMissionConfig));
+        protected override XmlSerializer serializer => new XmlSerializer(typeof(RTSCameraConfig));
 
-        protected override void CopyFrom(EnhancedMissionConfig other)
+        protected override void CopyFrom(RTSCameraConfig other)
         {
             this.ConfigVersion = other.ConfigVersion;
             this.UseFreeCameraByDefault = other.UseFreeCameraByDefault;
@@ -82,8 +83,8 @@ namespace EnhancedMission
             CopyFrom(CreateDefault());
         }
         [XmlIgnore]
-        protected override string SaveName => SavePath + nameof(EnhancedMissionConfig) + ".xml";
+        protected override string SaveName => Path.Combine(SavePath, nameof(RTSCameraConfig) + ".xml");
         [XmlIgnore]
-        protected override string[] OldNames { get; } = { };
+        protected override string[] OldNames { get; } = { Path.Combine(OldSavePath, "EnhancedMissionConfig.xml") };
     }
 }

@@ -1,5 +1,5 @@
 <Brushes>
-  <Brush Name="EnhancedMission.MissionMenuBrush">
+  <Brush Name="RTSCamera.MissionMenuBrush">
     <Layers>
       <BrushLayer Name="Default" Sprite="Frame1_canvas" />
       <BrushLayer Name="Frame" ExtendTop="27" ExtendLeft="26" ExtendRight="27" ExtendBottom="29" Sprite="Frame1_frame" OverlayMethod="CoverWithTexture" OverlaySprite="stone_texture_overlay"/>
@@ -11,7 +11,7 @@
       </Style>
     </Styles>
   </Brush>
-  <Brush Name="EnhancedMission.TransparentBrush">
+  <Brush Name="RTSCamera.TransparentBrush">
     <Layers>
       <BrushLayer Name="Default" Sprite="Frame1_canvas" />
       <BrushLayer Name="Frame" ExtendTop="27" ExtendLeft="26" ExtendRight="27" ExtendBottom="29" Sprite="Frame1_frame" OverlayMethod="CoverWithTexture" OverlaySprite="stone_texture_overlay"/>
