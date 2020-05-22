@@ -73,7 +73,7 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
 ## Optional File
 - ["Improved Combat AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/): Realistic blocking and adjusting combat AI.
 
-- "Cinematic Camera": Adjusting camera parameters such as moving speed, depth of field, etc.
+- ["Cinematic Camera"](https://www.nexusmods.com/mountandblade2bannerlord/mods/1627): Adjusting camera parameters such as moving speed, depth of field, etc.
 
 ## Troubleshoot
 - If the launcher can not start:

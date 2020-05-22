@@ -1,7 +1,7 @@
 # Changelog
 ## [e3.1.0] - 2020-05-21
 ### Added
-- Add options to for controlling allies.
+- Add options for controlling allies.
 
 - Add support for Cinematic Camera.
 

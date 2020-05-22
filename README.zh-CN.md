@@ -73,7 +73,7 @@
 ## 可选文件
 - ["Improved Combat AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/): 可调整战斗AI，可选择更真实的格挡。
 
-- "Cinematic Camera": 调整相机参数，如移动速度，景深等等。
+- ["Cinematic Camera"](https://www.nexusmods.com/mountandblade2bannerlord/mods/1627): 调整相机参数，如移动速度，景深等等。
 
 ## 解决问题
 - 若启动器无法启动：
