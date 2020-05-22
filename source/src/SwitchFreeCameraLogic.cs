@@ -109,7 +109,7 @@ namespace EnhancedMission
         private void DoNotDisturbRTS()
         {
             Utility.DisplayLocalizedText("str_em_player_dead", null, new Color(1, 0, 0));
-            _controlTroopLogic.ControlTroopAfterDead();
+            _controlTroopLogic.ControlTroop();
         }
 
         public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
@@ -135,7 +135,7 @@ namespace EnhancedMission
             else
             {
                 Utility.DisplayLocalizedText("str_em_player_dead");
-                _controlTroopLogic.ControlTroopAfterDead();
+                _controlTroopLogic.ControlTroop();
             }
             ToggleFreeCamera?.Invoke(false);
         }

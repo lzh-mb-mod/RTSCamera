@@ -8,8 +8,6 @@
 
 - 玩家死后可以控制其小兵。该小兵将会成为当前队伍的领队。
 
-- 调整战斗AI和可选择更真实的格挡功能放在了另一个mod中：["Enhanced Mission Change AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/).
-
   因为这些功能可能导致游戏更新后mod发生崩溃，降低mod的兼容性。
 
 - 暂停游戏或调整关卡中的时间流逝速度。
@@ -71,6 +69,11 @@
   - 按住`ctrl`再滚动鼠标中键来调整镜头移动速度。
 
   - 当命令面板关闭后，单机左键或右键来切换镜头锁定的士兵，移动镜头来解除锁定。
+
+## 可选文件
+- ["Improved Combat AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/): 可调整战斗AI，可选择更真实的格挡。
+
+- "Cinematic Camera": 调整相机参数，如移动速度，景深等等。
 
 ## 解决问题
 - 若启动器无法启动：

@@ -12,8 +12,6 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
 
 - Hotkey rebinding.
 
-- Realistic blocking and adjusting combat AI are supported in another mod called ["Enhanced Mission Change AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/).
-
   Because supporting them may cause the mod crash after beta update and break compatibility.
 
 - Configuration saving. The configuration is saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\EnhancedMission\`.
@@ -27,7 +25,7 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
 - Undead mode. HP of All agents will not change after switched on.
 
 ## How to install
-1. Copy `Modules` folder into Bannerlord installation folder(For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`). It should be merged with `Modules` of the game.
+1. Copy `Modules` folder into Bannerlord installation folder(For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`). It should be merged with `Modules` of the game. Or use Vortex to install it automatically.
 
 ## How to use
 - Start the launcher and choose Single player mode. In `Mods` panel select `EnhancedMission RTS Camera` mod and click `PLAY`.
@@ -71,6 +69,11 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
   - Hold `ctrl` and scroll mouse to adjust camera movement speed.
 
   - When order panel is closed, you can left click or right click to lock the camera to soldiers. Move the camera to unlock it.
+
+## Optional File
+- ["Improved Combat AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/): Realistic blocking and adjusting combat AI.
+
+- "Cinematic Camera": Adjusting camera parameters such as moving speed, depth of field, etc.
 
 ## Troubleshoot
 - If the launcher can not start:

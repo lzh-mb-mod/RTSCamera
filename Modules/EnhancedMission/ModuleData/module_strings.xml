@@ -67,14 +67,14 @@
     <string id="str_em_toggle_ui" text="{=EnhancedMission_toggleui}Toggle HUD" />
     <string id="str_em_gamekey_config" text="{=EnhancedMission_gamekeyconfigtitle}Config Key" />
 
-    <string id="str_em_key_category_name.EnhancedMissionHotKey" text="{=EnhancedMission_hotkeycategory}EnhancedMission Hot Key" />
-    <string id="str_em_key_name.EnhancedMissionHotKey_Up" text="{=EnhancedMission_openmenukey}Open Menu" />
-    <string id="str_em_key_name.EnhancedMissionHotKey_Down" text="{=EnhancedMission_pausekey}Pause" />
-    <string id="str_em_key_name.EnhancedMissionHotKey_Left" text="{=EnhancedMission_slowmotionkey}Slow Motion" />
-    <string id="str_em_key_name.EnhancedMissionHotKey_Right" text="{=EnhancedMission_freecamerakey}Free Camera" />
-    <string id="str_em_key_name.EnhancedMissionHotKey_Leave" text="{=EnhancedMission_disabledeathkey}Disable Death" />
-    <string id="str_em_key_name.EnhancedMissionHotKey_ShowIndicators" text="{=EnhancedMission_controltroopkey}Control Troop" />
+    <string id="str_key_category_name.EnhancedMissionHotKey" text="{=EnhancedMission_hotkeycategory}EnhancedMission Hot Key" />
+    <string id="str_key_name.EnhancedMissionHotKey_Up" text="{=EnhancedMission_openmenukey}Open Menu" />
+    <string id="str_key_name.EnhancedMissionHotKey_Down" text="{=EnhancedMission_pausekey}Pause" />
+    <string id="str_key_name.EnhancedMissionHotKey_Left" text="{=EnhancedMission_slowmotionkey}Slow Motion" />
+    <string id="str_key_name.EnhancedMissionHotKey_Right" text="{=EnhancedMission_freecamerakey}Free Camera" />
+    <string id="str_key_name.EnhancedMissionHotKey_Leave" text="{=EnhancedMission_disabledeathkey}Disable Death" />
+    <string id="str_key_name.EnhancedMissionHotKey_ShowIndicators" text="{=EnhancedMission_controltroopkey}Control Troop" />
     <!-- same as str_em_toggle_ui -->
-    <string id="str_em_key_name.EnhancedMissionHotKey_InitiateAllChat" text="{=EnhancedMission_toggleui}Toggle HUD" />
+    <string id="str_key_name.EnhancedMissionHotKey_InitiateAllChat" text="{=EnhancedMission_toggleui}Toggle HUD" />
   </strings>
 </base>

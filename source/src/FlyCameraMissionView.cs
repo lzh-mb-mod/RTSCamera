@@ -14,7 +14,7 @@ using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace EnhancedMission
 {
-    class FlyCameraMissionView : MissionView, ICameraModeLogic
+    public class FlyCameraMissionView : MissionView, ICameraModeLogic
     {
         private EnhancedMissionConfig _config;
         private SwitchFreeCameraLogic _freeCameraLogic;
@@ -25,7 +25,6 @@ namespace EnhancedMission
         private Vec3 _cameraSpeed;
         private float _cameraSpeedMultiplier;
         private bool _cameraSmoothMode;
-        private bool _cameraRotateSmoothMode;
         private float _cameraHeightToAdd;
         private float _cameraHeightLimit;
         private bool _classicMode = true;
@@ -43,9 +42,72 @@ namespace EnhancedMission
 
         private float _cameraBearingDelta;
         private float _cameraElevationDelta;
+        private float _cameraViewAngle = 65.0f;
+        private float _zoom = 1.0f;
         public float CameraBearing { get; private set; }
 
         public float CameraElevation { get; private set; }
+
+        public bool CameraRotateSmoothMode = false;
+        public float CameraViewAngle
+        {
+            get => _cameraViewAngle;
+            set
+            {
+                _cameraViewAngle = value;
+                UpdateOverridenCamera(0);
+            }
+        }
+
+        public float Zoom
+        {
+            get => _zoom;
+            set
+            {
+                _zoom = value;
+                UpdateOverridenCamera(0);
+            }
+        }
+
+        public float DepthOfFieldDistance
+        {
+            get => _depthOfFieldDistance;
+            set
+            {
+                _depthOfFieldDistance = value;
+                UpdateOverridenCamera(0);
+
+            }
+        }
+
+        public float DepthOfFieldStart
+        {
+            get => _depthOfFieldStart;
+            set
+            {
+                _depthOfFieldStart = value;
+                UpdateOverridenCamera(0);
+            }
+        }
+
+        public float DepthOfFieldEnd
+        {
+            get => _depthOfFieldEnd;
+            set
+            {
+                _depthOfFieldEnd = value;
+                UpdateOverridenCamera(0);
+            }
+        }
+
+
+        public float CameraSpeedFactor = 1;
+
+        public float CameraVerticalSpeedFactor = 1;
+        private float _depthOfFieldDistance = 0;
+        private float _depthOfFieldStart = 0;
+        private float _depthOfFieldEnd = 0;
+
         //public float CameraBearing => MissionScreen.CameraBearing;
 
         //public float CameraElevation => MissionScreen.CameraElevation;
@@ -66,7 +128,6 @@ namespace EnhancedMission
             this._cameraHeightToAdd = 0.0f;
             this._cameraHeightLimit = 0.0f;
             this._cameraSmoothMode = true;
-            this._cameraRotateSmoothMode = false;
             this.ViewOrderPriorty = 25;
 
             _config = EnhancedMissionConfig.Get();
@@ -213,7 +274,7 @@ namespace EnhancedMission
                 else if ((double)num < -0.00999999977648258)
                     this._cameraSpeedMultiplier *= 0.8f;
             }
-            float num1 = 3f * this._cameraSpeedMultiplier;
+            float num1 = 3f * this._cameraSpeedMultiplier * CameraSpeedFactor;
             if (MissionScreen.SceneLayer.Input.IsGameKeyDown(23))
                 num1 *= (float)this._shiftSpeedMultiplier;
             if (!this._cameraSmoothMode)
@@ -262,7 +323,7 @@ namespace EnhancedMission
                 this._cameraSpeed += (keyInput + mouseInput) * num1 * heightFactorForHorizontalMove;
             }
             float horizontalLimit = heightFactorForHorizontalMove * num1;
-            float verticalLimit = heightFactorForVerticalMove * num1;
+            float verticalLimit = heightFactorForVerticalMove * num1 * CameraVerticalSpeedFactor;
             this._cameraSpeed.x = MBMath.ClampFloat(this._cameraSpeed.x, -horizontalLimit, horizontalLimit);
             this._cameraSpeed.y = MBMath.ClampFloat(this._cameraSpeed.y, -horizontalLimit, horizontalLimit);
             this._cameraSpeed.z = MBMath.ClampFloat(this._cameraSpeed.z, -verticalLimit, verticalLimit);
@@ -328,9 +389,10 @@ namespace EnhancedMission
                     cameraFrame1.origin.z = -100f;
             }
             float newDNear = !this.Mission.CameraIsFirstPerson ? 0.1f : 0.065f;
+            this.CombatCamera.SetFovVertical((float)(this.CameraViewAngle * (Math.PI / 180.0)), TaleWorlds.Engine.Screen.AspectRatio, newDNear, 12500f);
             this.CombatCamera.Frame = cameraFrame1;
             MissionScreen.SceneView.SetCamera(this.CombatCamera);
-            this.Mission.SetCameraFrame(cameraFrame1, 65f / MissionScreen.CameraViewAngle);
+            this.Mission.SetCameraFrame(cameraFrame1, Zoom);
         }
 
         private void BeginForcedMove(Vec3 vec)
@@ -389,10 +451,10 @@ namespace EnhancedMission
             }
             float num4 = 5.4E-05f;
             float smoothFading;
-            if (this._cameraRotateSmoothMode)
+            if (this.CameraRotateSmoothMode)
             {
-                num4 *= 0.02f;
-                smoothFading = Math.Max(0.0f, (float)(1.0 - 2.0 * (0.0199999995529652 + (double)dt - 8.0 * ((double)dt * (double)dt))));
+                num4 *= 0.10f;
+                smoothFading = (float)Math.Pow(0.000001, dt);
             }
             else
                 smoothFading = 0.0f;
@@ -416,8 +478,28 @@ namespace EnhancedMission
                 this._cameraBearingDelta = MBMath.ClampFloat(this._cameraBearingDelta, -maxValue, maxValue);
                 this._cameraElevationDelta = MBMath.ClampFloat(this._cameraElevationDelta, -maxValue, maxValue);
             }
-            this.Mission.Scene.RayCastForClosestEntityOrTerrain(this.CombatCamera.Position, this.CombatCamera.Position + this.CombatCamera.Direction * 3000f, out var collisionDistance, out GameEntity _, 0.01f, BodyFlags.CommonFocusRayCastExcludeFlags);
-            this.Mission.Scene.SetDepthOfFieldFocus(collisionDistance);
+
+            Mission.Scene.SetDepthOfFieldParameters(DepthOfFieldStart, DepthOfFieldEnd, false);
+            if (Math.Abs(DepthOfFieldDistance) < 0.0001f)
+            {
+                this.Mission.Scene.RayCastForClosestEntityOrTerrain(this.CombatCamera.Position, this.CombatCamera.Position + this.CombatCamera.Direction * 3000f, out var terrainCollisionDistance, out GameEntity _, 0.01f, BodyFlags.CameraCollisionRayCastExludeFlags);
+                this.Mission.RayCastForClosestAgent(this.CameraPosition,
+                    this.CombatCamera.Position + this.CombatCamera.Direction * 3000f, out var agentCollisionDistance);
+                if (float.IsNaN(terrainCollisionDistance))
+                {
+                    terrainCollisionDistance = float.MaxValue;
+                }
+
+                if (float.IsNaN(agentCollisionDistance))
+                {
+                    agentCollisionDistance = float.MaxValue;
+                }
+                this.Mission.Scene.SetDepthOfFieldFocus(Math.Min(terrainCollisionDistance, agentCollisionDistance));
+            }
+            else
+            {
+                Mission.Scene.SetDepthOfFieldFocus(DepthOfFieldDistance);
+            }
 
             this.CameraBearing += this._cameraBearingDelta;
             this.CameraElevation += this._cameraElevationDelta;

@@ -13,14 +13,16 @@ using TaleWorlds.MountAndBlade.View.Screen;
 
 namespace EnhancedMission
 {
-    class ControlTroopLogic : MissionLogic
+    public class ControlTroopLogic : MissionLogic
     {
 
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
         private readonly EnhancedMissionConfig _config = EnhancedMissionConfig.Get();
-        public bool ControlTroopAfterDead()
+
+        public event Action MainAgentWillBeChangedToAnotherOne; 
+        public bool ControlTroop()
         {
-            if (this.Mission.PlayerTeam != null && Utility.IsAgentDead(this.Mission.PlayerTeam.PlayerOrderController.Owner))
+            if (this.Mission.PlayerTeam != null)
             {
                 var missionScreen = ScreenManager.TopScreen as MissionScreen;
                 Agent closestAllyAgent =
@@ -28,6 +30,8 @@ namespace EnhancedMission
                     missionScreen?.LastFollowedAgent.Team == Mission.PlayerTeam
                         ? missionScreen?.LastFollowedAgent
                         : GetAgentToControl() ?? this.Mission.PlayerTeam.Leader;
+                if (closestAllyAgent == Mission.MainAgent)
+                    return false;
                 return ControlAgent(closestAllyAgent);
             }
 
@@ -39,7 +43,10 @@ namespace EnhancedMission
             if (agent != null)
             {
                 if (!Utility.IsPlayerDead())
-                    Utility.AIControlMainAgent((FormationClass)_config.PlayerFormation);
+                {
+                    MainAgentWillBeChangedToAnotherOne?.Invoke();
+                    Utility.AIControlMainAgent((FormationClass) _config.PlayerFormation);
+                }
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
                 Utility.DisplayLocalizedText("str_em_control_troop");
                 agent.Controller = Agent.ControllerType.Player;
@@ -90,7 +97,11 @@ namespace EnhancedMission
 
             if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ControlTroop)))
             {
-                ControlTroopAfterDead();
+                if (!ControlTroop())
+                    return;
+                var switchFreeCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
+                if (switchFreeCameraLogic != null && switchFreeCameraLogic.isSpectatorCamera)
+                    switchFreeCameraLogic.SwitchCamera();
             }
         }
 
@@ -98,7 +109,7 @@ namespace EnhancedMission
         {
             if (Mission.MainAgent == null && _config.ControlAlliesAfterDeath)
             {
-                ControlTroopAfterDead();
+                ControlTroop();
             }
         }
     }

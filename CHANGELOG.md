@@ -1,7 +1,9 @@
 # Changelog
 ## [e3.1.0] - 2020-05-21
 ### Added
-- Add options to control troops after player death automatically.
+- Add options to for controlling allies.
+
+- Add support for Cinematic Camera.
 
 ## [e3.0.0] - 2020-04-25
 ### Fixed
