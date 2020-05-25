@@ -64,10 +64,12 @@ namespace RTSCamera
             mission.PlayerTeam.PlayerOrderController.Owner = mission.MainAgent;
             foreach (var formation in mission.PlayerTeam.FormationsIncludingEmpty)
             {
-                bool isAIControlled = formation.IsAIControlled;
                 if (formation.PlayerOwner != null)
+                {
+                    bool isAIControlled = formation.IsAIControlled;
                     formation.PlayerOwner = mission.MainAgent;
-                formation.IsAIControlled = isAIControlled;
+                    formation.IsAIControlled = isAIControlled;
+                }
             }
         }
 

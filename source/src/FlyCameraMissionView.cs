@@ -11,6 +11,7 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.Missions;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera
 {
@@ -55,7 +56,9 @@ namespace RTSCamera
             set
             {
                 _cameraViewAngle = value;
-                UpdateOverridenCamera(0);
+                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || _lockToAgent)
+                    return;
+                UpdateViewAngle();
             }
         }
 
@@ -65,7 +68,6 @@ namespace RTSCamera
             set
             {
                 _zoom = value;
-                UpdateOverridenCamera(0);
             }
         }
 
@@ -75,7 +77,9 @@ namespace RTSCamera
             set
             {
                 _depthOfFieldDistance = value;
-                UpdateOverridenCamera(0);
+                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || _lockToAgent)
+                    return;
+                UpdateDof();
 
             }
         }
@@ -86,7 +90,9 @@ namespace RTSCamera
             set
             {
                 _depthOfFieldStart = value;
-                UpdateOverridenCamera(0);
+                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || _lockToAgent)
+                    return;
+                UpdateDof();
             }
         }
 
@@ -96,7 +102,9 @@ namespace RTSCamera
             set
             {
                 _depthOfFieldEnd = value;
-                UpdateOverridenCamera(0);
+                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || _lockToAgent)
+                    return;
+                UpdateDof();
             }
         }
 
@@ -249,16 +257,16 @@ namespace RTSCamera
         private void UpdateFlyCamera(float dt)
         {
             HandleRotateInput(dt);
-            MatrixFrame cameraFrame1 = MatrixFrame.Identity;
-            cameraFrame1.rotation.RotateAboutSide(1.570796f);
-            cameraFrame1.rotation.RotateAboutForward(this.CameraBearing);
-            cameraFrame1.rotation.RotateAboutSide(this.CameraElevation);
-            cameraFrame1.origin = CameraPosition;
+            MatrixFrame cameraFrame = MatrixFrame.Identity;
+            cameraFrame.rotation.RotateAboutSide(1.570796f);
+            cameraFrame.rotation.RotateAboutForward(this.CameraBearing);
+            cameraFrame.rotation.RotateAboutSide(this.CameraElevation);
+            cameraFrame.origin = CameraPosition;
             if (_forceMove)
-                cameraFrame1.origin += ForcedMoveTick(dt);
-            float heightAtPosition = this.Mission.Scene.GetGroundHeightAtPosition(cameraFrame1.origin, BodyFlags.CommonCollisionExcludeFlags, true);
-            float heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 0.5) / 2), 1, 30);
-            float heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame1.origin.z - (double)heightAtPosition - 0.5) / 2), 1, 20);
+                cameraFrame.origin += ForcedMoveTick(dt);
+            float heightAtPosition = this.Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags, true);
+            float heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2), 1, 30);
+            float heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + ((double)cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2), 1, 20);
             if (this.DebugInput.IsHotKeyPressed("MissionScreenHotkeyIncreaseCameraSpeed"))
                 this._cameraSpeedMultiplier *= 1.5f;
             if (this.DebugInput.IsHotKeyPressed("MissionScreenHotkeyDecreaseCameraSpeed"))
@@ -329,16 +337,16 @@ namespace RTSCamera
             this._cameraSpeed.z = MBMath.ClampFloat(this._cameraSpeed.z, -verticalLimit, verticalLimit);
             if (_classicMode)
             {
-                Vec2 asVec2 = cameraFrame1.origin.AsVec2;
-                cameraFrame1.origin += this._cameraSpeed.x * new Vec3(cameraFrame1.rotation.s.AsVec2, 0.0f, -1f).NormalizedCopy() * dt;
-                ref Vec3 local = ref cameraFrame1.origin;
+                Vec2 asVec2 = cameraFrame.origin.AsVec2;
+                cameraFrame.origin += this._cameraSpeed.x * new Vec3(cameraFrame.rotation.s.AsVec2, 0.0f, -1f).NormalizedCopy() * dt;
+                ref Vec3 local = ref cameraFrame.origin;
                 Vec3 vec3_2 = local;
                 double y = (double)this._cameraSpeed.y;
-                Vec3 vec3_1 = new Vec3(cameraFrame1.rotation.u.AsVec2, 0.0f, -1f);
+                Vec3 vec3_1 = new Vec3(cameraFrame.rotation.u.AsVec2, 0.0f, -1f);
                 Vec3 vec3_3 = vec3_1.NormalizedCopy();
                 Vec3 vec3_4 = (float)y * vec3_3 * dt;
                 local = vec3_2 - vec3_4;
-                cameraFrame1.origin.z += this._cameraSpeed.z * dt;
+                cameraFrame.origin.z += this._cameraSpeed.z * dt;
                 if (!MissionScreen.SceneLayer.Input.IsControlDown())
                     this._cameraHeightToAdd -= (float)(TaleWorlds.InputSystem.Input.DeltaMouseScroll / 200.0) * verticalLimit;
                 // hold middle button and move mouse vertically to adjust height
@@ -359,40 +367,76 @@ namespace RTSCamera
                 this._cameraHeightToAdd = MathF.Clamp(this._cameraHeightToAdd, -verticalLimit, verticalLimit);
                 if ((double)MathF.Abs(this._cameraHeightToAdd) > 1.0 / 1000.0)
                 {
-                    cameraFrame1.origin.z += (float)((double)this._cameraHeightToAdd * (double)dt);
+                    cameraFrame.origin.z += (float)((double)this._cameraHeightToAdd * (double)dt);
                     this._cameraHeightToAdd *= (float)(1.0 - dt * 5.0);
                 }
                 else
                 {
-                    cameraFrame1.origin.z += this._cameraHeightToAdd * dt;
+                    cameraFrame.origin.z += this._cameraHeightToAdd * dt;
                     this._cameraHeightToAdd = 0.0f;
                 }
-                if ((double)this._cameraHeightLimit > 0.0 && (double)cameraFrame1.origin.z > (double)this._cameraHeightLimit)
-                    cameraFrame1.origin.z = this._cameraHeightLimit;
+                if ((double)this._cameraHeightLimit > 0.0 && (double)cameraFrame.origin.z > (double)this._cameraHeightLimit)
+                    cameraFrame.origin.z = this._cameraHeightLimit;
             }
             else
             {
-                cameraFrame1.origin += this._cameraSpeed.x * cameraFrame1.rotation.s * dt;
-                cameraFrame1.origin -= this._cameraSpeed.y * cameraFrame1.rotation.u * dt;
-                cameraFrame1.origin += this._cameraSpeed.z * cameraFrame1.rotation.f * dt;
+                cameraFrame.origin += this._cameraSpeed.x * cameraFrame.rotation.s * dt;
+                cameraFrame.origin -= this._cameraSpeed.y * cameraFrame.rotation.u * dt;
+                cameraFrame.origin += this._cameraSpeed.z * cameraFrame.rotation.f * dt;
             }
             if (!MBEditor.IsEditModeOn)
             {
-                if (!this.Mission.IsPositionInsideBoundaries(cameraFrame1.origin.AsVec2))
-                    cameraFrame1.origin.AsVec2 = this.Mission.GetClosestBoundaryPosition(cameraFrame1.origin.AsVec2);
-                float heightAtPosition1 = this.Mission.Scene.GetGroundHeightAtPosition(cameraFrame1.origin + new Vec3(0.0f, 0.0f, 100f, -1f), BodyFlags.CommonCollisionExcludeFlags, true);
+                if (!this.Mission.IsPositionInsideBoundaries(cameraFrame.origin.AsVec2))
+                    cameraFrame.origin.AsVec2 = this.Mission.GetClosestBoundaryPosition(cameraFrame.origin.AsVec2);
+                float heightAtPosition1 = this.Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin + new Vec3(0.0f, 0.0f, 100f, -1f), BodyFlags.CommonCollisionExcludeFlags, true);
                 if (!MissionScreen.IsCheatGhostMode && (double)heightAtPosition1 < 9999.0)
-                    cameraFrame1.origin.z = Math.Max(cameraFrame1.origin.z, heightAtPosition1 + 0.5f);
-                if ((double)cameraFrame1.origin.z > (double)heightAtPosition1 + 80.0)
-                    cameraFrame1.origin.z = heightAtPosition1 + 80f;
-                if ((double)cameraFrame1.origin.z < -100.0)
-                    cameraFrame1.origin.z = -100f;
+                    cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition1 + 0.5f);
+                if ((double)cameraFrame.origin.z > (double)heightAtPosition1 + 80.0)
+                    cameraFrame.origin.z = heightAtPosition1 + 80f;
+                if ((double)cameraFrame.origin.z < -100.0)
+                    cameraFrame.origin.z = -100f;
             }
+            UpdateCameraFrameAndDof(cameraFrame);
+        }
+
+        private void UpdateCameraFrameAndDof(MatrixFrame matrixFrame)
+        {
+            UpdateDof();
+            UpdateViewAngle();
+            this.CombatCamera.Frame = matrixFrame;
+            MissionScreen.SceneView?.SetCamera(this.CombatCamera);
+            this.Mission.SetCameraFrame(matrixFrame, Zoom);
+        }
+
+        private void UpdateDof()
+        {
+            Mission.Scene.SetDepthOfFieldParameters(DepthOfFieldStart, DepthOfFieldEnd, false);
+            if (Math.Abs(DepthOfFieldDistance) < 0.0001f)
+            {
+                this.Mission.Scene.RayCastForClosestEntityOrTerrain(this.CombatCamera.Position, this.CombatCamera.Position + this.CombatCamera.Direction * 3000f, out var terrainCollisionDistance, out GameEntity _, 0.5f, BodyFlags.CameraCollisionRayCastExludeFlags);
+                this.Mission.RayCastForClosestAgent(this.CameraPosition,
+                    this.CombatCamera.Position + this.CombatCamera.Direction * 3000f, out var agentCollisionDistance);
+                if (float.IsNaN(terrainCollisionDistance))
+                {
+                    terrainCollisionDistance = float.MaxValue;
+                }
+
+                if (float.IsNaN(agentCollisionDistance))
+                {
+                    agentCollisionDistance = float.MaxValue;
+                }
+                this.Mission.Scene.SetDepthOfFieldFocus(Math.Min(terrainCollisionDistance, agentCollisionDistance));
+            }
+            else
+            {
+                Mission.Scene.SetDepthOfFieldFocus(DepthOfFieldDistance);
+            }
+        }
+
+        private void UpdateViewAngle()
+        {
             float newDNear = !this.Mission.CameraIsFirstPerson ? 0.1f : 0.065f;
             this.CombatCamera.SetFovVertical((float)(this.CameraViewAngle * (Math.PI / 180.0)), TaleWorlds.Engine.Screen.AspectRatio, newDNear, 12500f);
-            this.CombatCamera.Frame = cameraFrame1;
-            MissionScreen.SceneView.SetCamera(this.CombatCamera);
-            this.Mission.SetCameraFrame(cameraFrame1, Zoom);
         }
 
         private void BeginForcedMove(Vec3 vec)
@@ -477,28 +521,6 @@ namespace RTSCamera
                 float maxValue = (float)(0.300000011920929 + 10.0 * (double)dt);
                 this._cameraBearingDelta = MBMath.ClampFloat(this._cameraBearingDelta, -maxValue, maxValue);
                 this._cameraElevationDelta = MBMath.ClampFloat(this._cameraElevationDelta, -maxValue, maxValue);
-            }
-
-            Mission.Scene.SetDepthOfFieldParameters(DepthOfFieldStart, DepthOfFieldEnd, false);
-            if (Math.Abs(DepthOfFieldDistance) < 0.0001f)
-            {
-                this.Mission.Scene.RayCastForClosestEntityOrTerrain(this.CombatCamera.Position, this.CombatCamera.Position + this.CombatCamera.Direction * 3000f, out var terrainCollisionDistance, out GameEntity _, 0.01f, BodyFlags.CameraCollisionRayCastExludeFlags);
-                this.Mission.RayCastForClosestAgent(this.CameraPosition,
-                    this.CombatCamera.Position + this.CombatCamera.Direction * 3000f, out var agentCollisionDistance);
-                if (float.IsNaN(terrainCollisionDistance))
-                {
-                    terrainCollisionDistance = float.MaxValue;
-                }
-
-                if (float.IsNaN(agentCollisionDistance))
-                {
-                    agentCollisionDistance = float.MaxValue;
-                }
-                this.Mission.Scene.SetDepthOfFieldFocus(Math.Min(terrainCollisionDistance, agentCollisionDistance));
-            }
-            else
-            {
-                Mission.Scene.SetDepthOfFieldFocus(DepthOfFieldDistance);
             }
 
             this.CameraBearing += this._cameraBearingDelta;

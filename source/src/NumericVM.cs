@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TaleWorlds.Library;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera
 {

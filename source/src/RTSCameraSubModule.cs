@@ -1,4 +1,5 @@
-﻿using TaleWorlds.Core;
+﻿using HarmonyLib;
+using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -11,6 +12,8 @@ namespace RTSCamera
             base.OnSubModuleLoad();
             RTSCameraExtension.Clear();
             Module.CurrentModule.GlobalTextManager.LoadGameTexts(BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
+
+            new Harmony("LeaveDetachmentPatch").PatchAll();
         }
 
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)

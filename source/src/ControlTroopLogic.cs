@@ -65,14 +65,15 @@ namespace RTSCamera
                 new WorldPosition(this.Mission.Scene, this.Mission.Scene.LastFinalRenderCameraPosition).AsVec2, 1E+7f,
                 Mission.PlayerTeam);
             var inPlayerPartyOnly = _config.ControlTroopsInPlayerPartyOnly;
-            var preferHero = _config.PreferToControlCompanions;
+            var preferCompanions = _config.PreferToControlCompanions;
             Agent firstAgent = null;
             var preferredAgent = agents.FirstOrDefault(agent =>
             {
-                if (inPlayerPartyOnly && !Utility.IsInPlayerParty(agent)) return false;
+                bool isInPlayerParty = !Utility.IsInPlayerParty(agent);
+                if (inPlayerPartyOnly && !isInPlayerParty) return false;
                 if (firstAgent != null)
                     firstAgent = agent;
-                return preferHero == agent.IsHero;
+                return !preferCompanions || agent.IsHero && isInPlayerParty;
             });
             return preferredAgent ?? firstAgent;
         }

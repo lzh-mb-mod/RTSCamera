@@ -1,4 +1,15 @@
 # Changelog
+## [e3.2.1] - 2020-05-25
+### Changed
+- Change logic of controlling companions.
+
+- Change the thickness of raycast that determines depth of field distance from 0.01 to 0.5.
+
+### Fixed
+- Fix crash in siege.
+
+- Fix a problem that adjusting camera parameters in Cinematic Camera may cause camera rotates.
+
 ## [e3.2.0] - 2020-05-23
 ### Changed
 - rename Module folder to RTSCamera; rename project to RTS Camera.

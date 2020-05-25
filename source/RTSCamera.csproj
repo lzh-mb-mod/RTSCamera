@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	  <TargetFramework>net472</TargetFramework>
 	  <ProcessorArchitecture>amd64</ProcessorArchitecture>
 	  <BinPath>C:\game\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\</BinPath>
 	  <LangVersion>8</LangVersion>
+	  <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <WarningLevel>2</WarningLevel>
-  </PropertyGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony" Version="2.0.1" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="SandBox">
       <HintPath>..\..\..\SandBox\bin\Win64_Shipping_Client\SandBox.dll</HintPath>
@@ -120,7 +120,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(BinPath)Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;" />
+    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(BinPath)Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(BinPath)Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;" />
   </Target>
 
 </Project>
