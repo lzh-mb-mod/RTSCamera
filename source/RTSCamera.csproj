@@ -5,7 +5,6 @@
 	  <ProcessorArchitecture>amd64</ProcessorArchitecture>
 	  <BinPath>C:\game\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\</BinPath>
 	  <LangVersion>8</LangVersion>
-	  <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
@@ -120,7 +119,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(BinPath)Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(BinPath)Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;" />
+    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;xcopy &quot;$(SolutionDir)..\Modules&quot; &quot;$(BinPath)\Modules&quot; /E /C /I /Y" />
   </Target>
 
 </Project>

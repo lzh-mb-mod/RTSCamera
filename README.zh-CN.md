@@ -8,8 +8,6 @@
 
 - 玩家死后可以控制其小兵。该小兵将会成为当前队伍的领队。
 
-  因为这些功能可能导致游戏更新后mod发生崩溃，降低mod的兼容性。
-
 - 暂停游戏或调整关卡中的时间流逝速度。
 
 - 自定义热键。
@@ -25,7 +23,9 @@
 - 不死模式：开启后任何单位都不会掉血和死亡。
 
 ## 如何安装
-1. 复制`Modules`文件夹到砍二的安装目录下（例如`C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`)，和砍二本体的Modules文件夹合并。
+1. 复制`Modules`文件夹到砍二的安装目录下（例如`C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`)，和砍二本体的Modules文件夹合并。或者你可以使用Vortex来自动安装和更新。
+
+   注意其它文件不应当被安装。它们是用来构建mod的源文件，仅为需要修改这个mod的人准备。
 
 ## 如何使用
 - 启动游戏启动器，并选择单人模式(Singleplayer)。在Mods选项卡中勾选`RTS Camera`并点击`Play`。

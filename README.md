@@ -12,8 +12,6 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
 
 - Hotkey rebinding.
 
-  Because supporting them may cause the mod crash after beta update and break compatibility.
-
 - Configuration saving. The configuration is saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\RTSCamera\`.
   
   The main config is saved in file `RTSCameraConfig.xml`.
@@ -26,6 +24,8 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
 
 ## How to install
 1. Copy `Modules` folder into Bannerlord installation folder(For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`). It should be merged with `Modules` of the game. Or use Vortex to install it automatically.
+
+   Note that the other files should not be installed. They are source files used to build the mod and are for those who want to modify the mod.
 
 ## How to use
 - Start the launcher and choose Single player mode. In `Mods` panel select `RTS Camera` mod and click `PLAY`.

@@ -1,4 +1,8 @@
 # Changelog
+## [e3.2.2] - 2020-05-27
+### Fixed
+- Fix crash in tournament when controlling allies after player dead.
+
 ## [e3.2.1] - 2020-05-25
 ### Changed
 - Change logic of controlling companions.
