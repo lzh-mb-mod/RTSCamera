@@ -46,6 +46,9 @@
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="Raised Height After Switching to Free Camera" />
     <string id="RTSCamera_playerformation" text="Player Formation" />
     <string id="RTSCamera_disabledeath" text="Disable Death" />
+    <string id="RTSCamera_constantspeed" text="Constant Speed" />
+    <string id="RTSCamera_outdoor" text="Outdoor" />
+    <string id="RTSCamera_restrictbyboundaries" text="Restrict By Boundaries" />
     <string id="RTSCamera_togglepause" text="Toggle Pause" />
     <string id="RTSCamera_slowmotionmode" text="Slow Motion Mode" />
     <string id="RTSCamera_slowmotionfactor" text="Slow Motion Factor" />

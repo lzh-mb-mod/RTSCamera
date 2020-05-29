@@ -46,6 +46,9 @@
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="切换到自由视角后相机提高的高度" />
     <string id="RTSCamera_playerformation" text="玩家编队" />
     <string id="RTSCamera_disabledeath" text="禁用死亡" />
+    <string id="RTSCamera_constantspeed" text="恒定速度" />
+    <string id="RTSCamera_outdoor" text="室外镜头" />
+    <string id="RTSCamera_restrictbyboundaries" text="镜头限制在边界内" />
     <string id="RTSCamera_togglepause" text="切换暂停" />
     <string id="RTSCamera_slowmotionmode" text="变速模式" />
     <string id="RTSCamera_slowmotionfactor" text="速度倍率" />

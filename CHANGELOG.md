@@ -1,4 +1,15 @@
 # Changelog
+## [e3.3.0] - 2020-05-29
+### Fixed
+- Fix harmony patch.
+
+### Added
+- Add "constant speed" option: Camera speed will not be affected by camera height after toggled off.
+
+- Add "outdoor" option: After toggled off, camera can go into houses.
+
+- Add "restrict by boundaries" option: After toggled off, camera can go out of scene boundary.
+
 ## [e3.2.2] - 2020-05-27
 ### Fixed
 - Fix crash in tournament when controlling allies after player dead.

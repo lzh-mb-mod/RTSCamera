@@ -42,6 +42,9 @@
     <string id="str_em_raised_height_after_switching_to_free_camera" text="{=RTSCamera_raisedheightafterswitchingtofreecamera}Raised Height After Switching to Free Camera" />
     <string id="str_em_player_formation" text="{=RTSCamera_playerformation}Player Formation" />
     <string id="str_em_disable_death" text="{=RTSCamera_disabledeath}Disable Death" />
+    <string id="str_em_constant_speed" text="{=RTSCamera_constantspeed}Constant Speed" />
+    <string id="str_em_outdoor" text="{=RTSCamera_outdoor}Outdoor" />
+    <string id="str_em_restrict_by_boundaries" text="{=RTSCamera_restrictbyboundaries}Restrict By Boundaries" />
     <string id="str_em_toggle_pause" text="{=RTSCamera_togglepause}Toggle Pause" />
     <string id="str_em_slow_motion_mode" text="{=RTSCamera_slowmotionmode}Slow Motion Mode" />
     <string id="str_em_slow_motion_factor" text="{=RTSCamera_slowmotionfactor}Slow Motion Factor" />

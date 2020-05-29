@@ -23,6 +23,11 @@ namespace RTSCamera
         public string SwitchFreeCameraString { get; } = GameTexts.FindText("str_em_switch_free_camera").ToString();
         public string DisableDeathString { get; } = GameTexts.FindText("str_em_disable_death").ToString();
         public string TogglePauseString { get; } = GameTexts.FindText("str_em_toggle_pause").ToString();
+
+        public string ConstantSpeedString { get; } = GameTexts.FindText("str_em_constant_speed").ToString();
+        public string OutdoorString { get; } = GameTexts.FindText("str_em_outdoor").ToString();
+        public string RestrictByBoundariesString { get; } = GameTexts.FindText("str_em_restrict_by_boundaries").ToString();
+
         public string SlowMotionModeString { get; } = GameTexts.FindText("str_em_slow_motion_mode").ToString();
 
         public string ControlAlliesOptionsDescriptionString { get; } =
@@ -44,7 +49,8 @@ namespace RTSCamera
         public string ConfigKeyString { get; } = GameTexts.FindText("str_em_gamekey_config").ToString();
 
 
-        [DataSourceProperty] public bool UseFreeCameraByDefault
+        [DataSourceProperty]
+        public bool UseFreeCameraByDefault
         {
             get => _config.UseFreeCameraByDefault;
             set
@@ -91,6 +97,45 @@ namespace RTSCamera
                     return;
                 _playerFormation = value;
                 OnPropertyChanged(nameof(PlayerFormation));
+            }
+        }
+
+        [DataSourceProperty]
+        public bool ConstantSpeed
+        {
+            get => _config.ConstantSpeed;
+            set
+            {
+                _config.ConstantSpeed = value;
+                var view = _mission.GetMissionBehaviour<FlyCameraMissionView>();
+                if (view != null)
+                    view.ConstantSpeed = value;
+            }
+        }
+
+        [DataSourceProperty]
+        public bool Outdoor
+        {
+            get => _config.Outdoor;
+            set
+            {
+                _config.Outdoor = value;
+                var view = _mission.GetMissionBehaviour<FlyCameraMissionView>();
+                if (view != null)
+                    view.Outdoor = value;
+            }
+        }
+
+        [DataSourceProperty]
+        public bool RestrictByBoundaries
+        {
+            get => _config.RestrictByBoundaries;
+            set
+            {
+                _config.RestrictByBoundaries = value;
+                var view = _mission.GetMissionBehaviour<FlyCameraMissionView>();
+                if (view != null)
+                    view.RestrictByBoundaries = value;
             }
         }
 
@@ -217,7 +262,7 @@ namespace RTSCamera
                     if (i != _config.PlayerFormation)
                     {
                         _config.PlayerFormation = i;
-                        Utility.SetPlayerFormation((FormationClass) _config.PlayerFormation);
+                        Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
                     }
                 }, () => _config.PlayerFormation,
                 (int)FormationClass.NumberOfRegularFormations, new[]
@@ -249,7 +294,7 @@ namespace RTSCamera
             this.Extensions = new MBBindingList<ExtensionVM>();
             foreach (var extension in RTSCameraExtension.Extensions)
             {
-                Extensions.Add(new ExtensionVM(extension.ButtonName, () =>  extension.OpenExtensionMenu(_mission)));
+                Extensions.Add(new ExtensionVM(extension.ButtonName, () => extension.OpenExtensionMenu(_mission)));
             }
             this._gameKeyConfigView = Mission.Current.GetMissionBehaviour<GameKeyConfigView>();
         }

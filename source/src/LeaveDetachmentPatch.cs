@@ -9,10 +9,10 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera
 {
-    [HarmonyPatch(typeof(Formation), "LeaveDetachment")]
-    public class HarmonyPath
+    //[HarmonyLib.HarmonyPatch(typeof(Formation), "LeaveDetachment")]
+    public class LeaveDetachmentPatch
     {
-        private static bool Prefix(
+        public static bool Prefix(
             Formation __instance,
             List<IDetachment> ____detachments,
             IDetachment detachment)
@@ -22,13 +22,13 @@ namespace RTSCamera
             foreach (Agent agent in detachment.Agents.Where<Agent>((Func<Agent, bool>)(a => a.Formation == __instance && a.IsAIControlled)).ToList<Agent>())
             {
                 detachment.RemoveAgent(agent);
-                typeof(Formation).GetMethod("AttachUnit", bindingAttr)?.Invoke(__instance, new object[] { agent });
+                typeof(Formation).GetMethod("AttachUnit", bindingAttr).Invoke(__instance, new object[] { agent });
             }
 
             ____detachments.Remove(detachment);
             var detachmentManager = (DetachmentManager) typeof(Team).GetProperty("DetachmentManager", bindingAttr)
                 ?.GetValue(__instance.Team);
-            typeof(DetachmentManager).GetMethod("OnFormationLeaveDetachment", bindingAttr)?.Invoke(detachmentManager, new object[2]
+            typeof(DetachmentManager).GetMethod("OnFormationLeaveDetachment", bindingAttr).Invoke(detachmentManager, new object[2]
             {
                 __instance,
                 detachment
