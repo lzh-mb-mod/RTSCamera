@@ -81,6 +81,7 @@
     <string id="RTSCamera_freecamerakey" text="自由视角" />
     <string id="RTSCamera_disabledeathkey" text="禁用死亡" />
     <string id="RTSCamera_controltroopkey" text="控制下属部队" />
+    <string id="RTSCamera_switchteam" text="切换队伍" />
 
     <string id="RTSCamera_enemywipedout" text="敌人已被消灭。" />
     <string id="RTSCamera_switchtoenemyteam" text="已切换至敌军队伍。" />

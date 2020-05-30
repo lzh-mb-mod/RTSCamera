@@ -99,6 +99,7 @@ namespace RTSCamera
                 yield return GameKeyEnum.DisableDeath;
                 yield return GameKeyEnum.ControlTroop;
                 yield return GameKeyEnum.ToggleHUD;
+                yield return GameKeyEnum.SwitchTeam;
             }
         }
 
@@ -162,7 +163,7 @@ namespace RTSCamera
 
         public SerializedGameKey SwitchTeamGameKey = new SerializedGameKey
         {
-            Id = ToId(GameKeyEnum.ToggleHUD),
+            Id = ToId(GameKeyEnum.SwitchTeam),
             StringId = "",
             GroupId = "RTSCameraHotKey",
             Key = InputKey.F12
