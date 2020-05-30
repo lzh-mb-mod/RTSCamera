@@ -162,7 +162,7 @@ namespace RTSCamera
 
         public SerializedGameKey SwitchTeamGameKey = new SerializedGameKey
         {
-            Id = ToId(GameKeyEnum.ToggleHUD),
+            Id = ToId(GameKeyEnum.SwitchTeam),
             StringId = "",
             GroupId = "RTSCameraHotKey",
             Key = InputKey.F12
