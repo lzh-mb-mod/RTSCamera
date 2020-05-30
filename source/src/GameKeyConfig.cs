@@ -23,6 +23,7 @@ namespace RTSCamera
         DisableDeath,
         ControlTroop,
         ToggleHUD,
+        SwitchTeam,
         NumberOfGameKeyEnums,
     }
 
@@ -159,6 +160,14 @@ namespace RTSCamera
             Key = InputKey.CloseBraces
         };
 
+        public SerializedGameKey SwitchTeamGameKey = new SerializedGameKey
+        {
+            Id = ToId(GameKeyEnum.ToggleHUD),
+            StringId = "",
+            GroupId = "RTSCameraHotKey",
+            Key = InputKey.F12
+        };
+
         private static GameKeyConfig _instance;
 
         public static GameKeyConfig Get()
@@ -232,6 +241,7 @@ namespace RTSCamera
             this.DisableDeathGameKey = other.DisableDeathGameKey;
             this.ControlTroopGameKey = other.ControlTroopGameKey;
             this.ToggleHUDGameKey = other.ToggleHUDGameKey;
+            this.SwitchTeamGameKey = other.SwitchTeamGameKey;
             this._gameKeys = other._gameKeys;
         }
 
@@ -251,6 +261,7 @@ namespace RTSCamera
             DisableDeathGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.DisableDeath));
             ControlTroopGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.ControlTroop));
             ToggleHUDGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.ToggleHUD));
+            SwitchTeamGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.SwitchTeam));
         }
 
         private void FromSerializedGameKeys()
@@ -263,6 +274,7 @@ namespace RTSCamera
             _gameKeys[(int)GameKeyEnum.DisableDeath] = DisableDeathGameKey.ToGameKey();
             _gameKeys[(int)GameKeyEnum.ControlTroop] = ControlTroopGameKey.ToGameKey();
             _gameKeys[(int)GameKeyEnum.ToggleHUD] = ToggleHUDGameKey.ToGameKey();
+            _gameKeys[(int) GameKeyEnum.SwitchTeam] = SwitchTeamGameKey.ToGameKey();
         }
 
         public string ConfigVersion { get; set; } = BinaryVersion.ToString(2);

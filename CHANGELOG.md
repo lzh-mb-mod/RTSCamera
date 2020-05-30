@@ -1,10 +1,14 @@
 # Changelog
+## [e3.3.1] - 2020-05-31
+### Added
+- Add switch team feature. Press F12 by default to use it.
+
 ## [e3.3.0] - 2020-05-29
 ### Fixed
 - Fix harmony patch.
 
 ### Added
-- Add "constant speed" option: Camera speed will not be affected by camera height after toggled off.
+- Add "constant speed" option: Camera speed will not be affected by camera height after toggled on.
 
 - Add "outdoor" option: After toggled off, camera can go into houses.
 

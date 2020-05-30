@@ -16,6 +16,33 @@ namespace RTSCamera
 {
     public class RTSCameraOrderTroopPlacer : MissionView
     {
+        private SwitchTeamLogic _controller;
+        private void RegisterReload()
+        {
+            foreach (var missionLogic in this.Mission.MissionLogics)
+            {
+                if (missionLogic is SwitchTeamLogic controller)
+                {
+                    _controller = controller;
+                    break;
+                }
+            }
+
+            if (_controller != null)
+            {
+                _controller.PostSwitchTeam += OnPostSwitchTeam;
+            }
+        }
+        private void OnPostSwitchTeam()
+        {
+            InitializeInADisgustingManner();
+        }
+        public override void OnMissionScreenInitialize()
+        {
+            base.OnMissionScreenInitialize();
+            RegisterReload();
+        }
+
         private bool _suspendTroopPlacer;
         private bool _isMouseDown;
         private List<GameEntity> _orderPositionEntities;

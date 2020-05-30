@@ -6,7 +6,7 @@
   <Window>
     <ButtonWidget Command.Click="CloseMenu" WidthSizePolicy = "StretchToParent" HeightSizePolicy = "StretchToParent" Brush="RTSCamera.TransparentBrush">
       <Children>
-        <ListPanel LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="200" Brush="RTSCamera.MissionMenuBrush">
+        <ListPanel LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="50" Brush="RTSCamera.MissionMenuBrush">
           <Children>
 
             <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy = "CoverChildren" HeightSizePolicy = "CoverChildren" HorizontalAlignment="Center" MarginTop="10">
@@ -226,6 +226,16 @@
             <ListPanel Id="AfterDeathOptions" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginTop="10" MarginLeft="50">
               <Children>
 
+                <ListPanel DataSource="{ControlAnotherHero}" LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                  <Children>
+
+                    <RichTextWidget Text="@Name" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+
+                    <Standard.DropdownWithHorizontalControl Id="StringOption" HorizontalAlignment="Center" VerticalAlignment="Center" Parameter.SelectorDataSource="{Selector}" />
+
+                  </Children>
+                </ListPanel>
+
                 <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy = "CoverChildren" HeightSizePolicy = "CoverChildren" HorizontalAlignment="Center" MarginTop="10">
                   <Children>
                     <TextWidget Text="@ControlAlliesAfterDeathString" WidthSizePolicy="Fixed" SuggestedWidth="500" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -268,16 +278,6 @@
                         </ButtonWidget>
                       </Children>
                     </Widget>
-                  </Children>
-                </ListPanel>
-
-                <ListPanel DataSource="{ControlAnotherHero}" LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
-                  <Children>
-
-                    <RichTextWidget Text="@Name" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
-
-                    <Standard.DropdownWithHorizontalControl Id="StringOption" HorizontalAlignment="Center" VerticalAlignment="Center" Parameter.SelectorDataSource="{Selector}" />
-
                   </Children>
                 </ListPanel>
 

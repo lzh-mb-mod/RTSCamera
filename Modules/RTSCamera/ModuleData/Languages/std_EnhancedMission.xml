@@ -81,5 +81,8 @@
     <string id="RTSCamera_freecamerakey" text="Free Camera" />
     <string id="RTSCamera_disabledeathkey" text="Disable Death" />
     <string id="RTSCamera_controltroopkey" text="Control Troop" />
+
+    <string id="RTSCamera_enemywipedout" text="Enemy has been wiped out." />
+    <string id="RTSCamera_switchtoenemyteam" text="Switched to the enemy team." />
   </strings>
 </base>

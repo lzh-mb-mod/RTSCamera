@@ -22,6 +22,7 @@ namespace RTSCamera
                 new FixScoreBoardAfterPlayerDeadLogic(),
                 new CommanderLogic(),
                 new HideHUDLogic(),
+                new SwitchTeamLogic(),
 
                 new MissionMenuView(),
                 new FlyCameraMissionView(),

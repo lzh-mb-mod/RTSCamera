@@ -77,7 +77,12 @@
     <string id="str_key_name.RTSCameraHotKey_Right" text="{=RTSCamera_freecamerakey}Free Camera" />
     <string id="str_key_name.RTSCameraHotKey_Leave" text="{=RTSCamera_disabledeathkey}Disable Death" />
     <string id="str_key_name.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_controltroopkey}Control Troop" />
+    <string id="str_key_name.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_switchteam}Switch Team" />
     <!-- same as str_em_toggle_ui -->
     <string id="str_key_name.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_toggleui}Toggle HUD" />
+
+    
+    <string id="str_em_enemy_wiped_out" text="{=RTSCamera_enemywipedout}Enemy has been wiped out." />
+    <string id="str_em_switch_to_enemy_team" text="{=RTSCamera_switchtoenemyteam}Switched to the enemy team." />
   </strings>
 </base>

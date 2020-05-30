@@ -24,6 +24,38 @@ namespace RTSCamera
     public class RTSCameraOrderUIHandler : MissionView, ISiegeDeploymentView
     {
 
+        private SwitchTeamLogic _controller;
+        private void RegisterReload()
+        {
+            if (_controller == null)
+            {
+                foreach (var missionLogic in this.Mission.MissionLogics)
+                {
+                    if (missionLogic is SwitchTeamLogic controller)
+                    {
+                        _controller = controller;
+                        break;
+                    }
+                }
+                if (_controller != null)
+                {
+                    _controller.PreSwitchTeam += OnPreSwitchTeam;
+                    _controller.PostSwitchTeam += OnPostSwitchTeam;
+                }
+            }
+        }
+        private void OnPreSwitchTeam()
+        {
+            this.dataSource.CloseToggleOrder();
+            this.OnMissionScreenFinalize();
+        }
+
+        private void OnPostSwitchTeam()
+        {
+            this.OnMissionScreenInitialize();
+            this.OnMissionScreenActivate();
+        }
+
         public bool exitWithRightClick = true;
 
         private SiegeMissionView _siegeMissionView;
@@ -66,6 +98,7 @@ namespace RTSCamera
         public override void OnMissionScreenInitialize()
         {
             base.OnMissionScreenInitialize();
+            RegisterReload();
             this.MissionScreen.SceneLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("MissionOrderHotkeyCategory"));
             this.MissionScreen.OrderFlag = new OrderFlag(this.Mission, this.MissionScreen);
             this._orderTroopPlacer = this.Mission.GetMissionBehaviour<RTSCameraOrderTroopPlacer>();
