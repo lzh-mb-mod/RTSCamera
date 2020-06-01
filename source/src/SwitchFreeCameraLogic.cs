@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -9,15 +10,30 @@ namespace RTSCamera
 {
     public class SwitchFreeCameraLogic : MissionLogic
     {
-        private RTSCameraConfig _config;
+        private readonly RTSCameraConfig _config;
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         private ControlTroopLogic _controlTroopLogic;
-        public bool isSpectatorCamera = false;
 
         private bool _isFirstTimeMainAgentChanged = true;
-        private bool _isFirstTimeSetToFreeCamera = true;
         private bool _switchToFreeCameraNextTick = false;
+        private List<FormationClass> _playerFormations;
+
+        public List<FormationClass> PlayerFormations => _playerFormations ??= new List<FormationClass>();
+
+        public FormationClass CurrentPlayerFormation
+        {
+            get => Mission.PlayerTeam?.TeamIndex < PlayerFormations.Count
+                ? PlayerFormations[Mission.PlayerTeam.TeamIndex]
+                : (FormationClass)_config.PlayerFormation;
+            set
+            {
+                if (Mission.PlayerTeam?.TeamIndex < PlayerFormations.Count)
+                    PlayerFormations[Mission.PlayerTeam.TeamIndex] = value;
+            }
+        }
+
+        public bool isSpectatorCamera = false;
 
         public event Action<bool> ToggleFreeCamera;
 
@@ -26,13 +42,20 @@ namespace RTSCamera
             _config = config;
         }
 
-        public override void OnBehaviourInitialize()
+        public override void EarlyStart()
         {
-            base.OnBehaviourInitialize();
+            base.EarlyStart();
 
             _controlTroopLogic = Mission.GetMissionBehaviour<ControlTroopLogic>();
 
             Mission.OnMainAgentChanged += OnMainAgentChanged;
+        }
+
+        public override void AfterAddTeam(Team team)
+        {
+            base.AfterAddTeam(team);
+
+            PlayerFormations.Add((FormationClass)_config.PlayerFormation);
         }
 
         public override void OnRemoveBehaviour()
@@ -45,7 +68,6 @@ namespace RTSCamera
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
-
             if (_switchToFreeCameraNextTick)
             {
                 _switchToFreeCameraNextTick = false;
@@ -70,6 +92,28 @@ namespace RTSCamera
             }
         }
 
+        protected override void OnAgentControllerChanged(Agent agent)
+        {
+            base.OnAgentControllerChanged(agent);
+
+            if (agent.Controller == Agent.ControllerType.Player)
+            {
+                agent.SetMaximumSpeedLimit(-1, true);
+                agent.DisableScriptedMovement();
+                agent.AIStateFlags &= ~Agent.AIStateFlag.UseObjectMoving; //agent.AIMoveToGameObjectDisable();
+                agent.AIStateFlags &= ~Agent.AIStateFlag.UseObjectUsing;  // agent.AIUseGameObjectEnable(false);
+                if (agent.Formation == null)
+                    return;
+                CurrentPlayerFormation = agent.Formation.FormationIndex;
+                agent.Formation = null;
+            }
+            else if (agent == Mission.MainAgent)
+            {
+                // the game may crash if no formation has agents and there are agents controlled by AI.
+                Utility.SetPlayerFormation(CurrentPlayerFormation);
+            }
+        }
+
         private void OnMainAgentChanged(object sender, PropertyChangedEventArgs e)
         {
             if (Mission.MainAgent != null)
@@ -83,9 +127,14 @@ namespace RTSCamera
                         _switchToFreeCameraNextTick = true;
                     }
                 }
-                else if (isSpectatorCamera)
+                else
                 {
-                    EnsureMainAgentControlledByAI();
+                    if (Mission.MainAgent.Formation != null)
+                        CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
+                    if (isSpectatorCamera)
+                    {
+                        EnsureMainAgentControlledByAI();
+                    }
                 }
             }
             else if (isSpectatorCamera)
@@ -98,12 +147,6 @@ namespace RTSCamera
         {
             Mission.MainAgent.Controller = Agent.ControllerType.AI;
             Mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
-
-            // the game may crash if no formation has agents and there are agents controlled by AI.
-            if (Mission.MainAgent.Formation == null || Mission.MainAgent.Formation.FormationIndex >= FormationClass.NumberOfRegularFormations)
-            {
-                Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
-            }
         }
 
         private void DoNotDisturbRTS()
@@ -142,20 +185,11 @@ namespace RTSCamera
 
         private void SwitchToFreeCamera()
         {
-            if (Mission.MainAgent != null && Mission.MainAgent.IsUsingGameObject)
-                return;
             isSpectatorCamera = true;
             if (Mission.MainAgent != null)
             {
-                Utility.AIControlMainAgent((FormationClass)_config.PlayerFormation);
-                if (_isFirstTimeSetToFreeCamera)
-                {
-                    _isFirstTimeSetToFreeCamera = false;
-                    Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
-                }
+                Utility.AIControlMainAgent();
             }
-            else if (_isFirstTimeSetToFreeCamera)
-                _isFirstTimeSetToFreeCamera = false;
 
             ToggleFreeCamera?.Invoke(true);
             Utility.DisplayLocalizedText("str_em_switch_to_free_camera");

@@ -10,7 +10,7 @@ using TaleWorlds.MountAndBlade;
 namespace RTSCamera
 {
     //[HarmonyLib.HarmonyPatch(typeof(Formation), "LeaveDetachment")]
-    public class LeaveDetachmentPatch
+    public class Formation_LeaveDetachmentPatch
     {
         public static bool Prefix(
             Formation __instance,

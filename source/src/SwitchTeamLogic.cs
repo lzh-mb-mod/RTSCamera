@@ -21,6 +21,8 @@ namespace RTSCamera
 
         public void SwapTeam()
         {
+            if (Mission.PlayerEnemyTeam == null)
+                return;
             bool firstTime = Mission.PlayerEnemyTeam.PlayerOrderController.Owner == null;
             var targetAgent = !Utility.IsAgentDead(Mission.PlayerEnemyTeam.PlayerOrderController.Owner)
                 ? Mission.PlayerEnemyTeam.PlayerOrderController.Owner
@@ -32,8 +34,7 @@ namespace RTSCamera
             }
             if (!Utility.IsPlayerDead()) // MainAgent may be null because of free camera mode.
             {
-                Mission.MainAgent.Controller = Agent.ControllerType.AI;
-                Mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
+                Utility.AIControlMainAgent();
             }
             Utility.DisplayLocalizedText("str_em_switch_to_enemy_team");
 

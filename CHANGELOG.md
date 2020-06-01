@@ -1,4 +1,17 @@
 # Changelog
+## [e3.4.0] - 2020-06-02
+### Fixed
+- Fix the problem that in RTS camera mode, when player starts to use ranged siege machine, the camera will be fixed on the siege machine.
+
+- Fix the problem that when player are using siege machine, switch RTS Camera on and off may cause the player unable to use siege machine by AI any more.
+
+### Changed
+- Now player will only be added to formation when switching to RTS Camera mode and will be removed from formation when switching back.
+
+## [e3.3.2] - 2020-05-31
+### Fixed
+- Fix broken hot key for switching team.
+
 ## [e3.3.1] - 2020-05-31
 ### Added
 - Add switch team feature. Press F12 by default to use it.

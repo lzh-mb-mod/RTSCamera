@@ -79,27 +79,12 @@ namespace RTSCamera
 
         public static void SetPlayerFormation(FormationClass formationClass)
         {
-            if (Mission.Current.MainAgent != null && Mission.Current.PlayerTeam != null &&
-                !Mission.Current.PlayerTeam.IsPlayerSergeant &&
-                Mission.Current.MainAgent.Formation?.FormationIndex != formationClass)
+            var mission = Mission.Current;
+            if (mission.MainAgent != null && Mission.Current.PlayerTeam != null &&
+                mission.MainAgent.Formation?.FormationIndex != formationClass && mission.MainAgent.IsAIControlled)
             {
-                var mission = Mission.Current;
-                var controller = mission.MainAgent.Controller;
-                // to add player to unit card in order UI, the controller need to be set to AI.
-                mission.MainAgent.Controller = Agent.ControllerType.AI;
-                var previousFormation = mission.MainAgent.Formation;
                 mission.MainAgent.Formation =
                     mission.PlayerTeam.GetFormation(formationClass);
-                if (controller != Agent.ControllerType.AI)
-                    mission.MainAgent.Controller = controller;
-                //if (previousFormation != null)
-                //{
-                //    mission.PlayerTeam.MasterOrderController.ClearSelectedFormations();
-                //    mission.PlayerTeam.MasterOrderController.SelectFormation(previousFormation);
-                //    mission.PlayerTeam.MasterOrderController.SetOrderWithFormationAndNumber(OrderType.Transfer,
-                //        mission.MainAgent.Formation, 0);
-                //}
-                //mission.PlayerTeam.ExpireAIQuerySystem();
             }
         }
 
@@ -121,16 +106,11 @@ namespace RTSCamera
             return false;
         }
 
-        public static void AIControlMainAgent(FormationClass playerFormation)
+        public static void AIControlMainAgent()
         {
             var mission = Mission.Current;
             mission.MainAgent.Controller = Agent.ControllerType.AI;
             mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
-            if (mission.MainAgent.Formation == null || mission.MainAgent.Formation.FormationIndex >=
-                FormationClass.NumberOfRegularFormations)
-            {
-                Utility.SetPlayerFormation(playerFormation);
-            }
             // avoid crash after victory. After victory, team ai decision won't be made so that current tactics won't be updated.
             if (mission.MissionEnded())
                 mission.AllowAiTicking = false;

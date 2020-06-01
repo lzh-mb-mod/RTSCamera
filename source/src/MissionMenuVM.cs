@@ -262,7 +262,9 @@ namespace RTSCamera
                     if (i != _config.PlayerFormation)
                     {
                         _config.PlayerFormation = i;
-                        Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
+                        _switchFreeCameraLogic.CurrentPlayerFormation = (FormationClass) i;
+                        if (_mission.MainAgent.IsAIControlled)
+                            Utility.SetPlayerFormation((FormationClass) i);
                     }
                 }, () => _config.PlayerFormation,
                 (int)FormationClass.NumberOfRegularFormations, new[]
