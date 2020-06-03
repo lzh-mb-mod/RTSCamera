@@ -52,6 +52,7 @@
     <string id="RTSCamera_togglepause" text="切换暂停" />
     <string id="RTSCamera_slowmotionmode" text="变速模式" />
     <string id="RTSCamera_slowmotionfactor" text="速度倍率" />
+    <string id="RTSCamera_showcontour" text="显示轮廓" />
 
     <string id="RTSCamera_controlalliesoptionsdescription" text="控制队友" />
     <string id="RTSCamera_controlalliesafterdeath" text="阵亡后控制队友" />

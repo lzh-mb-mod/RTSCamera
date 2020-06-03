@@ -48,6 +48,7 @@
     <string id="str_em_toggle_pause" text="{=RTSCamera_togglepause}Toggle Pause" />
     <string id="str_em_slow_motion_mode" text="{=RTSCamera_slowmotionmode}Slow Motion Mode" />
     <string id="str_em_slow_motion_factor" text="{=RTSCamera_slowmotionfactor}Slow Motion Factor" />
+    <string id="str_em_show_contour" text="{=RTSCamera_showcontour}Show Contour" />
 
     <string id="str_em_control_allies_options_description" text="{=RTSCamera_controlalliesoptionsdescription}Control Allies" />
     <string id="str_em_control_allies_after_death" text="{=RTSCamera_controlalliesafterdeath}Control Allies After Death" />

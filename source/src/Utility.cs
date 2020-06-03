@@ -115,5 +115,16 @@ namespace RTSCamera
             if (mission.MissionEnded())
                 mission.AllowAiTicking = false;
         }
+
+        public static bool IsEnemy(Agent agent)
+        {
+            return Mission.Current.MainAgent?.IsEnemyOf(agent) ??
+                   Mission.Current.PlayerTeam?.IsEnemyOf(agent.Team) ?? false;
+        }
+
+        public static bool IsEnemy(Formation formation)
+        {
+            return Mission.Current.PlayerTeam?.IsEnemyOf(formation.Team) ?? false;
+        }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using TaleWorlds.Core;
-using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -16,7 +15,8 @@ namespace RTSCamera
         private ControlTroopLogic _controlTroopLogic;
 
         private bool _isFirstTimeMainAgentChanged = true;
-        private bool _switchToFreeCameraNextTick = false;
+        private bool _switchToFreeCameraAfter100ms = false;
+        private float _timer;
         private List<FormationClass> _playerFormations;
 
         public List<FormationClass> PlayerFormations => _playerFormations ??= new List<FormationClass>();
@@ -68,10 +68,15 @@ namespace RTSCamera
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
-            if (_switchToFreeCameraNextTick)
+            if (_switchToFreeCameraAfter100ms)
             {
-                _switchToFreeCameraNextTick = false;
-                SwitchToFreeCamera();
+                _timer += dt;
+                if (_timer > 0.1)
+                {
+                    _switchToFreeCameraAfter100ms = false;
+                    _timer = 0;
+                    SwitchToFreeCamera();
+                }
             }
 
             if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.FreeCamera)))
@@ -105,12 +110,14 @@ namespace RTSCamera
                 if (agent.Formation == null)
                     return;
                 CurrentPlayerFormation = agent.Formation.FormationIndex;
-                agent.Formation = null;
             }
             else if (agent == Mission.MainAgent)
             {
                 // the game may crash if no formation has agents and there are agents controlled by AI.
-                Utility.SetPlayerFormation(CurrentPlayerFormation);
+                if (agent.Formation == null)
+                    Utility.SetPlayerFormation(CurrentPlayerFormation);
+                else
+                    CurrentPlayerFormation = agent.Formation.FormationIndex;
             }
         }
 
@@ -124,7 +131,8 @@ namespace RTSCamera
                     _isFirstTimeMainAgentChanged = false;
                     if (_config.UseFreeCameraByDefault)
                     {
-                        _switchToFreeCameraNextTick = true;
+                        _switchToFreeCameraAfter100ms = true;
+                        _timer = 0;
                     }
                 }
                 else

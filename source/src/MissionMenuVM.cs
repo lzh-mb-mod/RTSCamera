@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -15,6 +14,7 @@ namespace RTSCamera
         private readonly MissionSpeedLogic _missionSpeedLogic;
         private readonly GameKeyConfigView _gameKeyConfigView;
         private readonly HideHUDLogic _hideHudLogic;
+        private readonly AgentContourMissionView _contourView;
 
         private SelectionOptionDataVM _playerFormation;
         private SelectionOptionDataVM _controlAnotherHero;
@@ -30,6 +30,14 @@ namespace RTSCamera
 
         public string SlowMotionModeString { get; } = GameTexts.FindText("str_em_slow_motion_mode").ToString();
 
+        public string ShowContourString { get; } = GameTexts.FindText("str_em_show_contour").ToString();
+
+        public string DisplayMessageString { get; } = GameTexts.FindText("str_em_display_mod_message").ToString();
+
+        public string ToggleUIString { get; } = GameTexts.FindText("str_em_toggle_ui").ToString();
+
+        public string ConfigKeyString { get; } = GameTexts.FindText("str_em_gamekey_config").ToString();
+
         public string ControlAlliesOptionsDescriptionString { get; } =
             GameTexts.FindText("str_em_control_allies_options_description").ToString();
 
@@ -41,12 +49,6 @@ namespace RTSCamera
 
         public string ControlTroopsInPlayerPartyOnlyString { get; } =
             GameTexts.FindText("str_em_control_troops_in_player_party_only").ToString();
-
-        public string DisplayMessageString { get; } = GameTexts.FindText("str_em_display_mod_message").ToString();
-
-        public string ToggleUIString { get; } = GameTexts.FindText("str_em_toggle_ui").ToString();
-
-        public string ConfigKeyString { get; } = GameTexts.FindText("str_em_gamekey_config").ToString();
 
 
         [DataSourceProperty]
@@ -80,7 +82,7 @@ namespace RTSCamera
                     return;
                 _config.DisableDeath = !_config.DisableDeath;
                 _mission.GetMissionBehaviour<DisableDeathLogic>()?.SetDisableDeath(_config.DisableDeath);
-                this.OnPropertyChanged(nameof(DisableDeath));
+                OnPropertyChanged(nameof(DisableDeath));
             }
         }
 
@@ -145,7 +147,7 @@ namespace RTSCamera
             CloseMenu();
         }
 
-        [DataSourceProperty] public bool AdjustSpeedEnabled => this._missionSpeedLogic != null;
+        [DataSourceProperty] public bool AdjustSpeedEnabled => _missionSpeedLogic != null;
 
 
         [DataSourceProperty]
@@ -165,54 +167,15 @@ namespace RTSCamera
         public NumericVM SpeedFactor { get; }
 
         [DataSourceProperty]
-        public bool ControlAlliesAfterDeath
+        public bool ShowContour
         {
-            get => _config.ControlAlliesAfterDeath;
+            get => _config.ShowContour;
             set
             {
-                if (_config.ControlAlliesAfterDeath == value)
+                if (_config.ShowContour == value)
                     return;
-                _config.ControlAlliesAfterDeath = !_config.ControlAlliesAfterDeath;
-                this.OnPropertyChanged(nameof(ControlAlliesAfterDeath));
-            }
-        }
-
-        [DataSourceProperty]
-        public bool PreferToControlCompanions
-        {
-            get => _config.PreferToControlCompanions;
-            set
-            {
-                if (_config.PreferToControlCompanions == value)
-                    return;
-                _config.PreferToControlCompanions = !_config.PreferToControlCompanions;
-                this.OnPropertyChanged(nameof(PreferToControlCompanions));
-            }
-        }
-
-        [DataSourceProperty]
-        public bool ControlTroopsInPlayerPartyOnly
-        {
-            get => _config.ControlTroopsInPlayerPartyOnly;
-            set
-            {
-                if (_config.ControlTroopsInPlayerPartyOnly == value)
-                    return;
-                _config.ControlTroopsInPlayerPartyOnly = !_config.ControlTroopsInPlayerPartyOnly;
-                this.OnPropertyChanged(nameof(ControlTroopsInPlayerPartyOnly));
-            }
-        }
-
-        [DataSourceProperty]
-        public SelectionOptionDataVM ControlAnotherHero
-        {
-            get => _controlAnotherHero;
-            set
-            {
-                if (_controlAnotherHero == value)
-                    return;
-                _controlAnotherHero = value;
-                OnPropertyChanged(nameof(_controlAnotherHero));
+                _contourView?.SetEnableContour(value);
+                OnPropertyChanged(nameof(ShowContour));
             }
         }
 
@@ -243,6 +206,58 @@ namespace RTSCamera
             _gameKeyConfigView?.Activate();
         }
 
+        [DataSourceProperty]
+        public bool ControlAlliesAfterDeath
+        {
+            get => _config.ControlAlliesAfterDeath;
+            set
+            {
+                if (_config.ControlAlliesAfterDeath == value)
+                    return;
+                _config.ControlAlliesAfterDeath = !_config.ControlAlliesAfterDeath;
+                OnPropertyChanged(nameof(ControlAlliesAfterDeath));
+            }
+        }
+
+        [DataSourceProperty]
+        public bool PreferToControlCompanions
+        {
+            get => _config.PreferToControlCompanions;
+            set
+            {
+                if (_config.PreferToControlCompanions == value)
+                    return;
+                _config.PreferToControlCompanions = !_config.PreferToControlCompanions;
+                OnPropertyChanged(nameof(PreferToControlCompanions));
+            }
+        }
+
+        [DataSourceProperty]
+        public bool ControlTroopsInPlayerPartyOnly
+        {
+            get => _config.ControlTroopsInPlayerPartyOnly;
+            set
+            {
+                if (_config.ControlTroopsInPlayerPartyOnly == value)
+                    return;
+                _config.ControlTroopsInPlayerPartyOnly = !_config.ControlTroopsInPlayerPartyOnly;
+                OnPropertyChanged(nameof(ControlTroopsInPlayerPartyOnly));
+            }
+        }
+
+        [DataSourceProperty]
+        public SelectionOptionDataVM ControlAnotherHero
+        {
+            get => _controlAnotherHero;
+            set
+            {
+                if (_controlAnotherHero == value)
+                    return;
+                _controlAnotherHero = value;
+                OnPropertyChanged(nameof(_controlAnotherHero));
+            }
+        }
+
         public override void CloseMenu()
         {
             _config.Serialize();
@@ -253,18 +268,17 @@ namespace RTSCamera
         public MissionMenuVM(Mission mission, Action closeMenu)
             : base(closeMenu)
         {
-            this._config = RTSCameraConfig.Get();
-            this._mission = mission;
-            this._switchFreeCameraLogic = _mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
-            this.PlayerFormation = new SelectionOptionDataVM(new SelectionOptionData(
-                (int i) =>
+            _config = RTSCameraConfig.Get();
+            _mission = mission;
+            _switchFreeCameraLogic = _mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
+            PlayerFormation = new SelectionOptionDataVM(new SelectionOptionData(
+                i =>
                 {
                     if (i != _config.PlayerFormation)
                     {
                         _config.PlayerFormation = i;
                         _switchFreeCameraLogic.CurrentPlayerFormation = (FormationClass) i;
-                        if (_mission.MainAgent.IsAIControlled)
-                            Utility.SetPlayerFormation((FormationClass) i);
+                        Utility.SetPlayerFormation((FormationClass) i);
                     }
                 }, () => _config.PlayerFormation,
                 (int)FormationClass.NumberOfRegularFormations, new[]
@@ -276,29 +290,30 @@ namespace RTSCamera
                     new SelectionItem(true, "str_troop_group_name", "4"),
                     new SelectionItem(true, "str_troop_group_name", "5"),
                     new SelectionItem(true, "str_troop_group_name", "6"),
-                    new SelectionItem(true, "str_troop_group_name", "7"),
+                    new SelectionItem(true, "str_troop_group_name", "7")
                 }), GameTexts.FindText("str_em_player_formation"));
-            this.RaisedHeight =
+            RaisedHeight =
                 new NumericVM(GameTexts.FindText("str_em_raised_height_after_switching_to_free_camera").ToString(),
                     _config.RaisedHeight, 0.0f, 50f, true,
                     height => _config.RaisedHeight = height);
-            this._missionSpeedLogic = _mission.GetMissionBehaviour<MissionSpeedLogic>();
-            this.SpeedFactor = new NumericVM(GameTexts.FindText("str_em_slow_motion_factor").ToString(),
+            _missionSpeedLogic = _mission.GetMissionBehaviour<MissionSpeedLogic>();
+            SpeedFactor = new NumericVM(GameTexts.FindText("str_em_slow_motion_factor").ToString(),
                 _mission.Scene.SlowMotionFactor, 0.01f, 3.0f, false,
                 factor => { _missionSpeedLogic.SetSlowMotionFactor(factor); });
-            this._hideHudLogic = Mission.Current.GetMissionBehaviour<HideHUDLogic>();
+            _contourView = _mission.GetMissionBehaviour<AgentContourMissionView>();
+            _hideHudLogic = Mission.Current.GetMissionBehaviour<HideHUDLogic>();
             _hideHudLogic?.BeginTemporarilyOpenUI();
 
-            this.ControlAnotherHero = new SelectionOptionDataVM(
+            ControlAnotherHero = new SelectionOptionDataVM(
                 new ControlTroopsSelectionData().SelectionOptionData,
                 GameTexts.FindText("str_em_control_another_hero"));
 
-            this.Extensions = new MBBindingList<ExtensionVM>();
+            Extensions = new MBBindingList<ExtensionVM>();
             foreach (var extension in RTSCameraExtension.Extensions)
             {
                 Extensions.Add(new ExtensionVM(extension.ButtonName, () => extension.OpenExtensionMenu(_mission)));
             }
-            this._gameKeyConfigView = Mission.Current.GetMissionBehaviour<GameKeyConfigView>();
+            _gameKeyConfigView = Mission.Current.GetMissionBehaviour<GameKeyConfigView>();
         }
     }
 }

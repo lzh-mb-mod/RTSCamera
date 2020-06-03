@@ -14,9 +14,9 @@ using TaleWorlds.MountAndBlade.View.Screen;
 namespace RTSCamera
 {
     //[HarmonyLib.HarmonyPatch(typeof(RangedSiegeWeaponView), "HandleUserInput")]
-    public class RangedSiegeWeaponView_HandleUserInputPatch
+    public class Patch_RangedSiegeWeaponView
     {
-        public static bool Prefix(float dt, RangedSiegeWeaponView __instance, ref bool ____isInWeaponCameraMode)
+        public static bool HandleUserInput_Prefix(float dt, RangedSiegeWeaponView __instance, ref bool ____isInWeaponCameraMode)
         {
             var bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
             if (__instance.PilotAgent != null && __instance.PilotAgent.Controller == Agent.ControllerType.Player && __instance.CameraHolder != null)

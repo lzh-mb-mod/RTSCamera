@@ -49,6 +49,8 @@ namespace RTSCamera
 
         public float SlowMotionFactor = 0.2f;
 
+        public bool ShowContour = true;
+
         public bool DisplayMessage = true;
 
         public bool ControlAlliesAfterDeath;
@@ -86,6 +88,7 @@ namespace RTSCamera
             RestrictByBoundaries = other.RestrictByBoundaries;
             SlowMotionMode = other.SlowMotionMode;
             SlowMotionFactor = other.SlowMotionFactor;
+            ShowContour = other.ShowContour;
             DisplayMessage = other.DisplayMessage;
             ControlAlliesAfterDeath = other.ControlAlliesAfterDeath;
             PreferToControlCompanions = other.PreferToControlCompanions;

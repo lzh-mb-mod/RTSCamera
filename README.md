@@ -1,12 +1,14 @@
 # RTS Camera
 (Old name: EnhancedMission, Enhanced Mission RTS Camera)
-A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
+A mod for Mount&Blade Bannerlord that provides RTS camera and more features in battle.
 
 ## Features
 
-- Switch to rts-style camera.
+- Switch to rts-style camera and switch back.
 
-- Control your troops after you die.
+- Select troops by directly clicking on them. Selected Troops will be hightlighted with contour.
+
+- Control (respawn as one of) your troops after you die.
 
 - Pause game and adjust time speed.
 
@@ -20,7 +22,7 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
 
   You can modify them manually, but if you edit it incorrectly or remove them, the configuration will be reset to default.
 
-- Undead mode. HP of All agents will not change after switched on.
+- Undead mode. HP of All agents will not change after switched on. Just for the purpose of training your combat skill or making video.
 
 ## How to install
 1. Copy `Modules` folder into Bannerlord installation folder(For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`). It should be merged with `Modules` of the game. Or use Vortex to install it automatically.
@@ -36,7 +38,9 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
 
   - Press `O(letter)` (by default) to open menu of this mod. You can access the features of this mod in it.
 
-    Or you can use the following hotkeys by default:
+  - You can select troops by directly clicking on them. Press `shift` to prevent issuing movement orders, in case you only want to select troops but accidentally click on the ground. Press `F1` to prevent selecting troops, in case you only want to issue movement orders next but accidentally click on a troop.
+
+  - you can use the following hotkeys by default:
 
   - Press `F10` to switch between rts-style camera and main agent camera.
 
@@ -52,7 +56,7 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features.
 
   - Press `F12` to switch to enemy's team. Useful for making videos.
 
-- How to play in rts camera:
+- How to control rts camera:
 
   - In a mission, press `F10` to switch to rts camera.
 

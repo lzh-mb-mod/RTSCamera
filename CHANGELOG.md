@@ -1,4 +1,13 @@
 # Changelog
+## [e3.5.0] - 2020-06-04
+### Added
+- Add feature: Now player can select troops by directly clicking on them.
+
+- Troops that will be selected and has been selected will be highlighted with contour.
+
+### Changed
+- Player formation logic is reverted to the previous version.
+
 ## [e3.4.0] - 2020-06-02
 ### Fixed
 - Fix the problem that in RTS camera mode, when player starts to use ranged siege machine, the camera will be fixed on the siege machine.

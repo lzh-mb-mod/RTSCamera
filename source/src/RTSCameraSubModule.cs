@@ -21,11 +21,30 @@ namespace RTSCamera
             _harmony.Patch(
                 typeof(Formation).GetMethod("LeaveDetachment", BindingFlags.Instance | BindingFlags.NonPublic),
                 new HarmonyMethod(
-                    typeof(Formation_LeaveDetachmentPatch).GetMethod("Prefix", BindingFlags.Static | BindingFlags.Public)));
+                    typeof(Patch_Formation).GetMethod("LeaveDetachment_Prefix", BindingFlags.Static | BindingFlags.Public)));
+            //_harmony.Patch(
+            //    typeof(Formation).GetMethod("GetOrderPositionOfUnit", BindingFlags.Instance | BindingFlags.Public),
+            //    new HarmonyMethod(
+            //        typeof(Patch_Formation).GetMethod("GetOrderPositionOfUnit_Prefix", BindingFlags.Static | BindingFlags.Public)));
+
             _harmony.Patch(
                 typeof(RangedSiegeWeaponView).GetMethod("HandleUserInput", BindingFlags.Instance | BindingFlags.NonPublic),
                 new HarmonyMethod(
-                    typeof(RangedSiegeWeaponView_HandleUserInputPatch).GetMethod("Prefix", BindingFlags.Static | BindingFlags.Public)));
+                    typeof(Patch_RangedSiegeWeaponView).GetMethod("HandleUserInput_Prefix", BindingFlags.Static | BindingFlags.Public)));
+
+            //_harmony.Patch(typeof(MovementOrder).GetMethod("Tick", BindingFlags.Instance | BindingFlags.NonPublic),
+            //    postfix: new HarmonyMethod(
+            //        typeof(Patch_MovementOrder).GetMethod("Tick_Postfix", BindingFlags.Static | BindingFlags.Public)));
+            //_harmony.Patch(typeof(MovementOrder).GetMethod("GetPosition", BindingFlags.Instance | BindingFlags.Public),
+            //    prefix: new HarmonyMethod(
+            //        typeof(Patch_MovementOrder).GetMethod("GetPosition_Prefix", BindingFlags.Static | BindingFlags.Public)));
+            //_harmony.Patch(typeof(MovementOrder).GetProperty("MovementState", BindingFlags.Instance | BindingFlags.NonPublic)?.GetMethod,
+            //    prefix: new HarmonyMethod(
+            //        typeof(Patch_MovementOrder).GetMethod("Get_MovementState_Prefix", BindingFlags.Static | BindingFlags.Public)));
+
+            //_harmony.Patch(typeof(BehaviorCharge).GetMethod("CalculateCurrentOrder", BindingFlags.Instance | BindingFlags.NonPublic),
+            //    prefix: new HarmonyMethod(
+            //        typeof(Patch_BehaviorCharge).GetMethod("CalculateCurrentOrder_Prefix", BindingFlags.Static | BindingFlags.Public)));
         }
 
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
