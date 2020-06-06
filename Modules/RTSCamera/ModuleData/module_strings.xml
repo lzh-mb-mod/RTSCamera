@@ -2,17 +2,6 @@
 <base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
   <strings>
-    <string id="str_em_control_troop_tip" text="{=RTSCamera_controltrooptip}Press F or F10 to control your troop after dead." />
-    <string id="str_em_switch_team_tip" text="{=RTSCamera_switchteamtip}Press F9 to switch team." />
-    <string id="str_em_switch_free_camera_tip" text="{=RTSCamera_switchfreecameratip}Press F10 to switch free camera." />
-    <string id="str_em_disable_death_tip" text="{=RTSCamera_disabledeathtip}Press F11 to disable death." />
-    <string id="str_em_reset_mission_tip" text="{=RTSCamera_resetmissiontip}Press F12 to reset mission." />
-    <string id="str_em_more_option_tip" text="{=RTSCamera_moreoptiontip}Press O(letter) to adjust more settings." />
-    <string id="str_em_pause_tip" text="{=RTSCamera_pausetip}Press P to pause game." />
-    <string id="str_em_leave_mission_tip" text="{=RTSCamera_leavemissiontip}Hold TAB to leave the mission." />
-    <string id="str_em_read_position_tip" text="{=RTSCamera_readpositiontip}Press `I` key to get player or camera position." />
-    <string id="str_em_teleport_tip" text="{=RTSCamera_teleporttip}Press `L` key to teleport player when in free camera mode." />
-
     <string id="str_em_create_default_config" text="{=RTSCamera_createdefaultconfig}Create default config" />
     <string id="str_em_found_old_config" text="{=RTSCamera_foundoldconfig}Found old config file:" />
     <string id="str_em_delete_old_config" text="{=RTSCamera_deleteoldconfig}Delete the old config file." />
@@ -55,6 +44,10 @@
     <string id="str_em_prefer_to_control_companions" text="{=RTSCamera_prefertocontrolcompanions}Prefer To Control Companions" />
     <string id="str_em_control_troops_in_player_party_only" text="{=RTSCamera_controltroopsinplayerpartyonly}Control Troops In Player Party Only" />
     <string id="str_em_control_another_hero" text="{=RTSCamera_controlanotherhero}Control Another Hero" />
+
+    <string id="str_em_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Unbalanced Options" />
+    <string id="str_em_switch_team" text="{=RTSCamera_switchteam}Switch Team" />
+    <string id="str_em_hotkey_enabled" text="{=RTSCamera_hotkey_enabled}Hotkey enabled" />
 
     <string id="str_em_mission_paused" text="{=RTSCamera_missionpaused}Mission paused." />
     <string id="str_em_mission_continued" text="{=RTSCamera_missioncontinue}Mission continued." />

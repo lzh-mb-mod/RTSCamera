@@ -6,6 +6,7 @@ namespace RTSCamera
     class SwitchTeamLogic : MissionLogic
     {
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
+        private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         public delegate void SwitchTeamDelegate();
 
         public event SwitchTeamDelegate PreSwitchTeam;
@@ -15,7 +16,7 @@ namespace RTSCamera
         {
             base.OnMissionTick(dt);
 
-            if (Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.SwitchTeam)))
+            if (_config.SwitchTeamHotkeyEnabled && Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.SwitchTeam)))
                 SwapTeam();
         }
 

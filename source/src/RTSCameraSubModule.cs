@@ -1,6 +1,8 @@
-﻿using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
+using System;
+using System.Reflection;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
@@ -11,40 +13,66 @@ namespace RTSCamera
     public class RTSCameraSubModule : MBSubModuleBase
     {
         private readonly Harmony _harmony = new Harmony("RTSCameraPatch");
+        private bool successPatch;
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
-            RTSCameraExtension.Clear();
-            Module.CurrentModule.GlobalTextManager.LoadGameTexts(BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
+
+            try
+            {
+                RTSCameraExtension.Clear();
+                Module.CurrentModule.GlobalTextManager.LoadGameTexts(
+                    BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
 
 
-            _harmony.Patch(
-                typeof(Formation).GetMethod("LeaveDetachment", BindingFlags.Instance | BindingFlags.NonPublic),
-                new HarmonyMethod(
-                    typeof(Patch_Formation).GetMethod("LeaveDetachment_Prefix", BindingFlags.Static | BindingFlags.Public)));
-            //_harmony.Patch(
-            //    typeof(Formation).GetMethod("GetOrderPositionOfUnit", BindingFlags.Instance | BindingFlags.Public),
-            //    new HarmonyMethod(
-            //        typeof(Patch_Formation).GetMethod("GetOrderPositionOfUnit_Prefix", BindingFlags.Static | BindingFlags.Public)));
+                _harmony.Patch(
+                    typeof(Formation).GetMethod("LeaveDetachment", BindingFlags.Instance | BindingFlags.NonPublic),
+                    new HarmonyMethod(
+                        typeof(Patch_Formation).GetMethod("LeaveDetachment_Prefix",
+                            BindingFlags.Static | BindingFlags.Public)));
+                //_harmony.Patch(
+                //    typeof(Formation).GetMethod("GetOrderPositionOfUnit", BindingFlags.Instance | BindingFlags.Public),
+                //    new HarmonyMethod(
+                //        typeof(Patch_Formation).GetMethod("GetOrderPositionOfUnit_Prefix", BindingFlags.Static | BindingFlags.Public)));
 
-            _harmony.Patch(
-                typeof(RangedSiegeWeaponView).GetMethod("HandleUserInput", BindingFlags.Instance | BindingFlags.NonPublic),
-                new HarmonyMethod(
-                    typeof(Patch_RangedSiegeWeaponView).GetMethod("HandleUserInput_Prefix", BindingFlags.Static | BindingFlags.Public)));
+                _harmony.Patch(
+                    typeof(RangedSiegeWeaponView).GetMethod("HandleUserInput",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    new HarmonyMethod(
+                        typeof(Patch_RangedSiegeWeaponView).GetMethod("HandleUserInput_Prefix",
+                            BindingFlags.Static | BindingFlags.Public)));
 
-            //_harmony.Patch(typeof(MovementOrder).GetMethod("Tick", BindingFlags.Instance | BindingFlags.NonPublic),
-            //    postfix: new HarmonyMethod(
-            //        typeof(Patch_MovementOrder).GetMethod("Tick_Postfix", BindingFlags.Static | BindingFlags.Public)));
-            //_harmony.Patch(typeof(MovementOrder).GetMethod("GetPosition", BindingFlags.Instance | BindingFlags.Public),
-            //    prefix: new HarmonyMethod(
-            //        typeof(Patch_MovementOrder).GetMethod("GetPosition_Prefix", BindingFlags.Static | BindingFlags.Public)));
-            //_harmony.Patch(typeof(MovementOrder).GetProperty("MovementState", BindingFlags.Instance | BindingFlags.NonPublic)?.GetMethod,
-            //    prefix: new HarmonyMethod(
-            //        typeof(Patch_MovementOrder).GetMethod("Get_MovementState_Prefix", BindingFlags.Static | BindingFlags.Public)));
+                //_harmony.Patch(typeof(MovementOrder).GetMethod("Tick", BindingFlags.Instance | BindingFlags.NonPublic),
+                //    postfix: new HarmonyMethod(
+                //        typeof(Patch_MovementOrder).GetMethod("Tick_Postfix", BindingFlags.Static | BindingFlags.Public)));
+                //_harmony.Patch(typeof(MovementOrder).GetMethod("GetPosition", BindingFlags.Instance | BindingFlags.Public),
+                //    prefix: new HarmonyMethod(
+                //        typeof(Patch_MovementOrder).GetMethod("GetPosition_Prefix", BindingFlags.Static | BindingFlags.Public)));
+                //_harmony.Patch(typeof(MovementOrder).GetProperty("MovementState", BindingFlags.Instance | BindingFlags.NonPublic)?.GetMethod,
+                //    prefix: new HarmonyMethod(
+                //        typeof(Patch_MovementOrder).GetMethod("Get_MovementState_Prefix", BindingFlags.Static | BindingFlags.Public)));
 
-            //_harmony.Patch(typeof(BehaviorCharge).GetMethod("CalculateCurrentOrder", BindingFlags.Instance | BindingFlags.NonPublic),
-            //    prefix: new HarmonyMethod(
-            //        typeof(Patch_BehaviorCharge).GetMethod("CalculateCurrentOrder_Prefix", BindingFlags.Static | BindingFlags.Public)));
+                //_harmony.Patch(typeof(BehaviorCharge).GetMethod("CalculateCurrentOrder", BindingFlags.Instance | BindingFlags.NonPublic),
+                //    prefix: new HarmonyMethod(
+                //        typeof(Patch_BehaviorCharge).GetMethod("CalculateCurrentOrder_Prefix", BindingFlags.Static | BindingFlags.Public)));
+
+
+                successPatch = true;
+            }
+            catch (Exception e)
+            {
+                MBDebug.ConsolePrint(e.ToString());
+            }
+        }
+
+        protected override void OnBeforeInitialModuleScreenSetAsRoot()
+        {
+            base.OnBeforeInitialModuleScreenSetAsRoot();
+
+            if (!successPatch)
+            {
+                InformationManager.DisplayMessage(new InformationMessage("RTS Camera: patch failed"));
+            }
         }
 
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)

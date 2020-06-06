@@ -59,6 +59,8 @@ namespace RTSCamera
 
         public bool ControlTroopsInPlayerPartyOnly = true;
 
+        public bool SwitchTeamHotkeyEnabled = false;
+
         private static RTSCameraConfig CreateDefault()
         {
             return new RTSCameraConfig();
@@ -93,6 +95,7 @@ namespace RTSCamera
             ControlAlliesAfterDeath = other.ControlAlliesAfterDeath;
             PreferToControlCompanions = other.PreferToControlCompanions;
             ControlTroopsInPlayerPartyOnly = other.ControlTroopsInPlayerPartyOnly;
+            SwitchTeamHotkeyEnabled = other.SwitchTeamHotkeyEnabled;
         }
 
         public override void ResetToDefault()

@@ -1,4 +1,11 @@
 # Changelog
+## [e3.5.1] - 2020-06-06
+### Added
+- Add an option for disabling hotkey for switching team.
+
+### Changed
+- Reset hotkeys of previous version to prevent problems relating to hotkeys.
+
 ## [e3.5.0] - 2020-06-04
 ### Added
 - Add feature: Now player can select troops by directly clicking on them.

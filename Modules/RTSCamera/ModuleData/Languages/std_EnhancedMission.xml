@@ -5,18 +5,6 @@
     <tag language="English" />
   </tags>
   <strings>
-
-    <string id="RTSCamera_controltrooptip" text="Press F or F10 to control your troop after dead." />
-    <string id="RTSCamera_switchteamtip" text="Press F9 to switch team." />
-    <string id="RTSCamera_switchfreecameratip" text="Press F10 to switch free camera." />
-    <string id="RTSCamera_disabledeathtip" text="Press F11 to disable death." />
-    <string id="RTSCamera_resetmissiontip" text="Press F12 to reset mission." />
-    <string id="RTSCamera_moreoptiontip" text="Press O(letter) to adjust more settings." />
-    <string id="RTSCamera_pausetip" text="Press P to pause game." />
-    <string id="RTSCamera_leavemissiontip" text="Press TAB to open score board or leave the mission." />
-    <string id="RTSCamera_readpositiontip" text="Press `I` key to get player or camera position." />
-    <string id="RTSCamera_teleporttip" text="Press `L` key to teleport player when in free camera mode." />
-
     <string id="RTSCamera_createdefaultconfig" text="Create default config" />
     <string id="RTSCamera_foundoldconfig" text="Found old config file:" />
     <string id="RTSCamera_deleteoldconfig" text="Delete the old config file." />
@@ -59,6 +47,9 @@
     <string id="RTSCamera_prefertocontrolcompanions" text="Prefer To Control Companions" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
     <string id="RTSCamera_controlanotherhero" text="Control Another Hero" />
+
+    <string id="RTSCamera_unbalancedoptionsdescription" text="Unbalanced Options" />
+    <string id="RTSCamera_hotkey_enabled" text="Hotkey enabled" />
 
     <string id="RTSCamera_missionpaused" text="Mission paused." />
     <string id="RTSCamera_missioncontinue" text="Mission continued." />

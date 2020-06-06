@@ -5,18 +5,6 @@
     <tag language="简体中文" />
   </tags>
   <strings>
-
-    <string id="RTSCamera_controltrooptip" text="按F或F10来在你死后控制你的士兵。" />
-    <string id="RTSCamera_switchteamtip" text="按F9来切换队伍。" />
-    <string id="RTSCamera_switchfreecameratip" text="按F10来切换自由视角。" />
-    <string id="RTSCamera_disabledeathtip" text="按F11来禁用死亡。" />
-    <string id="RTSCamera_resetmissiontip" text="按F12来重置关卡。" />
-    <string id="RTSCamera_moreoptiontip" text="按字母O键来调整更多设置。" />
-    <string id="RTSCamera_pausetip" text="按P键来暂停游戏。" />
-    <string id="RTSCamera_leavemissiontip" text="按TAB键来打开战绩面板或结束战斗。" />
-    <string id="RTSCamera_readpositiontip" text="按住大小字母I键来获取当前玩家或镜头的位置" />
-    <string id="RTSCamera_teleporttip" text="按L键来在自由视角中让玩家瞬移至镜头位置" />
-
     <string id="RTSCamera_createdefaultconfig" text="创建默认配置" />
     <string id="RTSCamera_foundoldconfig" text="找到旧配置文件: " />
     <string id="RTSCamera_deleteoldconfig" text="删除旧配置文件" />
@@ -59,6 +47,10 @@
     <string id="RTSCamera_prefertocontrolcompanions" text="优先控制同伴" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
     <string id="RTSCamera_controlanotherhero" text="控制另一个英雄单位" />
+
+
+    <string id="RTSCamera_unbalancedoptionsdescription" text="不平衡的选项" />
+    <string id="RTSCamera_hotkey_enabled" text="启用热键" />
 
     <string id="RTSCamera_missionpaused" text="已暂停关卡。" />
     <string id="RTSCamera_missioncontinue" text="关卡继续。" />

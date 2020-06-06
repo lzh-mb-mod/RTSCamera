@@ -11,6 +11,7 @@ namespace RTSCamera
         private readonly RTSCameraConfig _config;
         private readonly Mission _mission;
         private readonly SwitchFreeCameraLogic _switchFreeCameraLogic;
+        private readonly SwitchTeamLogic _switchTeamLogic;
         private readonly MissionSpeedLogic _missionSpeedLogic;
         private readonly GameKeyConfigView _gameKeyConfigView;
         private readonly HideHUDLogic _hideHudLogic;
@@ -50,6 +51,13 @@ namespace RTSCamera
         public string ControlTroopsInPlayerPartyOnlyString { get; } =
             GameTexts.FindText("str_em_control_troops_in_player_party_only").ToString();
 
+        public string UnbalancedOptionsDescriptionString { get; } =
+            GameTexts.FindText("str_em_unbalanced_options_description").ToString();
+
+        public string SwitchTeamString { get; } = GameTexts.FindText("str_em_switch_team").ToString();
+
+        public string HotkeyEnabledString { get; } = GameTexts.FindText("str_em_hotkey_enabled").ToString();
+
 
         [DataSourceProperty]
         public bool UseFreeCameraByDefault
@@ -71,20 +79,6 @@ namespace RTSCamera
         }
 
         [DataSourceProperty] public bool SwitchFreeCameraEnabled => _switchFreeCameraLogic != null;
-
-        [DataSourceProperty]
-        public bool DisableDeath
-        {
-            get => _config.DisableDeath;
-            set
-            {
-                if (_config.DisableDeath == value)
-                    return;
-                _config.DisableDeath = !_config.DisableDeath;
-                _mission.GetMissionBehaviour<DisableDeathLogic>()?.SetDisableDeath(_config.DisableDeath);
-                OnPropertyChanged(nameof(DisableDeath));
-            }
-        }
 
         [DataSourceProperty]
         public NumericVM RaisedHeight { get; }
@@ -258,6 +252,39 @@ namespace RTSCamera
             }
         }
 
+        [DataSourceProperty]
+        public bool DisableDeath
+        {
+            get => _config.DisableDeath;
+            set
+            {
+                if (_config.DisableDeath == value)
+                    return;
+                _config.DisableDeath = value;
+                _mission.GetMissionBehaviour<DisableDeathLogic>()?.SetDisableDeath(_config.DisableDeath);
+                OnPropertyChanged(nameof(DisableDeath));
+            }
+        }
+
+        public void SwitchTeam()
+        {
+            _switchTeamLogic?.SwapTeam();
+        }
+
+        [DataSourceProperty]
+        public bool SwitchTeamHotkeyEnabled
+        {
+            get => _config.SwitchTeamHotkeyEnabled;
+            set
+            {
+                if (_config.SwitchTeamHotkeyEnabled == value)
+                    return;
+                _config.SwitchTeamHotkeyEnabled = value;
+                OnPropertyChanged(nameof(SwitchTeamHotkeyEnabled));
+
+            }
+        }
+
         public override void CloseMenu()
         {
             _config.Serialize();
@@ -271,6 +298,7 @@ namespace RTSCamera
             _config = RTSCameraConfig.Get();
             _mission = mission;
             _switchFreeCameraLogic = _mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
+            _switchTeamLogic = mission.GetMissionBehaviour<SwitchTeamLogic>();
             PlayerFormation = new SelectionOptionDataVM(new SelectionOptionData(
                 i =>
                 {

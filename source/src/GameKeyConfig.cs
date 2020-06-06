@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 using TaleWorlds.InputSystem;
-using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.ViewModelCollection;
 
 namespace RTSCamera
 {
@@ -58,7 +54,7 @@ namespace RTSCamera
     }
     public class GameKeyConfig : RTSCameraConfigBase<GameKeyConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 3);
+        protected static Version BinaryVersion => new Version(1, 4);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -80,9 +76,10 @@ namespace RTSCamera
                     ConfigVersion = BinaryVersion.ToString(2);
                     goto case "1.2";
                 case "1.2":
-                    ResetToDefault();
-                    goto case "1.3";
                 case "1.3":
+                    ResetToDefault();
+                    goto case "1.4";
+                case "1.4":
                     break;
             }
         }
@@ -166,7 +163,7 @@ namespace RTSCamera
             Id = ToId(GameKeyEnum.SwitchTeam),
             StringId = "",
             GroupId = "RTSCameraHotKey",
-            Key = InputKey.F12
+            Key = InputKey.F11
         };
 
         private static GameKeyConfig _instance;
@@ -216,17 +213,33 @@ namespace RTSCamera
 
         public override bool Serialize()
         {
-            ToSerializedGameKeys();
+            try
+            {
 
-            return base.Serialize();
+                ToSerializedGameKeys();
+                return base.Serialize();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+
         }
 
         public override bool Deserialize()
         {
-            if (base.Deserialize())
+            try
             {
-                FromSerializedGameKeys();
-                return true;
+                if (base.Deserialize())
+                {
+                    FromSerializedGameKeys();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
 
             return false;
