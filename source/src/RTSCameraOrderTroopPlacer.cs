@@ -16,7 +16,7 @@ namespace RTSCamera
     {
         private SwitchTeamLogic _controller;
         private AgentContourMissionView _contourView;
-        private RTSCameraConfig _config = RTSCameraConfig.Get();
+        private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private void RegisterReload()
         {
             foreach (var missionLogic in Mission.MissionLogics)
@@ -508,13 +508,9 @@ namespace RTSCamera
             AttachTarget = null;
             if (!PlayerOrderController.SelectedFormations.IsEmpty() && _clickedFormation == null)
             {
-                Vec3 rayBegin;
-                Vec3 rayEnd;
-                MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out rayBegin, out rayEnd);
-                float collisionDistance;
-                GameEntity collidedEntity;
-                if (!Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out collisionDistance,
-                    out collidedEntity, 0.3f))
+                MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out var rayBegin, out var rayEnd);
+                if (!Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out var collisionDistance,
+                    out var collidedEntity, 0.3f))
                     collisionDistance = 1000f;
                 if (cursorState == CursorState.Invisible && collisionDistance < 1000.0)
                 {

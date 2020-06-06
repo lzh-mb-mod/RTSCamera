@@ -54,7 +54,7 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features in b
 
   - Press `]` to toggle HUD. Or if you rebind the key and forget what you have set, you can also press `Home` key to toggle UI, which always works.
 
-  - Press `F12` to switch to enemy's team. Useful for making videos.
+  - Press `F11` to switch to enemy's team. Useful for making videos.
 
 - How to control rts camera:
 

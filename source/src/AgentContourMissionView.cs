@@ -191,9 +191,9 @@ namespace RTSCamera
         private void UpdateContour()
         {
             var mouseOverFormation = _mouseOverFormation;
-            ClearContour();
+            ClearEnemyFocusContour();
+            ClearAllyFocusContour();
             SetFocusContour();
-            MouseOver(mouseOverFormation);
         }
 
         private void SetFocusContour()
@@ -335,9 +335,8 @@ namespace RTSCamera
         private void ClearFormationFocusContour(Formation formation, bool isEnemy)
         {
             if (_mouseOverFormation == formation)
-                SetFormationMouseOverContour(formation, isEnemy);
-            else
-                ClearFormationContour(formation);
+                return;
+            ClearFormationContour(formation);
         }
 
         private static void ClearFormationContour(Formation formation)

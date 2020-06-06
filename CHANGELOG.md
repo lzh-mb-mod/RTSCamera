@@ -1,4 +1,9 @@
 # Changelog
+
+## [e3.5.2] - 2020-06-07
+### Changed
+- Disable show contour feature to avoid problems.
+
 ## [e3.5.1] - 2020-06-06
 ### Added
 - Add an option for disabling hotkey for switching team.

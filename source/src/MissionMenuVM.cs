@@ -160,18 +160,18 @@ namespace RTSCamera
         [DataSourceProperty]
         public NumericVM SpeedFactor { get; }
 
-        [DataSourceProperty]
-        public bool ShowContour
-        {
-            get => _config.ShowContour;
-            set
-            {
-                if (_config.ShowContour == value)
-                    return;
-                _contourView?.SetEnableContour(value);
-                OnPropertyChanged(nameof(ShowContour));
-            }
-        }
+        //[DataSourceProperty]
+        //public bool ShowContour
+        //{
+        //    get => _config.ShowContour;
+        //    set
+        //    {
+        //        if (_config.ShowContour == value)
+        //            return;
+        //        _contourView?.SetEnableContour(value);
+        //        OnPropertyChanged(nameof(ShowContour));
+        //    }
+        //}
 
         [DataSourceProperty]
         public bool DisplayMessage
@@ -269,6 +269,7 @@ namespace RTSCamera
         public void SwitchTeam()
         {
             _switchTeamLogic?.SwapTeam();
+            CloseMenu();
         }
 
         [DataSourceProperty]

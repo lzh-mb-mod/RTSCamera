@@ -6,7 +6,7 @@ namespace RTSCamera
 {
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 1);
+        protected static Version BinaryVersion => new Version(1, 2);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -16,13 +16,16 @@ namespace RTSCamera
                     Utility.DisplayLocalizedText("str_em_config_incompatible");
                     ResetToDefault();
                     Serialize();
-                    break;
+                    goto case "1.0";
                 case "1.0":
                     ConstantSpeed = false;
                     Outdoor = true;
                     RestrictByBoundaries = true;
-                    break;
+                    goto case "1.1";
                 case "1.1":
+                    ShowContour = false;
+                    goto case "1.2";
+                case "1.2":
                     break;
             }
         }
@@ -49,7 +52,7 @@ namespace RTSCamera
 
         public float SlowMotionFactor = 0.2f;
 
-        public bool ShowContour = true;
+        public bool ShowContour = false;
 
         public bool DisplayMessage = true;
 
