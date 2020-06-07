@@ -73,7 +73,6 @@ namespace RTSCamera
                         Serialize();
                     }
 
-                    ConfigVersion = BinaryVersion.ToString(2);
                     goto case "1.2";
                 case "1.2":
                 case "1.3":
@@ -82,6 +81,8 @@ namespace RTSCamera
                 case "1.4":
                     break;
             }
+
+            ConfigVersion = BinaryVersion.ToString(2);
         }
 
         [XmlIgnore]

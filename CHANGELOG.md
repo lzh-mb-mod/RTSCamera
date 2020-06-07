@@ -1,5 +1,10 @@
 # Changelog
 
+## [e3.5.3] - 2020-06-07
+### Fixed
+- Fix the problem that config is reset every time start the game.
+
+
 ## [e3.5.2] - 2020-06-07
 ### Changed
 - Disable show contour feature to avoid problems.

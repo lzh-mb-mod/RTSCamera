@@ -26,8 +26,11 @@ namespace RTSCamera
                     ShowContour = false;
                     goto case "1.2";
                 case "1.2":
+                    ShowContour = false; // currently disable this feature.
                     break;
             }
+
+            ConfigVersion = BinaryVersion.ToString(2);
         }
 
         private static RTSCameraConfig _instance;
