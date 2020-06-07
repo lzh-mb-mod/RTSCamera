@@ -82,6 +82,11 @@ namespace RTSCamera
             return _instance;
         }
 
+        public static void Clear()
+        {
+            _instance = null;
+        }
+
         protected override XmlSerializer serializer => new XmlSerializer(typeof(RTSCameraConfig));
 
         protected override void CopyFrom(RTSCameraConfig other)

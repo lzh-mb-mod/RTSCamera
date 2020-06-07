@@ -29,5 +29,13 @@ namespace RTSCamera
             else if (this.Input.IsKeyReleased(_gameKeyConfig.GetKey(GameKeyEnum.OpenMenu)))
                 ActivateMenu();
         }
+
+        public override void OnMissionScreenFinalize()
+        {
+            base.OnMissionScreenFinalize();
+
+            GameKeyConfig.Clear();
+            RTSCameraConfig.Clear();
+        }
     }
 }

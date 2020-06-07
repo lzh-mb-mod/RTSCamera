@@ -77,6 +77,7 @@ namespace RTSCamera
                 case "1.2":
                 case "1.3":
                     ResetToDefault();
+                    Serialize();
                     goto case "1.4";
                 case "1.4":
                     break;
@@ -178,6 +179,11 @@ namespace RTSCamera
             }
 
             return _instance;
+        }
+
+        public static void Clear()
+        {
+            _instance = null;
         }
 
         public InputKey GetKey(GameKeyEnum gameKeyEnum)
