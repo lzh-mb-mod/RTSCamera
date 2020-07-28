@@ -45,7 +45,7 @@ namespace RTSCamera
                 if (!Utility.IsPlayerDead())
                 {
                     MainAgentWillBeChangedToAnotherOne?.Invoke();
-                    Utility.AIControlMainAgent();
+                    Utility.AIControlMainAgent(true);
                 }
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
                 Utility.DisplayLocalizedText("str_em_control_troop");

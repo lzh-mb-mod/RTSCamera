@@ -81,10 +81,12 @@ namespace RTSCamera
         {
             var mission = Mission.Current;
             if (mission.MainAgent != null && Mission.Current.PlayerTeam != null &&
-                mission.MainAgent.Formation?.FormationIndex != formationClass && mission.MainAgent.IsAIControlled)
+                mission.MainAgent.Formation?.FormationIndex != formationClass)
             {
-                mission.MainAgent.Formation =
-                    mission.PlayerTeam.GetFormation(formationClass);
+                var formation = mission.PlayerTeam.GetFormation(formationClass);
+                if (formation.CountOfUnits == 0 && formation.IsAIControlled)
+                    formation.IsAIControlled = false;
+                mission.MainAgent.Formation = formation;
             }
         }
 
@@ -106,14 +108,21 @@ namespace RTSCamera
             return false;
         }
 
-        public static void AIControlMainAgent()
+        public static void AIControlMainAgent(bool alarmed)
         {
             var mission = Mission.Current;
             mission.MainAgent.Controller = Agent.ControllerType.AI;
-            mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
+            SetMainAgentAlarmed(alarmed);
             // avoid crash after victory. After victory, team ai decision won't be made so that current tactics won't be updated.
             if (mission.MissionEnded())
                 mission.AllowAiTicking = false;
+        }
+
+        public static void SetMainAgentAlarmed(bool alarmed)
+        {
+            Mission.Current.MainAgent.SetWatchState(alarmed
+                ? AgentAIStateFlagComponent.WatchState.Alarmed
+                : AgentAIStateFlagComponent.WatchState.Patroling);
         }
 
         public static bool IsEnemy(Agent agent)

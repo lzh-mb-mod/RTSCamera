@@ -24,17 +24,13 @@
     <string id="RTSCamera_loadedconfig" text="Loading config succeeded." />
     <string id="RTSCamera_loadconfigfailed" text="Loading config failed." />
 
-    <string id="RTSCamera_nofriendlybannder" text="No Banner on Friendly Troops" />
-    <string id="RTSCamera_nokillnotification" text="No Kill Notification" />
-    <string id="RTSCamera_makegruntvoice" text="Make Grunt Voice" />
-    <string id="RTSCamera_hasboundary" text="Has Boundary" />
-
     <string id="RTSCamera_usefreecamerabydefault" text="Use Free Camera By Default" />
     <string id="RTSCamera_switchfreecamera" text="Switch Free Camera" />
+    <string id="RTSCamera_prevent_player_fighting" text="Prevent Player Fighting" />
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="Raised Height After Switching to Free Camera" />
     <string id="RTSCamera_playerformation" text="Player Formation" />
-    <string id="RTSCamera_disabledeath" text="Disable Death" />
-    <string id="RTSCamera_constantspeed" text="Constant Speed" />
+    <string id="RTSCamera_always_set_player_formation" text="Always Set Player Formation" />
+    <string id="RTSCamera_constantspeed" text="Constant Camera Speed" />
     <string id="RTSCamera_outdoor" text="Outdoor" />
     <string id="RTSCamera_restrictbyboundaries" text="Restrict By Boundaries" />
     <string id="RTSCamera_togglepause" text="Toggle Pause" />
@@ -49,6 +45,8 @@
     <string id="RTSCamera_controlanotherhero" text="Control Another Hero" />
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="Unbalanced Options" />
+    <string id="RTSCamera_disabledeath" text="Disable Death" />
+    <string id="RTSCamera_switchteam" text="Switch Team" />
     <string id="RTSCamera_hotkey_enabled" text="Hotkey enabled" />
 
     <string id="RTSCamera_missionpaused" text="Mission paused." />
@@ -73,7 +71,6 @@
     <string id="RTSCamera_freecamerakey" text="Free Camera" />
     <string id="RTSCamera_disabledeathkey" text="Disable Death" />
     <string id="RTSCamera_controltroopkey" text="Control Troop" />
-    <string id="RTSCamera_switchteam" text="Switch Team" />
 
     <string id="RTSCamera_enemywipedout" text="Enemy has been wiped out." />
     <string id="RTSCamera_switchtoenemyteam" text="Switched to the enemy team." />

@@ -6,7 +6,7 @@ using TaleWorlds.MountAndBlade;
 namespace RTSCamera
 {
 
-    public class MissionMenuVM : MissionMenuVMBase
+    public class RTSCameraMenuVM : MissionMenuVMBase
     {
         private readonly RTSCameraConfig _config;
         private readonly Mission _mission;
@@ -22,7 +22,12 @@ namespace RTSCamera
 
         public string UseFreeCameraByDefaultString { get; } = GameTexts.FindText("str_em_use_free_camera_by_default").ToString();
         public string SwitchFreeCameraString { get; } = GameTexts.FindText("str_em_switch_free_camera").ToString();
-        public string DisableDeathString { get; } = GameTexts.FindText("str_em_disable_death").ToString();
+
+        public string PreventPlayerFightingString { get; }
+            = GameTexts.FindText("str_em_prevent_player_fighting").ToString();
+
+        public string AlwaysSetPlayerFormationString { get; } = GameTexts.FindText("str_em_always_set_player_formation").ToString();
+
         public string TogglePauseString { get; } = GameTexts.FindText("str_em_toggle_pause").ToString();
 
         public string ConstantSpeedString { get; } = GameTexts.FindText("str_em_constant_speed").ToString();
@@ -53,6 +58,7 @@ namespace RTSCamera
 
         public string UnbalancedOptionsDescriptionString { get; } =
             GameTexts.FindText("str_em_unbalanced_options_description").ToString();
+        public string DisableDeathString { get; } = GameTexts.FindText("str_em_disable_death").ToString();
 
         public string SwitchTeamString { get; } = GameTexts.FindText("str_em_switch_team").ToString();
 
@@ -81,6 +87,20 @@ namespace RTSCamera
         [DataSourceProperty] public bool SwitchFreeCameraEnabled => _switchFreeCameraLogic != null;
 
         [DataSourceProperty]
+        public bool PreventPlayerFighting
+        {
+            get => _config.PreventPlayerFighting;
+            set
+            {
+                if (_config.PreventPlayerFighting == value)
+                    return;
+                _config.PreventPlayerFighting = value;
+                Utility.SetMainAgentAlarmed(!value);
+                OnPropertyChanged(nameof(PreventPlayerFighting));
+            }
+        }
+
+        [DataSourceProperty]
         public NumericVM RaisedHeight { get; }
 
         [DataSourceProperty]
@@ -93,6 +113,22 @@ namespace RTSCamera
                     return;
                 _playerFormation = value;
                 OnPropertyChanged(nameof(PlayerFormation));
+            }
+        }
+
+        [DataSourceProperty]
+        public bool AlwaysSetPlayerFormation
+        {
+            get => _config.AlwaysSetPlayerFormation;
+            set
+            {
+                if (_config.AlwaysSetPlayerFormation == value)
+                    return;
+                _config.AlwaysSetPlayerFormation = value;
+                var formationClass = (FormationClass)PlayerFormation.Selector.SelectedIndex;
+                _switchFreeCameraLogic.CurrentPlayerFormation = formationClass;
+                Utility.SetPlayerFormation(formationClass);
+                OnPropertyChanged(nameof(AlwaysSetPlayerFormation));
             }
         }
 
@@ -293,7 +329,7 @@ namespace RTSCamera
             base.CloseMenu();
         }
 
-        public MissionMenuVM(Mission mission, Action closeMenu)
+        public RTSCameraMenuVM(Mission mission, Action closeMenu)
             : base(closeMenu)
         {
             _config = RTSCameraConfig.Get();
@@ -303,7 +339,7 @@ namespace RTSCamera
             PlayerFormation = new SelectionOptionDataVM(new SelectionOptionData(
                 i =>
                 {
-                    if (i != _config.PlayerFormation)
+                    if (i != _config.PlayerFormation || _config.AlwaysSetPlayerFormation)
                     {
                         _config.PlayerFormation = i;
                         _switchFreeCameraLogic.CurrentPlayerFormation = (FormationClass) i;

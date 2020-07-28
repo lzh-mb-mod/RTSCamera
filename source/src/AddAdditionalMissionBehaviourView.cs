@@ -24,7 +24,7 @@ namespace RTSCamera
                 new HideHUDLogic(),
                 new SwitchTeamLogic(),
 
-                new MissionMenuView(),
+                new RTSCameraMenuView(),
                 new FlyCameraMissionView(),
                 new GameKeyConfigView(),
                 new AgentContourMissionView(),

@@ -8,14 +8,14 @@ using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace RTSCamera
 {
-    public class MissionMenuView : MissionMenuViewBase
+    public class RTSCameraMenuView : MissionMenuViewBase
     {
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
-        public MissionMenuView()
-            : base(24, nameof(MissionMenuView))
+        public RTSCameraMenuView()
+            : base(24, nameof(RTSCameraMenuView))
         {
-            this.GetDataSource = () => new MissionMenuVM(Mission, this.OnCloseMenu);
+            this.GetDataSource = () => new RTSCameraMenuVM(Mission, this.OnCloseMenu);
         }
 
         public override void OnMissionScreenTick(float dt)

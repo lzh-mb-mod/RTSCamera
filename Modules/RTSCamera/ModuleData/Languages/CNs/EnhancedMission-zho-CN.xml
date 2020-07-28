@@ -24,22 +24,18 @@
     <string id="RTSCamera_loadedconfig" text="加载配置成功。" />
     <string id="RTSCamera_loadconfigfailed" text="加载配置文件失败。" />
 
-    <string id="RTSCamera_nofriendlybannder" text="关闭队友标识" />
-    <string id="RTSCamera_nokillnotification" text="关闭击杀报告" />
-    <string id="RTSCamera_makegruntvoice" text="下令后士兵回应" />
-    <string id="RTSCamera_hasboundary" text="地图边界" />
-
     <string id="RTSCamera_usefreecamerabydefault" text="默认自由视角" />
     <string id="RTSCamera_switchfreecamera" text="切换自由视角" />
+    <string id="RTSCamera_prevent_player_fighting" text="阻止玩家角色战斗" />
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="切换到自由视角后相机提高的高度" />
     <string id="RTSCamera_playerformation" text="玩家编队" />
-    <string id="RTSCamera_disabledeath" text="禁用死亡" />
-    <string id="RTSCamera_constantspeed" text="恒定速度" />
+    <string id="RTSCamera_always_set_player_formation" text="总是设置玩家编队" />
+    <string id="RTSCamera_constantspeed" text="恒定镜头速度" />
     <string id="RTSCamera_outdoor" text="室外镜头" />
     <string id="RTSCamera_restrictbyboundaries" text="镜头限制在边界内" />
     <string id="RTSCamera_togglepause" text="切换暂停" />
-    <string id="RTSCamera_slowmotionmode" text="变速模式" />
-    <string id="RTSCamera_slowmotionfactor" text="速度倍率" />
+    <string id="RTSCamera_slowmotionmode" text="慢速模式" />
+    <string id="RTSCamera_slowmotionfactor" text="慢速倍率" />
     <string id="RTSCamera_showcontour" text="显示轮廓" />
 
     <string id="RTSCamera_controlalliesoptionsdescription" text="控制队友" />
@@ -50,6 +46,8 @@
 
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="不平衡的选项" />
+    <string id="RTSCamera_disabledeath" text="禁用死亡" />
+    <string id="RTSCamera_switchteam" text="切换队伍" />
     <string id="RTSCamera_hotkey_enabled" text="启用热键" />
 
     <string id="RTSCamera_missionpaused" text="已暂停关卡。" />
@@ -74,7 +72,6 @@
     <string id="RTSCamera_freecamerakey" text="自由视角" />
     <string id="RTSCamera_disabledeathkey" text="禁用死亡" />
     <string id="RTSCamera_controltroopkey" text="控制下属部队" />
-    <string id="RTSCamera_switchteam" text="切换队伍" />
 
     <string id="RTSCamera_enemywipedout" text="敌人已被消灭。" />
     <string id="RTSCamera_switchtoenemyteam" text="已切换至敌军队伍。" />

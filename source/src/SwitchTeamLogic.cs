@@ -33,9 +33,9 @@ namespace RTSCamera
                 Utility.DisplayLocalizedText("str_em_enemy_wiped_out");
                 return;
             }
-            if (!Utility.IsPlayerDead()) // MainAgent may be null because of free camera mode.
+            if (!Utility.IsPlayerDead())
             {
-                Utility.AIControlMainAgent();
+                Utility.AIControlMainAgent(!_config.PreventPlayerFighting);
             }
             Utility.DisplayLocalizedText("str_em_switch_to_enemy_team");
 

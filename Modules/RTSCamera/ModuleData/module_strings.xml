@@ -21,17 +21,13 @@
     <string id="str_em_loaded_config" text="{=RTSCamera_loadedconfig}Loading config succeeded." />
     <string id="str_em_load_config_failed" text="{=RTSCamera_loadconfigfailed}Loading config failed." />
 
-    <string id="str_em_no_friendly_banner" text="{=RTSCamera_nofriendlybannder}No Banner on Friendly Troops" />
-    <string id="str_em_no_kill_notification" text="{=RTSCamera_nokillnotification}No Kill Notification" />
-    <string id="str_em_make_grunt_voice" text="{=RTSCamera_makegruntvoice}Make Grunt Voice" />
-    <string id="str_em_has_boundary" text="{=RTSCamera_hasboundary}Has Boundary" />
-
     <string id="str_em_use_free_camera_by_default" text="{=RTSCamera_usefreecamerabydefault}Use Free Camera By Default" />
     <string id="str_em_switch_free_camera" text="{=RTSCamera_switchfreecamera}Switch Free Camera" />
+    <string id="str_em_prevent_player_fighting" text="{=RTSCamera_prevent_player_fighting}Prevent Player Fighting" />
     <string id="str_em_raised_height_after_switching_to_free_camera" text="{=RTSCamera_raisedheightafterswitchingtofreecamera}Raised Height After Switching to Free Camera" />
     <string id="str_em_player_formation" text="{=RTSCamera_playerformation}Player Formation" />
-    <string id="str_em_disable_death" text="{=RTSCamera_disabledeath}Disable Death" />
-    <string id="str_em_constant_speed" text="{=RTSCamera_constantspeed}Constant Speed" />
+    <string id="str_em_always_set_player_formation" text="{=RTSCamera_always_set_player_formation}Always Set Player Formation" />
+    <string id="str_em_constant_speed" text="{=RTSCamera_constantspeed}Constant Camera Speed" />
     <string id="str_em_outdoor" text="{=RTSCamera_outdoor}Outdoor" />
     <string id="str_em_restrict_by_boundaries" text="{=RTSCamera_restrictbyboundaries}Restrict By Boundaries" />
     <string id="str_em_toggle_pause" text="{=RTSCamera_togglepause}Toggle Pause" />
@@ -46,6 +42,7 @@
     <string id="str_em_control_another_hero" text="{=RTSCamera_controlanotherhero}Control Another Hero" />
 
     <string id="str_em_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Unbalanced Options" />
+    <string id="str_em_disable_death" text="{=RTSCamera_disabledeath}Disable Death" />
     <string id="str_em_switch_team" text="{=RTSCamera_switchteam}Switch Team" />
     <string id="str_em_hotkey_enabled" text="{=RTSCamera_hotkey_enabled}Hotkey enabled" />
 
@@ -71,9 +68,9 @@
     <string id="str_key_name.RTSCameraHotKey_Right" text="{=RTSCamera_freecamerakey}Free Camera" />
     <string id="str_key_name.RTSCameraHotKey_Leave" text="{=RTSCamera_disabledeathkey}Disable Death" />
     <string id="str_key_name.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_controltroopkey}Control Troop" />
+    <!-- same as str_em_toggle_ui -->
     <string id="str_key_name.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_toggleui}Toggle HUD" />
     <string id="str_key_name.RTSCameraHotKey_InitiateTeamChat" text="{=RTSCamera_switchteam}Switch Team" />
-    <!-- same as str_em_toggle_ui -->
 
     
     <string id="str_em_enemy_wiped_out" text="{=RTSCamera_enemywipedout}Enemy has been wiped out." />

@@ -79,6 +79,11 @@ namespace RTSCamera
                 }
             }
 
+            if (Mission.MainAgent != null)
+            {
+                Utility.DisplayMessage($"main agent is alarmed: {Mission.MainAgent.AIStateFlags & Agent.AIStateFlag.Alarmed} is cautious: {Mission.MainAgent.AIStateFlags & Agent.AIStateFlag.Cautious}");
+            }
+
             if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.FreeCamera)))
             {
                 this.SwitchCamera();
@@ -107,17 +112,22 @@ namespace RTSCamera
                 agent.DisableScriptedMovement();
                 agent.AIStateFlags &= ~Agent.AIStateFlag.UseObjectMoving; //agent.AIMoveToGameObjectDisable();
                 agent.AIStateFlags &= ~Agent.AIStateFlag.UseObjectUsing;  // agent.AIUseGameObjectEnable(false);
+                if (_config.AlwaysSetPlayerFormation)
+                    Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
                 if (agent.Formation == null)
                     return;
                 CurrentPlayerFormation = agent.Formation.FormationIndex;
             }
             else if (agent == Mission.MainAgent)
             {
+                if (_config.AlwaysSetPlayerFormation)
+                    Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
                 // the game may crash if no formation has agents and there are agents controlled by AI.
-                if (agent.Formation == null)
+                else if (agent.Formation == null)
                     Utility.SetPlayerFormation(CurrentPlayerFormation);
-                else
-                    CurrentPlayerFormation = agent.Formation.FormationIndex;
+                if (agent.Formation == null)
+                    return;
+                CurrentPlayerFormation = agent.Formation.FormationIndex;
             }
         }
 
@@ -196,7 +206,7 @@ namespace RTSCamera
             isSpectatorCamera = true;
             if (Mission.MainAgent != null)
             {
-                Utility.AIControlMainAgent();
+                Utility.AIControlMainAgent(!_config.PreventPlayerFighting);
             }
 
             ToggleFreeCamera?.Invoke(true);
