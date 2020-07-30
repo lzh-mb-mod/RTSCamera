@@ -79,11 +79,6 @@ namespace RTSCamera
                 }
             }
 
-            if (Mission.MainAgent != null)
-            {
-                Utility.DisplayMessage($"main agent is alarmed: {Mission.MainAgent.AIStateFlags & Agent.AIStateFlag.Alarmed} is cautious: {Mission.MainAgent.AIStateFlags & Agent.AIStateFlag.Cautious}");
-            }
-
             if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.FreeCamera)))
             {
                 this.SwitchCamera();

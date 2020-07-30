@@ -2,6 +2,8 @@
 <base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
   <strings>
+    <string id="str_em_open_menu_hint" text="{=RTSCamera_open_menu_hint}Press {KeyName} in battle to open menu of RTS Camera" />
+
     <string id="str_em_create_default_config" text="{=RTSCamera_createdefaultconfig}Create default config" />
     <string id="str_em_found_old_config" text="{=RTSCamera_foundoldconfig}Found old config file:" />
     <string id="str_em_delete_old_config" text="{=RTSCamera_deleteoldconfig}Delete the old config file." />
@@ -40,6 +42,7 @@
     <string id="str_em_prefer_to_control_companions" text="{=RTSCamera_prefertocontrolcompanions}Prefer To Control Companions" />
     <string id="str_em_control_troops_in_player_party_only" text="{=RTSCamera_controltroopsinplayerpartyonly}Control Troops In Player Party Only" />
     <string id="str_em_control_another_hero" text="{=RTSCamera_controlanotherhero}Control Another Hero" />
+    <string id="str_em_select_character" text="{=RTSCamera_select_character}Select Character" />
 
     <string id="str_em_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Unbalanced Options" />
     <string id="str_em_disable_death" text="{=RTSCamera_disabledeath}Disable Death" />
@@ -71,9 +74,13 @@
     <!-- same as str_em_toggle_ui -->
     <string id="str_key_name.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_toggleui}Toggle HUD" />
     <string id="str_key_name.RTSCameraHotKey_InitiateTeamChat" text="{=RTSCamera_switchteam}Switch Team" />
+    <!-- same as str_em_select_character -->
+    <string id="str_key_name.RTSCameraHotKey_Attack" text="{=RTSCamera_select_character}Select Character" />
 
     
     <string id="str_em_enemy_wiped_out" text="{=RTSCamera_enemywipedout}Enemy has been wiped out." />
     <string id="str_em_switch_to_enemy_team" text="{=RTSCamera_switchtoenemyteam}Switched to the enemy team." />
-  </strings>
+
+    <string id="str_em_select_character_hint" text="{=RTSCamera_select_character_hint}Please Select a character by left click. Then press {KeyName} to lock to it and press again to control it." />
+</strings>
 </base>

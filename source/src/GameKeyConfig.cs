@@ -20,6 +20,7 @@ namespace RTSCamera
         ControlTroop,
         ToggleHUD,
         SwitchTeam,
+        SelectCharacter,
         NumberOfGameKeyEnums,
     }
 
@@ -54,7 +55,7 @@ namespace RTSCamera
     }
     public class GameKeyConfig : RTSCameraConfigBase<GameKeyConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 4);
+        protected static Version BinaryVersion => new Version(1, 5);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -80,6 +81,14 @@ namespace RTSCamera
                     Serialize();
                     goto case "1.4";
                 case "1.4":
+                    if (OpenMenuGameKey.Key == InputKey.O)
+                    {
+                        OpenMenuGameKey.Key = InputKey.L;
+                        FromSerializedGameKeys();
+                        Serialize();
+                    }
+                    goto case "1.5";
+                case "1.5":
                     break;
             }
 
@@ -99,6 +108,7 @@ namespace RTSCamera
                 yield return GameKeyEnum.ControlTroop;
                 yield return GameKeyEnum.ToggleHUD;
                 yield return GameKeyEnum.SwitchTeam;
+                yield return GameKeyEnum.SelectCharacter;
             }
         }
 
@@ -109,7 +119,7 @@ namespace RTSCamera
             Id = ToId(GameKeyEnum.OpenMenu),
             StringId = "",
             GroupId = "RTSCameraHotKey",
-            Key = InputKey.O
+            Key = InputKey.L
         };
 
         public SerializedGameKey PauseGameKey = new SerializedGameKey
@@ -166,6 +176,14 @@ namespace RTSCamera
             StringId = "",
             GroupId = "RTSCameraHotKey",
             Key = InputKey.F11
+        };
+
+        public SerializedGameKey SelectCharacterGameKey = new SerializedGameKey
+        {
+            Id = ToId(GameKeyEnum.SelectCharacter),
+            StringId = "",
+            GroupId = "RTSCameraHotKey",
+            Key = InputKey.SemiColon
         };
 
         private static GameKeyConfig _instance;
@@ -263,6 +281,7 @@ namespace RTSCamera
             this.ControlTroopGameKey = other.ControlTroopGameKey;
             this.ToggleHUDGameKey = other.ToggleHUDGameKey;
             this.SwitchTeamGameKey = other.SwitchTeamGameKey;
+            this.SelectCharacterGameKey = other.SelectCharacterGameKey;
             this._gameKeys = other._gameKeys;
         }
 
@@ -283,6 +302,7 @@ namespace RTSCamera
             ControlTroopGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.ControlTroop));
             ToggleHUDGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.ToggleHUD));
             SwitchTeamGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.SwitchTeam));
+            SelectCharacterGameKey = SerializedGameKey.FromGameKey(GetGameKey(GameKeyEnum.SelectCharacter));
         }
 
         private void FromSerializedGameKeys()
@@ -295,7 +315,8 @@ namespace RTSCamera
             _gameKeys[(int)GameKeyEnum.DisableDeath] = DisableDeathGameKey.ToGameKey();
             _gameKeys[(int)GameKeyEnum.ControlTroop] = ControlTroopGameKey.ToGameKey();
             _gameKeys[(int)GameKeyEnum.ToggleHUD] = ToggleHUDGameKey.ToGameKey();
-            _gameKeys[(int) GameKeyEnum.SwitchTeam] = SwitchTeamGameKey.ToGameKey();
+            _gameKeys[(int)GameKeyEnum.SwitchTeam] = SwitchTeamGameKey.ToGameKey();
+            _gameKeys[(int) GameKeyEnum.SelectCharacter] = SelectCharacterGameKey.ToGameKey();
         }
 
         public string ConfigVersion { get; set; } = BinaryVersion.ToString(2);

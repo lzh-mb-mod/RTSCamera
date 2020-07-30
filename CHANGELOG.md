@@ -1,5 +1,16 @@
 # Changelog
 
+## [e3.5.4] - 2020-07-29
+### Added
+- Add feature: You can press `;` then left click to select a soldier, then lock camera to it or control it by pressing `F`.
+
+- Add an option to prevent player fighting, to solve the problem that player character may charge into enemy formation when switched to free camera mode.
+
+- Add an option to always set player's formation.
+
+### Changed
+- The default key to open RTS menu is changed from 'O' to 'L'.
+
 ## [e3.5.3] - 2020-06-07
 ### Fixed
 - Fix the problem that changing config file may not work.

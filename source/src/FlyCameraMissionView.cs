@@ -33,6 +33,18 @@ namespace RTSCamera
         private bool _levelToEdge;
         private bool _lockToAgent;
 
+        public bool LockToAgent
+        {
+            get => _lockToAgent;
+            set
+            {
+                if (value == _lockToAgent)
+                    return;
+                _forceMove = false;
+                _lockToAgent = value;
+            }
+        }
+
         private bool _forceMove;
         private Vec3 _forceMoveVec;
         private float _forceMoveInvertedProgress;
@@ -59,7 +71,7 @@ namespace RTSCamera
             set
             {
                 _cameraViewAngle = value;
-                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || _lockToAgent)
+                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || LockToAgent)
                     return;
                 UpdateViewAngle();
             }
@@ -80,7 +92,7 @@ namespace RTSCamera
             set
             {
                 _depthOfFieldDistance = value;
-                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || _lockToAgent)
+                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || LockToAgent)
                     return;
                 UpdateDof();
 
@@ -93,7 +105,7 @@ namespace RTSCamera
             set
             {
                 _depthOfFieldStart = value;
-                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || _lockToAgent)
+                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || LockToAgent)
                     return;
                 UpdateDof();
             }
@@ -105,7 +117,7 @@ namespace RTSCamera
             set
             {
                 _depthOfFieldEnd = value;
-                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || _lockToAgent)
+                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || LockToAgent)
                     return;
                 UpdateDof();
             }
@@ -179,7 +191,7 @@ namespace RTSCamera
 
         public override bool UpdateOverridenCamera(float dt)
         {
-            if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || _lockToAgent)
+            if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || LockToAgent)
                 return base.UpdateOverridenCamera(dt);
 
             UpdateFlyCamera(dt);
@@ -192,7 +204,7 @@ namespace RTSCamera
                 Mission.MissionBehaviours.FirstOrDefault(
                         b => !(b is FlyCameraMissionView) && b is ICameraModeLogic) as
                     ICameraModeLogic;
-            return _lockToAgent && (_freeCameraLogic?.isSpectatorCamera ?? false)
+            return LockToAgent && (_freeCameraLogic?.isSpectatorCamera ?? false)
                 ? SpectatorCameraTypes.LockToAnyAgent
                 : otherCameraModeLogic?.GetMissionCameraLockMode(lockedToMainPlayer) ?? SpectatorCameraTypes.Invalid;
         }
@@ -228,7 +240,7 @@ namespace RTSCamera
                 _missionMainAgentController.IsDisabled = freeCamera;
             }
 
-            _lockToAgent = false;
+            LockToAgent = false;
             if (freeCamera)
             {
                 CameraBearing = MissionScreen.CameraBearing;
@@ -553,20 +565,20 @@ namespace RTSCamera
 
             if (_orderUIHandler != null)
                 UpdateDragData();
-            if (!_isOrderViewOpen &&
-                (Input.IsGameKeyReleased(8) ||
-                 (Input.IsGameKeyReleased(9) && !_rightButtonDraggingMode)))
-            {
-                _lockToAgent = true;
-            }
+            //if (!_isOrderViewOpen &&
+            //    (Input.IsGameKeyReleased(8) ||
+            //     (Input.IsGameKeyReleased(9) && !_rightButtonDraggingMode)))
+            //{
+            //    LockToAgent = true;
+            //}
 
-            else if (_lockToAgent && (Math.Abs(Input.GetDeltaMouseScroll()) > 0.0001f ||
+            if (LockToAgent && (Math.Abs(Input.GetDeltaMouseScroll()) > 0.0001f ||
                                  Input.IsGameKeyDown(0) || Input.IsGameKeyDown(1) ||
                                  Input.IsGameKeyDown(2) || Input.IsGameKeyDown(3) || Input.GetIsControllerConnected() &&
                                  (Input.GetKeyState(InputKey.ControllerLStick).y != 0.0 ||
                                   Input.GetKeyState(InputKey.ControllerLStick).x != 0.0)))
             {
-                _lockToAgent = false;
+                LockToAgent = false;
                 CameraBearing = MissionScreen.CameraBearing;
                 CameraElevation = MissionScreen.CameraElevation;
             }

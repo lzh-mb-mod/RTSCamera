@@ -4,7 +4,9 @@ using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
+using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera
@@ -15,13 +17,27 @@ namespace RTSCamera
         {
             if (!RTSCameraConfig.Get().DisplayMessage)
                 return;
-            DisplayMessageImpl(GameTexts.FindText(id, variation).ToString());
+            try
+            {
+                DisplayMessageImpl(GameTexts.FindText(id, variation).ToString());
+            }
+            catch
+            {
+                // ignored
+            }
         }
         public static void DisplayLocalizedText(string id, string variation, Color color)
         {
             if (!RTSCameraConfig.Get().DisplayMessage)
                 return;
-            DisplayMessageImpl(GameTexts.FindText(id, variation).ToString(), color);
+            try
+            {
+                DisplayMessageImpl(GameTexts.FindText(id, variation).ToString(), color);
+            }
+            catch
+            {
+                // ignored
+            }
         }
         public static void DisplayMessage(string msg)
         {
@@ -44,6 +60,23 @@ namespace RTSCamera
         private static void DisplayMessageImpl(string str, Color color)
         {
             InformationManager.DisplayMessage(new InformationMessage("RTS Camera: " + str, color));
+        }
+
+        public static void PrintOpenMenuHint()
+        {
+            var keyName = TextForKey(GameKeyConfig.Get().GetKey(GameKeyEnum.OpenMenu));
+            GameTexts.SetVariable("KeyName", keyName);
+            var hint = Module.CurrentModule.GlobalTextManager.FindText("str_em_open_menu_hint").ToString();
+            if (Mission.Current == null)
+                DisplayMessageImpl(hint);
+            else
+                DisplayMessage(hint);
+        }
+
+        public static TextObject TextForKey(InputKey key)
+        {
+           return  Module.CurrentModule.GlobalTextManager.FindText("str_game_key_text",
+                new Key(key).ToString().ToLower());
         }
 
         public static bool IsAgentDead(Agent agent)
@@ -112,7 +145,16 @@ namespace RTSCamera
         {
             var mission = Mission.Current;
             mission.MainAgent.Controller = Agent.ControllerType.AI;
-            SetMainAgentAlarmed(alarmed);
+            if (alarmed)
+            {
+                if ((mission.MainAgent.AIStateFlags & Agent.AIStateFlag.Alarmed) == Agent.AIStateFlag.None)
+                    SetMainAgentAlarmed(true);
+            }
+            else
+            {
+                SetMainAgentAlarmed(false);
+            }
+
             // avoid crash after victory. After victory, team ai decision won't be made so that current tactics won't be updated.
             if (mission.MissionEnded())
                 mission.AllowAiTicking = false;

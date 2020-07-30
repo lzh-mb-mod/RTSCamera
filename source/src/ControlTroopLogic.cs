@@ -18,6 +18,9 @@ namespace RTSCamera
 
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
+        private SwitchFreeCameraLogic _switchFreeCameraLogic;
+        private FlyCameraMissionView _flyCameraMissionView;
+        private SelectCharacterView _selectCharacterView;
 
         public event Action MainAgentWillBeChangedToAnotherOne; 
         public bool ControlTroop()
@@ -26,8 +29,7 @@ namespace RTSCamera
             {
                 var missionScreen = ScreenManager.TopScreen as MissionScreen;
                 Agent closestAllyAgent =
-                    (missionScreen?.LastFollowedAgent?.IsActive() ?? false) &&
-                    missionScreen?.LastFollowedAgent.Team == Mission.PlayerTeam
+                    (missionScreen?.LastFollowedAgent?.IsActive() ?? false)
                         ? missionScreen?.LastFollowedAgent
                         : GetAgentToControl() ?? this.Mission.PlayerTeam.Leader;
                 if (closestAllyAgent == Mission.MainAgent)
@@ -42,6 +44,8 @@ namespace RTSCamera
         {
             if (agent != null)
             {
+                if (agent.Team != Mission.PlayerTeam)
+                    return false;
                 if (!Utility.IsPlayerDead())
                 {
                     MainAgentWillBeChangedToAnotherOne?.Invoke();
@@ -57,6 +61,21 @@ namespace RTSCamera
                 Utility.DisplayLocalizedText("str_em_no_troop_to_control");
                 return false;
             }
+        }
+
+        public bool FocusOnAgent(Agent agent)
+        {
+            var missionScreen = ScreenManager.TopScreen as MissionScreen;
+            if (missionScreen == null)
+                return false;
+            if (!_switchFreeCameraLogic.isSpectatorCamera)
+                _switchFreeCameraLogic.SwitchCamera();
+            if (!_flyCameraMissionView.LockToAgent)
+                _flyCameraMissionView.LockToAgent = true;
+            
+            typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true)
+                .Invoke(missionScreen, new[] { agent });
+            return true;
         }
 
         private Agent GetAgentToControl()
@@ -83,6 +102,9 @@ namespace RTSCamera
             base.OnBehaviourInitialize();
 
             Mission.OnMainAgentChanged += OnMainAgentChanged;
+            _switchFreeCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
+            _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
+            _selectCharacterView = Mission.GetMissionBehaviour<SelectCharacterView>();
         }
 
         public override void OnRemoveBehaviour()
@@ -98,11 +120,16 @@ namespace RTSCamera
 
             if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ControlTroop)))
             {
-                if (!ControlTroop())
-                    return;
-                var switchFreeCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
-                if (switchFreeCameraLogic != null && switchFreeCameraLogic.isSpectatorCamera)
-                    switchFreeCameraLogic.SwitchCamera();
+                if (_selectCharacterView.SelectedAgent != null)
+                {
+                    if (FocusOnAgent(_selectCharacterView.SelectedAgent))
+                        _selectCharacterView.IsSelectingCharacter = false;
+                }
+                else if (ControlTroop())
+                {
+                    if (_switchFreeCameraLogic != null && _switchFreeCameraLogic.isSpectatorCamera)
+                        _switchFreeCameraLogic.SwitchCamera();
+                }
             }
         }
 

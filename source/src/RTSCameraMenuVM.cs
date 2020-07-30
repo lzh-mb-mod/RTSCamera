@@ -16,6 +16,7 @@ namespace RTSCamera
         private readonly GameKeyConfigView _gameKeyConfigView;
         private readonly HideHUDLogic _hideHudLogic;
         private readonly AgentContourMissionView _contourView;
+        private readonly SelectCharacterView _selectCharacterView;
 
         private SelectionOptionDataVM _playerFormation;
         private SelectionOptionDataVM _controlAnotherHero;
@@ -46,6 +47,8 @@ namespace RTSCamera
 
         public string ControlAlliesOptionsDescriptionString { get; } =
             GameTexts.FindText("str_em_control_allies_options_description").ToString();
+
+        public string SelectCharacterString { get; } = GameTexts.FindText("str_em_select_character").ToString();
 
         public string ControlAlliesAfterDeathString { get; } =
             GameTexts.FindText("str_em_control_allies_after_death").ToString();
@@ -236,6 +239,12 @@ namespace RTSCamera
             _gameKeyConfigView?.Activate();
         }
 
+        public void SelectCharacter()
+        {
+            _selectCharacterView.IsSelectingCharacter = true;
+            CloseMenu();
+        }
+
         [DataSourceProperty]
         public bool ControlAlliesAfterDeath
         {
@@ -369,16 +378,17 @@ namespace RTSCamera
             _hideHudLogic = Mission.Current.GetMissionBehaviour<HideHUDLogic>();
             _hideHudLogic?.BeginTemporarilyOpenUI();
 
-            ControlAnotherHero = new SelectionOptionDataVM(
-                new ControlTroopsSelectionData().SelectionOptionData,
-                GameTexts.FindText("str_em_control_another_hero"));
-
             Extensions = new MBBindingList<ExtensionVM>();
             foreach (var extension in RTSCameraExtension.Extensions)
             {
                 Extensions.Add(new ExtensionVM(extension.ButtonName, () => extension.OpenExtensionMenu(_mission)));
             }
             _gameKeyConfigView = Mission.Current.GetMissionBehaviour<GameKeyConfigView>();
+
+            ControlAnotherHero = new SelectionOptionDataVM(
+                new ControlTroopsSelectionData().SelectionOptionData,
+                GameTexts.FindText("str_em_control_another_hero"));
+            _selectCharacterView = Mission.Current.GetMissionBehaviour<SelectCharacterView>();
         }
     }
 }

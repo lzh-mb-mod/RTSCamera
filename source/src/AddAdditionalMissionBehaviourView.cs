@@ -15,6 +15,8 @@ namespace RTSCamera
             var config = RTSCameraConfig.Get();
             List<MissionBehaviour> list = new List<MissionBehaviour>
             {
+                new SelectCharacterView(),
+
                 new DisableDeathLogic(config),
                 new MissionSpeedLogic(),
                 new SwitchFreeCameraLogic(config),
@@ -28,7 +30,7 @@ namespace RTSCamera
                 new FlyCameraMissionView(),
                 new GameKeyConfigView(),
                 new AgentContourMissionView(),
-                new RTSCameraOrderTroopPlacer(),
+                new RTSCameraOrderTroopPlacer()
             };
 
 

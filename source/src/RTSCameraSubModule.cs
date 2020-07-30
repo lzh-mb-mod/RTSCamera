@@ -73,6 +73,8 @@ namespace RTSCamera
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera: patch failed"));
             }
+
+            Utility.PrintOpenMenuHint();
         }
 
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)

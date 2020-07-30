@@ -250,12 +250,24 @@
             <ListPanel Id="AfterDeathOptions" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginTop="10" MarginLeft="50">
               <Children>
 
-                <ListPanel DataSource="{ControlAnotherHero}" LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
                   <Children>
 
-                    <RichTextWidget Text="@Name" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                    <ListPanel DataSource="{ControlAnotherHero}" LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
 
-                    <Standard.DropdownWithHorizontalControl Id="StringOption" HorizontalAlignment="Center" VerticalAlignment="Center" Parameter.SelectorDataSource="{Selector}" />
+                        <RichTextWidget Text="@Name" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+
+                        <Standard.DropdownWithHorizontalControl Id="StringOption" HorizontalAlignment="Center" VerticalAlignment="Center" Parameter.SelectorDataSource="{Selector}" />
+
+                      </Children>
+                    </ListPanel>
+
+                    <ButtonWidget Command.Click="SwitchFreeCamera" IsVisible="@SwitchFreeCameraEnabled" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
+                      <Children>
+                        <TextWidget Text="@SwitchFreeCameraString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
+                      </Children>
+                    </ButtonWidget>
 
                   </Children>
                 </ListPanel>

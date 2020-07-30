@@ -18,6 +18,13 @@ namespace RTSCamera
             this.GetDataSource = () => new RTSCameraMenuVM(Mission, this.OnCloseMenu);
         }
 
+        public override void OnMissionScreenInitialize()
+        {
+            base.OnMissionScreenInitialize();
+
+            Utility.PrintOpenMenuHint();
+        }
+
         public override void OnMissionScreenTick(float dt)
         {
             base.OnMissionScreenTick(dt);

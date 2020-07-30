@@ -36,7 +36,7 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features in b
 
 - After entering a mission (scene):
 
-  - Press `O(letter)` (by default) to open menu of this mod. You can access the features of this mod in it.
+  - Press `L(letter)` (by default) to open menu of this mod. You can access the features of this mod in it.
 
   - You can select troops by directly clicking on them. Press `shift` to prevent issuing movement orders, in case you only want to select troops but accidentally click on the ground. Press `F1` to prevent selecting troops, in case you only want to issue movement orders next but accidentally click on a troop.
 
@@ -54,7 +54,9 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features in b
 
   - Press `]` to toggle HUD. Or if you rebind the key and forget what you have set, you can also press `Home` key to toggle UI, which always works.
 
-  - Press `F11` to switch to enemy's team. Useful for making videos.
+  - Press `F11` to switch to enemy's team(You need to enable hotkey for it in menu first). Useful for making videos.
+
+  - Press `;` and left click to select a soldier. You can lock camera to the selected soldier by pressing `F`, and then control it by pressing `F` again.
 
 - How to control rts camera:
 

@@ -5,6 +5,8 @@
     <tag language="English" />
   </tags>
   <strings>
+    <string id="RTSCamera_open_menu_hint" text="Press {KeyName} in battle to open menu of RTS Camera" />
+
     <string id="RTSCamera_createdefaultconfig" text="Create default config" />
     <string id="RTSCamera_foundoldconfig" text="Found old config file:" />
     <string id="RTSCamera_deleteoldconfig" text="Delete the old config file." />
@@ -43,6 +45,7 @@
     <string id="RTSCamera_prefertocontrolcompanions" text="Prefer To Control Companions" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
     <string id="RTSCamera_controlanotherhero" text="Control Another Hero" />
+    <string id="RTSCamera_select_character" text="Select Character" />
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="Unbalanced Options" />
     <string id="RTSCamera_disabledeath" text="Disable Death" />
@@ -74,5 +77,7 @@
 
     <string id="RTSCamera_enemywipedout" text="Enemy has been wiped out." />
     <string id="RTSCamera_switchtoenemyteam" text="Switched to the enemy team." />
+
+    <string id="RTSCamera_select_character_hint" text="Please Select a character by left click. Then press {KeyName} to lock to it and press again to control it." />
   </strings>
 </base>

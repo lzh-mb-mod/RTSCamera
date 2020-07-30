@@ -1,0 +1,9 @@
+<Prefab>
+  <Window>
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="RTSCamera.TransparentBrush">
+      <Children>
+        <TextWidget Text="@SelectCharacterHintString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>
