@@ -338,49 +338,49 @@ namespace RTSCamera
             int pressedIndex = -1;
             if (!this.DebugInput.IsControlDown())
             {
-                if (this.Input.IsGameKeyPressed(51))
+                if (this.Input.IsGameKeyPressed(52))
                     pressedIndex = 0;
-                else if (this.Input.IsGameKeyPressed(52))
-                    pressedIndex = 1;
                 else if (this.Input.IsGameKeyPressed(53))
-                    pressedIndex = 2;
+                    pressedIndex = 1;
                 else if (this.Input.IsGameKeyPressed(54))
-                    pressedIndex = 3;
+                    pressedIndex = 2;
                 else if (this.Input.IsGameKeyPressed(55))
-                    pressedIndex = 4;
+                    pressedIndex = 3;
                 else if (this.Input.IsGameKeyPressed(56))
-                    pressedIndex = 5;
+                    pressedIndex = 4;
                 else if (this.Input.IsGameKeyPressed(57))
-                    pressedIndex = 6;
+                    pressedIndex = 5;
                 else if (this.Input.IsGameKeyPressed(58))
-                    pressedIndex = 7;
+                    pressedIndex = 6;
                 else if (this.Input.IsGameKeyPressed(59))
+                    pressedIndex = 7;
+                else if (this.Input.IsGameKeyPressed(60))
                     pressedIndex = 8;
             }
             if (pressedIndex > -1)
                 this.dataSource.OnGiveOrder(pressedIndex);
             int formationTroopIndex = -1;
-            if (this.Input.IsGameKeyPressed(60))
+            if (this.Input.IsGameKeyPressed(61))
                 formationTroopIndex = 100;
-            else if (this.Input.IsGameKeyPressed(61))
-                formationTroopIndex = 0;
             else if (this.Input.IsGameKeyPressed(62))
-                formationTroopIndex = 1;
+                formationTroopIndex = 0;
             else if (this.Input.IsGameKeyPressed(63))
-                formationTroopIndex = 2;
+                formationTroopIndex = 1;
             else if (this.Input.IsGameKeyPressed(64))
-                formationTroopIndex = 3;
+                formationTroopIndex = 2;
             else if (this.Input.IsGameKeyPressed(65))
-                formationTroopIndex = 4;
+                formationTroopIndex = 3;
             else if (this.Input.IsGameKeyPressed(66))
-                formationTroopIndex = 5;
+                formationTroopIndex = 4;
             else if (this.Input.IsGameKeyPressed(67))
-                formationTroopIndex = 6;
+                formationTroopIndex = 5;
             else if (this.Input.IsGameKeyPressed(68))
+                formationTroopIndex = 6;
+            else if (this.Input.IsGameKeyPressed(69))
                 formationTroopIndex = 7;
             if (formationTroopIndex != -1)
                 this.dataSource.OnSelect(formationTroopIndex);
-            if (!this.Input.IsGameKeyPressed(50))
+            if (!this.Input.IsGameKeyPressed(51))
                 return;
             this.dataSource.ViewOrders();
         }

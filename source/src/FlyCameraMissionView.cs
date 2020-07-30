@@ -29,7 +29,6 @@ namespace RTSCamera
         private bool _resetDraggingMode;
         private bool _rightButtonDraggingMode;
         private Vec2 _clickedPositionPixel = Vec2.Zero;
-        private bool _setCombatActionOnNextTick;
         private bool _levelToEdge;
         private bool _lockToAgent;
 
@@ -178,17 +177,6 @@ namespace RTSCamera
             _config = null;
         }
 
-        public override void OnMissionScreenTick(float dt)
-        {
-            base.OnMissionScreenTick(dt);
-
-            if (_setCombatActionOnNextTick)
-            {
-                _setCombatActionOnNextTick = false;
-                Agent.Main?.SetIsCombatActionsDisabled(false);
-            }
-        }
-
         public override bool UpdateOverridenCamera(float dt)
         {
             if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || LockToAgent)
@@ -226,10 +214,6 @@ namespace RTSCamera
         private void OnToggleOrderViewEvent(MissionPlayerToggledOrderViewEvent e)
         {
             _isOrderViewOpen = e.IsOrderEnabled;
-            bool freeCamera = _freeCameraLogic != null && _freeCameraLogic.isSpectatorCamera;
-            _orderUIHandler.gauntletLayer.InputRestrictions.SetMouseVisibility(freeCamera && _isOrderViewOpen);
-            if (freeCamera && _isOrderViewOpen)
-                _setCombatActionOnNextTick = true;
         }
 
         private void OnToggleFreeCamera(bool freeCamera)

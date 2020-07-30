@@ -1,6 +1,10 @@
 # Changelog
 
-## [e3.5.4] - 2020-07-29
+## [e3.5.5] - 2020-07-31
+### Fixed
+- Keep compatible with Bannerlord e1.4.3.
+
+## [e3.5.4] - 2020-07-31
 ### Added
 - Add feature: You can press `;` then left click to select a soldier, then lock camera to it or control it by pressing `F`.
 
