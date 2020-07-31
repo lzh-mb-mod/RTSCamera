@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.5.6] - 2020-07-31
+### Fixed
+- Fix the problem that selecting character hint may be shown after conversation.
+
 ## [e3.5.5] - 2020-07-31
 ### Fixed
 - Keep compatible with Bannerlord e1.4.3.
