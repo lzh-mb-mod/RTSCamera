@@ -39,14 +39,11 @@ namespace RTSCamera
                     GameTexts.SetVariable("KeyName",
                         Utility.TextForKey(GameKeyConfig.Get().GetKey(GameKeyEnum.ControlTroop)));
                     _dataSource.SelectCharacterHintString = GameTexts.FindText("str_em_select_character_hint").ToString();
-                }
-                ScreenManager.SetSuspendLayer(_gauntletLayer, !_isSelectingCharacter);
-                if (_isSelectingCharacter)
-                {
-                    ScreenManager.TrySetFocus(_gauntletLayer);
+                    Activate();
                 }
                 else
                 {
+                    Deactivate();
                     MouseOverAgent = null;
                     SelectedAgent = null;
                 }
@@ -84,13 +81,6 @@ namespace RTSCamera
             base.OnMissionScreenInitialize();
 
             ViewOrderPriorty = 26;
-            _gauntletLayer = new GauntletLayer(this.ViewOrderPriorty) { IsFocusLayer = false };
-            _dataSource = new SelectCharacterVM();
-            _gauntletLayer.LoadMovie(nameof(SelectCharacterView), _dataSource);
-            _gauntletLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
-            MissionScreen.AddLayer(_gauntletLayer);
-            ScreenManager.SetSuspendLayer(_gauntletLayer, true);
-
             _controlTroopLogic = Mission.GetMissionBehaviour<ControlTroopLogic>();
             _switchFreeCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
             _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
@@ -103,11 +93,9 @@ namespace RTSCamera
         {
             base.OnMissionScreenFinalize();
 
-            _dataSource.OnFinalize();
-            _dataSource = null;
-            _gauntletLayer.InputRestrictions.ResetInputRestrictions();
-            MissionScreen.RemoveLayer(_gauntletLayer);
-            _gauntletLayer = null;
+            Deactivate();
+            _mouseOverAgent = null;
+            _selectedAgent = null;
             if (_switchTeamLogic != null)
                 _switchTeamLogic.PostSwitchTeam -= OnPostSwitchTeam;
         }
@@ -117,6 +105,28 @@ namespace RTSCamera
             base.OnAgentCreated(agent);
 
             agent.AddComponent(new AgentContourComponent(agent));
+        }
+
+        private void Activate()
+        {
+            _gauntletLayer = new GauntletLayer(this.ViewOrderPriorty) { IsFocusLayer = false };
+            _dataSource = new SelectCharacterVM();
+            _gauntletLayer.LoadMovie(nameof(SelectCharacterView), _dataSource);
+            _gauntletLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+            MissionScreen.AddLayer(_gauntletLayer);
+            ScreenManager.SetSuspendLayer(_gauntletLayer, true);
+        }
+
+        private void Deactivate()
+        {
+            _dataSource?.OnFinalize();
+            _dataSource = null;
+            if (_gauntletLayer != null)
+            {
+                _gauntletLayer.InputRestrictions.ResetInputRestrictions();
+                MissionScreen.RemoveLayer(_gauntletLayer);
+                _gauntletLayer = null;
+            }
         }
 
         public override void OnMissionScreenTick(float dt)
@@ -136,7 +146,7 @@ namespace RTSCamera
                 SelectCharacter();
             }
 
-            if (_gauntletLayer.Input.IsKeyPressed(InputKey.LeftMouseButton))
+            if (_gauntletLayer != null && _gauntletLayer.Input.IsKeyPressed(InputKey.LeftMouseButton))
             {
                 SelectedAgent = MouseOverAgent;
             }
