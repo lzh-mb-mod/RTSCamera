@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.5.7] - 2020-07-31
+### Fixed
+- Fix selecting character feature.
+
 ## [e3.5.6] - 2020-07-31
 ### Fixed
 - Fix the problem that selecting character hint may be shown after conversation.

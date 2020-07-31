@@ -38,8 +38,8 @@ namespace RTSCamera
                 {
                     GameTexts.SetVariable("KeyName",
                         Utility.TextForKey(GameKeyConfig.Get().GetKey(GameKeyEnum.ControlTroop)));
-                    _dataSource.SelectCharacterHintString = GameTexts.FindText("str_em_select_character_hint").ToString();
                     Activate();
+                    _dataSource.SelectCharacterHintString = GameTexts.FindText("str_em_select_character_hint").ToString();
                 }
                 else
                 {
