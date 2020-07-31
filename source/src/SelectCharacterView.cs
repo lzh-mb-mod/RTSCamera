@@ -39,7 +39,6 @@ namespace RTSCamera
                     GameTexts.SetVariable("KeyName",
                         Utility.TextForKey(GameKeyConfig.Get().GetKey(GameKeyEnum.ControlTroop)));
                     Activate();
-                    _dataSource.SelectCharacterHintString = GameTexts.FindText("str_em_select_character_hint").ToString();
                 }
                 else
                 {
@@ -114,7 +113,6 @@ namespace RTSCamera
             _gauntletLayer.LoadMovie(nameof(SelectCharacterView), _dataSource);
             _gauntletLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
             MissionScreen.AddLayer(_gauntletLayer);
-            ScreenManager.SetSuspendLayer(_gauntletLayer, true);
         }
 
         private void Deactivate()
