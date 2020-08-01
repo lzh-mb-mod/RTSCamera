@@ -214,6 +214,9 @@ namespace RTSCamera
         private void OnToggleOrderViewEvent(MissionPlayerToggledOrderViewEvent e)
         {
             _isOrderViewOpen = e.IsOrderEnabled;
+            bool freeCamera = _freeCameraLogic != null && _freeCameraLogic.isSpectatorCamera;
+            _orderUIHandler?.gauntletLayer.InputRestrictions.SetMouseVisibility(freeCamera && _isOrderViewOpen);
+
         }
 
         private void OnToggleFreeCamera(bool freeCamera)

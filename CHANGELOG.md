@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.5.8] - 2020-08-01
+### Fixed
+- Fix the problem that cursor is not shown when give commands in free camera mode.
+
 ## [e3.5.7] - 2020-07-31
 ### Fixed
 - Fix selecting character feature.
