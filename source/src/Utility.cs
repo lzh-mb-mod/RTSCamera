@@ -117,8 +117,14 @@ namespace RTSCamera
                 mission.MainAgent.Formation?.FormationIndex != formationClass)
             {
                 var formation = mission.PlayerTeam.GetFormation(formationClass);
-                if (formation.CountOfUnits == 0 && formation.IsAIControlled)
-                    formation.IsAIControlled = false;
+                if (formation.CountOfUnits == 0)
+                {
+                    if (formation.IsAIControlled)
+                        formation.IsAIControlled = false;
+                    // fix crash when begin a battle and assign player to an empty formation, then give it an shield wall order.
+                    formation.MovementOrder = MovementOrder.MovementOrderMove(mission.MainAgent.GetWorldPosition());
+                }
+
                 mission.MainAgent.Formation = formation;
             }
         }

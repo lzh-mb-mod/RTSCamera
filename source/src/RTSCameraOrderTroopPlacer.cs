@@ -15,7 +15,7 @@ namespace RTSCamera
     public class RTSCameraOrderTroopPlacer : MissionView
     {
         private SwitchTeamLogic _controller;
-        private AgentContourMissionView _contourView;
+        private FormationColorMissioView _contourView;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private void RegisterReload()
         {
@@ -41,7 +41,7 @@ namespace RTSCamera
         {
             base.OnMissionScreenInitialize();
             RegisterReload();
-            _contourView = Mission.GetMissionBehaviour<AgentContourMissionView>();
+            _contourView = Mission.GetMissionBehaviour<FormationColorMissioView>();
         }
 
         private bool _suspendTroopPlacer;
@@ -460,7 +460,7 @@ namespace RTSCamera
                     }
                     else
                     {
-                        //PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, _clickedFormation);
+                        PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, _clickedFormation);
                         //foreach (var selectedFormation in PlayerOrderController.SelectedFormations)
                         //{
                         //    selectedFormation.ApplyActionOnEachUnit(unit =>
@@ -543,12 +543,12 @@ namespace RTSCamera
                         agent = agent.RiderAgent;
                     if (_config.ShowContour && !IsDrawingForced && !_formationDrawingMode && agent?.Formation != null)
                     {
-                        //cursorState = agent.Formation.Team.IsEnemyOf(Mission.PlayerTeam)
-                        //    ? CursorState.Enemy
-                        //    : CursorState.Friend;
+                        cursorState = agent.Formation.Team.IsEnemyOf(Mission.PlayerTeam)
+                            ? CursorState.Enemy
+                            : CursorState.Friend;
                         // don't click enemy because charge to enemy is not implemented now.
-                        if (!agent.Formation.Team.IsEnemyOf(Mission.PlayerTeam))
-                            cursorState = CursorState.Friend;
+                        //if (!agent.Formation.Team.IsEnemyOf(Mission.PlayerTeam))
+                        //    cursorState = CursorState.Friend;
                         _mouseOverFormation = agent.Formation;
                     }
                     else

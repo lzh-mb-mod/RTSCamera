@@ -56,7 +56,7 @@ namespace RTSCamera
             {
                 if (_mouseOverAgent == value)
                     return;
-                _mouseOverAgent?.GetComponent<AgentContourComponent>()?.SetContourColor(3, null, false);
+                _mouseOverAgent?.GetComponent<AgentContourComponent>()?.SetContourColor((int)ColorLevel.MouseOverAgent, null, false);
                 _mouseOverAgent = value;
                 SetMouseOver(value);
             }
@@ -69,7 +69,7 @@ namespace RTSCamera
             {
                 if (_selectedAgent == value)
                     return;
-                _selectedAgent?.GetComponent<AgentContourComponent>()?.SetContourColor(2, null, false);
+                _selectedAgent?.GetComponent<AgentContourComponent>()?.SetContourColor((int)ColorLevel.SelectedAgent, null, false);
                 _selectedAgent = value;
                 SetSelected(value);
             }
@@ -104,6 +104,13 @@ namespace RTSCamera
             base.OnAgentCreated(agent);
 
             agent.AddComponent(new AgentContourComponent(agent));
+        }
+
+        public override void OnEarlyAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
+        {
+            base.OnEarlyAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
+
+            affectedAgent.GetComponent<AgentContourComponent>()?.ClearContourColor();
         }
 
         private void Activate()
@@ -158,12 +165,12 @@ namespace RTSCamera
 
         private void SetMouseOver(Agent agent)
         {
-            agent?.GetComponent<AgentContourComponent>()?.SetContourColor(3, Utility.IsEnemy(agent) ? EnemyMouseOverColor : MouseOverColor, true);
+            agent?.GetComponent<AgentContourComponent>()?.SetContourColor((int)ColorLevel.MouseOverAgent, Utility.IsEnemy(agent) ? EnemyMouseOverColor : MouseOverColor, true);
         }
 
         private void SetSelected(Agent agent)
         {
-            agent?.GetComponent<AgentContourComponent>()?.SetContourColor(2, Utility.IsEnemy(agent) ? EnemySelectedColor : SelectedColor, true);
+            agent?.GetComponent<AgentContourComponent>()?.SetContourColor((int)ColorLevel.SelectedAgent, Utility.IsEnemy(agent) ? EnemySelectedColor : SelectedColor, true);
         }
 
         private void SelectCharacter()

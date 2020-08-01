@@ -25,9 +25,12 @@ namespace RTSCamera
             if (Mission.PlayerEnemyTeam == null)
                 return;
             bool firstTime = Mission.PlayerEnemyTeam.PlayerOrderController.Owner == null;
-            var targetAgent = !Utility.IsAgentDead(Mission.PlayerEnemyTeam.PlayerOrderController.Owner)
+            var targetAgent = Mission.PlayerEnemyTeam.PlayerOrderController.Owner;
+            // Fix a rare crash in e1.4.3 when targetAgent.Team == null && targetAgent.IsDeleted == true and even **targetAgent.IsActive() == true**.
+            targetAgent = !Utility.IsAgentDead(targetAgent) && targetAgent?.Team != null
                 ? Mission.PlayerEnemyTeam.PlayerOrderController.Owner
                 : !Utility.IsAgentDead(Mission.PlayerEnemyTeam.GeneralAgent) ? Mission.PlayerEnemyTeam.GeneralAgent : Mission.PlayerEnemyTeam.Leader;
+            
             if (targetAgent == null)
             {
                 Utility.DisplayLocalizedText("str_em_enemy_wiped_out");

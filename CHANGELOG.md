@@ -1,5 +1,12 @@
 # Changelog
 
+## [e3.5.9] - 2020-08-02
+### Added
+- Enable feature that you can select formation by directly click on them.
+
+### Fixed
+- Fix crash when entering battle, assigning player to an empty formation and then giving an order such as shield wall.
+
 ## [e3.5.8] - 2020-08-01
 ### Fixed
 - Fix the problem that cursor is not shown when give commands in free camera mode.

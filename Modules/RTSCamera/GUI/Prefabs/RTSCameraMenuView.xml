@@ -171,7 +171,7 @@
 
             <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
               <Children>
-                <!-- <TextWidget Text="@ShowContourString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextWidget Text="@ShowContourString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
                   <Children>
                     <ButtonWidget IsSelected="@ShowContour" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
@@ -180,7 +180,7 @@
                       </Children>
                     </ButtonWidget>
                   </Children>
-                </Widget> -->
+                </Widget>
 
                 <TextWidget Text="@DisplayMessageString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">

@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using RTSCamera.src;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
@@ -16,7 +15,7 @@ using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera
 {
-    public class AgentContourMissionView : MissionView
+    public class FormationColorMissioView : MissionView
     {
         private readonly uint _allySelectedColor = new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger();
         private readonly uint _allyTargetColor = new Color(0.2f, 0.7f, 1.0f).ToUnsignedInteger();
@@ -58,56 +57,25 @@ namespace RTSCamera
             team.OnOrderIssued += OnOrderIssued;
             team.OnFormationsChanged += OnFormationsChanged;
             team.PlayerOrderController.OnSelectedFormationsChanged += OrderController_OnSelectedFormationsChanged;
+            //foreach (var formation in team.FormationsIncludingSpecialAndEmpty)
+            //{
+            //    formation.OnUnitCountChanged += Formation_OnUnitCountChanged;
+            //}
         }
 
-        public override void OnAgentCreated(Agent agent)
+        public override void OnAgentPanicked(Agent affectedAgent)
         {
-            base.OnAgentCreated(agent);
+            base.OnAgentPanicked(affectedAgent);
 
-            agent.AddComponent(new ContourAgentComponent(agent));
-        }
-
-        public override void OnEarlyAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
-        {
-            base.OnEarlyAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
-
-            ClearAgentContour(affectedAgent);
-        }
-
-        public override void OnAgentMount(Agent agent)
-        {
-            base.OnAgentMount(agent);
-
-            if (!ContourEnabled)
-                return;
-            var formation = agent.Formation;
-            if (formation == null)
-                return;
-            bool isEnemy = Utility.IsEnemy(agent);
-            if (formation == _mouseOverFormation)
-                SetAgentMouseOverContour(agent, isEnemy);
-            else if (isEnemy)
-            {
-                if (_enemyAsTargetFormations.Contains(formation))
-                    SetAgentAsTargetContour(agent, true);
-            }
-            else if (_allySelectedFormations.Contains(formation))
-                SetAgentSelectedContour(agent, false);
-            else if (_allyAsTargetFormations.Contains(formation))
-                SetAgentAsTargetContour(agent, false);
+            ClearAgentFormationContour(affectedAgent);
         }
 
         public void MouseOver(Formation formation)
         {
-            if (!ContourEnabled)
-                return;
-            if (formation == _mouseOverFormation)
+            if (!ContourEnabled || formation == _mouseOverFormation)
                 return;
             if (_mouseOverFormation != null)
-            {
-                ClearFormationMouseOverContour(_mouseOverFormation, Utility.IsEnemy(_mouseOverFormation));
-                _mouseOverFormation = null;
-            }
+                ClearFormationMouseOverContour(_mouseOverFormation);
             if (formation != null)
                 SetFormationMouseOverContour(formation, Utility.IsEnemy(formation));
         }
@@ -117,7 +85,6 @@ namespace RTSCamera
             if (!ContourEnabled)
                 return;
 
-            // not implemented.
         }
 
         public void SetEnableContour(bool enable)
@@ -161,10 +128,25 @@ namespace RTSCamera
         {
             if (!ContourEnabled)
                 return;
-            ClearFormationContour(formation);
+            var mouseOverFormation = _mouseOverFormation;
+            _mouseOverFormation = null;
+            
+            ClearFormationAllContour(formation);
             SetFocusContour();
-            MouseOver(_mouseOverFormation);
+            MouseOver(mouseOverFormation);
         }
+
+        //private void Formation_OnUnitCountChanged(Formation formation)
+        //{
+        //    if (!ContourEnabled)
+        //        return;
+
+        //    var mouseOverFormation = _mouseOverFormation;
+        //    _mouseOverFormation = null;
+        //    ClearFormationAllContour(formation);
+        //    SetFocusContour();
+        //    MouseOver(mouseOverFormation);
+        //}
 
         private void OrderController_OnSelectedFormationsChanged()
         {
@@ -190,9 +172,7 @@ namespace RTSCamera
 
         private void UpdateContour()
         {
-            var mouseOverFormation = _mouseOverFormation;
-            ClearEnemyFocusContour();
-            ClearAllyFocusContour();
+            ClearContour();
             SetFocusContour();
         }
 
@@ -201,7 +181,7 @@ namespace RTSCamera
             _enemyAsTargetFormations.Clear();
             _allyAsTargetFormations.Clear();
             _allySelectedFormations.Clear();
-            foreach (var formation in PlayerOrderController.SelectedFormations)
+            foreach (var formation in PlayerOrderController?.SelectedFormations)
             {
                 SetFormationSelectedContour(formation, false);
                 switch (formation.MovementOrder.OrderType)
@@ -233,28 +213,28 @@ namespace RTSCamera
         {
             foreach (var formation in _enemyAsTargetFormations)
             {
-                ClearFormationContour(formation);
+                ClearFormationAllContour(formation);
             }
 
             _enemyAsTargetFormations.Clear();
 
             foreach (var formation in _allySelectedFormations)
             {
-                ClearFormationContour(formation);
+                ClearFormationAllContour(formation);
             }
 
             _allySelectedFormations.Clear();
 
             foreach (var formation in _allyAsTargetFormations)
             {
-                ClearFormationContour(formation);
+                ClearFormationAllContour(formation);
             }
 
             _allyAsTargetFormations.Clear();
 
             if (_mouseOverFormation == null)
                 return;
-            ClearFormationContour(_mouseOverFormation);
+            ClearFormationAllContour(_mouseOverFormation);
             _mouseOverFormation = null;
         }
 
@@ -262,7 +242,7 @@ namespace RTSCamera
         {
             foreach (var formation in _enemyAsTargetFormations)
             {
-                ClearFormationFocusContour(formation, true);
+                ClearFormationFocusContour(formation);
             }
 
             _enemyAsTargetFormations.Clear();
@@ -272,14 +252,14 @@ namespace RTSCamera
         {
             foreach (var formation in _allySelectedFormations)
             {
-                ClearFormationFocusContour(formation, false);
+                ClearFormationFocusContour(formation);
             }
 
             _allySelectedFormations.Clear();
 
             foreach (var formation in _allyAsTargetFormations)
             {
-                ClearFormationFocusContour(formation, false);
+                ClearFormationFocusContour(formation);
             }
 
             _allyAsTargetFormations.Clear();
@@ -291,34 +271,12 @@ namespace RTSCamera
             formation.ApplyActionOnEachUnit(agent => SetAgentMouseOverContour(agent, isEnemy));
         }
 
-        private void ClearFormationMouseOverContour(Formation formation, bool isEnemy)
-        {
-            if (isEnemy)
-            {
-                if (_enemyAsTargetFormations.Contains(formation))
-                    formation.ApplyActionOnEachUnit(agent => SetAgentAsTargetContour(agent, true));
-                else
-                    ClearFormationContour(formation);
-            }
-            else
-            {
-                if (_allySelectedFormations.Contains(formation))
-                    formation.ApplyActionOnEachUnit(agent => SetAgentSelectedContour(agent, false));
-                else if (_allyAsTargetFormations.Contains(formation))
-                    formation.ApplyActionOnEachUnit(agent => SetAgentAsTargetContour(agent, false));
-                else
-                    ClearFormationContour(formation);
-            }
-        }
-
         private void SetFormationAsTargetContour(Formation formation, bool isEnemy)
         {
             if (isEnemy)
                 _enemyAsTargetFormations.Add(formation);
             else
                 _allyAsTargetFormations.Add(formation);
-            if (_mouseOverFormation == formation)
-                return;
             formation.ApplyActionOnEachUnit(agent => SetAgentAsTargetContour(agent, isEnemy));
         }
 
@@ -327,48 +285,52 @@ namespace RTSCamera
             if (!isEnemy)
                 _allySelectedFormations.Add(formation);
 
-            if (_mouseOverFormation == formation)
-                return;
             formation.ApplyActionOnEachUnit(agent => SetAgentSelectedContour(agent, isEnemy));
-        }
-
-        private void ClearFormationFocusContour(Formation formation, bool isEnemy)
-        {
-            if (_mouseOverFormation == formation)
-                return;
-            ClearFormationContour(formation);
-        }
-
-        private static void ClearFormationContour(Formation formation)
-        {
-            formation.ApplyActionOnEachUnit(ClearAgentContour);
         }
 
         private void SetAgentMouseOverContour(Agent agent, bool enemy)
         {
-            SetAgentContour(agent, enemy ? _mouseOverEnemyColor : _mouseOverAllyColor);
+            agent.GetComponent<AgentContourComponent>()?.SetContourColor((int) ColorLevel.MouseOverFormation,
+                enemy ? _mouseOverEnemyColor : _mouseOverAllyColor, true);
         }
 
         private void SetAgentAsTargetContour(Agent agent, bool enemy)
         {
-            SetAgentContour(agent, enemy ? _enemyTargetColor : _allyTargetColor);
+            agent.GetComponent<AgentContourComponent>()?.SetContourColor((int)ColorLevel.TargetFormation,
+                enemy ? _enemyTargetColor : _allyTargetColor, true);
         }
 
         private void SetAgentSelectedContour(Agent agent, bool enemy)
         {
-            SetAgentContour(agent, enemy ? _enemySelectedColor : _allySelectedColor);
+            agent.GetComponent<AgentContourComponent>()?.SetContourColor((int)ColorLevel.SelectedFormation,
+                enemy ? _enemySelectedColor : _allySelectedColor, true);
         }
 
-        private static void ClearAgentContour(Agent agent)
+        private void ClearFormationMouseOverContour(Formation formation)
         {
-            SetAgentContour(agent, new uint?());
+            ClearFormationContour(formation, ColorLevel.MouseOverFormation);
+            _mouseOverFormation = null;
         }
 
-        private static void SetAgentContour(Agent agent, uint? color)
+        private void ClearFormationFocusContour(Formation formation)
         {
-            agent.AgentVisuals?.SetContourColor(color);
-            if (agent.HasMount)
-                agent.MountAgent.AgentVisuals?.SetContourColor(color);
+            formation.ApplyActionOnEachUnit(agent =>
+                agent.GetComponent<AgentContourComponent>()?.ClearTargetOrSelectedFormationColor());
+        }
+
+        private void ClearFormationContour(Formation formation, ColorLevel level)
+        {
+            formation.ApplyActionOnEachUnit(agent => agent.GetComponent<AgentContourComponent>()?.SetContourColor((int)level, null, true));
+        }
+
+        private static void ClearFormationAllContour(Formation formation)
+        {
+            formation.ApplyActionOnEachUnit(ClearAgentFormationContour);
+        }
+
+        private static void ClearAgentFormationContour(Agent agent)
+        {
+            agent.GetComponent<AgentContourComponent>()?.ClearFormationColor();
         }
     }
 }

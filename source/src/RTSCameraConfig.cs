@@ -26,7 +26,7 @@ namespace RTSCamera
                     ShowContour = false;
                     goto case "1.2";
                 case "1.2":
-                    ShowContour = false; // currently disable this feature.
+                    //ShowContour = false; // currently disable this feature.
                     break;
             }
 
