@@ -76,8 +76,6 @@
 
   - 按住`ctrl`再滚动鼠标中键来调整镜头移动速度。
 
-  - 当命令面板关闭后，单机左键或右键来切换镜头锁定的士兵，移动镜头来解除锁定。
-
 ## 可选文件
 - ["Improved Combat AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/): 可调整战斗AI，可选择更真实的格挡。
 

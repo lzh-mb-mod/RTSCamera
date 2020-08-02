@@ -93,32 +93,48 @@ namespace RTSCamera
 
         protected void RemoveOldConfig()
         {
-            foreach (var oldName in OldNames)
+            try
             {
-                if (File.Exists(oldName))
+                foreach (var oldName in OldNames)
                 {
-                    Utility.DisplayMessage(GameTexts.FindText("str_em_found_old_config").ToString() + $" \"{oldName}\".");
-                    Utility.DisplayLocalizedText("str_em_delete_old_config");
-                    File.Delete(oldName);
-                }
+                    if (File.Exists(oldName))
+                    {
+                        Utility.DisplayMessage(GameTexts.FindText("str_em_found_old_config").ToString() + $" \"{oldName}\".");
+                        Utility.DisplayLocalizedText("str_em_delete_old_config");
+                        File.Delete(oldName);
+                    }
 
-                if (Directory.Exists(OldSavePath) && Directory.GetFileSystemEntries(OldSavePath).Length == 0)
-                {
-                    Directory.Delete(OldSavePath);
+                    if (Directory.Exists(OldSavePath) && Directory.GetFileSystemEntries(OldSavePath).Length == 0)
+                    {
+                        Directory.Delete(OldSavePath);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
+                Console.WriteLine(e);
             }
         }
 
         private void MoveOldConfig()
         {
-            string firstOldName = OldNames.FirstOrDefault(File.Exists);
-            if (firstOldName != null && !firstOldName.IsEmpty())
+            try
             {
-                Utility.DisplayLocalizedText("str_em_rename_old_config");
-                EnsureSaveDirectory();
-                File.Move(firstOldName, SaveName);
+                string firstOldName = OldNames.FirstOrDefault(File.Exists);
+                if (firstOldName != null && !firstOldName.IsEmpty())
+                {
+                    Utility.DisplayLocalizedText("str_em_rename_old_config");
+                    EnsureSaveDirectory();
+                    File.Move(firstOldName, SaveName);
+                }
+                RemoveOldConfig();
             }
-            RemoveOldConfig();
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
+                Console.WriteLine(e);
+            }
         }
         [XmlIgnore]
         protected abstract string SaveName { get; }

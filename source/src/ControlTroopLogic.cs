@@ -80,21 +80,39 @@ namespace RTSCamera
 
         private Agent GetAgentToControl()
         {
-            var agents = Mission.GetNearbyAllyAgents(
+            var firstPreferredAgents = Mission.GetNearbyAllyAgents(
+                new WorldPosition(this.Mission.Scene, this.Mission.Scene.LastFinalRenderCameraPosition).AsVec2, 20f,
+                Mission.PlayerTeam);
+            var secondPreferredAgents = Mission.GetNearbyAllyAgents(
                 new WorldPosition(this.Mission.Scene, this.Mission.Scene.LastFinalRenderCameraPosition).AsVec2, 1E+7f,
                 Mission.PlayerTeam);
             var inPlayerPartyOnly = _config.ControlTroopsInPlayerPartyOnly;
             var preferCompanions = _config.PreferToControlCompanions;
-            Agent firstAgent = null;
-            var preferredAgent = agents.FirstOrDefault(agent =>
+            Agent firstPreferredFallback = null;
+            var firstPreferredAgent = firstPreferredAgents.FirstOrDefault(agent =>
             {
+                if (agent.IsRunningAway)
+                    return false;
                 bool isInPlayerParty = !Utility.IsInPlayerParty(agent);
                 if (inPlayerPartyOnly && !isInPlayerParty) return false;
-                if (firstAgent != null)
-                    firstAgent = agent;
+                if (firstPreferredFallback == null)
+                    firstPreferredFallback = agent;
                 return !preferCompanions || agent.IsHero && isInPlayerParty;
             });
-            return preferredAgent ?? firstAgent;
+            if (firstPreferredAgent != null || firstPreferredFallback != null)
+                return firstPreferredAgent ?? firstPreferredFallback;
+            Agent secondPreferredFallback = null;
+            var secondPreferredAgent = secondPreferredAgents.FirstOrDefault(agent =>
+            {
+                if (agent.IsRunningAway)
+                    return false;
+                bool isInPlayerParty = !Utility.IsInPlayerParty(agent);
+                if (inPlayerPartyOnly && !isInPlayerParty) return false;
+                if (secondPreferredFallback == null)
+                    secondPreferredFallback = agent;
+                return !preferCompanions || agent.IsHero && isInPlayerParty;
+            });
+            return secondPreferredAgent ?? secondPreferredFallback;
         }
 
         public override void OnBehaviourInitialize()

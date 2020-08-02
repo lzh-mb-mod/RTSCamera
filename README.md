@@ -76,8 +76,6 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features in b
 
   - Hold `ctrl` and scroll mouse to adjust camera movement speed.
 
-  - When order panel is closed, you can left click or right click to lock the camera to soldiers. Move the camera to unlock it.
-
 ## Optional File
 - ["Improved Combat AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/): Realistic blocking and adjusting combat AI.
 

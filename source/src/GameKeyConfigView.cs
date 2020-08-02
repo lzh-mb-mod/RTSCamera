@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TaleWorlds.Core;
-using TaleWorlds.Engine.GauntletUI;
+﻿using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
-using TaleWorlds.Library;
-using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade.GauntletUI;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.ViewModelCollection.GameOptions;
-using TaleWorlds.MountAndBlade.ViewModelCollection.GameOptions.GameKeys;
 
 namespace RTSCamera
 {
@@ -21,6 +13,7 @@ namespace RTSCamera
         private GameKeyConfigVM _dataSource;
         private KeybindingPopup _keybindingPopup;
         private GameKeyOptionVM _currentGameKey;
+        private bool _enableKeyBindingPopupNextTick;
 
         public GameKeyConfigView()
         {
@@ -45,22 +38,27 @@ namespace RTSCamera
         public override void OnMissionScreenTick(float dt)
         {
             base.OnMissionScreenTick(dt);
-            if (this._gauntletLayer == null)
+            if (_gauntletLayer == null)
                 return;
-            if (!this._keybindingPopup.IsActive && this._gauntletLayer.Input.IsHotKeyReleased("Exit"))
+            if (!_keybindingPopup.IsActive && _gauntletLayer.Input.IsHotKeyReleased("Exit"))
             {
-                this._dataSource.ExecuteCancel();
+                _dataSource.ExecuteCancel();
             }
-            this._keybindingPopup.Tick();
+            _keybindingPopup.Tick();
+            if (_enableKeyBindingPopupNextTick)
+            {
+                _enableKeyBindingPopupNextTick = false;
+                _keybindingPopup.OnToggle(true);
+            }
         }
 
         public void Activate()
         {
             _dataSource = new GameKeyConfigVM(OnKeyBindRequest, Deactivate);
-            _gauntletLayer = new GauntletLayer(ViewOrderPriorty);
+            _gauntletLayer = new GauntletLayer(ViewOrderPriorty) {IsFocusLayer = true};
             _gauntletLayer.LoadMovie(nameof(GameKeyConfigView), _dataSource);
             _gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
-            _gauntletLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+            _gauntletLayer.InputRestrictions.SetInputRestrictions();
             _gauntletLayer.IsFocusLayer = true;
             MissionScreen.AddLayer(_gauntletLayer);
             ScreenManager.TrySetFocus(_gauntletLayer);
@@ -71,30 +69,30 @@ namespace RTSCamera
             _gauntletLayer.InputRestrictions.ResetInputRestrictions();
             MissionScreen.RemoveLayer(_gauntletLayer);
             _gauntletLayer = null;
-            this._dataSource.OnFinalize();
-            this._dataSource = null;
+            _dataSource.OnFinalize();
+            _dataSource = null;
         }
 
         private void OnKeyBindRequest(GameKeyOptionVM requestedHotKeyToChange)
         {
             _currentGameKey = requestedHotKeyToChange;
-            _keybindingPopup.OnToggle(true);
+            _enableKeyBindingPopupNextTick = true;
         }
 
         private void SetHotKey(Key key)
         {
             //if (_dataSource.Groups.First<GameKeyGroupVM>((g => g.GameKeys.Contains(this._currentGameKey))).GameKeys.Any<GameKeyOptionVM>(keyVM => keyVM.CurrentKey.InputKey == key.InputKey))
             //    InformationManager.AddQuickInformation(new TextObject("{=n4UUrd1p}Already in use"));
-            /*else*/ if (this._gauntletLayer.Input.IsHotKeyReleased("Exit"))
+            /*else*/ if (_gauntletLayer.Input.IsHotKeyReleased("Exit"))
             {
-                this._currentGameKey = null;
-                this._keybindingPopup.OnToggle(false);
+                _currentGameKey = null;
+                _keybindingPopup.OnToggle(false);
             }
             else
             {
-                this._currentGameKey?.Set(key.InputKey);
-                this._currentGameKey = null;
-                this._keybindingPopup.OnToggle(false);
+                _currentGameKey?.Set(key.InputKey);
+                _currentGameKey = null;
+                _keybindingPopup.OnToggle(false);
             }
         }
 

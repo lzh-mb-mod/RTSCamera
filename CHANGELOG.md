@@ -1,5 +1,12 @@
 # Changelog
 
+## [e3.5.10] - 2020-08-02
+### Fixed
+- Fix key configuration.
+
+### Changed
+- Soldiers within 20 meters will be considered first when looking for soldier to control.
+
 ## [e3.5.9] - 2020-08-02
 ### Added
 - Enable feature that you can select formation by directly click on them.
