@@ -176,10 +176,20 @@ namespace RTSCamera
         private void SelectCharacter()
         {
             MissionScreen.ScreenPointToWorldRay(Input.GetMousePositionRanged(), out var rayBegin, out var rayEnd);
-            var agent = Mission.RayCastForClosestAgent(rayBegin, rayEnd, out var distance, -1, 0.3f);
+            int excludedAgentIndex = -1;
+            if (Mission.MainAgent != null && Mission.MainAgent.IsPlayerControlled)
+            {
+                excludedAgentIndex = Mission.MainAgent.Index;
+            }
+            var agent = Mission.RayCastForClosestAgent(rayBegin, rayEnd, out var distance, excludedAgentIndex, 0.3f);
             if (agent != null && agent.IsMount)
                 agent = agent.RiderAgent ?? null;
             MouseOverAgent = agent;
+            if (MouseOverAgent != null && Mission.MainAgent != null)
+            {
+                Utility.DisplayMessage((MouseOverAgent.Position - Mission.MainAgent.Position).Length
+                    .ToString());
+            }
         }
     }
 }

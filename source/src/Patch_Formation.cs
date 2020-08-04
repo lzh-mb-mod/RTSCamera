@@ -13,6 +13,9 @@ namespace RTSCamera
     //[HarmonyLib.HarmonyPatch(typeof(Formation), "LeaveDetachment")]
     public class Patch_Formation
     {
+        private static readonly MethodInfo GetOrderPositionOfUnitAux =
+            typeof(Formation).GetMethod("GetOrderPositionOfUnitAux", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public static bool LeaveDetachment_Prefix(
             Formation __instance,
             List<IDetachment> ____detachments,
@@ -37,18 +40,17 @@ namespace RTSCamera
             return false;
         }
 
-        //public static bool GetOrderPositionOfUnit_Prefix(Formation __instance, Agent unit, List<Agent> ___detachedUnits, ref WorldPosition __result)
-        //{
-        //    if (!___detachedUnits.Contains(unit) && __instance.MovementOrder.OrderType == OrderType.ChargeWithTarget)
-        //    {
+        public static bool GetOrderPositionOfUnit_Prefix(Formation __instance, Agent unit, List<Agent> ___detachedUnits, ref WorldPosition __result)
+        {
+            if (!___detachedUnits.Contains(unit) && __instance.MovementOrder.OrderType == OrderType.ChargeWithTarget)
+            {
 
-        //        __result = (WorldPosition)(typeof(Formation)
-        //            .GetMethod("GetOrderPositionOfUnitAux", BindingFlags.Instance | BindingFlags.NonPublic)?
-        //            .Invoke(__instance, new object[] {unit}) ?? new WorldPosition());
-        //        return false;
-        //    }
+                __result = (WorldPosition) (GetOrderPositionOfUnitAux?.Invoke(__instance, new object[] {unit}) ??
+                                            new WorldPosition());
+                return false;
+            }
 
-        //    return true;
-        //}
+            return true;
+        }
     }
 }

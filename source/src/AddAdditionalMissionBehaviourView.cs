@@ -30,7 +30,8 @@ namespace RTSCamera
                 new FlyCameraMissionView(),
                 new GameKeyConfigView(),
                 new FormationColorMissioView(),
-                new RTSCameraOrderTroopPlacer()
+                new RTSCameraOrderTroopPlacer(),
+                new BehaviorValueTweak()
             };
 
 
