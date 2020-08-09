@@ -793,7 +793,7 @@ namespace RTSCamera
                 return;
 
             _currentCursorState = GetCursorState();
-            Utility.DisplayMessage(_currentCursorState.ToString());
+            //Utility.DisplayMessage(_currentCursorState.ToString());
             if (Input.IsKeyPressed(InputKey.LeftMouseButton))
             {
                 _isMouseDown = true;
