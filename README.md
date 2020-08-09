@@ -6,7 +6,7 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features in b
 
 - Press `F10` to switch to rts-style camera and switch back.
 
-- Select troops by directly clicking on them. Selected Troops will be hightlighted with contour.
+- Select troops by directly clicking on them. Selected Troops will be hightlighted.
 
 - Press `F` to control one of your troops after you die.
 
@@ -57,6 +57,8 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features in b
   - Press `F11` to switch to enemy's team(You need to enable hotkey for it in menu first). Useful for making videos.
 
   - Press `;` and left click to select a soldier. You can lock camera to the selected soldier by pressing `F`, and then control it by pressing `F` again.
+
+  - When order panel is opened, the formation your mouse on, the formation you selected and the formation as target of enemy will be highlighted with different color.
 
 - How to control rts camera:
 

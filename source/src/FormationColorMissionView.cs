@@ -18,10 +18,10 @@ namespace RTSCamera
     public class FormationColorMissionView : MissionView
     {
         private readonly uint _allySelectedColor = new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger();
-        private readonly uint _allyTargetColor = new Color(0.2f, 0.7f, 1.0f).ToUnsignedInteger();
+        private readonly uint _allyTargetColor = new Color(0.3f, 0.3f, 1.0f).ToUnsignedInteger();
+        private readonly uint _mouseOverAllyColor = new Color(0.3f, 1.0f, 1.0f).ToUnsignedInteger();
         private readonly uint _enemySelectedColor = new Color(0.98f, 0.4f, 0.5f).ToUnsignedInteger();
         private readonly uint _enemyTargetColor = new Color(1f, 0.2f, 0.2f).ToUnsignedInteger();
-        private readonly uint _mouseOverAllyColor = new Color(0.3f, 1.0f, 1.0f).ToUnsignedInteger();
         private readonly uint _mouseOverEnemyColor = new Color(0.98f, 0.6f, 0.5f).ToUnsignedInteger();
         private readonly List<Formation> _enemyAsTargetFormations = new List<Formation>();
         private readonly List<Formation> _allyAsTargetFormations = new List<Formation>();
