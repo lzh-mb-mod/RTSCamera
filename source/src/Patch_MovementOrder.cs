@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.Engine;
+﻿using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -30,37 +24,70 @@ namespace RTSCamera
         {
             if (__instance.OrderType == OrderType.ChargeWithTarget && __instance.TargetFormation.CountOfUnits > 0)
             {
-                FormationQuerySystem querySystem = f.QuerySystem;
-                FormationQuerySystem targetFormation = __instance.TargetFormation.QuerySystem;
-                if (targetFormation == null)
+                FormationQuerySystem myFormationQuerySystem = f.QuerySystem;
+                Formation targetFormation = __instance.TargetFormation;
+                FormationQuerySystem targetFormationQuerySystem = targetFormation.QuerySystem;
+                if (targetFormationQuerySystem == null)
                 {
                     __result = f.OrderPosition;
                     return false;
                 }
-                WorldPosition targetMedianPosition = targetFormation.MedianPosition;
-                if (querySystem.IsRangedFormation || querySystem.IsRangedCavalryFormation)
+                WorldPosition targetMedianPosition = targetFormationQuerySystem.MedianPosition;
+                targetMedianPosition.SetVec2(targetFormationQuerySystem.FormationIntegrityData.AverageVelocityExcludeFarAgents - f.CurrentPosition + myFormationQuerySystem.AveragePosition);
+                if (f.FiringOrder != FiringOrder.FiringOrderHoldYourFire &&(myFormationQuerySystem.IsRangedFormation || myFormationQuerySystem.IsRangedCavalryFormation))
                 {
-                    if ((double)targetMedianPosition.AsVec2.DistanceSquared(querySystem.AveragePosition) <= (double)querySystem.MissileRange * (double)querySystem.MissileRange)
+                    if (myFormationQuerySystem.IsRangedCavalryFormation)
                     {
-                        Vec2 direction = (targetFormation.MedianPosition.AsVec2 - querySystem.AveragePosition)
-                            .Normalized();
-                        targetMedianPosition.SetVec2(targetMedianPosition.AsVec2 - direction * querySystem.MissileRange);
+                        if (targetMedianPosition.AsVec2.DistanceSquared(myFormationQuerySystem.AveragePosition) <=
+                            myFormationQuerySystem.MissileRange * myFormationQuerySystem.MissileRange)
+                        {
+                            Vec2 direction = (targetFormationQuerySystem.MedianPosition.AsVec2 - myFormationQuerySystem.AveragePosition)
+                                .Normalized();
+                            targetMedianPosition.SetVec2(targetMedianPosition.AsVec2 -
+                                                         direction * myFormationQuerySystem.MissileRange + f.CurrentPosition -
+                                                         myFormationQuerySystem.AveragePosition);
+                        }
+                    }
+                    else // querySystem.IsRangedFormation == true
+                    {
+                        if (targetMedianPosition.AsVec2.DistanceSquared(myFormationQuerySystem.AveragePosition) <=
+                            myFormationQuerySystem.MissileRange * myFormationQuerySystem.MissileRange)
+                        {
+                            targetMedianPosition = myFormationQuerySystem.MedianPosition;
+                            targetMedianPosition.SetVec2(f.CurrentPosition);
+                        }
                     }
                 }
-                else
-                {
-                    Vec2 vec2 = (targetFormation.AveragePosition - f.QuerySystem.AveragePosition).Normalized();
-                    float num = 2f;
-                    if ((double)targetFormation.FormationPower < (double)f.QuerySystem.FormationPower * 0.200000002980232)
-                        num = 0.1f;
-                    targetMedianPosition.SetVec2(targetMedianPosition.AsVec2 - vec2 * num);
-                }
+                //else
+                //{
+                //    Vec2 vec2 = (__instance.TargetFormation.SmoothedAverageUnitPosition - f.SmoothedAverageUnitPosition).Normalized();
+                //    float num = 2;
+                //    if ((double)targetFormationQuerySystem.FormationPower < (double)f.QuerySystem.FormationPower * 0.200000002980232)
+                //        num = 0.1f;
+                //    targetMedianPosition.SetVec2(targetMedianPosition.AsVec2 - vec2 * num);
+                //}
+
+                targetMedianPosition.SetVec2(MBMath.Lerp(f.CurrentPosition, targetMedianPosition.AsVec2, 0.5f, 0.01f ));
                 __result = targetMedianPosition;
                 return false;
             }
 
             return true;
         }
+
+        //public static bool GetSubstituteOrder_Prefix(MovementOrder __instance, MovementOrder __result,
+        //    Formation formation)
+        //{
+        //    if (__instance.OrderType == OrderType.ChargeWithTarget)
+        //    {
+        //        var position = formation.QuerySystem.MedianPosition;
+        //        position.SetVec2(formation.CurrentPosition);
+        //        __result = MovementOrder.MovementOrderMove(position);
+        //        return false;
+        //    }
+
+        //    return true;
+        //}
 
         //public static bool Get_MovementState_Prefix(MovementOrder __instance, ref object __result)
         //{

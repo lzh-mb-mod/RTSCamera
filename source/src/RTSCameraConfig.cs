@@ -6,7 +6,7 @@ namespace RTSCamera
 {
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 2);
+        protected static Version BinaryVersion => new Version(1, 3);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -26,7 +26,9 @@ namespace RTSCamera
                     ShowContour = false;
                     goto case "1.2";
                 case "1.2":
-                    //ShowContour = false; // currently disable this feature.
+                    ShowContour = true; // enable this feature.
+                    goto case "1.3";
+                case "1.3":
                     break;
             }
 

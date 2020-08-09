@@ -15,7 +15,7 @@ namespace RTSCamera
         private readonly MissionSpeedLogic _missionSpeedLogic;
         private readonly GameKeyConfigView _gameKeyConfigView;
         private readonly HideHUDLogic _hideHudLogic;
-        private readonly FormationColorMissioView _contourView;
+        private readonly FormationColorMissionView _contourView;
         private readonly SelectCharacterView _selectCharacterView;
 
         private SelectionOptionDataVM _playerFormation;
@@ -374,7 +374,7 @@ namespace RTSCamera
             SpeedFactor = new NumericVM(GameTexts.FindText("str_em_slow_motion_factor").ToString(),
                 _mission.Scene.SlowMotionFactor, 0.01f, 3.0f, false,
                 factor => { _missionSpeedLogic.SetSlowMotionFactor(factor); });
-            _contourView = _mission.GetMissionBehaviour<FormationColorMissioView>();
+            _contourView = _mission.GetMissionBehaviour<FormationColorMissionView>();
             _hideHudLogic = Mission.Current.GetMissionBehaviour<HideHUDLogic>();
             _hideHudLogic?.BeginTemporarilyOpenUI();
 

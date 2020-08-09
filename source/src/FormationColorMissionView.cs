@@ -15,7 +15,7 @@ using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera
 {
-    public class FormationColorMissioView : MissionView
+    public class FormationColorMissionView : MissionView
     {
         private readonly uint _allySelectedColor = new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger();
         private readonly uint _allyTargetColor = new Color(0.2f, 0.7f, 1.0f).ToUnsignedInteger();
@@ -61,6 +61,31 @@ namespace RTSCamera
             //{
             //    formation.OnUnitCountChanged += Formation_OnUnitCountChanged;
             //}
+        }
+
+        public override void OnAgentBuild(Agent agent, Banner banner)
+        {
+            base.OnAgentBuild(agent, banner);
+
+            if (agent.Formation != null)
+            {
+                bool isEnemy = Utility.IsEnemy(agent.Formation);
+                if (agent.Formation == _mouseOverFormation)
+                    SetAgentMouseOverContour(agent, isEnemy);
+                if (isEnemy)
+                {
+                    if (_enemyAsTargetFormations.Contains(agent.Formation))
+                        SetAgentAsTargetContour(agent, true);
+                }
+                else
+                {
+                    if (_allySelectedFormations.Contains(agent.Formation))
+                        SetAgentSelectedContour(agent, false);
+                    if (_allyAsTargetFormations.Contains(agent.Formation))
+                        SetAgentAsTargetContour(agent, false);
+                }
+            }
+
         }
 
         public override void OnAgentPanicked(Agent affectedAgent)
@@ -203,6 +228,23 @@ namespace RTSCamera
                         {
                             SetFormationAsTargetContour(allyFormation, false);
                         }
+                        break;
+                    }
+                }
+            }
+
+            foreach (var enemyFormation in Mission.PlayerEnemyTeam.FormationsIncludingSpecial)
+            {
+                switch (enemyFormation.MovementOrder.OrderType)
+                {
+                    case OrderType.ChargeWithTarget:
+                    {
+                        var targetFormation = enemyFormation.MovementOrder.TargetFormation;
+                        if (targetFormation != null)
+                        {
+                            SetFormationAsTargetContour(targetFormation, false);
+                        }
+
                         break;
                     }
                 }

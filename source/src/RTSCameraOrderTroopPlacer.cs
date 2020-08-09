@@ -15,7 +15,7 @@ namespace RTSCamera
     public class RTSCameraOrderTroopPlacer : MissionView
     {
         private SwitchTeamLogic _controller;
-        private FormationColorMissioView _contourView;
+        private FormationColorMissionView _contourView;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private void RegisterReload()
         {
@@ -41,9 +41,10 @@ namespace RTSCamera
         {
             base.OnMissionScreenInitialize();
             RegisterReload();
-            _contourView = Mission.GetMissionBehaviour<FormationColorMissioView>();
+            _contourView = Mission.GetMissionBehaviour<FormationColorMissionView>();
         }
 
+        private CursorState _currentCursorState = CursorState.Invisible;
         private bool _suspendTroopPlacer;
         private bool _isMouseDown;
         private List<GameEntity> _orderPositionEntities;
@@ -249,33 +250,40 @@ namespace RTSCamera
             }
         }
 
+        private bool IsDraggingFormation()
+        {
+            if (_formationDrawingStartingPointOfMouse.HasValue)
+            {
+                Vec2 vec2 = _formationDrawingStartingPointOfMouse.Value - Input.GetMousePositionPixel();
+                if (Math.Abs(vec2.x) >= 10.0 || Math.Abs(vec2.y) >= 10.0)
+                {
+                    return true;
+                }
+            }
+
+            if (_formationDrawingStartingTime.HasValue &&
+                MBCommon.GetTime(MBCommon.TimeType.Application) -
+                _formationDrawingStartingTime.Value >= 0.300000011920929)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private void UpdateFormationDrawing(bool giveOrder)
         {
             isDrawnThisFrame = true;
             HideOrderPositionEntities();
             if (!_formationDrawingStartingPosition.HasValue)
                 return;
-            WorldPosition formationRealEndingPosition = WorldPosition.Invalid;
-            bool flag = false;
-            if (MissionScreen.MouseVisible && _formationDrawingStartingPointOfMouse.HasValue)
-            {
-                Vec2 vec2 = _formationDrawingStartingPointOfMouse.Value - Input.GetMousePositionPixel();
-                if (Math.Abs(vec2.x) < 10.0 && Math.Abs(vec2.y) < 10.0)
-                {
-                    flag = true;
-                    formationRealEndingPosition = _formationDrawingStartingPosition.Value;
-                }
-            }
+            WorldPosition formationRealEndingPosition;
 
-            if (MissionScreen.MouseVisible && _formationDrawingStartingTime.HasValue &&
-                MBCommon.GetTime(MBCommon.TimeType.Application) -
-                _formationDrawingStartingTime.Value < 0.300000011920929)
+            if (!IsDraggingFormation())
             {
-                flag = true;
                 formationRealEndingPosition = _formationDrawingStartingPosition.Value;
             }
-
-            if (!flag)
+            else
             {
                 Vec3 rayBegin;
                 Vec3 rayEnd;
@@ -372,37 +380,50 @@ namespace RTSCamera
                 (int)AttachSide);
         }
 
-        private void HandleMouseDown()
+        private void BeginFormationDraggingOrClicking()
+        {
+            Vec3 rayBegin;
+            Vec3 rayEnd;
+            MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out rayBegin, out rayEnd);
+            float collisionDistance;
+            if (Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out collisionDistance,
+                0.3f))
+            {
+                Vec3 vec3 = rayEnd - rayBegin;
+                double num = vec3.Normalize();
+                _formationDrawingStartingPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, rayBegin + vec3 * collisionDistance,
+                    false);
+                _formationDrawingStartingPointOfMouse = Input.GetMousePositionPixel();
+                _formationDrawingStartingTime = MBCommon.GetTime(MBCommon.TimeType.Application);
+                return;
+            }
+
+            _formationDrawingStartingPosition = new WorldPosition?();
+            _formationDrawingStartingPointOfMouse = new Vec2?();
+            _formationDrawingStartingTime = new float?();
+        }
+
+        private void HandleMousePressed()
         {
             if (PlayerOrderController.SelectedFormations.IsEmpty() || _clickedFormation != null)
                 return;
-            switch (GetCursorState())
+            switch (_currentCursorState)
             {
+                case CursorState.Enemy:
+                    // disable clicking on enemy formation for now.
+                    _formationDrawingMode = true;
+                    BeginFormationDraggingOrClicking();
+                    break;
+                case CursorState.Friend:
+                    if (PlayerOrderController.IsFormationSelectable(_mouseOverFormation))
+                        _clickedFormation = _mouseOverFormation;
+                    else
+                        _formationDrawingMode = true;
+                    BeginFormationDraggingOrClicking();
+                    break;
                 case CursorState.Normal:
                     _formationDrawingMode = true;
-                    Vec3 rayBegin;
-                    Vec3 rayEnd;
-                    MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out rayBegin, out rayEnd);
-                    float collisionDistance;
-                    if (Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out collisionDistance,
-                        0.3f))
-                    {
-                        Vec3 vec3 = rayEnd - rayBegin;
-                        double num = vec3.Normalize();
-                        _formationDrawingStartingPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, rayBegin + vec3 * collisionDistance,
-                            false);
-                        _formationDrawingStartingPointOfMouse = Input.GetMousePositionPixel();
-                        _formationDrawingStartingTime = MBCommon.GetTime(MBCommon.TimeType.Application);
-                        break;
-                    }
-
-                    _formationDrawingStartingPosition = new WorldPosition?();
-                    _formationDrawingStartingPointOfMouse = new Vec2?();
-                    _formationDrawingStartingTime = new float?();
-                    break;
-                case CursorState.Enemy:
-                case CursorState.Friend:
-                    _clickedFormation = _mouseOverFormation;
+                    BeginFormationDraggingOrClicking();
                     break;
                 case CursorState.Rotation:
                     if (_mouseOverFormation.CountOfUnits <= 0)
@@ -430,9 +451,27 @@ namespace RTSCamera
             }
         }
 
+        private void TryTransformFromClickingToDragging()
+        {
+            if (PlayerOrderController.SelectedFormations.IsEmpty())
+                return;
+            switch (_currentCursorState)
+            {
+                case CursorState.Enemy:
+                case CursorState.Friend:
+                    if (IsDraggingFormation())
+                    {
+                        _formationDrawingMode = true;
+                        _clickedFormation = null;
+                    }
+
+                    break;
+            }
+        }
+
         private void HandleMouseUp()
         {
-            var cursorState = GetCursorState();
+            var cursorState = _currentCursorState;
             if (_clickedFormation != null)
             {
                 if (_clickedFormation.CountOfUnits > 0)
@@ -458,23 +497,25 @@ namespace RTSCamera
                         //        0);
                         //}
                     }
-                    else
-                    {
-                        PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, _clickedFormation);
-                        foreach (var selectedFormation in PlayerOrderController.SelectedFormations)
-                        {
-                            selectedFormation.ApplyActionOnEachUnit(unit =>
-                            {
-                                unit.SetAIBehaviorValues(AISimpleBehaviorKind.GoToPos, 3f, 7f, 5f, 20f, 6f);
-                                unit.SetAIBehaviorValues(AISimpleBehaviorKind.Melee, 8f, 7f, 5f, 20f, 0.01f);
-                                unit.SetAIBehaviorValues(AISimpleBehaviorKind.Ranged, 0.02f, 7f, 0.04f, 20f, 0.03f);
-                                unit.SetAIBehaviorValues(AISimpleBehaviorKind.ChargeHorseback, 10f, 7f, 5f, 30f, 0.05f);
-                                unit.SetAIBehaviorValues(AISimpleBehaviorKind.RangedHorseback, 0.02f, 15f, 0.065f, 30f, 0.055f);
-                                unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityMelee, 5f, 12f, 7.5f, 30f, 4f);
-                                unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityRanged, 0.55f, 12f, 0.8f, 30f, 0.45f);
-                            });
-                        }
-                    }
+                    //else
+                    //{
+                    //    PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, _clickedFormation);
+                    //    foreach (Formation selectedFormation in PlayerOrderController.SelectedFormations)
+                    //        selectedFormation.FacingOrder = FacingOrder.FacingOrderLookAtEnemy;
+                    //    foreach (var selectedFormation in PlayerOrderController.SelectedFormations)
+                    //    {
+                    //        selectedFormation.ApplyActionOnEachUnit(unit =>
+                    //        {
+                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.GoToPos, 3f, 7f, 5f, 20f, 6f);
+                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Melee, 8f, 7f, 5f, 20f, 0.01f);
+                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Ranged, 0, 7f, 0, 20f, 0);
+                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.ChargeHorseback, 10f, 7f, 5f, 30f, 0.05f);
+                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.RangedHorseback, 0.02f, 15f, 0.065f, 30f, 0.055f);
+                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityMelee, 5f, 12f, 7.5f, 30f, 4f);
+                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityRanged, 0.55f, 12f, 0.8f, 30f, 0.45f);
+                    //        });
+                    //    }
+                    //}
                 }
 
                 _clickedFormation = null;
@@ -492,6 +533,9 @@ namespace RTSCamera
             }
 
             _formationDrawingMode = false;
+            _formationDrawingStartingPosition = null;
+            _formationDrawingStartingPointOfMouse = null;
+            _formationDrawingStartingTime = null;
             _deltaMousePosition = Vec2.Zero;
         }
 
@@ -556,13 +600,18 @@ namespace RTSCamera
                         _mouseOverFormation = null;
                     }
                 }
+            }
 
-                if (cursorState == CursorState.Invisible &&
-                    !Input.IsShiftDown()) // press shift to avoid accidentally click on ground.
-                {
-                    cursorState = IsCursorStateGroundOrNormal();
-                    UpdateAttachData();
-                }
+            if (_clickedFormation != null) // click on formation and hold.
+            {
+                cursorState = _currentCursorState;
+            }
+            if (cursorState == CursorState.Invisible &&
+                !(Input.IsShiftDown() && _config.ShowContour) || // press shift to avoid accidentally click on ground.
+                _formationDrawingMode)
+            {
+                cursorState = IsCursorStateGroundOrNormal();
+                UpdateAttachData();
             }
 
             if (cursorState != CursorState.Ground &&
@@ -742,30 +791,42 @@ namespace RTSCamera
             isDrawnThisFrame = false;
             if (SuspendTroopPlacer)
                 return;
+
+            _currentCursorState = GetCursorState();
+            Utility.DisplayMessage(_currentCursorState.ToString());
             if (Input.IsKeyPressed(InputKey.LeftMouseButton))
             {
                 _isMouseDown = true;
-                HandleMouseDown();
+                HandleMousePressed();
+                //Utility.DisplayMessage("key pressed");
             }
 
             if (Input.IsKeyReleased(InputKey.LeftMouseButton) && _isMouseDown)
             {
                 _isMouseDown = false;
                 HandleMouseUp();
+                //Utility.DisplayMessage("key up");
             }
             else if (Input.IsKeyDown(InputKey.LeftMouseButton) && _isMouseDown)
             {
+                //Utility.DisplayMessage("key down");
                 if (formationDrawTimer.Check(MBCommon.GetTime(MBCommon.TimeType.Application)) &&
                     !IsDrawingFacing &&
-                    (!IsDrawingForming &&
-                     IsCursorStateGroundOrNormal() == CursorState.Ground) &&
-                    GetCursorState() == CursorState.Ground)
-                    UpdateFormationDrawing(false);
+                    !IsDrawingForming)
+                {
+                    //Utility.DisplayMessage("try transform");
+                    TryTransformFromClickingToDragging();
+                    if (_currentCursorState == CursorState.Ground)
+                        UpdateFormationDrawing(false);
+                }
             }
             else if (IsDrawingForced)
             {
+                //Utility.DisplayMessage("drawing forced");
                 Reset();
-                HandleMouseDown();
+                _formationDrawingMode = true;
+                BeginFormationDraggingOrClicking();
+                //HandleMousePressed();
                 UpdateFormationDrawing(false);
             }
             else if (IsDrawingFacing || _wasDrawingFacing)
@@ -806,7 +867,6 @@ namespace RTSCamera
 
         private void UpdateInputForContour()
         {
-            var cursorState = GetCursorState();
             _contourView?.MouseOver(_mouseOverFormation);
         }
 

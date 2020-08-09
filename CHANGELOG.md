@@ -1,11 +1,17 @@
 # Changelog
 
-## [e3.5.10] - 2020-08-02
+## [e3.5.10] - 2020-08-09
 ### Fixed
 - Fix key configuration.
 
+- Fix crash when controlling soldier in hideout.
+
 ### Changed
 - Soldiers within 20 meters will be considered first when looking for soldier to control.
+
+- Enable selecting formation feature by default.
+
+- Slow motion config will be saved when changed using hotkey.
 
 ## [e3.5.9] - 2020-08-02
 ### Added

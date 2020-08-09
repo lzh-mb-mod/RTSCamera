@@ -48,12 +48,14 @@ namespace RTSCamera
             Mission.Scene.SlowMotionMode = slowMotionMode;
             _config.SlowMotionMode = slowMotionMode;
             Utility.DisplayLocalizedText(slowMotionMode ? "str_em_slow_motion_enabled" : "str_em_normal_mode_enabled");
+            _config.Serialize();
         }
 
         public void SetSlowMotionFactor(float factor)
         {
             Mission.Scene.SlowMotionFactor = factor;
             _config.SlowMotionFactor = factor;
+            _config.Serialize();
         }
 
         //public void ApplySlowMotionFactor()

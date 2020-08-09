@@ -185,11 +185,11 @@ namespace RTSCamera
             if (agent != null && agent.IsMount)
                 agent = agent.RiderAgent ?? null;
             MouseOverAgent = agent;
-            if (MouseOverAgent != null && Mission.MainAgent != null)
-            {
-                Utility.DisplayMessage((MouseOverAgent.Position - Mission.MainAgent.Position).Length
-                    .ToString());
-            }
+            //if (MouseOverAgent != null && Mission.MainAgent != null)
+            //{
+            //    Utility.DisplayMessage((MouseOverAgent.Position - Mission.MainAgent.Position).Length
+            //        .ToString());
+            //}
         }
     }
 }

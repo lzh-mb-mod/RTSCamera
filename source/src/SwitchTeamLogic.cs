@@ -38,7 +38,7 @@ namespace RTSCamera
             }
             if (!Utility.IsPlayerDead())
             {
-                Utility.AIControlMainAgent(!_config.PreventPlayerFighting);
+                Utility.AIControlMainAgent(true);
             }
             Utility.DisplayLocalizedText("str_em_switch_to_enemy_team");
 
