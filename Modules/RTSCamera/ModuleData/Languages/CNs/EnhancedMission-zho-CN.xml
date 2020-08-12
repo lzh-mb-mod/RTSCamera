@@ -50,8 +50,9 @@
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="不平衡的选项" />
     <string id="RTSCamera_disabledeath" text="禁用死亡" />
+    <string id="RTSCamera_disable_death_hotkey_enabled" text="启用禁用死亡的热键" />
     <string id="RTSCamera_switchteam" text="切换队伍" />
-    <string id="RTSCamera_hotkey_enabled" text="启用热键" />
+    <string id="RTSCamera_switch_team_hotkey_enabled" text="启用切换队伍的热键" />
 
     <string id="RTSCamera_missionpaused" text="已暂停关卡。" />
     <string id="RTSCamera_missioncontinue" text="关卡继续。" />

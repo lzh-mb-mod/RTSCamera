@@ -71,6 +71,8 @@ namespace RTSCamera
 
         public bool DisableDeath;
 
+        public bool DisableDeathHotkeyEnabled = false;
+
         public bool SwitchTeamHotkeyEnabled = false;
 
         private static RTSCameraConfig CreateDefault()
@@ -103,7 +105,6 @@ namespace RTSCamera
             RaisedHeight = other.RaisedHeight;
             PlayerFormation = other.PlayerFormation;
             AlwaysSetPlayerFormation = other.AlwaysSetPlayerFormation;
-            DisableDeath = other.DisableDeath;
             ConstantSpeed = other.ConstantSpeed;
             Outdoor = other.Outdoor;
             RestrictByBoundaries = other.RestrictByBoundaries;
@@ -114,6 +115,8 @@ namespace RTSCamera
             ControlAlliesAfterDeath = other.ControlAlliesAfterDeath;
             PreferToControlCompanions = other.PreferToControlCompanions;
             ControlTroopsInPlayerPartyOnly = other.ControlTroopsInPlayerPartyOnly;
+            DisableDeath = other.DisableDeath;
+            DisableDeathHotkeyEnabled = other.DisableDeathHotkeyEnabled;
             SwitchTeamHotkeyEnabled = other.SwitchTeamHotkeyEnabled;
         }
 

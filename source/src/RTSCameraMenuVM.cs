@@ -63,9 +63,11 @@ namespace RTSCamera
             GameTexts.FindText("str_em_unbalanced_options_description").ToString();
         public string DisableDeathString { get; } = GameTexts.FindText("str_em_disable_death").ToString();
 
+        public string DisableDeathHotkeyEnabledString { get; } = GameTexts.FindText("str_em_disable_death_hotkey_enabled").ToString();
+
         public string SwitchTeamString { get; } = GameTexts.FindText("str_em_switch_team").ToString();
 
-        public string HotkeyEnabledString { get; } = GameTexts.FindText("str_em_hotkey_enabled").ToString();
+        public string SwitchTeamHotkeyEnabledString { get; } = GameTexts.FindText("str_em_switch_team_hotkey_enabled").ToString();
 
 
         [DataSourceProperty]
@@ -308,6 +310,19 @@ namespace RTSCamera
                 _config.DisableDeath = value;
                 _mission.GetMissionBehaviour<DisableDeathLogic>()?.SetDisableDeath(_config.DisableDeath);
                 OnPropertyChanged(nameof(DisableDeath));
+            }
+        }
+
+        [DataSourceProperty]
+        public bool DisableDeathHotkeyEnabled
+        {
+            get => _config.DisableDeathHotkeyEnabled;
+            set
+            {
+                if (_config.DisableDeathHotkeyEnabled == value)
+                    return;
+                _config.DisableDeathHotkeyEnabled = value;
+                OnPropertyChanged(nameof(DisableDeathHotkeyEnabled));
             }
         }
 

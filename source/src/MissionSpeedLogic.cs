@@ -55,7 +55,6 @@ namespace RTSCamera
         {
             Mission.Scene.SlowMotionFactor = factor;
             _config.SlowMotionFactor = factor;
-            _config.Serialize();
         }
 
         //public void ApplySlowMotionFactor()

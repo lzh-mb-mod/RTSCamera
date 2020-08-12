@@ -6,380 +6,515 @@
   <Window>
     <ButtonWidget Command.Click="CloseMenu" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="RTSCamera.TransparentBrush">
       <Children>
-        <ListPanel LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="50" Brush="RTSCamera.MissionMenuBrush">
+        <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="1600" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="50" Brush="RTSCamera.MissionMenuBrush">
           <Children>
 
-            <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
+            <ListPanel LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Left">
               <Children>
 
-                <TextWidget Text="@UseFreeCameraByDefaultString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <!-- About free camera -->
+                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="500" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
                   <Children>
-                    <ButtonWidget IsSelected="@UseFreeCameraByDefault" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                    <ButtonWidget Command.Click="SwitchFreeCamera" IsVisible="@SwitchFreeCameraEnabled" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
                       <Children>
-                        <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                        <TextWidget Text="@SwitchFreeCameraString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
                       </Children>
                     </ButtonWidget>
                   </Children>
                 </Widget>
 
-                <ButtonWidget Command.Click="SwitchFreeCamera" IsVisible="@SwitchFreeCameraEnabled" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
+                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
                   <Children>
-                    <TextWidget Text="@SwitchFreeCameraString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
-                  </Children>
-                </ButtonWidget>
-
-                <TextWidget Text="@PreventPlayerFightingString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <Children>
-                    <ButtonWidget IsSelected="@PreventPlayerFighting" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
                       <Children>
-                        <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
-                      </Children>
-                    </ButtonWidget>
-                  </Children>
-                </Widget>
-
-              </Children>
-            </ListPanel>
-
-            <ListPanel DataSource="{RaisedHeight}" IsVisible="@IsVisible" LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10" MarginLeft="20">
-              <Children>
-                <RichTextWidget Text="@Name" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginLeft="10" Brush="SPOptions.Slider.Value.Text" />
-
-                <SliderWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="338" SuggestedHeight="42" MarginLeft="20" VerticalAlignment="Center" DoNotUpdateHandleSize="true" Filler="Filler" Handle="SliderHandle" IsDiscrete="@IsDiscrete" MaxValueFloat="@Max" MinValueFloat="@Min" ValueFloat="@OptionValue">
-                  <Children>
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="362" SuggestedHeight="38" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_canvas" IsEnabled="false" />
-                    <Widget Id="Filler" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_fill" ClipContents="true">
-                      <Children>
-                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" HorizontalAlignment="Left" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_fill" />
+                        <TextWidget Text="@UseFreeCameraByDefaultString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text"/>
                       </Children>
                     </Widget>
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="400" SuggestedHeight="65" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_frame" IsEnabled="false" />
-                    <Widget Id="SliderHandle" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="14" SuggestedHeight="38" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="SPOptions.Slider.Handle" />
-                  </Children>
-                </SliderWidget>
-
-                <RichTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="50" MarginLeft="20" VerticalAlignment="Center" Brush="SPOptions.Slider.Value.Text" IsEnabled="false" Text="@OptionValueAsString" />
-              </Children>
-            </ListPanel>
-
-            <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
-              <Children>
-
-                <ListPanel DataSource="{PlayerFormation}" LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <Children>
-                    <RichTextWidget Text="@Name" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
-                    <Standard.DropdownWithHorizontalControl Id="StringOption" HorizontalAlignment="Center" VerticalAlignment="Center" Parameter.SelectorDataSource="{Selector}" />
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <ButtonWidget IsSelected="@UseFreeCameraByDefault" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                          <Children>
+                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                          </Children>
+                        </ButtonWidget>
+                      </Children>
+                    </Widget>
                   </Children>
                 </ListPanel>
 
-                <TextWidget Text="@AlwaysSetPlayerFormationString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
                   <Children>
-                    <ButtonWidget IsSelected="@AlwaysSetPlayerFormation" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
                       <Children>
-                        <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                        <TextWidget Text="@PreventPlayerFightingString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text"/>
                       </Children>
-                    </ButtonWidget>
-                  </Children>
-                </Widget>
-
-              </Children>
-            </ListPanel>
-            <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
-              <Children>
-
-                <TextWidget Text="@ConstantSpeedString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <Children>
-                    <ButtonWidget IsSelected="@ConstantSpeed" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                    </Widget>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
                       <Children>
-                        <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
-                      </Children>
-                    </ButtonWidget>
-                  </Children>
-                </Widget>
-
-                <TextWidget Text="@OutdoorString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <Children>
-                    <ButtonWidget IsSelected="@Outdoor" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
-                      <Children>
-                        <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
-                      </Children>
-                    </ButtonWidget>
-                  </Children>
-                </Widget>
-
-                <TextWidget Text="@RestrictByBoundariesString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <Children>
-                    <ButtonWidget IsSelected="@RestrictByBoundaries" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
-                      <Children>
-                        <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
-                      </Children>
-                    </ButtonWidget>
-                  </Children>
-                </Widget>
-
-              </Children>
-            </ListPanel>
-
-            <ListPanel IsVisible="@AdjustSpeedEnabled" LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
-              <Children>
-                <ButtonWidget Command.Click="TogglePause" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
-                  <Children>
-                    <TextWidget Text="@TogglePauseString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
-                  </Children>
-                </ButtonWidget>
-
-                <TextWidget Text="@SlowMotionModeString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <Children>
-                    <ButtonWidget IsSelected="@SlowMotionMode" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
-                      <Children>
-                        <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
-                      </Children>
-                    </ButtonWidget>
-                  </Children>
-                </Widget>
-
-                <ListPanel DataSource="{SpeedFactor}" IsVisible="@IsVisible" LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginLeft="20">
-                  <Children>
-                    <RichTextWidget Text="@Name" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginLeft="10" Brush="SPOptions.Slider.Value.Text" />
-
-                    <SliderWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="338" SuggestedHeight="42" MarginLeft="20" VerticalAlignment="Center" DoNotUpdateHandleSize="true" Filler="Filler" Handle="SliderHandle" IsDiscrete="@IsDiscrete" MaxValueFloat="@Max" MinValueFloat="@Min" ValueFloat="@OptionValue">
-                      <Children>
-                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="362" SuggestedHeight="38" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_canvas" IsEnabled="false" />
-                        <Widget Id="Filler" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_fill" ClipContents="true">
+                        <ButtonWidget IsSelected="@PreventPlayerFighting" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
                           <Children>
-                            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" HorizontalAlignment="Left" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_fill" />
+                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                          </Children>
+                        </ButtonWidget>
+                      </Children>
+                    </Widget>
+                  </Children>
+                </ListPanel>
+
+                <ListPanel DataSource="{RaisedHeight}" IsVisible="@IsVisible" LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Left" VerticalAlignment="Center" MarginTop="10">
+                  <Children>
+
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <RichTextWidget Text="@Name" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                      </Children>
+                    </Widget>
+
+                    <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <SliderWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="338" SuggestedHeight="42" VerticalAlignment="Center" DoNotUpdateHandleSize="true" Filler="Filler" Handle="SliderHandle" IsDiscrete="@IsDiscrete" MaxValueFloat="@Max" MinValueFloat="@Min" ValueFloat="@OptionValue" MarginLeft="30">
+                          <Children>
+                            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="362" SuggestedHeight="38" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_canvas" IsEnabled="false" />
+                            <Widget Id="Filler" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_fill" ClipContents="true">
+                              <Children>
+                                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" HorizontalAlignment="Left" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_fill" />
+                              </Children>
+                            </Widget>
+                            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="400" SuggestedHeight="65" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_frame" IsEnabled="false" />
+                            <Widget Id="SliderHandle" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="14" SuggestedHeight="38" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="SPOptions.Slider.Handle" />
+                          </Children>
+                        </SliderWidget>
+                        <RichTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="50" MarginLeft="20" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="SPOptions.Slider.Value.Text" IsEnabled="false" Text="@OptionValueAsString" />
+                      </Children>
+                    </ListPanel>
+
+                  </Children>
+                </ListPanel>
+
+                <ListPanel DataSource="{PlayerFormation}" LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                  <Children>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <RichTextWidget Text="@Name" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                      </Children>
+                    </Widget>
+                    <Standard.DropdownWithHorizontalControl Id="StringOption" HorizontalAlignment="Center" VerticalAlignment="Center" Parameter.SelectorDataSource="{Selector}" MarginLeft="10" />
+                  </Children>
+                </ListPanel>
+
+                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                  <Children>
+
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <TextWidget Text="@AlwaysSetPlayerFormationString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                      </Children>
+                    </Widget>
+
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <ButtonWidget IsSelected="@AlwaysSetPlayerFormation" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                          <Children>
+                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                          </Children>
+                        </ButtonWidget>
+                      </Children>
+                    </Widget>
+                  </Children>
+                </ListPanel>
+
+                <!-- About time speed -->
+                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="500" HorizontalAlignment="Center" VerticalAlignment="Center">
+                  <Children>
+                    <ButtonWidget IsVisible="@AdjustSpeedEnabled" Command.Click="TogglePause" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1" MarginTop="10">
+                      <Children>
+                        <TextWidget Text="@TogglePauseString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
+                      </Children>
+                    </ButtonWidget>
+                  </Children>
+                </Widget>
+
+                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" IsVisible="@AdjustSpeedEnabled" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
+                  <Children>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <TextWidget Text="@SlowMotionModeString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                      </Children>
+                    </Widget>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <ButtonWidget IsSelected="@SlowMotionMode" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                          <Children>
+                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                          </Children>
+                        </ButtonWidget>
+                      </Children>
+                    </Widget>
+                  </Children>
+                </ListPanel>
+
+                <ListPanel IsVisible="@AdjustSpeedEnabled" LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                  <Children>
+                    <Widget DataSource="{SpeedFactor}" IsVisible="@IsVisible" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <RichTextWidget Text="@Name" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                      </Children>
+                    </Widget>
+
+                    <ListPanel DataSource="{SpeedFactor}" IsVisible="@IsVisible" LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <SliderWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="338" SuggestedHeight="42" VerticalAlignment="Center" DoNotUpdateHandleSize="true" Filler="Filler" Handle="SliderHandle" IsDiscrete="@IsDiscrete" MaxValueFloat="@Max" MinValueFloat="@Min" ValueFloat="@OptionValue" MarginLeft="30">
+                          <Children>
+                            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="362" SuggestedHeight="38" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_canvas" IsEnabled="false" />
+                            <Widget Id="Filler" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_fill" ClipContents="true">
+                              <Children>
+                                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="345" SuggestedHeight="35" HorizontalAlignment="Left" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_fill" />
+                              </Children>
+                            </Widget>
+                            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="400" SuggestedHeight="65" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_frame" IsEnabled="false" />
+                            <Widget Id="SliderHandle" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="14" SuggestedHeight="38" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="SPOptions.Slider.Handle" />
+                          </Children>
+                        </SliderWidget>
+                        <RichTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="50" MarginLeft="20" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="SPOptions.Slider.Value.Text" IsEnabled="false" Text="@OptionValueAsString" />
+                      </Children>
+                    </ListPanel>
+                  </Children>
+                </ListPanel>
+
+
+                <!-- Control Ally Options -->
+                <PartyHeaderToggleWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="800" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="10" MarginRight="10" CollapseIndicator="Description\CollapseParent\GroupTitle\CollapseIndicator" WidgetToClose="..\AfterDeathOptions" ListPanel="..\AfterDeathOptions" RenderLate="true" UpdateChildrenStates="true">
+                  <Children>
+
+                    <ListPanel Id="Description" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" LayoutImp.LayoutMethod="HorizontalLeftToRight" UpdateChildrenStates="true">
+                      <Children>
+
+                        <Widget Id="CollapseParent" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" UpdateChildrenStates="true">
+                          <Children>
+                            <TextWidget Id="GroupTitle" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" Brush="SPOptions.GameKeysGroup.Title.Text" Text="@ControlAlliesOptionsDescriptionString" ClipContents="false" MarginLeft="30">
+                              <Children>
+                                <ImageWidget Id="CollapseIndicator" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="19" SuggestedWidth="19" VerticalAlignment="Center" PositionXOffset="-26" PositionYOffset="-3" Brush="SPOptions.GameKeysgroup.ExpandIndicator" OverrideDefaultStateSwitchingEnabled="true" />
+                              </Children>
+                            </TextWidget>
                           </Children>
                         </Widget>
-                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="400" SuggestedHeight="65" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="SPOptions\standart_slider_frame" IsEnabled="false" />
-                        <Widget Id="SliderHandle" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="14" SuggestedHeight="38" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="SPOptions.Slider.Handle" />
-                      </Children>
-                    </SliderWidget>
 
-                    <RichTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="50" MarginLeft="20" VerticalAlignment="Center" Brush="SPOptions.Slider.Value.Text" IsEnabled="false" Text="@OptionValueAsString" />
+                        <ImageWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="2" VerticalAlignment="Center" MarginLeft="15" Brush="SPOptions.CollapserLine" />
+                      </Children>
+                    </ListPanel>
+
+                  </Children>
+                </PartyHeaderToggleWidget>
+
+                <ListPanel Id="AfterDeathOptions" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center">
+                  <Children>
+
+                    <ListPanel DataSource="{ControlAnotherHero}" LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" SuggestedWidth="800" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                      <Children>
+
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Children>
+                            <RichTextWidget Text="@Name" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                          </Children>
+                        </Widget>
+                        <Standard.DropdownWithHorizontalControl Id="StringOption" HorizontalAlignment="Center" VerticalAlignment="Center" Parameter.SelectorDataSource="{Selector}" MarginLeft="10" />
+                      </Children>
+                    </ListPanel>
+
+
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="500" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                      <Children>
+                        <ButtonWidget Command.Click="SelectCharacter" IsVisible="@SwitchFreeCameraEnabled" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
+                          <Children>
+                            <TextWidget Text="@SelectCharacterString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
+                          </Children>
+                        </ButtonWidget>
+                      </Children>
+                    </Widget>
+
+                    <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
+                      <Children>
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Children>
+                            <TextWidget Text="@ControlAlliesAfterDeathString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                          </Children>
+                        </Widget>
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Children>
+                            <ButtonWidget IsSelected="@ControlAlliesAfterDeath" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                              <Children>
+                                <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                              </Children>
+                            </ButtonWidget>
+                          </Children>
+                        </Widget>
+                      </Children>
+                    </ListPanel>
+
+                    <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
+                      <Children>
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Children>
+                            <TextWidget Text="@PreferToControlCompanionsString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                          </Children>
+                        </Widget>
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Children>
+                            <ButtonWidget IsSelected="@PreferToControlCompanions" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                              <Children>
+                                <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                              </Children>
+                            </ButtonWidget>
+                          </Children>
+                        </Widget>
+                      </Children>
+                    </ListPanel>
+
+                    <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
+                      <Children>
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Children>
+                            <TextWidget Text="@ControlTroopsInPlayerPartyOnlyString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                          </Children>
+                        </Widget>
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Children>
+                            <ButtonWidget IsSelected="@ControlTroopsInPlayerPartyOnly" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                              <Children>
+                                <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                              </Children>
+                            </ButtonWidget>
+                          </Children>
+                        </Widget>
+                      </Children>
+                    </ListPanel>
+
                   </Children>
                 </ListPanel>
 
               </Children>
             </ListPanel>
 
-            <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
+            <ListPanel LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Right" MarginTop="10">
               <Children>
-                <TextWidget Text="@ShowContourString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <Children>
-                    <ButtonWidget IsSelected="@ShowContour" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
-                      <Children>
-                        <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
-                      </Children>
-                    </ButtonWidget>
-                  </Children>
-                </Widget>
 
-                <TextWidget Text="@DisplayMessageString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
                   <Children>
-                    <ButtonWidget IsSelected="@DisplayMessage" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
                       <Children>
-                        <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                        <TextWidget Text="@ConstantSpeedString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
                       </Children>
-                    </ButtonWidget>
+                    </Widget>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <ButtonWidget IsSelected="@ConstantSpeed" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                          <Children>
+                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                          </Children>
+                        </ButtonWidget>
+                      </Children>
+                    </Widget>
                   </Children>
-                </Widget>
-                <ButtonWidget Command.Click="ToggleUI" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
+                </ListPanel>
+
+                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
+                  <Children>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <TextWidget Text="@OutdoorString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                      </Children>
+                    </Widget>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <ButtonWidget IsSelected="@Outdoor" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                          <Children>
+                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                          </Children>
+                        </ButtonWidget>
+                      </Children>
+                    </Widget>
+                  </Children>
+                </ListPanel>
+
+                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
+                  <Children>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <TextWidget Text="@RestrictByBoundariesString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                      </Children>
+                    </Widget>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <ButtonWidget IsSelected="@RestrictByBoundaries" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                          <Children>
+                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                          </Children>
+                        </ButtonWidget>
+                      </Children>
+                    </Widget>
+                  </Children>
+                </ListPanel>
+
+                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
+                  <Children>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <TextWidget Text="@ShowContourString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                      </Children>
+                    </Widget>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <ButtonWidget IsSelected="@ShowContour" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                          <Children>
+                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                          </Children>
+                        </ButtonWidget>
+                      </Children>
+                    </Widget>
+                  </Children>
+                </ListPanel>
+
+                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
+                  <Children>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <TextWidget Text="@DisplayMessageString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                      </Children>
+                    </Widget>
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                      <Children>
+                        <ButtonWidget IsSelected="@DisplayMessage" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                          <Children>
+                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                          </Children>
+                        </ButtonWidget>
+                      </Children>
+                    </Widget>
+                  </Children>
+                </ListPanel>
+
+                <ButtonWidget Command.Click="ToggleUI" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1" MarginTop="10">
                   <Children>
                     <TextWidget Text="@ToggleUIString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
                   </Children>
                 </ButtonWidget>
 
-              </Children>
-            </ListPanel>
-
-            <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
-              <Children>
-
-                <ButtonWidget Command.Click="ConfigKey" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
+                <ButtonWidget Command.Click="ConfigKey" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1" MarginTop="10">
                   <Children>
                     <TextWidget Text="@ConfigKeyString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
                   </Children>
                 </ButtonWidget>
-              </Children>
-            </ListPanel>
 
-            <ListPanel DataSource="{Extensions}" LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
-              <ItemTemplate>
+                <ListPanel DataSource="{Extensions}" LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
+                  <ItemTemplate>
 
-                <ButtonWidget Command.Click="Clicked" DoNotPassEventsToChildren="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
-                  <Children>
-                    <TextWidget Text="@Name" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text" MarginLeft="40" MarginRight="40" />
-                  </Children>
-                </ButtonWidget>
-
-              </ItemTemplate>
-            </ListPanel>
-
-            <PartyHeaderToggleWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="1000" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Top" MarginLeft="10" MarginRight="10" CollapseIndicator="Description\CollapseParent\GroupTitle\CollapseIndicator" WidgetToClose="..\AfterDeathOptions" ListPanel="..\AfterDeathOptions" RenderLate="true" UpdateChildrenStates="true">
-              <Children>
-
-                <ListPanel Id="Description" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" LayoutImp.LayoutMethod="HorizontalLeftToRight" UpdateChildrenStates="true">
-                  <Children>
-
-                    <Widget Id="CollapseParent" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" UpdateChildrenStates="true">
+                    <ButtonWidget Command.Click="Clicked" DoNotPassEventsToChildren="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
                       <Children>
-                        <TextWidget Id="GroupTitle" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" Brush="SPOptions.GameKeysGroup.Title.Text" Text="@ControlAlliesOptionsDescriptionString" ClipContents="false" MarginLeft="30">
-                          <Children>
-                            <ImageWidget Id="CollapseIndicator" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="19" SuggestedWidth="19" VerticalAlignment="Center" PositionXOffset="-26" PositionYOffset="-3" Brush="SPOptions.GameKeysgroup.ExpandIndicator" OverrideDefaultStateSwitchingEnabled="true" />
-                          </Children>
-                        </TextWidget>
+                        <TextWidget Text="@Name" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text" MarginLeft="40" MarginRight="40" />
                       </Children>
-                    </Widget>
+                    </ButtonWidget>
 
-                    <ImageWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="2" VerticalAlignment="Center" MarginLeft="15" Brush="SPOptions.CollapserLine" />
-                  </Children>
+                  </ItemTemplate>
                 </ListPanel>
 
-              </Children>
-            </PartyHeaderToggleWidget>
-
-            <ListPanel Id="AfterDeathOptions" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginTop="10" MarginLeft="50">
-              <Children>
-
-                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
+                <!-- Unbalanced Options -->
+                <PartyHeaderToggleWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="800" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="10" MarginRight="10" MarginTop="30" CollapseIndicator="Description\CollapseParent\GroupTitle\CollapseIndicator" WidgetToClose="..\UnblancedOptions" ListPanel="..\UnblancedOptions" RenderLate="true" UpdateChildrenStates="true">
                   <Children>
 
-                    <ListPanel DataSource="{ControlAnotherHero}" LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ListPanel Id="Description" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" LayoutImp.LayoutMethod="HorizontalLeftToRight" UpdateChildrenStates="true">
                       <Children>
 
-                        <RichTextWidget Text="@Name" DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                        <Widget Id="CollapseParent" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" UpdateChildrenStates="true">
+                          <Children>
+                            <TextWidget Id="GroupTitle" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" Brush="SPOptions.GameKeysGroup.Title.Text" Text="@UnbalancedOptionsDescriptionString" ClipContents="false" MarginLeft="30">
+                              <Children>
+                                <ImageWidget Id="CollapseIndicator" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="19" SuggestedWidth="19" VerticalAlignment="Center" PositionXOffset="-26" PositionYOffset="-3" Brush="SPOptions.GameKeysgroup.ExpandIndicator" OverrideDefaultStateSwitchingEnabled="true" />
+                              </Children>
+                            </TextWidget>
+                          </Children>
+                        </Widget>
 
-                        <Standard.DropdownWithHorizontalControl Id="StringOption" HorizontalAlignment="Center" VerticalAlignment="Center" Parameter.SelectorDataSource="{Selector}" />
+                        <ImageWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="2" VerticalAlignment="Center" MarginLeft="15" Brush="SPOptions.CollapserLine" />
+                      </Children>
+                    </ListPanel>
+
+                  </Children>
+                </PartyHeaderToggleWidget>
+
+                <ListPanel Id="UnblancedOptions" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center">
+                  <Children>
+
+                    <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
+                      <Children>
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Children>
+                            <TextWidget Text="@DisableDeathString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                          </Children>
+                        </Widget>
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Children>
+                            <ButtonWidget IsSelected="@DisableDeath" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                              <Children>
+                                <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                              </Children>
+                            </ButtonWidget>
+                          </Children>
+                        </Widget>
+                      </Children>
+                    </ListPanel>
+
+                    <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
+                      <Children>
+
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Children>
+                            <TextWidget Text="@DisableDeathHotkeyEnabledString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                          </Children>
+                        </Widget>
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Children>
+                            <ButtonWidget IsSelected="@DisableDeathHotkeyEnabled" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                              <Children>
+                                <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                              </Children>
+                            </ButtonWidget>
+                          </Children>
+                        </Widget>
 
                       </Children>
                     </ListPanel>
 
-                    <ButtonWidget Command.Click="SelectCharacter" IsVisible="@SwitchFreeCameraEnabled" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
+                    <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
                       <Children>
-                        <TextWidget Text="@SelectCharacterString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
-                      </Children>
-                    </ButtonWidget>
-
-                  </Children>
-                </ListPanel>
-
-                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
-                  <Children>
-                    <TextWidget Text="@ControlAlliesAfterDeathString" WidthSizePolicy="Fixed" SuggestedWidth="500" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
-                      <Children>
-                        <ButtonWidget IsSelected="@ControlAlliesAfterDeath" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                        <ButtonWidget Command.Click="SwitchTeam" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
                           <Children>
-                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                            <TextWidget Text="@SwitchTeamString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
                           </Children>
                         </ButtonWidget>
                       </Children>
-                    </Widget>
-                  </Children>
-                </ListPanel>
+                    </ListPanel>
 
-                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
-                  <Children>
-                    <TextWidget Text="@PreferToControlCompanionsString" WidthSizePolicy="Fixed" SuggestedWidth="500" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">
                       <Children>
-                        <ButtonWidget IsSelected="@PreferToControlCompanions" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
                           <Children>
-                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                            <TextWidget Text="@SwitchTeamHotkeyEnabledString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
                           </Children>
-                        </ButtonWidget>
-                      </Children>
-                    </Widget>
-                  </Children>
-                </ListPanel>
-
-                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
-                  <Children>
-                    <TextWidget Text="@ControlTroopsInPlayerPartyOnlyString" WidthSizePolicy="Fixed" SuggestedWidth="500" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
-                      <Children>
-                        <ButtonWidget IsSelected="@ControlTroopsInPlayerPartyOnly" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                        </Widget>
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
                           <Children>
-                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                            <ButtonWidget IsSelected="@SwitchTeamHotkeyEnabled" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                              <Children>
+                                <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+                              </Children>
+                            </ButtonWidget>
                           </Children>
-                        </ButtonWidget>
+                        </Widget>
+
                       </Children>
-                    </Widget>
-                  </Children>
-                </ListPanel>
+                    </ListPanel>
 
-              </Children>
-            </ListPanel>
-
-
-
-            <PartyHeaderToggleWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="1000" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Top" MarginLeft="10" MarginRight="10" CollapseIndicator="Description\CollapseParent\GroupTitle\CollapseIndicator" WidgetToClose="..\UnblancedOptions" ListPanel="..\UnblancedOptions" RenderLate="true" UpdateChildrenStates="true">
-              <Children>
-
-                <ListPanel Id="Description" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" LayoutImp.LayoutMethod="HorizontalLeftToRight" UpdateChildrenStates="true">
-                  <Children>
-
-                    <Widget Id="CollapseParent" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" UpdateChildrenStates="true">
-                      <Children>
-                        <TextWidget Id="GroupTitle" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" Brush="SPOptions.GameKeysGroup.Title.Text" Text="@UnbalancedOptionsDescriptionString" ClipContents="false" MarginLeft="30">
-                          <Children>
-                            <ImageWidget Id="CollapseIndicator" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="19" SuggestedWidth="19" VerticalAlignment="Center" PositionXOffset="-26" PositionYOffset="-3" Brush="SPOptions.GameKeysgroup.ExpandIndicator" OverrideDefaultStateSwitchingEnabled="true" />
-                          </Children>
-                        </TextWidget>
-                      </Children>
-                    </Widget>
-
-                    <ImageWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="2" VerticalAlignment="Center" MarginLeft="15" Brush="SPOptions.CollapserLine" />
-                  </Children>
-                </ListPanel>
-
-              </Children>
-            </PartyHeaderToggleWidget>
-            <ListPanel Id="UnblancedOptions" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginTop="10" MarginLeft="50">
-              <Children>
-
-                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
-                  <Children>
-                    <TextWidget Text="@DisableDeathString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
-                      <Children>
-                        <ButtonWidget IsSelected="@DisableDeath" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
-                          <Children>
-                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
-                          </Children>
-                        </ButtonWidget>
-                      </Children>
-                    </Widget>
-                  </Children>
-                </ListPanel>
-
-                <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="10">
-                  <Children>
-                    <ButtonWidget Command.Click="SwitchTeam" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="300" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="ButtonBrush2" PositiveBehaviourBrush="ButtonBrush1">
-                      <Children>
-                        <TextWidget Text="@SwitchTeamString" HeightSizePolicy="CoverChildren" WidthSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Popup.Button.Text"/>
-                      </Children>
-                    </ButtonWidget>
-
-                    <TextWidget Text="@HotkeyEnabledString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center">
-                      <Children>
-                        <ButtonWidget IsSelected="@SwitchTeamHotkeyEnabled" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Left" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
-                          <Children>
-                            <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
-                          </Children>
-                        </ButtonWidget>
-                      </Children>
-                    </Widget>
                   </Children>
                 </ListPanel>
 

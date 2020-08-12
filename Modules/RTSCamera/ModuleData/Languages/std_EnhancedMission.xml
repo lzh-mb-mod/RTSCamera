@@ -49,8 +49,9 @@
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="Unbalanced Options" />
     <string id="RTSCamera_disabledeath" text="Disable Death" />
+    <string id="RTSCamera_disable_death_hotkey_enabled" text="Disable Death Hotkey enabled" />
     <string id="RTSCamera_switchteam" text="Switch Team" />
-    <string id="RTSCamera_hotkey_enabled" text="Hotkey enabled" />
+    <string id="RTSCamera_switch_team_hotkey_enabled" text="Switch Team Hotkey enabled" />
 
     <string id="RTSCamera_missionpaused" text="Mission paused." />
     <string id="RTSCamera_missioncontinue" text="Mission continued." />

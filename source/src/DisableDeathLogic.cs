@@ -22,7 +22,7 @@ namespace RTSCamera
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
-            if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.DisableDeath)))
+            if (_config.DisableDeathHotkeyEnabled && this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.DisableDeath)))
             {
                 this._config.DisableDeath = !this._config.DisableDeath;
                 SetDisableDeath(this._config.DisableDeath);

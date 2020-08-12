@@ -52,7 +52,7 @@ namespace RTSCamera
         {
             base.OnMissionTick(dt);
 
-            if (Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ToggleHUD)) || Input.IsKeyPressed(InputKey.Home))
+            if (Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ToggleHUD)) || (MBDebug.DisableAllUI && Input.IsKeyPressed(InputKey.Home)))
                 ToggleUI();
         }
 
