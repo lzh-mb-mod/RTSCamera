@@ -33,14 +33,14 @@ namespace RTSCamera
             
             if (targetAgent == null)
             {
-                Utility.DisplayLocalizedText("str_em_enemy_wiped_out");
+                Utility.DisplayLocalizedText("str_rts_camera_enemy_wiped_out");
                 return;
             }
             if (!Utility.IsPlayerDead())
             {
                 Utility.AIControlMainAgent(true);
             }
-            Utility.DisplayLocalizedText("str_em_switch_to_enemy_team");
+            Utility.DisplayLocalizedText("str_rts_camera_switch_to_enemy_team");
 
             PreSwitchTeam?.Invoke();
             Mission.PlayerTeam = Mission.PlayerEnemyTeam;

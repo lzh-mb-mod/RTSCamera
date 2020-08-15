@@ -5,7 +5,7 @@ namespace RTSCamera
 {
     public class SelectCharacterVM : ViewModel
     {
-        private string _selectCharacterHintString = GameTexts.FindText("str_em_select_character_hint").ToString();
+        private string _selectCharacterHintString = GameTexts.FindText("str_rts_camera_select_character_hint").ToString();
 
         [DataSourceProperty]
         public string SelectCharacterHintString

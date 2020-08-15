@@ -34,13 +34,13 @@ namespace RTSCamera
                 {
                     serializer.Serialize(writer, this);
                 }
-                Utility.DisplayLocalizedText("str_em_saved_config");
+                Utility.DisplayLocalizedText("str_rts_camera_saved_config");
                 return true;
             }
             catch (Exception e)
             {
-                Utility.DisplayLocalizedText("str_em_save_config_failed");
-                Utility.DisplayLocalizedText("str_em_exception_caught");
+                Utility.DisplayLocalizedText("str_rts_camera_save_config_failed");
+                Utility.DisplayLocalizedText("str_rts_camera_exception_caught");
                 Utility.DisplayMessage(e.ToString());
                 Console.WriteLine(e);
             }
@@ -59,14 +59,14 @@ namespace RTSCamera
                     var config = (T)deserializer.Deserialize(reader);
                     this.CopyFrom(config);
                 }
-                Utility.DisplayLocalizedText("str_em_loaded_config");
+                Utility.DisplayLocalizedText("str_rts_camera_loaded_config");
                 UpgradeToCurrentVersion();
                 return true;
             }
             catch (Exception e)
             {
-                Utility.DisplayLocalizedText("str_em_load_config_failed");
-                Utility.DisplayLocalizedText("str_em_exception_caught");
+                Utility.DisplayLocalizedText("str_rts_camera_load_config_failed");
+                Utility.DisplayLocalizedText("str_rts_camera_exception_caught");
                 Utility.DisplayMessage(e.ToString());
                 Console.WriteLine(e);
             }
@@ -84,7 +84,7 @@ namespace RTSCamera
             MoveOldConfig();
             if (File.Exists(SaveName) && Deserialize())
                 return;
-            Utility.DisplayLocalizedText("str_em_create_default_config");
+            Utility.DisplayLocalizedText("str_rts_camera_create_default_config");
             ResetToDefault();
             Serialize();
         }
@@ -99,8 +99,8 @@ namespace RTSCamera
                 {
                     if (File.Exists(oldName))
                     {
-                        Utility.DisplayMessage(GameTexts.FindText("str_em_found_old_config").ToString() + $" \"{oldName}\".");
-                        Utility.DisplayLocalizedText("str_em_delete_old_config");
+                        Utility.DisplayMessage(GameTexts.FindText("str_rts_camera_found_old_config").ToString() + $" \"{oldName}\".");
+                        Utility.DisplayLocalizedText("str_rts_camera_delete_old_config");
                         File.Delete(oldName);
                     }
 
@@ -124,7 +124,7 @@ namespace RTSCamera
                 string firstOldName = OldNames.FirstOrDefault(File.Exists);
                 if (firstOldName != null && !firstOldName.IsEmpty())
                 {
-                    Utility.DisplayLocalizedText("str_em_rename_old_config");
+                    Utility.DisplayLocalizedText("str_rts_camera_rename_old_config");
                     EnsureSaveDirectory();
                     File.Move(firstOldName, SaveName);
                 }

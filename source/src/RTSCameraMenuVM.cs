@@ -1,5 +1,6 @@
 ﻿using System;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -21,54 +22,67 @@ namespace RTSCamera
         private SelectionOptionDataVM _playerFormation;
         private SelectionOptionDataVM _controlAnotherHero;
 
-        public string UseFreeCameraByDefaultString { get; } = GameTexts.FindText("str_em_use_free_camera_by_default").ToString();
-        public string SwitchFreeCameraString { get; } = GameTexts.FindText("str_em_switch_free_camera").ToString();
+        public string TitleString { get; } = GameTexts.FindText("str_rts_camera_mod_name").ToString();
+
+        public string UseFreeCameraByDefaultString { get; } = GameTexts.FindText("str_rts_camera_use_free_camera_by_default").ToString();
+        public string SwitchFreeCameraString { get; } = GameTexts.FindText("str_rts_camera_switch_free_camera").ToString();
 
         public string PreventPlayerFightingString { get; }
-            = GameTexts.FindText("str_em_prevent_player_fighting").ToString();
+            = GameTexts.FindText("str_rts_camera_prevent_player_fighting").ToString();
 
-        public string AlwaysSetPlayerFormationString { get; } = GameTexts.FindText("str_em_always_set_player_formation").ToString();
+        public string AlwaysSetPlayerFormationString { get; } = GameTexts.FindText("str_rts_camera_always_set_player_formation").ToString();
 
-        public string TogglePauseString { get; } = GameTexts.FindText("str_em_toggle_pause").ToString();
+        public string TogglePauseString { get; } = GameTexts.FindText("str_rts_camera_toggle_pause").ToString();
 
-        public string ConstantSpeedString { get; } = GameTexts.FindText("str_em_constant_speed").ToString();
-        public string OutdoorString { get; } = GameTexts.FindText("str_em_outdoor").ToString();
-        public string RestrictByBoundariesString { get; } = GameTexts.FindText("str_em_restrict_by_boundaries").ToString();
+        public string ConstantSpeedString { get; } = GameTexts.FindText("str_rts_camera_constant_speed").ToString();
+        public string OutdoorString { get; } = GameTexts.FindText("str_rts_camera_outdoor").ToString();
+        public string RestrictByBoundariesString { get; } = GameTexts.FindText("str_rts_camera_restrict_by_boundaries").ToString();
 
-        public string SlowMotionModeString { get; } = GameTexts.FindText("str_em_slow_motion_mode").ToString();
+        public string SlowMotionModeString { get; } = GameTexts.FindText("str_rts_camera_slow_motion_mode").ToString();
 
-        public string ShowContourString { get; } = GameTexts.FindText("str_em_show_contour").ToString();
+        public string ShowContourString { get; } = GameTexts.FindText("str_rts_camera_show_contour").ToString();
 
-        public string DisplayMessageString { get; } = GameTexts.FindText("str_em_display_mod_message").ToString();
+        public string DisplayMessageString { get; } = GameTexts.FindText("str_rts_camera_display_mod_message").ToString();
 
-        public string ToggleUIString { get; } = GameTexts.FindText("str_em_toggle_ui").ToString();
+        public string ToggleUIString { get; } = GameTexts.FindText("str_rts_camera_toggle_ui").ToString();
 
-        public string ConfigKeyString { get; } = GameTexts.FindText("str_em_gamekey_config").ToString();
+        public string ConfigKeyString { get; } = GameTexts.FindText("str_rts_camera_gamekey_config").ToString();
 
-        public string ControlAlliesOptionsDescriptionString { get; } =
-            GameTexts.FindText("str_em_control_allies_options_description").ToString();
+        public string ControlAllyOptionsDescriptionString { get; } =
+            GameTexts.FindText("str_rts_camera_control_ally_options_description").ToString();
 
-        public string SelectCharacterString { get; } = GameTexts.FindText("str_em_select_character").ToString();
+        public string SelectCharacterString { get; } = GameTexts.FindText("str_rts_camera_select_character").ToString();
 
-        public string ControlAlliesAfterDeathString { get; } =
-            GameTexts.FindText("str_em_control_allies_after_death").ToString();
+        public string ControlAllyAfterDeathString { get; } =
+            GameTexts.FindText("str_rts_camera_control_ally_after_death").ToString();
 
         public string PreferToControlCompanionsString { get; } =
-            GameTexts.FindText("str_em_prefer_to_control_companions").ToString();
+            GameTexts.FindText("str_rts_camera_prefer_to_control_companions").ToString();
 
         public string ControlTroopsInPlayerPartyOnlyString { get; } =
-            GameTexts.FindText("str_em_control_troops_in_player_party_only").ToString();
+            GameTexts.FindText("str_rts_camera_control_troops_in_player_party_only").ToString();
 
         public string UnbalancedOptionsDescriptionString { get; } =
-            GameTexts.FindText("str_em_unbalanced_options_description").ToString();
-        public string DisableDeathString { get; } = GameTexts.FindText("str_em_disable_death").ToString();
+            GameTexts.FindText("str_rts_camera_unbalanced_options_description").ToString();
+        public string DisableDeathString { get; } = GameTexts.FindText("str_rts_camera_disable_death").ToString();
 
-        public string DisableDeathHotkeyEnabledString { get; } = GameTexts.FindText("str_em_disable_death_hotkey_enabled").ToString();
+        public string DisableDeathHotkeyEnabledString { get; } = GameTexts.FindText("str_rts_camera_disable_death_hotkey_enabled").ToString();
 
-        public string SwitchTeamString { get; } = GameTexts.FindText("str_em_switch_team").ToString();
+        public string SwitchTeamString { get; } = GameTexts.FindText("str_rts_camera_switch_team").ToString();
 
-        public string SwitchTeamHotkeyEnabledString { get; } = GameTexts.FindText("str_em_switch_team_hotkey_enabled").ToString();
+        public string SwitchTeamHotkeyEnabledString { get; } = GameTexts.FindText("str_rts_camera_switch_team_hotkey_enabled").ToString();
 
+
+        public void SwitchFreeCamera()
+        {
+            _switchFreeCameraLogic?.SwitchCamera();
+            CloseMenu();
+        }
+
+        public HintViewModel SwitchFreeCameraHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_switch_free_camera_hint").ToString());
+
+        [DataSourceProperty] public bool SwitchFreeCameraEnabled => _switchFreeCameraLogic != null;
 
         [DataSourceProperty]
         public bool UseFreeCameraByDefault
@@ -83,13 +97,8 @@ namespace RTSCamera
             }
         }
 
-        public void SwitchFreeCamera()
-        {
-            _switchFreeCameraLogic?.SwitchCamera();
-            CloseMenu();
-        }
-
-        [DataSourceProperty] public bool SwitchFreeCameraEnabled => _switchFreeCameraLogic != null;
+        public HintViewModel UseFreeCameraByDefaultHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_use_free_camera_by_default_hint").ToString());
 
         [DataSourceProperty]
         public bool PreventPlayerFighting
@@ -105,8 +114,14 @@ namespace RTSCamera
             }
         }
 
+        public HintViewModel PreventPlayerFightingHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_prevent_player_fighting_hint").ToString());
+
         [DataSourceProperty]
         public NumericVM RaisedHeight { get; }
+
+        public HintViewModel RaisedHeightHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_raised_height_hint").ToString());
 
         [DataSourceProperty]
         public SelectionOptionDataVM PlayerFormation
@@ -120,6 +135,9 @@ namespace RTSCamera
                 OnPropertyChanged(nameof(PlayerFormation));
             }
         }
+
+        public HintViewModel PlayerFormationHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_player_formation_hint").ToString());
 
         [DataSourceProperty]
         public bool AlwaysSetPlayerFormation
@@ -137,44 +155,10 @@ namespace RTSCamera
             }
         }
 
-        [DataSourceProperty]
-        public bool ConstantSpeed
-        {
-            get => _config.ConstantSpeed;
-            set
-            {
-                _config.ConstantSpeed = value;
-                var view = _mission.GetMissionBehaviour<FlyCameraMissionView>();
-                if (view != null)
-                    view.ConstantSpeed = value;
-            }
-        }
+        public HintViewModel AlwaysSetPlayerFormationHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_always_set_player_formation_hint").ToString());
 
-        [DataSourceProperty]
-        public bool Outdoor
-        {
-            get => _config.Outdoor;
-            set
-            {
-                _config.Outdoor = value;
-                var view = _mission.GetMissionBehaviour<FlyCameraMissionView>();
-                if (view != null)
-                    view.Outdoor = value;
-            }
-        }
-
-        [DataSourceProperty]
-        public bool RestrictByBoundaries
-        {
-            get => _config.RestrictByBoundaries;
-            set
-            {
-                _config.RestrictByBoundaries = value;
-                var view = _mission.GetMissionBehaviour<FlyCameraMissionView>();
-                if (view != null)
-                    view.RestrictByBoundaries = value;
-            }
-        }
+        [DataSourceProperty] public bool AdjustSpeedEnabled => _missionSpeedLogic != null;
 
         public void TogglePause()
         {
@@ -182,7 +166,8 @@ namespace RTSCamera
             CloseMenu();
         }
 
-        [DataSourceProperty] public bool AdjustSpeedEnabled => _missionSpeedLogic != null;
+        public HintViewModel TogglePauseHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_toggle_pause_hint").ToString());
 
 
         [DataSourceProperty]
@@ -198,8 +183,62 @@ namespace RTSCamera
             }
         }
 
+        public HintViewModel SlowMotionModeHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_slow_motion_hint").ToString());
+
         [DataSourceProperty]
         public NumericVM SpeedFactor { get; }
+
+        public HintViewModel SlowMotionFactorHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_slow_motion_factor_hint").ToString());
+
+        [DataSourceProperty]
+        public bool ConstantSpeed
+        {
+            get => _config.ConstantSpeed;
+            set
+            {
+                _config.ConstantSpeed = value;
+                var view = _mission.GetMissionBehaviour<FlyCameraMissionView>();
+                if (view != null)
+                    view.ConstantSpeed = value;
+            }
+        }
+
+        public HintViewModel ConstantSpeedHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_constant_speed_hint").ToString());
+
+        [DataSourceProperty]
+        public bool Outdoor
+        {
+            get => _config.Outdoor;
+            set
+            {
+                _config.Outdoor = value;
+                var view = _mission.GetMissionBehaviour<FlyCameraMissionView>();
+                if (view != null)
+                    view.Outdoor = value;
+            }
+        }
+
+        public HintViewModel OutdoorHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_outdoor_hint").ToString());
+
+        [DataSourceProperty]
+        public bool RestrictByBoundaries
+        {
+            get => _config.RestrictByBoundaries;
+            set
+            {
+                _config.RestrictByBoundaries = value;
+                var view = _mission.GetMissionBehaviour<FlyCameraMissionView>();
+                if (view != null)
+                    view.RestrictByBoundaries = value;
+            }
+        }
+
+        public HintViewModel RestrictByBoundariesHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_restricted_by_boundaries_hint").ToString());
 
         [DataSourceProperty]
         public bool ShowContour
@@ -214,6 +253,9 @@ namespace RTSCamera
             }
         }
 
+        public HintViewModel ShowContourHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_show_contour_hint").ToString());
+
         [DataSourceProperty]
         public bool DisplayMessage
         {
@@ -227,11 +269,17 @@ namespace RTSCamera
             }
         }
 
+        public HintViewModel DisplayMessageHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_display_message_hint").ToString());
+
         public void ToggleUI()
         {
             _hideHudLogic?.ToggleUI();
             CloseMenu();
         }
+
+        public HintViewModel ToggleUIHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_toggle_ui_hint").ToString());
 
         [DataSourceProperty]
         public MBBindingList<ExtensionVM> Extensions { get; }
@@ -241,50 +289,8 @@ namespace RTSCamera
             _gameKeyConfigView?.Activate();
         }
 
-        public void SelectCharacter()
-        {
-            _selectCharacterView.IsSelectingCharacter = true;
-            CloseMenu();
-        }
-
-        [DataSourceProperty]
-        public bool ControlAlliesAfterDeath
-        {
-            get => _config.ControlAlliesAfterDeath;
-            set
-            {
-                if (_config.ControlAlliesAfterDeath == value)
-                    return;
-                _config.ControlAlliesAfterDeath = !_config.ControlAlliesAfterDeath;
-                OnPropertyChanged(nameof(ControlAlliesAfterDeath));
-            }
-        }
-
-        [DataSourceProperty]
-        public bool PreferToControlCompanions
-        {
-            get => _config.PreferToControlCompanions;
-            set
-            {
-                if (_config.PreferToControlCompanions == value)
-                    return;
-                _config.PreferToControlCompanions = !_config.PreferToControlCompanions;
-                OnPropertyChanged(nameof(PreferToControlCompanions));
-            }
-        }
-
-        [DataSourceProperty]
-        public bool ControlTroopsInPlayerPartyOnly
-        {
-            get => _config.ControlTroopsInPlayerPartyOnly;
-            set
-            {
-                if (_config.ControlTroopsInPlayerPartyOnly == value)
-                    return;
-                _config.ControlTroopsInPlayerPartyOnly = !_config.ControlTroopsInPlayerPartyOnly;
-                OnPropertyChanged(nameof(ControlTroopsInPlayerPartyOnly));
-            }
-        }
+        public HintViewModel ConfigKeyHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_config_key_hint").ToString());
 
         [DataSourceProperty]
         public SelectionOptionDataVM ControlAnotherHero
@@ -299,6 +305,66 @@ namespace RTSCamera
             }
         }
 
+        public HintViewModel ControlAnotherHeroHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_control_another_hero_hint").ToString());
+
+        public void SelectCharacter()
+        {
+            _selectCharacterView.IsSelectingCharacter = true;
+            CloseMenu();
+        }
+
+        public HintViewModel SelectCharacterHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_select_character_hint").ToString());
+
+        [DataSourceProperty]
+        public bool ControlAllyAfterDeath
+        {
+            get => _config.ControlAllyAfterDeath;
+            set
+            {
+                if (_config.ControlAllyAfterDeath == value)
+                    return;
+                _config.ControlAllyAfterDeath = !_config.ControlAllyAfterDeath;
+                OnPropertyChanged(nameof(ControlAllyAfterDeath));
+            }
+        }
+
+        public HintViewModel ControlAllyAfterDeathHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_control_ally_after_death_hint").ToString());
+
+        [DataSourceProperty]
+        public bool PreferToControlCompanions
+        {
+            get => _config.PreferToControlCompanions;
+            set
+            {
+                if (_config.PreferToControlCompanions == value)
+                    return;
+                _config.PreferToControlCompanions = !_config.PreferToControlCompanions;
+                OnPropertyChanged(nameof(PreferToControlCompanions));
+            }
+        }
+
+        public HintViewModel PreferToControlCompanionsHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_prefer_to_control_companions_hint").ToString());
+
+        [DataSourceProperty]
+        public bool ControlTroopsInPlayerPartyOnly
+        {
+            get => _config.ControlTroopsInPlayerPartyOnly;
+            set
+            {
+                if (_config.ControlTroopsInPlayerPartyOnly == value)
+                    return;
+                _config.ControlTroopsInPlayerPartyOnly = !_config.ControlTroopsInPlayerPartyOnly;
+                OnPropertyChanged(nameof(ControlTroopsInPlayerPartyOnly));
+            }
+        }
+
+        public HintViewModel ControlTroopsInPlayerPartyOnlyHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_control_troops_in_player_party_only_hint").ToString());
+
         [DataSourceProperty]
         public bool DisableDeath
         {
@@ -312,6 +378,9 @@ namespace RTSCamera
                 OnPropertyChanged(nameof(DisableDeath));
             }
         }
+
+        public HintViewModel DisableDeathHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_disable_death_hint").ToString());
 
         [DataSourceProperty]
         public bool DisableDeathHotkeyEnabled
@@ -331,6 +400,9 @@ namespace RTSCamera
             _switchTeamLogic?.SwapTeam();
             CloseMenu();
         }
+
+        public HintViewModel SwitchTeamHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_switch_team_hint").ToString());
 
         [DataSourceProperty]
         public bool SwitchTeamHotkeyEnabled
@@ -380,13 +452,13 @@ namespace RTSCamera
                     new SelectionItem(true, "str_troop_group_name", "5"),
                     new SelectionItem(true, "str_troop_group_name", "6"),
                     new SelectionItem(true, "str_troop_group_name", "7")
-                }), GameTexts.FindText("str_em_player_formation"));
+                }), GameTexts.FindText("str_rts_camera_player_formation"));
             RaisedHeight =
-                new NumericVM(GameTexts.FindText("str_em_raised_height_after_switching_to_free_camera").ToString(),
+                new NumericVM(GameTexts.FindText("str_rts_camera_raised_height_after_switching_to_free_camera").ToString(),
                     _config.RaisedHeight, 0.0f, 50f, true,
                     height => _config.RaisedHeight = height);
             _missionSpeedLogic = _mission.GetMissionBehaviour<MissionSpeedLogic>();
-            SpeedFactor = new NumericVM(GameTexts.FindText("str_em_slow_motion_factor").ToString(),
+            SpeedFactor = new NumericVM(GameTexts.FindText("str_rts_camera_slow_motion_factor").ToString(),
                 _mission.Scene.SlowMotionFactor, 0.01f, 3.0f, false,
                 factor => { _missionSpeedLogic.SetSlowMotionFactor(factor); });
             _contourView = _mission.GetMissionBehaviour<FormationColorMissionView>();
@@ -402,7 +474,7 @@ namespace RTSCamera
 
             ControlAnotherHero = new SelectionOptionDataVM(
                 new ControlTroopsSelectionData().SelectionOptionData,
-                GameTexts.FindText("str_em_control_another_hero"));
+                GameTexts.FindText("str_rts_camera_control_another_hero"));
             _selectCharacterView = Mission.Current.GetMissionBehaviour<SelectCharacterView>();
         }
     }

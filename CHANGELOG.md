@@ -1,4 +1,10 @@
 # Changelog
+## [e3.5.11] - 2020-08-15
+### Changed
+- Rearrange UI of mod menu.
+
+### Added
+- Add hint for each button in mod menu.
 
 ## [e3.5.10] - 2020-08-09
 ### Fixed
@@ -102,7 +108,7 @@
 
 ## [e3.2.2] - 2020-05-27
 ### Fixed
-- Fix crash in tournament when controlling allies after player dead.
+- Fix crash in tournament when controlling ally after player dead.
 
 ## [e3.2.1] - 2020-05-25
 ### Changed
@@ -121,7 +127,7 @@
 
 ## [e3.1.0] - 2020-05-21
 ### Added
-- Add options for controlling allies.
+- Add options for controlling ally.
 
 - Add support for Cinematic Camera.
 

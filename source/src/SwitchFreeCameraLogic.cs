@@ -165,7 +165,7 @@ namespace RTSCamera
 
         private void DoNotDisturbRTS()
         {
-            Utility.DisplayLocalizedText("str_em_player_dead", null, new Color(1, 0, 0));
+            Utility.DisplayLocalizedText("str_rts_camera_player_dead", null, new Color(1, 0, 0));
             _controlTroopLogic.ControlTroop();
         }
 
@@ -173,7 +173,7 @@ namespace RTSCamera
         {
             base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
 
-            if (Mission.MainAgent == affectedAgent && (_config.ControlAlliesAfterDeath || isSpectatorCamera))
+            if (Mission.MainAgent == affectedAgent && (_config.ControlAllyAfterDeath || isSpectatorCamera))
             {
                 // mask code in Mission.OnAgentRemoved so that formations will not be delegated to AI after player dead.
                 affectedAgent.OnMainAgentWieldedItemChange = (Agent.OnMainAgentWieldedItemChangeDelegate)null;
@@ -186,12 +186,12 @@ namespace RTSCamera
             isSpectatorCamera = false;
             if (Mission.MainAgent != null)
             {
-                Utility.DisplayLocalizedText("str_em_switch_to_player");
+                Utility.DisplayLocalizedText("str_rts_camera_switch_to_player");
                 Mission.MainAgent.Controller = Agent.ControllerType.Player;
             }
             else
             {
-                Utility.DisplayLocalizedText("str_em_player_dead");
+                Utility.DisplayLocalizedText("str_rts_camera_player_dead");
                 _controlTroopLogic.ControlTroop();
             }
             ToggleFreeCamera?.Invoke(false);
@@ -206,7 +206,7 @@ namespace RTSCamera
             }
 
             ToggleFreeCamera?.Invoke(true);
-            Utility.DisplayLocalizedText("str_em_switch_to_free_camera");
+            Utility.DisplayLocalizedText("str_rts_camera_switch_to_free_camera");
         }
     }
 }

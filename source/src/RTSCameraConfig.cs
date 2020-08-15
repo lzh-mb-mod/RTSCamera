@@ -13,7 +13,7 @@ namespace RTSCamera
             switch (ConfigVersion)
             {
                 default:
-                    Utility.DisplayLocalizedText("str_em_config_incompatible");
+                    Utility.DisplayLocalizedText("str_rts_camera_config_incompatible");
                     ResetToDefault();
                     Serialize();
                     goto case "1.0";
@@ -63,7 +63,7 @@ namespace RTSCamera
 
         public bool DisplayMessage = true;
 
-        public bool ControlAlliesAfterDeath;
+        public bool ControlAllyAfterDeath;
 
         public bool PreferToControlCompanions;
 
@@ -112,7 +112,7 @@ namespace RTSCamera
             SlowMotionFactor = other.SlowMotionFactor;
             ShowContour = other.ShowContour;
             DisplayMessage = other.DisplayMessage;
-            ControlAlliesAfterDeath = other.ControlAlliesAfterDeath;
+            ControlAllyAfterDeath = other.ControlAllyAfterDeath;
             PreferToControlCompanions = other.PreferToControlCompanions;
             ControlTroopsInPlayerPartyOnly = other.ControlTroopsInPlayerPartyOnly;
             DisableDeath = other.DisableDeath;

@@ -22,7 +22,7 @@ namespace RTSCamera
         {
             base.OnMissionScreenInitialize();
 
-            Utility.PrintOpenMenuHint();
+            Utility.PrintUsageHint();
         }
 
         public override void OnMissionScreenTick(float dt)

@@ -62,7 +62,7 @@ namespace RTSCamera
             switch (ConfigVersion?.ToString())
             {
                 default:
-                    Utility.DisplayLocalizedText("str_em_config_incompatible");
+                    Utility.DisplayLocalizedText("str_rts_camera_config_incompatible");
                     ResetToDefault();
                     Serialize();
                     break;

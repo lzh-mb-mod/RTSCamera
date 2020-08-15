@@ -52,13 +52,13 @@ namespace RTSCamera
                     Utility.AIControlMainAgent(true);
                 }
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
-                Utility.DisplayLocalizedText("str_em_control_troop");
+                Utility.DisplayLocalizedText("str_rts_camera_control_troop");
                 agent.Controller = Agent.ControllerType.Player;
                 return true;
             }
             else
             {
-                Utility.DisplayLocalizedText("str_em_no_troop_to_control");
+                Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
                 return false;
             }
         }
@@ -153,7 +153,7 @@ namespace RTSCamera
 
         private void OnMainAgentChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Mission.MainAgent == null && _config.ControlAlliesAfterDeath)
+            if (Mission.MainAgent == null && _config.ControlAllyAfterDeath)
             {
                 ControlTroop();
             }

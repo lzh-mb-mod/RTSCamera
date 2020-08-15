@@ -5,14 +5,39 @@
     <tag language="English" />
   </tags>
   <strings>
+    <string id="RTSCamera_mod_name" text="RTS Camera" />
+
     <string id="RTSCamera_open_menu_hint" text="Press {KeyName} in battle to open menu of RTS Camera" />
+    <string id="RTSCamera_switch_camera_hint" text="Press {KeyName} in battle to switch to free Camera" />
+
+    <string id="RTSCamera_switch_free_camera_hint" text="Switch between free camera and player camera." />
+    <string id="RTSCamera_use_free_camera_by_default_hint" text="Switch to free camera when entering battle." />
+    <string id="RTSCamera_prevent_player_fighting_hint" text="Prevent player AI from fighting with nearby enemies, to solve the problems that player may charge into enemy formation after switching to free camera." />
+    <string id="RTSCamera_raised_height_hint" text="Camera raised height after switching to free camera." />
+    <string id="RTSCamera_player_formation_hint" text="Assign player to the selected formation." />
+    <string id="RTSCamera_always_set_player_formation_hint" text="Automatically set player to the specified formation, for example when switching to free camera, when controlling another solider, etc." />
+    <string id="RTSCamera_toggle_pause_hint" text="Pause or unpause the game." />
+    <string id="RTSCamera_slow_motion_hint" text="Whether to enable slow motion mode (to adjust time speed)." />
+    <string id="RTSCamera_slow_motion_factor_hint" text="The factor of time speed." />
+    <string id="RTSCamera_control_another_hero_hint" text="Control the hero you selected." />
+    <string id="RTSCamera_select_character_hint" text="Select a character using mouse, then you can focus the camera to it or control it." />
+    <string id="RTSCamera_control_ally_after_death_hint" text="Automatically control one of your ally after you die." />
+    <string id="RTSCamera_prefer_to_control_companions_hint" text="Prefer to control companions when looking for target to control." />
+    <string id="RTSCamera_control_troops_in_player_party_only_hint" text="Only consider troops in player party when looking for target to control." />
+    <string id="RTSCamera_constant_speed_hint" text="Camera movement speed won't be affected by height, for making videos." />
+    <string id="RTSCamera_outdoor_hint" text="Camera will not collide with terrain and buildings when disabled, for making video." />
+    <string id="RTSCamera_restricted_by_boundaries_hint" text="Camera will not be restricted by scene boundaries when disabled, for making video." />
+    <string id="RTSCamera_show_contour_hint" text="Selected formation will be highlighted by contour. You can directly select formation by clicking on them." />
+    <string id="RTSCamera_display_message_hint" text="Whether to display message of this mod." />
+    <string id="RTSCamera_toggle_ui_hint" text="Toggle HUD of the game, for making video." />
+    <string id="RTSCamera_config_key_hint" text="Config hotkey of this mod." />
+    <string id="RTSCamera_disable_death_hint" text="All units will not die, for making video." />
+    <string id="RTSCamera_switch_team_hint" text="Swap player's team, for making video." />
 
     <string id="RTSCamera_createdefaultconfig" text="Create default config" />
     <string id="RTSCamera_foundoldconfig" text="Found old config file:" />
     <string id="RTSCamera_deleteoldconfig" text="Delete the old config file." />
     <string id="RTSCamera_renameoldconfig" text="Rename old config file to new name..." />
-    <string id="RTSCamera_contentillegal" text="Content is illegal." />
-    <string id="RTSCamera_contentoutofrange" text="Content is out of range." />
 
     <string id="RTSCamera_controltroop" text="Controlling: {ControlledTroopName}." />
     <string id="RTSCamera_notrooptocontrol" text="No ally troop to control." />
@@ -29,7 +54,7 @@
     <string id="RTSCamera_usefreecamerabydefault" text="Use Free Camera By Default" />
     <string id="RTSCamera_switchfreecamera" text="Switch Free Camera" />
     <string id="RTSCamera_prevent_player_fighting" text="Prevent Player Fighting" />
-    <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="Raised Height After Switching to Free Camera" />
+    <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="Camera Raised Height" />
     <string id="RTSCamera_playerformation" text="Player Formation" />
     <string id="RTSCamera_always_set_player_formation" text="Always Set Player Formation" />
     <string id="RTSCamera_constantspeed" text="Constant Camera Speed" />
@@ -40,8 +65,8 @@
     <string id="RTSCamera_slowmotionfactor" text="Slow Motion Factor" />
     <string id="RTSCamera_showcontour" text="Show Contour" />
 
-    <string id="RTSCamera_controlalliesoptionsdescription" text="Control Allies" />
-    <string id="RTSCamera_controlalliesafterdeath" text="Control Allies After Death" />
+    <string id="RTSCamera_controlallyoptionsdescription" text="Control ally" />
+    <string id="RTSCamera_controlallyafterdeath" text="Control ally After Death" />
     <string id="RTSCamera_prefertocontrolcompanions" text="Prefer To Control Companions" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
     <string id="RTSCamera_controlanotherhero" text="Control Another Hero" />

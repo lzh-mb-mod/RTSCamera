@@ -39,7 +39,7 @@ namespace RTSCamera
 
         private void PrintDeathStatus(bool disableDeath)
         {
-            Utility.DisplayLocalizedText(disableDeath ? "str_em_death_disabled" : "str_em_death_enabled");
+            Utility.DisplayLocalizedText(disableDeath ? "str_rts_camera_death_disabled" : "str_rts_camera_death_enabled");
         }
     }
 }

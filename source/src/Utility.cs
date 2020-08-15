@@ -62,15 +62,24 @@ namespace RTSCamera
             InformationManager.DisplayMessage(new InformationMessage("RTS Camera: " + str, color));
         }
 
-        public static void PrintOpenMenuHint()
+        public static void PrintUsageHint()
         {
             var keyName = TextForKey(GameKeyConfig.Get().GetKey(GameKeyEnum.OpenMenu));
             GameTexts.SetVariable("KeyName", keyName);
-            var hint = Module.CurrentModule.GlobalTextManager.FindText("str_em_open_menu_hint").ToString();
+            var hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_open_menu_hint").ToString();
+            DisplayMessageOutOfMission(hint);
+            keyName = TextForKey(GameKeyConfig.Get().GetKey(GameKeyEnum.FreeCamera));
+            GameTexts.SetVariable("KeyName", keyName);
+            hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_switch_camera_hint").ToString();
+            DisplayMessageOutOfMission((hint));
+        }
+
+        private static void DisplayMessageOutOfMission(string text)
+        {
             if (Mission.Current == null)
-                DisplayMessageImpl(hint);
+                DisplayMessageImpl(text);
             else
-                DisplayMessage(hint);
+                DisplayMessage(text);
         }
 
         public static TextObject TextForKey(InputKey key)
