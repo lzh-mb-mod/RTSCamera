@@ -59,7 +59,7 @@ namespace RTSCamera
 
         public float SlowMotionFactor = 0.2f;
 
-        public bool ShowContour = false;
+        public bool ShowContour = true;
 
         public bool DisplayMessage = true;
 

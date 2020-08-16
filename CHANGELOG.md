@@ -1,4 +1,11 @@
 # Changelog
+## [e3.5.12] - 2020-08-15
+### Fixed
+- Fix hint text when selecting character.
+
+### Changed
+- Optimize behavior when pressing F key.
+
 ## [e3.5.11] - 2020-08-15
 ### Changed
 - Rearrange UI of mod menu.

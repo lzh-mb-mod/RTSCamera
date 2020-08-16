@@ -32,8 +32,6 @@ namespace RTSCamera
                     (missionScreen?.LastFollowedAgent?.IsActive() ?? false)
                         ? missionScreen?.LastFollowedAgent
                         : GetAgentToControl() ?? this.Mission.PlayerTeam.Leader;
-                if (closestAllyAgent == Mission.MainAgent)
-                    return false;
                 return ControlAgent(closestAllyAgent);
             }
 
@@ -44,7 +42,7 @@ namespace RTSCamera
         {
             if (agent != null)
             {
-                if (agent.Team != Mission.PlayerTeam)
+                if (agent.Controller == Agent.ControllerType.Player || agent.Team != Mission.PlayerTeam)
                     return false;
                 if (!Utility.IsPlayerDead())
                 {

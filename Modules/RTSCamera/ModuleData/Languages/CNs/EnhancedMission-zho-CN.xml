@@ -105,6 +105,6 @@
     <string id="RTSCamera_enemywipedout" text="敌人已被消灭。" />
     <string id="RTSCamera_switchtoenemyteam" text="已切换至敌军队伍。" />
 
-    <string id="RTSCamera_select_character_hint" text="请左键点击以选择一个角色，然后按{KeyName}键锁定到它，再按一次来控制它。" />
+    <string id="RTSCamera_select_character_view_hint" text="请左键点击以选择一个角色，然后按{KeyName}键锁定到它，再按一次来控制它。" />
   </strings>
 </base>

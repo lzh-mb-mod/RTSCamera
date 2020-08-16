@@ -13,7 +13,7 @@ namespace RTSCamera
 {
     public class MissionMenuViewBase : MissionView
     {
-        private string _movieName;
+        private readonly string _movieName;
         private MissionMenuVMBase _dataSource;
         protected GauntletLayer GauntletLayer;
         private GauntletMovie _movie;

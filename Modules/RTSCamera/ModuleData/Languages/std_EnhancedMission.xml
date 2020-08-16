@@ -65,8 +65,8 @@
     <string id="RTSCamera_slowmotionfactor" text="Slow Motion Factor" />
     <string id="RTSCamera_showcontour" text="Show Contour" />
 
-    <string id="RTSCamera_controlallyoptionsdescription" text="Control ally" />
-    <string id="RTSCamera_controlallyafterdeath" text="Control ally After Death" />
+    <string id="RTSCamera_controlallyoptionsdescription" text="Control Ally" />
+    <string id="RTSCamera_controlallyafterdeath" text="Control Ally After Death" />
     <string id="RTSCamera_prefertocontrolcompanions" text="Prefer To Control Companions" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
     <string id="RTSCamera_controlanotherhero" text="Control Another Hero" />
@@ -104,6 +104,6 @@
     <string id="RTSCamera_enemywipedout" text="Enemy has been wiped out." />
     <string id="RTSCamera_switchtoenemyteam" text="Switched to the enemy team." />
 
-    <string id="RTSCamera_select_character_hint" text="Please Select a character by left click. Then press {KeyName} to lock to it and press again to control it." />
+    <string id="RTSCamera_select_character_view_hint" text="Please Select a character by left click. Then press {KeyName} to lock to it and press again to control it." />
   </strings>
 </base>
