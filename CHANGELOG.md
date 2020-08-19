@@ -1,4 +1,9 @@
 # Changelog
+
+## [e3.5.13] - 2020-08-19
+### Fixed
+- Keep compatible with Bannelord e1.5.0.
+
 ## [e3.5.12] - 2020-08-15
 ### Fixed
 - Fix hint text when selecting character.
