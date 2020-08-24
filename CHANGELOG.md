@@ -1,4 +1,8 @@
 # Changelog
+## [e3.5.14] - 2020-08-24
+### Fixed
+- Fix the problem that ally formation is wrong highlighted when "show contour" is enabled.
+
 ## [e3.5.12] - 2020-08-15
 ### Fixed
 - Fix hint text when selecting character.
