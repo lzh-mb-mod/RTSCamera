@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.5.14] - 2020-08-24
+### Fixed
+- Fix the problem that ally formation is wrong highlighted when "show contour" is enabled.
+
 ## [e3.5.13] - 2020-08-19
 ### Fixed
 - Keep compatible with Bannelord e1.5.0.

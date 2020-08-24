@@ -203,9 +203,8 @@ namespace RTSCamera
 
         private void SetFocusContour()
         {
-            _enemyAsTargetFormations.Clear();
-            _allyAsTargetFormations.Clear();
-            _allySelectedFormations.Clear();
+            ClearEnemyFocusContour();
+            ClearAllyFocusContour();
             foreach (var formation in PlayerOrderController?.SelectedFormations)
             {
                 SetFormationSelectedContour(formation, false);

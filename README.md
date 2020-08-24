@@ -94,6 +94,8 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features in b
 
 - If the game crashed after starting:
 
+  - If you upgraded this mod from version lower than e3.2.0, pleas remove the old mod folder "EnhancedMission" to prevent crash.
+
   - Please uncheck the mod in launcher and wait for mod update.
 
     Optionally you can tell me the step to reproduce the crash.
