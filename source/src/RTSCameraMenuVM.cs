@@ -15,7 +15,7 @@ namespace RTSCamera
         private readonly SwitchTeamLogic _switchTeamLogic;
         private readonly MissionSpeedLogic _missionSpeedLogic;
         private readonly GameKeyConfigView _gameKeyConfigView;
-        private readonly HideHUDLogic _hideHudLogic;
+        private readonly HideHUDView _hideHudView;
         private readonly FormationColorMissionView _contourView;
         private readonly SelectCharacterView _selectCharacterView;
 
@@ -274,7 +274,7 @@ namespace RTSCamera
 
         public void ToggleUI()
         {
-            _hideHudLogic?.ToggleUI();
+            _hideHudView?.ToggleUI();
             CloseMenu();
         }
 
@@ -421,7 +421,7 @@ namespace RTSCamera
         public override void CloseMenu()
         {
             _config.Serialize();
-            _hideHudLogic?.EndTemporarilyOpenUI();
+            _hideHudView?.EndTemporarilyOpenUI();
             base.CloseMenu();
         }
 
@@ -462,8 +462,7 @@ namespace RTSCamera
                 _mission.Scene.SlowMotionFactor, 0.01f, 3.0f, false,
                 factor => { _missionSpeedLogic.SetSlowMotionFactor(factor); });
             _contourView = _mission.GetMissionBehaviour<FormationColorMissionView>();
-            _hideHudLogic = Mission.Current.GetMissionBehaviour<HideHUDLogic>();
-            _hideHudLogic?.BeginTemporarilyOpenUI();
+            _hideHudView = Mission.Current.GetMissionBehaviour<HideHUDView>();
 
             Extensions = new MBBindingList<ExtensionVM>();
             foreach (var extension in RTSCameraExtension.Extensions)

@@ -1,5 +1,13 @@
 # Changelog
 
+## [e3.5.15] - 2020-09-02
+### Fixed
+- When the HUD is hidden, opening any focused view (such as when entering a conversation, pressing esc, etc.) will cause the HUD to be temporarily enabled.
+
+- Fix player AI in arena practice after switched to free camera.
+
+- Fix the problem that multiple player character may be spawned when switched to free camera in arena practice.
+
 ## [e3.5.14] - 2020-08-24
 ### Fixed
 - Fix the problem that ally formation is wrong highlighted when "show contour" is enabled.

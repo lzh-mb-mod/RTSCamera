@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Reflection;
+using SandBox;
 using SandBox.Source.Towns;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -71,7 +72,12 @@ namespace RTSCamera
                         "CheckIfConversationAgentIsEscortingThePlayer_Prefix",
                         BindingFlags.Static | BindingFlags.Public)));
 
-
+                _harmony.Patch(
+                    typeof(ArenaPracticeFightMissionController).GetMethod("StartPractice",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    new HarmonyMethod(
+                        typeof(Patch_ArenaPracticeFightMissionController).GetMethod("StartPractice_Prefix",
+                            BindingFlags.Static | BindingFlags.Public)));
 
                 //_harmony.Patch(typeof(MovementOrder).GetMethod("Tick", BindingFlags.Instance | BindingFlags.NonPublic),
                 //    postfix: new HarmonyMethod(

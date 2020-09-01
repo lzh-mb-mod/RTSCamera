@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using TaleWorlds.Engine;
+﻿using TaleWorlds.Engine;
+using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
-using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace RTSCamera
 {
-    class HideHUDLogic : MissionLogic
+    class HideHUDView : MissionView
     {
         private GameKeyConfig _gameKeyConfig;
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private bool _oldDisplayTargetingReticule = true;
         private bool _hideUI = false;
-
+        private bool _isTemporarilyOpenUI = false;
 
         public override void OnBehaviourInitialize()
         {
@@ -41,19 +38,29 @@ namespace RTSCamera
             MBDebug.DisableAllUI = false;
         }
 
-        protected override void OnEndMission()
+        public override void OnMissionScreenTick(float dt)
         {
-            base.OnEndMission();
-            MBDebug.DisableAllUI = false;
-            RecoverTargetingReticule();
-        }
+            base.OnMissionScreenTick(dt);
 
-        public override void OnMissionTick(float dt)
-        {
-            base.OnMissionTick(dt);
-
-            if (Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ToggleHUD)) || (MBDebug.DisableAllUI && Input.IsKeyPressed(InputKey.Home)))
+            if (TaleWorlds.InputSystem.Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ToggleHUD)) || (MBDebug.DisableAllUI && TaleWorlds.InputSystem.Input.IsKeyPressed(InputKey.Home)))
                 ToggleUI();
+
+            if (!_isTemporarilyOpenUI)
+            {
+                if (ScreenManager.FocusedLayer != MissionScreen.SceneLayer)
+                {
+                    _isTemporarilyOpenUI = true;
+                    BeginTemporarilyOpenUI();
+                }
+            }
+            else
+            {
+                if (ScreenManager.FocusedLayer == MissionScreen.SceneLayer)
+                {
+                    _isTemporarilyOpenUI = false;
+                    EndTemporarilyOpenUI();
+                }
+            }
         }
 
         public void ToggleUI()

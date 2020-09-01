@@ -118,8 +118,8 @@ namespace RTSCamera
             {
                 if (_config.AlwaysSetPlayerFormation)
                     Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
-                // the game may crash if no formation has agents and there are agents controlled by AI.
-                else if (agent.Formation == null)
+                // the game may crash if team has ai, no formation has agents and there are agents controlled by AI.
+                else if (agent.Team != null && agent.Team.HasTeamAi && agent.Formation == null)
                     Utility.SetPlayerFormation(CurrentPlayerFormation);
                 if (agent.Formation == null)
                     return;
