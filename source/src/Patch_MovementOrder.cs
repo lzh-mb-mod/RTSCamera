@@ -1,4 +1,5 @@
-﻿using TaleWorlds.Engine;
+﻿using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -33,8 +34,8 @@ namespace RTSCamera
                     return false;
                 }
                 WorldPosition targetMedianPosition = targetFormationQuerySystem.MedianPosition;
-                targetMedianPosition.SetVec2(targetFormationQuerySystem.FormationIntegrityData.AverageVelocityExcludeFarAgents - f.CurrentPosition + myFormationQuerySystem.AveragePosition);
-                if (f.FiringOrder != FiringOrder.FiringOrderHoldYourFire &&(myFormationQuerySystem.IsRangedFormation || myFormationQuerySystem.IsRangedCavalryFormation))
+                //targetMedianPosition.SetVec2(targetFormationQuerySystem.FormationIntegrityData.AverageVelocityExcludeFarAgents - f.CurrentPosition + myFormationQuerySystem.AveragePosition);
+                if (f.FiringOrder != FiringOrder.FiringOrderHoldYourFire && (myFormationQuerySystem.IsRangedFormation || myFormationQuerySystem.IsRangedCavalryFormation))
                 {
                     if (myFormationQuerySystem.IsRangedCavalryFormation)
                     {
@@ -58,16 +59,20 @@ namespace RTSCamera
                         }
                     }
                 }
-                //else
-                //{
-                //    Vec2 vec2 = (__instance.TargetFormation.SmoothedAverageUnitPosition - f.SmoothedAverageUnitPosition).Normalized();
-                //    float num = 2;
-                //    if ((double)targetFormationQuerySystem.FormationPower < (double)f.QuerySystem.FormationPower * 0.200000002980232)
-                //        num = 0.1f;
-                //    targetMedianPosition.SetVec2(targetMedianPosition.AsVec2 - vec2 * num);
-                //}
+                else
+                {
+                    Vec2 vec2 = (targetFormationQuerySystem.AveragePosition - f.QuerySystem.AveragePosition).Normalized();
+                    float num = 2;
+                    if ((double)targetFormationQuerySystem.FormationPower < (double)f.QuerySystem.FormationPower * 0.200000002980232)
+                        num = 0.1f;
+                    targetMedianPosition.SetVec2(targetMedianPosition.AsVec2 - vec2 * num);
+                }
 
-                targetMedianPosition.SetVec2(MBMath.Lerp(f.CurrentPosition, targetMedianPosition.AsVec2, 0.5f, 0.01f ));
+                //targetMedianPosition.SetVec2(MBMath.Lerp(f.CurrentPosition, targetMedianPosition.AsVec2, 0.5f, 0.01f ));
+                if (f.FormationIndex == FormationClass.HeavyCavalry)
+                {
+                    Utility.DisplayMessage(targetMedianPosition.X.ToString() + ',' + targetMedianPosition.Y);
+                }
                 __result = targetMedianPosition;
                 return false;
             }
@@ -75,19 +80,19 @@ namespace RTSCamera
             return true;
         }
 
-        //public static bool GetSubstituteOrder_Prefix(MovementOrder __instance, MovementOrder __result,
-        //    Formation formation)
-        //{
-        //    if (__instance.OrderType == OrderType.ChargeWithTarget)
-        //    {
-        //        var position = formation.QuerySystem.MedianPosition;
-        //        position.SetVec2(formation.CurrentPosition);
-        //        __result = MovementOrder.MovementOrderMove(position);
-        //        return false;
-        //    }
+        public static bool GetSubstituteOrder_Prefix(MovementOrder __instance, ref MovementOrder __result,
+            Formation formation)
+        {
+            if (__instance.OrderType == OrderType.ChargeWithTarget)
+            {
+                var position = formation.QuerySystem.MedianPosition;
+                position.SetVec2(formation.CurrentPosition);
+                __result = MovementOrder.MovementOrderMove(position);
+                return false;
+            }
 
-        //    return true;
-        //}
+            return true;
+        }
 
         //public static bool Get_MovementState_Prefix(MovementOrder __instance, ref object __result)
         //{

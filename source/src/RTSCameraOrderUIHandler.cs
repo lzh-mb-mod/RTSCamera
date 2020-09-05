@@ -327,7 +327,7 @@ namespace RTSCamera
                             break;
                     }
                 }
-                //if (this.DebugInput.IsAltDown())
+                //if (this.Input.IsAltDown())
                 //{
                 //    bool isMouseVisible = this.dataSource.IsTransferActive || !this.gauntletLayer.InputRestrictions.MouseVisibility;
                 //    this.gauntletLayer.InputRestrictions.SetInputRestrictions(isMouseVisible, isMouseVisible ? InputUsageMask.Mouse : InputUsageMask.Invalid);
@@ -336,7 +336,7 @@ namespace RTSCamera
                     this.dataSource.OnEscape();
             }
             int pressedIndex = -1;
-            if (!this.DebugInput.IsControlDown())
+            if (!this.Input.IsControlDown())
             {
                 if (this.Input.IsGameKeyPressed(53))
                     pressedIndex = 0;

@@ -285,14 +285,14 @@ namespace RTSCamera
                 heightFactorForHorizontalMove = 1;
                 heightFactorForVerticalMove = 1;
             }
-            if (DebugInput.IsHotKeyPressed("MissionScreenHotkeyIncreaseCameraSpeed"))
+            if (MissionScreen.InputManager.IsHotKeyPressed("MissionScreenHotkeyIncreaseCameraSpeed"))
                 _cameraSpeedMultiplier *= 1.5f;
-            if (DebugInput.IsHotKeyPressed("MissionScreenHotkeyDecreaseCameraSpeed"))
+            if (MissionScreen.InputManager.IsHotKeyPressed("MissionScreenHotkeyDecreaseCameraSpeed"))
                 _cameraSpeedMultiplier *= 0.6666667f;
-            if (DebugInput.IsHotKeyPressed("ResetCameraSpeed"))
+            if (MissionScreen.InputManager.IsHotKeyPressed("ResetCameraSpeed"))
                 _cameraSpeedMultiplier = 1f;
             _cameraSpeed *= (float)(1.0 - 10 * (double)dt);
-            if (DebugInput.IsControlDown())
+            if (MissionScreen.InputManager.IsControlDown())
             {
                 float num = MissionScreen.SceneLayer.Input.GetDeltaMouseScroll() * 0.008333334f;
                 if (num > 0.00999999977648258)
@@ -309,7 +309,7 @@ namespace RTSCamera
                 _cameraSpeed.y = 0.0f;
                 _cameraSpeed.z = 0.0f;
             }
-            if (!DebugInput.IsControlDown() || !DebugInput.IsAltDown())
+            if (!MissionScreen.InputManager.IsControlDown() || !MissionScreen.InputManager.IsAltDown())
             {
                 Vec3 keyInput = Vec3.Zero;
                 Vec3 mouseInput = Vec3.Zero;

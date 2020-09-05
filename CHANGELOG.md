@@ -1,7 +1,9 @@
 # Changelog
 
-## [e3.5.15] - 2020-09-02
+## [e3.5.15] - 2020-09-05
 ### Fixed
+- Fix the problem of that ctrl or alt key does not work. Now camera speed can be adjusted by pressing ctrl + mosue scroll again.
+
 - When the HUD is hidden, opening any focused view (such as when entering a conversation, pressing esc, etc.) will cause the HUD to be temporarily enabled.
 
 - Fix player AI in arena practice after switched to free camera.

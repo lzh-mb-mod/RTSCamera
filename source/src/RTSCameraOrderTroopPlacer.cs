@@ -307,7 +307,7 @@ namespace RTSCamera
                 worldPosition = _formationDrawingStartingPosition.Value;
             if (!OrderFlag.IsPositionOnValidGround(worldPosition))
                 return;
-            bool isFormationLayoutVertical = !DebugInput.IsControlDown();
+            bool isFormationLayoutVertical = !Input.IsControlDown();
             if ((!InputKey.LeftMouseButton.IsDown() || _formationDrawingStartingPointOfMouse.HasValue) &&
                 IsDrawingAttaching)
                 UpdateFormationDrawingForAttachOrder(giveOrder, isFormationLayoutVertical);
@@ -412,6 +412,8 @@ namespace RTSCamera
                 case CursorState.Enemy:
                     // disable clicking on enemy formation for now.
                     _formationDrawingMode = true;
+                    //enable clicking on enemy formation;
+                    //_clickedFormation = _mouseOverFormation;
                     BeginFormationDraggingOrClicking();
                     break;
                 case CursorState.Friend:
@@ -509,10 +511,10 @@ namespace RTSCamera
                     //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.GoToPos, 3f, 7f, 5f, 20f, 6f);
                     //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Melee, 8f, 7f, 5f, 20f, 0.01f);
                     //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Ranged, 0, 7f, 0, 20f, 0);
-                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.ChargeHorseback, 10f, 7f, 5f, 30f, 0.05f);
+                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.ChargeHorseback, 10f, 30f, 6f, 40f, 0.05f);
                     //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.RangedHorseback, 0.02f, 15f, 0.065f, 30f, 0.055f);
                     //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityMelee, 5f, 12f, 7.5f, 30f, 4f);
-                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityRanged, 0.55f, 12f, 0.8f, 30f, 0.45f);
+                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityRanged, 0.0f, 12f, 0.0f, 30f, 0.0f);
                     //        });
                     //    }
                     //}
