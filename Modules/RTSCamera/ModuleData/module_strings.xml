@@ -60,7 +60,7 @@
     <string id="str_rts_camera_constant_speed" text="{=RTSCamera_constantspeed}Constant Camera Speed" />
     <string id="str_rts_camera_outdoor" text="{=RTSCamera_outdoor}Outdoor" />
     <string id="str_rts_camera_restrict_by_boundaries" text="{=RTSCamera_restrictbyboundaries}Restrict By Boundaries" />
-    <string id="str_rts_camera_show_contour" text="{=RTSCamera_showcontour}Show Contour" />
+    <string id="str_rts_camera_show_contour" text="{=RTSCamera_showcontour}Show Contour(Click to select formation)" />
 
     <string id="str_rts_camera_control_ally_options_description" text="{=RTSCamera_controlallyoptionsdescription}Control Ally" />
     <string id="str_rts_camera_control_ally_after_death" text="{=RTSCamera_controlallyafterdeath}Control Ally After Death" />

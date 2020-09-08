@@ -418,10 +418,14 @@ namespace RTSCamera
                     break;
                 case CursorState.Friend:
                     if (PlayerOrderController.IsFormationSelectable(_mouseOverFormation))
+                    {
                         _clickedFormation = _mouseOverFormation;
+                        BeginFormationDraggingOrClicking();
+                    }
                     else
-                        _formationDrawingMode = true;
-                    BeginFormationDraggingOrClicking();
+                    {
+                        goto case CursorState.Normal;
+                    }
                     break;
                 case CursorState.Normal:
                     _formationDrawingMode = true;
@@ -577,39 +581,30 @@ namespace RTSCamera
                         }
                     }
 
-                    if (cursorState == CursorState.Invisible &&
-                        MissionScreen.OrderFlag.FocusedOrderableObject != null)
-                        cursorState = CursorState.OrderableEntity;
-                }
-
-
-                {
-                    var agent = RayCastForAgent(collisionDistance);
-                    if (agent != null && agent.Formation == null && agent.IsMount)
-                        agent = agent.RiderAgent;
-                    if (_config.ShowContour && !IsDrawingForced && !_formationDrawingMode && agent?.Formation != null)
+                    if (cursorState == CursorState.Invisible)
                     {
-                        cursorState = agent.Formation.Team.IsEnemyOf(Mission.PlayerTeam)
-                            ? CursorState.Enemy
-                            : CursorState.Friend;
-                        // don't click enemy because charge to enemy is not implemented now.
-                        //if (!agent.Formation.Team.IsEnemyOf(Mission.PlayerTeam))
-                        //    cursorState = CursorState.Friend;
-                        _mouseOverFormation = agent.Formation;
-                    }
-                    else
-                    {
-                        _mouseOverFormation = null;
+                        if (MissionScreen.OrderFlag.FocusedOrderableObject != null)
+                            cursorState = CursorState.OrderableEntity;
+                        else
+                        {
+                            var formation = GetMouseOverFormation(collisionDistance);
+                            _mouseOverFormation = formation;
+                            if (formation != null)
+                            {
+                                cursorState = formation.Team.IsEnemyOf(Mission.PlayerTeam)
+                                    ? CursorState.Enemy
+                                    : CursorState.Friend;
+                            }
+                        }
                     }
                 }
             }
-
-            if (_clickedFormation != null) // click on formation and hold.
+            else if (_clickedFormation != null) // click on formation and hold.
             {
                 cursorState = _currentCursorState;
             }
             if (cursorState == CursorState.Invisible &&
-                !(Input.IsShiftDown() && _config.ShowContour) || // press shift to avoid accidentally click on ground.
+                !(Input.IsAltDown() && _config.ShowContour) || // press alt to avoid accidentally click on ground.
                 _formationDrawingMode)
             {
                 cursorState = IsCursorStateGroundOrNormal();
@@ -876,8 +871,24 @@ namespace RTSCamera
         {
             MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out var rayBegin, out var rayEnd);
             var agent = Mission.RayCastForClosestAgent(rayBegin, rayEnd, out var agentDistance,
-                Mission.MainAgent?.IsAIControlled ?? true ? -1 : Mission.MainAgent.Index, 0.3f);
+                Mission.MainAgent?.IsAIControlled ?? true ? -1 : Mission.MainAgent.Index, 0.5f);
             return agentDistance > distance ? null : agent;
+        }
+
+        private Formation GetMouseOverFormation(float collisionDistance)
+        {
+            var agent = RayCastForAgent(collisionDistance);
+            if (agent != null && agent.IsMount)
+                agent = agent.RiderAgent;
+            if (agent == null || agent.Controller == Agent.ControllerType.Player)
+                return null;
+            if (_config.ShowContour && !IsDrawingForced && !_formationDrawingMode && agent?.Formation != null &&
+                !PlayerOrderController.IsFormationListening(agent.Formation))
+            {
+                return agent.Formation;
+            }
+
+            return null;
         }
 
         private bool IsDeployment => Mission.GetMissionBehaviour<SiegeDeploymentHandler>() != null;

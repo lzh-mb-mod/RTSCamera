@@ -63,7 +63,7 @@
     <string id="RTSCamera_togglepause" text="切换暂停" />
     <string id="RTSCamera_slowmotionmode" text="慢速模式" />
     <string id="RTSCamera_slowmotionfactor" text="慢速倍率" />
-    <string id="RTSCamera_showcontour" text="显示轮廓" />
+    <string id="RTSCamera_showcontour" text="显示轮廓（点击选择部队）" />
 
     <string id="RTSCamera_controlallyoptionsdescription" text="控制队友" />
     <string id="RTSCamera_controlallyafterdeath" text="阵亡后控制队友" />

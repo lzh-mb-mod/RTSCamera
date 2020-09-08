@@ -63,7 +63,7 @@
     <string id="RTSCamera_togglepause" text="Toggle Pause" />
     <string id="RTSCamera_slowmotionmode" text="Slow Motion Mode" />
     <string id="RTSCamera_slowmotionfactor" text="Slow Motion Factor" />
-    <string id="RTSCamera_showcontour" text="Show Contour" />
+    <string id="RTSCamera_showcontour" text="Show Contour(Click to select formation)" />
 
     <string id="RTSCamera_controlallyoptionsdescription" text="Control Ally" />
     <string id="RTSCamera_controlallyafterdeath" text="Control Ally After Death" />

@@ -29,7 +29,8 @@ namespace RTSCamera
             {
                 var missionScreen = ScreenManager.TopScreen as MissionScreen;
                 Agent closestAllyAgent =
-                    (missionScreen?.LastFollowedAgent?.IsActive() ?? false)
+                    ((missionScreen?.LastFollowedAgent?.IsActive() ?? false) &&
+                     (_flyCameraMissionView.LockToAgent || missionScreen.LastFollowedAgent.Team == Mission.PlayerTeam))
                         ? missionScreen?.LastFollowedAgent
                         : GetAgentToControl() ?? this.Mission.PlayerTeam.Leader;
                 return ControlAgent(closestAllyAgent);

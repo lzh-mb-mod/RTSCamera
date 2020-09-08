@@ -38,7 +38,7 @@ A mod for Mount&Blade Bannerlord that provides RTS camera and more features in b
 
   - Press `L(letter)` (by default) to open menu of this mod. You can access the features of this mod in it.
 
-  - You can select troops by directly clicking on them. Press `shift` to prevent issuing movement orders, in case you only want to select troops but accidentally click on the ground. Press `F1` to prevent selecting troops, in case you only want to issue movement orders next but accidentally click on a troop.
+  - You can select troops by directly clicking on them. Press `alt` to prevent giving movement orders, in case you only want to select troops but accidentally click on the ground. Press `F1` to prevent selecting troops, in case you only want to issue movement orders next but accidentally click on a troop.
 
   - you can use the following hotkeys by default:
 

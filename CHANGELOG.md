@@ -1,5 +1,11 @@
 # Changelog
 
+## [e3.5.16] - 2020-09-08
+### Changed
+- Use alt instead of shift to prevent giving movement orders when "show contour" is enabled.
+
+- Optimize behavior of click formation.
+
 ## [e3.5.15] - 2020-09-05
 ### Fixed
 - Fix the problem of that ctrl or alt key does not work. Now camera speed can be adjusted by pressing ctrl + mosue scroll again.
