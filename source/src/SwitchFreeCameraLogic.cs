@@ -111,14 +111,6 @@ namespace RTSCamera
             }
         }
 
-        public void ForceSwitchToAgent(Agent agent)
-        {
-            // temporarily mask code in this.OnMainAgentChanged that would set main agent's controller to AI.
-            isSpectatorCamera = false;
-            Mission.MainAgent = agent;
-            SwitchToAgent();
-        }
-
         protected override void OnAgentControllerChanged(Agent agent)
         {
             base.OnAgentControllerChanged(agent);
@@ -172,7 +164,7 @@ namespace RTSCamera
                     }
                     else
                     {
-                        _controlTroopLogic.ControlMainAgent(false, false);
+                        _controlTroopLogic.ControlMainAgent(false);
                     }
                 }
             }
@@ -206,14 +198,11 @@ namespace RTSCamera
             {
                 // mask code in Mission.OnAgentRemoved so that formations will not be delegated to AI after player dead.
                 affectedAgent.OnMainAgentWieldedItemChange = (Agent.OnMainAgentWieldedItemChangeDelegate)null;
+                bool shouldSmoothToAgent = Utility.BeforeSetMainAgent();
                 Mission.MainAgent = null;
                 // Set smooth move again if controls another agent instantly.
                 // Otherwise MissionScreen will reset camera elevate and bearing.
-                if (!isSpectatorCamera && Mission.MainAgent != null)
-                {
-                    if (ScreenManager.TopScreen is MissionScreen missionScreen)
-                        Utility.SmoothMoveToAgent(missionScreen);
-                }
+                Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
             }
         }
 

@@ -86,6 +86,13 @@ namespace RTSCamera
             }
         }
 
+        public override void OnRemoveBehaviour()
+        {
+            base.OnRemoveBehaviour();
+
+            Game.Current.GameStateManager.ActiveStateDisabledByUser = false;
+        }
+
         private bool _oldGameStatusDisabledStatus = false;
 
         private void PauseGame()

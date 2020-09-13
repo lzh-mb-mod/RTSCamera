@@ -20,16 +20,7 @@ namespace RTSCamera
 
         public event Action MainAgentWillBeChangedToAnotherOne;
 
-        //public bool ControlTroop(bool forceControl, bool smoothMovement)
-        //{
-        //    if (this.Mission.PlayerTeam != null)
-        //    {
-        //        Agent closestAllyAgent = GetAgentToControl();
-        //        return ControlAgent(closestAllyAgent, forceControl, smoothMovement);
-        //    }
-
-        //    return false;
-        //}
+        public MissionScreen MissionScreen => _flyCameraMissionView?.MissionScreen;
 
         public bool SetMainAgent()
         {
@@ -40,8 +31,6 @@ namespace RTSCamera
         {
             if (agent != null)
             {
-                if (!(ScreenManager.TopScreen is MissionScreen missionScreen))
-                    return false;
                 if (Mission.MainAgent == agent || agent.Team != Mission.PlayerTeam)
                     return false;
                 if (!Utility.IsPlayerDead())
@@ -51,7 +40,17 @@ namespace RTSCamera
                 }
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
                 Utility.DisplayLocalizedText("str_rts_camera_control_troop");
-                Mission.MainAgent = agent;
+                bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
+                if (_switchFreeCameraLogic.isSpectatorCamera)
+                {
+                    Mission.MainAgent = agent;
+                }
+                else
+                {
+                    agent.Controller = Agent.ControllerType.Player;
+                }
+                Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
+
                 return true;
             }
             else
@@ -77,14 +76,18 @@ namespace RTSCamera
                     MainAgentWillBeChangedToAnotherOne?.Invoke();
                     Utility.AIControlMainAgent(true);
                 }
-                if (Mission.MainAgent != agent)
+                bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
+                if (_switchFreeCameraLogic.isSpectatorCamera)
                 {
                     Mission.MainAgent = agent;
-                }
-                if (_switchFreeCameraLogic != null && _switchFreeCameraLogic.isSpectatorCamera)
-                {
                     _switchFreeCameraLogic.SwitchCamera();
                 }
+                else
+                {
+                    agent.Controller = Agent.ControllerType.Player;
+                }
+
+                Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
             }
             else
             {
@@ -95,24 +98,20 @@ namespace RTSCamera
             return false;
         }
 
-        public bool ControlMainAgent(bool displayMessage = true, bool smoothMoveToAgent = true)
+        public bool ControlMainAgent(bool displayMessage = true)
         {
             if (Mission.MainAgent != null)
             {
                 if (Mission.MainAgent.Controller != Agent.ControllerType.Player)
                 {
-                    if (!(ScreenManager.TopScreen is MissionScreen missionScreen))
-                        return false;
                     if (displayMessage)
                     {
                         GameTexts.SetVariable("ControlledTroopName", Mission.MainAgent.Name);
                         Utility.DisplayLocalizedText("str_rts_camera_control_troop");
                     }
+                    bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
                     Mission.MainAgent.Controller = Agent.ControllerType.Player;
-                    if (smoothMoveToAgent)
-                    {
-                        Utility.SmoothMoveToAgent(missionScreen);
-                    }
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
                 }
             }
             else
@@ -124,87 +123,13 @@ namespace RTSCamera
             return false;
         }
 
-        //public bool ControlAgent(Agent agent)
-        //{
-        //    if (agent != null)
-        //    {
-        //        if (!(ScreenManager.TopScreen is MissionScreen missionScreen))
-        //            return false;
-        //        if (agent.Controller == Agent.ControllerType.Player || agent.Team != Mission.PlayerTeam)
-        //            return false;
-        //        if (!Utility.IsPlayerDead())
-        //        {
-        //            MainAgentWillBeChangedToAnotherOne?.Invoke();
-        //            Utility.AIControlMainAgent(true);
-        //        }
-        //        GameTexts.SetVariable("ControlledTroopName", agent.Name);
-        //        Utility.DisplayLocalizedText("str_rts_camera_control_troop");
-        //        if (_switchFreeCameraLogic != null && _switchFreeCameraLogic.isSpectatorCamera)
-        //        {
-        //            _switchFreeCameraLogic.ForceSwitchToAgent(agent);
-        //        }
-        //        else
-        //        {
-        //            agent.Controller = Agent.ControllerType.Player;
-        //            Utility.SmoothMoveToAgent(missionScreen);
-        //        }
-
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
-        //        return false;
-        //    }
-        //}
-
-        //public bool ControlAgent(Agent agent, bool forceControl, bool smoothMovement)
-        //{
-        //    if (agent != null)
-        //    {
-        //        if (!(ScreenManager.TopScreen is MissionScreen missionScreen))
-        //            return false;
-        //        if (agent.Controller == Agent.ControllerType.Player || agent.Team != Mission.PlayerTeam)
-        //            return false;
-        //        if (!Utility.IsPlayerDead())
-        //        {
-        //            MainAgentWillBeChangedToAnotherOne?.Invoke();
-        //            Utility.AIControlMainAgent(true);
-        //        }
-        //        GameTexts.SetVariable("ControlledTroopName", agent.Name);
-        //        Utility.DisplayLocalizedText("str_rts_camera_control_troop");
-        //        if (forceControl && _switchFreeCameraLogic != null && _switchFreeCameraLogic.isSpectatorCamera)
-        //        {
-        //            _switchFreeCameraLogic.ForceSwitchToAgent(agent);
-        //        }
-        //        else
-        //        {
-        //            agent.Controller = Agent.ControllerType.Player;
-
-        //            if (smoothMovement && _switchFreeCameraLogic != null && !_switchFreeCameraLogic.isSpectatorCamera &&
-        //                agent != missionScreen.LastFollowedAgent)
-        //            {
-        //                Utility.SmoothMoveToAgent(missionScreen);
-        //            }
-        //        }
-
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
-        //        return false;
-        //    }
-        //}
-
         public Agent GetAgentToControl()
         {
-            var missionScreen = ScreenManager.TopScreen as MissionScreen;
 
-            if (missionScreen?.LastFollowedAgent?.IsActive() ?? false)
+            if (_flyCameraMissionView.MissionScreen?.LastFollowedAgent?.IsActive() ?? false)
             {
                 if ((!_switchFreeCameraLogic.isSpectatorCamera || _flyCameraMissionView.LockToAgent) &&
-                    missionScreen.LastFollowedAgent.Team == Mission.PlayerTeam) return missionScreen?.LastFollowedAgent;
+                    _flyCameraMissionView.MissionScreen.LastFollowedAgent.Team == Mission.PlayerTeam) return _flyCameraMissionView.MissionScreen?.LastFollowedAgent;
             }
             else if (Mission.MainAgent?.IsActive() ?? false)
             {

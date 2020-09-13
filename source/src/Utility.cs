@@ -239,6 +239,27 @@ namespace RTSCamera
         private static readonly FieldInfo IsPlayerAgentAdded =
             typeof(MissionScreen).GetField("_isPlayerAgentAdded", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static bool ShouldSmoothMoveToAgent = true;
+
+        public static bool BeforeSetMainAgent()
+        {
+            if (ShouldSmoothMoveToAgent)
+            {
+                ShouldSmoothMoveToAgent = false;
+                return true;
+            }
+
+            return false;
+        }
+
+        public static void AfterSetMainAgent(bool shouldSmoothMoveToAgent, MissionScreen missionScreen)
+        {
+            if (shouldSmoothMoveToAgent)
+            {
+                ShouldSmoothMoveToAgent = true;
+                SmoothMoveToAgent(missionScreen);
+            }
+        }
         public static void SmoothMoveToAgent(MissionScreen missionScreen)
         {
             Utility.DisplayMessage("SmoothMoveToAgent");
@@ -262,9 +283,9 @@ namespace RTSCamera
                 SetCameraElevation?.Invoke(missionScreen, new object[]{0.0f});
                 SetCameraBearing?.Invoke(missionScreen,
                     new object[] {spectatingData.AgentToFollow.LookDirectionAsAngle});
-                // Avoid MissionScreen._cameraSpecialCurrentAddedBearing reset to 0.
-                IsPlayerAgentAdded?.SetValue(missionScreen, false);
             }
+            // Avoid MissionScreen._cameraSpecialCurrentAddedBearing reset to 0.
+            IsPlayerAgentAdded?.SetValue(missionScreen, false);
         }
     }
 }
