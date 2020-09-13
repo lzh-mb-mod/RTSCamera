@@ -29,6 +29,7 @@ namespace RTSCamera
                     ShowContour = true; // enable this feature.
                     goto case "1.3";
                 case "1.3":
+                    AttackSpecificFormation = false;
                     break;
             }
 
@@ -60,6 +61,8 @@ namespace RTSCamera
         public float SlowMotionFactor = 0.2f;
 
         public bool ShowContour = true;
+
+        public bool AttackSpecificFormation = false;
 
         public bool DisplayMessage = true;
 
@@ -111,6 +114,7 @@ namespace RTSCamera
             SlowMotionMode = other.SlowMotionMode;
             SlowMotionFactor = other.SlowMotionFactor;
             ShowContour = other.ShowContour;
+            AttackSpecificFormation = other.AttackSpecificFormation;
             DisplayMessage = other.DisplayMessage;
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;
             PreferToControlCompanions = other.PreferToControlCompanions;

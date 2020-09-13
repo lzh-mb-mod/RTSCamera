@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.Screens;
@@ -8,11 +9,17 @@ using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.Screen;
 
 namespace RTSCamera
 {
     public class FlyCameraMissionView : MissionView, ICameraModeLogic
     {
+        private static readonly FieldInfo IsPlayerAgentAddedField =
+            typeof(MissionScreen).GetField("_isPlayerAgentAdded", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo SetLastFollowedAgent =
+            typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true);
+
         private RTSCameraConfig _config;
         private SwitchFreeCameraLogic _freeCameraLogic;
         private MissionMainAgentController _missionMainAgentController;
@@ -56,7 +63,7 @@ namespace RTSCamera
 
         public float CameraElevation { get; private set; }
 
-        public bool CameraRotateSmoothMode = false;
+        public bool CameraRotateSmoothMode = true;
 
         public bool ConstantSpeed = false;
 
@@ -140,6 +147,20 @@ namespace RTSCamera
         {
             get => CombatCamera.Position;
             set => CombatCamera.Position = value;
+        }
+
+        public bool FocusOnAgent(Agent agent)
+        {
+            if (MissionScreen.LastFollowedAgent == agent)
+                return true;
+            typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true)
+                .Invoke(MissionScreen, new object[] { agent });
+            if (!LockToAgent)
+                LockToAgent = true;
+            if (agent != Mission.MainAgent && !_freeCameraLogic.isSpectatorCamera)
+                _freeCameraLogic.SwitchCamera();
+            Utility.SmoothMoveToAgent(MissionScreen);
+            return true;
         }
 
         public override void OnMissionScreenInitialize()
@@ -227,13 +248,23 @@ namespace RTSCamera
                 _missionMainAgentController.IsDisabled = freeCamera;
             }
 
-            LockToAgent = false;
-            if (freeCamera)
+            if (!freeCamera)
             {
-                CameraBearing = MissionScreen.CameraBearing;
-                CameraElevation = MissionScreen.CameraElevation;
-                BeginForcedMove(new Vec3(0, 0, _config.RaisedHeight));
+                LockToAgent = false;
             }
+            else if (!LockToAgent)
+            {
+                BeginForcedMove(new Vec3(0, 0, _config.RaisedHeight));
+                LeaveFromAgent();
+            }
+        }
+
+        private void LeaveFromAgent()
+        {
+            CameraBearing = MissionScreen.CameraBearing;
+            CameraElevation = MissionScreen.CameraElevation;
+            SetLastFollowedAgent?.Invoke(MissionScreen, new object[] { null });
+            MissionScreen.LastFollowedAgentVisuals = null;
         }
 
         private void UpdateDragData()
@@ -468,7 +499,7 @@ namespace RTSCamera
         {
             var previousProgress = _forceMoveInvertedProgress;
             _forceMoveInvertedProgress *= (float)Math.Pow(0.00001, dt);
-            if (Math.Abs(_forceMoveInvertedProgress) < 0.0001f)
+            if (Math.Abs(_forceMoveInvertedProgress) < 0.00001f)
             {
                 _forceMove = false;
                 _forceMoveInvertedProgress = 1;
@@ -566,8 +597,7 @@ namespace RTSCamera
                                   Input.GetKeyState(InputKey.ControllerLStick).x != 0.0)))
             {
                 LockToAgent = false;
-                CameraBearing = MissionScreen.CameraBearing;
-                CameraElevation = MissionScreen.CameraElevation;
+                LeaveFromAgent();
             }
         }
     }

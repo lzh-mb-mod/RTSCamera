@@ -32,31 +32,6 @@ namespace RTSCamera
                     new HarmonyMethod(
                         typeof(Patch_Formation).GetMethod("LeaveDetachment_Prefix",
                             BindingFlags.Static | BindingFlags.Public)));
-                //_harmony.Patch(
-                //    typeof(Formation).GetMethod("GetOrderPositionOfUnit", BindingFlags.Instance | BindingFlags.Public),
-                //    prefix: new HarmonyMethod(
-                //        typeof(Patch_Formation).GetMethod("GetOrderPositionOfUnit_Prefix", BindingFlags.Static | BindingFlags.Public)));
-
-                //_harmony.Patch(typeof(MovementOrder).GetMethod("GetPosition", BindingFlags.Instance | BindingFlags.Public),
-                //    prefix: new HarmonyMethod(
-                //        typeof(Patch_MovementOrder).GetMethod("GetPosition_Prefix", BindingFlags.Static | BindingFlags.Public)));
-                //_harmony.Patch(
-                //    typeof(MovementOrder).GetMethod("GetSubstituteOrder",
-                //        BindingFlags.Instance | BindingFlags.NonPublic),
-                //    prefix: new HarmonyMethod(typeof(Patch_MovementOrder).GetMethod("GetSubstituteOrder_Prefix",
-                //        BindingFlags.Static | BindingFlags.Public)));
-
-                //_harmony.Patch(
-                //    typeof(FormationMovementComponent).GetMethod("GetFormationFrame",
-                //        BindingFlags.Instance | BindingFlags.Public),
-                //    prefix: new HarmonyMethod(
-                //        typeof(Patch_FormationMovementComponent).GetMethod("GetFormationFrame_Prefix",
-                //            BindingFlags.Static | BindingFlags.Public)));
-
-                //_harmony.Patch(
-                //    typeof(FacingOrder).GetMethod("GetDirection", BindingFlags.Instance | BindingFlags.Public),
-                //    prefix: new HarmonyMethod(typeof(Patch_FacingOrder).GetMethod("GetDirection_Prefix",
-                //        BindingFlags.Static | BindingFlags.Public)));
 
                 _harmony.Patch(
                     typeof(RangedSiegeWeaponView).GetMethod("HandleUserInput",

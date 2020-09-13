@@ -13,6 +13,10 @@ namespace RTSCamera
         {
             base.OnCreated();
             var config = RTSCameraConfig.Get();
+            if (config.AttackSpecificFormation)
+            {
+                PatchChargeToFormation.Patch();
+            }
             List<MissionBehaviour> list = new List<MissionBehaviour>
             {
                 new SelectCharacterView(),

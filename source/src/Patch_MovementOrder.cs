@@ -1,4 +1,5 @@
-﻿using TaleWorlds.Core;
+﻿using RTSCamera.QuerySystem;
+using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -34,7 +35,7 @@ namespace RTSCamera
                     return false;
                 }
                 WorldPosition targetMedianPosition = targetFormationQuerySystem.MedianPosition;
-                //targetMedianPosition.SetVec2(targetFormationQuerySystem.FormationIntegrityData.AverageVelocityExcludeFarAgents - f.CurrentPosition + myFormationQuerySystem.AveragePosition);
+                targetMedianPosition.SetVec2(QueryDataStore.Get(f).TargetPosition.Value);
                 if (f.FiringOrder != FiringOrder.FiringOrderHoldYourFire && (myFormationQuerySystem.IsRangedFormation || myFormationQuerySystem.IsRangedCavalryFormation))
                 {
                     if (myFormationQuerySystem.IsRangedCavalryFormation)
@@ -59,14 +60,14 @@ namespace RTSCamera
                         }
                     }
                 }
-                else
-                {
-                    Vec2 vec2 = (targetFormationQuerySystem.AveragePosition - f.QuerySystem.AveragePosition).Normalized();
-                    float num = 2;
-                    if ((double)targetFormationQuerySystem.FormationPower < (double)f.QuerySystem.FormationPower * 0.200000002980232)
-                        num = 0.1f;
-                    targetMedianPosition.SetVec2(targetMedianPosition.AsVec2 - vec2 * num);
-                }
+                //else
+                //{
+                //    Vec2 vec2 = (targetFormationQuerySystem.AveragePosition - f.QuerySystem.AveragePosition).Normalized();
+                //    float num = 2;
+                //    if ((double)targetFormationQuerySystem.FormationPower < (double)f.QuerySystem.FormationPower * 0.200000002980232)
+                //        num = 0.1f;
+                //    targetMedianPosition.SetVec2(targetMedianPosition.AsVec2 - vec2 * num);
+                //}
 
                 //targetMedianPosition.SetVec2(MBMath.Lerp(f.CurrentPosition, targetMedianPosition.AsVec2, 0.5f, 0.01f ));
                 if (f.FormationIndex == FormationClass.HeavyCavalry)

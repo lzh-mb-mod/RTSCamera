@@ -410,10 +410,14 @@ namespace RTSCamera
             switch (_currentCursorState)
             {
                 case CursorState.Enemy:
-                    // disable clicking on enemy formation for now.
-                    _formationDrawingMode = true;
-                    //enable clicking on enemy formation;
-                    //_clickedFormation = _mouseOverFormation;
+                    if (_config.AttackSpecificFormation)
+                    {
+                        _clickedFormation = _mouseOverFormation;
+                    }
+                    else
+                    {
+                        _formationDrawingMode = true;
+                    }
                     BeginFormationDraggingOrClicking();
                     break;
                 case CursorState.Friend:
@@ -487,41 +491,23 @@ namespace RTSCamera
                     {
                         HideNonSelectedOrderRotationEntities(_clickedFormation);
 
-                        // Press alt to attach rather than select. But it's not implemented now.
-                        //if (!Input.IsAltDown())
+                        if (PlayerOrderController.IsFormationSelectable(_clickedFormation))
                         {
-                            if (PlayerOrderController.IsFormationSelectable(_clickedFormation))
-                            {
-                                if (!Input.IsControlDown())
-                                    PlayerOrderController.ClearSelectedFormations();
-                                PlayerOrderController.SelectFormation(_clickedFormation);
-                            }
+                            if (!Input.IsControlDown())
+                                PlayerOrderController.ClearSelectedFormations();
+                            PlayerOrderController.SelectFormation(_clickedFormation);
                         }
-                        //else
-                        //{
-                        //    PlayerOrderController.SetOrderWithFormationAndNumber(OrderType.Attach, _clickedFormation,
-                        //        0);
-                        //}
                     }
-                    //else
-                    //{
-                    //    PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, _clickedFormation);
-                    //    foreach (Formation selectedFormation in PlayerOrderController.SelectedFormations)
-                    //        selectedFormation.FacingOrder = FacingOrder.FacingOrderLookAtEnemy;
-                    //    foreach (var selectedFormation in PlayerOrderController.SelectedFormations)
-                    //    {
-                    //        selectedFormation.ApplyActionOnEachUnit(unit =>
-                    //        {
-                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.GoToPos, 3f, 7f, 5f, 20f, 6f);
-                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Melee, 8f, 7f, 5f, 20f, 0.01f);
-                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Ranged, 0, 7f, 0, 20f, 0);
-                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.ChargeHorseback, 10f, 30f, 6f, 40f, 0.05f);
-                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.RangedHorseback, 0.02f, 15f, 0.065f, 30f, 0.055f);
-                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityMelee, 5f, 12f, 7.5f, 30f, 4f);
-                    //            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityRanged, 0.0f, 12f, 0.0f, 30f, 0.0f);
-                    //        });
-                    //    }
-                    //}
+                    else if (_config.AttackSpecificFormation)
+                    {
+                        PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, _clickedFormation);
+                        foreach (Formation selectedFormation in PlayerOrderController.SelectedFormations)
+                            selectedFormation.FacingOrder = FacingOrder.FacingOrderLookAtEnemy;
+                        foreach (var selectedFormation in PlayerOrderController.SelectedFormations)
+                        {
+                            selectedFormation.ApplyActionOnEachUnit(UnitAIBehaviorValues.SetUnitAIBehaviorWhenChargeToFormation);
+                        }
+                    }
                 }
 
                 _clickedFormation = null;
@@ -604,7 +590,7 @@ namespace RTSCamera
                 cursorState = _currentCursorState;
             }
             if (cursorState == CursorState.Invisible &&
-                !(Input.IsAltDown() && _config.ShowContour) || // press alt to avoid accidentally click on ground.
+                !(Input.IsKeyDown(InputKey.MiddleMouseButton) && _config.ShowContour) || // press middle mouse button to avoid accidentally click on ground.
                 _formationDrawingMode)
             {
                 cursorState = IsCursorStateGroundOrNormal();
@@ -791,14 +777,15 @@ namespace RTSCamera
 
             _currentCursorState = GetCursorState();
             //Utility.DisplayMessage(_currentCursorState.ToString());
-            if (Input.IsKeyPressed(InputKey.LeftMouseButton))
+            // use middle mouse button to select formation
+            if (Input.IsKeyPressed(InputKey.LeftMouseButton) || Input.IsKeyPressed(InputKey.MiddleMouseButton))
             {
                 _isMouseDown = true;
                 HandleMousePressed();
                 //Utility.DisplayMessage("key pressed");
             }
 
-            if (Input.IsKeyReleased(InputKey.LeftMouseButton) && _isMouseDown)
+            if ((Input.IsKeyReleased(InputKey.LeftMouseButton) || (Input.IsKeyPressed(InputKey.MiddleMouseButton) && !_formationDrawingMode)) && _isMouseDown)
             {
                 _isMouseDown = false;
                 HandleMouseUp();
@@ -880,10 +867,11 @@ namespace RTSCamera
             var agent = RayCastForAgent(collisionDistance);
             if (agent != null && agent.IsMount)
                 agent = agent.RiderAgent;
-            if (agent == null || agent.Controller == Agent.ControllerType.Player)
+            if (agent == null)
                 return null;
             if (_config.ShowContour && !IsDrawingForced && !_formationDrawingMode && agent?.Formation != null &&
-                !PlayerOrderController.IsFormationListening(agent.Formation))
+                !(PlayerOrderController.SelectedFormations.Count == 1 &&
+                  PlayerOrderController.SelectedFormations.Contains(agent.Formation)))
             {
                 return agent.Formation;
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -8,6 +9,8 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View.Screen;
+using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace RTSCamera
 {
@@ -15,10 +18,10 @@ namespace RTSCamera
     {
         public static void DisplayLocalizedText(string id, string variation = null)
         {
-            if (!RTSCameraConfig.Get().DisplayMessage)
-                return;
             try
             {
+                if (!RTSCameraConfig.Get().DisplayMessage)
+                    return;
                 DisplayMessageImpl(GameTexts.FindText(id, variation).ToString());
             }
             catch
@@ -28,10 +31,10 @@ namespace RTSCamera
         }
         public static void DisplayLocalizedText(string id, string variation, Color color)
         {
-            if (!RTSCameraConfig.Get().DisplayMessage)
-                return;
             try
             {
+                if (!RTSCameraConfig.Get().DisplayMessage)
+                    return;
                 DisplayMessageImpl(GameTexts.FindText(id, variation).ToString(), color);
             }
             catch
@@ -41,15 +44,29 @@ namespace RTSCamera
         }
         public static void DisplayMessage(string msg)
         {
-            if (!RTSCameraConfig.Get().DisplayMessage)
-                return;
-            DisplayMessageImpl(new TaleWorlds.Localization.TextObject(msg).ToString());
+            try
+            {
+                if (!RTSCameraConfig.Get().DisplayMessage)
+                    return;
+                DisplayMessageImpl(new TaleWorlds.Localization.TextObject(msg).ToString());
+            }
+            catch
+            {
+                // ignored
+            }
         }
         public static void DisplayMessage(string msg, Color color)
         {
-            if (!RTSCameraConfig.Get().DisplayMessage)
-                return;
-            DisplayMessageImpl(new TaleWorlds.Localization.TextObject(msg).ToString(), color);
+            try
+            {
+                if (!RTSCameraConfig.Get().DisplayMessage)
+                    return;
+                DisplayMessageImpl(new TaleWorlds.Localization.TextObject(msg).ToString(), color);
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         private static void DisplayMessageImpl(string str)
@@ -191,6 +208,63 @@ namespace RTSCamera
         public static bool IsEnemy(Formation formation)
         {
             return Mission.Current.PlayerTeam?.IsEnemyOf(formation.Team) ?? false;
+        }
+
+        private static readonly FieldInfo CameraAddSpecialMovement =
+            typeof(MissionScreen).GetField("_cameraAddSpecialMovement", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly FieldInfo CameraApplySpecialMovementsInstantly =
+            typeof(MissionScreen).GetField("_cameraApplySpecialMovementsInstantly", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly MethodInfo SetLastFollowedAgent =
+            typeof(MissionScreen).GetProperty("LastFollowedAgent", BindingFlags.Instance | BindingFlags.Public)?.GetSetMethod(true);
+
+        private static readonly FieldInfo CameraSpecialCurrentAddedElevation =
+            typeof(MissionScreen).GetField("_cameraSpecialCurrentAddedElevation", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly FieldInfo CameraSpecialCurrentAddedBearing =
+            typeof(MissionScreen).GetField("_cameraSpecialCurrentAddedBearing", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly FieldInfo CameraSpecialCurrentPositionToAdd =
+            typeof(MissionScreen).GetField("_cameraSpecialCurrentPositionToAdd", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly MethodInfo SetCameraElevation =
+            typeof(MissionScreen).GetProperty("CameraElevation", BindingFlags.Instance | BindingFlags.Public)
+                ?.GetSetMethod(true);
+
+        private static readonly MethodInfo SetCameraBearing =
+            typeof(MissionScreen).GetProperty("CameraBearing", BindingFlags.Instance | BindingFlags.Public)
+                ?.GetSetMethod(true);
+
+        private static readonly FieldInfo IsPlayerAgentAdded =
+            typeof(MissionScreen).GetField("_isPlayerAgentAdded", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static void SmoothMoveToAgent(MissionScreen missionScreen)
+        {
+            Utility.DisplayMessage("SmoothMoveToAgent");
+            var spectatingData = missionScreen.GetSpectatingData(missionScreen.CombatCamera.Position);
+            if (spectatingData.AgentToFollow != null)
+            {
+                CameraAddSpecialMovement?.SetValue(missionScreen, true);
+                CameraApplySpecialMovementsInstantly?.SetValue(missionScreen, false);
+                if (missionScreen.LastFollowedAgent != spectatingData.AgentToFollow)
+                {
+                    SetLastFollowedAgent.Invoke(missionScreen, new object[] { spectatingData.AgentToFollow });
+                    CameraSpecialCurrentPositionToAdd?.SetValue(missionScreen,
+                        missionScreen.CombatCamera.Position - spectatingData.AgentToFollow.VisualPosition +
+                        (Vec3)CameraSpecialCurrentPositionToAdd.GetValue(missionScreen));
+                }
+                CameraSpecialCurrentAddedElevation?.SetValue(missionScreen,
+                    missionScreen.CameraElevation + (float) CameraSpecialCurrentAddedElevation.GetValue(missionScreen));
+                CameraSpecialCurrentAddedBearing?.SetValue(missionScreen,
+                    MBMath.WrapAngle(missionScreen.CameraBearing - spectatingData.AgentToFollow.LookDirectionAsAngle +
+                                     (float) CameraSpecialCurrentAddedBearing.GetValue(missionScreen)));
+                SetCameraElevation?.Invoke(missionScreen, new object[]{0.0f});
+                SetCameraBearing?.Invoke(missionScreen,
+                    new object[] {spectatingData.AgentToFollow.LookDirectionAsAngle});
+                // Avoid MissionScreen._cameraSpecialCurrentAddedBearing reset to 0.
+                IsPlayerAgentAdded?.SetValue(missionScreen, false);
+            }
         }
     }
 }

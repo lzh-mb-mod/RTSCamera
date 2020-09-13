@@ -42,6 +42,9 @@ namespace RTSCamera
 
         public string ShowContourString { get; } = GameTexts.FindText("str_rts_camera_show_contour").ToString();
 
+        public string AttackSpecificFormationString { get; } =
+            GameTexts.FindText("str_rts_camera_attack_specific_formation").ToString();
+
         public string DisplayMessageString { get; } = GameTexts.FindText("str_rts_camera_display_mod_message").ToString();
 
         public string ToggleUIString { get; } = GameTexts.FindText("str_rts_camera_toggle_ui").ToString();
@@ -248,6 +251,10 @@ namespace RTSCamera
             {
                 if (_config.ShowContour == value)
                     return;
+                if (!value && AttackSpecificFormation)
+                {
+                    AttackSpecificFormation = false;
+                }
                 _contourView?.SetEnableContour(value);
                 OnPropertyChanged(nameof(ShowContour));
             }
@@ -255,6 +262,32 @@ namespace RTSCamera
 
         public HintViewModel ShowContourHint { get; } =
             new HintViewModel(GameTexts.FindText("str_rts_camera_show_contour_hint").ToString());
+
+        [DataSourceProperty]
+        public bool AttackSpecificFormation
+        {
+            get => _config.AttackSpecificFormation;
+            set
+            {
+                if (_config.AttackSpecificFormation == value)
+                    return;
+                _config.AttackSpecificFormation = value;
+                if (_config.AttackSpecificFormation)
+                {
+                    if (!ShowContour)
+                        ShowContour = true;
+                    PatchChargeToFormation.Patch();
+                }
+                else
+                {
+                    PatchChargeToFormation.UnPatch();
+                }
+                OnPropertyChanged(nameof(AttackSpecificFormation));
+            }
+        }
+
+        public HintViewModel AttackSpecificFormationHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_attack_specific_formation_hint").ToString());
 
         [DataSourceProperty]
         public bool DisplayMessage

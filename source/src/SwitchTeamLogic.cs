@@ -7,10 +7,18 @@ namespace RTSCamera
     {
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
+        private ControlTroopLogic _controlTroopLogic;
         public delegate void SwitchTeamDelegate();
 
         public event SwitchTeamDelegate PreSwitchTeam;
         public event SwitchTeamDelegate PostSwitchTeam;
+
+        public override void OnBehaviourInitialize()
+        {
+            base.OnBehaviourInitialize();
+
+            _controlTroopLogic = Mission.GetMissionBehaviour<ControlTroopLogic>();
+        }
 
         public override void OnMissionTick(float dt)
         {
@@ -44,7 +52,7 @@ namespace RTSCamera
 
             PreSwitchTeam?.Invoke();
             Mission.PlayerTeam = Mission.PlayerEnemyTeam;
-            targetAgent.Controller = Agent.ControllerType.Player;
+            _controlTroopLogic.SetToMainAgent(targetAgent);
             PostSwitchTeam?.Invoke();
 
             if (firstTime)

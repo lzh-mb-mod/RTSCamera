@@ -25,7 +25,7 @@ namespace RTSCamera
 
         private void SwitchMainAgent(Agent agent)
         {
-            _logic?.ControlAgent(agent);
+            _logic?.ForceControlAgent(agent);
         }
     }
 }

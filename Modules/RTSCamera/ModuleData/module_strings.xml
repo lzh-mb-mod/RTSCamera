@@ -25,6 +25,7 @@
     <string id="str_rts_camera_outdoor_hint" text="{=RTSCamera_outdoor_hint}Camera will not collide with terrain and buildings when disabled, for making video." />
     <string id="str_rts_camera_restricted_by_boundaries_hint" text="{=RTSCamera_restricted_by_boundaries_hint}Camera will not be restricted by scene boundaries when disabled, for making video." />
     <string id="str_rts_camera_show_contour_hint" text="{=RTSCamera_show_contour_hint}Selected formation will be highlighted by contour. You can directly select formation by clicking on them." />
+    <string id="str_rts_camera_attack_specific_formation_hint" text="{=RTSCamera_attack_specific_formation_hint}You will be able to give order to attack a specific formation by clicking on enemy formation. Also applied to AI." />
     <string id="str_rts_camera_display_message_hint" text="{=RTSCamera_display_message_hint}Whether to display message of this mod." />
     <string id="str_rts_camera_toggle_ui_hint" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
     <string id="str_rts_camera_config_key_hint" text="{=RTSCamera_config_key_hint}Config hotkey of this mod." />
@@ -38,8 +39,8 @@
 
     <string id="str_rts_camera_control_troop" text="{=RTSCamera_controltroop}Controlling: {ControlledTroopName}." />
     <string id="str_rts_camera_no_troop_to_control" text="{=RTSCamera_notrooptocontrol}No ally troop to control." />
-    <string id="str_rts_camera_death_disabled" text="{=RTSCamera_deathdisabled}Death Disabled." />
-    <string id="str_rts_camera_death_enabled" text="{=RTSCamera_deathenabled}Death Enabled." />
+    <string id="str_rts_camera_death_disabled" text="{=RTSCamera_deathdisabled}All Invulnerable enabled." />
+    <string id="str_rts_camera_death_enabled" text="{=RTSCamera_deathenabled}All Invulnerable disabled." />
 
     <string id="str_rts_camera_config_incompatible" text="{=RTSCamera_configincompatible}Config version not compatible.\nReset config." />
     <string id="str_rts_camera_saved_config" text="{=RTSCamera_savedconfig}Saving config succeeded." />
@@ -61,6 +62,7 @@
     <string id="str_rts_camera_outdoor" text="{=RTSCamera_outdoor}Outdoor" />
     <string id="str_rts_camera_restrict_by_boundaries" text="{=RTSCamera_restrictbyboundaries}Restrict By Boundaries" />
     <string id="str_rts_camera_show_contour" text="{=RTSCamera_showcontour}Show Contour(Click to select formation)" />
+    <string id="str_rts_camera_attack_specific_formation" text="{=RTSCamera_attack_specific_formation}Enable Attack Specific Formation" />
 
     <string id="str_rts_camera_control_ally_options_description" text="{=RTSCamera_controlallyoptionsdescription}Control Ally" />
     <string id="str_rts_camera_control_ally_after_death" text="{=RTSCamera_controlallyafterdeath}Control Ally After Death" />
@@ -70,8 +72,8 @@
     <string id="str_rts_camera_select_character" text="{=RTSCamera_select_character}Select Character" />
 
     <string id="str_rts_camera_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Unbalanced Options" />
-    <string id="str_rts_camera_disable_death" text="{=RTSCamera_disabledeath}Disable Death" />
-    <string id="str_rts_camera_disable_death_hotkey_enabled" text="{=RTSCamera_disable_death_hotkey_enabled}Disable Death Hotkey enabled" />
+    <string id="str_rts_camera_disable_death" text="{=RTSCamera_disabledeath}All Invulnerable" />
+    <string id="str_rts_camera_disable_death_hotkey_enabled" text="{=RTSCamera_disable_death_hotkey_enabled}All Invulnerable Hotkey enabled" />
     <string id="str_rts_camera_switch_team" text="{=RTSCamera_switchteam}Switch Team" />
     <string id="str_rts_camera_switch_team_hotkey_enabled" text="{=RTSCamera_switch_team_hotkey_enabled}Switch Team Hotkey enabled" />
 
@@ -95,7 +97,7 @@
     <string id="str_key_name.RTSCameraHotKey_Down" text="{=RTSCamera_pausekey}Pause" />
     <string id="str_key_name.RTSCameraHotKey_Left" text="{=RTSCamera_slowmotionkey}Slow Motion" />
     <string id="str_key_name.RTSCameraHotKey_Right" text="{=RTSCamera_freecamerakey}Free Camera" />
-    <string id="str_key_name.RTSCameraHotKey_Leave" text="{=RTSCamera_disabledeathkey}Disable Death" />
+    <string id="str_key_name.RTSCameraHotKey_Leave" text="{=RTSCamera_disabledeathkey}All Invulnerable" />
     <string id="str_key_name.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_controltroopkey}Control Troop" />
     <!-- same as str_rts_camera_toggle_ui -->
     <string id="str_key_name.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_toggleui}Toggle HUD" />
