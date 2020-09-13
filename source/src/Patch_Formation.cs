@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using HarmonyLib;
+using RTSCamera.QuerySystem;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
@@ -45,8 +46,11 @@ namespace RTSCamera
             if (!___detachedUnits.Contains(unit) && __instance.MovementOrder.OrderType == OrderType.ChargeWithTarget)
             {
 
-                __result = (WorldPosition) (GetOrderPositionOfUnitAux?.Invoke(__instance, new object[] {unit}) ??
-                                            new WorldPosition());
+                //__result = (WorldPosition) (GetOrderPositionOfUnitAux?.Invoke(__instance, new object[] {unit}) ??
+                //                            new WorldPosition());
+                var targetFormation = QueryDataStore.Get(__instance.TargetFormation);
+                __result = targetFormation.NearestAgent(unit.Position.AsVec2)?.GetWorldPosition() ?? new WorldPosition();
+
                 return false;
             }
 
