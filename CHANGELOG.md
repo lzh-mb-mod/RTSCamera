@@ -6,6 +6,9 @@
 
 - Optimize behavior of click formation.
 
+### Fixed
+- Fix a rare crash that occured when switch free camera too quickly.
+
 ## [e3.5.15] - 2020-09-05
 ### Fixed
 - Fix the problem of that ctrl or alt key does not work. Now camera speed can be adjusted by pressing ctrl + mosue scroll again.

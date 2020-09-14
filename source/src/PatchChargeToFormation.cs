@@ -22,9 +22,9 @@ namespace RTSCamera
                     prefix: new HarmonyMethod(
                         typeof(Patch_Formation).GetMethod("GetOrderPositionOfUnit_Prefix", BindingFlags.Static | BindingFlags.Public)));
 
-                Harmony.Patch(typeof(MovementOrder).GetMethod("GetPosition", BindingFlags.Instance | BindingFlags.Public),
-                    prefix: new HarmonyMethod(
-                        typeof(Patch_MovementOrder).GetMethod("GetPosition_Prefix", BindingFlags.Static | BindingFlags.Public)));
+                //Harmony.Patch(typeof(MovementOrder).GetMethod("GetPosition", BindingFlags.Instance | BindingFlags.Public),
+                //    prefix: new HarmonyMethod(
+                //        typeof(Patch_MovementOrder).GetMethod("GetPosition_Prefix", BindingFlags.Static | BindingFlags.Public)));
                 Harmony.Patch(
                     typeof(MovementOrder).GetMethod("GetSubstituteOrder",
                         BindingFlags.Instance | BindingFlags.NonPublic),
@@ -38,10 +38,10 @@ namespace RTSCamera
                         typeof(Patch_FormationMovementComponent).GetMethod("GetFormationFrame_Prefix",
                             BindingFlags.Static | BindingFlags.Public)));
 
-                Harmony.Patch(
-                    typeof(FacingOrder).GetMethod("GetDirection", BindingFlags.Instance | BindingFlags.Public),
-                    prefix: new HarmonyMethod(typeof(Patch_FacingOrder).GetMethod("GetDirection_Prefix",
-                        BindingFlags.Static | BindingFlags.Public)));
+                //Harmony.Patch(
+                //    typeof(FacingOrder).GetMethod("GetDirection", BindingFlags.Instance | BindingFlags.Public),
+                //    prefix: new HarmonyMethod(typeof(Patch_FacingOrder).GetMethod("GetDirection_Prefix",
+                //        BindingFlags.Static | BindingFlags.Public)));
 
             }
             catch (Exception e)

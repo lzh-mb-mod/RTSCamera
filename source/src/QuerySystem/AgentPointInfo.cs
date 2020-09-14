@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DBSCAN;
+﻿using System.Drawing;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.QuerySystem
 {
-    public class AgentPointInfo : IPointData
+    public class AgentPointInfo
     {
         public Agent Agent { get; }
-        private readonly Point _point;
+        public readonly Vec2 Point;
 
         public AgentPointInfo(Agent agent)
         {
             Agent = agent;
-            _point = new Point(agent.Position.x, agent.Position.y);
+            Point = agent.Position.AsVec2;
         }
-
-        public ref readonly Point Point => ref _point;
     }
 }

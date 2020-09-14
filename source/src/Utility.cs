@@ -260,7 +260,7 @@ namespace RTSCamera
                 SmoothMoveToAgent(missionScreen);
             }
         }
-        public static void SmoothMoveToAgent(MissionScreen missionScreen)
+        public static void SmoothMoveToAgent(MissionScreen missionScreen, bool forceMove = false)
         {
             Utility.DisplayMessage("SmoothMoveToAgent");
             var spectatingData = missionScreen.GetSpectatingData(missionScreen.CombatCamera.Position);
@@ -268,13 +268,13 @@ namespace RTSCamera
             {
                 CameraAddSpecialMovement?.SetValue(missionScreen, true);
                 CameraApplySpecialMovementsInstantly?.SetValue(missionScreen, false);
-                if (missionScreen.LastFollowedAgent != spectatingData.AgentToFollow)
+                if (missionScreen.LastFollowedAgent != spectatingData.AgentToFollow || forceMove)
                 {
-                    SetLastFollowedAgent.Invoke(missionScreen, new object[] { spectatingData.AgentToFollow });
                     CameraSpecialCurrentPositionToAdd?.SetValue(missionScreen,
                         missionScreen.CombatCamera.Position - spectatingData.AgentToFollow.VisualPosition +
                         (Vec3)CameraSpecialCurrentPositionToAdd.GetValue(missionScreen));
                 }
+                SetLastFollowedAgent.Invoke(missionScreen, new object[] { spectatingData.AgentToFollow });
                 CameraSpecialCurrentAddedElevation?.SetValue(missionScreen,
                     missionScreen.CameraElevation + (float) CameraSpecialCurrentAddedElevation.GetValue(missionScreen));
                 CameraSpecialCurrentAddedBearing?.SetValue(missionScreen,

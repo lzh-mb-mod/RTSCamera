@@ -7,6 +7,7 @@ using System.Text;
 using HarmonyLib;
 using RTSCamera.QuerySystem;
 using TaleWorlds.Engine;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera
@@ -31,7 +32,7 @@ namespace RTSCamera
             }
 
             ____detachments.Remove(detachment);
-            var detachmentManager = (DetachmentManager) typeof(Team).GetProperty("DetachmentManager", bindingAttr)
+            var detachmentManager = (DetachmentManager)typeof(Team).GetProperty("DetachmentManager", bindingAttr)
                 ?.GetValue(__instance.Team);
             typeof(DetachmentManager).GetMethod("OnFormationLeaveDetachment", bindingAttr).Invoke(detachmentManager, new object[2]
             {
@@ -45,11 +46,22 @@ namespace RTSCamera
         {
             if (!___detachedUnits.Contains(unit) && __instance.MovementOrder.OrderType == OrderType.ChargeWithTarget)
             {
-
                 //__result = (WorldPosition) (GetOrderPositionOfUnitAux?.Invoke(__instance, new object[] {unit}) ??
                 //                            new WorldPosition());
                 var targetFormation = QueryDataStore.Get(__instance.TargetFormation);
-                __result = targetFormation.NearestAgent(unit.Position.AsVec2)?.GetWorldPosition() ?? new WorldPosition();
+
+                Vec2 unitPosition;
+                if (unit.HasMount)
+                {
+                    unitPosition = __instance.GetCurrentGlobalPositionOfUnit(unit, true);
+                }
+                else
+                {
+                    unitPosition = __instance.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
+                                   unit.Position.AsVec2 * 0.8f;
+                }
+                __result = targetFormation
+                    .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
 
                 return false;
             }

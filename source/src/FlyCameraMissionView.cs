@@ -19,6 +19,10 @@ namespace RTSCamera
             typeof(MissionScreen).GetField("_isPlayerAgentAdded", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly MethodInfo SetLastFollowedAgent =
             typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true);
+        private static readonly MethodInfo SetCameraBearing =
+            typeof(MissionScreen).GetProperty("CameraBearing")?.GetSetMethod(true);
+        private static readonly MethodInfo SetCameraElevation =
+            typeof(MissionScreen).GetProperty("CameraElevation")?.GetSetMethod(true);
 
         private RTSCameraConfig _config;
         private SwitchFreeCameraLogic _freeCameraLogic;
@@ -159,7 +163,7 @@ namespace RTSCamera
                 LockToAgent = true;
             if (agent != Mission.MainAgent && !_freeCameraLogic.isSpectatorCamera)
                 _freeCameraLogic.SwitchCamera();
-            Utility.SmoothMoveToAgent(MissionScreen);
+            Utility.SmoothMoveToAgent(MissionScreen, true);
             return true;
         }
 
@@ -213,9 +217,11 @@ namespace RTSCamera
                 Mission.MissionBehaviours.FirstOrDefault(
                         b => !(b is FlyCameraMissionView) && b is ICameraModeLogic) as
                     ICameraModeLogic;
-            return LockToAgent && (_freeCameraLogic?.isSpectatorCamera ?? false)
-                ? SpectatorCameraTypes.LockToAnyAgent
-                : otherCameraModeLogic?.GetMissionCameraLockMode(lockedToMainPlayer) ?? SpectatorCameraTypes.Invalid;
+            if (_freeCameraLogic?.isSpectatorCamera ?? false)
+            {
+                return LockToAgent ? SpectatorCameraTypes.LockToAnyAgent : SpectatorCameraTypes.Free;
+            }
+            return otherCameraModeLogic?.GetMissionCameraLockMode(lockedToMainPlayer) ?? SpectatorCameraTypes.Invalid;
         }
 
         private void EndDrag()
@@ -455,6 +461,8 @@ namespace RTSCamera
             CombatCamera.Frame = matrixFrame;
             MissionScreen.SceneView?.SetCamera(CombatCamera);
             Mission.SetCameraFrame(matrixFrame, Zoom);
+            SetCameraBearing?.Invoke(MissionScreen, new object[1] { CameraBearing });
+            SetCameraElevation?.Invoke(MissionScreen, new object[1] { CameraElevation });
         }
 
         private void UpdateDof()

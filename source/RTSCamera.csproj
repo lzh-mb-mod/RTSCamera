@@ -13,11 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DBSCAN" Version="2.0.12" />
-    <PackageReference Include="DBSCAN.RBush" Version="2.0.12" />
     <PackageReference Include="KdTree" Version="1.4.1" />
     <PackageReference Include="Lib.Harmony" Version="2.0.2" />
-    <PackageReference Include="RBush" Version="2.0.41" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SandBox">
@@ -128,7 +125,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;&#xD;&#xA;Copy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)DBSCAN.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)DBSCAN.RBush.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)RBush.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)KdTreeLib.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)System.Collections.Immutable.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;xcopy &quot;$(SolutionDir)..\Modules&quot; &quot;$(GamePath)\Modules&quot; /E /C /I /Y" />
+    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;&#xD;&#xA;Copy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)KdTreeLib.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;xcopy &quot;$(SolutionDir)..\Modules&quot; &quot;$(GamePath)\Modules&quot; /E /C /I /Y" />
   </Target>
 
 </Project>
