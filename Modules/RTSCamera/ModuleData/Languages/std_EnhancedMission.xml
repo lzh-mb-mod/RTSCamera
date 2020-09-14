@@ -27,7 +27,7 @@
     <string id="RTSCamera_constant_speed_hint" text="Camera movement speed won't be affected by height, for making videos." />
     <string id="RTSCamera_outdoor_hint" text="Camera will not collide with terrain and buildings when disabled, for making video." />
     <string id="RTSCamera_restricted_by_boundaries_hint" text="Camera will not be restricted by scene boundaries when disabled, for making video." />
-    <string id="RTSCamera_show_contour_hint" text="Selected formation will be highlighted by contour. You can directly select formation by clicking on them." />
+    <string id="RTSCamera_click_to_select_formation_hint" text="Selected formation will be highlighted by contour. You can directly select formation by clicking on them." />
     <string id="RTSCamera_attack_specific_formation_hint" text="You will be able to give order to attack a specific formation by clicking on enemy formation. Also applied to AI." />
     <string id="RTSCamera_display_message_hint" text="Whether to display message of this mod." />
     <string id="RTSCamera_toggle_ui_hint" text="Toggle HUD of the game, for making video." />
@@ -64,7 +64,7 @@
     <string id="RTSCamera_togglepause" text="Toggle Pause" />
     <string id="RTSCamera_slowmotionmode" text="Slow Motion Mode" />
     <string id="RTSCamera_slowmotionfactor" text="Slow Motion Factor" />
-    <string id="RTSCamera_showcontour" text="Show Contour(Click to select formation)" />
+    <string id="RTSCamera_click_to_select_formation" text="Click to select formation" />
     <string id="RTSCamera_attack_specific_formation" text="Enable Attack Specific Formation" />
 
     <string id="RTSCamera_controlallyoptionsdescription" text="Control Ally" />

@@ -9,6 +9,8 @@
 ### Fixed
 - Fix a rare crash that occured when switch free camera too quickly.
 
+- Fix a crash happen when changing "Prevent Player From Fighting" option when player character is dead.
+
 ## [e3.5.15] - 2020-09-05
 ### Fixed
 - Fix the problem of that ctrl or alt key does not work. Now camera speed can be adjusted by pressing ctrl + mosue scroll again.

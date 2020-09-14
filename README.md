@@ -1,14 +1,22 @@
 # RTS Camera
 (Old name: EnhancedMission, Enhanced Mission RTS Camera)
-A mod for Mount&Blade Bannerlord that provides RTS camera and more features in battle.
+A mod for Mount&Blade II Bannerlord that provides RTS camera and more features in battle.
 
 ## Features
 
-- Press `F10` to switch to rts-style camera and switch back.
+- You can press `F10` to switch to rts-style camera and press again to switch back.
 
-- Select troops by directly clicking on them. Selected Troops will be highlighted.
+- You can make your formation only charge to a specific enemy formation by clicking on the enemy formation, rather than charging to all enemies when you press `F1` `F3`.
 
-- Press `F` to control one of your troops after you die.
+  - The target enemy formation that your selected troops are charging to will be hightlighted with red outline when you open command panel.
+
+  - AI formation will also have the ability to charge to a specific formation. Your formation targeted by the enemy formation will be highlighted with purple outline when you open command panel.
+
+- You can select your formations by directly clicking them. Selected troops will be highlighted with green outline.
+
+- After your character die, press `F` to control one of your soldiers. Troops in the same formation as player character will be considered first.
+
+- Press `;` and click a soldier, then press `F` to lock the camera on it. Press `F` again to take control of it.
 
 - Pause game and adjust time speed.
 

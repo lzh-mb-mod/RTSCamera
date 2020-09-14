@@ -40,7 +40,7 @@ namespace RTSCamera
 
         public string SlowMotionModeString { get; } = GameTexts.FindText("str_rts_camera_slow_motion_mode").ToString();
 
-        public string ShowContourString { get; } = GameTexts.FindText("str_rts_camera_show_contour").ToString();
+        public string ClickToSelectFormationString { get; } = GameTexts.FindText("str_rts_camera_click_to_select_formation").ToString();
 
         public string AttackSpecificFormationString { get; } =
             GameTexts.FindText("str_rts_camera_attack_specific_formation").ToString();
@@ -244,24 +244,20 @@ namespace RTSCamera
             new HintViewModel(GameTexts.FindText("str_rts_camera_restricted_by_boundaries_hint").ToString());
 
         [DataSourceProperty]
-        public bool ShowContour
+        public bool ClickToSelectFormation
         {
-            get => _config.ShowContour;
+            get => _config.ClickToSelectFormation;
             set
             {
-                if (_config.ShowContour == value)
+                if (_config.ClickToSelectFormation == value)
                     return;
-                if (!value && AttackSpecificFormation)
-                {
-                    AttackSpecificFormation = false;
-                }
-                _contourView?.SetEnableContour(value);
-                OnPropertyChanged(nameof(ShowContour));
+                _contourView?.SetEnableContourForSelectedFormation(value);
+                OnPropertyChanged(nameof(ClickToSelectFormation));
             }
         }
 
-        public HintViewModel ShowContourHint { get; } =
-            new HintViewModel(GameTexts.FindText("str_rts_camera_show_contour_hint").ToString());
+        public HintViewModel ClickToSelectFormationHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_click_to_select_formation_hint").ToString());
 
         [DataSourceProperty]
         public bool AttackSpecificFormation
@@ -274,8 +270,6 @@ namespace RTSCamera
                 _config.AttackSpecificFormation = value;
                 if (_config.AttackSpecificFormation)
                 {
-                    if (!ShowContour)
-                        ShowContour = true;
                     PatchChargeToFormation.Patch();
                 }
                 else

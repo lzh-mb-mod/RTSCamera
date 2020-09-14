@@ -24,7 +24,7 @@
     <string id="str_rts_camera_constant_speed_hint" text="{=RTSCamera_constant_speed_hint}Camera movement speed won't be affected by height, for making videos." />
     <string id="str_rts_camera_outdoor_hint" text="{=RTSCamera_outdoor_hint}Camera will not collide with terrain and buildings when disabled, for making video." />
     <string id="str_rts_camera_restricted_by_boundaries_hint" text="{=RTSCamera_restricted_by_boundaries_hint}Camera will not be restricted by scene boundaries when disabled, for making video." />
-    <string id="str_rts_camera_show_contour_hint" text="{=RTSCamera_show_contour_hint}Selected formation will be highlighted by contour. You can directly select formation by clicking on them." />
+    <string id="str_rts_camera_click_to_select_formation_hint" text="{=RTSCamera_click_to_select_formation_hint}You can directly select formation by clicking on them. Selected formation will be highlighted with outline." />
     <string id="str_rts_camera_attack_specific_formation_hint" text="{=RTSCamera_attack_specific_formation_hint}You will be able to give order to attack a specific formation by clicking on enemy formation. Also applied to AI." />
     <string id="str_rts_camera_display_message_hint" text="{=RTSCamera_display_message_hint}Whether to display message of this mod." />
     <string id="str_rts_camera_toggle_ui_hint" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
@@ -61,7 +61,7 @@
     <string id="str_rts_camera_constant_speed" text="{=RTSCamera_constantspeed}Constant Camera Speed" />
     <string id="str_rts_camera_outdoor" text="{=RTSCamera_outdoor}Outdoor" />
     <string id="str_rts_camera_restrict_by_boundaries" text="{=RTSCamera_restrictbyboundaries}Restrict By Boundaries" />
-    <string id="str_rts_camera_show_contour" text="{=RTSCamera_showcontour}Show Contour(Click to select formation)" />
+    <string id="str_rts_camera_click_to_select_formation" text="{=RTSCamera_click_to_select_formation}Click to select formation" />
     <string id="str_rts_camera_attack_specific_formation" text="{=RTSCamera_attack_specific_formation}Enable Attack Specific Formation" />
 
     <string id="str_rts_camera_control_ally_options_description" text="{=RTSCamera_controlallyoptionsdescription}Control Ally" />

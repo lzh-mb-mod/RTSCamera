@@ -501,12 +501,6 @@ namespace RTSCamera
                     else if (_config.AttackSpecificFormation)
                     {
                         PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, _clickedFormation);
-                        foreach (Formation selectedFormation in PlayerOrderController.SelectedFormations)
-                            selectedFormation.FacingOrder = FacingOrder.FacingOrderLookAtEnemy;
-                        foreach (var selectedFormation in PlayerOrderController.SelectedFormations)
-                        {
-                            selectedFormation.ApplyActionOnEachUnit(UnitAIBehaviorValues.SetUnitAIBehaviorWhenChargeToFormation);
-                        }
                     }
                 }
 
@@ -571,15 +565,26 @@ namespace RTSCamera
                     {
                         if (MissionScreen.OrderFlag.FocusedOrderableObject != null)
                             cursorState = CursorState.OrderableEntity;
-                        else
+                        else if (_config.ShouldHighlightWithOutline())
                         {
                             var formation = GetMouseOverFormation(collisionDistance);
                             _mouseOverFormation = formation;
                             if (formation != null)
                             {
-                                cursorState = formation.Team.IsEnemyOf(Mission.PlayerTeam)
-                                    ? CursorState.Enemy
-                                    : CursorState.Friend;
+                                if (formation.Team.IsEnemyOf(Mission.PlayerTeam))
+                                {
+                                    if (_config.AttackSpecificFormation)
+                                    {
+                                        cursorState = CursorState.Enemy;
+                                    }
+                                }
+                                else
+                                {
+                                    if (_config.ClickToSelectFormation)
+                                    {
+                                        cursorState = CursorState.Friend;
+                                    }
+                                }
                             }
                         }
                     }
@@ -590,7 +595,7 @@ namespace RTSCamera
                 cursorState = _currentCursorState;
             }
             if (cursorState == CursorState.Invisible &&
-                !(Input.IsKeyDown(InputKey.MiddleMouseButton) && _config.ShowContour) || // press middle mouse button to avoid accidentally click on ground.
+                !(Input.IsKeyDown(InputKey.MiddleMouseButton) && _config.ShouldHighlightWithOutline()) || // press middle mouse button to avoid accidentally click on ground.
                 _formationDrawingMode)
             {
                 cursorState = IsCursorStateGroundOrNormal();
@@ -778,14 +783,16 @@ namespace RTSCamera
             _currentCursorState = GetCursorState();
             //Utility.DisplayMessage(_currentCursorState.ToString());
             // use middle mouse button to select formation
-            if (Input.IsKeyPressed(InputKey.LeftMouseButton) || Input.IsKeyPressed(InputKey.MiddleMouseButton))
+            if (Input.IsKeyPressed(InputKey.LeftMouseButton) || (_config.ShouldHighlightWithOutline() && Input.IsKeyPressed(InputKey.MiddleMouseButton)))
             {
                 _isMouseDown = true;
                 HandleMousePressed();
                 //Utility.DisplayMessage("key pressed");
             }
 
-            if ((Input.IsKeyReleased(InputKey.LeftMouseButton) || (Input.IsKeyPressed(InputKey.MiddleMouseButton) && !_formationDrawingMode)) && _isMouseDown)
+            if ((Input.IsKeyReleased(InputKey.LeftMouseButton) ||
+                 _config.ShouldHighlightWithOutline() && Input.IsKeyPressed(InputKey.MiddleMouseButton) &&
+                 !_formationDrawingMode) && _isMouseDown)
             {
                 _isMouseDown = false;
                 HandleMouseUp();
@@ -869,7 +876,7 @@ namespace RTSCamera
                 agent = agent.RiderAgent;
             if (agent == null)
                 return null;
-            if (_config.ShowContour && !IsDrawingForced && !_formationDrawingMode && agent?.Formation != null &&
+            if (_config.ShouldHighlightWithOutline() && !IsDrawingForced && !_formationDrawingMode && agent?.Formation != null &&
                 !(PlayerOrderController.SelectedFormations.Count == 1 &&
                   PlayerOrderController.SelectedFormations.Contains(agent.Formation)))
             {

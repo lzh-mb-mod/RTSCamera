@@ -35,7 +35,7 @@ namespace RTSCamera.QuerySystem
                         AddAgent(tree, agent);
                 });
                 return tree;
-            }, 0.23f);
+            }, 0.1f);
         }
 
         private static void AddAgent(KdTree<float, AgentPointInfo> tree, Agent agent)

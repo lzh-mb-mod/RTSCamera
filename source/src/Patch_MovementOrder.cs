@@ -95,6 +95,17 @@ namespace RTSCamera
             return true;
         }
 
+        public static bool SetChargeBehaviorValues_Prefix(Agent unit)
+        {
+            if (unit.Formation != null && unit.Formation.MovementOrder.OrderType == OrderType.ChargeWithTarget)
+            {
+                UnitAIBehaviorValues.SetUnitAIBehaviorWhenChargeToFormation(unit);
+                return false;
+            }
+
+            return true;
+        }
+
         //public static bool Get_MovementState_Prefix(MovementOrder __instance, ref object __result)
         //{
         //    var orderType = (OrderType) (typeof(MovementOrder).GetProperty("OrderType")?.GetValue(__instance) ??

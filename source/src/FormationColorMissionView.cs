@@ -32,7 +32,9 @@ namespace RTSCamera
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
 
         private bool _isOrderShown;
-        private bool ContourEnabled => _isOrderShown && _config.ShowContour;
+        private bool HighlightEnabled => _isOrderShown && (_config.ShouldHighlightWithOutline());
+        private bool HighlightEnabledForSelectedFormation => _isOrderShown && _config.ClickToSelectFormation;
+        private bool HighlightEnabledForAsTargetFormation => _isOrderShown && _config.AttackSpecificFormation;
 
         public override void OnMissionScreenInitialize()
         {
@@ -97,25 +99,22 @@ namespace RTSCamera
 
         public void MouseOver(Formation formation)
         {
-            if (!ContourEnabled || formation == _mouseOverFormation)
+            if (!HighlightEnabled || formation == _mouseOverFormation)
                 return;
             if (_mouseOverFormation != null)
                 ClearFormationMouseOverContour(_mouseOverFormation);
             if (formation != null)
-                SetFormationMouseOverContour(formation, Utility.IsEnemy(formation));
+            {
+                bool isEnemy = Utility.IsEnemy(formation);
+                if (isEnemy ? HighlightEnabledForAsTargetFormation : HighlightEnabledForSelectedFormation)
+                    SetFormationMouseOverContour(formation, Utility.IsEnemy(formation));
+            }
         }
 
-        public void Select(Formation formation, bool isEnemy)
+        public void SetEnableContourForSelectedFormation(bool enable)
         {
-            if (!ContourEnabled)
-                return;
-
-        }
-
-        public void SetEnableContour(bool enable)
-        {
-            _config.ShowContour = enable;
-            if (ContourEnabled)
+            _config.ClickToSelectFormation = enable;
+            if (HighlightEnabled)
             {
                 SetFocusContour();
             }
@@ -128,7 +127,7 @@ namespace RTSCamera
         private void OnToggleOrderViewEvent(MissionPlayerToggledOrderViewEvent e)
         {
             _isOrderShown = e.IsOrderEnabled;
-            if (ContourEnabled)
+            if (HighlightEnabled)
             {
                 SetFocusContour();
             }
@@ -140,7 +139,7 @@ namespace RTSCamera
 
         private void OnOrderIssued(OrderType orderType, IEnumerable<Formation> appliedFormations, params object[] delegateParams)
         {
-            if (!ContourEnabled)
+            if (!HighlightEnabledForAsTargetFormation)
                 return;
             if (!_allySelectedFormations.Intersect(appliedFormations).IsEmpty())
             {
@@ -151,11 +150,11 @@ namespace RTSCamera
 
         private void OnFormationsChanged(Team team, Formation formation)
         {
-            if (!ContourEnabled)
+            if (!HighlightEnabled)
                 return;
             var mouseOverFormation = _mouseOverFormation;
             _mouseOverFormation = null;
-            
+
             ClearFormationAllContour(formation);
             SetFocusContour();
             MouseOver(mouseOverFormation);
@@ -163,7 +162,7 @@ namespace RTSCamera
 
         //private void Formation_OnUnitCountChanged(Formation formation)
         //{
-        //    if (!ContourEnabled)
+        //    if (!HighlightEnabled)
         //        return;
 
         //    var mouseOverFormation = _mouseOverFormation;
@@ -175,8 +174,21 @@ namespace RTSCamera
 
         private void OrderController_OnSelectedFormationsChanged()
         {
-            if (!ContourEnabled)
+            if (!_config.ShouldHighlightWithOutline())
                 return;
+            if (!_isOrderShown)
+            {
+                _allySelectedFormations.Clear();
+                var formations = PlayerOrderController?.SelectedFormations;
+                if (formations == null)
+                    return;
+                foreach (var formation in formations)
+                {
+                    _allySelectedFormations.Add(formation);
+                }
+
+                return;
+            }
             UpdateContour();
             if (_orderUIHandler == null)
                 return;
@@ -190,7 +202,7 @@ namespace RTSCamera
 
         private void Mission_OnPlayerTeamChanged(Team arg1, Team arg2)
         {
-            if (!ContourEnabled)
+            if (!HighlightEnabled)
                 return;
             UpdateContour();
         }
@@ -205,43 +217,54 @@ namespace RTSCamera
         {
             ClearEnemyFocusContour();
             ClearAllyFocusContour();
-            foreach (var formation in PlayerOrderController?.SelectedFormations)
+            var formations = PlayerOrderController?.SelectedFormations;
+            if (formations == null)
+                return;
+            foreach (var formation in formations)
             {
                 SetFormationSelectedContour(formation, false);
                 switch (formation.MovementOrder.OrderType)
                 {
                     case OrderType.ChargeWithTarget:
                     {
-                        var enemyFormation = formation.MovementOrder.TargetFormation;
-                        if (enemyFormation != null)
+                        if (HighlightEnabledForAsTargetFormation)
                         {
-                            SetFormationAsTargetContour(enemyFormation, true);
+                            var enemyFormation = formation.MovementOrder.TargetFormation;
+                            if (enemyFormation != null)
+                            {
+                                SetFormationAsTargetContour(enemyFormation, true);
+                            }
                         }
 
                         break;
                     }
-                    case OrderType.Attach:
-                    {
-                        var allyFormation = formation.MovementOrder.TargetFormation;
-                        if (allyFormation != null)
-                        {
-                            SetFormationAsTargetContour(allyFormation, false);
-                        }
-                        break;
-                    }
+                    //case OrderType.Attach:
+                    //{
+                    //    var allyFormation = formation.MovementOrder.TargetFormation;
+                    //    if (allyFormation != null)
+                    //    {
+                    //        SetFormationAsTargetContour(allyFormation, false);
+                    //    }
+                    //    break;
+                    //}
                 }
             }
 
+            if (Mission.PlayerEnemyTeam == null)
+                return;
             foreach (var enemyFormation in Mission.PlayerEnemyTeam.FormationsIncludingSpecial)
             {
                 switch (enemyFormation.MovementOrder.OrderType)
                 {
                     case OrderType.ChargeWithTarget:
                     {
-                        var targetFormation = enemyFormation.MovementOrder.TargetFormation;
-                        if (targetFormation != null)
+                        if (HighlightEnabledForAsTargetFormation)
                         {
-                            SetFormationAsTargetContour(targetFormation, false);
+                            var targetFormation = enemyFormation.MovementOrder.TargetFormation;
+                            if (targetFormation != null)
+                            {
+                                SetFormationAsTargetContour(targetFormation, false);
+                            }
                         }
 
                         break;
@@ -325,13 +348,13 @@ namespace RTSCamera
         {
             if (!isEnemy)
                 _allySelectedFormations.Add(formation);
-
-            formation.ApplyActionOnEachUnit(agent => SetAgentSelectedContour(agent, isEnemy));
+            if (HighlightEnabledForSelectedFormation)
+                formation.ApplyActionOnEachUnit(agent => SetAgentSelectedContour(agent, isEnemy));
         }
 
         private void SetAgentMouseOverContour(Agent agent, bool enemy)
         {
-            agent.GetComponent<AgentContourComponent>()?.SetContourColor((int) ColorLevel.MouseOverFormation,
+            agent.GetComponent<AgentContourComponent>()?.SetContourColor((int)ColorLevel.MouseOverFormation,
                 enemy ? _mouseOverEnemyColor : _mouseOverAllyColor, true);
         }
 

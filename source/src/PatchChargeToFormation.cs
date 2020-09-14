@@ -32,6 +32,12 @@ namespace RTSCamera
                         BindingFlags.Static | BindingFlags.Public)));
 
                 Harmony.Patch(
+                    typeof(MovementOrder).GetMethod("SetChargeBehaviorValues",
+                        BindingFlags.Static | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_MovementOrder).GetMethod("SetChargeBehaviorValues_Prefix",
+                        BindingFlags.Static | BindingFlags.Public)));
+
+                Harmony.Patch(
                     typeof(FormationMovementComponent).GetMethod("GetFormationFrame",
                         BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(

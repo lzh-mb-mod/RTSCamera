@@ -176,6 +176,8 @@ namespace RTSCamera
         public static void AIControlMainAgent(bool alarmed)
         {
             var mission = Mission.Current;
+            if (mission?.MainAgent == null)
+                return;
             mission.MainAgent.Controller = Agent.ControllerType.AI;
             if (alarmed)
             {
@@ -194,7 +196,7 @@ namespace RTSCamera
 
         public static void SetMainAgentAlarmed(bool alarmed)
         {
-            Mission.Current.MainAgent.SetWatchState(alarmed
+            Mission.Current.MainAgent?.SetWatchState(alarmed
                 ? AgentAIStateFlagComponent.WatchState.Alarmed
                 : AgentAIStateFlagComponent.WatchState.Patroling);
         }

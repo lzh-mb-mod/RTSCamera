@@ -6,7 +6,7 @@ namespace RTSCamera
 {
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 3);
+        protected static Version BinaryVersion => new Version(1, 4);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -21,15 +21,11 @@ namespace RTSCamera
                     ConstantSpeed = false;
                     Outdoor = true;
                     RestrictByBoundaries = true;
-                    goto case "1.1";
+                    goto case "1.4";
                 case "1.1":
-                    ShowContour = false;
-                    goto case "1.2";
                 case "1.2":
-                    ShowContour = true; // enable this feature.
-                    goto case "1.3";
                 case "1.3":
-                    AttackSpecificFormation = false;
+                case "1.4":
                     break;
             }
 
@@ -60,7 +56,7 @@ namespace RTSCamera
 
         public float SlowMotionFactor = 0.2f;
 
-        public bool ShowContour = true;
+        public bool ClickToSelectFormation = true;
 
         public bool AttackSpecificFormation = false;
 
@@ -113,7 +109,7 @@ namespace RTSCamera
             RestrictByBoundaries = other.RestrictByBoundaries;
             SlowMotionMode = other.SlowMotionMode;
             SlowMotionFactor = other.SlowMotionFactor;
-            ShowContour = other.ShowContour;
+            ClickToSelectFormation = other.ClickToSelectFormation;
             AttackSpecificFormation = other.AttackSpecificFormation;
             DisplayMessage = other.DisplayMessage;
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;

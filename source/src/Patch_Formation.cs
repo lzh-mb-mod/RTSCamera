@@ -51,9 +51,17 @@ namespace RTSCamera
                 var targetFormation = QueryDataStore.Get(__instance.TargetFormation);
 
                 Vec2 unitPosition;
-                if (unit.HasMount)
+                if (QueryLibrary.IsCavalry(unit))
                 {
-                    unitPosition = __instance.GetCurrentGlobalPositionOfUnit(unit, true);
+                    if (QueryLibrary.IsRangedCavalry(unit))
+                    {
+                        unitPosition = unit.Position.AsVec2;
+                    }
+                    else
+                    {
+                        unitPosition = __instance.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
+                                       unit.Position.AsVec2 * 0.8f + unit.GetMovementDirection().AsVec2 * 2;
+                    }
                 }
                 else
                 {
