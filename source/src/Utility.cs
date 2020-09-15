@@ -16,6 +16,8 @@ namespace RTSCamera
 {
     public class Utility
     {
+        private static readonly MethodInfo OnUnitJoinOrLeave =
+            typeof(MovementOrder).GetMethod("OnUnitJoinOrLeave", BindingFlags.Instance | BindingFlags.NonPublic);
         public static void DisplayLocalizedText(string id, string variation = null)
         {
             try
@@ -178,15 +180,30 @@ namespace RTSCamera
             var mission = Mission.Current;
             if (mission?.MainAgent == null)
                 return;
-            mission.MainAgent.Controller = Agent.ControllerType.AI;
-            if (alarmed)
+            try
             {
-                if ((mission.MainAgent.AIStateFlags & Agent.AIStateFlag.Alarmed) == Agent.AIStateFlag.None)
-                    SetMainAgentAlarmed(true);
+                mission.MainAgent.Controller = Agent.ControllerType.AI;
+                if (alarmed)
+                {
+                    if ((mission.MainAgent.AIStateFlags & Agent.AIStateFlag.Alarmed) == Agent.AIStateFlag.None)
+                        SetMainAgentAlarmed(true);
+                }
+                else
+                {
+                    SetMainAgentAlarmed(false);
+                }
+
+                if (mission.MainAgent.Formation != null)
+                {
+                    OnUnitJoinOrLeave?.Invoke(mission.MainAgent.Formation.MovementOrder, new object[]
+                    {
+                        mission.MainAgent.Formation, mission.MainAgent, true
+                    });
+                }
             }
-            else
+            catch (Exception e)
             {
-                SetMainAgentAlarmed(false);
+                Utility.DisplayMessage(e.ToString());
             }
 
             // avoid crash after victory. After victory, team ai decision won't be made so that current tactics won't be updated.

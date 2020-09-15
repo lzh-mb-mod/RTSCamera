@@ -1,8 +1,15 @@
 # Changelog
 
-## [e3.5.16] - 2020-09-08
+## [e3.6.0] - 2020-09-015
+### Added
+- Add "charge to formation" feature. Soldiers can charge to a single enemy formation.
+
+- Add camera smooth movement when camera mode changes or player character changes, etc.
+
+- Free camera now uses smooth rotation by default.
+
 ### Changed
-- Use alt instead of shift to prevent giving movement orders when "show contour" is enabled.
+- Use middle mouse button instead of shift to prevent giving movement orders when "Click to Select Formation" is enabled.
 
 - Optimize behavior of click formation.
 

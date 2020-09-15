@@ -410,7 +410,7 @@ namespace RTSCamera
             switch (_currentCursorState)
             {
                 case CursorState.Enemy:
-                    if (_config.AttackSpecificFormation)
+                    if (_config.AttackSpecificFormation && Input.IsKeyDown(InputKey.MiddleMouseButton))
                     {
                         _clickedFormation = _mouseOverFormation;
                     }
@@ -421,7 +421,7 @@ namespace RTSCamera
                     BeginFormationDraggingOrClicking();
                     break;
                 case CursorState.Friend:
-                    if (PlayerOrderController.IsFormationSelectable(_mouseOverFormation))
+                    if (PlayerOrderController.IsFormationSelectable(_mouseOverFormation) && Input.IsKeyDown(InputKey.MiddleMouseButton))
                     {
                         _clickedFormation = _mouseOverFormation;
                         BeginFormationDraggingOrClicking();
@@ -482,7 +482,7 @@ namespace RTSCamera
         private void HandleMouseUp()
         {
             var cursorState = _currentCursorState;
-            if (_clickedFormation != null)
+            if (_clickedFormation != null && Input.IsKeyDown(InputKey.MiddleMouseButton))
             {
                 if (_clickedFormation.CountOfUnits > 0)
                 {
@@ -494,8 +494,18 @@ namespace RTSCamera
                         if (PlayerOrderController.IsFormationSelectable(_clickedFormation))
                         {
                             if (!Input.IsControlDown())
+                            {
                                 PlayerOrderController.ClearSelectedFormations();
-                            PlayerOrderController.SelectFormation(_clickedFormation);
+                                PlayerOrderController.SelectFormation(_clickedFormation);
+                            }
+                            else if (PlayerOrderController.IsFormationListening(_clickedFormation))
+                            {
+                                PlayerOrderController.DeselectFormation(_clickedFormation);
+                            }
+                            else
+                            {
+                                PlayerOrderController.SelectFormation(_clickedFormation);
+                            }
                         }
                     }
                     else if (_config.AttackSpecificFormation)

@@ -1,84 +1,65 @@
 # RTS Camera
 (Old name: EnhancedMission, Enhanced Mission RTS Camera)
-A mod for Mount&Blade II Bannerlord that provides RTS camera and more features in battle.
+
+A mod for Mount&Blade II Bannerlord that provides free camera and more features in battle.
+
+## Save Compability
+This mod does not read or write stuffs to your game save. Installing or removing this mod has no impact on your game save.
 
 ## Features
 
-- You can press `F10` to switch to rts-style camera and press again to switch back.
+- You can press `F10` to switch to free camera and press again to switch back. Player character will be controlled by AI when switched to free camera.
 
-- You can make your formation only charge to a specific enemy formation by clicking on the enemy formation, rather than charging to all enemies when you press `F1` `F3`.
+  - You can press `L` and check `Use Free Camera By Default` to automatically switch to free camera when entering a battle.
+
+- You can make your formation **only charge to a specific enemy formation** by clicking middle mouse button on the enemy formation, rather than charging to all enemies when you press `F1` `F3`.
 
   - The target enemy formation that your selected troops are charging to will be hightlighted with red outline when you open command panel.
 
   - AI formation will also have the ability to charge to a specific formation. Your formation targeted by the enemy formation will be highlighted with purple outline when you open command panel.
 
-- You can select your formations by directly clicking them. Selected troops will be highlighted with green outline.
+  - You can press `L` and uncheck `Enable Attack Specific Formation` to disable this feature.
 
-- After your character die, press `F` to control one of your soldiers. Troops in the same formation as player character will be considered first.
+- You can select your formations by clicking middle mouse button them. Selected troops will be highlighted with green outline.
 
-- Press `;` and click a soldier, then press `F` to lock the camera on it. Press `F` again to take control of it.
+  - You can press `L` and uncheck `Middle Click to select formation` to disable this feature.
 
-- Pause game and adjust time speed.
+- After your character dies, you can press `F` to control one of your soldiers and continue fighting. Soldiers in the same formation as player character will be considered first when deciding which soldier to control.
 
-- Hotkey rebinding.
+  - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your charater dies. Press `L` and check `Control Ally After Death` option to enable this feature. It's always enabled when in free camera mode to ensure a smooth gaming experience.
 
-- Configuration saving. The configuration is saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\RTSCamera\`.
-  
-  The main config is saved in file `RTSCameraConfig.xml`.
+- Press `;` and click a soldier, then press `F` to let camera follow it. Press `F` again to take control of the soldier.
 
-  The hot key config is saved in file `GameKeyConfig.xml`.
+- Pause game (`[`) or adjust time speed (`'`).
 
-  You can modify them manually, but if you edit it incorrectly or remove them, the configuration will be reset to default.
+- You can rebind hotkeys by pressing `L` and click `Config Key`.
 
-- Undead mode. HP of All agents will not change after switched on. Just for the purpose of training your combat skill or making video.
+- Toggle HUD by pressing `]`. If you rebind the key and forget the key set for toggling HUD, you can always use `HOME` key to enable HUD.
+
+- Configuration saving.
 
 ## How to install
-1. Copy `Modules` folder into Bannerlord installation folder(For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord - Beta`). It should be merged with `Modules` of the game. Or use Vortex to install it automatically.
+1. Remove any old installation of this mod. You can go to `Modules` folder of bannerlord installation folder (For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord\Moudles\`) and remove folders like `RTSCamera` or `EnhancedMission`.
 
-   Note that the other files should not be installed. They are source files used to build the mod and are for those who want to modify the mod.
+2. Copy `Modules` folder into Bannerlord installation folder. It should be merged with `Modules` of the game. Or use Vortex to install it automatically.
 
-## How to use
-- Start the launcher and choose Single player mode. In `Mods` panel select `RTS Camera` mod and click `PLAY`.
+   Note that the other files such as those in `source` folder should not be installed. They are source files used to build the mod and are for those who want to modify the mod.
 
-  Then play the game as usual.
+## Details
 
-- After entering a mission (scene):
+- Press `L(letter)` to open menu of this mod when in a scene. You can adjust all the options of this mod in it.
 
-  - Press `L(letter)` (by default) to open menu of this mod. You can access the features of this mod in it.
+  - You can close the menu by pressing `esc`, left clicking outside the menu or right clicking.
 
-  - You can select troops by directly clicking on them. Press `alt` to prevent giving movement orders, in case you only want to select troops but accidentally click on the ground. Press `F1` to prevent selecting troops, in case you only want to issue movement orders next but accidentally click on a troop.
+- When in free camera:
 
-  - you can use the following hotkeys by default:
-
-  - Press `F10` to switch between rts-style camera and main agent camera.
-
-  - Press `F` or `F10` to control one of your troops after you being killed.
-
-  - Press `End` to disable death.
-
-  - Press `[` to pause game.
-
-  - Press `'` to toggle slow motion.
-
-  - Press `]` to toggle HUD. Or if you rebind the key and forget what you have set, you can also press `Home` key to toggle UI, which always works.
-
-  - Press `F11` to switch to enemy's team(You need to enable hotkey for it in menu first). Useful for making videos.
-
-  - Press `;` and left click to select a soldier. You can lock camera to the selected soldier by pressing `F`, and then control it by pressing `F` again.
-
-  - When order panel is opened, the formation your mouse on, the formation you selected and the formation as target of enemy will be highlighted with different color.
-
-- How to control rts camera:
-
-  - In a mission, press `F10` to switch to rts camera.
-
-  - Your player character will be added to the formation chosen in mod menu.
+  - Your player character will be controlled by AI. A known issue is that you player character may charge to enemy alone when it has ranged weapon. Enable `Prevent Player Fighting` option in menu to solve this issue.
 
   - Use `W`, `A`, `S`, `D`, `Space`, `Z` and mouse middle button to move the camera.
 
   - Use `shift` to speed up camera movement.
 
-  - Move your mouse to rotate the camera, or when order panel is opened, drag right button to rotate the camera.
+  - Move your mouse to rotate the camera, or when order panel is opened, drag right mouse button to rotate the camera.
 
   - Left click on the ground and drag to change the position, direction and width of the formation you selected.
 
@@ -86,10 +67,17 @@ A mod for Mount&Blade II Bannerlord that provides RTS camera and more features i
 
   - Hold `ctrl` and scroll mouse to adjust camera movement speed.
 
-## Optional File
-- ["Improved Combat AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/): Realistic blocking and adjusting combat AI.
+  - Hold `ctrl` and click middle mouse button to reset camera movement speed.
 
-- ["Cinematic Camera"](https://www.nexusmods.com/mountandblade2bannerlord/mods/1627): Adjusting camera parameters such as moving speed, depth of field, etc.
+  - Hold `ctrl` and drag middle mouse button vertically to adjust camera height.
+   
+- The configuration is saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\RTSCamera\`.
+
+  The main config is saved in file `RTSCameraConfig.xml`.
+
+  The hot key config is saved in file `GameKeyConfig.xml`.
+
+  You can modify them manually, but if you edit them incorrectly or remove them, the configuration will be reset to default.
 
 ## Troubleshoot
 - If the launcher can not start:
@@ -103,14 +91,31 @@ A mod for Mount&Blade II Bannerlord that provides RTS camera and more features i
 - If the game crashed after starting:
 
   - If you upgraded this mod from version lower than e3.2.0, pleas remove the old mod folder "EnhancedMission" to prevent crash.
+  
+  - I would appreciate it if you send dump file to me to help me to solve the crash by followinig steps below:
 
-  - Please uncheck the mod in launcher and wait for mod update.
+    - Click `Yes` when the game crashes and ask whether to collect information.
 
-    Optionally you can tell me the step to reproduce the crash.
+    - Before sending files to TaleWorlds, go to `C:\ProgramData\Mount and Blade II Bannerlord\crashes`(**Not the game installation path**) and find the folder related to the crash by timestamp.
 
-- If you forget the hotkey you set for opening menu:
+    - Then send `dump.dmp` file in the folder to me.
 
-  - you can remove the config file so that it will be reset to default.
+- If you forget the hotkey set for opening menu:
+
+  - You can remove the config file so that config will be reset to default.
+
+## Optional File
+- ["Improved Combat AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/): Adjusting combat AI.
+
+- ["Cinematic Camera"](https://www.nexusmods.com/mountandblade2bannerlord/mods/1627): Adjusting camera parameters such as moving speed, depth of field, etc.
+
+## Source Code
+
+Source code should be available within `source` folder in release of this mod. Or you can get it at [gitlab.com](https://gitlab.com/lzh_mb_mod/rts-camera).
 
 ## Contact with me
-* Please mail to: lizhenhuan1019@qq.com
+- Email:
+
+  - lizhenhuan1019@outlook.com
+
+  - lizhenhuan1019@qq.com

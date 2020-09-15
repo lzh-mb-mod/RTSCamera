@@ -180,8 +180,7 @@ namespace RTSCamera
 
         private void EnsureMainAgentControlledByAI()
         {
-            Mission.MainAgent.Controller = Agent.ControllerType.AI;
-            Mission.MainAgent.SetWatchState(AgentAIStateFlagComponent.WatchState.Alarmed);
+            Utility.AIControlMainAgent(true);
         }
 
         private void DoNotDisturbRTS()

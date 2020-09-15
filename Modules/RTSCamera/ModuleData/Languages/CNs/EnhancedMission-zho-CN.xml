@@ -21,13 +21,13 @@
     <string id="RTSCamera_slow_motion_factor_hint" text="时间流逝速度倍率。" />
     <string id="RTSCamera_control_another_hero_hint" text="控制一个你选择的英雄。" />
     <string id="RTSCamera_select_character_hint" text="用鼠标选择一个角色，然后你可以将相机对准它或者控制它。" />
-    <string id="RTSCamera_control_ally_after_death_hint" text="阵亡后自动控制你的一个队友。" />
+    <string id="RTSCamera_control_ally_after_death_hint" text="阵亡后自动控制你的一个队友来继续战斗。" />
     <string id="RTSCamera_prefer_to_control_companions_hint" text="当寻找可控制的单位时倾向于控制同伴。" />
     <string id="RTSCamera_control_troops_in_player_party_only_hint" text="当寻找可控制的单位时只考虑玩家部队内的单位。" />
     <string id="RTSCamera_constant_speed_hint" text="镜头移动速度不再受高度影响，用于制作视频。" />
     <string id="RTSCamera_outdoor_hint" text="禁用后镜头不再受到地面或建筑的限制，用于制作视频。" />
     <string id="RTSCamera_restricted_by_boundaries_hint" text="禁用后镜头不再受到地图边界的限制，用于制作视频。" />
-    <string id="RTSCamera_click_to_select_formation_hint" text="你可以用鼠标点击来选择部队。选中的编队会用轮廓高亮。" />
+    <string id="RTSCamera_click_to_select_formation_hint" text="你可以用点击鼠标中键来选择部队。选中的编队会用轮廓高亮。" />
     <string id="RTSCamera_attack_specific_formation_hint" text="你将可以通过点击敌方编队来发出攻击指定的敌方编队的命令。对AI同样适用。" />
     <string id="RTSCamera_display_message_hint" text="是否显示本mod的消息。" />
     <string id="RTSCamera_toggle_ui_hint" text="开关游戏的HUD，用于制作视频。" />
@@ -64,7 +64,7 @@
     <string id="RTSCamera_togglepause" text="切换暂停" />
     <string id="RTSCamera_slowmotionmode" text="慢速模式" />
     <string id="RTSCamera_slowmotionfactor" text="慢速倍率" />
-    <string id="RTSCamera_click_to_select_formation" text="可通过点击来选择部队" />
+    <string id="RTSCamera_click_to_select_formation" text="点击鼠标中键来选择部队" />
     <string id="RTSCamera_attack_specific_formation" text="启用攻击特定编队" />
 
     <string id="RTSCamera_controlallyoptionsdescription" text="控制队友" />
