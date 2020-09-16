@@ -1,6 +1,5 @@
-﻿using System;
+﻿using RTSCamera.Config;
 using System.Collections.Generic;
-using System.Text;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 

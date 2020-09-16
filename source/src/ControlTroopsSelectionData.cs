@@ -1,7 +1,5 @@
-﻿using System;
+﻿using RTSCamera.Config;
 using System.Linq;
-using System.Text;
-using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera

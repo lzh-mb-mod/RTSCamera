@@ -5,7 +5,7 @@ using TaleWorlds.MountAndBlade.GauntletUI;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.ViewModelCollection.GameOptions;
 
-namespace RTSCamera
+namespace RTSCamera.Config
 {
     class GameKeyConfigView : MissionView
     {

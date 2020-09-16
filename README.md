@@ -47,7 +47,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 ## Details
 
-- Press `L(letter)` to open menu of this mod when in a scene. You can adjust all the options of this mod in it.
+- Press `L` to open menu of this mod when in a scene. You can adjust all the options of this mod in it.
 
   - You can close the menu by pressing `esc`, left clicking outside the menu or right clicking.
 

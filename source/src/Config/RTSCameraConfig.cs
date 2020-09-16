@@ -2,7 +2,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace RTSCamera
+namespace RTSCamera.Config
 {
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {

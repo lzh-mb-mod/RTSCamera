@@ -1,4 +1,5 @@
-﻿using TaleWorlds.Engine;
+﻿using RTSCamera.Config;
+using TaleWorlds.Engine;
 using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;

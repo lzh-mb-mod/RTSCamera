@@ -1,4 +1,4 @@
-﻿using TaleWorlds.InputSystem;
+﻿using RTSCamera.Config;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera

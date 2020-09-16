@@ -4,7 +4,7 @@ using System.IO;
 using System.Xml.Serialization;
 using TaleWorlds.InputSystem;
 
-namespace RTSCamera
+namespace RTSCamera.Config
 {
     public static class GameKeyCategory
     {

@@ -1,9 +1,9 @@
-﻿using RTSCamera.QuerySystem;
+﻿using RTSCamera.Config;
+using RTSCamera.QuerySystem;
 using System;
 using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
-using TaleWorlds.Engine.Screens;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Screen;
 

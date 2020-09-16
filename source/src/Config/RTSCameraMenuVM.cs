@@ -4,7 +4,7 @@ using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera
+namespace RTSCamera.Config
 {
 
     public class RTSCameraMenuVM : MissionMenuVMBase

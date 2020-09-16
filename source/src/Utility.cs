@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using RTSCamera.Config;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -182,23 +183,26 @@ namespace RTSCamera
                 return;
             try
             {
-                mission.MainAgent.Controller = Agent.ControllerType.AI;
-                if (alarmed)
+                if (mission.MainAgent.Controller == Agent.ControllerType.Player)
                 {
-                    if ((mission.MainAgent.AIStateFlags & Agent.AIStateFlag.Alarmed) == Agent.AIStateFlag.None)
-                        SetMainAgentAlarmed(true);
-                }
-                else
-                {
-                    SetMainAgentAlarmed(false);
-                }
-
-                if (mission.MainAgent.Formation != null)
-                {
-                    OnUnitJoinOrLeave?.Invoke(mission.MainAgent.Formation.MovementOrder, new object[]
+                    mission.MainAgent.Controller = Agent.ControllerType.AI;
+                    if (alarmed)
                     {
-                        mission.MainAgent.Formation, mission.MainAgent, true
-                    });
+                        if ((mission.MainAgent.AIStateFlags & Agent.AIStateFlag.Alarmed) == Agent.AIStateFlag.None)
+                            SetMainAgentAlarmed(true);
+                    }
+                    else
+                    {
+                        SetMainAgentAlarmed(false);
+                    }
+
+                    if (mission.MainAgent.Formation != null)
+                    {
+                        OnUnitJoinOrLeave?.Invoke(mission.MainAgent.Formation.MovementOrder, new object[]
+                        {
+                            mission.MainAgent.Formation, mission.MainAgent, true
+                        });
+                    }
                 }
             }
             catch (Exception e)

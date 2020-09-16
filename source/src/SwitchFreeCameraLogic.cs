@@ -1,12 +1,11 @@
-﻿using RTSCamera.QuerySystem;
+﻿using RTSCamera.Config;
+using RTSCamera.QuerySystem;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using TaleWorlds.Core;
-using TaleWorlds.Engine.Screens;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Screen;
 
 namespace RTSCamera
 {

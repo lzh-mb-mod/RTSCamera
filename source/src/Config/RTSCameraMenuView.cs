@@ -1,12 +1,4 @@
-﻿using TaleWorlds.Core;
-using TaleWorlds.Engine.GauntletUI;
-using TaleWorlds.Engine.Screens;
-using TaleWorlds.GauntletUI.Data;
-using TaleWorlds.InputSystem;
-using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
-
-namespace RTSCamera
+﻿namespace RTSCamera.Config
 {
     public class RTSCameraMenuView : MissionMenuViewBase
     {
