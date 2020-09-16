@@ -164,6 +164,7 @@ namespace RTSCamera
             if (agent != Mission.MainAgent && !_freeCameraLogic.isSpectatorCamera)
                 _freeCameraLogic.SwitchCamera();
             Utility.SmoothMoveToAgent(MissionScreen, true);
+            UpdateMouseVisibility();
             return true;
         }
 
@@ -241,14 +242,11 @@ namespace RTSCamera
         private void OnToggleOrderViewEvent(MissionPlayerToggledOrderViewEvent e)
         {
             _isOrderViewOpen = e.IsOrderEnabled;
-            bool freeCamera = _freeCameraLogic != null && _freeCameraLogic.isSpectatorCamera;
-            _orderUIHandler?.gauntletLayer.InputRestrictions.SetMouseVisibility(freeCamera && _isOrderViewOpen);
-
+            UpdateMouseVisibility();
         }
 
         private void OnToggleFreeCamera(bool freeCamera)
         {
-            _orderUIHandler?.gauntletLayer.InputRestrictions.SetMouseVisibility(freeCamera && _isOrderViewOpen);
             if (_missionMainAgentController != null)
             {
                 _missionMainAgentController.IsDisabled = freeCamera;
@@ -263,6 +261,12 @@ namespace RTSCamera
                 BeginForcedMove(new Vec3(0, 0, _config.RaisedHeight));
                 LeaveFromAgent();
             }
+            UpdateMouseVisibility(); 
+        }
+
+        private void UpdateMouseVisibility()
+        {
+            _orderUIHandler?.gauntletLayer.InputRestrictions.SetMouseVisibility((_freeCameraLogic?.isSpectatorCamera ?? false) && !LockToAgent && _isOrderViewOpen);
         }
 
         private void LeaveFromAgent()
@@ -606,6 +610,7 @@ namespace RTSCamera
             {
                 LockToAgent = false;
                 LeaveFromAgent();
+                UpdateMouseVisibility();
             }
         }
     }

@@ -9,14 +9,17 @@
 - Free camera now uses smooth rotation by default.
 
 ### Changed
-- Use middle mouse button instead of shift to prevent giving movement orders when "Click to Select Formation" is enabled.
+- Use middle mouse button instead of left mouse button to select formation to avoid accidentally giving movement orders when "Click to Select Formation" is enabled.
 
 - Optimize behavior of click formation.
 
 ### Fixed
 - Fix a rare crash that occured when switch free camera too quickly.
 
-- Fix a crash happen when changing "Prevent Player From Fighting" option when player character is dead.
+- Fix the problem that player may charge to enemy alone.
+
+### Removed
+- Remove "Prevent Player Fighting" option because the related problem has been fixed.
 
 ## [e3.5.15] - 2020-09-05
 ### Fixed

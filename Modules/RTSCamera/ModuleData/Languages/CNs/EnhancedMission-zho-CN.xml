@@ -12,7 +12,6 @@
 
     <string id="RTSCamera_switch_free_camera_hint" text="在自由视角和玩家视角间切换。" />
     <string id="RTSCamera_use_free_camera_by_default_hint" text="进入战斗时自动切换到自由视角。" />
-    <string id="RTSCamera_prevent_player_fighting_hint" text="阻止玩家角色与周围敌人战斗，以解决切换到自由视角后后玩家角色会无视指令而冲锋的问题。" />
     <string id="RTSCamera_raised_height_hint" text="切换到自由视角后相机提高的高度。" />
     <string id="RTSCamera_player_formation_hint" text="将玩家分配到指定的编队。" />
     <string id="RTSCamera_always_set_player_formation_hint" text="自动将玩家分配到指定编队，例如当切换到自由视角时，当控制另一个士兵时，等等。" />
@@ -54,7 +53,6 @@
 
     <string id="RTSCamera_usefreecamerabydefault" text="默认自由视角" />
     <string id="RTSCamera_switchfreecamera" text="切换自由视角" />
-    <string id="RTSCamera_prevent_player_fighting" text="阻止玩家角色战斗" />
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="相机提高的高度" />
     <string id="RTSCamera_playerformation" text="玩家编队" />
     <string id="RTSCamera_always_set_player_formation" text="总是设置玩家编队" />

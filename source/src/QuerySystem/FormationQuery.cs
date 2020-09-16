@@ -22,6 +22,14 @@ namespace RTSCamera.QuerySystem
             return result.Length == 0 ? null : result[0].Value.Agent;
         }
 
+        public Agent NearestOfAverageOfNearestPosition(Vec2 position, int count)
+        {
+            var agents = KdTree.Value.GetNearestNeighbours(new float[2] {position.x, position.y}, count);
+            var averagePosition = Average(agents);
+            var nearest = KdTree.Value.GetNearestNeighbours(new float[2] {averagePosition.x, averagePosition.y}, 1);
+            return nearest.Length == 0 ? null : nearest[0].Value.Agent;
+        }
+
         public FormationQuery(Formation formation)
         {
             Formation = formation;

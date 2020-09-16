@@ -56,20 +56,34 @@ namespace RTSCamera
                     if (QueryLibrary.IsRangedCavalry(unit))
                     {
                         unitPosition = unit.Position.AsVec2;
+                        __result = targetFormation
+                            .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
                     }
                     else
                     {
                         unitPosition = __instance.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
-                                       unit.Position.AsVec2 * 0.8f + unit.GetMovementDirection().AsVec2 * 2;
+                                       unit.Position.AsVec2 * 0.8f;
+                        var targetPosition = targetFormation
+                            .NearestOfAverageOfNearestPosition(unitPosition, 5)?.GetWorldPosition();
+                        if (targetPosition != null)
+                        {
+                            __result = targetPosition.Value;
+                            var distance = MathF.Clamp((__result.AsVec2 - unit.Position.AsVec2).Length, 0, 10);
+                            __result.SetVec2(unit.GetMovementDirection().AsVec2 * distance + __result.AsVec2);
+                        }
+                        else
+                        {
+                            __result = new WorldPosition();
+                        }
                     }
                 }
                 else
                 {
                     unitPosition = __instance.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
                                    unit.Position.AsVec2 * 0.8f;
+                    __result = targetFormation
+                        .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
                 }
-                __result = targetFormation
-                    .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
 
                 return false;
             }

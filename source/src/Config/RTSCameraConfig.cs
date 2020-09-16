@@ -38,8 +38,6 @@ namespace RTSCamera
 
         public bool UseFreeCameraByDefault;
 
-        public bool PreventPlayerFighting = false;
-
         public float RaisedHeight = 10;
 
         public int PlayerFormation = 4;
@@ -100,7 +98,6 @@ namespace RTSCamera
         {
             ConfigVersion = other.ConfigVersion;
             UseFreeCameraByDefault = other.UseFreeCameraByDefault;
-            PreventPlayerFighting = other.PreventPlayerFighting;
             RaisedHeight = other.RaisedHeight;
             PlayerFormation = other.PlayerFormation;
             AlwaysSetPlayerFormation = other.AlwaysSetPlayerFormation;

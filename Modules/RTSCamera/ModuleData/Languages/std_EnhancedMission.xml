@@ -12,7 +12,6 @@
 
     <string id="RTSCamera_switch_free_camera_hint" text="Switch between free camera and player camera." />
     <string id="RTSCamera_use_free_camera_by_default_hint" text="Switch to free camera when entering battle." />
-    <string id="RTSCamera_prevent_player_fighting_hint" text="Prevent player AI from fighting with nearby enemies, to solve the problems that player may charge into enemy formation after switching to free camera." />
     <string id="RTSCamera_raised_height_hint" text="Camera raised height after switching to free camera." />
     <string id="RTSCamera_player_formation_hint" text="Assign player to the selected formation." />
     <string id="RTSCamera_always_set_player_formation_hint" text="Automatically set player to the specified formation, for example when switching to free camera, when controlling another solider, etc." />
@@ -54,7 +53,6 @@
 
     <string id="RTSCamera_usefreecamerabydefault" text="Use Free Camera By Default" />
     <string id="RTSCamera_switchfreecamera" text="Switch Free Camera" />
-    <string id="RTSCamera_prevent_player_fighting" text="Prevent Player Fighting" />
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="Camera Raised Height" />
     <string id="RTSCamera_playerformation" text="Player Formation" />
     <string id="RTSCamera_always_set_player_formation" text="Always Set Player Formation" />

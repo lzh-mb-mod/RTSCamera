@@ -226,7 +226,7 @@ namespace RTSCamera
             isSpectatorCamera = true;
             if (Mission.MainAgent != null)
             {
-                Utility.AIControlMainAgent(!_config.PreventPlayerFighting);
+                Utility.AIControlMainAgent(true);
             }
 
             ToggleFreeCamera?.Invoke(true);

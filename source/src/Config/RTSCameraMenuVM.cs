@@ -27,9 +27,6 @@ namespace RTSCamera
         public string UseFreeCameraByDefaultString { get; } = GameTexts.FindText("str_rts_camera_use_free_camera_by_default").ToString();
         public string SwitchFreeCameraString { get; } = GameTexts.FindText("str_rts_camera_switch_free_camera").ToString();
 
-        public string PreventPlayerFightingString { get; }
-            = GameTexts.FindText("str_rts_camera_prevent_player_fighting").ToString();
-
         public string AlwaysSetPlayerFormationString { get; } = GameTexts.FindText("str_rts_camera_always_set_player_formation").ToString();
 
         public string TogglePauseString { get; } = GameTexts.FindText("str_rts_camera_toggle_pause").ToString();
@@ -102,23 +99,6 @@ namespace RTSCamera
 
         public HintViewModel UseFreeCameraByDefaultHint { get; } =
             new HintViewModel(GameTexts.FindText("str_rts_camera_use_free_camera_by_default_hint").ToString());
-
-        [DataSourceProperty]
-        public bool PreventPlayerFighting
-        {
-            get => _config.PreventPlayerFighting;
-            set
-            {
-                if (_config.PreventPlayerFighting == value)
-                    return;
-                _config.PreventPlayerFighting = value;
-                Utility.SetMainAgentAlarmed(!value);
-                OnPropertyChanged(nameof(PreventPlayerFighting));
-            }
-        }
-
-        public HintViewModel PreventPlayerFightingHint { get; } =
-            new HintViewModel(GameTexts.FindText("str_rts_camera_prevent_player_fighting_hint").ToString());
 
         [DataSourceProperty]
         public NumericVM RaisedHeight { get; }

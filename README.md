@@ -53,8 +53,6 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 - When in free camera:
 
-  - Your player character will be controlled by AI. A known issue is that you player character may charge to enemy alone when it has ranged weapon. Enable `Prevent Player Fighting` option in menu to solve this issue.
-
   - Use `W`, `A`, `S`, `D`, `Space`, `Z` and mouse middle button to move the camera.
 
   - Use `shift` to speed up camera movement.
