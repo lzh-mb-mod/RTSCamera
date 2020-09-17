@@ -1,4 +1,6 @@
-﻿using TaleWorlds.Library;
+﻿using RTSCamera.QuerySystem;
+using TaleWorlds.Engine;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera
@@ -35,10 +37,7 @@ namespace RTSCamera
 
         public Vec2 CurrentDirection;
 
-        public void SetCurrentDirection(Vec2 direction)
-        {
-            CurrentDirection = direction;
-        }
+        public QueryData<WorldPosition> CurrentTargetPosition { get; }
 
         public RTSCameraAgentComponent(Agent agent) : base(agent)
         {
@@ -46,6 +45,65 @@ namespace RTSCamera
             {
                 _colors[i] = new Contour(null, false);
             }
+
+            CurrentTargetPosition = new QueryData<WorldPosition>(() =>
+            {
+                var unit = this.Agent;
+                var formation = unit.Formation;
+                if (formation == null)
+                    return WorldPosition.Invalid;
+                var targetFormation = QueryDataStore.Get(formation.TargetFormation);
+
+                Vec2 unitPosition;
+                if (QueryLibrary.IsCavalry(unit))
+                {
+                    if (QueryLibrary.IsRangedCavalry(unit))
+                    {
+                        unitPosition = unit.Position.AsVec2;
+                        return targetFormation
+                            .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
+                    }
+                    else
+                    {
+                        unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
+                                       unit.Position.AsVec2 * 0.8f;
+                        var targetPosition = targetFormation
+                            .NearestOfAverageOfNearestPosition(unitPosition, 10)?.GetWorldPosition();
+                        if (targetPosition != null)
+                        {
+                            var result  = targetPosition.Value;
+                            var targetDirection = result.AsVec2 - unit.Position.AsVec2;
+                            var distance = targetDirection.Normalize();
+                            if (distance < 3)
+                            {
+                                result = unit.GetWorldPosition();
+                                result.SetVec2(CurrentDirection * 20 + result.AsVec2);
+                            }
+                            else
+                            {
+                                if (distance < 20 && targetDirection.DotProduct(CurrentDirection) < 0)
+                                {
+                                    result.SetVec2(-targetDirection * 50 + result.AsVec2);
+                                }
+                                else
+                                {
+                                    CurrentDirection = targetDirection;
+                                    result.SetVec2(targetDirection * 10 + result.AsVec2);
+                                }
+                            }
+
+                            return result;
+                        }
+
+                        return new WorldPosition();
+                    }
+                }
+
+                unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
+                               unit.Position.AsVec2 * 0.8f;
+                return targetFormation
+                    .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
+            }, 0.1f);
         }
 
         public void SetContourColor(int level, uint? color, bool alwaysVisible)

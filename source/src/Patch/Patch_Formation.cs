@@ -51,65 +51,12 @@ namespace RTSCamera.Patch
         {
             if (!___detachedUnits.Contains(unit) && __instance.MovementOrder.OrderType == OrderType.ChargeWithTarget)
             {
-                //__result = (WorldPosition) (GetOrderPositionOfUnitAux?.Invoke(__instance, new object[] {unit}) ??
-                //                            new WorldPosition());
-                var targetFormation = QueryDataStore.Get(__instance.TargetFormation);
-
-                Vec2 unitPosition;
-                if (QueryLibrary.IsCavalry(unit))
+                var component = unit.GetComponent<RTSCameraAgentComponent>();
+                if (component != null)
                 {
-                    if (QueryLibrary.IsRangedCavalry(unit))
-                    {
-                        unitPosition = unit.Position.AsVec2;
-                        __result = targetFormation
-                            .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
-                    }
-                    else
-                    {
-                        unitPosition = __instance.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
-                                       unit.Position.AsVec2 * 0.8f;
-                        var targetPosition = targetFormation
-                            .NearestOfAverageOfNearestPosition(unitPosition, 10)?.GetWorldPosition();
-                        if (targetPosition != null)
-                        {
-                            __result = targetPosition.Value;
-                            var targetDirection = __result.AsVec2 - unit.Position.AsVec2;
-                            var distance = targetDirection.Normalize();
-                            var component = unit.GetComponent<RTSCameraAgentComponent>();
-                            var moveDirection = component?.CurrentDirection ?? unit.GetMovementDirection().AsVec2;
-                            if (distance < 3)
-                            {
-                                __result = unit.GetWorldPosition();
-                                __result.SetVec2(moveDirection * 20 + __result.AsVec2);
-                            }
-                            else
-                            {
-                                if (distance < 20 && targetDirection.DotProduct(moveDirection) < 0)
-                                {
-                                    __result.SetVec2(-targetDirection * 50 + __result.AsVec2);
-                                }
-                                else
-                                {
-                                    unit.GetComponent<RTSCameraAgentComponent>()?.SetCurrentDirection(targetDirection);
-                                    __result.SetVec2(targetDirection * 10 + __result.AsVec2);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            __result = new WorldPosition();
-                        }
-                    }
+                    __result = component.CurrentTargetPosition.Value;
+                    return false;
                 }
-                else
-                {
-                    unitPosition = __instance.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
-                                   unit.Position.AsVec2 * 0.8f;
-                    __result = targetFormation
-                        .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
-                }
-
-                return false;
             }
 
             return true;
