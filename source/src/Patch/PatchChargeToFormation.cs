@@ -1,9 +1,9 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.Reflection;
+using HarmonyLib;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera
+namespace RTSCamera.Patch
 {
     public class PatchChargeToFormation
     {

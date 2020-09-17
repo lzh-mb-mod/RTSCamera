@@ -2,7 +2,7 @@
   <Window>
     <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="RTSCamera.TransparentBrush">
       <Children>
-        <TextWidget Text="@SelectCharacterHintString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <TextWidget Text="@SelectCharacterHintString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="300" />
       </Children>
     </Widget>
   </Window>

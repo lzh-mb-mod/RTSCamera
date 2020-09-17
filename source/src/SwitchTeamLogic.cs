@@ -51,6 +51,7 @@ namespace RTSCamera
             Utility.DisplayLocalizedText("str_rts_camera_switch_to_enemy_team");
 
             PreSwitchTeam?.Invoke();
+            Mission.PlayerEnemyTeam.PlayerOrderController.Owner = targetAgent;
             Mission.PlayerTeam = Mission.PlayerEnemyTeam;
             _controlTroopLogic.SetToMainAgent(targetAgent);
             PostSwitchTeam?.Invoke();

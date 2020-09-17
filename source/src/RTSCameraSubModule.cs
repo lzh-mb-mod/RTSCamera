@@ -1,12 +1,14 @@
 ﻿using HarmonyLib;
 using System;
 using System.Reflection;
+using RTSCamera.Patch;
 using SandBox;
 using SandBox.Source.Towns;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
 using Module = TaleWorlds.MountAndBlade.Module;
 
@@ -29,14 +31,14 @@ namespace RTSCamera
 
                 _harmony.Patch(
                     typeof(Formation).GetMethod("LeaveDetachment", BindingFlags.Instance | BindingFlags.NonPublic),
-                    new HarmonyMethod(
+                    prefix: new HarmonyMethod(
                         typeof(Patch_Formation).GetMethod("LeaveDetachment_Prefix",
                             BindingFlags.Static | BindingFlags.Public)));
 
                 _harmony.Patch(
                     typeof(RangedSiegeWeaponView).GetMethod("HandleUserInput",
                         BindingFlags.Instance | BindingFlags.NonPublic),
-                    new HarmonyMethod(
+                    prefix: new HarmonyMethod(
                         typeof(Patch_RangedSiegeWeaponView).GetMethod("HandleUserInput_Prefix",
                             BindingFlags.Static | BindingFlags.Public)));
 
@@ -50,11 +52,23 @@ namespace RTSCamera
                 _harmony.Patch(
                     typeof(ArenaPracticeFightMissionController).GetMethod("StartPractice",
                         BindingFlags.Instance | BindingFlags.NonPublic),
-                    new HarmonyMethod(
+                    prefix: new HarmonyMethod(
                         typeof(Patch_ArenaPracticeFightMissionController).GetMethod("StartPractice_Prefix",
                             BindingFlags.Static | BindingFlags.Public)));
 
-                //_harmony.Patch(typeof(MovementOrder).GetMethod("Tick", BindingFlags.Instance | BindingFlags.NonPublic),
+                _harmony.Patch(
+                    typeof(MissionAgentLabelView).GetMethod("IsAllyInAllyTeam",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_MissionAgentLabelView).GetMethod("IsAllyInAllyTeam_Prefix",
+                        BindingFlags.Static | BindingFlags.Public)));
+                _harmony.Patch(
+                    typeof(MissionBoundaryCrossingHandler).GetMethod("TickForMainAgent",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(
+                        typeof(Patch_MissionBoundaryCrossingHandler).GetMethod("TickForMainAgent_Prefix",
+                            BindingFlags.Static | BindingFlags.Public)));
+
+                    //_harmony.Patch(typeof(MovementOrder).GetMethod("Tick", BindingFlags.Instance | BindingFlags.NonPublic),
                 //    postfix: new HarmonyMethod(
                 //        typeof(Patch_MovementOrder).GetMethod("Tick_Postfix", BindingFlags.Static | BindingFlags.Public)));
                 //_harmony.Patch(typeof(MovementOrder).GetProperty("MovementState", BindingFlags.Instance | BindingFlags.NonPublic)?.GetMethod,

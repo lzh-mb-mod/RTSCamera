@@ -24,7 +24,7 @@
     <string id="str_rts_camera_outdoor_hint" text="{=RTSCamera_outdoor_hint}Camera will not collide with terrain and buildings when disabled, for making video." />
     <string id="str_rts_camera_restricted_by_boundaries_hint" text="{=RTSCamera_restricted_by_boundaries_hint}Camera will not be restricted by scene boundaries when disabled, for making video." />
     <string id="str_rts_camera_click_to_select_formation_hint" text="{=RTSCamera_click_to_select_formation_hint}You can directly select formation by clicking middle mouse button on them. Selected formation will be highlighted with outline." />
-    <string id="str_rts_camera_attack_specific_formation_hint" text="{=RTSCamera_attack_specific_formation_hint}You will be able to give order to attack a specific formation by clicking middle mouse button on enemy formation. Also enabled for AI." />
+    <string id="str_rts_camera_attack_specific_formation_hint" text="{=RTSCamera_attack_specific_formation_hint}You can give order to attack a specific formation by clicking middle mouse button on enemy formation. Also enabled for AI." />
     <string id="str_rts_camera_display_message_hint" text="{=RTSCamera_display_message_hint}Whether to display message of this mod." />
     <string id="str_rts_camera_toggle_ui_hint" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
     <string id="str_rts_camera_config_key_hint" text="{=RTSCamera_config_key_hint}Config hotkey of this mod." />

@@ -32,7 +32,7 @@ namespace RTSCamera
                 {
                     serializer.Serialize(writer, this);
                 }
-                Utility.DisplayLocalizedText("str_rts_camera_saved_config");
+                //Utility.DisplayLocalizedText("str_rts_camera_saved_config");
                 return true;
             }
             catch (Exception e)
@@ -57,7 +57,7 @@ namespace RTSCamera
                     var config = (T)deserializer.Deserialize(reader);
                     this.CopyFrom(config);
                 }
-                Utility.DisplayLocalizedText("str_rts_camera_loaded_config");
+                //Utility.DisplayLocalizedText("str_rts_camera_loaded_config");
                 UpgradeToCurrentVersion();
                 return true;
             }

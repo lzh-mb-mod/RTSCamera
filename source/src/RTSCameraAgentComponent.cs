@@ -1,4 +1,5 @@
-﻿using TaleWorlds.MountAndBlade;
+﻿using TaleWorlds.Library;
+using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera
 {
@@ -24,7 +25,7 @@ namespace RTSCamera
         NumberOfLevel
     }
 
-    public class AgentContourComponent : AgentComponent
+    public class RTSCameraAgentComponent : AgentComponent
     {
         private readonly Contour[] _colors = new Contour[(int)ColorLevel.NumberOfLevel];
         private int _currentLevel = -1;
@@ -32,7 +33,14 @@ namespace RTSCamera
         private uint? CurrentColor => _currentLevel < 0 ? null : _colors[_currentLevel].Color;
         private bool CurrentAlwaysVisible => _currentLevel < 0 || _colors[_currentLevel].AlwaysVisible;
 
-        public AgentContourComponent(Agent agent) : base(agent)
+        public Vec2 CurrentDirection;
+
+        public void SetCurrentDirection(Vec2 direction)
+        {
+            CurrentDirection = direction;
+        }
+
+        public RTSCameraAgentComponent(Agent agent) : base(agent)
         {
             for (int i = 0; i < _colors.Length; ++i)
             {

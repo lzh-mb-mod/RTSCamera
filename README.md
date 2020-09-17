@@ -16,7 +16,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - The target enemy formation that your selected troops are charging to will be hightlighted with red outline when you open command panel.
 
-  - AI formation will also have the ability to charge to a specific formation. Your formation targeted by the enemy formation will be highlighted with purple outline when you open command panel.
+  - AI formation will also have the ability to charge to a specific formation. Your formation targeted by the enemy formation will be highlighted with dark blue outline when you open command panel.
 
   - You can press `L` and uncheck `Enable Attack Specific Formation` to disable this feature.
 

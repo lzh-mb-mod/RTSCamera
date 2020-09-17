@@ -349,19 +349,19 @@ namespace RTSCamera
 
         private void SetAgentMouseOverContour(Agent agent, bool enemy)
         {
-            agent.GetComponent<AgentContourComponent>()?.SetContourColor((int)ColorLevel.MouseOverFormation,
+            agent.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)ColorLevel.MouseOverFormation,
                 enemy ? _mouseOverEnemyColor : _mouseOverAllyColor, true);
         }
 
         private void SetAgentAsTargetContour(Agent agent, bool enemy)
         {
-            agent.GetComponent<AgentContourComponent>()?.SetContourColor((int)ColorLevel.TargetFormation,
+            agent.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)ColorLevel.TargetFormation,
                 enemy ? _enemyTargetColor : _allyTargetColor, true);
         }
 
         private void SetAgentSelectedContour(Agent agent, bool enemy)
         {
-            agent.GetComponent<AgentContourComponent>()?.SetContourColor((int)ColorLevel.SelectedFormation,
+            agent.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)ColorLevel.SelectedFormation,
                 enemy ? _enemySelectedColor : _allySelectedColor, true);
         }
 
@@ -374,12 +374,12 @@ namespace RTSCamera
         private void ClearFormationFocusContour(Formation formation)
         {
             formation.ApplyActionOnEachUnit(agent =>
-                agent.GetComponent<AgentContourComponent>()?.ClearTargetOrSelectedFormationColor());
+                agent.GetComponent<RTSCameraAgentComponent>()?.ClearTargetOrSelectedFormationColor());
         }
 
         private void ClearFormationContour(Formation formation, ColorLevel level)
         {
-            formation.ApplyActionOnEachUnit(agent => agent.GetComponent<AgentContourComponent>()?.SetContourColor((int)level, null, true));
+            formation.ApplyActionOnEachUnit(agent => agent.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)level, null, true));
         }
 
         private static void ClearFormationAllContour(Formation formation)
@@ -389,7 +389,7 @@ namespace RTSCamera
 
         private static void ClearAgentFormationContour(Agent agent)
         {
-            agent.GetComponent<AgentContourComponent>()?.ClearFormationColor();
+            agent.GetComponent<RTSCameraAgentComponent>()?.ClearFormationColor();
         }
     }
 }

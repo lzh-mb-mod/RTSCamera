@@ -94,6 +94,19 @@ namespace RTSCamera
             DisplayMessageOutOfMission((hint));
         }
 
+        public static void PrintOrderHint()
+        {
+            if (RTSCameraConfig.Get().ClickToSelectFormation)
+            {
+                DisplayLocalizedText("str_rts_camera_click_to_select_formation_hint");
+            }
+
+            if (RTSCameraConfig.Get().AttackSpecificFormation)
+            {
+                DisplayLocalizedText("str_rts_camera_attack_specific_formation_hint");
+            }
+        }
+
         private static void DisplayMessageOutOfMission(string text)
         {
             if (Mission.Current == null)
@@ -285,7 +298,6 @@ namespace RTSCamera
         }
         public static void SmoothMoveToAgent(MissionScreen missionScreen, bool forceMove = false)
         {
-            Utility.DisplayMessage("SmoothMoveToAgent");
             var spectatingData = missionScreen.GetSpectatingData(missionScreen.CombatCamera.Position);
             if (spectatingData.AgentToFollow != null)
             {

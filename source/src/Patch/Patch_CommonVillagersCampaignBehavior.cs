@@ -1,10 +1,7 @@
-﻿
-
-using SandBox.Source.Towns;
-using TaleWorlds.CampaignSystem;
+﻿using TaleWorlds.CampaignSystem;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera
+namespace RTSCamera.Patch
 {
     //[HarmonyLib.HarmonyPatch(typeof(CommonVillagersCampaignBehavior), "conversation_guard_start_on_condition")]
     public class Patch_CommonVillagersCampaignBehavior

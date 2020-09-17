@@ -2,7 +2,7 @@
 
 ## [e3.6.0] - 2020-09-015
 ### Added
-- Add "charge to formation" feature. Soldiers can charge to a single enemy formation.
+- Add "charge to formation" feature. You can click mouse middle button to a enemy formation and your soldiers will charge to it.
 
 - Add camera smooth movement when camera mode changes or player character changes, etc.
 
@@ -17,6 +17,10 @@
 - Fix a rare crash that occured when switch free camera too quickly.
 
 - Fix the problem that player may charge to enemy alone.
+
+- Fix the problem that player character may goes out of battle field and causes retreat in free camera mode.
+
+- Fix the problem that banner on player character is not shown in free camera mode.
 
 ### Removed
 - Remove "Prevent Player Fighting" option because the related problem has been fixed.

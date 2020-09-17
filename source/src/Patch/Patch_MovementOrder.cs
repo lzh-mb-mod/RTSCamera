@@ -1,10 +1,6 @@
-﻿using RTSCamera.QuerySystem;
-using TaleWorlds.Core;
-using TaleWorlds.Engine;
-using TaleWorlds.Library;
-using TaleWorlds.MountAndBlade;
+﻿using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera
+namespace RTSCamera.Patch
 {
     //[HarmonyLib.HarmonyPatch(typeof(MovementOrder), "Tick")]
     public class Patch_MovementOrder

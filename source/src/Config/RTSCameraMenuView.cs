@@ -15,6 +15,7 @@
             base.OnMissionScreenInitialize();
 
             Utility.PrintUsageHint();
+            Utility.PrintOrderHint();
         }
 
         public override void OnMissionScreenTick(float dt)

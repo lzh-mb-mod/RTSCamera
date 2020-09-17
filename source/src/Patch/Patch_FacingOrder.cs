@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.Library;
-using TaleWorlds.MountAndBlade;
-
-namespace RTSCamera
+﻿namespace RTSCamera.Patch
 {
     //[HarmonyLib.HarmonyPatch(typeof(FacingOrder), "GetDirection")]
     public class Patch_FacingOrder

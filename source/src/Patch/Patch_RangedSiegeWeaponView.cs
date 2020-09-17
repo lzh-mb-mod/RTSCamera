@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.DotNet;
-using TaleWorlds.Engine;
+﻿using System.Reflection;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
-using TaleWorlds.MountAndBlade.View.Screen;
 
-namespace RTSCamera
+namespace RTSCamera.Patch
 {
     //[HarmonyLib.HarmonyPatch(typeof(RangedSiegeWeaponView), "HandleUserInput")]
     public class Patch_RangedSiegeWeaponView

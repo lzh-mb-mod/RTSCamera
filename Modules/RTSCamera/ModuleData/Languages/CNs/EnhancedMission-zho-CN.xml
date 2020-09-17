@@ -26,8 +26,8 @@
     <string id="RTSCamera_constant_speed_hint" text="镜头移动速度不再受高度影响，用于制作视频。" />
     <string id="RTSCamera_outdoor_hint" text="禁用后镜头不再受到地面或建筑的限制，用于制作视频。" />
     <string id="RTSCamera_restricted_by_boundaries_hint" text="禁用后镜头不再受到地图边界的限制，用于制作视频。" />
-    <string id="RTSCamera_click_to_select_formation_hint" text="你可以用点击鼠标中键来选择部队。选中的编队会用轮廓高亮。" />
-    <string id="RTSCamera_attack_specific_formation_hint" text="你将可以通过点击敌方编队来发出攻击指定的敌方编队的命令。对AI同样适用。" />
+    <string id="RTSCamera_click_to_select_formation_hint" text="你可以点击鼠标中键来选择部队。选中的编队会用轮廓高亮。" />
+    <string id="RTSCamera_attack_specific_formation_hint" text="你用鼠标中键点击敌方编队来发出攻击指定的敌方编队的命令。对AI同样适用。" />
     <string id="RTSCamera_display_message_hint" text="是否显示本mod的消息。" />
     <string id="RTSCamera_toggle_ui_hint" text="开关游戏的HUD，用于制作视频。" />
     <string id="RTSCamera_config_key_hint" text="配置本mod的快捷键。" />
