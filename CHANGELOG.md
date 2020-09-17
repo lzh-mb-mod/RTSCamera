@@ -2,7 +2,7 @@
 
 ## [e3.6.0] - 2020-09-015
 ### Added
-- Add "charge to formation" feature. You can click mouse middle button to a enemy formation and your soldiers will charge to it.
+- Add "charge to formation" feature. You can click mouse middle button to an enemy formation and your soldiers will charge to it.
 
 - Add camera smooth movement when camera mode changes or player character changes, etc.
 
@@ -14,7 +14,7 @@
 - Optimize behavior of click formation.
 
 ### Fixed
-- Fix a rare crash that occured when switch free camera too quickly.
+- Fix a rare crash that occurred when switch free camera too quickly.
 
 - Fix the problem that player may charge to enemy alone.
 

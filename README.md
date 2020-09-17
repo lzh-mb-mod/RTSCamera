@@ -14,11 +14,11 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 - You can make your formation **only charge to a specific enemy formation** by clicking middle mouse button on the enemy formation, rather than charging to all enemies when you press `F1` `F3`.
 
-  - The target enemy formation that your selected troops are charging to will be hightlighted with red outline when you open command panel.
+  - The target enemy formation that your selected troops are charging to will be highlighted with red outline when you open command panel.
 
   - AI formation will also have the ability to charge to a specific formation. Your formation targeted by the enemy formation will be highlighted with dark blue outline when you open command panel.
 
-  - I didn't find a way to restrict range weapons's target to specific formation, so remeber to hold fire when using this feature if they have javelins.
+  - I didn't find a way to restrict range weapon's target to specific formation, so remember to hold fire when using this feature if they have javelins.
 
   - You can press `L` and uncheck `Enable Attack Specific Formation` to disable this feature.
 

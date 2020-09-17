@@ -56,7 +56,7 @@ namespace RTSCamera.Config
 
         public bool ClickToSelectFormation = true;
 
-        public bool AttackSpecificFormation = false;
+        public bool AttackSpecificFormation = true;
 
         public bool DisplayMessage = true;
 
