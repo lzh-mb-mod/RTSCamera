@@ -200,7 +200,13 @@ namespace RTSCamera
                 Mission.MainAgent = null;
                 // Set smooth move again if controls another agent instantly.
                 // Otherwise MissionScreen will reset camera elevate and bearing.
-                Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
+                if (Mission.MainAgent != null)
+                    Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
+                else if (shouldSmoothToAgent)
+                {
+                    Utility.ShouldSmoothMoveToAgent = true;
+                    Utility.ResetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen);
+                }
             }
         }
 

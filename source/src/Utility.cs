@@ -298,28 +298,40 @@ namespace RTSCamera
         }
         public static void SmoothMoveToAgent(MissionScreen missionScreen, bool forceMove = false)
         {
-            var spectatingData = missionScreen.GetSpectatingData(missionScreen.CombatCamera.Position);
-            if (spectatingData.AgentToFollow != null)
+            try
             {
-                CameraAddSpecialMovement?.SetValue(missionScreen, true);
-                CameraApplySpecialMovementsInstantly?.SetValue(missionScreen, false);
-                if (missionScreen.LastFollowedAgent != spectatingData.AgentToFollow || forceMove)
+                var spectatingData = missionScreen.GetSpectatingData(missionScreen.CombatCamera.Position);
+                if (spectatingData.AgentToFollow != null)
                 {
-                    CameraSpecialCurrentPositionToAdd?.SetValue(missionScreen,
-                        missionScreen.CombatCamera.Position - spectatingData.AgentToFollow.VisualPosition +
-                        (Vec3)CameraSpecialCurrentPositionToAdd.GetValue(missionScreen));
+                    CameraAddSpecialMovement?.SetValue(missionScreen, true);
+                    CameraApplySpecialMovementsInstantly?.SetValue(missionScreen, false);
+                    if (missionScreen.LastFollowedAgent != spectatingData.AgentToFollow || forceMove)
+                    {
+                        CameraSpecialCurrentPositionToAdd?.SetValue(missionScreen,
+                            missionScreen.CombatCamera.Position - spectatingData.AgentToFollow.VisualPosition +
+                            (Vec3)CameraSpecialCurrentPositionToAdd.GetValue(missionScreen));
+                    }
+                    SetLastFollowedAgent.Invoke(missionScreen, new object[] { spectatingData.AgentToFollow });
+                    CameraSpecialCurrentAddedElevation?.SetValue(missionScreen,
+                        missionScreen.CameraElevation + (float)CameraSpecialCurrentAddedElevation.GetValue(missionScreen));
+                    CameraSpecialCurrentAddedBearing?.SetValue(missionScreen,
+                        MBMath.WrapAngle(missionScreen.CameraBearing - spectatingData.AgentToFollow.LookDirectionAsAngle +
+                                         (float)CameraSpecialCurrentAddedBearing.GetValue(missionScreen)));
+                    SetCameraElevation?.Invoke(missionScreen, new object[] { 0.0f });
+                    SetCameraBearing?.Invoke(missionScreen,
+                        new object[] { spectatingData.AgentToFollow.LookDirectionAsAngle });
                 }
-                SetLastFollowedAgent.Invoke(missionScreen, new object[] { spectatingData.AgentToFollow });
-                CameraSpecialCurrentAddedElevation?.SetValue(missionScreen,
-                    missionScreen.CameraElevation + (float) CameraSpecialCurrentAddedElevation.GetValue(missionScreen));
-                CameraSpecialCurrentAddedBearing?.SetValue(missionScreen,
-                    MBMath.WrapAngle(missionScreen.CameraBearing - spectatingData.AgentToFollow.LookDirectionAsAngle +
-                                     (float) CameraSpecialCurrentAddedBearing.GetValue(missionScreen)));
-                SetCameraElevation?.Invoke(missionScreen, new object[]{0.0f});
-                SetCameraBearing?.Invoke(missionScreen,
-                    new object[] {spectatingData.AgentToFollow.LookDirectionAsAngle});
+                // Avoid MissionScreen._cameraSpecialCurrentAddedBearing reset to 0.
+                ResetIsPlayerAgentAdded(missionScreen);
             }
-            // Avoid MissionScreen._cameraSpecialCurrentAddedBearing reset to 0.
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        public static void ResetIsPlayerAgentAdded(MissionScreen missionScreen)
+        {
             IsPlayerAgentAdded?.SetValue(missionScreen, false);
         }
     }

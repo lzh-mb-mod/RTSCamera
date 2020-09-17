@@ -18,6 +18,8 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - AI formation will also have the ability to charge to a specific formation. Your formation targeted by the enemy formation will be highlighted with dark blue outline when you open command panel.
 
+  - I didn't find a way to restrict range weapons's target to specific formation, so remeber to hold fire when using this feature if they have javelins.
+
   - You can press `L` and uncheck `Enable Attack Specific Formation` to disable this feature.
 
 - You can select your formations by clicking middle mouse button them. Selected troops will be highlighted with green outline.
