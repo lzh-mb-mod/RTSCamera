@@ -10,6 +10,8 @@ using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
+using TaleWorlds.MountAndBlade.View.Screen;
+using Array = System.Array;
 using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace RTSCamera
@@ -67,6 +69,15 @@ namespace RTSCamera
                     prefix: new HarmonyMethod(
                         typeof(Patch_MissionBoundaryCrossingHandler).GetMethod("TickForMainAgent_Prefix",
                             BindingFlags.Static | BindingFlags.Public)));
+
+                var IMissionListener_OnMissionModeChange = typeof(IMissionListener).GetMethod("OnMissionModeChange", BindingFlags.Instance | BindingFlags.Public);
+
+                var mapping = typeof(MissionScreen).GetInterfaceMap(IMissionListener_OnMissionModeChange.DeclaringType);
+                var index = Array.IndexOf(mapping.InterfaceMethods, IMissionListener_OnMissionModeChange);
+                _harmony.Patch(
+                     mapping.TargetMethods[index],
+                    prefix: new HarmonyMethod(typeof(Patch_MissionScreen).GetMethod("OnMissionModeChange_Prefix",
+                        BindingFlags.Static | BindingFlags.Public)));
 
                     //_harmony.Patch(typeof(MovementOrder).GetMethod("Tick", BindingFlags.Instance | BindingFlags.NonPublic),
                 //    postfix: new HarmonyMethod(

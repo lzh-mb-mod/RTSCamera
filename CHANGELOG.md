@@ -1,6 +1,14 @@
 # Changelog
 
-## [e3.6.0] - 2020-09-015
+## [3.6.2] - 2020-09-18
+### Fixed
+- Fix crash in free camera when click "Assault" button in siege.
+
+## [3.6.1] - 2020-09-18
+### Fixed
+- Enable "Attack Specific Formation" by default.
+
+## [e3.6.0] - 2020-09-18
 ### Added
 - Add "charge to formation" feature. You can click mouse middle button to an enemy formation and your soldiers will charge to it.
 
