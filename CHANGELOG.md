@@ -2,7 +2,7 @@
 
 ## [3.6.2] - 2020-09-18
 ### Fixed
-- Fix crash in free camera when click "Assault" button in siege.
+- Fix crash in free camera when click "Begin Assault" button in siege.
 
 ## [3.6.1] - 2020-09-18
 ### Fixed
