@@ -125,7 +125,6 @@ namespace RTSCamera
 
         public Agent GetAgentToControl()
         {
-
             if (_flyCameraMissionView.MissionScreen?.LastFollowedAgent?.IsActive() ?? false)
             {
                 if ((!_switchFreeCameraLogic.isSpectatorCamera || _flyCameraMissionView.LockToAgent) &&
@@ -135,6 +134,9 @@ namespace RTSCamera
             {
                 return Mission.MainAgent;
             }
+
+            if (Mission.PlayerTeam == null)
+                return null;
 
             var nearestAgent =
                 QueryDataStore.Get(Mission.PlayerTeam.GetFormation(_switchFreeCameraLogic.CurrentPlayerFormation))
@@ -193,7 +195,7 @@ namespace RTSCamera
         {
             base.OnMissionTick(dt);
 
-            if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ControlTroop)))
+            if (Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ControlTroop)))
             {
                 if (_selectCharacterView.SelectedAgent != null)
                 {

@@ -1,10 +1,14 @@
 # Changelog
 
-## [3.6.2] - 2020-09-18
+## [e3.6.3] - 2020-09-19
 ### Fixed
-- Fix crash in free camera when click "Begin Assault" button in siege.
+- Fix a crash when pressing F at the end of tournament.
 
-## [3.6.1] - 2020-09-18
+## [e3.6.2] - 2020-09-18
+### Fixed
+- Fix a crash in free camera when click "Begin Assault" button in siege.
+
+## [e3.6.1] - 2020-09-18
 ### Fixed
 - Enable "Attack Specific Formation" by default.
 
