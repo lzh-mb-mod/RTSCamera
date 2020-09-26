@@ -18,14 +18,18 @@ namespace RTSCamera
     {
         private static readonly FieldInfo CameraAddedElevation =
             typeof(MissionScreen).GetField("_cameraAddedElevation", BindingFlags.Instance | BindingFlags.NonPublic);
-        private static readonly FieldInfo IsPlayerAgentAddedField =
-            typeof(MissionScreen).GetField("_isPlayerAgentAdded", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly MethodInfo SetLastFollowedAgent =
             typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true);
         private static readonly MethodInfo SetCameraBearing =
             typeof(MissionScreen).GetProperty("CameraBearing")?.GetSetMethod(true);
         private static readonly MethodInfo SetCameraElevation =
             typeof(MissionScreen).GetProperty("CameraElevation")?.GetSetMethod(true);
+
+        private static readonly FieldInfo CameraSpecialCurrentAddedElevation =
+            typeof(MissionScreen).GetField("_cameraSpecialCurrentAddedElevation", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly FieldInfo CameraSpecialCurrentAddedBearing =
+            typeof(MissionScreen).GetField("_cameraSpecialCurrentAddedBearing", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private RTSCameraConfig _config;
         private SwitchFreeCameraLogic _freeCameraLogic;
@@ -167,8 +171,10 @@ namespace RTSCamera
         private void LeaveFromAgent()
         {
             CameraPosition = MissionScreen.CombatCamera.Position;
-            CameraBearing = MissionScreen.CameraBearing;
-            CameraElevation = MissionScreen.CameraElevation;
+            CameraBearing = MissionScreen.CameraBearing +
+                (float?) CameraSpecialCurrentAddedBearing?.GetValue(MissionScreen) ?? 0;
+            CameraElevation = MissionScreen.CameraElevation +
+                (float?) CameraSpecialCurrentAddedElevation?.GetValue(MissionScreen) ?? 0;
             SetLastFollowedAgent?.Invoke(MissionScreen, new object[] { null });
             MissionScreen.LastFollowedAgentVisuals = null;
         }

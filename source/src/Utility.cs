@@ -315,14 +315,10 @@ namespace RTSCamera
                         var targetFrame =
                             GetCameraFrameWhenLockedToAgent(missionScreen, spectatingData.AgentToFollow);
                         CameraSpecialCurrentPositionToAdd?.SetValue(missionScreen,
-                            missionScreen.CombatCamera.Position - targetFrame.origin +
-                            (Vec3)CameraSpecialCurrentPositionToAdd.GetValue(missionScreen));
-                        CameraSpecialCurrentAddedElevation?.SetValue(missionScreen,
-                            missionScreen.CameraElevation +
-                            (float)CameraSpecialCurrentAddedElevation.GetValue(missionScreen));
+                            missionScreen.CombatCamera.Position - targetFrame.origin);
+                        CameraSpecialCurrentAddedElevation?.SetValue(missionScreen, missionScreen.CameraElevation);
                         CameraSpecialCurrentAddedBearing?.SetValue(missionScreen,
-                            MBMath.WrapAngle(missionScreen.CameraBearing - spectatingData.AgentToFollow.LookDirectionAsAngle +
-                                             (float)CameraSpecialCurrentAddedBearing.GetValue(missionScreen)));
+                            MBMath.WrapAngle(missionScreen.CameraBearing - spectatingData.AgentToFollow.LookDirectionAsAngle));
                         SetCameraElevation?.Invoke(missionScreen, new object[] { 0.0f });
                         SetCameraBearing?.Invoke(missionScreen,
                             new object[] { spectatingData.AgentToFollow.LookDirectionAsAngle });
@@ -353,7 +349,6 @@ namespace RTSCamera
             result.rotation.RotateAboutSide(missionScreen.CameraElevation);
             MatrixFrame matrixFrame = result;
             float num8 = Math.Max(cameraBaseDistance + Mission.CameraAddedDistance, 0.48f) * agentScale;
-
             result.rotation.RotateAboutSide((float?)CameraAddedElevation?.GetValue(missionScreen) ?? 0);
             bool flag5 = agentToFollow.AgentVisuals != null && (uint)agentToFollow.AgentVisuals.GetSkeleton().GetCurrentRagdollState() > 0;
             var agentVisualPosition = agentToFollow.VisualPosition;
