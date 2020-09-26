@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using TaleWorlds.Library;
+﻿using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.QuerySystem
