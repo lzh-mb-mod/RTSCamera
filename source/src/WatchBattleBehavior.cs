@@ -1,4 +1,5 @@
-﻿using Helpers;
+﻿using System;
+using Helpers;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.Core;
@@ -24,40 +25,71 @@ namespace RTSCamera
 
         private static void AddMenuOption(Game game, CampaignGameStarter gameStarter)
         {
-            gameStarter.AddGameMenuOption("encounter", "rts_camera_watch_battle",
-                game.GameTextManager.FindText("str_rts_camera_watch_battle").ToString(), args =>
-                {
-                    CheckEnemyAttackableHonorably(args);
-                    return EncounterAttackCondition(args);
-                }, args =>
-                {
-                    WatchMode = true;
-                    MenuHelper.EncounterAttackConsequence(args);
-                });
+            try
+            {
+                gameStarter.AddGameMenuOption("encounter", "rts_camera_watch_battle",
+                    game.GameTextManager.FindText("str_rts_camera_watch_battle").ToString(), args =>
+                    {
+                        try
+                        {
+                            CheckEnemyAttackableHonorably(args);
+                            return EncounterAttackCondition(args);
+                        }
+                        catch (Exception e)
+                        {
+                            Utility.DisplayMessage(e.ToString());
+                        }
 
-            gameStarter.AddGameMenuOption("menu_siege_strategies", "rts_camera_watch_battle",
-                game.GameTextManager.FindText("str_rts_camera_watch_battle").ToString(), WatchSiegeCondition, WatchSiegeConsequence);
+                        return false;
+                    }, args =>
+                    {
+                        try
+                        {
+                            WatchMode = true;
+                            MenuHelper.EncounterAttackConsequence(args);
+                        }
+                        catch (Exception e)
+                        {
+                            WatchMode = false;
+                            Utility.DisplayMessage(e.ToString());
+                        }
+                    });
+
+                gameStarter.AddGameMenuOption("menu_siege_strategies", "rts_camera_watch_battle",
+                    game.GameTextManager.FindText("str_rts_camera_watch_battle").ToString(), WatchSiegeCondition, WatchSiegeConsequence);
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
+            }
 
         }
 
         private static bool WatchSiegeCondition(MenuCallbackArgs args)
         {
-            args.optionLeaveType = GameMenuOption.LeaveType.Mission;
-            if (MobileParty.MainParty.BesiegedSettlement == null || !Hero.MainHero.IsWounded)
-                return false;
-            if (MobileParty.MainParty.BesiegedSettlement != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent != null && (MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp.BesiegerParty == MobileParty.MainParty))
+            try
             {
-                Settlement settlement = PlayerEncounter.EncounteredParty != null ? PlayerEncounter.EncounteredParty.Settlement : PlayerSiege.PlayerSiegeEvent.BesiegedSettlement;
-                if (PlayerSiege.PlayerSide == BattleSideEnum.Attacker && !settlement.SiegeEvent.BesiegerCamp.IsPreparationComplete)
+                args.optionLeaveType = GameMenuOption.LeaveType.Mission;
+                if (MobileParty.MainParty.BesiegedSettlement == null || !Hero.MainHero.IsWounded)
+                    return false;
+                if (MobileParty.MainParty.BesiegedSettlement != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent != null && (MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp.BesiegerParty == MobileParty.MainParty))
                 {
-                    args.IsEnabled = false;
-                    args.Tooltip = new TextObject("{=bCuxzp1N}You need to wait for the siege equipment to be prepared.");
+                    Settlement settlement = PlayerEncounter.EncounteredParty != null ? PlayerEncounter.EncounteredParty.Settlement : PlayerSiege.PlayerSiegeEvent.BesiegedSettlement;
+                    if (PlayerSiege.PlayerSide == BattleSideEnum.Attacker && !settlement.SiegeEvent.BesiegerCamp.IsPreparationComplete)
+                    {
+                        args.IsEnabled = false;
+                        args.Tooltip = new TextObject("{=bCuxzp1N}You need to wait for the siege equipment to be prepared.");
+                        return true;
+                    }
+
+                    args.IsEnabled = true;
+                    args.Tooltip = GameTexts.FindText("str_rts_camera_watch_mode_tool_tip");
                     return true;
                 }
-
-                args.IsEnabled = true;
-                args.Tooltip = GameTexts.FindText("str_rts_camera_watch_mode_tool_tip");
-                return true;
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
             }
 
             return false;
@@ -65,12 +97,20 @@ namespace RTSCamera
 
         private static void WatchSiegeConsequence(MenuCallbackArgs args)
         {
-            if (PlayerEncounter.IsActive)
-                PlayerEncounter.LeaveEncounter = false;
-            else
-                Campaign.Current.HandleSettlementEncounter(MobileParty.MainParty, PlayerSiege.PlayerSiegeEvent.BesiegedSettlement);
-            WatchMode = true;
-            GameMenu.SwitchToMenu("assault_town");
+            try
+            {
+                if (PlayerEncounter.IsActive)
+                    PlayerEncounter.LeaveEncounter = false;
+                else
+                    Campaign.Current.HandleSettlementEncounter(MobileParty.MainParty, PlayerSiege.PlayerSiegeEvent.BesiegedSettlement);
+                WatchMode = true;
+                GameMenu.SwitchToMenu("assault_town");
+            }
+            catch (Exception e)
+            {
+                WatchMode = false;
+                Utility.DisplayMessage(e.ToString());
+            }
         }
 
         private static readonly TextObject EnemyNotAttackableTooltip = new TextObject("{=oYUAuLO7}You have sworn not to attack.");

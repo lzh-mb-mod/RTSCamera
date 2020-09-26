@@ -117,20 +117,7 @@ namespace RTSCamera
             base.OnGameStart(game, gameStarterObject);
 
             game.GameTextManager.LoadGameTexts(BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
-        }
-
-        public override void OnCampaignStart(Game game, object starterObject)
-        {
-            base.OnCampaignStart(game, starterObject);
-
-            AddCampaignBehavior(starterObject);
-        }
-
-        public override void OnGameLoaded(Game game, object initializerObject)
-        {
-            base.OnGameLoaded(game, initializerObject);
-
-            AddCampaignBehavior(initializerObject);
+            AddCampaignBehavior(gameStarterObject);
         }
 
         private void AddCampaignBehavior(object gameStarter)

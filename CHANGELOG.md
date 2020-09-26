@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.7.1] - 2020-09-26
+### Fixed
+- Fix crash in Bannerlord 1.5.1
+
 ## [e3.7.0] - 2020-09-26
 ### Added
 - Add "Watch battle" menu option when player is injured. You can command your troops in free camera but cannot take control of any units and directly fighting.
@@ -10,7 +14,7 @@
   Now the movement of the camera is smoother.
 
 ### Changed
-- Now Cheat options are only enabled when cheat mode of the base game is enabled.
+- Now cheat options are only enabled when cheat mode of the base game is enabled.
 
 ## [e3.6.3] - 2020-09-19
 ### Fixed
