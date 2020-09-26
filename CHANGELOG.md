@@ -1,8 +1,12 @@
 # Changelog
 
+## [e3.7.2] - 2020-09-26
+### Fixed
+- Fix cavalry AI in "Charge to formation" mode.
+
 ## [e3.7.1] - 2020-09-26
 ### Fixed
-- Fix crash in Bannerlord 1.5.1
+- Fix crash in Bannerlord 1.5.1.
 
 ## [e3.7.0] - 2020-09-26
 ### Added

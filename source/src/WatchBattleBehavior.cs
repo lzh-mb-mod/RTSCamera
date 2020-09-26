@@ -71,7 +71,10 @@ namespace RTSCamera
             {
                 args.optionLeaveType = GameMenuOption.LeaveType.Mission;
                 if (MobileParty.MainParty.BesiegedSettlement == null || !Hero.MainHero.IsWounded)
+                {
+                    args.IsEnabled = false;
                     return false;
+                }
                 if (MobileParty.MainParty.BesiegedSettlement != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent != null && (MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp.BesiegerParty == MobileParty.MainParty))
                 {
                     Settlement settlement = PlayerEncounter.EncounteredParty != null ? PlayerEncounter.EncounteredParty.Settlement : PlayerSiege.PlayerSiegeEvent.BesiegedSettlement;

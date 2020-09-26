@@ -84,7 +84,7 @@ namespace RTSCamera
                             if (distance > 20)
                             {
                                 CurrentDirection = targetDirection;
-                                result.SetVec2(targetDirection * 5 + targetPosition.AsVec2);
+                                result.SetVec2(targetDirection * 10 + targetPosition.AsVec2);
                             }
                             else if (targetDirection.DotProduct(CurrentDirection) < 0)
                             {
@@ -92,7 +92,7 @@ namespace RTSCamera
                             }
                             else
                             {
-                                result.SetVec2(CurrentDirection * 5 + targetPosition.AsVec2);
+                                result.SetVec2(CurrentDirection * 10 + targetPosition.AsVec2);
                             }
 
 
