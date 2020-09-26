@@ -2,6 +2,7 @@
 using RTSCamera.Patch;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -372,6 +373,8 @@ namespace RTSCamera.Config
 
         public HintViewModel ControlTroopsInPlayerPartyOnlyHint { get; } =
             new HintViewModel(GameTexts.FindText("str_rts_camera_control_troops_in_player_party_only_hint").ToString());
+
+        public bool CheatEnabled => NativeConfig.CheatMode;
 
         [DataSourceProperty]
         public bool DisableDeath

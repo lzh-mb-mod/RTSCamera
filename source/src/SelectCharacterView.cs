@@ -1,6 +1,7 @@
 ﻿using RTSCamera.Config;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
+using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -21,8 +22,6 @@ namespace RTSCamera
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
         private GauntletLayer _gauntletLayer;
         private SelectCharacterVM _dataSource;
-        private ControlTroopLogic _controlTroopLogic;
-        private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private FlyCameraMissionView _flyCameraMissionView;
         private SwitchTeamLogic _switchTeamLogic;
 
@@ -79,9 +78,7 @@ namespace RTSCamera
         {
             base.OnMissionScreenInitialize();
 
-            ViewOrderPriorty = 26;
-            _controlTroopLogic = Mission.GetMissionBehaviour<ControlTroopLogic>();
-            _switchFreeCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
+            ViewOrderPriorty = 24;
             _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
             _switchTeamLogic = Mission.GetMissionBehaviour<SwitchTeamLogic>();
             if (_switchTeamLogic != null)
@@ -113,12 +110,26 @@ namespace RTSCamera
             affectedAgent.GetComponent<RTSCameraAgentComponent>()?.ClearContourColor();
         }
 
+        public bool LockOnAgent()
+        {
+            if (Mission.Mode == MissionMode.Conversation || Mission.Mode == MissionMode.Barter)
+                return false;
+            if (SelectedAgent != null)
+            {
+                _flyCameraMissionView.FocusOnAgent(SelectedAgent);
+                IsSelectingCharacter = false;
+                return true;
+            }
+
+            return false;
+        }
+
         private void Activate()
         {
             _gauntletLayer = new GauntletLayer(this.ViewOrderPriorty) { IsFocusLayer = false };
             _dataSource = new SelectCharacterVM();
             _gauntletLayer.LoadMovie(nameof(SelectCharacterView), _dataSource);
-            _gauntletLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+            _gauntletLayer.InputRestrictions.SetInputRestrictions();
             MissionScreen.AddLayer(_gauntletLayer);
         }
 
@@ -139,22 +150,37 @@ namespace RTSCamera
             base.OnMissionScreenTick(dt);
 
             if (Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.SelectCharacter)) ||
-                IsSelectingCharacter && (_gauntletLayer.Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.SelectCharacter)) ||
-                                         _gauntletLayer.Input.IsKeyPressed(InputKey.RightMouseButton) ||
-                                         _gauntletLayer.Input.IsKeyPressed(InputKey.Escape)))
+                IsSelectingCharacter && (_gauntletLayer.Input.IsKeyPressed(InputKey.RightMouseButton)))
             {
                 IsSelectingCharacter = !IsSelectingCharacter;
             }
 
+            if (Mission.Mode == MissionMode.Conversation || Mission.Mode == MissionMode.Barter)
+                return;
+
             if (IsSelectingCharacter)
             {
-                SelectCharacter();
+                UpdateMouseOverCharacter();
             }
 
-            if (_gauntletLayer != null && _gauntletLayer.Input.IsKeyPressed(InputKey.LeftMouseButton))
+            if (_gauntletLayer != null)
             {
-                SelectedAgent = MouseOverAgent;
+                if (_gauntletLayer.Input.IsKeyPressed(InputKey.LeftMouseButton))
+                {
+                    SelectedAgent = MouseOverAgent;
+                }
             }
+        }
+
+        public override bool OnEscape()
+        {
+            if (IsSelectingCharacter)
+            {
+                IsSelectingCharacter = false;
+                return true;
+            }
+
+            return base.OnEscape();
         }
 
         private void OnPostSwitchTeam()
@@ -173,11 +199,11 @@ namespace RTSCamera
             agent?.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)ColorLevel.SelectedAgent, Utility.IsEnemy(agent) ? EnemySelectedColor : SelectedColor, true);
         }
 
-        private void SelectCharacter()
+        private void UpdateMouseOverCharacter()
         {
             MissionScreen.ScreenPointToWorldRay(Input.GetMousePositionRanged(), out var rayBegin, out var rayEnd);
             int excludedAgentIndex = -1;
-            if (Mission.MainAgent != null && Mission.MainAgent.IsPlayerControlled)
+            if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
             {
                 excludedAgentIndex = Mission.MainAgent.Index;
             }

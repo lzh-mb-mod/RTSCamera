@@ -1,5 +1,14 @@
 # Changelog
 
+## [e3.7.0] - 2020-09-26
+### Added
+- Add "Watch battle" menu option when player is injured. You can command your troops in free camera but cannot take control of any units and directly fighting.
+
+### Fixed
+- Fix the problem that camera elevation angle and camera height may suddenly change when switching between player camera and free camera.
+
+  Now the movement of the camera is smoother.
+
 ## [e3.6.3] - 2020-09-19
 ### Fixed
 - Fix a crash when pressing F at the end of tournament.

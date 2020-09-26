@@ -451,7 +451,7 @@
                     </ListPanel>
 
                     <!-- Unbalanced Options -->
-                    <PartyHeaderToggleWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="800" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="10" MarginRight="10" MarginTop="30" CollapseIndicator="Description\CollapseParent\GroupTitle\CollapseIndicator" WidgetToClose="..\UnblancedOptions" ListPanel="..\UnblancedOptions" RenderLate="true" UpdateChildrenStates="true">
+                    <PartyHeaderToggleWidget IsVisible="@CheatEnabled" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" SuggestedWidth="800" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="10" MarginRight="10" MarginTop="30" CollapseIndicator="Description\CollapseParent\GroupTitle\CollapseIndicator" WidgetToClose="..\UnblancedOptions" ListPanel="..\UnblancedOptions" RenderLate="true" UpdateChildrenStates="true">
                       <Children>
 
                         <ListPanel Id="Description" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" LayoutImp.LayoutMethod="HorizontalLeftToRight" UpdateChildrenStates="true">
@@ -474,7 +474,7 @@
                       </Children>
                     </PartyHeaderToggleWidget>
 
-                    <ListPanel Id="UnblancedOptions" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ListPanel Id="UnblancedOptions" IsVisible="@CheatEnabled" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center">
                       <Children>
 
                         <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="800" HorizontalAlignment="Center" MarginTop="10">

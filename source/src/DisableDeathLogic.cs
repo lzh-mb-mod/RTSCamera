@@ -1,4 +1,5 @@
 ﻿using RTSCamera.Config;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera
@@ -22,6 +23,8 @@ namespace RTSCamera
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
+            if (!NativeConfig.CheatMode)
+                return;
             if (_config.DisableDeathHotkeyEnabled && this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.DisableDeath)))
             {
                 this._config.DisableDeath = !this._config.DisableDeath;
@@ -31,6 +34,8 @@ namespace RTSCamera
 
         public void SetDisableDeath(bool disableDeath, bool atStart = false)
         {
+            if (!NativeConfig.CheatMode)
+                return;
             Mission.DisableDying = disableDeath;
             if (atStart && !disableDeath)
                 return;

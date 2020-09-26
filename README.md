@@ -28,7 +28,9 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 - After your character dies, you can press `F` to control one of your soldiers and continue fighting. Soldiers in the same formation as player character will be considered first when deciding which soldier to control.
 
-  - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your charater dies. Press `L` and check `Control Ally After Death` option to enable this feature. It's always enabled when in free camera mode to ensure a smooth gaming experience.
+  - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your charater dies. Press `L` and check `Control Ally After Death` option to enable this feature. It's always enabled in free camera mode to ensure a smooth gaming experience.
+
+- If your character is injured in campaign map and you encounter an enemy party, you can still choose "Watch the battle" option to begin the battle. In this battle you can command your troops in free camera but cannot directly fighting.
 
 - Press `;` and click a soldier, then press `F` to let camera follow it. Press `F` again to take control of the soldier.
 

@@ -1,4 +1,5 @@
 ﻿using RTSCamera.Config;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera
@@ -24,12 +25,17 @@ namespace RTSCamera
         {
             base.OnMissionTick(dt);
 
+            if (!NativeConfig.CheatMode)
+                return;
+
             if (_config.SwitchTeamHotkeyEnabled && Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.SwitchTeam)))
                 SwapTeam();
         }
 
         public void SwapTeam()
         {
+            if (!NativeConfig.CheatMode)
+                return;
             if (Mission.PlayerEnemyTeam == null)
                 return;
             bool firstTime = Mission.PlayerEnemyTeam.PlayerOrderController.Owner == null;

@@ -5,9 +5,13 @@
     <tag language="简体中文" />
   </tags>
   <strings>
-    <string id="RTSCamera_mod_name" text="RTS Camera" />
+    <string id="RTSCamera_mod_name" text="自由视角" />
 
-    <string id="RTSCamera_open_menu_hint" text="战斗中按{KeyName}键来打开RTS Camera的菜单。" />
+    <string id="RTSCamera_watch_battle" text="(自由视角)观看这场战斗。" />
+    <string id="RTSCamera_cannot_control_agent_in_watch_mode" text="旁观模式下无法控制单位。" />
+    <string id="RTSCamera_watch_mode_tool_tip" text="你受伤了。你可能可以指挥你的部队，但你无法直接参与战斗。" />
+
+    <string id="RTSCamera_open_menu_hint" text="战斗中按{KeyName}键来打开自由视角的菜单。" />
     <string id="RTSCamera_switch_camera_hint" text="战斗中按{KeyName}键来切换到自由视角" />
 
     <string id="RTSCamera_switch_free_camera_hint" text="在自由视角和玩家视角间切换。" />
@@ -73,7 +77,7 @@
     <string id="RTSCamera_select_character" text="选择角色" />
 
 
-    <string id="RTSCamera_unbalancedoptionsdescription" text="不平衡的选项" />
+    <string id="RTSCamera_unbalancedoptionsdescription" text="作弊选项" />
     <string id="RTSCamera_disabledeath" text="全员无敌" />
     <string id="RTSCamera_disable_death_hotkey_enabled" text="启用全员无敌的热键" />
     <string id="RTSCamera_switchteam" text="切换队伍" />
@@ -86,7 +90,7 @@
     <string id="RTSCamera_fastfowardenabled" text="启用快速模式。" />
     <string id="RTSCamera_normalmodeenabled" text="启用正常速度。" />
 
-    <string id="RTSCamera_playeragentdead" text="玩家角色已死亡。" />
+    <string id="RTSCamera_playeragentdead" text="玩家控制的角色已阵亡。" />
     <string id="RTSCamera_switchtoplayer" text="切换到玩家角色。" />
     <string id="RTSCamera_switchtofreecamera" text="切换到自由视角。" />
 

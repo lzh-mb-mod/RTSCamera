@@ -2,7 +2,11 @@
 <base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
   <strings>
-    <string id="str_rts_camera_mod_name" text="{RTSCamera_mod_name}RTS Camera" />
+    <string id="str_rts_camera_mod_name" text="{=RTSCamera_mod_name}RTS Camera" />
+
+    <string id="str_rts_camera_watch_battle" text="{=RTSCamera_watch_battle}(RTS Camera)Watch the battle." />
+    <string id="str_rts_camera_cannot_control_agent_in_watch_mode" text="{=RTSCamera_cannot_control_agent_in_watch_mode}Cannot control units in watch mode." />
+    <string id="str_rts_camera_watch_mode_tool_tip" text="{=RTSCamera_watch_mode_tool_tip}You are injured. You may be able to commmand your troops but you cannot directly participate in the battle." />
 
     <string id="str_rts_camera_open_menu_hint" text="{=RTSCamera_open_menu_hint}Press {KeyName} in battle to open menu of RTS Camera" />
     <string id="str_rts_camera_switch_camera_hint" text="{=RTSCamera_switch_camera_hint}Press {KeyName} in battle to switch to free Camera" />
@@ -69,7 +73,7 @@
     <string id="str_rts_camera_control_another_hero" text="{=RTSCamera_controlanotherhero}Control Another Hero" />
     <string id="str_rts_camera_select_character" text="{=RTSCamera_select_character}Select Character" />
 
-    <string id="str_rts_camera_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Unbalanced Options" />
+    <string id="str_rts_camera_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Cheat Options" />
     <string id="str_rts_camera_disable_death" text="{=RTSCamera_disabledeath}All Invulnerable" />
     <string id="str_rts_camera_disable_death_hotkey_enabled" text="{=RTSCamera_disable_death_hotkey_enabled}All Invulnerable Hotkey enabled" />
     <string id="str_rts_camera_switch_team" text="{=RTSCamera_switchteam}Switch Team" />

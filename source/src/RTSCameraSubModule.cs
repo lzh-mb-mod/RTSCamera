@@ -1,12 +1,17 @@
 ﻿using HarmonyLib;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using RTSCamera.Patch;
 using SandBox;
 using SandBox.Source.Towns;
+using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.GameMenus;
+using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
@@ -117,6 +122,29 @@ namespace RTSCamera
 
             game.GameTextManager.LoadGameTexts(BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
         }
+
+        public override void OnCampaignStart(Game game, object starterObject)
+        {
+            base.OnCampaignStart(game, starterObject);
+
+            AddCampaignBehavior(starterObject);
+        }
+
+        public override void OnGameLoaded(Game game, object initializerObject)
+        {
+            base.OnGameLoaded(game, initializerObject);
+
+            AddCampaignBehavior(initializerObject);
+        }
+
+        private void AddCampaignBehavior(object gameStarter)
+        {
+            if (gameStarter is CampaignGameStarter campaignGameStarter)
+            {
+                campaignGameStarter.AddBehavior(new WatchBattleBehavior());
+            }
+        }
+        
 
         protected override void OnSubModuleUnloaded()
         {

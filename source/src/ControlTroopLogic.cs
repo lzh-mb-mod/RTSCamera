@@ -195,17 +195,15 @@ namespace RTSCamera
         {
             base.OnMissionTick(dt);
 
-            if (Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ControlTroop)))
+            if (MissionScreen.SceneLayer.Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ControlTroop)))
             {
-                if (_selectCharacterView.SelectedAgent != null)
-                {
-                    if (_flyCameraMissionView.FocusOnAgent(_selectCharacterView.SelectedAgent))
-                        _selectCharacterView.IsSelectingCharacter = false;
-                }
-                else
-                {
-                    ForceControlAgent();
-                }
+                if (_selectCharacterView.LockOnAgent())
+                    return;
+
+                if (Mission.MainAgent?.Controller == Agent.ControllerType.Player)
+                    return;
+                
+                ForceControlAgent();
             }
         }
     }

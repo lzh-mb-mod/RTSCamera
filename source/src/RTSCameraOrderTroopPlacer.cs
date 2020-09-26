@@ -182,10 +182,9 @@ namespace RTSCamera
         private void UpdateFormationDrawingForFacingOrder(bool giveOrder)
         {
             isDrawnThisFrame = true;
-            List<(Agent, WorldFrame)> simulationAgentFrames;
             PlayerOrderController.SimulateNewFacingOrder(
                 OrderController.GetOrderLookAtDirection(PlayerOrderController.SelectedFormations,
-                    MissionScreen.GetOrderFlagPosition().AsVec2), out simulationAgentFrames);
+                    MissionScreen.GetOrderFlagPosition().AsVec2), out var simulationAgentFrames);
             int entityIndex = 0;
             HideOrderPositionEntities();
             foreach ((Agent _, WorldFrame frame) in simulationAgentFrames)
@@ -199,8 +198,7 @@ namespace RTSCamera
         private void UpdateFormationDrawingForDestination(bool giveOrder)
         {
             isDrawnThisFrame = true;
-            List<(Agent, WorldFrame)> simulationAgentFrames;
-            PlayerOrderController.SimulateDestinationFrames(out simulationAgentFrames);
+            PlayerOrderController.SimulateDestinationFrames(out var simulationAgentFrames);
             int entityIndex = 0;
             HideOrderPositionEntities();
             foreach ((Agent _, WorldFrame frame) in simulationAgentFrames)
@@ -219,8 +217,7 @@ namespace RTSCamera
             Vec2 asVec2 = orderFlagFrame.rotation.f.AsVec2;
             float orderFormCustomWidth =
                 OrderController.GetOrderFormCustomWidth(PlayerOrderController.SelectedFormations, origin1);
-            List<(Agent, WorldFrame)> simulationAgentFrames;
-            PlayerOrderController.SimulateNewCustomWidthOrder(orderFormCustomWidth, out simulationAgentFrames);
+            PlayerOrderController.SimulateNewCustomWidthOrder(orderFormCustomWidth, out var simulationAgentFrames);
             Formation formation =
                 PlayerOrderController.SelectedFormations.MaxBy(
                     f => f.CountOfUnits);
@@ -326,9 +323,8 @@ namespace RTSCamera
             bool isFormationLayoutVertical)
         {
             isDrawnThisFrame = true;
-            List<(Agent, WorldFrame)> simulationAgentFrames;
             PlayerOrderController.SimulateNewOrderWithPositionAndDirection(formationRealStartingPosition,
-                formationRealEndingPosition, out simulationAgentFrames, isFormationLayoutVertical);
+                formationRealEndingPosition, out var simulationAgentFrames, isFormationLayoutVertical);
             if (giveOrder)
             {
                 if (!isFormationLayoutVertical)
@@ -363,10 +359,9 @@ namespace RTSCamera
                 formationLineBegin.SetVec2(formationLineBegin.AsVec2 + vec2);
                 WorldPosition formationLineEnd = attachPosition;
                 formationLineEnd.SetVec2(formationLineEnd.AsVec2 - vec2);
-                List<(Agent, WorldFrame)> simulationAgentFrames;
                 OrderController.SimulateNewOrderWithPositionAndDirection(
                     Enumerable.Repeat(selectedFormation, 1), PlayerOrderController.simulationFormations,
-                    formationLineBegin, formationLineEnd, out simulationAgentFrames, isFormationLayoutVertical);
+                    formationLineBegin, formationLineEnd, out var simulationAgentFrames, isFormationLayoutVertical);
                 foreach ((Agent _, WorldFrame frame2) in simulationAgentFrames)
                 {
                     var worldFrame = frame2;
@@ -422,10 +417,13 @@ namespace RTSCamera
                     BeginFormationDraggingOrClicking();
                     break;
                 case CursorState.Friend:
-                    if (PlayerOrderController.IsFormationSelectable(_mouseOverFormation) && Input.IsKeyDown(InputKey.MiddleMouseButton))
+                    if (Input.IsKeyDown(InputKey.MiddleMouseButton))
                     {
-                        _clickedFormation = _mouseOverFormation;
-                        BeginFormationDraggingOrClicking();
+                        if (PlayerOrderController.IsFormationSelectable(_mouseOverFormation))
+                        {
+                            _clickedFormation = _mouseOverFormation;
+                            BeginFormationDraggingOrClicking();
+                        }
                     }
                     else
                     {

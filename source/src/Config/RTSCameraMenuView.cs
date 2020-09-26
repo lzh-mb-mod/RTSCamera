@@ -1,11 +1,13 @@
-﻿namespace RTSCamera.Config
+﻿using TaleWorlds.Core;
+
+namespace RTSCamera.Config
 {
     public class RTSCameraMenuView : MissionMenuViewBase
     {
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         public RTSCameraMenuView()
-            : base(24, nameof(RTSCameraMenuView))
+            : base(26, nameof(RTSCameraMenuView))
         {
             this.GetDataSource = () => new RTSCameraMenuVM(Mission, this.OnCloseMenu);
         }
@@ -14,8 +16,11 @@
         {
             base.OnMissionScreenInitialize();
 
-            Utility.PrintUsageHint();
-            Utility.PrintOrderHint();
+            if (Mission.Mode == MissionMode.Battle)
+            {
+                Utility.PrintUsageHint();
+                Utility.PrintOrderHint();
+            }
         }
 
         public override void OnMissionScreenTick(float dt)

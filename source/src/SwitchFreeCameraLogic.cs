@@ -3,6 +3,7 @@ using RTSCamera.QuerySystem;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -15,7 +16,6 @@ namespace RTSCamera
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         private ControlTroopLogic _controlTroopLogic;
-        private FlyCameraMissionView _flyCameraMissionView;
 
         private bool _isFirstTimeMainAgentChanged = true;
         private bool _switchToFreeCameraAfter100ms = false;
@@ -57,7 +57,6 @@ namespace RTSCamera
             base.OnBehaviourInitialize();
 
             _controlTroopLogic = Mission.GetMissionBehaviour<ControlTroopLogic>();
-            _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
 
             Mission.OnMainAgentChanged += OnMainAgentChanged;
         }
@@ -76,11 +75,27 @@ namespace RTSCamera
 
             this.Mission.OnMainAgentChanged -= OnMainAgentChanged;
             QueryDataStore.Clear();
+            WatchBattleBehavior.WatchMode = false;
+        }
+
+        public override void OnFormationUnitsSpawned(Team team)
+        {
+            base.OnFormationUnitsSpawned(team);
+
+            if (WatchBattleBehavior.WatchMode && team == Mission.PlayerTeam && Mission.MainAgent == null)
+            {
+                _controlTroopLogic.SetMainAgent();
+                Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
+                if (Mission.PlayerTeam.IsPlayerGeneral)
+                    Utility.SetPlayerAsCommander(true);
+                team.PlayerOrderController?.SelectAllFormations(false);
+            }
         }
 
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
+
             if (_switchToFreeCameraAfter100ms)
             {
                 _timer += dt;
@@ -149,7 +164,7 @@ namespace RTSCamera
                     {
                         // try to switch to free camera by default.
                         _isFirstTimeMainAgentChanged = false;
-                        if (_config.UseFreeCameraByDefault)
+                        if (_config.UseFreeCameraByDefault || WatchBattleBehavior.WatchMode)
                         {
                             _switchToFreeCameraAfter100ms = true;
                             _timer = 0;
@@ -184,7 +199,6 @@ namespace RTSCamera
 
         private void DoNotDisturbRTS()
         {
-            Utility.DisplayLocalizedText("str_rts_camera_player_dead", null, new Color(1, 0, 0));
             _controlTroopLogic.SetMainAgent();
         }
 
@@ -194,6 +208,8 @@ namespace RTSCamera
 
             if (Mission.MainAgent == affectedAgent && (_config.ControlAllyAfterDeath || isSpectatorCamera))
             {
+                if (Mission.MainAgent.Character == CharacterObject.PlayerCharacter) 
+                    Utility.DisplayLocalizedText("str_rts_camera_player_dead", null, new Color(1, 0, 0));
                 // mask code in Mission.OnAgentRemoved so that formations will not be delegated to AI after player dead.
                 affectedAgent.OnMainAgentWieldedItemChange = (Agent.OnMainAgentWieldedItemChangeDelegate)null;
                 bool shouldSmoothToAgent = Utility.BeforeSetMainAgent();
@@ -205,13 +221,18 @@ namespace RTSCamera
                 else if (shouldSmoothToAgent)
                 {
                     Utility.ShouldSmoothMoveToAgent = true;
-                    Utility.ResetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen);
+                    Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, false);
                 }
             }
         }
 
         private void SwitchToAgent()
         {
+            if (WatchBattleBehavior.WatchMode)
+            {
+                Utility.DisplayLocalizedText("str_rts_camera_cannot_control_agent_in_watch_mode");
+                return;
+            }
             isSpectatorCamera = false;
             if (Mission.MainAgent != null)
             {

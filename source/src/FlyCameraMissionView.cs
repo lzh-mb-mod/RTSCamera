@@ -16,6 +16,8 @@ namespace RTSCamera
 {
     public class FlyCameraMissionView : MissionView, ICameraModeLogic
     {
+        private static readonly FieldInfo CameraAddedElevation =
+            typeof(MissionScreen).GetField("_cameraAddedElevation", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly FieldInfo IsPlayerAgentAddedField =
             typeof(MissionScreen).GetField("_isPlayerAgentAdded", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly MethodInfo SetLastFollowedAgent =
@@ -148,25 +150,27 @@ namespace RTSCamera
 
         public Camera CombatCamera => MissionScreen.CombatCamera;
 
-        public Vec3 CameraPosition
-        {
-            get => CombatCamera.Position;
-            set => CombatCamera.Position = value;
-        }
+        public Vec3 CameraPosition { get; set; }
 
-        public bool FocusOnAgent(Agent agent)
+        public void FocusOnAgent(Agent agent)
         {
-            if (MissionScreen.LastFollowedAgent == agent)
-                return true;
             typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true)
-                .Invoke(MissionScreen, new object[] { agent });
+                ?.Invoke(MissionScreen, new object[] { agent });
             if (!LockToAgent)
                 LockToAgent = true;
-            if (agent != Mission.MainAgent && !_freeCameraLogic.isSpectatorCamera)
+            if (!_freeCameraLogic.isSpectatorCamera)
                 _freeCameraLogic.SwitchCamera();
             Utility.SmoothMoveToAgent(MissionScreen, true);
             UpdateMouseVisibility();
-            return true;
+        }
+
+        private void LeaveFromAgent()
+        {
+            CameraPosition = MissionScreen.CombatCamera.Position;
+            CameraBearing = MissionScreen.CameraBearing;
+            CameraElevation = MissionScreen.CameraElevation;
+            SetLastFollowedAgent?.Invoke(MissionScreen, new object[] { null });
+            MissionScreen.LastFollowedAgentVisuals = null;
         }
 
         public override void OnMissionScreenInitialize()
@@ -270,14 +274,6 @@ namespace RTSCamera
             _orderUIHandler?.gauntletLayer.InputRestrictions.SetMouseVisibility((_freeCameraLogic?.isSpectatorCamera ?? false) && !LockToAgent && _isOrderViewOpen);
         }
 
-        private void LeaveFromAgent()
-        {
-            CameraBearing = MissionScreen.CameraBearing;
-            CameraElevation = MissionScreen.CameraElevation;
-            SetLastFollowedAgent?.Invoke(MissionScreen, new object[] { null });
-            MissionScreen.LastFollowedAgentVisuals = null;
-        }
-
         private void UpdateDragData()
         {
             if (_resetDraggingMode)
@@ -307,7 +303,8 @@ namespace RTSCamera
             MatrixFrame cameraFrame = MatrixFrame.Identity;
             cameraFrame.rotation.RotateAboutSide(1.570796f);
             cameraFrame.rotation.RotateAboutForward(CameraBearing);
-            cameraFrame.rotation.RotateAboutSide(CameraElevation);
+            cameraFrame.rotation.RotateAboutSide(
+                CameraElevation + (float?) CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);
             cameraFrame.origin = CameraPosition;
             if (_forceMove)
                 cameraFrame.origin += ForcedMoveTick(dt);
@@ -461,9 +458,10 @@ namespace RTSCamera
 
         private void UpdateCameraFrameAndDof(MatrixFrame matrixFrame)
         {
+            CameraPosition = matrixFrame.origin;
+            CombatCamera.Frame = matrixFrame;
             UpdateDof();
             UpdateViewAngle();
-            CombatCamera.Frame = matrixFrame;
             MissionScreen.SceneView?.SetCamera(CombatCamera);
             Mission.SetCameraFrame(matrixFrame, Zoom);
             SetCameraBearing?.Invoke(MissionScreen, new object[1] { CameraBearing });
@@ -523,7 +521,6 @@ namespace RTSCamera
 
         private void HandleRotateInput(float dt)
         {
-
             float mouseSensitivity = MissionScreen.SceneLayer.Input.GetMouseSensivity();
             float inputXRaw = 0.0f;
             float inputYRaw = 0.0f;
