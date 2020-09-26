@@ -38,7 +38,7 @@ namespace RTSCamera.Patch
             }
 
             ____detachments.Remove(detachment);
-            var detachmentManager = (DetachmentManager) DetachmentManager?.GetValue(__instance.Team);
+            var detachmentManager = (DetachmentManager)DetachmentManager?.GetValue(__instance.Team);
             OnFormationLeaveDetachment?.Invoke(detachmentManager, new object[2]
             {
                 __instance,
@@ -49,7 +49,8 @@ namespace RTSCamera.Patch
 
         public static bool GetOrderPositionOfUnit_Prefix(Formation __instance, Agent unit, List<Agent> ___detachedUnits, ref WorldPosition __result)
         {
-            if (!___detachedUnits.Contains(unit) && __instance.MovementOrder.OrderType == OrderType.ChargeWithTarget)
+            if (!___detachedUnits.Contains(unit) &&
+                __instance.MovementOrder.OrderType == OrderType.ChargeWithTarget)
             {
                 var component = unit.GetComponent<RTSCameraAgentComponent>();
                 if (component != null)

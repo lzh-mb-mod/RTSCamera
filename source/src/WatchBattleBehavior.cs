@@ -1,6 +1,4 @@
-﻿
-
-using Helpers;
+﻿using Helpers;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.Core;

@@ -49,81 +49,91 @@ namespace RTSCamera
 
             CurrentTargetPosition = new QueryData<WorldPosition>(() =>
             {
-                var unit = this.Agent;
-                var formation = unit.Formation;
-                if (formation == null)
-                    return WorldPosition.Invalid;
-                var targetFormation = QueryDataStore.Get(formation.TargetFormation);
-
-                Vec2 unitPosition;
-                if (QueryLibrary.IsRangedCavalry(unit))
+                try
                 {
-                    unitPosition = unit.Position.AsVec2;
+
+                    var unit = this.Agent;
+                    var formation = unit.Formation;
+                    if (formation == null)
+                        return WorldPosition.Invalid;
+                    var targetFormation = QueryDataStore.Get(formation.TargetFormation);
+
+                    Vec2 unitPosition;
+                    if (QueryLibrary.IsRangedCavalry(unit))
+                    {
+                        unitPosition = unit.Position.AsVec2;
+                        return targetFormation
+                            .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
+                    }
+                    if (QueryLibrary.IsCavalry(unit))
+                    {
+                        unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
+                                       unit.Position.AsVec2 * 0.8f;
+                        var targetAgent = targetFormation.NearestOfAverageOfNearestPosition(unitPosition, 7);
+                        if (targetAgent != null)
+                        {
+                            if (targetAgent.HasMount)
+                                return targetAgent.GetWorldPosition();
+
+                            var targetPosition = targetAgent.GetWorldPosition();
+                            var targetDirection = targetPosition.AsVec2 - unit.Position.AsVec2;
+                            var distance = targetDirection.Normalize();
+                            var result = targetPosition;
+
+                            // new
+                            if (distance > 20)
+                            {
+                                CurrentDirection = targetDirection;
+                                result.SetVec2(targetDirection * 5 + targetPosition.AsVec2);
+                            }
+                            else if (targetDirection.DotProduct(CurrentDirection) < 0)
+                            {
+                                result.SetVec2((CurrentDirection.DotProduct(targetDirection * distance) + 50) * CurrentDirection + unit.Position.AsVec2);
+                            }
+                            else
+                            {
+                                result.SetVec2(CurrentDirection * 5 + targetPosition.AsVec2);
+                            }
+
+
+                            // old
+                            //if (distance < 3)
+                            //{
+                            //    result = unit.GetWorldPosition();
+                            //    result.SetVec2(CurrentDirection * 20 + result.AsVec2);
+                            //}
+                            //else
+                            //{
+                            //    if (distance < 20 && targetDirection.DotProduct(CurrentDirection) < 0)
+                            //    {
+                            //        result.SetVec2(-targetDirection * 50 + result.AsVec2);
+                            //    }
+                            //    else
+                            //    {
+                            //        CurrentDirection = targetDirection;
+                            //        result.SetVec2(targetDirection * 10 + result.AsVec2);
+                            //    }
+
+                            //}
+
+
+                            return result.GetNavMesh() == UIntPtr.Zero || !Mission.Current.IsPositionInsideBoundaries(result.AsVec2) ? targetPosition : result;
+                        }
+
+                        return WorldPosition.Invalid;
+                    }
+
+                    unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
+                                   unit.Position.AsVec2 * 0.8f;
                     return targetFormation
                         .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
                 }
-                if (QueryLibrary.IsCavalry(unit))
+                catch (Exception e)
                 {
-                    unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
-                                   unit.Position.AsVec2 * 0.8f;
-                    var targetAgent = targetFormation.NearestOfAverageOfNearestPosition(unitPosition, 7);
-                    if (targetAgent != null)
-                    {
-                        if (targetAgent.HasMount)
-                            return targetAgent.GetWorldPosition();
-
-                        var targetPosition = targetAgent.GetWorldPosition();
-                        var targetDirection = targetPosition.AsVec2 - unit.Position.AsVec2;
-                        var distance = targetDirection.Normalize();
-                        var result = targetPosition;
-
-                        // new
-                        if (distance > 20)
-                        {
-                            CurrentDirection = targetDirection;
-                            result.SetVec2(targetDirection * 5 + targetPosition.AsVec2);
-                        }
-                        else if (targetDirection.DotProduct(CurrentDirection) < 0)
-                        {
-                            result.SetVec2((CurrentDirection.DotProduct(targetDirection * distance) + 50) * CurrentDirection + unit.Position.AsVec2);
-                        }
-                        else
-                        {
-                            result.SetVec2(CurrentDirection * 5 + targetPosition.AsVec2);
-                        }
-
-
-                        // old
-                        //if (distance < 3)
-                        //{
-                        //    result = unit.GetWorldPosition();
-                        //    result.SetVec2(CurrentDirection * 20 + result.AsVec2);
-                        //}
-                        //else
-                        //{
-                        //    if (distance < 20 && targetDirection.DotProduct(CurrentDirection) < 0)
-                        //    {
-                        //        result.SetVec2(-targetDirection * 50 + result.AsVec2);
-                        //    }
-                        //    else
-                        //    {
-                        //        CurrentDirection = targetDirection;
-                        //        result.SetVec2(targetDirection * 10 + result.AsVec2);
-                        //    }
-
-                        //}
-
-
-                        return result.GetNavMesh() == UIntPtr.Zero || !Mission.Current.IsPositionInsideBoundaries(result.AsVec2) ? targetPosition : result;
-                    }
-
-                    return new WorldPosition();
+                    Utility.DisplayMessage(e.ToString());
                 }
 
-                unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
-                               unit.Position.AsVec2 * 0.8f;
-                return targetFormation
-                    .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
+                return WorldPosition.Invalid;
             }, 0.2f);
         }
 

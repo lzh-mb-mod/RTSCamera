@@ -1,7 +1,6 @@
 ﻿using RTSCamera.Config;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
-using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;

@@ -9,6 +9,9 @@
 
   Now the movement of the camera is smoother.
 
+### Changed
+- Now Cheat options are only enabled when cheat mode of the base game is enabled.
+
 ## [e3.6.3] - 2020-09-19
 ### Fixed
 - Fix a crash when pressing F at the end of tournament.
