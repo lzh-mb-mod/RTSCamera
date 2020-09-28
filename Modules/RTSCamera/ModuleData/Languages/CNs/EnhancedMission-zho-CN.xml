@@ -68,6 +68,7 @@
     <string id="RTSCamera_slowmotionfactor" text="慢速倍率" />
     <string id="RTSCamera_click_to_select_formation" text="点击鼠标中键来选择部队" />
     <string id="RTSCamera_attack_specific_formation" text="启用攻击特定编队" />
+    <string id="RTSCamera_fix_circular_arrangement" text="修复圆阵" />
 
     <string id="RTSCamera_controlallyoptionsdescription" text="控制队友" />
     <string id="RTSCamera_controlallyafterdeath" text="阵亡后控制队友" />

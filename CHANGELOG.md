@@ -1,5 +1,12 @@
 # Changelog
 
+## [e3.8.0] - 2020-09-28
+### Added
+- Add fix for circular arrangement of the base game.
+
+### Fixed
+- Fix compatibility with extension.
+
 ## [e3.7.2] - 2020-09-26
 ### Fixed
 - Fix cavalry AI in "Charge to formation" mode.

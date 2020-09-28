@@ -58,6 +58,8 @@ namespace RTSCamera.Config
 
         public bool AttackSpecificFormation = true;
 
+        public bool FixCircularArrangement = true;
+
         public bool DisplayMessage = true;
 
         public bool ControlAllyAfterDeath;
@@ -108,6 +110,7 @@ namespace RTSCamera.Config
             SlowMotionFactor = other.SlowMotionFactor;
             ClickToSelectFormation = other.ClickToSelectFormation;
             AttackSpecificFormation = other.AttackSpecificFormation;
+            FixCircularArrangement = other.FixCircularArrangement;
             DisplayMessage = other.DisplayMessage;
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;
             PreferToControlCompanions = other.PreferToControlCompanions;

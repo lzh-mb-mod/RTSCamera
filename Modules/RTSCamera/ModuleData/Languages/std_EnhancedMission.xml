@@ -68,6 +68,7 @@
     <string id="RTSCamera_slowmotionfactor" text="Slow Motion Factor" />
     <string id="RTSCamera_click_to_select_formation" text="Middle Click to select formation" />
     <string id="RTSCamera_attack_specific_formation" text="Enable Attack Specific Formation" />
+    <string id="RTSCamera_fix_circular_arrangement" text="Fix Circular Arrangement" />
 
     <string id="RTSCamera_controlallyoptionsdescription" text="Control Ally" />
     <string id="RTSCamera_controlallyafterdeath" text="Control Ally After Death" />

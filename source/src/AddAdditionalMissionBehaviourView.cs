@@ -1,6 +1,7 @@
 ﻿using RTSCamera.Config;
 using System.Collections.Generic;
 using RTSCamera.Patch;
+using RTSCamera.Patch.CircularFormation;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 
@@ -16,6 +17,11 @@ namespace RTSCamera
             if (config.AttackSpecificFormation)
             {
                 PatchChargeToFormation.Patch();
+            }
+
+            if (config.FixCircularArrangement)
+            {
+                PatchCircularFormation.Patch();
             }
             List<MissionBehaviour> list = new List<MissionBehaviour>
             {

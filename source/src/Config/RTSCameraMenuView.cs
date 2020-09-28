@@ -7,7 +7,7 @@ namespace RTSCamera.Config
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         public RTSCameraMenuView()
-            : base(26, nameof(RTSCameraMenuView))
+            : base(24, nameof(RTSCameraMenuView))
         {
             this.GetDataSource = () => new RTSCameraMenuVM(Mission, this.OnCloseMenu);
         }

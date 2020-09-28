@@ -4,6 +4,7 @@ using SandBox;
 using SandBox.Source.Towns;
 using System;
 using System.Reflection;
+using RTSCamera.Patch.CircularFormation;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -31,6 +32,7 @@ namespace RTSCamera
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts(
                     BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
 
+                successPatch = true;
 
                 _harmony.Patch(
                     typeof(Formation).GetMethod("LeaveDetachment", BindingFlags.Instance | BindingFlags.NonPublic),
@@ -80,7 +82,8 @@ namespace RTSCamera
                     prefix: new HarmonyMethod(typeof(Patch_MissionScreen).GetMethod("OnMissionModeChange_Prefix",
                         BindingFlags.Static | BindingFlags.Public)));
 
-                    //_harmony.Patch(typeof(MovementOrder).GetMethod("Tick", BindingFlags.Instance | BindingFlags.NonPublic),
+
+                //_harmony.Patch(typeof(MovementOrder).GetMethod("Tick", BindingFlags.Instance | BindingFlags.NonPublic),
                 //    postfix: new HarmonyMethod(
                 //        typeof(Patch_MovementOrder).GetMethod("Tick_Postfix", BindingFlags.Static | BindingFlags.Public)));
                 //_harmony.Patch(typeof(MovementOrder).GetProperty("MovementState", BindingFlags.Instance | BindingFlags.NonPublic)?.GetMethod,
@@ -90,12 +93,10 @@ namespace RTSCamera
                 //_harmony.Patch(typeof(BehaviorCharge).GetMethod("CalculateCurrentOrder", BindingFlags.Instance | BindingFlags.NonPublic),
                 //    prefix: new HarmonyMethod(
                 //        typeof(Patch_BehaviorCharge).GetMethod("CalculateCurrentOrder_Prefix", BindingFlags.Static | BindingFlags.Public)));
-
-
-                successPatch = true;
             }
             catch (Exception e)
             {
+                successPatch = false;
                 MBDebug.ConsolePrint(e.ToString());
             }
         }

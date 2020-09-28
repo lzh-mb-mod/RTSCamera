@@ -77,7 +77,7 @@ namespace RTSCamera
         {
             base.OnMissionScreenInitialize();
 
-            ViewOrderPriorty = 24;
+            ViewOrderPriorty = 23;
             _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
             _switchTeamLogic = Mission.GetMissionBehaviour<SwitchTeamLogic>();
             if (_switchTeamLogic != null)

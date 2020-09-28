@@ -1,5 +1,6 @@
 ﻿using System;
 using RTSCamera.Patch;
+using RTSCamera.Patch.CircularFormation;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Engine;
@@ -43,6 +44,9 @@ namespace RTSCamera.Config
 
         public string AttackSpecificFormationString { get; } =
             GameTexts.FindText("str_rts_camera_attack_specific_formation").ToString();
+
+        public string FixCircularArrangementString { get; } =
+            GameTexts.FindText("str_rts_camera_fix_circular_arrangement").ToString();
 
         public string DisplayMessageString { get; } = GameTexts.FindText("str_rts_camera_display_mod_message").ToString();
 
@@ -264,6 +268,27 @@ namespace RTSCamera.Config
 
         public HintViewModel AttackSpecificFormationHint { get; } =
             new HintViewModel(GameTexts.FindText("str_rts_camera_attack_specific_formation_hint").ToString());
+
+        [DataSourceProperty]
+        public bool FixCircularArrangement
+        {
+            get => _config.FixCircularArrangement;
+            set
+            {
+                if (_config.FixCircularArrangement == value)
+                    return;
+                _config.FixCircularArrangement = value;
+                if (_config.FixCircularArrangement)
+                {
+                    PatchCircularFormation.Patch();
+                }
+                else
+                {
+                    PatchCircularFormation.UnPatch();
+                }
+                OnPropertyChanged(nameof(FixCircularArrangement));
+            }
+        }
 
         [DataSourceProperty]
         public bool DisplayMessage
