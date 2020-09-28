@@ -26,6 +26,10 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - You can press `L` and uncheck `Middle Click to select formation` to disable this feature.
 
+- The bug in the base game that movement order may change width of circular arrangement is fixed.
+
+  - You can press `L` and uncheck `Fix Circular Arrangement` to disable this feature.
+
 - After your character dies, you can press `F` to control one of your soldiers and continue fighting. Soldiers in the same formation as player character will be considered first when deciding which soldier to control.
 
   - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your charater dies. Press `L` and check `Control Ally After Death` option to enable this feature. It's always enabled in free camera mode to ensure a smooth gaming experience.
