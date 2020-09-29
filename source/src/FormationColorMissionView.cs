@@ -85,9 +85,9 @@ namespace RTSCamera
 
         }
 
-        public override void OnAgentPanicked(Agent affectedAgent)
+        public override void OnAgentFleeing(Agent affectedAgent)
         {
-            base.OnAgentPanicked(affectedAgent);
+            base.OnAgentFleeing(affectedAgent);
 
             ClearAgentFormationContour(affectedAgent);
         }
