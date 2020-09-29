@@ -36,7 +36,7 @@ namespace RTSCamera
         private uint? CurrentColor => _currentLevel < 0 ? null : _colors[_currentLevel].Color;
         private bool CurrentAlwaysVisible => _currentLevel < 0 || _colors[_currentLevel].AlwaysVisible;
 
-        public Vec2 CurrentDirection;
+        public Vec2 CurrentDirection = Vec2.One;
 
         public QueryData<WorldPosition> CurrentTargetPosition { get; }
 
@@ -59,40 +59,90 @@ namespace RTSCamera
                     var targetFormation = QueryDataStore.Get(formation.TargetFormation);
 
                     Vec2 unitPosition;
+
                     if (QueryLibrary.IsRangedCavalry(unit))
                     {
-                        unitPosition = unit.Position.AsVec2;
-                        return targetFormation
-                            .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
+                        var targetAgent = unit.GetTargetAgent();
+                        if (targetAgent == null || targetAgent.Formation != targetFormation.Formation)
+                        {
+                            unitPosition = unit.Position.AsVec2;
+                            targetAgent = targetFormation.NearestAgent(unitPosition);
+                        }
+                        return targetAgent?.GetWorldPosition() ?? WorldPosition.Invalid;
                     }
                     if (QueryLibrary.IsCavalry(unit))
                     {
-                        unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
+                        Agent targetAgent = null;
+                        var estimatedPosition = formation.GetCurrentGlobalPositionOfUnit(unit, false);
+                        unitPosition = estimatedPosition * 0.2f +
                                        unit.Position.AsVec2 * 0.8f;
-                        var targetAgent = targetFormation.NearestOfAverageOfNearestPosition(unitPosition, 7);
+                        if (targetAgent == null || targetAgent.Formation != targetFormation.Formation)
+                            targetAgent = targetFormation.NearestOfAverageOfNearestPosition(unitPosition, 10);
                         if (targetAgent != null)
                         {
                             if (targetAgent.HasMount)
+                            {
                                 return targetAgent.GetWorldPosition();
+                            }
 
                             var targetPosition = targetAgent.GetWorldPosition();
                             var targetDirection = targetPosition.AsVec2 - unit.Position.AsVec2;
                             var distance = targetDirection.Normalize();
                             var result = targetPosition;
+                            var targetDepth = targetFormation.Formation.Depth;
 
                             // new
-                            if (distance > 20)
+                            if (distance > 5)
                             {
-                                CurrentDirection = targetDirection;
-                                result.SetVec2(targetDirection * 10 + targetPosition.AsVec2);
-                            }
-                            else if (targetDirection.DotProduct(CurrentDirection) < 0)
-                            {
-                                result.SetVec2((CurrentDirection.DotProduct(targetDirection * distance) + 50) * CurrentDirection + unit.Position.AsVec2);
+                                if (targetDirection.DotProduct(CurrentDirection) > 0)
+                                {
+                                    CurrentDirection = targetDirection;
+                                    result.SetVec2(CurrentDirection * 10 + targetPosition.AsVec2);
+                                }
+                                else
+                                //if (distance > 20)
+                                //{
+                                //    CurrentDirection = targetDirection;
+                                //    result.SetVec2(targetDirection * 10 + targetPosition.AsVec2);
+                                //}
+                                //else if (distance > 5 && targetDirection.DotProduct(CurrentDirection) < 0)
+                                {
+                                    var halfWidth = formation.Width / 2;
+                                    var halfDepth = formation.Depth / 2;
+                                    var formationCenter = formation.QuerySystem.AveragePosition;
+                                    var formationDirection = formation.QuerySystem.EstimatedDirection;
+                                    var leftFront =
+                                        formationDirection.TransformToParentUnitF(new Vec2(-halfWidth, halfDepth));
+                                    var rightFront =
+                                        formationDirection.TransformToParentUnitF(new Vec2(halfWidth, halfDepth));
+                                    var leftBack =
+                                        formationDirection.TransformToParentUnitF(new Vec2(-halfWidth, -halfDepth));
+                                    var rightBack =
+                                        formationDirection.TransformToParentUnitF(new Vec2(halfWidth, -halfDepth));
+                                    var addedStopDistance =
+                                        CurrentDirection.DotProduct(estimatedPosition - formationCenter) * 1.5f +
+                                        Math.Max(MathF.Max(-CurrentDirection.DotProduct(leftFront),
+                                                -CurrentDirection.DotProduct(rightFront),
+                                                -CurrentDirection.DotProduct(leftBack)),
+                                            -CurrentDirection.DotProduct(rightBack));
+
+                                    var remainingStopDistance = CurrentDirection.DotProduct(targetDirection * distance) + 20 +
+                                                       addedStopDistance;
+                                    // arrive
+                                    if (remainingStopDistance < 5)
+                                    {
+                                        CurrentDirection = targetDirection;
+                                        result.SetVec2(targetDirection * (10 + targetDepth) + targetPosition.AsVec2);
+                                    }
+                                    else
+                                    {
+                                        result.SetVec2(remainingStopDistance * CurrentDirection + unit.Position.AsVec2);
+                                    }
+                                }
                             }
                             else
                             {
-                                result.SetVec2(CurrentDirection * 10 + targetPosition.AsVec2);
+                                result.SetVec2(CurrentDirection * (10 + targetDepth) + targetPosition.AsVec2);
                             }
 
 
@@ -122,11 +172,17 @@ namespace RTSCamera
 
                         return WorldPosition.Invalid;
                     }
-
-                    unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
-                                   unit.Position.AsVec2 * 0.8f;
-                    return targetFormation
-                        .NearestAgent(unitPosition)?.GetWorldPosition() ?? new WorldPosition();
+                    else
+                    {
+                        var targetAgent = unit.GetTargetAgent();
+                        if (targetAgent == null || targetAgent.Formation != targetFormation.Formation)
+                        {
+                            unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
+                                           unit.Position.AsVec2 * 0.8f;
+                            targetAgent = targetFormation.NearestAgent(unitPosition);
+                        }
+                        return targetAgent?.GetWorldPosition() ?? WorldPosition.Invalid;
+                    }
                 }
                 catch (Exception e)
                 {
