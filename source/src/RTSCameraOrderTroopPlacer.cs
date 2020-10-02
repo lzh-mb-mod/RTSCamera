@@ -46,6 +46,7 @@ namespace RTSCamera
         }
 
         private CursorState _currentCursorState = CursorState.Invisible;
+        private QueryData<CursorState> _cachedCursorState;
         private bool _suspendTroopPlacer;
         private bool _isMouseDown;
         private List<GameEntity> _orderPositionEntities;
@@ -124,6 +125,7 @@ namespace RTSCamera
         {
             PlayerTeam = Mission.PlayerTeam;
             PlayerOrderController = PlayerTeam.PlayerOrderController;
+            _cachedCursorState = new QueryData<CursorState>(GetCursorState, 0.05f);
         }
 
         public override void OnMissionTick(float dt)
@@ -431,6 +433,8 @@ namespace RTSCamera
                     }
                     break;
                 case CursorState.Normal:
+                    if (_config.ShouldHighlightWithOutline() && Input.IsKeyDown(InputKey.MiddleMouseButton))
+                        return;
                     _formationDrawingMode = true;
                     BeginFormationDraggingOrClicking();
                     break;
@@ -709,6 +713,8 @@ namespace RTSCamera
                 }
 
                 copy.SetMaterial(_meshMaterial);
+                copy.SetContourColor(new Color(0, 0.6f, 1).ToUnsignedInteger());
+                copy.SetContourState(true);
                 empty.AddComponent(copy);
                 empty.SetVisibilityExcludeParents(false);
                 _orderPositionEntities.Add(empty);
@@ -789,7 +795,7 @@ namespace RTSCamera
             if (SuspendTroopPlacer)
                 return;
 
-            _currentCursorState = GetCursorState();
+            _currentCursorState = _cachedCursorState.Value;
             //Utility.DisplayMessage(_currentCursorState.ToString());
             // use middle mouse button to select formation
             if (Input.IsKeyPressed(InputKey.LeftMouseButton) || (_config.ShouldHighlightWithOutline() && Input.IsKeyPressed(InputKey.MiddleMouseButton)))

@@ -1,5 +1,15 @@
 # Changelog
 
+## [e3.8.1] - 2020-10-02
+### Added
+- Highlight order flag to make it 
+
+### Changed
+- Optimize performance.
+
+### Fixed
+- Fix bug of selecting formation.
+
 ## [e3.8.0] - 2020-09-28
 ### Added
 - Add fix for circular arrangement of the base game.

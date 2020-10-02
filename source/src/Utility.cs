@@ -298,7 +298,8 @@ namespace RTSCamera
                 SmoothMoveToAgent(missionScreen);
             }
         }
-        public static void SmoothMoveToAgent(MissionScreen missionScreen, bool forceMove = false)
+
+        public static void SmoothMoveToAgent(MissionScreen missionScreen, bool forceMove = false, bool changeCameraRotation = true)
         {
             try
             {
@@ -313,6 +314,9 @@ namespace RTSCamera
                             GetCameraFrameWhenLockedToAgent(missionScreen, spectatingData.AgentToFollow);
                         CameraSpecialCurrentPositionToAdd?.SetValue(missionScreen,
                             missionScreen.CombatCamera.Position - targetFrame.origin);
+                    }
+                    if (changeCameraRotation)
+                    {
                         CameraSpecialCurrentAddedElevation?.SetValue(missionScreen, missionScreen.CameraElevation);
                         CameraSpecialCurrentAddedBearing?.SetValue(missionScreen,
                             MBMath.WrapAngle(missionScreen.CameraBearing - spectatingData.AgentToFollow.LookDirectionAsAngle));

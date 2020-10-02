@@ -164,7 +164,7 @@ namespace RTSCamera
                 LockToAgent = true;
             if (!_freeCameraLogic.isSpectatorCamera)
                 _freeCameraLogic.SwitchCamera();
-            Utility.SmoothMoveToAgent(MissionScreen, true);
+            Utility.SmoothMoveToAgent(MissionScreen, true, false);
             UpdateMouseVisibility();
         }
 
