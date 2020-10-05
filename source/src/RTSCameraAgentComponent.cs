@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.ExceptionServices;
 using RTSCamera.QuerySystem;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
@@ -65,17 +66,20 @@ namespace RTSCamera
                             Vec2 unitPosition = unit.Position.AsVec2;
                             targetAgent = targetFormation.NearestAgent(unitPosition);
                         }
+
                         return targetAgent?.GetWorldPosition() ?? new WorldPosition();
                     }
+
                     if (QueryLibrary.IsCavalry(unit))
                     {
                         var targetAgent = unit.GetTargetAgent();
                         if (targetAgent == null || targetAgent.Formation != formation.TargetFormation)
                         {
                             Vec2 unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
-                                               unit.Position.AsVec2 * 0.8f;
+                                                unit.Position.AsVec2 * 0.8f;
                             targetAgent = targetFormation.NearestOfAverageOfNearestPosition(unitPosition, 7);
                         }
+
                         if (targetAgent != null)
                         {
                             if (targetAgent.HasMount)
@@ -94,7 +98,9 @@ namespace RTSCamera
                             }
                             else if (distance > 5 && targetDirection.DotProduct(CurrentDirection) < 0)
                             {
-                                result.SetVec2((CurrentDirection.DotProduct(targetDirection * distance) + 50) * CurrentDirection + unit.Position.AsVec2);
+                                result.SetVec2(
+                                    (CurrentDirection.DotProduct(targetDirection * distance) + 50) * CurrentDirection +
+                                    unit.Position.AsVec2);
                             }
                             else
                             {
@@ -123,7 +129,10 @@ namespace RTSCamera
                             //}
 
 
-                            return result.GetNavMesh() == UIntPtr.Zero || !Mission.Current.IsPositionInsideBoundaries(result.AsVec2) ? targetPosition : result;
+                            return result.GetNavMesh() == UIntPtr.Zero ||
+                                   !Mission.Current.IsPositionInsideBoundaries(result.AsVec2)
+                                ? targetPosition
+                                : result;
                         }
 
                         return WorldPosition.Invalid;
@@ -134,9 +143,10 @@ namespace RTSCamera
                         if (targetAgent == null || targetAgent.Formation != formation.TargetFormation)
                         {
                             Vec2 unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
-                                               unit.Position.AsVec2 * 0.8f;
+                                                unit.Position.AsVec2 * 0.8f;
                             targetAgent = targetFormation.NearestAgent(unitPosition);
                         }
+
                         return targetAgent?.GetWorldPosition() ?? new WorldPosition();
                     }
                 }
@@ -175,14 +185,23 @@ namespace RTSCamera
             SetColor();
         }
 
+        [HandleProcessCorruptedStateExceptions]
         public void ClearContourColor()
         {
-            for (int i = 0; i < _colors.Length; ++i)
+            try
             {
-                _colors[i].Color = null;
+                for (int i = 0; i < _colors.Length; ++i)
+                {
+                    _colors[i].Color = null;
+                }
+
                 Agent.AgentVisuals?.SetContourColor(null);
                 if (Agent.HasMount)
                     Agent.MountAgent.AgentVisuals?.SetContourColor(null);
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
             }
         }
 
@@ -203,18 +222,34 @@ namespace RTSCamera
                 UpdateColor();
         }
 
+        [HandleProcessCorruptedStateExceptions]
         protected override void OnMount(Agent mount)
         {
             base.OnMount(mount);
 
-            mount.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
+            try
+            {
+                mount.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
+            }
         }
 
+        [HandleProcessCorruptedStateExceptions]
         protected override void OnDismount(Agent mount)
         {
             base.OnDismount(mount);
 
-            mount.AgentVisuals?.SetContourColor(new uint?());
+            try
+            {
+                mount.AgentVisuals?.SetContourColor(null);
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
+            }
         }
 
         private int EffectiveLevel(int maxLevel = (int)ColorLevel.NumberOfLevel - 1)
@@ -228,11 +263,19 @@ namespace RTSCamera
             return -1;
         }
 
+        [HandleProcessCorruptedStateExceptions]
         private void SetColor()
         {
-            Agent.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
-            if (Agent.HasMount)
-                Agent.MountAgent.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
+            try
+            {
+                Agent.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
+                if (Agent.HasMount)
+                    Agent.MountAgent.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
+            }
         }
     }
 }

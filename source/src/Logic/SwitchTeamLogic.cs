@@ -2,7 +2,7 @@
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera
+namespace RTSCamera.Logic
 {
     class SwitchTeamLogic : MissionLogic
     {

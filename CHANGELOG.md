@@ -1,8 +1,19 @@
 # Changelog
 
+## [e3.8.2] - 2020-10-05
+### Fixed
+- Fix a rare crash in base game.
+
+- Fix the problem that movement command cannot be given when paused.
+
+- Fix the problem that selecting formation with middle mouse button does not work when paused.
+
+### Changed
+- Improve the behavior of choosing character to control when the player character is killed in battle.
+
 ## [e3.8.1] - 2020-10-02
 ### Added
-- Highlight order flag to make it 
+- Highlight order flag to make it more conspicuous.
 
 ### Changed
 - Optimize performance.

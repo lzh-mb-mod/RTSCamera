@@ -1,14 +1,14 @@
-﻿using RTSCamera.Config;
-using RTSCamera.QuerySystem;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using RTSCamera.Config;
+using RTSCamera.QuerySystem;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera
+namespace RTSCamera.Logic
 {
     public class SwitchFreeCameraLogic : MissionLogic
     {
@@ -21,6 +21,7 @@ namespace RTSCamera
         private bool _switchToFreeCameraAfter100ms = false;
         private float _timer;
         private List<FormationClass> _playerFormations;
+        private float _updatePlayerFormationTime = 0;
 
         public List<FormationClass> PlayerFormations => _playerFormations ??= new List<FormationClass>();
 
@@ -107,6 +108,14 @@ namespace RTSCamera
                 }
             }
 
+            _updatePlayerFormationTime += dt;
+            if (_updatePlayerFormationTime > 0.1f && !Utility.IsPlayerDead() &&
+                Mission.MainAgent.Formation != null)
+            {
+                _updatePlayerFormationTime = 0;
+                CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
+            }
+
             if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.FreeCamera)))
             {
                 this.SwitchCamera();
@@ -158,7 +167,7 @@ namespace RTSCamera
         {
             if (Mission.MainAgent != null)
             {
-                if ((Mission.Mode == MissionMode.Battle || Mission.Mode == MissionMode.Deployment))
+                if (Mission.Mode == MissionMode.Battle || Mission.Mode == MissionMode.Deployment)
                 {
                     if (_isFirstTimeMainAgentChanged)
                     {
@@ -182,11 +191,7 @@ namespace RTSCamera
                     }
                 }
             }
-            else if (isSpectatorCamera)
-            {
-                DoNotDisturbRTS();
-            }
-            else if (_config.ControlAllyAfterDeath)
+            else if (isSpectatorCamera || _config.ControlAllyAfterDeath)
             {
                 _controlTroopLogic.SetMainAgent();
             }
@@ -197,18 +202,13 @@ namespace RTSCamera
             Utility.AIControlMainAgent(true);
         }
 
-        private void DoNotDisturbRTS()
-        {
-            _controlTroopLogic.SetMainAgent();
-        }
-
         public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
         {
             base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
 
             if (Mission.MainAgent == affectedAgent && (_config.ControlAllyAfterDeath || isSpectatorCamera))
             {
-                if (Mission.MainAgent.Character == CharacterObject.PlayerCharacter) 
+                if (Mission.Mode == MissionMode.Battle && Mission.MainAgent.Character == CharacterObject.PlayerCharacter) 
                     Utility.DisplayLocalizedText("str_rts_camera_player_dead", null, new Color(1, 0, 0));
                 // mask code in Mission.OnAgentRemoved so that formations will not be delegated to AI after player dead.
                 affectedAgent.OnMainAgentWieldedItemChange = (Agent.OnMainAgentWieldedItemChangeDelegate)null;

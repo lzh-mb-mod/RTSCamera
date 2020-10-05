@@ -1,9 +1,8 @@
-﻿using RTSCamera.Config;
-using RTSCamera.QuerySystem;
-using System;
-using System.Linq;
+﻿using System;
+using RTSCamera.Config;
+using RTSCamera.Logic;
 using TaleWorlds.Core;
-using TaleWorlds.Engine;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Screen;
 
@@ -17,6 +16,9 @@ namespace RTSCamera
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private FlyCameraMissionView _flyCameraMissionView;
         private SelectCharacterView _selectCharacterView;
+        private Agent _nearestNonHero;
+        private Agent _nearestHero;
+        private Agent _nearestCompanion;
 
         public event Action MainAgentWillBeChangedToAnotherOne;
 
@@ -53,11 +55,9 @@ namespace RTSCamera
 
                 return true;
             }
-            else
-            {
-                Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
-                return false;
-            }
+
+            Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
+            return false;
         }
 
         public bool ForceControlAgent()
@@ -138,48 +138,63 @@ namespace RTSCamera
             if (Mission.PlayerTeam == null)
                 return null;
 
-            var nearestAgent =
-                QueryDataStore.Get(Mission.PlayerTeam.GetFormation(_switchFreeCameraLogic.CurrentPlayerFormation))
-                    .NearestAgent(Mission.Scene.LastFinalRenderCameraPosition.AsVec2, true);
-            if (nearestAgent != null && nearestAgent.IsActive() && CanControl(nearestAgent))
-                return nearestAgent;
-            var firstPreferredAgents = Mission.GetNearbyAllyAgents(
-                new WorldPosition(this.Mission.Scene, this.Mission.Scene.LastFinalRenderCameraPosition).AsVec2, 20f,
-                Mission.PlayerTeam);
-            var secondPreferredAgents = Mission.GetNearbyAllyAgents(
-                new WorldPosition(this.Mission.Scene, this.Mission.Scene.LastFinalRenderCameraPosition).AsVec2, 1E+7f,
-                Mission.PlayerTeam);
-            var preferCompanions = _config.PreferToControlCompanions;
-            Agent firstPreferredFallback = null;
-            var firstPreferredAgent = firstPreferredAgents.FirstOrDefault(agent =>
+            var cameraPosition = Mission.Scene.LastFinalRenderCameraPosition;
+            if (_config.PreferToControlCompanions)
             {
-                if (agent.IsRunningAway)
-                    return false;
-                if (!CanControl(agent))
-                    return false;
-                if (firstPreferredFallback == null)
-                    firstPreferredFallback = agent;
-                return !preferCompanions || agent.IsHero && Utility.IsInPlayerParty(agent);
-            });
-            if (firstPreferredAgent != null || firstPreferredFallback != null)
-                return firstPreferredAgent ?? firstPreferredFallback;
-            Agent secondPreferredFallback = null;
-            var secondPreferredAgent = secondPreferredAgents.FirstOrDefault(agent =>
+                var firstPreference =
+                    AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation, cameraPosition);
+                if (firstPreference.companion != null)
+                    return firstPreference.companion;
+
+                if ((int)_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
+                {
+                    var secondPreference =
+                        AgentPreferenceFromFormation((FormationClass) _config.PlayerFormation, cameraPosition);
+                    if (secondPreference.companion != null)
+                        return secondPreference.companion;
+                    var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition);
+                    return thirdPreference.companion ??
+                           firstPreference.agent ?? secondPreference.agent ?? thirdPreference.agent;
+                }
+                else
+                {
+                    var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition);
+                    return thirdPreference.companion ??
+                           firstPreference.agent ?? thirdPreference.agent;
+                }
+
+            }
+
+            var agent = AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation, cameraPosition).agent;
+            if (agent != null)
             {
-                if (agent.IsRunningAway)
-                    return false;
-                if (!CanControl(agent))
-                    return false;
-                if (secondPreferredFallback == null)
-                    secondPreferredFallback = agent;
-                return !preferCompanions || agent.IsHero && Utility.IsInPlayerParty(agent);
-            });
-            return secondPreferredAgent ?? secondPreferredFallback ?? Mission.PlayerTeam.Leader;
+                return agent;
+            }
+
+            if ((int) _switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
+            {
+                var secondPreference = AgentPreferenceFromFormation((FormationClass) _config.PlayerFormation, cameraPosition);
+                if (secondPreference.agent != null)
+                {
+                    return secondPreference.agent;
+                }
+            }
+            return AgentPreferenceFromPlayerTeam(cameraPosition).agent ?? Mission.PlayerTeam.Leader;
+        }
+        private (Agent agent, Agent companion) AgentPreferenceFromPlayerTeam(Vec3 position)
+        {
+            var preference = new ControlAgentPreference();
+            preference.UpdateAgentPreferenceFromTeam(Mission.PlayerTeam, position);
+            return (preference.NearestAgent, preference.NearestCompanion);
         }
 
-        private bool CanControl(Agent agent)
+
+        private (Agent agent, Agent companion) AgentPreferenceFromFormation(FormationClass formationClass,
+            Vec3 position)
         {
-            return agent.IsHuman && agent.IsActive() && (!_config.ControlTroopsInPlayerPartyOnly || Utility.IsInPlayerParty(agent));
+            var preference = new ControlAgentPreference();
+            preference.UpdateAgentPreferenceFromFormation(formationClass, position);
+            return (preference.NearestAgent, preference.NearestCompanion);
         }
 
         public override void OnBehaviourInitialize()
@@ -202,7 +217,7 @@ namespace RTSCamera
 
                 if (Mission.MainAgent?.Controller == Agent.ControllerType.Player)
                     return;
-                
+
                 ForceControlAgent();
             }
         }

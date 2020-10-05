@@ -1,4 +1,5 @@
 ﻿using System;
+using RTSCamera.Logic;
 using RTSCamera.Patch;
 using RTSCamera.Patch.CircularFormation;
 using TaleWorlds.Core;

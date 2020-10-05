@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using RTSCamera.Logic;
+using RTSCamera.QuerySystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.InputSystem;
@@ -46,7 +48,7 @@ namespace RTSCamera
         }
 
         private CursorState _currentCursorState = CursorState.Invisible;
-        private QueryData<CursorState> _cachedCursorState;
+        private UiQueryData<CursorState> _cachedCursorState;
         private bool _suspendTroopPlacer;
         private bool _isMouseDown;
         private List<GameEntity> _orderPositionEntities;
@@ -125,7 +127,7 @@ namespace RTSCamera
         {
             PlayerTeam = Mission.PlayerTeam;
             PlayerOrderController = PlayerTeam.PlayerOrderController;
-            _cachedCursorState = new QueryData<CursorState>(GetCursorState, 0.05f);
+            _cachedCursorState = new UiQueryData<CursorState>(GetCursorState, 0.05f);
         }
 
         public override void OnMissionTick(float dt)
@@ -419,18 +421,18 @@ namespace RTSCamera
                     BeginFormationDraggingOrClicking();
                     break;
                 case CursorState.Friend:
-                    if (Input.IsKeyDown(InputKey.MiddleMouseButton))
+                    if (_config.ClickToSelectFormation && Input.IsKeyDown(InputKey.MiddleMouseButton))
                     {
-                        if (PlayerOrderController.IsFormationSelectable(_mouseOverFormation))
+                        if (_mouseOverFormation != null && PlayerOrderController.IsFormationSelectable(_mouseOverFormation))
                         {
                             _clickedFormation = _mouseOverFormation;
-                            BeginFormationDraggingOrClicking();
                         }
                     }
                     else
                     {
-                        goto case CursorState.Normal;
+                        _formationDrawingMode = true;
                     }
+                    BeginFormationDraggingOrClicking();
                     break;
                 case CursorState.Normal:
                     if (_config.ShouldHighlightWithOutline() && Input.IsKeyDown(InputKey.MiddleMouseButton))
@@ -757,8 +759,19 @@ namespace RTSCamera
 
         private void HideOrderPositionEntities()
         {
-            foreach (GameEntity orderPositionEntity in _orderPositionEntities)
-                orderPositionEntity.HideIfNotFadingOut();
+            if (MissionState.Current.Paused)
+            {
+                foreach (GameEntity orderPositionEntity in _orderPositionEntities)
+                {
+                    orderPositionEntity.FadeIn();
+                    orderPositionEntity.HideIfNotFadingOut();
+                }
+            }
+            else
+            {
+                foreach (GameEntity orderPositionEntity in _orderPositionEntities)
+                    orderPositionEntity.HideIfNotFadingOut();
+            }
             for (int index = 0; index < _orderRotationEntities.Count; ++index)
             {
                 GameEntity orderRotationEntity = _orderRotationEntities[index];

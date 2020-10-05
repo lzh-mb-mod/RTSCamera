@@ -1,4 +1,5 @@
 ﻿using RTSCamera.Config;
+using RTSCamera.Logic;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
