@@ -52,7 +52,7 @@ namespace RTSCamera
             {
                 try
                 {
-                    var unit = this.Agent;
+                    var unit = Agent;
                     var formation = unit.Formation;
                     if (formation == null)
                         return WorldPosition.Invalid;
@@ -249,6 +249,19 @@ namespace RTSCamera
             catch (Exception e)
             {
                 Utility.DisplayMessage(e.ToString());
+            }
+        }
+
+        protected override void OnStopUsingGameObject()
+        {
+            base.OnStopUsingGameObject();
+
+            if (Agent.Controller == Agent.ControllerType.Player)
+            {
+                Agent.DisableScriptedMovement();
+                Agent.AIUseGameObjectEnable(false);
+                Agent.AIMoveToGameObjectDisable();
+                Agent.SetScriptedFlags(Agent.GetScriptedFlags() & ~Agent.AIScriptedFrameFlags.NoAttack);
             }
         }
 

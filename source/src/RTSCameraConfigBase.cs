@@ -51,11 +51,11 @@ namespace RTSCamera
             try
             {
                 EnsureSaveDirectory();
-                XmlSerializer deserializer = this.serializer;
+                XmlSerializer deserializer = serializer;
                 using (TextReader reader = new StreamReader(SaveName))
                 {
                     var config = (T)deserializer.Deserialize(reader);
-                    this.CopyFrom(config);
+                    CopyFrom(config);
                 }
                 //Utility.DisplayLocalizedText("str_rts_camera_loaded_config");
                 UpgradeToCurrentVersion();
@@ -97,7 +97,7 @@ namespace RTSCamera
                 {
                     if (File.Exists(oldName))
                     {
-                        Utility.DisplayMessage(GameTexts.FindText("str_rts_camera_found_old_config").ToString() + $" \"{oldName}\".");
+                        Utility.DisplayMessage(GameTexts.FindText("str_rts_camera_found_old_config") + $" \"{oldName}\".");
                         Utility.DisplayLocalizedText("str_rts_camera_delete_old_config");
                         File.Delete(oldName);
                     }

@@ -1,6 +1,6 @@
-﻿using KdTree;
+﻿using System.Collections.Generic;
+using KdTree;
 using KdTree.Math;
-using System.Collections.Generic;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -57,8 +57,8 @@ namespace RTSCamera.QuerySystem
             Vec2 result = Vec2.Zero;
             foreach (var point in points)
             {
-                result.x += (float)point.Point[0];
-                result.y += (float)point.Point[1];
+                result.x += point.Point[0];
+                result.y += point.Point[1];
             }
 
             if (points.Length != 0)
@@ -74,8 +74,8 @@ namespace RTSCamera.QuerySystem
             Vec2 result = Vec2.Zero;
             foreach (var point in points)
             {
-                result.x += (float) point.Point.X;
-                result.y += (float) point.Point.Y;
+                result.x += point.Point.X;
+                result.y += point.Point.Y;
             }
 
             if (points.Count != 0)

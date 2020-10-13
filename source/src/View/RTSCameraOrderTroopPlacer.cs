@@ -1,8 +1,8 @@
-﻿using RTSCamera.Config;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using RTSCamera.Config;
 using RTSCamera.Logic;
 using RTSCamera.QuerySystem;
 using TaleWorlds.Core;
@@ -13,7 +13,7 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.Missions.Handlers;
 using TaleWorlds.MountAndBlade.View.Missions;
 
-namespace RTSCamera
+namespace RTSCamera.View
 {
     public class RTSCameraOrderTroopPlacer : MissionView
     {
@@ -811,7 +811,7 @@ namespace RTSCamera
             _currentCursorState = _cachedCursorState.Value;
             //Utility.DisplayMessage(_currentCursorState.ToString());
             // use middle mouse button to select formation
-            if (Input.IsKeyPressed(InputKey.LeftMouseButton) || (_config.ShouldHighlightWithOutline() && Input.IsKeyPressed(InputKey.MiddleMouseButton)))
+            if (Input.IsKeyPressed(InputKey.LeftMouseButton) || _config.ShouldHighlightWithOutline() && Input.IsKeyPressed(InputKey.MiddleMouseButton))
             {
                 _isMouseDown = true;
                 HandleMousePressed();
@@ -893,7 +893,7 @@ namespace RTSCamera
         {
             MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out var rayBegin, out var rayEnd);
             var agent = Mission.RayCastForClosestAgent(rayBegin, rayEnd, out var agentDistance,
-                Mission.MainAgent?.IsAIControlled ?? true ? -1 : Mission.MainAgent.Index, 0.5f);
+                MissionScreen.LastFollowedAgent?.Index ?? -1, 0.5f);
             return agentDistance > distance ? null : agent;
         }
 

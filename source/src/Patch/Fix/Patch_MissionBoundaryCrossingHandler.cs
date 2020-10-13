@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Patch
+namespace RTSCamera.Patch.Fix
 {
     public class Patch_MissionBoundaryCrossingHandler
     {

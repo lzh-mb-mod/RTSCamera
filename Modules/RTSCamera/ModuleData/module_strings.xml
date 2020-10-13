@@ -19,7 +19,7 @@
     <string id="str_rts_camera_toggle_pause_hint" text="{=RTSCamera_toggle_pause_hint}Pause or unpause the game." />
     <string id="str_rts_camera_slow_motion_hint" text="{=RTSCamera_slow_motion_hint}Whether to enable slow motion mode (to adjust time speed)." />
     <string id="str_rts_camera_slow_motion_factor_hint" text="{=RTSCamera_slow_motion_factor_hint}The factor of time speed." />
-    <string id="str_rts_camera_control_another_hero_hint" text="{=RTSCamera_control_another_hero_hint}Control the hero you selected." />
+    <string id="str_rts_camera_watch_another_hero_hint" text="{=RTSCamera_watch_another_hero_hint}Watch the hero you selected." />
     <string id="str_rts_camera_select_character_hint" text="{=RTSCamera_select_character_hint}Select a character using mouse, then you can focus the camera to it or control it." />
     <string id="str_rts_camera_control_ally_after_death_hint" text="{=RTSCamera_control_ally_after_death_hint}Automatically control one of your ally after you die." />
     <string id="str_rts_camera_prefer_to_control_companions_hint" text="{=RTSCamera_prefer_to_control_companions_hint}Prefer to control companions when looking for target to control." />
@@ -71,7 +71,7 @@
     <string id="str_rts_camera_control_ally_after_death" text="{=RTSCamera_controlallyafterdeath}Control Ally After Death" />
     <string id="str_rts_camera_prefer_to_control_companions" text="{=RTSCamera_prefertocontrolcompanions}Prefer To Control Companions" />
     <string id="str_rts_camera_control_troops_in_player_party_only" text="{=RTSCamera_controltroopsinplayerpartyonly}Control Troops In Player Party Only" />
-    <string id="str_rts_camera_control_another_hero" text="{=RTSCamera_controlanotherhero}Control Another Hero" />
+    <string id="str_rts_camera_watch_another_hero" text="{=RTSCamera_watchanotherhero}Watch Another Hero" />
     <string id="str_rts_camera_select_character" text="{=RTSCamera_select_character}Select Character" />
 
     <string id="str_rts_camera_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Cheat Options" />
@@ -113,5 +113,7 @@
     <string id="str_rts_camera_switch_to_enemy_team" text="{=RTSCamera_switchtoenemyteam}Switched to the enemy team." />
 
     <string id="str_rts_camera_select_character_view_hint" text="{=RTSCamera_select_character_view_hint}Please Select a character by left click. Then press {KeyName} to lock to it and press again to control it." />
+    <string id="str_rts_camera_control_troop_hint" text="{=RTSCamera_control_troop_hint}Press {KeyName} to control one of your teammates." />
+    <string id="str_rts_camera_control_current_agent_hint" text="{=RTSCamera_control_current_agent_hint}Press {KeyName} to control the character" />
   </strings>
 </base>

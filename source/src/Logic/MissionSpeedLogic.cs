@@ -2,7 +2,7 @@
 using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera
+namespace RTSCamera.Logic
 {
 
     class MissionSpeedLogic : MissionLogic

@@ -22,7 +22,7 @@
     <string id="RTSCamera_toggle_pause_hint" text="暂停游戏或取消暂停游戏。" />
     <string id="RTSCamera_slow_motion_hint" text="是否启用慢速模式(调整时间的流逝速度)。" />
     <string id="RTSCamera_slow_motion_factor_hint" text="时间流逝速度倍率。" />
-    <string id="RTSCamera_control_another_hero_hint" text="控制一个你选择的英雄。" />
+    <string id="RTSCamera_watch_another_hero_hint" text="观察一个你选择的英雄。" />
     <string id="RTSCamera_select_character_hint" text="用鼠标选择一个角色，然后你可以将相机对准它或者控制它。" />
     <string id="RTSCamera_control_ally_after_death_hint" text="阵亡后自动控制你的一个队友来继续战斗。" />
     <string id="RTSCamera_prefer_to_control_companions_hint" text="当寻找可控制的单位时倾向于控制同伴。" />
@@ -74,7 +74,7 @@
     <string id="RTSCamera_controlallyafterdeath" text="阵亡后控制队友" />
     <string id="RTSCamera_prefertocontrolcompanions" text="优先控制同伴" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
-    <string id="RTSCamera_controlanotherhero" text="控制另一个英雄单位" />
+    <string id="RTSCamera_watchanotherhero" text="观察另一个英雄单位" />
     <string id="RTSCamera_select_character" text="选择角色" />
 
 
@@ -111,5 +111,7 @@
     <string id="RTSCamera_switchtoenemyteam" text="已切换至敌军队伍。" />
 
     <string id="RTSCamera_select_character_view_hint" text="请左键点击以选择一个角色，然后按{KeyName}键锁定到它，再按一次来控制它。" />
+    <string id="RTSCamera_control_troop_hint" text="按{KeyName}键来控制你的一个队友。" />
+    <string id="RTSCamera_control_current_agent_hint" text="按{KeyName}来控制该角色" />
   </strings>
 </base>

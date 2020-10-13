@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.QuerySystem
@@ -19,36 +16,36 @@ namespace RTSCamera.QuerySystem
 
         public UiQueryData(Func<T> valueFunc, float lifetime)
         {
-            this._cachedValue = default(T);
-            this._expireTime = 0.0f;
-            this._lifetime = lifetime;
-            this._valueFunc = valueFunc;
-            this._syncGroup = (IEnumerable<IQueryData>)null;
-            this.TelemetryScopeName = "QueryDataNameUninitialized";
+            _cachedValue = default;
+            _expireTime = 0.0f;
+            _lifetime = lifetime;
+            _valueFunc = valueFunc;
+            _syncGroup = null;
+            TelemetryScopeName = "QueryDataNameUninitialized";
         }
 
         public void Evaluate(float currentTime)
         {
-            this.SetValue(this._valueFunc(), currentTime);
+            SetValue(_valueFunc(), currentTime);
         }
 
         public void SetValue(T value, float currentTime)
         {
-            this._cachedValue = value;
-            this._expireTime = currentTime + this._lifetime;
+            _cachedValue = value;
+            _expireTime = currentTime + _lifetime;
         }
 
         public T GetCachedValue()
         {
-            return this._cachedValue;
+            return _cachedValue;
         }
 
         public T GetCachedValueWithMaxAge(float age)
         {
-            if ((double)MBCommon.GetTime(MBCommon.TimeType.Application) <= (double)this._expireTime - (double)this._lifetime + (double)Math.Min(this._lifetime, age))
-                return this._cachedValue;
-            this.Expire();
-            return this.Value;
+            if (MBCommon.GetTime(MBCommon.TimeType.Application) <= _expireTime - (double)_lifetime + Math.Min(_lifetime, age))
+                return _cachedValue;
+            Expire();
+            return Value;
         }
 
         public T Value
@@ -56,34 +53,34 @@ namespace RTSCamera.QuerySystem
             get
             {
                 float time = MBCommon.GetTime(MBCommon.TimeType.Application);
-                if ((double)time >= (double)this._expireTime)
+                if (time >= (double)_expireTime)
                 {
-                    if (this._syncGroup != null)
+                    if (_syncGroup != null)
                     {
-                        foreach (IQueryData queryData in this._syncGroup)
+                        foreach (IQueryData queryData in _syncGroup)
                             queryData.Evaluate(time);
                     }
-                    this.Evaluate(time);
+                    Evaluate(time);
                 }
-                return this._cachedValue;
+                return _cachedValue;
             }
         }
 
         public void Expire()
         {
-            this._expireTime = 0.0f;
+            _expireTime = 0.0f;
         }
 
         public static void SetupSyncGroup(params IQueryData[] groupItems)
         {
-            List<IQueryData> queryDataList = new List<IQueryData>((IEnumerable<IQueryData>)groupItems);
+            List<IQueryData> queryDataList = new List<IQueryData>(groupItems);
             foreach (IQueryData groupItem in groupItems)
-                groupItem.SetSyncGroup((IEnumerable<IQueryData>)queryDataList);
+                groupItem.SetSyncGroup(queryDataList);
         }
 
         public void SetSyncGroup(IEnumerable<IQueryData> syncGroup)
         {
-            this._syncGroup = syncGroup;
+            _syncGroup = syncGroup;
         }
     }
 }

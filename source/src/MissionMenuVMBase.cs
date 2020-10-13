@@ -9,7 +9,7 @@ namespace RTSCamera
 
         public virtual void CloseMenu()
         {
-            this._closeMenu?.Invoke();
+            _closeMenu?.Invoke();
         }
 
         protected MissionMenuVMBase(Action closeMenu)

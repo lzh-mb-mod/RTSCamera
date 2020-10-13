@@ -34,9 +34,15 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your charater dies. Press `L` and check `Control Ally After Death` option to enable this feature. It's always enabled in free camera mode to ensure a smooth gaming experience.
 
-- If your character is injured in campaign map and you encounter an enemy party, you can still choose "Watch the battle" option to begin the battle. In this battle you can command your troops in free camera but cannot directly fighting.
+- When the camera is following a character, you can press `F` to control the character. You can make the camera follow a character in the following ways:
 
-- Press `;` and click a soldier, then press `F` to let camera follow it. Press `F` again to take control of the soldier.
+  - You can make the camera follow any hero by pressing `L` to open the menu and selecting a hero in `Watch Another Hero` drop-down list.
+
+  - You can make the camera follow any character by pressing `;` and clicking a character, then pressing `F`.
+
+  - You can press left/right mouse button to change the character that the camera is following.
+
+- If your character is injured in campaign map and you encounter an enemy party, you can still choose "Watch the battle" option to begin the battle. In this battle you can command your troops in free camera but cannot directly control a character and fighting.
 
 - Pause game (`[`) or adjust time speed (`'`).
 

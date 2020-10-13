@@ -2,6 +2,7 @@
 using RTSCamera.Logic;
 using RTSCamera.Patch;
 using RTSCamera.Patch.CircularFormation;
+using RTSCamera.View;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Engine;
@@ -10,7 +11,6 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Config
 {
-
     public class RTSCameraMenuVM : MissionMenuVMBase
     {
         private readonly RTSCameraConfig _config;
@@ -18,13 +18,13 @@ namespace RTSCamera.Config
         private readonly SwitchFreeCameraLogic _switchFreeCameraLogic;
         private readonly SwitchTeamLogic _switchTeamLogic;
         private readonly MissionSpeedLogic _missionSpeedLogic;
-        private readonly GameKeyConfigView _gameKeyConfigView;
+        private readonly RTSCameraGameKeyConfigView _gameKeyConfigView;
         private readonly HideHUDView _hideHudView;
         private readonly FormationColorMissionView _contourView;
-        private readonly SelectCharacterView _selectCharacterView;
+        private readonly RTSCameraSelectCharacterView _selectCharacterView;
 
         private SelectionOptionDataVM _playerFormation;
-        private SelectionOptionDataVM _controlAnotherHero;
+        private SelectionOptionDataVM _watchAnotherHero;
 
         public string TitleString { get; } = GameTexts.FindText("str_rts_camera_mod_name").ToString();
 
@@ -328,20 +328,20 @@ namespace RTSCamera.Config
             new HintViewModel(GameTexts.FindText("str_rts_camera_config_key_hint").ToString());
 
         [DataSourceProperty]
-        public SelectionOptionDataVM ControlAnotherHero
+        public SelectionOptionDataVM WatchAnotherHero
         {
-            get => _controlAnotherHero;
+            get => _watchAnotherHero;
             set
             {
-                if (_controlAnotherHero == value)
+                if (_watchAnotherHero == value)
                     return;
-                _controlAnotherHero = value;
-                OnPropertyChanged(nameof(_controlAnotherHero));
+                _watchAnotherHero = value;
+                OnPropertyChanged(nameof(_watchAnotherHero));
             }
         }
 
-        public HintViewModel ControlAnotherHeroHint { get; } =
-            new HintViewModel(GameTexts.FindText("str_rts_camera_control_another_hero_hint").ToString());
+        public HintViewModel WatchAnotherHeroHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_watch_another_hero_hint").ToString());
 
         public void SelectCharacter()
         {
@@ -472,7 +472,8 @@ namespace RTSCamera.Config
             PlayerFormation = new SelectionOptionDataVM(new SelectionOptionData(
                 i =>
                 {
-                    if (i != _config.PlayerFormation || _config.AlwaysSetPlayerFormation)
+                    if ((i != _config.PlayerFormation || _config.AlwaysSetPlayerFormation) &&
+                        i > 0 && i < (int)FormationClass.NumberOfAllFormations)
                     {
                         _config.PlayerFormation = i;
                         _switchFreeCameraLogic.CurrentPlayerFormation = (FormationClass) i;
@@ -506,12 +507,15 @@ namespace RTSCamera.Config
             {
                 Extensions.Add(new ExtensionVM(extension.ButtonName, () => extension.OpenExtensionMenu(_mission)));
             }
-            _gameKeyConfigView = Mission.Current.GetMissionBehaviour<GameKeyConfigView>();
+            _gameKeyConfigView = Mission.Current.GetMissionBehaviour<RTSCameraGameKeyConfigView>();
 
-            ControlAnotherHero = new SelectionOptionDataVM(
-                new ControlTroopsSelectionData().SelectionOptionData,
-                GameTexts.FindText("str_rts_camera_control_another_hero"));
-            _selectCharacterView = Mission.Current.GetMissionBehaviour<SelectCharacterView>();
+            _selectCharacterView = Mission.Current.GetMissionBehaviour<RTSCameraSelectCharacterView>();
+            if (_selectCharacterView == null)
+                return;
+
+            WatchAnotherHero = new SelectionOptionDataVM(
+                new WatchAgentSelectionData(_selectCharacterView.MissionScreen).SelectionOptionData,
+                GameTexts.FindText("str_rts_camera_watch_another_hero"));
         }
     }
 }

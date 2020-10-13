@@ -1,7 +1,7 @@
 ﻿using System;
 using TaleWorlds.Library;
 
-namespace RTSCamera
+namespace RTSCamera.View
 {
     public class ExtensionVM : ViewModel
     {

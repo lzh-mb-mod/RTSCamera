@@ -1,0 +1,9 @@
+<Prefab>
+  <Window>
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="RTSCamera.TransparentBrush">
+      <Children>
+        <TextWidget Text="@Text" IsVisible="@ShowText" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="100" Brush="AgentHUD.Interaction.Text" />
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

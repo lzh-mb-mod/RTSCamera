@@ -22,7 +22,7 @@
     <string id="RTSCamera_toggle_pause_hint" text="Pause or unpause the game." />
     <string id="RTSCamera_slow_motion_hint" text="Whether to enable slow motion mode (to adjust time speed)." />
     <string id="RTSCamera_slow_motion_factor_hint" text="The factor of time speed." />
-    <string id="RTSCamera_control_another_hero_hint" text="Control the hero you selected." />
+    <string id="RTSCamera_watch_another_hero_hint" text="Watch the hero you selected." />
     <string id="RTSCamera_select_character_hint" text="Select a character using mouse, then you can focus the camera to it or control it." />
     <string id="RTSCamera_control_ally_after_death_hint" text="Automatically control one of your ally after you die and continue fighting." />
     <string id="RTSCamera_prefer_to_control_companions_hint" text="Prefer to control companions when looking for target to control." />
@@ -74,7 +74,7 @@
     <string id="RTSCamera_controlallyafterdeath" text="Control Ally After Death" />
     <string id="RTSCamera_prefertocontrolcompanions" text="Prefer To Control Companions" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
-    <string id="RTSCamera_controlanotherhero" text="Control Another Hero" />
+    <string id="RTSCamera_watchanotherhero" text="Watch Another Hero" />
     <string id="RTSCamera_select_character" text="Select Character" />
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="Cheat Options" />
@@ -110,5 +110,7 @@
     <string id="RTSCamera_switchtoenemyteam" text="Switched to the enemy team." />
 
     <string id="RTSCamera_select_character_view_hint" text="Please Select a character by left click. Then press {KeyName} to lock to it and press again to control it." />
+    <string id="RTSCamera_control_troop_hint" text="You can press {KeyName} to control one of your teammates." />
+    <string id="RTSCamera_control_current_agent_hint" text="Press {KeyName} to control the character" />
   </strings>
 </base>

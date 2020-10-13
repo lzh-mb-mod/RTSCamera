@@ -21,7 +21,7 @@ namespace RTSCamera.Config
         ToggleHUD,
         SwitchTeam,
         SelectCharacter,
-        NumberOfGameKeyEnums,
+        NumberOfGameKeyEnums
     }
 
     public struct SerializedGameKey
@@ -59,7 +59,7 @@ namespace RTSCamera.Config
 
         protected override void UpgradeToCurrentVersion()
         {
-            switch (ConfigVersion?.ToString())
+            switch (ConfigVersion)
             {
                 default:
                     Utility.DisplayLocalizedText("str_rts_camera_config_incompatible");
@@ -272,17 +272,17 @@ namespace RTSCamera.Config
 
         protected override void CopyFrom(GameKeyConfig other)
         {
-            this.ConfigVersion = other.ConfigVersion;
-            this.OpenMenuGameKey = other.OpenMenuGameKey;
-            this.PauseGameKey = other.PauseGameKey;
-            this.SlowMotionGameKey = other.SlowMotionGameKey;
-            this.FreeCameraGameKey = other.FreeCameraGameKey;
-            this.DisableDeathGameKey = other.DisableDeathGameKey;
-            this.ControlTroopGameKey = other.ControlTroopGameKey;
-            this.ToggleHUDGameKey = other.ToggleHUDGameKey;
-            this.SwitchTeamGameKey = other.SwitchTeamGameKey;
-            this.SelectCharacterGameKey = other.SelectCharacterGameKey;
-            this._gameKeys = other._gameKeys;
+            ConfigVersion = other.ConfigVersion;
+            OpenMenuGameKey = other.OpenMenuGameKey;
+            PauseGameKey = other.PauseGameKey;
+            SlowMotionGameKey = other.SlowMotionGameKey;
+            FreeCameraGameKey = other.FreeCameraGameKey;
+            DisableDeathGameKey = other.DisableDeathGameKey;
+            ControlTroopGameKey = other.ControlTroopGameKey;
+            ToggleHUDGameKey = other.ToggleHUDGameKey;
+            SwitchTeamGameKey = other.SwitchTeamGameKey;
+            SelectCharacterGameKey = other.SelectCharacterGameKey;
+            _gameKeys = other._gameKeys;
         }
 
         protected override XmlSerializer serializer => new XmlSerializer(typeof(GameKeyConfig));

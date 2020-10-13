@@ -1,7 +1,7 @@
 ﻿using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 
-namespace RTSCamera.Patch
+namespace RTSCamera.Patch.Fix
 {
     public class Patch_MissionAgentLabelView
     {

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
-namespace RTSCamera
+namespace RTSCamera.View
 {
     public class SelectionOptionDataVM : ViewModel
     {
@@ -18,13 +17,13 @@ namespace RTSCamera
         [DataSourceProperty]
         public SelectorVM<SelectorItemVM> Selector
         {
-            get => this._selector;
+            get => _selector;
             set
             {
-                if (value == this._selector)
+                if (value == _selector)
                     return;
-                this._selector = value;
-                this.OnPropertyChanged(nameof(Selector));
+                _selector = value;
+                OnPropertyChanged(nameof(Selector));
             }
         }
 
@@ -43,11 +42,11 @@ namespace RTSCamera
 
         public SelectionOptionDataVM(SelectionOptionData option, TextObject name)
         {
-            this._selectionOptionData = option;
-            this.Name = name.ToString();
+            _selectionOptionData = option;
+            Name = name.ToString();
 
             IEnumerable<SelectionItem> selectableItems = option.GetSelectableOptionNames();
-            if (selectableItems.All<SelectionItem>((Func<SelectionItem, bool>)(n => n.IsLocalizationId)))
+            if (selectableItems.All(n => n.IsLocalizationId))
             {
                 List<TextObject> textObjectList = new List<TextObject>();
                 foreach (SelectionItem selectionItem in selectableItems)
@@ -55,7 +54,7 @@ namespace RTSCamera
                     TextObject text = GameTexts.FindText(selectionItem.Data, selectionItem.Variation);
                     textObjectList.Add(text);
                 }
-                this._selector = new SelectorVM<SelectorItemVM>((IEnumerable<TextObject>)textObjectList, (int)this._selectionOptionData.GetValue(), new Action<SelectorVM<SelectorItemVM>>(this.UpdateValue));
+                _selector = new SelectorVM<SelectorItemVM>(textObjectList, (int)_selectionOptionData.GetValue(), UpdateValue);
             }
             else
             {
@@ -70,24 +69,22 @@ namespace RTSCamera
                     else
                         stringList.Add(selectionItem.Data);
                 }
-                this._selector = new SelectorVM<SelectorItemVM>((IEnumerable<string>)stringList, (int)this._selectionOptionData.GetValue(), new Action<SelectorVM<SelectorItemVM>>(this.UpdateValue));
+                _selector = new SelectorVM<SelectorItemVM>(stringList, (int)_selectionOptionData.GetValue(), UpdateValue);
             }
-            this._initialValue = (int)this._selectionOptionData.GetValue();
-            this.Selector.SelectedIndex = this._initialValue;
+            _initialValue = (int)_selectionOptionData.GetValue();
+            Selector.SelectedIndex = _initialValue;
         }
 
         public override void RefreshValues()
         {
             base.RefreshValues();
-            this._selector?.RefreshValues();
+            _selector?.RefreshValues();
         }
 
         public void UpdateValue(SelectorVM<SelectorItemVM> selector)
         {
-            if (selector.SelectedIndex < 0)
-                return;
-            this._selectionOptionData.SetValue((float)selector.SelectedIndex);
-            this._selectionOptionData.Commit();
+            _selectionOptionData.SetValue(selector.SelectedIndex);
+            _selectionOptionData.Commit();
         }
     }
 }

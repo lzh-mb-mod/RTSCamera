@@ -2,7 +2,7 @@
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
 
-namespace RTSCamera.Patch
+namespace RTSCamera.Patch.Fix
 {
     //[HarmonyLib.HarmonyPatch(typeof(RangedSiegeWeaponView), "HandleUserInput")]
     public class Patch_RangedSiegeWeaponView

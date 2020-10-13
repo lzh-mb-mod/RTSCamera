@@ -1,7 +1,7 @@
 ﻿using TaleWorlds.Core;
 using TaleWorlds.Library;
 
-namespace RTSCamera
+namespace RTSCamera.View
 {
     public class SelectCharacterVM : ViewModel
     {

@@ -42,7 +42,7 @@ namespace RTSCamera.Config
 
         public int PlayerFormation = 4;
 
-        public bool AlwaysSetPlayerFormation = false;
+        public bool AlwaysSetPlayerFormation;
 
         public bool ConstantSpeed;
 
@@ -70,9 +70,9 @@ namespace RTSCamera.Config
 
         public bool DisableDeath;
 
-        public bool DisableDeathHotkeyEnabled = false;
+        public bool DisableDeathHotkeyEnabled;
 
-        public bool SwitchTeamHotkeyEnabled = false;
+        public bool SwitchTeamHotkeyEnabled;
 
         private static RTSCameraConfig CreateDefault()
         {

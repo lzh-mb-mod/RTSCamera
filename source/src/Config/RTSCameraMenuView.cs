@@ -9,7 +9,7 @@ namespace RTSCamera.Config
         public RTSCameraMenuView()
             : base(24, nameof(RTSCameraMenuView))
         {
-            this.GetDataSource = () => new RTSCameraMenuVM(Mission, this.OnCloseMenu);
+            GetDataSource = () => new RTSCameraMenuVM(Mission, OnCloseMenu);
         }
 
         public override void OnMissionScreenInitialize()
@@ -28,10 +28,10 @@ namespace RTSCamera.Config
             base.OnMissionScreenTick(dt);
             if (IsActivated)
             {
-                if (this.GauntletLayer.Input.IsKeyReleased(_gameKeyConfig.GetKey(GameKeyEnum.OpenMenu)))
+                if (GauntletLayer.Input.IsKeyReleased(_gameKeyConfig.GetKey(GameKeyEnum.OpenMenu)))
                     DeactivateMenu();
             }
-            else if (this.Input.IsKeyReleased(_gameKeyConfig.GetKey(GameKeyEnum.OpenMenu)))
+            else if (Input.IsKeyReleased(_gameKeyConfig.GetKey(GameKeyEnum.OpenMenu)))
                 ActivateMenu();
         }
 

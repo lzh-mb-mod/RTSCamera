@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera
+namespace RTSCamera.Logic
 {
     class CommanderLogic : MissionLogic
     {
@@ -9,7 +9,7 @@ namespace RTSCamera
         {
             base.OnBehaviourInitialize();
 
-            this.Mission.OnMainAgentChanged += OnMainAgentChanged;
+            Mission.OnMainAgentChanged += OnMainAgentChanged;
         }
 
         public override void OnRemoveBehaviour()
@@ -21,7 +21,7 @@ namespace RTSCamera
 
         private void OnMainAgentChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (this.Mission.MainAgent != null)
+            if (Mission.MainAgent != null)
                 Utility.SetPlayerAsCommander();
             else
                 Utility.CancelPlayerAsCommander();

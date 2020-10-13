@@ -1,6 +1,5 @@
 ﻿using System;
 using TaleWorlds.Library;
-using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera
 {
@@ -33,72 +32,72 @@ namespace RTSCamera
         [DataSourceProperty]
         public float Min
         {
-            get => this._min;
+            get => _min;
             set
             {
-                if (Math.Abs(value - this._min) < 0.01f)
+                if (Math.Abs(value - _min) < 0.01f)
                     return;
-                this._min = value;
-                this.OnPropertyChanged(nameof(Min));
+                _min = value;
+                OnPropertyChanged(nameof(Min));
             }
         }
 
         [DataSourceProperty]
         public float Max
         {
-            get => this._max;
+            get => _max;
             set
             {
-                if (Math.Abs(value - this._max) < 0.01f)
+                if (Math.Abs(value - _max) < 0.01f)
                     return;
-                this._max = value;
-                this.OnPropertyChanged(nameof(Max));
+                _max = value;
+                OnPropertyChanged(nameof(Max));
             }
         }
 
         [DataSourceProperty]
         public float OptionValue
         {
-            get => this._optionValue;
+            get => _optionValue;
             set
             {
-                if (Math.Abs((double)value - (double)this._optionValue) < 0.01f)
+                if (Math.Abs(value - (double)_optionValue) < 0.01f)
                     return;
-                this._optionValue = MathF.Round(value * _roundScale) / (float)_roundScale;
-                this.OnPropertyChanged(nameof(OptionValue));
-                this.OnPropertyChanged(nameof(OptionValueAsString));
-                this._updateAction(OptionValue);
+                _optionValue = MathF.Round(value * _roundScale) / (float)_roundScale;
+                OnPropertyChanged(nameof(OptionValue));
+                OnPropertyChanged(nameof(OptionValueAsString));
+                _updateAction(OptionValue);
             }
         }
 
         [DataSourceProperty]
         public bool IsDiscrete
         {
-            get => this._isDiscrete;
+            get => _isDiscrete;
             set
             {
-                if (value == this._isDiscrete)
+                if (value == _isDiscrete)
                     return;
-                this._isDiscrete = value;
-                this.OnPropertyChanged(nameof(IsDiscrete));
+                _isDiscrete = value;
+                OnPropertyChanged(nameof(IsDiscrete));
             }
         }
 
         [DataSourceProperty]
-        public string OptionValueAsString => !this.IsDiscrete ? this._optionValue.ToString("F") : ((int)this._optionValue).ToString();
+        public string OptionValueAsString => !IsDiscrete ? _optionValue.ToString("F") : ((int)_optionValue).ToString();
 
 
 
         [DataSourceProperty]
         public bool IsVisible
         {
-            get => this._isVisible;
+            get => _isVisible;
             set
             {
-                if (value == this._isVisible)
+                if (value == _isVisible)
                     return;
-                this._isVisible = value;
-                this.OnPropertyChanged(nameof(IsVisible));
+                _isVisible = value;
+                OnPropertyChanged(nameof(IsVisible));
             }
         }
     }

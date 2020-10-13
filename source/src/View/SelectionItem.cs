@@ -1,4 +1,4 @@
-﻿namespace RTSCamera
+﻿namespace RTSCamera.View
 {
     public struct SelectionItem
     {
@@ -8,9 +8,9 @@
 
         public SelectionItem(bool isLocalizationId, string data, string variation = null)
         {
-            this.IsLocalizationId = isLocalizationId;
-            this.Data = data;
-            this.Variation = variation;
+            IsLocalizationId = isLocalizationId;
+            Data = data;
+            Variation = variation;
         }
     }
 }

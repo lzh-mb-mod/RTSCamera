@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using TaleWorlds.Engine;
@@ -29,7 +28,7 @@ namespace RTSCamera.Patch
             IDetachment detachment)
         {
 
-            foreach (Agent agent in detachment.Agents.Where<Agent>((Func<Agent, bool>)(a => a.Formation == __instance && a.IsAIControlled)).ToList<Agent>())
+            foreach (Agent agent in detachment.Agents.Where(a => a.Formation == __instance && a.IsAIControlled).ToList())
             {
                 detachment.RemoveAgent(agent);
                 AttachUnit?.Invoke(__instance, new object[] { agent });

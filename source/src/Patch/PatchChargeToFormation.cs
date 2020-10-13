@@ -8,7 +8,7 @@ namespace RTSCamera.Patch
     public class PatchChargeToFormation
     {
         private static readonly Harmony Harmony = new Harmony("RTSCameraChargeToFormationPatch");
-        private static bool _patched = false;
+        private static bool _patched;
 
         public static void Patch()
         {

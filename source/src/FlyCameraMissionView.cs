@@ -3,8 +3,10 @@ using System.Linq;
 using System.Reflection;
 using RTSCamera.Config;
 using RTSCamera.Logic;
+using RTSCamera.View;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
+using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
@@ -50,6 +52,8 @@ namespace RTSCamera
         private Vec2 _clickedPositionPixel = Vec2.Zero;
         private bool _levelToEdge;
         private bool _lockToAgent;
+        private GauntletLayer _showControlHintLayer;
+        private ShowControlHintVM _showControlHintVM;
 
         public bool LockToAgent
         {
@@ -60,6 +64,17 @@ namespace RTSCamera
                     return;
                 _forceMove = false;
                 _lockToAgent = value;
+                if (_lockToAgent)
+                {
+                    if (MissionScreen.LastFollowedAgent != null && MissionScreen.LastFollowedAgent.Team == Mission.PlayerTeam)
+                    {
+                        _showControlHintVM.SetShowText(true, true);
+                    }
+                }
+                else
+                {
+                    _showControlHintVM.SetShowText(false, false);
+                }
             }
         }
 
@@ -70,14 +85,13 @@ namespace RTSCamera
         private float _cameraBearingDelta;
         private float _cameraElevationDelta;
         private float _cameraViewAngle = 65.0f;
-        private float _zoom = 1.0f;
         public float CameraBearing { get; private set; }
 
         public float CameraElevation { get; private set; }
 
         public bool CameraRotateSmoothMode = true;
 
-        public bool ConstantSpeed = false;
+        public bool ConstantSpeed;
 
         public bool Outdoor = true;
 
@@ -95,14 +109,7 @@ namespace RTSCamera
             }
         }
 
-        public float Zoom
-        {
-            get => _zoom;
-            set
-            {
-                _zoom = value;
-            }
-        }
+        public float Zoom { get; set; } = 1.0f;
 
         public float DepthOfFieldDistance
         {
@@ -188,7 +195,7 @@ namespace RTSCamera
             _cameraHeightToAdd = 0.0f;
             _cameraHeightLimit = 0.0f;
             _cameraSmoothMode = true;
-            ViewOrderPriorty = 25;
+            ViewOrderPriorty = 1;
 
             _config = RTSCameraConfig.Get();
             ConstantSpeed = _config.ConstantSpeed;
@@ -198,14 +205,29 @@ namespace RTSCamera
             _missionMainAgentController = Mission.GetMissionBehaviour<MissionMainAgentController>();
             _orderUIHandler = Mission.GetMissionBehaviour<RTSCameraOrderUIHandler>();
 
+            _showControlHintVM = new ShowControlHintVM(_orderUIHandler?.IsDeployment ?? false);
+            _showControlHintLayer = new GauntletLayer(ViewOrderPriorty);
+            _showControlHintLayer.LoadMovie("RTSCameraShowControlHint", _showControlHintVM);
+            MissionScreen.AddLayer(_showControlHintLayer);
+
             Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
             if (_freeCameraLogic != null)
                 _freeCameraLogic.ToggleFreeCamera += OnToggleFreeCamera;
+
+            MissionScreen.OnSpectateAgentFocusIn += MissionScreenOnSpectateAgentFocusIn;
+            MissionScreen.OnSpectateAgentFocusOut += MissionScreenOnSpectateAgentFocusOut;
         }
 
         public override void OnMissionScreenFinalize()
         {
             base.OnMissionScreenFinalize();
+
+            MissionScreen.RemoveLayer(_showControlHintLayer);
+            _showControlHintLayer = null;
+            _showControlHintVM = null;
+
+            MissionScreen.OnSpectateAgentFocusIn -= MissionScreenOnSpectateAgentFocusIn;
+            MissionScreen.OnSpectateAgentFocusOut -= MissionScreenOnSpectateAgentFocusOut;
 
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
             if (_freeCameraLogic != null)
@@ -235,6 +257,17 @@ namespace RTSCamera
                 return LockToAgent ? SpectatorCameraTypes.LockToAnyAgent : SpectatorCameraTypes.Free;
             }
             return otherCameraModeLogic?.GetMissionCameraLockMode(lockedToMainPlayer) ?? SpectatorCameraTypes.Invalid;
+        }
+
+        private void MissionScreenOnSpectateAgentFocusIn(Agent agent)
+        {
+            _showControlHintVM.SetShowText(true, (LockToAgent || Mission.MainAgent == null) &&
+                                                 agent.Team != null && agent.Team == Mission.PlayerTeam);
+        }
+
+        private void MissionScreenOnSpectateAgentFocusOut(Agent agent)
+        {
+            _showControlHintVM.SetShowText(false, Mission.MainAgent == null && Mission.PlayerTeam?.ActiveAgents.Count > 0);
         }
 
         private void EndDrag()
@@ -278,7 +311,14 @@ namespace RTSCamera
 
         private void UpdateMouseVisibility()
         {
-            _orderUIHandler?.gauntletLayer.InputRestrictions.SetMouseVisibility((_freeCameraLogic?.isSpectatorCamera ?? false) && !LockToAgent && _isOrderViewOpen);
+            bool mouseVisibility =
+                (Input.IsAltDown() || (_freeCameraLogic?.isSpectatorCamera ?? false) && !LockToAgent) &&
+                _isOrderViewOpen ||
+                (_orderUIHandler?.IsDeployment ?? false);
+            if (mouseVisibility != _orderUIHandler?.gauntletLayer.InputRestrictions.MouseVisibility)
+            {
+                _orderUIHandler?.gauntletLayer.InputRestrictions.SetMouseVisibility(mouseVisibility);
+            }
         }
 
         private void UpdateDragData()
@@ -297,7 +337,7 @@ namespace RTSCamera
             }
             else
             {
-                if (!_isOrderViewOpen || !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton) || MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton) || (MissionScreen.SceneLayer.Input.GetMousePositionPixel().DistanceSquared(_clickedPositionPixel) <= 10.0 || _rightButtonDraggingMode))
+                if (!_isOrderViewOpen || !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton) || MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton) || MissionScreen.SceneLayer.Input.GetMousePositionPixel().DistanceSquared(_clickedPositionPixel) <= 10.0 || _rightButtonDraggingMode)
                     return;
                 BeginDrag();
                 _rightButtonDraggingMode = true;
@@ -539,7 +579,7 @@ namespace RTSCamera
                     float y = MissionScreen.SceneLayer.Input.GetMousePositionRanged().y;
                     if (x <= 0.01 && y >= 0.01 && y <= 0.25)
                         inputXRaw = -1000f * dt;
-                    else if (x >= 0.99 && (y >= 0.01 && y <= 0.25))
+                    else if (x >= 0.99 && y >= 0.01 && y <= 0.25)
                         inputXRaw = 1000f * dt;
                 }
                 else
@@ -615,8 +655,8 @@ namespace RTSCamera
             {
                 LockToAgent = false;
                 LeaveFromAgent();
-                UpdateMouseVisibility();
             }
+            UpdateMouseVisibility();
         }
     }
 }

@@ -24,46 +24,46 @@ namespace RTSCamera.Config
 
         public GameKeyConfigVM(Action<GameKeyOptionVM> onKeyBindRequest, Action onClose)
         {
-            this._onKeyBindRequest = onKeyBindRequest;
-            this._onClose = onClose;
-            this._config = GameKeyConfig.Get();
-            this._categories = new Dictionary<string, List<GameKey>>()
+            _onKeyBindRequest = onKeyBindRequest;
+            _onClose = onClose;
+            _config = GameKeyConfig.Get();
+            _categories = new Dictionary<string, List<GameKey>>
             {
                 {
                     GameKeyCategory.RTSCameraHotKey,
                     _config.GameKeyEnums.Select(gameKeyEnum => _config.GetGameKey(gameKeyEnum)).ToList()
-                },
+                }
             };
-            this.Groups = new MBBindingList<GameKeyGroupVM>();
-            foreach (var category in this._categories)
+            Groups = new MBBindingList<GameKeyGroupVM>();
+            foreach (var category in _categories)
             {
                 if (category.Value.Count > 0)
-                    this.Groups.Add(new GameKeyGroupVM(category.Key, category.Value, _onKeyBindRequest, UpdateKeysOfGameKeysWithID));
+                    Groups.Add(new GameKeyGroupVM(category.Key, category.Value, _onKeyBindRequest, UpdateKeysOfGameKeysWithID));
             }
-            this.RefreshValues();
+            RefreshValues();
         }
 
         public override void RefreshValues()
         {
             base.RefreshValues();
-            this.CancelLbl = new TextObject("{=3CpNUnVl}Cancel").ToString();
-            this.DoneLbl = new TextObject("{=WiNRdfsm}Done").ToString();
-            this.Name = "ConfigKey";
-            this.Groups.ApplyActionOnAllItems((Action<GameKeyGroupVM>)(x => x.RefreshValues()));
+            CancelLbl = new TextObject("{=3CpNUnVl}Cancel").ToString();
+            DoneLbl = new TextObject("{=WiNRdfsm}Done").ToString();
+            Name = "ConfigKey";
+            Groups.ApplyActionOnAllItems(x => x.RefreshValues());
         }
 
         public void OnReset()
         {
             foreach (GameKeyGroupVM group in Groups)
                 group.OnReset();
-            this._keysToChangeOnDone.Clear();
+            _keysToChangeOnDone.Clear();
         }
 
         public void OnDone()
         {
             foreach (GameKeyGroupVM group in Groups)
                 group.OnDone();
-            foreach (KeyValuePair<GameKey, InputKey> keyValuePair in this._keysToChangeOnDone)
+            foreach (KeyValuePair<GameKey, InputKey> keyValuePair in _keysToChangeOnDone)
                 keyValuePair.Key.PrimaryKey.ChangeKey(keyValuePair.Value);
             _config.Serialize();
         }
@@ -72,12 +72,12 @@ namespace RTSCamera.Config
         {
             foreach (var category in _categories)
             {
-                    foreach (GameKey key in category.Value.Where<GameKey>((Func<GameKey, bool>)(k => k != null && k.Id == givenId)))
+                    foreach (GameKey key in category.Value.Where(k => k != null && k.Id == givenId))
                     {
-                        if (this._keysToChangeOnDone.ContainsKey(key))
-                            this._keysToChangeOnDone[key] = newKey;
+                        if (_keysToChangeOnDone.ContainsKey(key))
+                            _keysToChangeOnDone[key] = newKey;
                         else
-                            this._keysToChangeOnDone.Add(key, newKey);
+                            _keysToChangeOnDone.Add(key, newKey);
                     }
             }
         }
@@ -96,52 +96,52 @@ namespace RTSCamera.Config
         [DataSourceProperty]
         public string Name
         {
-            get => this._name;
+            get => _name;
             set
             {
-                if (value == this._name)
+                if (value == _name)
                     return;
-                this._name = value;
-                this.OnPropertyChanged(nameof(Name));
+                _name = value;
+                OnPropertyChanged(nameof(Name));
             }
         }
 
         [DataSourceProperty]
         public MBBindingList<GameKeyGroupVM> Groups
         {
-            get => this._groups;
+            get => _groups;
             set
             {
-                if (value == this._groups)
+                if (value == _groups)
                     return;
-                this._groups = value;
-                this.OnPropertyChanged(nameof(Groups));
+                _groups = value;
+                OnPropertyChanged(nameof(Groups));
             }
         }
 
         [DataSourceProperty]
         public string CancelLbl
         {
-            get => this._cancelLbl;
+            get => _cancelLbl;
             set
             {
-                if (value == this._cancelLbl)
+                if (value == _cancelLbl)
                     return;
-                this._cancelLbl = value;
-                this.OnPropertyChanged(nameof(CancelLbl));
+                _cancelLbl = value;
+                OnPropertyChanged(nameof(CancelLbl));
             }
         }
 
         [DataSourceProperty]
         public string DoneLbl
         {
-            get => this._doneLbl;
+            get => _doneLbl;
             set
             {
-                if (value == this._doneLbl)
+                if (value == _doneLbl)
                     return;
-                this._doneLbl = value;
-                this.OnPropertyChanged(nameof(DoneLbl));
+                _doneLbl = value;
+                OnPropertyChanged(nameof(DoneLbl));
             }
         }
     }

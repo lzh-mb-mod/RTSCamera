@@ -1,6 +1,7 @@
 ﻿using System;
 using RTSCamera.Config;
 using RTSCamera.Logic;
+using RTSCamera.View;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -15,10 +16,7 @@ namespace RTSCamera
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private FlyCameraMissionView _flyCameraMissionView;
-        private SelectCharacterView _selectCharacterView;
-        private Agent _nearestNonHero;
-        private Agent _nearestHero;
-        private Agent _nearestCompanion;
+        private RTSCameraSelectCharacterView _selectCharacterView;
 
         public event Action MainAgentWillBeChangedToAnotherOne;
 
@@ -67,32 +65,41 @@ namespace RTSCamera
 
         public bool ForceControlAgent(Agent agent)
         {
-            if (agent != null)
+            try
             {
-                if (agent.Controller == Agent.ControllerType.Player || agent.Team != Mission.PlayerTeam)
-                    return false;
-                if (!Utility.IsPlayerDead())
+                if (agent != null)
                 {
-                    MainAgentWillBeChangedToAnotherOne?.Invoke();
-                    Utility.AIControlMainAgent(true);
-                }
-                bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
-                if (_switchFreeCameraLogic.isSpectatorCamera)
-                {
-                    Mission.MainAgent = agent;
-                    _switchFreeCameraLogic.SwitchCamera();
+                    if (agent.Controller == Agent.ControllerType.Player || agent.Team != Mission.PlayerTeam)
+                        return false;
+                    if (!Utility.IsPlayerDead() && Mission.MainAgent != agent)
+                    {
+                        MainAgentWillBeChangedToAnotherOne?.Invoke();
+                        Utility.AIControlMainAgent(true);
+                    }
+                    bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
+                    if (_switchFreeCameraLogic.isSpectatorCamera)
+                    {
+                        Mission.MainAgent = agent;
+                        _switchFreeCameraLogic.SwitchCamera();
+                    }
+                    else
+                    {
+                        agent.Controller = Agent.ControllerType.Player;
+                    }
+
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
+
+                    return true;
                 }
                 else
                 {
-                    agent.Controller = Agent.ControllerType.Player;
+                    Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
+                    return false;
                 }
-
-                Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
             }
-            else
+            catch (Exception e)
             {
-                Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
-                return false;
+                Utility.DisplayMessage(e.ToString());
             }
 
             return false;
@@ -100,24 +107,32 @@ namespace RTSCamera
 
         public bool ControlMainAgent(bool displayMessage = true)
         {
-            if (Mission.MainAgent != null)
+            try
             {
-                if (Mission.MainAgent.Controller != Agent.ControllerType.Player)
+                if (Mission.MainAgent != null)
                 {
-                    if (displayMessage)
+                    if (Mission.MainAgent.Controller != Agent.ControllerType.Player)
                     {
-                        GameTexts.SetVariable("ControlledTroopName", Mission.MainAgent.Name);
-                        Utility.DisplayLocalizedText("str_rts_camera_control_troop");
+                        if (displayMessage)
+                        {
+                            GameTexts.SetVariable("ControlledTroopName", Mission.MainAgent.Name);
+                            Utility.DisplayLocalizedText("str_rts_camera_control_troop");
+                        }
+                        bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
+                        Mission.MainAgent.Controller = Agent.ControllerType.Player;
+                        Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
+
+                        return true;
                     }
-                    bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
-                    Mission.MainAgent.Controller = Agent.ControllerType.Player;
-                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
+                }
+                else
+                {
+                    Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
                 }
             }
-            else
+            catch (Exception e)
             {
-                Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
-                return false;
+                Utility.DisplayMessage(e.ToString());
             }
 
             return false;
@@ -149,7 +164,7 @@ namespace RTSCamera
                 if ((int)_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
                 {
                     var secondPreference =
-                        AgentPreferenceFromFormation((FormationClass) _config.PlayerFormation, cameraPosition);
+                        AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation, cameraPosition);
                     if (secondPreference.companion != null)
                         return secondPreference.companion;
                     var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition);
@@ -171,9 +186,9 @@ namespace RTSCamera
                 return agent;
             }
 
-            if ((int) _switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
+            if ((int)_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
             {
-                var secondPreference = AgentPreferenceFromFormation((FormationClass) _config.PlayerFormation, cameraPosition);
+                var secondPreference = AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation, cameraPosition);
                 if (secondPreference.agent != null)
                 {
                     return secondPreference.agent;
@@ -203,7 +218,7 @@ namespace RTSCamera
 
             _switchFreeCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
             _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
-            _selectCharacterView = Mission.GetMissionBehaviour<SelectCharacterView>();
+            _selectCharacterView = Mission.GetMissionBehaviour<RTSCameraSelectCharacterView>();
         }
 
         public override void OnMissionTick(float dt)

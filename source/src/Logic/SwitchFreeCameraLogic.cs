@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.QuerySystem;
 using TaleWorlds.CampaignSystem;
@@ -18,10 +19,10 @@ namespace RTSCamera.Logic
         private ControlTroopLogic _controlTroopLogic;
 
         private bool _isFirstTimeMainAgentChanged = true;
-        private bool _switchToFreeCameraAfter100ms = false;
+        private bool _switchToFreeCameraAfter100ms;
         private float _timer;
         private List<FormationClass> _playerFormations;
-        private float _updatePlayerFormationTime = 0;
+        private float _updatePlayerFormationTime;
 
         public List<FormationClass> PlayerFormations => _playerFormations ??= new List<FormationClass>();
 
@@ -37,7 +38,7 @@ namespace RTSCamera.Logic
             }
         }
 
-        public bool isSpectatorCamera = false;
+        public bool isSpectatorCamera;
 
         public event Action<bool> ToggleFreeCamera;
 
@@ -74,7 +75,7 @@ namespace RTSCamera.Logic
         {
             base.OnRemoveBehaviour();
 
-            this.Mission.OnMainAgentChanged -= OnMainAgentChanged;
+            Mission.OnMainAgentChanged -= OnMainAgentChanged;
             QueryDataStore.Clear();
             WatchBattleBehavior.WatchMode = false;
         }
@@ -89,7 +90,7 @@ namespace RTSCamera.Logic
                 Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
                 if (Mission.PlayerTeam.IsPlayerGeneral)
                     Utility.SetPlayerAsCommander(true);
-                team.PlayerOrderController?.SelectAllFormations(false);
+                team.PlayerOrderController?.SelectAllFormations();
             }
         }
 
@@ -116,9 +117,9 @@ namespace RTSCamera.Logic
                 CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
             }
 
-            if (this.Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.FreeCamera)))
+            if (Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.FreeCamera)))
             {
-                this.SwitchCamera();
+                SwitchCamera();
             }
         }
 
@@ -140,10 +141,7 @@ namespace RTSCamera.Logic
 
             if (agent.Controller == Agent.ControllerType.Player)
             {
-                agent.SetMaximumSpeedLimit(-1, true);
-                agent.DisableScriptedMovement();
-                agent.AIStateFlags &= ~Agent.AIStateFlag.UseObjectMoving; //agent.AIMoveToGameObjectDisable();
-                agent.AIStateFlags &= ~Agent.AIStateFlag.UseObjectUsing;  // agent.AIUseGameObjectEnable(false);
+                agent.SetMaximumSpeedLimit(-1, false);
                 if (_config.AlwaysSetPlayerFormation)
                     Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
                 if (agent.Formation == null)
@@ -152,6 +150,11 @@ namespace RTSCamera.Logic
             }
             else if (agent == Mission.MainAgent)
             {
+                if (agent.Formation != null)
+                {
+                    Utility.SetHasPlayer(agent.Formation, false);
+                }
+
                 if (_config.AlwaysSetPlayerFormation)
                     Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
                 // the game may crash if team has ai, no formation has agents and there are agents controlled by AI.
@@ -206,22 +209,32 @@ namespace RTSCamera.Logic
         {
             base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
 
-            if (Mission.MainAgent == affectedAgent && (_config.ControlAllyAfterDeath || isSpectatorCamera))
+            if (Mission.MainAgent == affectedAgent)
             {
-                if (Mission.Mode == MissionMode.Battle && Mission.MainAgent.Character == CharacterObject.PlayerCharacter) 
-                    Utility.DisplayLocalizedText("str_rts_camera_player_dead", null, new Color(1, 0, 0));
-                // mask code in Mission.OnAgentRemoved so that formations will not be delegated to AI after player dead.
-                affectedAgent.OnMainAgentWieldedItemChange = (Agent.OnMainAgentWieldedItemChangeDelegate)null;
-                bool shouldSmoothToAgent = Utility.BeforeSetMainAgent();
-                Mission.MainAgent = null;
-                // Set smooth move again if controls another agent instantly.
-                // Otherwise MissionScreen will reset camera elevate and bearing.
-                if (Mission.MainAgent != null)
-                    Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
-                else if (shouldSmoothToAgent)
+                if (_config.ControlAllyAfterDeath || isSpectatorCamera)
                 {
-                    Utility.ShouldSmoothMoveToAgent = true;
-                    Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, false);
+                    if (Mission.Mode == MissionMode.Battle &&
+                        Mission.MainAgent.Character == CharacterObject.PlayerCharacter)
+                        Utility.DisplayLocalizedText("str_rts_camera_player_dead", null, new Color(1, 0, 0));
+                    // mask code in Mission.OnAgentRemoved so that formations will not be delegated to AI after player dead.
+                    affectedAgent.OnMainAgentWieldedItemChange = null;
+                    bool shouldSmoothToAgent = Utility.BeforeSetMainAgent();
+                    Mission.MainAgent = null;
+                    // Set smooth move again if controls another agent instantly.
+                    // Otherwise MissionScreen will reset camera elevate and bearing.
+                    if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
+                        Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
+                    else if (shouldSmoothToAgent)
+                    {
+                        Utility.ShouldSmoothMoveToAgent = true;
+                        Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, false);
+                    }
+                }
+                else if (Mission.PlayerTeam?.ActiveAgents.Count > 0)
+                {
+                    GameTexts.SetVariable("KeyName",
+                        Utility.TextForKey(_gameKeyConfig.GetKey(GameKeyEnum.ControlTroop)));
+                    Utility.DisplayLocalizedText("str_rts_camera_control_troop_hint");
                 }
             }
         }

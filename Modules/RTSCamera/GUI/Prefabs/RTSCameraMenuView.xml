@@ -206,7 +206,7 @@
                     <ListPanel Id="AfterDeathOptions" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center">
                       <Children>
 
-                        <ListPanel DataSource="{ControlAnotherHero}" LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" SuggestedWidth="800" HeightSizePolicy="Fixed" SuggestedHeight="42" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
+                        <ListPanel DataSource="{WatchAnotherHero}" LayoutImp.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" SuggestedWidth="800" HeightSizePolicy="Fixed" SuggestedHeight="42" HorizontalAlignment="Center" VerticalAlignment="Center" MarginTop="10">
                           <Children>
 
                             <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -217,7 +217,7 @@
                             <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="400" SuggestedHeight="42" HorizontalAlignment="Center" VerticalAlignment="Center">
                               <Children>
                                 <Standard.DropdownWithHorizontalControl Id="StringOption" HorizontalAlignment="Center" VerticalAlignment="Center" Parameter.SelectorDataSource="{Selector}" MarginLeft="10" />
-                                <HintWidget DataSource="{..\ControlAnotherHeroHint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint"/>
+                                <HintWidget DataSource="{..\WatchAnotherHeroHint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint"/>
                               </Children>
                             </Widget>
                           </Children>

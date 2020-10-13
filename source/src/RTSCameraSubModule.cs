@@ -1,10 +1,11 @@
-﻿using HarmonyLib;
+﻿using System;
+using System.Reflection;
+using HarmonyLib;
+using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Patch;
+using RTSCamera.Patch.Fix;
 using SandBox;
 using SandBox.Source.Towns;
-using System;
-using System.Reflection;
-using RTSCamera.Patch.CircularFormation;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -13,7 +14,6 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
 using TaleWorlds.MountAndBlade.View.Screen;
-using Array = System.Array;
 using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace RTSCamera

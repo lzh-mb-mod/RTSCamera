@@ -50,10 +50,6 @@ namespace RTSCamera.Logic
                 Utility.DisplayLocalizedText("str_rts_camera_enemy_wiped_out");
                 return;
             }
-            if (!Utility.IsPlayerDead())
-            {
-                Utility.AIControlMainAgent(true);
-            }
             Utility.DisplayLocalizedText("str_rts_camera_switch_to_enemy_team");
 
             PreSwitchTeam?.Invoke();

@@ -1,6 +1,6 @@
-﻿using RTSCamera.Config;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RTSCamera.Config;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -8,10 +8,29 @@ using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
-namespace RTSCamera
+namespace RTSCamera.View
 {
     public class FormationColorMissionView : MissionView
     {
+        private static readonly OrderType[] movementOrderTypes =
+        {
+            OrderType.Move,
+            OrderType.MoveToLineSegment,
+            OrderType.MoveToLineSegmentWithHorizontalLayout,
+            OrderType.Charge,
+            OrderType.ChargeWithTarget,
+            OrderType.StandYourGround,
+            OrderType.FollowMe,
+            OrderType.FollowEntity,
+            OrderType.GuardMe,
+            OrderType.Attach,
+            OrderType.Retreat,
+            OrderType.AdvanceTenPaces,
+            OrderType.FallBackTenPaces,
+            OrderType.Advance,
+            OrderType.FallBack
+        };
+
         private readonly uint _allySelectedColor = new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger();
         private readonly uint _allyTargetColor = new Color(0.3f, 0.3f, 1.0f).ToUnsignedInteger();
         private readonly uint _mouseOverAllyColor = new Color(0.3f, 1.0f, 1.0f).ToUnsignedInteger();
@@ -27,7 +46,7 @@ namespace RTSCamera
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
 
         private bool _isOrderShown;
-        private bool HighlightEnabled => _isOrderShown && (_config.ShouldHighlightWithOutline());
+        private bool HighlightEnabled => _isOrderShown && _config.ShouldHighlightWithOutline();
         private bool HighlightEnabledForSelectedFormation => _isOrderShown && _config.ClickToSelectFormation;
         private bool HighlightEnabledForAsTargetFormation => _isOrderShown && _config.AttackSpecificFormation;
 
@@ -134,7 +153,7 @@ namespace RTSCamera
 
         private void OnOrderIssued(OrderType orderType, IEnumerable<Formation> appliedFormations, params object[] delegateParams)
         {
-            if (!HighlightEnabledForAsTargetFormation)
+            if (!HighlightEnabledForAsTargetFormation || movementOrderTypes.FindIndex(o => o == orderType) == -1)
                 return;
             if (!_allySelectedFormations.Intersect(appliedFormations).IsEmpty())
             {
@@ -169,21 +188,8 @@ namespace RTSCamera
 
         private void OrderController_OnSelectedFormationsChanged()
         {
-            if (!_config.ShouldHighlightWithOutline())
+            if (!HighlightEnabled)
                 return;
-            if (!_isOrderShown)
-            {
-                _allySelectedFormations.Clear();
-                var formations = PlayerOrderController?.SelectedFormations;
-                if (formations == null)
-                    return;
-                foreach (var formation in formations)
-                {
-                    _allySelectedFormations.Add(formation);
-                }
-
-                return;
-            }
             UpdateContour();
             if (_orderUIHandler == null)
                 return;

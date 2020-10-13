@@ -6,7 +6,7 @@ namespace RTSCamera.Patch.CircularFormation
     public class PatchCircularFormation
     {
         private static readonly Harmony Harmony = new Harmony("RTSCameraCircularFormationPatch");
-        private static bool _patched = false;
+        private static bool _patched;
         public static void Patch()
         {
             try

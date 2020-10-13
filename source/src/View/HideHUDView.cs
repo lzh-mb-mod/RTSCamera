@@ -6,15 +6,15 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 
-namespace RTSCamera
+namespace RTSCamera.View
 {
     class HideHUDView : MissionView
     {
         private GameKeyConfig _gameKeyConfig;
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private bool _oldDisplayTargetingReticule = true;
-        private bool _hideUI = false;
-        private bool _isTemporarilyOpenUI = false;
+        private bool _hideUI;
+        private bool _isTemporarilyOpenUI;
 
         public override void OnBehaviourInitialize()
         {
@@ -44,7 +44,7 @@ namespace RTSCamera
         {
             base.OnMissionScreenTick(dt);
 
-            if (TaleWorlds.InputSystem.Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ToggleHUD)) || (MBDebug.DisableAllUI && TaleWorlds.InputSystem.Input.IsKeyPressed(InputKey.Home)))
+            if (TaleWorlds.InputSystem.Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ToggleHUD)) || MBDebug.DisableAllUI && TaleWorlds.InputSystem.Input.IsKeyPressed(InputKey.Home))
                 ToggleUI();
 
             if (!_isTemporarilyOpenUI)

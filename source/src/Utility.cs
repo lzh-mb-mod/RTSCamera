@@ -1,12 +1,13 @@
-﻿using RTSCamera.Config;
-using System;
+﻿using System;
 using System.Reflection;
+using RTSCamera.Config;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Screen;
 using Module = TaleWorlds.MountAndBlade.Module;
 
@@ -48,7 +49,7 @@ namespace RTSCamera
             {
                 if (!RTSCameraConfig.Get().DisplayMessage)
                     return;
-                DisplayMessageImpl(new TaleWorlds.Localization.TextObject(msg).ToString());
+                DisplayMessageImpl(new TextObject(msg).ToString());
             }
             catch
             {
@@ -61,7 +62,7 @@ namespace RTSCamera
             {
                 if (!RTSCameraConfig.Get().DisplayMessage)
                     return;
-                DisplayMessageImpl(new TaleWorlds.Localization.TextObject(msg).ToString(), color);
+                DisplayMessageImpl(new TextObject(msg).ToString(), color);
             }
             catch
             {
@@ -88,7 +89,7 @@ namespace RTSCamera
             keyName = TextForKey(GameKeyConfig.Get().GetKey(GameKeyEnum.FreeCamera));
             GameTexts.SetVariable("KeyName", keyName);
             hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_switch_camera_hint").ToString();
-            DisplayMessageOutOfMission((hint));
+            DisplayMessageOutOfMission(hint);
         }
 
         public static void PrintOrderHint()
@@ -164,6 +165,8 @@ namespace RTSCamera
                     formation.MovementOrder = MovementOrder.MovementOrderMove(mission.MainAgent.GetWorldPosition());
                 }
 
+                if (mission.MainAgent.Formation != null)
+                    SetHasPlayer(mission.MainAgent.Formation, false);
                 mission.MainAgent.Formation = formation;
             }
         }
@@ -191,8 +194,13 @@ namespace RTSCamera
                 return;
             try
             {
+                mission.GetMissionBehaviour<MissionMainAgentController>()?.InteractionComponent.ClearFocus();
                 if (mission.MainAgent.Controller == Agent.ControllerType.Player)
                 {
+                    if (mission.MainAgent.IsUsingGameObject && !(mission.MainAgent.CurrentlyUsedGameObject is SpawnedItemEntity))
+                    {
+                        mission.MainAgent.HandleStopUsingAction();
+                    }
                     mission.MainAgent.Controller = Agent.ControllerType.AI;
                     if (alarmed)
                     {
@@ -215,7 +223,7 @@ namespace RTSCamera
             }
             catch (Exception e)
             {
-                Utility.DisplayMessage(e.ToString());
+                DisplayMessage(e.ToString());
             }
 
             // avoid crash after victory. After victory, team ai decision won't be made so that current tactics won't be updated.
@@ -358,7 +366,7 @@ namespace RTSCamera
                 cameraTarget += vec3_4;
             }
             cameraTarget.z += (float)CameraTargetAddedHeight.GetValue(missionScreen);
-            cameraTarget += matrixFrame.rotation.f * agentScale * (0.7f * MathF.Pow(MathF.Cos((float)(1.0 / (((double)num8 / (double)agentScale - 0.200000002980232) * 30.0 + 20.0))), 3500f));
+            cameraTarget += matrixFrame.rotation.f * agentScale * (0.7f * MathF.Pow(MathF.Cos((float)(1.0 / ((num8 / (double)agentScale - 0.200000002980232) * 30.0 + 20.0))), 3500f));
             result.origin = cameraTarget + matrixFrame.rotation.u * missionScreen.CameraResultDistanceToTarget;
             return result;
         }
@@ -368,6 +376,23 @@ namespace RTSCamera
             IsPlayerAgentAdded?.SetValue(missionScreen, value);
             if (value)
                 CameraSpecialCurrentPositionToAdd?.SetValue(missionScreen, Vec3.Zero);
+        }
+
+        private static readonly PropertyInfo HasPlayer =
+            typeof(Formation).GetProperty(nameof(HasPlayer), BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly MethodInfo SetHasPlayerMethod = HasPlayer?.GetSetMethod(true);
+
+        public static void SetHasPlayer(Formation formation, bool hasPlayer)
+        {
+            try
+            {
+                SetHasPlayerMethod?.Invoke(formation, new object[] { hasPlayer });
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
+            }
         }
     }
 }

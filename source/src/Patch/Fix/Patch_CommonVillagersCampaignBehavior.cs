@@ -1,7 +1,7 @@
 ﻿using TaleWorlds.CampaignSystem;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Patch
+namespace RTSCamera.Patch.Fix
 {
     //[HarmonyLib.HarmonyPatch(typeof(CommonVillagersCampaignBehavior), "conversation_guard_start_on_condition")]
     public class Patch_CommonVillagersCampaignBehavior

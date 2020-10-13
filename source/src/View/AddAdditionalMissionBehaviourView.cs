@@ -1,12 +1,12 @@
-﻿using RTSCamera.Config;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RTSCamera.Config;
 using RTSCamera.Logic;
 using RTSCamera.Patch;
 using RTSCamera.Patch.CircularFormation;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 
-namespace RTSCamera
+namespace RTSCamera.View
 {
     [DefaultView]
     class AddAdditionalMissionBehaviourView : MissionView
@@ -26,7 +26,7 @@ namespace RTSCamera
             }
             List<MissionBehaviour> list = new List<MissionBehaviour>
             {
-                new SelectCharacterView(),
+                new RTSCameraSelectCharacterView(),
 
                 new DisableDeathLogic(config),
                 new MissionSpeedLogic(),
@@ -39,7 +39,7 @@ namespace RTSCamera
                 new HideHUDView(),
                 new RTSCameraMenuView(),
                 new FlyCameraMissionView(),
-                new GameKeyConfigView(),
+                new RTSCameraGameKeyConfigView(),
                 new FormationColorMissionView(),
                 new RTSCameraOrderTroopPlacer()
             };

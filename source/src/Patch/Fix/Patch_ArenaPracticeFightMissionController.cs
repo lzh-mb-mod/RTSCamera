@@ -1,6 +1,6 @@
 ﻿using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Patch
+namespace RTSCamera.Patch.Fix
 {
     //[HarmonyLib.HarmonyPatch(typeof(ArenaPracticeFightMissionController), "StartPractice")]
     public class Patch_ArenaPracticeFightMissionController

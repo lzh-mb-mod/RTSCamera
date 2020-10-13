@@ -5,11 +5,11 @@ using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
 
-namespace RTSCamera
+namespace RTSCamera.CampaignGame.Behavior
 {
     public class WatchBattleBehavior : CampaignBehaviorBase
     {
-        public static bool WatchMode = false;
+        public static bool WatchMode;
 
         public override void SyncData(IDataStore dataStore)
         {
@@ -75,7 +75,7 @@ namespace RTSCamera
                     args.IsEnabled = false;
                     return false;
                 }
-                if (MobileParty.MainParty.BesiegedSettlement != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent != null && (MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp.BesiegerParty == MobileParty.MainParty))
+                if (MobileParty.MainParty.BesiegedSettlement != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp.BesiegerParty == MobileParty.MainParty)
                 {
                     Settlement settlement = PlayerEncounter.EncounteredParty != null ? PlayerEncounter.EncounteredParty.Settlement : PlayerSiege.PlayerSiegeEvent.BesiegedSettlement;
                     if (PlayerSiege.PlayerSide == BattleSideEnum.Attacker && !settlement.SiegeEvent.BesiegerCamp.IsPreparationComplete)
@@ -105,7 +105,7 @@ namespace RTSCamera
                 if (PlayerEncounter.IsActive)
                     PlayerEncounter.LeaveEncounter = false;
                 else
-                    Campaign.Current.HandleSettlementEncounter(MobileParty.MainParty, PlayerSiege.PlayerSiegeEvent.BesiegedSettlement);
+                    TaleWorlds.CampaignSystem.Campaign.Current.HandleSettlementEncounter(MobileParty.MainParty, PlayerSiege.PlayerSiegeEvent.BesiegedSettlement);
                 WatchMode = true;
                 GameMenu.SwitchToMenu("assault_town");
             }
@@ -146,13 +146,7 @@ namespace RTSCamera
                 return false;
             MapEvent battle = PlayerEncounter.Battle;
             Settlement mapEventSettlement = battle?.MapEventSettlement;
-            return (battle == null || mapEventSettlement == null ||
-                    (!mapEventSettlement.IsFortification || !battle.IsSiegeAssault) ||
-                    (PlayerSiege.PlayerSiegeEvent == null ||
-                     PlayerSiege.PlayerSiegeEvent.BesiegerCamp.IsPreparationComplete)) &&
-                   (battle != null && (battle.HasTroopsOnBothSides() || battle.IsSiegeAssault) &&
-                    MapEvent.PlayerMapEvent.GetLeaderParty(PartyBase.MainParty.OpponentSide) != null) &&
-                   Hero.MainHero.IsWounded;
+            return (battle == null || mapEventSettlement == null || !mapEventSettlement.IsFortification || !battle.IsSiegeAssault || PlayerSiege.PlayerSiegeEvent == null || PlayerSiege.PlayerSiegeEvent.BesiegerCamp.IsPreparationComplete) && battle != null && (battle.HasTroopsOnBothSides() || battle.IsSiegeAssault) && MapEvent.PlayerMapEvent.GetLeaderParty(PartyBase.MainParty.OpponentSide) != null && Hero.MainHero.IsWounded;
         }
     }
 }

@@ -7,7 +7,7 @@ using TaleWorlds.MountAndBlade.ViewModelCollection.GameOptions;
 
 namespace RTSCamera.Config
 {
-    class GameKeyConfigView : MissionView
+    class RTSCameraGameKeyConfigView : MissionView
     {
         private GauntletLayer _gauntletLayer;
         private GameKeyConfigVM _dataSource;
@@ -15,7 +15,7 @@ namespace RTSCamera.Config
         private GameKeyOptionVM _currentGameKey;
         private bool _enableKeyBindingPopupNextTick;
 
-        public GameKeyConfigView()
+        public RTSCameraGameKeyConfigView()
         {
             ViewOrderPriorty = 1000;
         }
@@ -56,7 +56,7 @@ namespace RTSCamera.Config
         {
             _dataSource = new GameKeyConfigVM(OnKeyBindRequest, Deactivate);
             _gauntletLayer = new GauntletLayer(ViewOrderPriorty) {IsFocusLayer = true};
-            _gauntletLayer.LoadMovie(nameof(GameKeyConfigView), _dataSource);
+            _gauntletLayer.LoadMovie(nameof(RTSCameraGameKeyConfigView), _dataSource);
             _gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
             _gauntletLayer.InputRestrictions.SetInputRestrictions();
             _gauntletLayer.IsFocusLayer = true;

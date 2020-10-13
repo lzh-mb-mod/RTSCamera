@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RTSCamera
+namespace RTSCamera.View
 {
     public class SelectionOptionData
     {
-        private Action<int> _setValue;
+        private readonly Action<int> _setValue;
         private readonly Func<int> _getValue;
         private int _value;
         private readonly int _limit;
@@ -19,6 +19,7 @@ namespace RTSCamera
             _limit = limit;
             _data = data;
         }
+
         public float GetDefaultValue()
         {
             return _getValue();
@@ -26,6 +27,8 @@ namespace RTSCamera
 
         public void Commit()
         {
+            if (_value == _getValue())
+                return;
             _setValue(_value);
         }
 
@@ -36,7 +39,7 @@ namespace RTSCamera
 
         public void SetValue(float value)
         {
-            this._value = (int)value;
+            _value = (int)value;
         }
 
         public object GetOptionType()

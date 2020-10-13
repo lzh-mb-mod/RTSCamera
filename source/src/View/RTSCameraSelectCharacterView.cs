@@ -6,15 +6,14 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
-using TaleWorlds.MountAndBlade.View.Screen;
 
-namespace RTSCamera
+namespace RTSCamera.View
 {
-    public class SelectCharacterView : MissionView
+    public class RTSCameraSelectCharacterView : MissionView
     {
-        private bool _isSelectingCharacter = false;
-        private Agent _mouseOverAgent = null;
-        private Agent _selectedAgent = null;
+        private bool _isSelectingCharacter;
+        private Agent _mouseOverAgent;
+        private Agent _selectedAgent;
         private static readonly uint MouseOverColor = new Color(0.3f, 1.0f, 1.0f).ToUnsignedInteger();
         private static readonly uint SelectedColor = new Color(0.2f, 0.5f, 1.0f).ToUnsignedInteger();
         private static readonly uint EnemyMouseOverColor = new Color(0.98f, 0.6f, 0.5f).ToUnsignedInteger();
@@ -126,9 +125,9 @@ namespace RTSCamera
 
         private void Activate()
         {
-            _gauntletLayer = new GauntletLayer(this.ViewOrderPriorty) { IsFocusLayer = false };
+            _gauntletLayer = new GauntletLayer(ViewOrderPriorty) { IsFocusLayer = false };
             _dataSource = new SelectCharacterVM();
-            _gauntletLayer.LoadMovie(nameof(SelectCharacterView), _dataSource);
+            _gauntletLayer.LoadMovie(nameof(RTSCameraSelectCharacterView), _dataSource);
             _gauntletLayer.InputRestrictions.SetInputRestrictions();
             MissionScreen.AddLayer(_gauntletLayer);
         }
@@ -150,7 +149,7 @@ namespace RTSCamera
             base.OnMissionScreenTick(dt);
 
             if (Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.SelectCharacter)) ||
-                IsSelectingCharacter && (_gauntletLayer.Input.IsKeyPressed(InputKey.RightMouseButton)))
+                IsSelectingCharacter && _gauntletLayer.Input.IsKeyPressed(InputKey.RightMouseButton))
             {
                 IsSelectingCharacter = !IsSelectingCharacter;
             }

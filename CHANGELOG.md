@@ -1,5 +1,14 @@
 # Changelog
 
+## [e3.8.3] - 2020-10-10
+### Fixed
+- Fix a problem that player may be added twice to the same formation arrangement. It happens when player is using a siege weapon and switch to free camera mode. Now player character will stop use siege weapon when switch to free camera mode to avoid this problem.
+
+- Fix the problem that in free camera mode pressing F may still make player character interact with other characters or siege weapons.
+
+### Changed
+- Change "Control Another Hero" to "Watch Another Hero". You can press F to control the hero when watching it.
+
 ## [e3.8.2] - 2020-10-05
 ### Fixed
 - Fix a rare crash in base game.
