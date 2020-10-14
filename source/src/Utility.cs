@@ -187,7 +187,7 @@ namespace RTSCamera
             return false;
         }
 
-        public static void AIControlMainAgent(bool alarmed)
+        public static void AIControlMainAgent(bool changeAlarmed, bool alarmed = false)
         {
             var mission = Mission.Current;
             if (mission?.MainAgent == null)
@@ -197,19 +197,22 @@ namespace RTSCamera
                 mission.GetMissionBehaviour<MissionMainAgentController>()?.InteractionComponent.ClearFocus();
                 if (mission.MainAgent.Controller == Agent.ControllerType.Player)
                 {
-                    if (mission.MainAgent.IsUsingGameObject && !(mission.MainAgent.CurrentlyUsedGameObject is SpawnedItemEntity))
+                    if (mission.MainAgent.Formation != null && mission.MainAgent.IsUsingGameObject && !(mission.MainAgent.CurrentlyUsedGameObject is SpawnedItemEntity))
                     {
                         mission.MainAgent.HandleStopUsingAction();
                     }
                     mission.MainAgent.Controller = Agent.ControllerType.AI;
-                    if (alarmed)
+                    if (changeAlarmed)
                     {
-                        if ((mission.MainAgent.AIStateFlags & Agent.AIStateFlag.Alarmed) == Agent.AIStateFlag.None)
-                            SetMainAgentAlarmed(true);
-                    }
-                    else
-                    {
-                        SetMainAgentAlarmed(false);
+                        if (alarmed)
+                        {
+                            if ((mission.MainAgent.AIStateFlags & Agent.AIStateFlag.Alarmed) == Agent.AIStateFlag.None)
+                                SetMainAgentAlarmed(true);
+                        }
+                        else
+                        {
+                            SetMainAgentAlarmed(false);
+                        }
                     }
 
                     if (mission.MainAgent.Formation != null)

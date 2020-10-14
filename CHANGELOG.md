@@ -1,6 +1,9 @@
 # Changelog
 
-## [e3.8.3] - 2020-10-10
+## [e3.9.0] - 2020-10-15
+### Added
+- Player can select formations by clicking troop card.
+
 ### Fixed
 - Fix a problem that player may be added twice to the same formation arrangement. It happens when player is using a siege weapon and switch to free camera mode. Now player character will stop use siege weapon when switch to free camera mode to avoid this problem.
 

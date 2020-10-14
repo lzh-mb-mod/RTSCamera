@@ -47,9 +47,11 @@ namespace RTSCamera
         private float _cameraHeightLimit;
         private bool _classicMode = true;
         private bool _isOrderViewOpen;
-        private bool _resetDraggingMode;
+        private bool _willEndDraggingMode;
+        private bool _earlyDraggingMode;
+        private float _beginDraggingOffset;
+        private readonly float _beginDraggingOffsetThreshold = 100;
         private bool _rightButtonDraggingMode;
-        private Vec2 _clickedPositionPixel = Vec2.Zero;
         private bool _levelToEdge;
         private bool _lockToAgent;
         private GauntletLayer _showControlHintLayer;
@@ -180,9 +182,9 @@ namespace RTSCamera
         {
             CameraPosition = MissionScreen.CombatCamera.Position;
             CameraBearing = MissionScreen.CameraBearing +
-                (float?) CameraSpecialCurrentAddedBearing?.GetValue(MissionScreen) ?? 0;
+                (float?)CameraSpecialCurrentAddedBearing?.GetValue(MissionScreen) ?? 0;
             CameraElevation = MissionScreen.CameraElevation +
-                (float?) CameraSpecialCurrentAddedElevation?.GetValue(MissionScreen) ?? 0;
+                (float?)CameraSpecialCurrentAddedElevation?.GetValue(MissionScreen) ?? 0;
             SetLastFollowedAgent?.Invoke(MissionScreen, new object[] { null });
             MissionScreen.LastFollowedAgentVisuals = null;
         }
@@ -259,6 +261,17 @@ namespace RTSCamera
             return otherCameraModeLogic?.GetMissionCameraLockMode(lockedToMainPlayer) ?? SpectatorCameraTypes.Invalid;
         }
 
+        public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
+        {
+            base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
+
+            if (affectedAgent == MissionScreen.LastFollowedAgent && LockToAgent)
+            {
+                LockToAgent = false;
+                LeaveFromAgent();
+            }
+        }
+
         private void MissionScreenOnSpectateAgentFocusIn(Agent agent)
         {
             _showControlHintVM.SetShowText(true, (LockToAgent || Mission.MainAgent == null) &&
@@ -270,18 +283,42 @@ namespace RTSCamera
             _showControlHintVM.SetShowText(false, Mission.MainAgent == null && Mission.PlayerTeam?.ActiveAgents.Count > 0);
         }
 
-        private void EndDrag()
+        private bool ShouldBeginEarlyDragging()
         {
-            _orderUIHandler.exitWithRightClick = true;
-            _orderUIHandler.gauntletLayer.InputRestrictions.SetMouseVisibility(true);
-            MissionScreen.SetOrderFlagVisibility(true);
+            return !_earlyDraggingMode &&
+                   (MissionScreen.InputManager.IsAltDown() || MissionScreen.LastFollowedAgent == null) &&
+                   MissionScreen.SceneLayer.Input.IsKeyPressed(InputKey.RightMouseButton);
+        }
+
+        private void BeginEarlyDragging()
+        {
+            _earlyDraggingMode = true;
+            _beginDraggingOffset = 0;
+        }
+
+        private void EndEarlyDragging()
+        {
+            _earlyDraggingMode = false;
+            _beginDraggingOffset = 0;
+        }
+
+        private bool ShouldBeginDragging()
+        {
+            return _earlyDraggingMode && _beginDraggingOffset > _beginDraggingOffsetThreshold;
         }
 
         private void BeginDrag()
         {
+            EndEarlyDragging();
+            _rightButtonDraggingMode = true;
             _orderUIHandler.exitWithRightClick = false;
-            _orderUIHandler.gauntletLayer.InputRestrictions.SetMouseVisibility(false);
-            MissionScreen.SetOrderFlagVisibility(false);
+        }
+
+        private void EndDrag()
+        {
+            EndEarlyDragging();
+            _rightButtonDraggingMode = false;
+            _orderUIHandler.exitWithRightClick = true;
         }
 
         private void OnToggleOrderViewEvent(MissionPlayerToggledOrderViewEvent e)
@@ -306,41 +343,68 @@ namespace RTSCamera
                 BeginForcedMove(new Vec3(0, 0, _config.RaisedHeight));
                 LeaveFromAgent();
             }
-            UpdateMouseVisibility(); 
+            UpdateMouseVisibility();
         }
 
         private void UpdateMouseVisibility()
         {
+            if (_orderUIHandler == null)
+                return;
+
             bool mouseVisibility =
-                (Input.IsAltDown() || (_freeCameraLogic?.isSpectatorCamera ?? false) && !LockToAgent) &&
-                _isOrderViewOpen ||
-                (_orderUIHandler?.IsDeployment ?? false);
-            if (mouseVisibility != _orderUIHandler?.gauntletLayer.InputRestrictions.MouseVisibility)
+                ((_orderUIHandler?.IsDeployment ?? false) ||
+                 _isOrderViewOpen && (Input.IsAltDown() || MissionScreen.LastFollowedAgent == null)) &&
+                !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton);
+            if (mouseVisibility != _orderUIHandler.gauntletLayer.InputRestrictions.MouseVisibility)
             {
-                _orderUIHandler?.gauntletLayer.InputRestrictions.SetMouseVisibility(mouseVisibility);
+                _orderUIHandler.gauntletLayer.InputRestrictions.SetInputRestrictions(mouseVisibility,
+                    mouseVisibility ? InputUsageMask.All : InputUsageMask.Invalid);
+            }
+
+            if (MissionScreen.OrderFlag != null )
+            {
+                bool orderFlagVisibility = (_isOrderViewOpen || _orderUIHandler.IsDeployment) &&
+                                           !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton);
+                if (orderFlagVisibility != MissionScreen.OrderFlag.IsVisible)
+                {
+                    MissionScreen.SetOrderFlagVisibility(orderFlagVisibility);
+                }
             }
         }
 
         private void UpdateDragData()
         {
-            if (_resetDraggingMode)
+            if (_willEndDraggingMode)
             {
-                _rightButtonDraggingMode = false;
-                _resetDraggingMode = false;
+                _willEndDraggingMode = false;
                 EndDrag();
             }
-            else if (_rightButtonDraggingMode && MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton))
-                _resetDraggingMode = true;
-            else if (MissionScreen.SceneLayer.Input.IsKeyPressed(InputKey.RightMouseButton))
+            else if (!_isOrderViewOpen && !(_orderUIHandler?.IsDeployment ?? false) || MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton))
             {
-                _clickedPositionPixel = MissionScreen.SceneLayer.Input.GetMousePositionPixel();
+                if (_earlyDraggingMode)
+                    EndEarlyDragging();
+                if (_rightButtonDraggingMode)
+                    _willEndDraggingMode = true;
             }
-            else
+            else if (_isOrderViewOpen || (_orderUIHandler?.IsDeployment ?? false))
             {
-                if (!_isOrderViewOpen || !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton) || MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton) || MissionScreen.SceneLayer.Input.GetMousePositionPixel().DistanceSquared(_clickedPositionPixel) <= 10.0 || _rightButtonDraggingMode)
-                    return;
-                BeginDrag();
-                _rightButtonDraggingMode = true;
+                if (ShouldBeginEarlyDragging())
+                {
+                    BeginEarlyDragging();
+                }
+                else if (MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
+                {
+                    if (ShouldBeginDragging())
+                    {
+                        BeginDrag();
+                    }
+                    else if (_earlyDraggingMode)
+                    {
+                        float inputXRaw = MissionScreen.SceneLayer.Input.GetMouseMoveX();
+                        float inputYRaw = MissionScreen.SceneLayer.Input.GetMouseMoveY();
+                        _beginDraggingOffset += inputYRaw * inputYRaw + inputXRaw * inputXRaw;
+                    }
+                }
             }
         }
 
@@ -351,19 +415,19 @@ namespace RTSCamera
             cameraFrame.rotation.RotateAboutSide(1.570796f);
             cameraFrame.rotation.RotateAboutForward(CameraBearing);
             cameraFrame.rotation.RotateAboutSide(
-                CameraElevation + (float?) CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);
+                CameraElevation + (float?)CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);
             cameraFrame.origin = CameraPosition;
             if (_forceMove)
                 cameraFrame.origin += ForcedMoveTick(dt);
             float heightFactorForHorizontalMove;
             float heightFactorForVerticalMove;
-            if(!ConstantSpeed)
+            if (!ConstantSpeed)
             {
                 float heightAtPosition =
                     Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags, false);
-                heightFactorForHorizontalMove = MathF.Clamp((float) (1.0 + (cameraFrame.origin.z - (double) heightAtPosition - 0.5) / 2),
+                heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
                     1, 30);
-                heightFactorForVerticalMove = MathF.Clamp((float) (1.0 + (cameraFrame.origin.z - (double) heightAtPosition - 0.5) / 2),
+                heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
                     1, 20);
             }
             else
@@ -573,7 +637,7 @@ namespace RTSCamera
             float inputYRaw = 0.0f;
             if (!MBCommon.IsPaused && Mission.Mode != MissionMode.Barter)
             {
-                if (MissionScreen.MouseVisible && !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
+                if (MissionScreen.MouseVisible)
                 {
                     float x = MissionScreen.SceneLayer.Input.GetMousePositionRanged().x;
                     float y = MissionScreen.SceneLayer.Input.GetMousePositionRanged().y;

@@ -200,14 +200,10 @@ namespace RTSCamera.View
             {
                 if (!_orderTroopPlacer.SuspendTroopPlacer)
                     _orderTroopPlacer.SuspendTroopPlacer = true;
-                gauntletLayer.InputRestrictions.ResetInputRestrictions();
             }
             if (IsDeployment)
             {
-                if (MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
-                    gauntletLayer.InputRestrictions.SetMouseVisibility(false);
-                else
-                    gauntletLayer.InputRestrictions.SetInputRestrictions();
+                gauntletLayer.InputRestrictions.SetInputRestrictions(gauntletLayer.InputRestrictions.MouseVisibility);
             }
             MissionScreen.OrderFlag.IsTroop = dataSource.ActiveTargetState == 0;
             MissionScreen.OrderFlag.Tick(dt);

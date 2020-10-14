@@ -142,6 +142,9 @@ namespace RTSCamera.Logic
             if (agent.Controller == Agent.ControllerType.Player)
             {
                 agent.SetMaximumSpeedLimit(-1, false);
+                agent.DisableScriptedMovement();
+                agent.AIUseGameObjectEnable(false);
+                agent.StopRetreating();
                 if (_config.AlwaysSetPlayerFormation)
                     Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
                 if (agent.Formation == null)
@@ -202,7 +205,7 @@ namespace RTSCamera.Logic
 
         private void EnsureMainAgentControlledByAI()
         {
-            Utility.AIControlMainAgent(true);
+            Utility.AIControlMainAgent(false);
         }
 
         public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
@@ -265,7 +268,7 @@ namespace RTSCamera.Logic
             isSpectatorCamera = true;
             if (Mission.MainAgent != null)
             {
-                Utility.AIControlMainAgent(true);
+                Utility.AIControlMainAgent(true, true);
             }
 
             ToggleFreeCamera?.Invoke(true);

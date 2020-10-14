@@ -202,9 +202,9 @@ namespace RTSCamera.View
         {
             MissionScreen.ScreenPointToWorldRay(Input.GetMousePositionRanged(), out var rayBegin, out var rayEnd);
             int excludedAgentIndex = -1;
-            if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
+            if (MissionScreen.LastFollowedAgent?.Controller == Agent.ControllerType.Player)
             {
-                excludedAgentIndex = Mission.MainAgent.Index;
+                excludedAgentIndex = MissionScreen.LastFollowedAgent.Index;
             }
             var agent = Mission.RayCastForClosestAgent(rayBegin, rayEnd, out var distance, excludedAgentIndex, 0.3f);
             if (agent != null && agent.IsMount)

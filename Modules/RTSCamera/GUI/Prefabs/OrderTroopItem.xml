@@ -1,0 +1,27 @@
+<Prefab>
+  <Constants>
+    <Constant Name="Troop.Background.Width" BrushName="Order.Troop.Background" BrushLayer="Default" BrushValueType="Width" MultiplyResult="0.75"/>
+    <Constant Name="Troop.Background.Height" BrushName="Order.Troop.Background" BrushLayer="Default" BrushValueType="Height" MultiplyResult="0.75"/>
+
+    <Constant Name="Troop.Icon.Width" BrushName="Order.Troop.Icon" BrushLayer="Default" BrushValueType="Width" MultiplyResult="0.75"/>
+    <Constant Name="Troop.Icon.Height" BrushName="Order.Troop.Icon" BrushLayer="Default" BrushValueType="Height" MultiplyResult="0.75"/>
+  </Constants>
+  <Window>
+    <OrderTroopItemWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height" CurrentMemberCount="@CurrentMemberCount" IsSelectable="@IsSelectable" IsSelected="@IsSelected" FormationClass="@FormationClass" FormationIconWidget="Icon" Brush="Order.Troop.Background">
+      <Children>
+        <ButtonWidget Command.Click="ExecuteAction" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height">
+          <Children>
+            <Widget Id="Icon" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Icon.Width" SuggestedHeight="!Troop.Icon.Height" Brush="Order.Troop.Icon"/>
+            <FillBar WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="13" VerticalAlignment="Bottom" MarginLeft="16" MarginRight="16" MarginBottom="18" MaxAmount="100" CurrentAmount="@Morale" InitialAmount="@Morale" Brush="Order.Troop.MoraleFillBar"/>
+            <TextWidget IntText="@CurrentMemberCount" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="50" VerticalAlignment="Center" PositionYOffset="-17" Brush="Order.Troop.CountText"/>
+            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="40" SuggestedHeight="20" HorizontalAlignment="Right" PositionXOffset="3" PositionYOffset="20" Sprite="HintBG@2x_9">
+              <Children>
+                <TextWidget Text="@ShortcutText" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" PositionYOffset="2" Brush="Order.Troop.HotKeyText"/>
+              </Children>
+            </Widget>
+          </Children>
+        </ButtonWidget>
+      </Children>
+    </OrderTroopItemWidget>
+  </Window>
+</Prefab>

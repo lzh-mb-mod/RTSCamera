@@ -7,7 +7,21 @@ A mod for Mount&Blade II Bannerlord that provides free camera and more features 
 This mod does not read or write stuffs to your game save. Installing or removing this mod has no impact on your game save.
 
 ## Features
+- Free camera mode switchable at any time.
 
+- Clickable troop cards.
+
+- Command your troops to attack any enemy formation.
+
+- Select your formation by middle clicking on units in formation.
+
+- Control one of your soldiers and continue fighting/commanding after player character is injured in battle.
+
+- Watch any unit and optionally take control of any unit in player team.
+
+- Change time speed in battle, or pause the battle.
+
+## How to Use
 - You can press `F10` to switch to free camera and press again to switch back. Player character will be controlled by AI when switched to free camera.
 
   - You can press `L` and check `Use Free Camera By Default` to automatically switch to free camera when entering a battle.
@@ -22,7 +36,9 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - You can press `L` and uncheck `Enable Attack Specific Formation` to disable this feature.
 
-- You can select your formations by clicking middle mouse button them. Selected troops will be highlighted with green outline.
+- You can select your formations by clicking on troop cards. You can press `Alt` to show the mouse and drag right mouse button to rotate the camera when mouse is shown.
+
+- You can select your formations by clicking middle mouse button on soldiers. Selected troops will be highlighted with green outline.
 
   - You can press `L` and uncheck `Middle Click to select formation` to disable this feature.
 
@@ -52,7 +68,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 - Configuration saving.
 
-## How to install
+## How to Install
 1. Remove any old installation of this mod. You can go to `Modules` folder of bannerlord installation folder (For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord\Moudles\`) and remove folders like `RTSCamera` or `EnhancedMission`.
 
 2. Copy `Modules` folder into Bannerlord installation folder. It should be merged with `Modules` of the game. Or use Vortex to install it automatically.

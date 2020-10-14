@@ -36,7 +36,7 @@ namespace RTSCamera
                 if (!Utility.IsPlayerDead())
                 {
                     MainAgentWillBeChangedToAnotherOne?.Invoke();
-                    Utility.AIControlMainAgent(true);
+                    Utility.AIControlMainAgent(false);
                 }
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
                 Utility.DisplayLocalizedText("str_rts_camera_control_troop");
@@ -74,7 +74,7 @@ namespace RTSCamera
                     if (!Utility.IsPlayerDead() && Mission.MainAgent != agent)
                     {
                         MainAgentWillBeChangedToAnotherOne?.Invoke();
-                        Utility.AIControlMainAgent(true);
+                        Utility.AIControlMainAgent(false);
                     }
                     bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
                     if (_switchFreeCameraLogic.isSpectatorCamera)
