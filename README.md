@@ -71,9 +71,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 ## How to Install
 1. Remove any old installation of this mod. You can go to `Modules` folder of bannerlord installation folder (For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord\Moudles\`) and remove folders like `RTSCamera` or `EnhancedMission`.
 
-2. Copy `Modules` folder into Bannerlord installation folder. It should be merged with `Modules` of the game. Or use Vortex to install it automatically.
-
-   Note that the other files such as those in `source` folder should not be installed. They are source files used to build the mod and are for those who want to modify the mod.
+2. Copy `RTSCamera` folder you downloaded into Bannerlord `Modules` folder. Or use Vortex to install it automatically.
 
 ## Details
 

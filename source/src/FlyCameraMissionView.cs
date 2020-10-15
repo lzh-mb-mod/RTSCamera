@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Logic;
 using RTSCamera.View;
@@ -274,13 +275,16 @@ namespace RTSCamera
 
         private void MissionScreenOnSpectateAgentFocusIn(Agent agent)
         {
-            _showControlHintVM.SetShowText(true, (LockToAgent || Mission.MainAgent == null) &&
-                                                 agent.Team != null && agent.Team == Mission.PlayerTeam);
+            _showControlHintVM.SetShowText(true,
+                !WatchBattleBehavior.WatchMode && (LockToAgent || Mission.MainAgent == null) && agent.Team != null &&
+                agent.Team == Mission.PlayerTeam);
         }
 
         private void MissionScreenOnSpectateAgentFocusOut(Agent agent)
         {
-            _showControlHintVM.SetShowText(false, Mission.MainAgent == null && Mission.PlayerTeam?.ActiveAgents.Count > 0);
+            _showControlHintVM.SetShowText(false,
+                !WatchBattleBehavior.WatchMode && Mission.MainAgent == null &&
+                Mission.PlayerTeam?.ActiveAgents.Count > 0);
         }
 
         private bool ShouldBeginEarlyDragging()

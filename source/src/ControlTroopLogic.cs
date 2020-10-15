@@ -44,12 +44,13 @@ namespace RTSCamera
                 if (_switchFreeCameraLogic.isSpectatorCamera)
                 {
                     Mission.MainAgent = agent;
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, false);
                 }
                 else
                 {
-                    agent.Controller = Agent.ControllerType.Player;
+                    Utility.PlayerControlAgent(agent);
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, true);
                 }
-                Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
 
                 return true;
             }
@@ -84,7 +85,7 @@ namespace RTSCamera
                     }
                     else
                     {
-                        agent.Controller = Agent.ControllerType.Player;
+                        Utility.PlayerControlAgent(agent);
                     }
 
                     Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
@@ -119,7 +120,7 @@ namespace RTSCamera
                             Utility.DisplayLocalizedText("str_rts_camera_control_troop");
                         }
                         bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
-                        Mission.MainAgent.Controller = Agent.ControllerType.Player;
+                        Utility.PlayerControlAgent(Mission.MainAgent);
                         Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
 
                         return true;

@@ -72,9 +72,7 @@
 ## 如何安装
 1. 移除本mod的旧版文件。到砍二游戏安装路径中的`Modules`文件夹（例如`C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord\Moudles\`）中移除`RTSCamera`或`EnhancedMission`文件夹。
 
-2. 复制`Modules`文件夹到砍二的安装目录下，和砍二本体的Modules文件夹合并。或者你可以使用Vortex来自动安装。
-
-   注意其它文件例如`source`文件夹中的文件不应当被安装。它们是用来构建mod的源文件，仅为要修改本mod的人准备。
+2. 复制`RTSCamera`文件夹到砍二的`Modules`文件中。或者你可以使用Vortex来自动安装。
 
 ## 详细信息
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.9.1] - 2020-10-15
+### Fixed
+- Fix minor problems.
+
 ## [e3.9.0] - 2020-10-15
 ### Added
 - Player can select formations by clicking troop card.

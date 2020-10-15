@@ -187,6 +187,17 @@ namespace RTSCamera
             return false;
         }
 
+        public static void PlayerControlAgent(Agent agent)
+        {
+            bool isUsingGameObject = agent.IsUsingGameObject;
+            agent.Controller = Agent.ControllerType.Player;
+            if (isUsingGameObject)
+            {
+                agent.DisableScriptedMovement();
+                agent.AIUseGameObjectEnable(false);
+            }
+        }
+
         public static void AIControlMainAgent(bool changeAlarmed, bool alarmed = false)
         {
             var mission = Mission.Current;
@@ -299,12 +310,12 @@ namespace RTSCamera
             return false;
         }
 
-        public static void AfterSetMainAgent(bool shouldSmoothMoveToAgent, MissionScreen missionScreen)
+        public static void AfterSetMainAgent(bool shouldSmoothMoveToAgent, MissionScreen missionScreen, bool rotateCamera = true)
         {
             if (shouldSmoothMoveToAgent)
             {
                 ShouldSmoothMoveToAgent = true;
-                SmoothMoveToAgent(missionScreen);
+                SmoothMoveToAgent(missionScreen, false, rotateCamera);
             }
         }
 

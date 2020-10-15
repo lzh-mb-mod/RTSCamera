@@ -201,12 +201,7 @@ namespace RTSCamera.View
         private void UpdateMouseOverCharacter()
         {
             MissionScreen.ScreenPointToWorldRay(Input.GetMousePositionRanged(), out var rayBegin, out var rayEnd);
-            int excludedAgentIndex = -1;
-            if (MissionScreen.LastFollowedAgent?.Controller == Agent.ControllerType.Player)
-            {
-                excludedAgentIndex = MissionScreen.LastFollowedAgent.Index;
-            }
-            var agent = Mission.RayCastForClosestAgent(rayBegin, rayEnd, out var distance, excludedAgentIndex, 0.3f);
+            var agent = Mission.RayCastForClosestAgent(rayBegin, rayEnd, out var distance, -1, 0.1f);
             if (agent != null && agent.IsMount)
                 agent = agent.RiderAgent ?? null;
             MouseOverAgent = agent;

@@ -142,8 +142,6 @@ namespace RTSCamera.Logic
             if (agent.Controller == Agent.ControllerType.Player)
             {
                 agent.SetMaximumSpeedLimit(-1, false);
-                agent.DisableScriptedMovement();
-                agent.AIUseGameObjectEnable(false);
                 agent.StopRetreating();
                 if (_config.AlwaysSetPlayerFormation)
                     Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
