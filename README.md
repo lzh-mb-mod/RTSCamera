@@ -36,7 +36,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - You can press `L` and uncheck `Enable Attack Specific Formation` to disable this feature.
 
-- You can select your formations by clicking on troop cards. You can press `Alt` to show the mouse and drag right mouse button to rotate the camera when mouse is shown.
+- You can select your formations by clicking on troop cards. You can press `Alt` to show the cursor and drag right mouse button to rotate the camera when cursor is shown.
 
 - You can select your formations by clicking middle mouse button on soldiers. Selected troops will be highlighted with green outline.
 

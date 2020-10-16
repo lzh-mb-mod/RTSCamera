@@ -356,7 +356,7 @@ namespace RTSCamera
                 return;
 
             bool mouseVisibility =
-                ((_orderUIHandler?.IsDeployment ?? false) ||
+                ((_orderUIHandler?.IsDeployment ?? false) || _orderUIHandler.dataSource.IsTransferActive ||
                  _isOrderViewOpen && (Input.IsAltDown() || MissionScreen.LastFollowedAgent == null)) &&
                 !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton);
             if (mouseVisibility != _orderUIHandler.gauntletLayer.InputRestrictions.MouseVisibility)
@@ -368,6 +368,7 @@ namespace RTSCamera
             if (MissionScreen.OrderFlag != null )
             {
                 bool orderFlagVisibility = (_isOrderViewOpen || _orderUIHandler.IsDeployment) &&
+                                           !_orderUIHandler.dataSource.IsTransferActive &&
                                            !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton);
                 if (orderFlagVisibility != MissionScreen.OrderFlag.IsVisible)
                 {
