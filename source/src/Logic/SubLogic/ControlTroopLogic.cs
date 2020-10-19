@@ -1,26 +1,31 @@
 ﻿using System;
 using RTSCamera.Config;
-using RTSCamera.Logic;
+using RTSCamera.Event;
 using RTSCamera.View;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Screen;
 
-namespace RTSCamera
+namespace RTSCamera.Logic.SubLogic
 {
-    public class ControlTroopLogic : MissionLogic
+    public class ControlTroopLogic
     {
-
+        private RTSCameraLogic _rtsCameraLogic;
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private FlyCameraMissionView _flyCameraMissionView;
         private RTSCameraSelectCharacterView _selectCharacterView;
 
-        public event Action MainAgentWillBeChangedToAnotherOne;
+        public Mission Mission => _rtsCameraLogic.Mission;
 
         public MissionScreen MissionScreen => _flyCameraMissionView?.MissionScreen;
+
+        public ControlTroopLogic(RTSCameraLogic logic)
+        {
+            _rtsCameraLogic = logic;
+        }
 
         public bool SetMainAgent()
         {
@@ -35,13 +40,13 @@ namespace RTSCamera
                     return false;
                 if (!Utility.IsPlayerDead())
                 {
-                    MainAgentWillBeChangedToAnotherOne?.Invoke();
+                    MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                     Utility.AIControlMainAgent(false);
                 }
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
                 Utility.DisplayLocalizedText("str_rts_camera_control_troop");
                 bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
-                if (_switchFreeCameraLogic.isSpectatorCamera)
+                if (_switchFreeCameraLogic.IsSpectatorCamera)
                 {
                     Mission.MainAgent = agent;
                     Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, false);
@@ -74,11 +79,11 @@ namespace RTSCamera
                         return false;
                     if (!Utility.IsPlayerDead() && Mission.MainAgent != agent)
                     {
-                        MainAgentWillBeChangedToAnotherOne?.Invoke();
+                        MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                         Utility.AIControlMainAgent(false);
                     }
                     bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
-                    if (_switchFreeCameraLogic.isSpectatorCamera)
+                    if (_switchFreeCameraLogic.IsSpectatorCamera)
                     {
                         Mission.MainAgent = agent;
                         _switchFreeCameraLogic.SwitchCamera();
@@ -143,7 +148,7 @@ namespace RTSCamera
         {
             if (_flyCameraMissionView.MissionScreen?.LastFollowedAgent?.IsActive() ?? false)
             {
-                if ((!_switchFreeCameraLogic.isSpectatorCamera || _flyCameraMissionView.LockToAgent) &&
+                if ((!_switchFreeCameraLogic.IsSpectatorCamera || _flyCameraMissionView.LockToAgent) &&
                     _flyCameraMissionView.MissionScreen.LastFollowedAgent.Team == Mission.PlayerTeam) return _flyCameraMissionView.MissionScreen?.LastFollowedAgent;
             }
             else if (Mission.MainAgent?.IsActive() ?? false)
@@ -213,19 +218,16 @@ namespace RTSCamera
             return (preference.NearestAgent, preference.NearestCompanion);
         }
 
-        public override void OnBehaviourInitialize()
+        public void OnBehaviourInitialize()
         {
-            base.OnBehaviourInitialize();
-
-            _switchFreeCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
+            _rtsCameraLogic = Mission.GetMissionBehaviour<RTSCameraLogic>();
+            _switchFreeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
             _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
             _selectCharacterView = Mission.GetMissionBehaviour<RTSCameraSelectCharacterView>();
         }
 
-        public override void OnMissionTick(float dt)
+        public void OnMissionTick(float dt)
         {
-            base.OnMissionTick(dt);
-
             if (MissionScreen.SceneLayer.Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ControlTroop)))
             {
                 if (_selectCharacterView.LockOnAgent())

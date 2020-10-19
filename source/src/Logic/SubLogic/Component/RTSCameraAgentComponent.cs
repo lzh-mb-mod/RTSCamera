@@ -5,7 +5,7 @@ using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera
+namespace RTSCamera.Logic.SubLogic.Component
 {
     public struct Contour
     {

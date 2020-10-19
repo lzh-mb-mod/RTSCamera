@@ -1,30 +1,31 @@
 ﻿using RTSCamera.Config;
+using RTSCamera.Event;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Logic
+namespace RTSCamera.Logic.SubLogic
 {
-    class SwitchTeamLogic : MissionLogic
+    public class SwitchTeamLogic
     {
+        private readonly RTSCameraLogic _logic;
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private ControlTroopLogic _controlTroopLogic;
-        public delegate void SwitchTeamDelegate();
 
-        public event SwitchTeamDelegate PreSwitchTeam;
-        public event SwitchTeamDelegate PostSwitchTeam;
+        public Mission Mission => _logic.Mission;
 
-        public override void OnBehaviourInitialize()
+        public SwitchTeamLogic(RTSCameraLogic logic)
         {
-            base.OnBehaviourInitialize();
-
-            _controlTroopLogic = Mission.GetMissionBehaviour<ControlTroopLogic>();
+            _logic = logic;
         }
 
-        public override void OnMissionTick(float dt)
+        public void OnBehaviourInitialize()
         {
-            base.OnMissionTick(dt);
+            _controlTroopLogic = _logic.ControlTroopLogic;
+        }
 
+        public void OnMissionTick(float dt)
+        {
             if (!NativeConfig.CheatMode)
                 return;
 
@@ -52,11 +53,11 @@ namespace RTSCamera.Logic
             }
             Utility.DisplayLocalizedText("str_rts_camera_switch_to_enemy_team");
 
-            PreSwitchTeam?.Invoke();
+            MissionEvent.OnPreSwitchTeam();
             Mission.PlayerEnemyTeam.PlayerOrderController.Owner = targetAgent;
             Mission.PlayerTeam = Mission.PlayerEnemyTeam;
             _controlTroopLogic.SetToMainAgent(targetAgent);
-            PostSwitchTeam?.Invoke();
+            MissionEvent.OnPostSwitchTeam();
 
             if (firstTime)
             {

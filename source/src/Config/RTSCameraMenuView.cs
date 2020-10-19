@@ -1,4 +1,5 @@
-﻿using TaleWorlds.Core;
+﻿using RTSCamera.View.Basic;
+using TaleWorlds.Core;
 
 namespace RTSCamera.Config
 {

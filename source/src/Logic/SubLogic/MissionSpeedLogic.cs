@@ -2,26 +2,30 @@
 using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Logic
+namespace RTSCamera.Logic.SubLogic
 {
-
-    class MissionSpeedLogic : MissionLogic
+    public class MissionSpeedLogic
     {
-        private RTSCameraConfig _config;
+        private readonly RTSCameraLogic _logic;
+        private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
-        public override void AfterStart()
-        {
-            base.AfterStart();
+        public Mission Mission => _logic.Mission;
 
-            _config = RTSCameraConfig.Get();
+        public MissionSpeedLogic(RTSCameraLogic logic)
+        {
+            _logic = logic;
+        }
+
+        public void AfterStart()
+        {
+
             Mission.Scene.SlowMotionFactor = _config.SlowMotionFactor;
             Mission.Scene.SlowMotionMode = _config.SlowMotionMode;
         }
 
-        public override void OnMissionTick(float dt)
+        public void OnMissionTick(float dt)
         {
-            base.OnMissionTick(dt);
             if (Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.Pause)))
             {
                 TogglePause();
@@ -67,10 +71,10 @@ namespace RTSCamera.Logic
         //    }
         //}
 
-        public void SetFastForwardMode()
-        {
-            Mission.SetFastForwardingFromUI(true);
-            Utility.DisplayLocalizedText("str_rts_camera_fast_forward_mode_enabled");
-        }
+        //public void SetFastForwardMode()
+        //{
+        //    Mission.SetFastForwardingFromUI(true);
+        //    Utility.DisplayLocalizedText("str_rts_camera_fast_forward_mode_enabled");
+        //}
     }
 }

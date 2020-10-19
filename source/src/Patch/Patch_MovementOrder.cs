@@ -1,4 +1,5 @@
-﻿using TaleWorlds.MountAndBlade;
+﻿using RTSCamera.Logic;
+using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using RTSCamera.Config.Basic;
 
 namespace RTSCamera.Config
 {

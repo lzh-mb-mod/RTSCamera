@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using RTSCamera.Config;
+﻿using RTSCamera.Config;
 using RTSCamera.Logic;
 using RTSCamera.Patch;
 using RTSCamera.Patch.CircularFormation;
+using System.Collections.Generic;
+using RTSCamera.Logic.SubLogic;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 
@@ -28,13 +29,7 @@ namespace RTSCamera.View
             {
                 new RTSCameraSelectCharacterView(),
 
-                new DisableDeathLogic(config),
-                new MissionSpeedLogic(),
-                new SwitchFreeCameraLogic(config),
-                new ControlTroopLogic(),
-                new FixScoreBoardAfterPlayerDeadLogic(),
-                new CommanderLogic(),
-                new SwitchTeamLogic(),
+                new RTSCameraLogic(),
 
                 new HideHUDView(),
                 new RTSCameraMenuView(),

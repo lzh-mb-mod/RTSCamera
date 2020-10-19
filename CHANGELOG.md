@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.9.3] - 2020-10-19
+### Changed
+- Minor changes.
+
 ## [e3.9.2] - 2020-10-16
 ### Fixed
 - Fix the problem that in transfer command, cursor is not shown.

@@ -1,6 +1,6 @@
 ﻿using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera
+namespace RTSCamera.Logic
 {
     public class UnitAIBehaviorValues
     {

@@ -1,21 +1,26 @@
 ﻿using System.ComponentModel;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Logic
+namespace RTSCamera.Logic.SubLogic
 {
-    class CommanderLogic : MissionLogic
+    public class CommanderLogic
     {
-        public override void OnBehaviourInitialize()
-        {
-            base.OnBehaviourInitialize();
+        private readonly RTSCameraLogic _logic;
 
+        public Mission Mission => _logic.Mission;
+
+        public CommanderLogic(RTSCameraLogic logic)
+        {
+            _logic = logic;
+        }
+
+        public void OnBehaviourInitialize()
+        {
             Mission.OnMainAgentChanged += OnMainAgentChanged;
         }
 
-        public override void OnRemoveBehaviour()
+        public void OnRemoveBehaviour()
         {
-            base.OnRemoveBehaviour();
-
             Mission.OnMainAgentChanged -= OnMainAgentChanged;
         }
 

@@ -1,5 +1,7 @@
 ﻿using RTSCamera.Config;
+using RTSCamera.Event;
 using RTSCamera.Logic;
+using RTSCamera.Logic.SubLogic;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
@@ -20,11 +22,8 @@ namespace RTSCamera.View
         {
             base.OnBehaviourInitialize();
 
-            _switchFreeCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
-            if (_switchFreeCameraLogic != null)
-            {
-                _switchFreeCameraLogic.ToggleFreeCamera += OnToggleFreeCamera;
-            }
+            _switchFreeCameraLogic = Mission.GetMissionBehaviour<RTSCameraLogic>().SwitchFreeCameraLogic;
+            MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
             _gameKeyConfig = GameKeyConfig.Get();
             _oldDisplayTargetingReticule = BannerlordConfig.DisplayTargetingReticule;
         }
@@ -33,8 +32,7 @@ namespace RTSCamera.View
         {
             base.OnRemoveBehaviour();
 
-            if (_switchFreeCameraLogic != null)
-                _switchFreeCameraLogic.ToggleFreeCamera -= OnToggleFreeCamera;
+            MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             RecoverTargetingReticule();
 
             MBDebug.DisableAllUI = false;
@@ -97,7 +95,7 @@ namespace RTSCamera.View
 
         private void RecoverTargetingReticule()
         {
-            if (_switchFreeCameraLogic != null && _switchFreeCameraLogic.isSpectatorCamera && !BannerlordConfig.DisplayTargetingReticule)
+            if (_switchFreeCameraLogic != null && _switchFreeCameraLogic.IsSpectatorCamera && !BannerlordConfig.DisplayTargetingReticule)
             {
                 BannerlordConfig.DisplayTargetingReticule = _oldDisplayTargetingReticule;
             }

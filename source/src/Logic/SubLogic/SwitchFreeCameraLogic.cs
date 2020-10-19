@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
+using RTSCamera.Event;
 using RTSCamera.QuerySystem;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Logic
+namespace RTSCamera.Logic.SubLogic
 {
-    public class SwitchFreeCameraLogic : MissionLogic
+    public class SwitchFreeCameraLogic 
     {
-        private readonly RTSCameraConfig _config;
+        private readonly RTSCameraLogic _logic;
+        private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         private ControlTroopLogic _controlTroopLogic;
@@ -23,6 +25,8 @@ namespace RTSCamera.Logic
         private float _timer;
         private List<FormationClass> _playerFormations;
         private float _updatePlayerFormationTime;
+
+        public Mission Mission => _logic.Mission;
 
         public List<FormationClass> PlayerFormations => _playerFormations ??= new List<FormationClass>();
 
@@ -38,52 +42,41 @@ namespace RTSCamera.Logic
             }
         }
 
-        public bool isSpectatorCamera;
+        public bool IsSpectatorCamera;
 
-        public event Action<bool> ToggleFreeCamera;
-
-        public SwitchFreeCameraLogic(RTSCameraConfig config)
+        public SwitchFreeCameraLogic(RTSCameraLogic logic)
         {
-            _config = config;
+            _logic = logic;
         }
 
-        public override void OnCreated()
+        public void OnCreated()
         {
-            base.OnCreated();
 
             QueryDataStore.EnsureInitialized();
         }
 
-        public override void OnBehaviourInitialize()
+        public void OnBehaviourInitialize()
         {
-            base.OnBehaviourInitialize();
-
-            _controlTroopLogic = Mission.GetMissionBehaviour<ControlTroopLogic>();
+            _controlTroopLogic = _logic.ControlTroopLogic;
 
             Mission.OnMainAgentChanged += OnMainAgentChanged;
         }
 
-        public override void AfterAddTeam(Team team)
+        public void AfterAddTeam(Team team)
         {
-            base.AfterAddTeam(team);
-
             PlayerFormations.Add((FormationClass)_config.PlayerFormation);
             QueryDataStore.AddTeam(team);
         }
 
-        public override void OnRemoveBehaviour()
+        public void OnRemoveBehaviour()
         {
-            base.OnRemoveBehaviour();
-
             Mission.OnMainAgentChanged -= OnMainAgentChanged;
             QueryDataStore.Clear();
             WatchBattleBehavior.WatchMode = false;
         }
 
-        public override void OnFormationUnitsSpawned(Team team)
+        public void OnFormationUnitsSpawned(Team team)
         {
-            base.OnFormationUnitsSpawned(team);
-
             if (WatchBattleBehavior.WatchMode && team == Mission.PlayerTeam && Mission.MainAgent == null)
             {
                 _controlTroopLogic.SetMainAgent();
@@ -94,10 +87,8 @@ namespace RTSCamera.Logic
             }
         }
 
-        public override void OnMissionTick(float dt)
+        public void OnMissionTick(float dt)
         {
-            base.OnMissionTick(dt);
-
             if (_switchToFreeCameraAfter100ms)
             {
                 _timer += dt;
@@ -125,7 +116,7 @@ namespace RTSCamera.Logic
 
         public void SwitchCamera()
         {
-            if (isSpectatorCamera)
+            if (IsSpectatorCamera)
             {
                 SwitchToAgent();
             }
@@ -135,10 +126,8 @@ namespace RTSCamera.Logic
             }
         }
 
-        protected override void OnAgentControllerChanged(Agent agent)
+        public void OnAgentControllerChanged(Agent agent)
         {
-            base.OnAgentControllerChanged(agent);
-
             if (agent.Controller == Agent.ControllerType.Player)
             {
                 agent.SetMaximumSpeedLimit(-1, false);
@@ -185,7 +174,7 @@ namespace RTSCamera.Logic
                     }
                     if (Mission.MainAgent.Formation != null)
                         CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
-                    if (isSpectatorCamera)
+                    if (IsSpectatorCamera)
                     {
                         EnsureMainAgentControlledByAI();
                     }
@@ -195,7 +184,7 @@ namespace RTSCamera.Logic
                     }
                 }
             }
-            else if (isSpectatorCamera || _config.ControlAllyAfterDeath)
+            else if (IsSpectatorCamera || _config.ControlAllyAfterDeath)
             {
                 _controlTroopLogic.SetMainAgent();
             }
@@ -206,13 +195,11 @@ namespace RTSCamera.Logic
             Utility.AIControlMainAgent(false);
         }
 
-        public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
+        public void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
         {
-            base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
-
             if (Mission.MainAgent == affectedAgent)
             {
-                if (_config.ControlAllyAfterDeath || isSpectatorCamera)
+                if (_config.ControlAllyAfterDeath || IsSpectatorCamera)
                 {
                     if (Mission.Mode == MissionMode.Battle &&
                         Mission.MainAgent.Character == CharacterObject.PlayerCharacter)
@@ -247,7 +234,7 @@ namespace RTSCamera.Logic
                 Utility.DisplayLocalizedText("str_rts_camera_cannot_control_agent_in_watch_mode");
                 return;
             }
-            isSpectatorCamera = false;
+            IsSpectatorCamera = false;
             if (Mission.MainAgent != null)
             {
                 Utility.DisplayLocalizedText("str_rts_camera_switch_to_player");
@@ -258,18 +245,18 @@ namespace RTSCamera.Logic
                 Utility.DisplayLocalizedText("str_rts_camera_player_dead");
                 _controlTroopLogic.SetMainAgent();
             }
-            ToggleFreeCamera?.Invoke(false);
+            MissionEvent.OnToggleFreeCamera(false);
         }
 
         private void SwitchToFreeCamera()
         {
-            isSpectatorCamera = true;
+            IsSpectatorCamera = true;
             if (Mission.MainAgent != null)
             {
                 Utility.AIControlMainAgent(true, true);
             }
 
-            ToggleFreeCamera?.Invoke(true);
+            MissionEvent.OnToggleFreeCamera(true);
             Utility.DisplayLocalizedText("str_rts_camera_switch_to_free_camera");
         }
     }

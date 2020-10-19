@@ -5,7 +5,7 @@ namespace RTSCamera.View
 {
     public class ExtensionVM : ViewModel
     {
-        private Action _clicked;
+        private readonly Action _clicked;
         public ExtensionVM(string name, Action clicked)
         {
             Name = name;

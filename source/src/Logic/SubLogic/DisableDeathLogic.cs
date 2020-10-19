@@ -2,27 +2,28 @@
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Logic
+namespace RTSCamera.Logic.SubLogic
 {
-    public class DisableDeathLogic : MissionLogic
+    public class DisableDeathLogic
     {
-        private RTSCameraConfig _config;
+        private readonly RTSCameraLogic _logic;
+        private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
-        public DisableDeathLogic(RTSCameraConfig config)
+        public Mission Mission => _logic.Mission;
+
+        public DisableDeathLogic(RTSCameraLogic logic)
         {
-            _config = config;
+            _logic = logic;
         }
 
-        public override void AfterStart()
+        public void AfterStart()
         {
-            base.AfterStart();
             SetDisableDeath(_config.DisableDeath, true);
         }
 
-        public override void OnMissionTick(float dt)
+        public void OnMissionTick(float dt)
         {
-            base.OnMissionTick(dt);
             if (!NativeConfig.CheatMode)
                 return;
             if (_config.DisableDeathHotkeyEnabled && Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.DisableDeath)))

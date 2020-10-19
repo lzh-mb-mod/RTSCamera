@@ -3,8 +3,9 @@ using System.Linq;
 using System.Reflection;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
+using RTSCamera.Event;
 using RTSCamera.Logic;
-using RTSCamera.View;
+using RTSCamera.Logic.SubLogic;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
@@ -16,7 +17,7 @@ using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Screen;
 
-namespace RTSCamera
+namespace RTSCamera.View
 {
     public class FlyCameraMissionView : MissionView, ICameraModeLogic
     {
@@ -36,6 +37,7 @@ namespace RTSCamera
             typeof(MissionScreen).GetField("_cameraSpecialCurrentAddedBearing", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private RTSCameraConfig _config;
+        private RTSCameraLogic _rtsCameraLogic;
         private SwitchFreeCameraLogic _freeCameraLogic;
         private MissionMainAgentController _missionMainAgentController;
         private RTSCameraOrderUIHandler _orderUIHandler;
@@ -106,7 +108,7 @@ namespace RTSCamera
             set
             {
                 _cameraViewAngle = value;
-                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || LockToAgent)
+                if (_freeCameraLogic == null || !_freeCameraLogic.IsSpectatorCamera || LockToAgent)
                     return;
                 UpdateViewAngle();
             }
@@ -120,7 +122,7 @@ namespace RTSCamera
             set
             {
                 _depthOfFieldDistance = value;
-                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || LockToAgent)
+                if (_freeCameraLogic == null || !_freeCameraLogic.IsSpectatorCamera || LockToAgent)
                     return;
                 UpdateDof();
 
@@ -133,7 +135,7 @@ namespace RTSCamera
             set
             {
                 _depthOfFieldStart = value;
-                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || LockToAgent)
+                if (_freeCameraLogic == null || !_freeCameraLogic.IsSpectatorCamera || LockToAgent)
                     return;
                 UpdateDof();
             }
@@ -145,7 +147,7 @@ namespace RTSCamera
             set
             {
                 _depthOfFieldEnd = value;
-                if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || LockToAgent)
+                if (_freeCameraLogic == null || !_freeCameraLogic.IsSpectatorCamera || LockToAgent)
                     return;
                 UpdateDof();
             }
@@ -173,7 +175,7 @@ namespace RTSCamera
                 ?.Invoke(MissionScreen, new object[] { agent });
             if (!LockToAgent)
                 LockToAgent = true;
-            if (!_freeCameraLogic.isSpectatorCamera)
+            if (!_freeCameraLogic.IsSpectatorCamera)
                 _freeCameraLogic.SwitchCamera();
             Utility.SmoothMoveToAgent(MissionScreen, true, false);
             UpdateMouseVisibility();
@@ -204,7 +206,8 @@ namespace RTSCamera
             ConstantSpeed = _config.ConstantSpeed;
             Outdoor = _config.Outdoor;
             RestrictByBoundaries = _config.RestrictByBoundaries;
-            _freeCameraLogic = Mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
+            _rtsCameraLogic = Mission.GetMissionBehaviour<RTSCameraLogic>();
+            _freeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
             _missionMainAgentController = Mission.GetMissionBehaviour<MissionMainAgentController>();
             _orderUIHandler = Mission.GetMissionBehaviour<RTSCameraOrderUIHandler>();
 
@@ -214,8 +217,7 @@ namespace RTSCamera
             MissionScreen.AddLayer(_showControlHintLayer);
 
             Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
-            if (_freeCameraLogic != null)
-                _freeCameraLogic.ToggleFreeCamera += OnToggleFreeCamera;
+            MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
 
             MissionScreen.OnSpectateAgentFocusIn += MissionScreenOnSpectateAgentFocusIn;
             MissionScreen.OnSpectateAgentFocusOut += MissionScreenOnSpectateAgentFocusOut;
@@ -233,8 +235,7 @@ namespace RTSCamera
             MissionScreen.OnSpectateAgentFocusOut -= MissionScreenOnSpectateAgentFocusOut;
 
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
-            if (_freeCameraLogic != null)
-                _freeCameraLogic.ToggleFreeCamera -= OnToggleFreeCamera;
+            MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             _freeCameraLogic = null;
             _missionMainAgentController = null;
             _config = null;
@@ -242,7 +243,7 @@ namespace RTSCamera
 
         public override bool UpdateOverridenCamera(float dt)
         {
-            if (_freeCameraLogic == null || !_freeCameraLogic.isSpectatorCamera || LockToAgent)
+            if (_freeCameraLogic == null || !_freeCameraLogic.IsSpectatorCamera || LockToAgent)
                 return base.UpdateOverridenCamera(dt);
 
             UpdateFlyCamera(dt);
@@ -255,7 +256,7 @@ namespace RTSCamera
                 Mission.MissionBehaviours.FirstOrDefault(
                         b => !(b is FlyCameraMissionView) && b is ICameraModeLogic) as
                     ICameraModeLogic;
-            if (_freeCameraLogic?.isSpectatorCamera ?? false)
+            if (_freeCameraLogic?.IsSpectatorCamera ?? false)
             {
                 return LockToAgent ? SpectatorCameraTypes.LockToAnyAgent : SpectatorCameraTypes.Free;
             }

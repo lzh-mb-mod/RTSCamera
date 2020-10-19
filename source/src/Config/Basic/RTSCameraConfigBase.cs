@@ -4,7 +4,7 @@ using System.Linq;
 using System.Xml.Serialization;
 using TaleWorlds.Core;
 
-namespace RTSCamera
+namespace RTSCamera.Config.Basic
 {
     public abstract class RTSCameraConfigBase<T> where T : RTSCameraConfigBase<T>
     {

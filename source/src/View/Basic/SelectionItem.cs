@@ -1,4 +1,4 @@
-﻿namespace RTSCamera.View
+﻿namespace RTSCamera.View.Basic
 {
     public struct SelectionItem
     {

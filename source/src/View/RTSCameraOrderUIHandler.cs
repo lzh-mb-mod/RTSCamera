@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using RTSCamera.Event;
 using RTSCamera.Logic;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -24,26 +25,10 @@ namespace RTSCamera.View
     [OverrideView(typeof(MissionOrderUIHandler))]
     public class RTSCameraOrderUIHandler : MissionView, ISiegeDeploymentView
     {
-
-        private SwitchTeamLogic _controller;
         private void RegisterReload()
         {
-            if (_controller == null)
-            {
-                foreach (var missionLogic in Mission.MissionLogics)
-                {
-                    if (missionLogic is SwitchTeamLogic controller)
-                    {
-                        _controller = controller;
-                        break;
-                    }
-                }
-                if (_controller != null)
-                {
-                    _controller.PreSwitchTeam += OnPreSwitchTeam;
-                    _controller.PostSwitchTeam += OnPostSwitchTeam;
-                }
-            }
+            MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
+            MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
         }
         private void OnPreSwitchTeam()
         {
@@ -147,6 +132,9 @@ namespace RTSCamera.View
         public override void OnMissionScreenFinalize()
         {
             base.OnMissionScreenFinalize();
+            MissionEvent.PreSwitchTeam -= OnPreSwitchTeam;
+            MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
+
             _deploymentPointDataSources = null;
             _orderTroopPlacer = null;
             gauntletLayer = null;

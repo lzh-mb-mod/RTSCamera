@@ -1,5 +1,7 @@
 ﻿using RTSCamera.Config;
+using RTSCamera.Event;
 using RTSCamera.Logic;
+using RTSCamera.Logic.SubLogic.Component;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
@@ -22,7 +24,6 @@ namespace RTSCamera.View
         private GauntletLayer _gauntletLayer;
         private SelectCharacterVM _dataSource;
         private FlyCameraMissionView _flyCameraMissionView;
-        private SwitchTeamLogic _switchTeamLogic;
 
         public bool IsSelectingCharacter
         {
@@ -79,9 +80,7 @@ namespace RTSCamera.View
 
             ViewOrderPriorty = 23;
             _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
-            _switchTeamLogic = Mission.GetMissionBehaviour<SwitchTeamLogic>();
-            if (_switchTeamLogic != null)
-                _switchTeamLogic.PostSwitchTeam += OnPostSwitchTeam;
+            MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
         }
 
         public override void OnMissionScreenFinalize()
@@ -91,8 +90,7 @@ namespace RTSCamera.View
             Deactivate();
             _mouseOverAgent = null;
             _selectedAgent = null;
-            if (_switchTeamLogic != null)
-                _switchTeamLogic.PostSwitchTeam -= OnPostSwitchTeam;
+            MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
         }
 
         public override void OnAgentCreated(Agent agent)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RTSCamera.View
+namespace RTSCamera.View.Basic
 {
     public class SelectionOptionData
     {

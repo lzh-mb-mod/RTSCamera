@@ -5,7 +5,7 @@ using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
-namespace RTSCamera.View
+namespace RTSCamera.View.Basic
 {
     public class SelectionOptionDataVM : ViewModel
     {

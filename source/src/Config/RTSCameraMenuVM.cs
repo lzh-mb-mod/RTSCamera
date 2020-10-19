@@ -1,8 +1,10 @@
 ﻿using System;
 using RTSCamera.Logic;
+using RTSCamera.Logic.SubLogic;
 using RTSCamera.Patch;
 using RTSCamera.Patch.CircularFormation;
 using RTSCamera.View;
+using RTSCamera.View.Basic;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Engine;
@@ -15,6 +17,7 @@ namespace RTSCamera.Config
     {
         private readonly RTSCameraConfig _config;
         private readonly Mission _mission;
+        private readonly RTSCameraLogic _rtsCameraLogic;
         private readonly SwitchFreeCameraLogic _switchFreeCameraLogic;
         private readonly SwitchTeamLogic _switchTeamLogic;
         private readonly MissionSpeedLogic _missionSpeedLogic;
@@ -411,7 +414,7 @@ namespace RTSCamera.Config
                 if (_config.DisableDeath == value)
                     return;
                 _config.DisableDeath = value;
-                _mission.GetMissionBehaviour<DisableDeathLogic>()?.SetDisableDeath(_config.DisableDeath);
+                _rtsCameraLogic.DisableDeathLogic.SetDisableDeath(_config.DisableDeath);
                 OnPropertyChanged(nameof(DisableDeath));
             }
         }
@@ -467,8 +470,9 @@ namespace RTSCamera.Config
         {
             _config = RTSCameraConfig.Get();
             _mission = mission;
-            _switchFreeCameraLogic = _mission.GetMissionBehaviour<SwitchFreeCameraLogic>();
-            _switchTeamLogic = mission.GetMissionBehaviour<SwitchTeamLogic>();
+            _rtsCameraLogic = _mission.GetMissionBehaviour<RTSCameraLogic>();
+            _switchFreeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
+            _switchTeamLogic = _rtsCameraLogic.SwitchTeamLogic;
             PlayerFormation = new SelectionOptionDataVM(new SelectionOptionData(
                 i =>
                 {
@@ -495,7 +499,7 @@ namespace RTSCamera.Config
                 new NumericVM(GameTexts.FindText("str_rts_camera_raised_height_after_switching_to_free_camera").ToString(),
                     _config.RaisedHeight, 0.0f, 50f, true,
                     height => _config.RaisedHeight = height);
-            _missionSpeedLogic = _mission.GetMissionBehaviour<MissionSpeedLogic>();
+            _missionSpeedLogic = _rtsCameraLogic.MissionSpeedLogic;
             SpeedFactor = new NumericVM(GameTexts.FindText("str_rts_camera_slow_motion_factor").ToString(),
                 _mission.Scene.SlowMotionFactor, 0.01f, 3.0f, false,
                 factor => { _missionSpeedLogic.SetSlowMotionFactor(factor); });

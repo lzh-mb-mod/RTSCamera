@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using RTSCamera.Config;
+using RTSCamera.Event;
 using RTSCamera.Logic;
 using RTSCamera.QuerySystem;
 using TaleWorlds.Core;
@@ -17,24 +18,11 @@ namespace RTSCamera.View
 {
     public class RTSCameraOrderTroopPlacer : MissionView
     {
-        private SwitchTeamLogic _controller;
         private FormationColorMissionView _contourView;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private void RegisterReload()
         {
-            foreach (var missionLogic in Mission.MissionLogics)
-            {
-                if (missionLogic is SwitchTeamLogic controller)
-                {
-                    _controller = controller;
-                    break;
-                }
-            }
-
-            if (_controller != null)
-            {
-                _controller.PostSwitchTeam += OnPostSwitchTeam;
-            }
+            MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
         }
         private void OnPostSwitchTeam()
         {
@@ -45,6 +33,13 @@ namespace RTSCamera.View
             base.OnMissionScreenInitialize();
             RegisterReload();
             _contourView = Mission.GetMissionBehaviour<FormationColorMissionView>();
+        }
+
+        public override void OnMissionScreenFinalize()
+        {
+            base.OnMissionScreenFinalize();
+
+            MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
         }
 
         private CursorState _currentCursorState = CursorState.Invisible;
