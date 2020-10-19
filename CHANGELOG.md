@@ -1,8 +1,17 @@
 # Changelog
 
+## [e3.9.4] - 2020-10-19
+### Fixed
+- Fix the problem that switch team doesn't work.
+
+- Fix the problem that shift to accelerate camera does not work in e1.5.4.
+
 ## [e3.9.3] - 2020-10-19
 ### Changed
 - Minor changes.
+
+### Fixed
+- Keep compatible with Bannerlord e1.5.4.
 
 ## [e3.9.2] - 2020-10-16
 ### Fixed

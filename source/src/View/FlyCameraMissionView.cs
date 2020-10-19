@@ -457,7 +457,7 @@ namespace RTSCamera.View
                     _cameraSpeedMultiplier *= 0.8f;
             }
             float num1 = 3f * _cameraSpeedMultiplier * CameraSpeedFactor;
-            if (MissionScreen.SceneLayer.Input.IsGameKeyDown(23))
+            if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.Zoom))
                 num1 *= _shiftSpeedMultiplier;
             if (!_cameraSmoothMode)
             {
@@ -469,17 +469,17 @@ namespace RTSCamera.View
             {
                 Vec3 keyInput = Vec3.Zero;
                 Vec3 mouseInput = Vec3.Zero;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(0))
+                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.MoveForward))
                     ++keyInput.y;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(1))
+                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.MoveBackward))
                     --keyInput.y;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(2))
+                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.MoveLeft))
                     --keyInput.x;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(3))
+                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.MoveRight))
                     ++keyInput.x;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(13))
+                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.Jump))
                     ++keyInput.z;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(14))
+                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.Crouch))
                     --keyInput.z;
                 if (MissionScreen.MouseVisible && !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
                 {
@@ -718,8 +718,8 @@ namespace RTSCamera.View
             //}
 
             if (LockToAgent && (Math.Abs(Input.GetDeltaMouseScroll()) > 0.0001f ||
-                                 Input.IsGameKeyDown(0) || Input.IsGameKeyDown(1) ||
-                                 Input.IsGameKeyDown(2) || Input.IsGameKeyDown(3) || Input.GetIsControllerConnected() &&
+                                 Input.IsGameKeyDown(CombatHotKeyCategory.MoveForward) || Input.IsGameKeyDown(CombatHotKeyCategory.MoveBackward) ||
+                                 Input.IsGameKeyDown(CombatHotKeyCategory.MoveLeft) || Input.IsGameKeyDown(CombatHotKeyCategory.MoveRight) || Input.GetIsControllerConnected() &&
                                  (Input.GetKeyState(InputKey.ControllerLStick).y != 0.0 ||
                                   Input.GetKeyState(InputKey.ControllerLStick).x != 0.0)))
             {

@@ -1,9 +1,8 @@
-﻿using System;
+﻿using RTSCamera.Event;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using RTSCamera.Event;
-using RTSCamera.Logic;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
@@ -25,10 +24,15 @@ namespace RTSCamera.View
     [OverrideView(typeof(MissionOrderUIHandler))]
     public class RTSCameraOrderUIHandler : MissionView, ISiegeDeploymentView
     {
+        private bool _registered = false;
         private void RegisterReload()
         {
-            MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
-            MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
+            if (!_registered)
+            {
+                MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
+                MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
+                _registered = true;
+            }
         }
         private void OnPreSwitchTeam()
         {
@@ -132,8 +136,6 @@ namespace RTSCamera.View
         public override void OnMissionScreenFinalize()
         {
             base.OnMissionScreenFinalize();
-            MissionEvent.PreSwitchTeam -= OnPreSwitchTeam;
-            MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
 
             _deploymentPointDataSources = null;
             _orderTroopPlacer = null;
@@ -322,49 +324,49 @@ namespace RTSCamera.View
             int pressedIndex = -1;
             if (!Input.IsControlDown())
             {
-                if (Input.IsGameKeyPressed(53))
+                if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder1))
                     pressedIndex = 0;
-                else if (Input.IsGameKeyPressed(54))
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder2))
                     pressedIndex = 1;
-                else if (Input.IsGameKeyPressed(55))
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder3))
                     pressedIndex = 2;
-                else if (Input.IsGameKeyPressed(56))
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder4))
                     pressedIndex = 3;
-                else if (Input.IsGameKeyPressed(57))
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder5))
                     pressedIndex = 4;
-                else if (Input.IsGameKeyPressed(58))
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder6))
                     pressedIndex = 5;
-                else if (Input.IsGameKeyPressed(59))
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder7))
                     pressedIndex = 6;
-                else if (Input.IsGameKeyPressed(60))
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder8))
                     pressedIndex = 7;
-                else if (Input.IsGameKeyPressed(61))
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrderReturn))
                     pressedIndex = 8;
             }
             if (pressedIndex > -1)
                 dataSource.OnGiveOrder(pressedIndex);
             int formationTroopIndex = -1;
-            if (Input.IsGameKeyPressed(62))
+            if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.EveryoneHear))
                 formationTroopIndex = 100;
-            else if (Input.IsGameKeyPressed(63))
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group0Hear))
                 formationTroopIndex = 0;
-            else if (Input.IsGameKeyPressed(64))
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group1Hear))
                 formationTroopIndex = 1;
-            else if (Input.IsGameKeyPressed(65))
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group2Hear))
                 formationTroopIndex = 2;
-            else if (Input.IsGameKeyPressed(66))
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group3Hear))
                 formationTroopIndex = 3;
-            else if (Input.IsGameKeyPressed(67))
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group4Hear))
                 formationTroopIndex = 4;
-            else if (Input.IsGameKeyPressed(68))
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group5Hear))
                 formationTroopIndex = 5;
-            else if (Input.IsGameKeyPressed(69))
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group6Hear))
                 formationTroopIndex = 6;
-            else if (Input.IsGameKeyPressed(70))
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group7Hear))
                 formationTroopIndex = 7;
             if (formationTroopIndex != -1)
                 dataSource.OnSelect(formationTroopIndex);
-            if (!Input.IsGameKeyPressed(52))
+            if (!Input.IsGameKeyPressed(MissionOrderHotkeyCategory.ViewOrders))
                 return;
             dataSource.ViewOrders();
         }

@@ -18,6 +18,14 @@ namespace RTSCamera.Event
         public static event SwitchTeamDelegate PreSwitchTeam;
         public static event SwitchTeamDelegate PostSwitchTeam;
 
+        public static void Clear()
+        {
+            MainAgentWillBeChangedToAnotherOne = null;
+            ToggleFreeCamera = null;
+            PreSwitchTeam = null;
+            PostSwitchTeam = null;
+        }
+
         public static void OnMainAgentWillBeChangedToAnotherOne(Agent newAgent)
         {
             MainAgentWillBeChangedToAnotherOne?.Invoke(newAgent);
