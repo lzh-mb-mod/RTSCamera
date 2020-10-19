@@ -1,9 +1,8 @@
-﻿using System;
+﻿using RTSCamera.Event;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using RTSCamera.Event;
-using RTSCamera.Logic;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
