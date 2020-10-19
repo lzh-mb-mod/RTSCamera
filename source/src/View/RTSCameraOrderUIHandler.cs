@@ -24,10 +24,15 @@ namespace RTSCamera.View
     [OverrideView(typeof(MissionOrderUIHandler))]
     public class RTSCameraOrderUIHandler : MissionView, ISiegeDeploymentView
     {
+        private bool _registered = false;
         private void RegisterReload()
         {
-            MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
-            MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
+            if (!_registered)
+            {
+                MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
+                MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
+                _registered = true;
+            }
         }
         private void OnPreSwitchTeam()
         {
@@ -131,8 +136,6 @@ namespace RTSCamera.View
         public override void OnMissionScreenFinalize()
         {
             base.OnMissionScreenFinalize();
-            MissionEvent.PreSwitchTeam -= OnPreSwitchTeam;
-            MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
 
             _deploymentPointDataSources = null;
             _orderTroopPlacer = null;
