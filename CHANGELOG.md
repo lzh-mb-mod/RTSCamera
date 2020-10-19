@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.9.5] - 2020-10-20
+### Fixed
+- Fix the problem that UI becomes transparent in bannerlord e1.5.4
+
 ## [e3.9.4] - 2020-10-19
 ### Fixed
 - Fix the problem that switch team doesn't work.
