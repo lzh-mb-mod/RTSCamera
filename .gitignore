@@ -1,6 +1,6 @@
 .vs/
-source/bin/
-source/obj/
+source/*/bin/
+source/*/obj/
 *.DotSettings*
 *.csproj.user
 *.dll

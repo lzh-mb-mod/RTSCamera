@@ -24,25 +24,26 @@ namespace RTSCamera.View
     [OverrideView(typeof(MissionOrderUIHandler))]
     public class RTSCameraOrderUIHandler : MissionView, ISiegeDeploymentView
     {
-        private bool _registered = false;
         private void RegisterReload()
         {
-            if (!_registered)
-            {
-                MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
-                MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
-                _registered = true;
-            }
+            MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
+            MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
+        }
+
+        private void UnregisterReload()
+        {
+            MissionEvent.PreSwitchTeam -= OnPreSwitchTeam;
+            MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
         }
         private void OnPreSwitchTeam()
         {
             dataSource.CloseToggleOrder();
-            OnMissionScreenFinalize();
+            FinalizeViewAndVM();
         }
 
         private void OnPostSwitchTeam()
         {
-            OnMissionScreenInitialize();
+            InitailizeViewAndVM();
             OnMissionScreenActivate();
         }
 
@@ -88,7 +89,13 @@ namespace RTSCamera.View
         public override void OnMissionScreenInitialize()
         {
             base.OnMissionScreenInitialize();
+
             RegisterReload();
+            InitailizeViewAndVM();
+        }
+
+        private void InitailizeViewAndVM()
+        {
             MissionScreen.SceneLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("MissionOrderHotkeyCategory"));
             MissionScreen.OrderFlag = new OrderFlag(Mission, MissionScreen);
             _orderTroopPlacer = Mission.GetMissionBehaviour<RTSCameraOrderTroopPlacer>();
@@ -136,7 +143,12 @@ namespace RTSCamera.View
         public override void OnMissionScreenFinalize()
         {
             base.OnMissionScreenFinalize();
+            FinalizeViewAndVM();
+            UnregisterReload();
+        }
 
+        private void FinalizeViewAndVM()
+        {
             _deploymentPointDataSources = null;
             _orderTroopPlacer = null;
             gauntletLayer = null;
