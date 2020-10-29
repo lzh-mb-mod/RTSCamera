@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.9.6] - 2020-10-25
+### Fixed
+- Fix the problem that config key page is transparent.
+
 ## [e3.9.5] - 2020-10-20
 ### Fixed
 - Fix the problem that UI becomes transparent in Bannerlord e1.5.4.

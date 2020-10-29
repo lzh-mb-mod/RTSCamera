@@ -1,9 +1,9 @@
-﻿using RTSCamera.Config;
+﻿using MissionLibrary.Extension;
+using RTSCamera.Config;
 using RTSCamera.Logic;
 using RTSCamera.Patch;
 using RTSCamera.Patch.CircularFormation;
 using System.Collections.Generic;
-using RTSCamera.Logic.SubLogic;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 
@@ -48,6 +48,14 @@ namespace RTSCamera.View
             }
 
             foreach (var extension in RTSCameraExtension.Extensions)
+            {
+                foreach (var missionBehaviour in extension.CreateMissionBehaviours(Mission))
+                {
+                    AddMissionBehaviour(missionBehaviour);
+                }
+            }
+
+            foreach (var extension in MissionExtensionCollection.Extensions)
             {
                 foreach (var missionBehaviour in extension.CreateMissionBehaviours(Mission))
                 {

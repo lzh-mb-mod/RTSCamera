@@ -1,5 +1,5 @@
 ﻿using RTSCamera.Config;
-using RTSCamera.Event;
+using RTSCamera.Config.HotKey;
 using RTSCamera.Logic;
 using RTSCamera.Logic.SubLogic;
 using TaleWorlds.Engine;
@@ -12,7 +12,6 @@ namespace RTSCamera.View
 {
     class HideHUDView : MissionView
     {
-        private GameKeyConfig _gameKeyConfig;
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private bool _oldDisplayTargetingReticule = true;
         private bool _hideUI;
@@ -23,8 +22,7 @@ namespace RTSCamera.View
             base.OnBehaviourInitialize();
 
             _switchFreeCameraLogic = Mission.GetMissionBehaviour<RTSCameraLogic>().SwitchFreeCameraLogic;
-            MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
-            _gameKeyConfig = GameKeyConfig.Get();
+            MissionLibrary.Event.MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
             _oldDisplayTargetingReticule = BannerlordConfig.DisplayTargetingReticule;
         }
 
@@ -32,7 +30,7 @@ namespace RTSCamera.View
         {
             base.OnRemoveBehaviour();
 
-            MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
+            MissionLibrary.Event.MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             RecoverTargetingReticule();
 
             MBDebug.DisableAllUI = false;
@@ -42,7 +40,7 @@ namespace RTSCamera.View
         {
             base.OnMissionScreenTick(dt);
 
-            if (TaleWorlds.InputSystem.Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ToggleHUD)) || MBDebug.DisableAllUI && TaleWorlds.InputSystem.Input.IsKeyPressed(InputKey.Home))
+            if (TaleWorlds.InputSystem.Input.IsKeyPressed(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ToggleHUD)) || MBDebug.DisableAllUI && TaleWorlds.InputSystem.Input.IsKeyPressed(InputKey.Home))
                 ToggleUI();
 
             if (!_isTemporarilyOpenUI)

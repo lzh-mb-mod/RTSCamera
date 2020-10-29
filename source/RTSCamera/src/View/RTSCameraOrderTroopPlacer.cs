@@ -1,11 +1,9 @@
-﻿using System;
+﻿using RTSCamera.Config;
+using RTSCamera.QuerySystem;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using RTSCamera.Config;
-using RTSCamera.Event;
-using RTSCamera.Logic;
-using RTSCamera.QuerySystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.InputSystem;
@@ -22,7 +20,7 @@ namespace RTSCamera.View
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private void RegisterReload()
         {
-            MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
         }
         private void OnPostSwitchTeam()
         {
@@ -39,7 +37,7 @@ namespace RTSCamera.View
         {
             base.OnMissionScreenFinalize();
 
-            MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
         }
 
         private CursorState _currentCursorState = CursorState.Invisible;

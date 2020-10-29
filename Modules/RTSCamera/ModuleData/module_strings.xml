@@ -96,17 +96,29 @@
     <string id="str_rts_camera_gamekey_config" text="{=RTSCamera_gamekeyconfigtitle}Config Key" />
 
     <string id="str_key_category_name.RTSCameraHotKey" text="{=RTSCamera_hotkeycategory}RTSCamera Hot Key" />
-    <string id="str_key_name.RTSCameraHotKey_Up" text="{=RTSCamera_openmenukey}Open Menu" />
-    <string id="str_key_name.RTSCameraHotKey_Down" text="{=RTSCamera_pausekey}Pause" />
-    <string id="str_key_name.RTSCameraHotKey_Left" text="{=RTSCamera_slowmotionkey}Slow Motion" />
-    <string id="str_key_name.RTSCameraHotKey_Right" text="{=RTSCamera_freecamerakey}Free Camera" />
-    <string id="str_key_name.RTSCameraHotKey_Leave" text="{=RTSCamera_disabledeathkey}All Invulnerable" />
-    <string id="str_key_name.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_controltroopkey}Control Troop" />
+    <string id="str_key_name.RTSCameraHotKey_Up" text="{=RTSCamera_pausekey}Pause" />
+    <string id="str_key_name.RTSCameraHotKey_Down" text="{=RTSCamera_slowmotionkey}Slow Motion" />
+    <string id="str_key_name.RTSCameraHotKey_Left" text="{=RTSCamera_freecamerakey}Free Camera" />
+    <string id="str_key_name.RTSCameraHotKey_Right" text="{=RTSCamera_disabledeathkey}All Invulnerable" />
+    <string id="str_key_name.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey}Control Troop" />
     <!-- same as str_rts_camera_toggle_ui -->
-    <string id="str_key_name.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_toggleui}Toggle HUD" />
-    <string id="str_key_name.RTSCameraHotKey_InitiateTeamChat" text="{=RTSCamera_switchteam}Switch Team" />
+    <string id="str_key_name.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_toggleui}Toggle HUD" />
+    <string id="str_key_name.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_switchteam}Switch Team" />
     <!-- same as str_rts_camera_select_character -->
-    <string id="str_key_name.RTSCameraHotKey_Attack" text="{=RTSCamera_select_character}Select Character" />
+    <string id="str_key_name.RTSCameraHotKey_InitiateTeamChat" text="{=RTSCamera_select_character}Select Character" />
+
+    <!-- same as str_rts_camera_toggle_pause_hint -->
+    <string id="str_key_description.RTSCameraHotKey_Up" text="{=RTSCamera_toggle_pause_hint}Pause or unpause the game." />
+    <string id="str_key_description.RTSCameraHotKey_Down" text="{=RTSCamera_slowmotionkey_description}Enable slow motion mode. Press again to recover." />
+    <!-- same as str_rts_camera_use_free_camera_by_default_hint -->
+    <string id="str_key_description.RTSCameraHotKey_Left" text="{=RTSCamera_switch_free_camera_hint}Switch between free camera and player camera." />
+    <string id="str_key_description.RTSCameraHotKey_Right" text="{=RTSCamera_disable_death_desciption}All units will not die, for making video. Need to be in cheat mode and enabled in menu." />
+    <string id="str_key_description.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey_description}Control one of your teamates when you are killed, or switch to player camera when in free camera mode." />
+    <!-- same as str_rts_camera_toggle_ui_hint -->
+    <string id="str_key_description.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
+    <string id="str_key_description.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_switchteam_description}Swap player's team, for making video. Need to be in cheat mode and enabled in menu." />
+    <!-- same as str_rts_camera_select_character_hint -->
+    <string id="str_key_description.RTSCameraHotKey_InitiateTeamChat" text="{=RTSCamera_select_character_hint}Select a character using mouse, then you can focus the camera to it or control it." />
 
 
     <string id="str_rts_camera_enemy_wiped_out" text="{=RTSCamera_enemywipedout}Enemy has been wiped out." />

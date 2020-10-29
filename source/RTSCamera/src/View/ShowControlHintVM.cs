@@ -1,8 +1,8 @@
 ﻿using RTSCamera.Config;
+using RTSCamera.Config.HotKey;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
-using TaleWorlds.MountAndBlade.View.Screen;
 
 namespace RTSCamera.View
 {
@@ -61,7 +61,7 @@ namespace RTSCamera.View
 
         private TextObject GetText()
         {
-            GameTexts.SetVariable("KeyName", Utility.TextForKey(GameKeyConfig.Get().GetKey(GameKeyEnum.ControlTroop)));
+            GameTexts.SetVariable("KeyName", Utility.TextForKey(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop)));
             if (_focusedOnAgent)
             {
                 return GameTexts.FindText("str_rts_camera_control_current_agent_hint");

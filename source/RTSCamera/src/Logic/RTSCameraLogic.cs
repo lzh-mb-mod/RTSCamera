@@ -53,6 +53,7 @@ namespace RTSCamera.Logic
             SwitchFreeCameraLogic.OnRemoveBehaviour();
 
             MissionEvent.Clear();
+            MissionLibrary.Event.MissionEvent.Clear();
         }
 
         public override void AfterStart()

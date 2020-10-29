@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using MissionLibrary.Controller.Camera;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
-using RTSCamera.Event;
 using RTSCamera.Logic;
 using RTSCamera.Logic.SubLogic;
+using System;
+using System.Linq;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
@@ -19,7 +19,7 @@ using TaleWorlds.MountAndBlade.View.Screen;
 
 namespace RTSCamera.View
 {
-    public class FlyCameraMissionView : MissionView, ICameraModeLogic
+    public class FlyCameraMissionView : MissionView, ICameraModeLogic, ICameraController
     {
         private static readonly FieldInfo CameraAddedElevation =
             typeof(MissionScreen).GetField("_cameraAddedElevation", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -94,8 +94,6 @@ namespace RTSCamera.View
 
         public float CameraElevation { get; private set; }
 
-        public bool CameraRotateSmoothMode = true;
-
         public bool ConstantSpeed;
 
         public bool Outdoor = true;
@@ -116,6 +114,33 @@ namespace RTSCamera.View
 
         public float Zoom { get; set; } = 1.0f;
 
+        public float ViewAngle { get; set; }
+
+        // legacy.
+        public bool CameraRotateSmoothMode = true;
+        public bool SmoothRotationMode 
+        {
+            get => CameraRotateSmoothMode;
+            set => CameraRotateSmoothMode = value;
+        }
+
+        // legacy
+        public float CameraSpeedFactor = 1;
+
+        // legacy
+        public float CameraVerticalSpeedFactor = 1;
+
+        public float MovementSpeedFactor
+        {
+            get => CameraSpeedFactor;
+            set => CameraSpeedFactor = value;
+        }
+        public float VerticalMovementSpeedFactor
+        {
+            get => CameraVerticalSpeedFactor;
+            set => CameraVerticalSpeedFactor = value;
+        }
+
         public float DepthOfFieldDistance
         {
             get => _depthOfFieldDistance;
@@ -125,7 +150,6 @@ namespace RTSCamera.View
                 if (_freeCameraLogic == null || !_freeCameraLogic.IsSpectatorCamera || LockToAgent)
                     return;
                 UpdateDof();
-
             }
         }
 
@@ -153,10 +177,6 @@ namespace RTSCamera.View
             }
         }
 
-
-        public float CameraSpeedFactor = 1;
-
-        public float CameraVerticalSpeedFactor = 1;
         private float _depthOfFieldDistance;
         private float _depthOfFieldStart;
         private float _depthOfFieldEnd;
@@ -168,6 +188,11 @@ namespace RTSCamera.View
         public Camera CombatCamera => MissionScreen.CombatCamera;
 
         public Vec3 CameraPosition { get; set; }
+
+        public FlyCameraMissionView()
+        {
+            CameraController.Instance = this;
+        }
 
         public void FocusOnAgent(Agent agent)
         {
@@ -217,7 +242,7 @@ namespace RTSCamera.View
             MissionScreen.AddLayer(_showControlHintLayer);
 
             Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
-            MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
+            MissionLibrary.Event.MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
 
             MissionScreen.OnSpectateAgentFocusIn += MissionScreenOnSpectateAgentFocusIn;
             MissionScreen.OnSpectateAgentFocusOut += MissionScreenOnSpectateAgentFocusOut;
@@ -235,10 +260,12 @@ namespace RTSCamera.View
             MissionScreen.OnSpectateAgentFocusOut -= MissionScreenOnSpectateAgentFocusOut;
 
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
-            MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
+            MissionLibrary.Event.MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             _freeCameraLogic = null;
             _missionMainAgentController = null;
             _config = null;
+
+            CameraController.Clear();
         }
 
         public override bool UpdateOverridenCamera(float dt)
@@ -456,7 +483,7 @@ namespace RTSCamera.View
                 else if (num < -0.00999999977648258)
                     _cameraSpeedMultiplier *= 0.8f;
             }
-            float num1 = 3f * _cameraSpeedMultiplier * CameraSpeedFactor;
+            float num1 = 3f * _cameraSpeedMultiplier * MovementSpeedFactor;
             if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.Zoom))
                 num1 *= _shiftSpeedMultiplier;
             if (!_cameraSmoothMode)
@@ -505,7 +532,7 @@ namespace RTSCamera.View
                 _cameraSpeed += (keyInput + mouseInput) * num1 * heightFactorForHorizontalMove;
             }
             float horizontalLimit = heightFactorForHorizontalMove * num1;
-            float verticalLimit = heightFactorForVerticalMove * num1 * CameraVerticalSpeedFactor;
+            float verticalLimit = heightFactorForVerticalMove * num1 * VerticalMovementSpeedFactor;
             _cameraSpeed.x = MBMath.ClampFloat(_cameraSpeed.x, -horizontalLimit, horizontalLimit);
             _cameraSpeed.y = MBMath.ClampFloat(_cameraSpeed.y, -horizontalLimit, horizontalLimit);
             _cameraSpeed.z = MBMath.ClampFloat(_cameraSpeed.z, -verticalLimit, verticalLimit);
@@ -671,7 +698,7 @@ namespace RTSCamera.View
             }
             float num4 = 5.4E-05f;
             float smoothFading;
-            if (CameraRotateSmoothMode)
+            if (SmoothRotationMode)
             {
                 num4 *= 0.10f;
                 smoothFading = (float)Math.Pow(0.000001, dt);

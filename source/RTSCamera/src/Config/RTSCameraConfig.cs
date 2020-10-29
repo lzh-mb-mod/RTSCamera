@@ -1,7 +1,7 @@
-﻿using System;
+﻿using MissionSharedLibrary.Config;
+using System;
 using System.IO;
 using System.Xml.Serialization;
-using RTSCamera.Config.Basic;
 
 namespace RTSCamera.Config
 {
@@ -32,8 +32,6 @@ namespace RTSCamera.Config
 
             ConfigVersion = BinaryVersion.ToString(2);
         }
-
-        private static RTSCameraConfig _instance;
 
         public string ConfigVersion { get; set; } = BinaryVersion.ToString();
 
@@ -75,27 +73,7 @@ namespace RTSCamera.Config
 
         public bool SwitchTeamHotkeyEnabled;
 
-        private static RTSCameraConfig CreateDefault()
-        {
-            return new RTSCameraConfig();
-        }
-        public static RTSCameraConfig Get()
-        {
-            if (_instance == null)
-            {
-                _instance = CreateDefault();
-                _instance.SyncWithSave();
-            }
-
-            return _instance;
-        }
-
-        public static void Clear()
-        {
-            _instance = null;
-        }
-
-        protected override XmlSerializer serializer => new XmlSerializer(typeof(RTSCameraConfig));
+        protected override XmlSerializer Serializer => new XmlSerializer(typeof(RTSCameraConfig));
 
         protected override void CopyFrom(RTSCameraConfig other)
         {
@@ -120,14 +98,7 @@ namespace RTSCamera.Config
             DisableDeathHotkeyEnabled = other.DisableDeathHotkeyEnabled;
             SwitchTeamHotkeyEnabled = other.SwitchTeamHotkeyEnabled;
         }
-
-        public override void ResetToDefault()
-        {
-            CopyFrom(CreateDefault());
-        }
         [XmlIgnore]
-        protected override string SaveName => Path.Combine(SavePath, nameof(RTSCameraConfig) + ".xml");
-        [XmlIgnore]
-        protected override string[] OldNames { get; } = { Path.Combine(OldSavePath, "EnhancedMissionConfig.xml") };
+        protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");
     }
 }

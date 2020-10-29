@@ -1,5 +1,4 @@
-﻿using RTSCamera.Event;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,14 +25,14 @@ namespace RTSCamera.View
     {
         private void RegisterReload()
         {
-            MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
-            MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
         }
 
         private void UnregisterReload()
         {
-            MissionEvent.PreSwitchTeam -= OnPreSwitchTeam;
-            MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PreSwitchTeam -= OnPreSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
         }
         private void OnPreSwitchTeam()
         {

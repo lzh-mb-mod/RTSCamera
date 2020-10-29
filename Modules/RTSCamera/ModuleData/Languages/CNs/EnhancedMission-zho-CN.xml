@@ -99,8 +99,7 @@
     <string id="RTSCamera_toggleui" text="切换HUD" />
     <string id="RTSCamera_gamekeyconfigtitle" text="按键绑定" />
 
-    <string id="RTSCamera_hotkeycategory" text="RTS Camera热键" />
-    <string id="RTSCamera_openmenukey" text="打开菜单" />
+    <string id="RTSCamera_hotkeycategory" text="自由视角热键" />
     <string id="RTSCamera_pausekey" text="暂停" />
     <string id="RTSCamera_slowmotionkey" text="变速模式" />
     <string id="RTSCamera_freecamerakey" text="自由视角" />

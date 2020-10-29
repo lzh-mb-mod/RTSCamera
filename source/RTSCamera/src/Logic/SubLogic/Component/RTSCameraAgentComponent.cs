@@ -1,6 +1,6 @@
-﻿using System;
+﻿using RTSCamera.QuerySystem;
+using System;
 using System.Runtime.ExceptionServices;
-using RTSCamera.QuerySystem;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;

@@ -4,6 +4,7 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera
 {
+    // Legacy.
     public abstract class RTSCameraExtension
     {
         public static event Action OnExtensionMenuClosed;

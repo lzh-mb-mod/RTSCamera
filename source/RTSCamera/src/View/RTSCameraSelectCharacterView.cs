@@ -1,6 +1,5 @@
 ﻿using RTSCamera.Config;
-using RTSCamera.Event;
-using RTSCamera.Logic;
+using RTSCamera.Config.HotKey;
 using RTSCamera.Logic.SubLogic.Component;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
@@ -20,7 +19,6 @@ namespace RTSCamera.View
         private static readonly uint SelectedColor = new Color(0.2f, 0.5f, 1.0f).ToUnsignedInteger();
         private static readonly uint EnemyMouseOverColor = new Color(0.98f, 0.6f, 0.5f).ToUnsignedInteger();
         private static readonly uint EnemySelectedColor = new Color(0.98f, 0.2f, 0.3f).ToUnsignedInteger();
-        private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
         private GauntletLayer _gauntletLayer;
         private SelectCharacterVM _dataSource;
         private FlyCameraMissionView _flyCameraMissionView;
@@ -36,7 +34,7 @@ namespace RTSCamera.View
                 if (_isSelectingCharacter)
                 {
                     GameTexts.SetVariable("KeyName",
-                        Utility.TextForKey(GameKeyConfig.Get().GetKey(GameKeyEnum.ControlTroop)));
+                        Utility.TextForKey(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop)));
                     Activate();
                 }
                 else
@@ -80,7 +78,7 @@ namespace RTSCamera.View
 
             ViewOrderPriorty = 23;
             _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
-            MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
         }
 
         public override void OnMissionScreenFinalize()
@@ -90,7 +88,7 @@ namespace RTSCamera.View
             Deactivate();
             _mouseOverAgent = null;
             _selectedAgent = null;
-            MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
         }
 
         public override void OnAgentCreated(Agent agent)
@@ -146,7 +144,7 @@ namespace RTSCamera.View
         {
             base.OnMissionScreenTick(dt);
 
-            if (Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.SelectCharacter)) ||
+            if (Input.IsKeyPressed(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SelectCharacter)) ||
                 IsSelectingCharacter && _gauntletLayer.Input.IsKeyPressed(InputKey.RightMouseButton))
             {
                 IsSelectingCharacter = !IsSelectingCharacter;

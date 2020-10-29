@@ -1,7 +1,9 @@
-﻿using System;
+﻿using MissionLibrary.HotKey;
 using RTSCamera.Config;
+using RTSCamera.Config.HotKey;
 using RTSCamera.Event;
 using RTSCamera.View;
+using System;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -12,7 +14,6 @@ namespace RTSCamera.Logic.SubLogic
     public class ControlTroopLogic
     {
         private RTSCameraLogic _rtsCameraLogic;
-        private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private SwitchFreeCameraLogic _switchFreeCameraLogic;
         private FlyCameraMissionView _flyCameraMissionView;
@@ -41,6 +42,7 @@ namespace RTSCamera.Logic.SubLogic
                 if (!Utility.IsPlayerDead())
                 {
                     MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
+                    MissionLibrary.Event.MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                     Utility.AIControlMainAgent(false);
                 }
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
@@ -80,6 +82,7 @@ namespace RTSCamera.Logic.SubLogic
                     if (!Utility.IsPlayerDead() && Mission.MainAgent != agent)
                     {
                         MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
+                        MissionLibrary.Event.MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                         Utility.AIControlMainAgent(false);
                     }
                     bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
@@ -228,7 +231,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnMissionTick(float dt)
         {
-            if (MissionScreen.SceneLayer.Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.ControlTroop)))
+            if (MissionScreen.SceneLayer.Input.IsKeyPressed(RTSCameraGameKeyCategory.GetKey(Config.HotKey.GameKeyEnum.ControlTroop)))
             {
                 if (_selectCharacterView.LockOnAgent())
                     return;

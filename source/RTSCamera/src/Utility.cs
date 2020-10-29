@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using MissionLibrary.HotKey.Category;
 using RTSCamera.Config;
+using RTSCamera.Config.HotKey;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
@@ -82,11 +84,11 @@ namespace RTSCamera
 
         public static void PrintUsageHint()
         {
-            var keyName = TextForKey(GameKeyConfig.Get().GetKey(GameKeyEnum.OpenMenu));
+            var keyName = TextForKey(MissionLibraryGameKeyCategory.GetKey(GeneralGameKey.OpenMenu));
             GameTexts.SetVariable("KeyName", keyName);
             var hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_open_menu_hint").ToString();
             DisplayMessageOutOfMission(hint);
-            keyName = TextForKey(GameKeyConfig.Get().GetKey(GameKeyEnum.FreeCamera));
+            keyName = TextForKey(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera));
             GameTexts.SetVariable("KeyName", keyName);
             hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_switch_camera_hint").ToString();
             DisplayMessageOutOfMission(hint);

@@ -1,4 +1,5 @@
 ﻿using RTSCamera.Config;
+using RTSCamera.Config.HotKey;
 using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 
@@ -8,7 +9,6 @@ namespace RTSCamera.Logic.SubLogic
     {
         private readonly RTSCameraLogic _logic;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
-        private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         public Mission Mission => _logic.Mission;
 
@@ -26,12 +26,12 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnMissionTick(float dt)
         {
-            if (Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.Pause)))
+            if (Input.IsKeyPressed(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.Pause)))
             {
                 TogglePause();
             }
 
-            if (Input.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.SlowMotion)))
+            if (Input.IsKeyPressed(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SlowMotion)))
             {
                 SetSlowMotionMode(!Mission.Scene.SlowMotionMode);
             }

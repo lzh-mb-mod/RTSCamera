@@ -3,6 +3,7 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Event
 {
+    // Legacy. Use MissionLibrary.Event.MissionEvent instead.
     public static class MissionEvent
     {
         public static event Action<Agent> MainAgentWillBeChangedToAnotherOne;

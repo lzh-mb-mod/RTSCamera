@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <strings>
+    <string id="str_key_category_name.MissionLibraryGeneralGameKey" text="{=MissionLibrary_general_game_key}General Hot Key" />
+    <string id="str_key_name.MissionLibraryGeneralGameKey_Up" text="{=MissionLibrary_openmenukey}Open Menu" />
+    <string id="str_key_description.MissionLibraryGeneralGameKey_Up" text="{=MissionLibrary_openmenukey_description}Open or close menu." />
+    
+  </strings>
+</base>

@@ -98,8 +98,7 @@
     <string id="RTSCamera_toggleui" text="Toggle HUD" />
     <string id="RTSCamera_gamekeyconfigtitle" text="Config Key" />
 
-    <string id="RTSCamera_hotkeycategory" text="RTSCamera Hot Key" />
-    <string id="RTSCamera_openmenukey" text="Open Menu" />
+    <string id="RTSCamera_hotkeycategory" text="RTS Camera Hot Key" />
     <string id="RTSCamera_pausekey" text="Pause" />
     <string id="RTSCamera_slowmotionkey" text="Slow Motion" />
     <string id="RTSCamera_freecamerakey" text="Free Camera" />

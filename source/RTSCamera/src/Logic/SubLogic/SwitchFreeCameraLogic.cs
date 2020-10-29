@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using RTSCamera.CampaignGame.Behavior;
+﻿using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Event;
 using RTSCamera.QuerySystem;
+using System.Collections.Generic;
+using System.ComponentModel;
+using RTSCamera.Config.HotKey;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -16,7 +16,6 @@ namespace RTSCamera.Logic.SubLogic
     {
         private readonly RTSCameraLogic _logic;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
-        private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
 
         private ControlTroopLogic _controlTroopLogic;
 
@@ -108,7 +107,7 @@ namespace RTSCamera.Logic.SubLogic
                 CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
             }
 
-            if (Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.FreeCamera)))
+            if (Mission.InputManager.IsKeyPressed(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera)))
             {
                 SwitchCamera();
             }
@@ -131,6 +130,10 @@ namespace RTSCamera.Logic.SubLogic
             if (agent.Controller == Agent.ControllerType.Player)
             {
                 agent.SetMaximumSpeedLimit(-1, false);
+                if (agent.HasMount)
+                {
+                    agent.MountAgent.SetMaximumSpeedLimit(-1, false);
+                }
                 agent.StopRetreating();
                 if (_config.AlwaysSetPlayerFormation)
                     Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
@@ -221,7 +224,7 @@ namespace RTSCamera.Logic.SubLogic
                 else if (Mission.PlayerTeam?.ActiveAgents.Count > 0)
                 {
                     GameTexts.SetVariable("KeyName",
-                        Utility.TextForKey(_gameKeyConfig.GetKey(GameKeyEnum.ControlTroop)));
+                        Utility.TextForKey(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop)));
                     Utility.DisplayLocalizedText("str_rts_camera_control_troop_hint");
                 }
             }
@@ -246,6 +249,7 @@ namespace RTSCamera.Logic.SubLogic
                 _controlTroopLogic.SetMainAgent();
             }
             MissionEvent.OnToggleFreeCamera(false);
+            MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(false);
         }
 
         private void SwitchToFreeCamera()
@@ -257,6 +261,7 @@ namespace RTSCamera.Logic.SubLogic
             }
 
             MissionEvent.OnToggleFreeCamera(true);
+            MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(true);
             Utility.DisplayLocalizedText("str_rts_camera_switch_to_free_camera");
         }
     }

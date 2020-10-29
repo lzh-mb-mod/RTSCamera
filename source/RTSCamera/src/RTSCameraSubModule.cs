@@ -1,11 +1,15 @@
-﻿using System;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
+using MissionLibrary;
+using MissionLibrary.Extension;
 using RTSCamera.CampaignGame.Behavior;
+using RTSCamera.Config;
+using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
 using SandBox;
 using SandBox.Source.Towns;
+using System;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -20,6 +24,9 @@ namespace RTSCamera
 {
     public class RTSCameraSubModule : MBSubModuleBase
     {
+        public const string ModuleId = "RTSCamera";
+        public const string OldModuleId = "EnhancedMission";
+
         private readonly Harmony _harmony = new Harmony("RTSCameraPatch");
         private bool successPatch;
         protected override void OnSubModuleLoad()
@@ -28,9 +35,13 @@ namespace RTSCamera
 
             try
             {
+                Global.Initialize();
+                RTSCameraGameKeyCategory.Initialize();
                 RTSCameraExtension.Clear();
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts(
                     BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
+                Module.CurrentModule.GlobalTextManager.LoadGameTexts(
+                    BasePath.Name + "Modules/RTSCamera/ModuleData/MissionLibrary.xml");
 
                 successPatch = true;
 
@@ -81,18 +92,6 @@ namespace RTSCamera
                      mapping.TargetMethods[index],
                     prefix: new HarmonyMethod(typeof(Patch_MissionScreen).GetMethod("OnMissionModeChange_Prefix",
                         BindingFlags.Static | BindingFlags.Public)));
-
-
-                //_harmony.Patch(typeof(MovementOrder).GetMethod("Tick", BindingFlags.Instance | BindingFlags.NonPublic),
-                //    postfix: new HarmonyMethod(
-                //        typeof(Patch_MovementOrder).GetMethod("Tick_Postfix", BindingFlags.Static | BindingFlags.Public)));
-                //_harmony.Patch(typeof(MovementOrder).GetProperty("MovementState", BindingFlags.Instance | BindingFlags.NonPublic)?.GetMethod,
-                //    prefix: new HarmonyMethod(
-                //        typeof(Patch_MovementOrder).GetMethod("Get_MovementState_Prefix", BindingFlags.Static | BindingFlags.Public)));
-
-                //_harmony.Patch(typeof(BehaviorCharge).GetMethod("CalculateCurrentOrder", BindingFlags.Instance | BindingFlags.NonPublic),
-                //    prefix: new HarmonyMethod(
-                //        typeof(Patch_BehaviorCharge).GetMethod("CalculateCurrentOrder_Prefix", BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {
@@ -110,6 +109,7 @@ namespace RTSCamera
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera: patch failed"));
             }
 
+            MissionSharedLibrary.Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage; 
             Utility.PrintUsageHint();
         }
 
@@ -118,6 +118,7 @@ namespace RTSCamera
             base.OnGameStart(game, gameStarterObject);
 
             game.GameTextManager.LoadGameTexts(BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
+            game.GameTextManager.LoadGameTexts(BasePath.Name + "Modules/RTSCamera/ModuleData/MissionLibrary.xml");
             AddCampaignBehavior(gameStarterObject);
         }
 
@@ -134,7 +135,10 @@ namespace RTSCamera
         {
             base.OnSubModuleUnloaded();
             RTSCameraExtension.Clear();
+            MissionExtensionCollection.Clear();
             _harmony.UnpatchAll(_harmony.Id);
+            RTSCameraGameKeyCategory.Clear();
+            Global.Clear();
         }
     }
 }

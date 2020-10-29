@@ -9,6 +9,7 @@ using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace RTSCamera.View.Basic
 {
+    // Legacy. Use MissionSharedLibrary.View.MissionMenuViewBase instead.
     public class MissionMenuViewBase : MissionView
     {
         private readonly string _movieName;

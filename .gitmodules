@@ -1,0 +1,3 @@
+[submodule "source/library/mission-library"]
+	path = source/library/mission-library
+	url = git@gitlab.com:lzh_mb_mod/mission-library.git

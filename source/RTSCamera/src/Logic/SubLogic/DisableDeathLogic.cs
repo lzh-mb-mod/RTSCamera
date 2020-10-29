@@ -1,4 +1,6 @@
-﻿using RTSCamera.Config;
+﻿using MissionLibrary.HotKey;
+using RTSCamera.Config;
+using RTSCamera.Config.HotKey;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
@@ -8,7 +10,7 @@ namespace RTSCamera.Logic.SubLogic
     {
         private readonly RTSCameraLogic _logic;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
-        private readonly GameKeyConfig _gameKeyConfig = GameKeyConfig.Get();
+        private readonly IGameKeyCategory _gameKeyCategory = RTSCameraGameKeyCategory.Category;
 
         public Mission Mission => _logic.Mission;
 
@@ -26,7 +28,7 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (!NativeConfig.CheatMode)
                 return;
-            if (_config.DisableDeathHotkeyEnabled && Mission.InputManager.IsKeyPressed(_gameKeyConfig.GetKey(GameKeyEnum.DisableDeath)))
+            if (_config.DisableDeathHotkeyEnabled && Mission.InputManager.IsKeyPressed(_gameKeyCategory.GetKey((int)GameKeyEnum.DisableDeath)))
             {
                 _config.DisableDeath = !_config.DisableDeath;
                 SetDisableDeath(_config.DisableDeath);

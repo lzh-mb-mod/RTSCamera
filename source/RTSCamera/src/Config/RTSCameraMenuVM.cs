@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MissionLibrary.Extension;
 using RTSCamera.Logic;
 using RTSCamera.Logic.SubLogic;
 using RTSCamera.Patch;
 using RTSCamera.Patch.CircularFormation;
 using RTSCamera.View;
 using RTSCamera.View.Basic;
+using System;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Engine;
@@ -13,7 +14,7 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Config
 {
-    public class RTSCameraMenuVM : MissionMenuVMBase
+    public class RTSCameraMenuVM : MissionSharedLibrary.View.MissionMenuVMBase
     {
         private readonly RTSCameraConfig _config;
         private readonly Mission _mission;
@@ -303,6 +304,7 @@ namespace RTSCamera.Config
                 if (_config.DisplayMessage == value)
                     return;
                 _config.DisplayMessage = value;
+                MissionSharedLibrary.Utility.ShouldDisplayMessage = value;
                 OnPropertyChanged(nameof(DisplayMessage));
             }
         }
@@ -511,6 +513,12 @@ namespace RTSCamera.Config
             {
                 Extensions.Add(new ExtensionVM(extension.ButtonName, () => extension.OpenExtensionMenu(_mission)));
             }
+
+            foreach (var extension in MissionExtensionCollection.Extensions)
+            {
+                Extensions.Add(new ExtensionVM(extension.ButtonName, () => extension.OpenExtensionMenu(_mission)));
+            }
+
             _gameKeyConfigView = Mission.Current.GetMissionBehaviour<RTSCameraGameKeyConfigView>();
 
             _selectCharacterView = Mission.Current.GetMissionBehaviour<RTSCameraSelectCharacterView>();

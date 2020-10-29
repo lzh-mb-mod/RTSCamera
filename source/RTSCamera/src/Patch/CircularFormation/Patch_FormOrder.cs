@@ -1,6 +1,6 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Reflection;
-using HarmonyLib;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -54,8 +54,8 @@ namespace RTSCamera.Patch.CircularFormation
                         if (!customWidth.HasValue)
                             return true;
 
-                        circularFormation.FormFromCircumference((float)CustomWidth.GetValue(__instance) -
-                                                                formation.UnitDiameter);
+                        //circularFormation.FormFromCircumference((float)CustomWidth.GetValue(__instance) -
+                        //                                        formation.UnitDiameter);
 
                         int countWithOverride = formation.OverridenUnitCount ?? circularFormation.UnitCount;
                         int maximumDepth = GetMaximumDepth(countWithOverride, formation.Distance, formation.Interval,
