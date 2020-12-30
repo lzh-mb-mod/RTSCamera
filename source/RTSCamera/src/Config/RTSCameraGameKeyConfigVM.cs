@@ -16,7 +16,7 @@ namespace RTSCamera.Config
         private string _resetLbl;
         public MissionLibraryGameKeyConfigVM GameKeyOptions { get; set; }
 
-        public RTSCameraGameKeyConfigVM(GameKeyCategoryManager gameKeyCategoryManager, Action<GameKeyOptionVM> onKeyBindRequest, Action onClose)
+        public RTSCameraGameKeyConfigVM(AGameKeyCategoryManager gameKeyCategoryManager, Action<GameKeyOptionVM> onKeyBindRequest, Action onClose)
         {
             _onClose = onClose;
             GameKeyOptions = new MissionLibraryGameKeyConfigVM(gameKeyCategoryManager, onKeyBindRequest);

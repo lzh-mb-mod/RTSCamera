@@ -10,7 +10,7 @@ namespace RTSCamera.Logic.SubLogic
     {
         private readonly RTSCameraLogic _logic;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
-        private readonly IGameKeyCategory _gameKeyCategory = RTSCameraGameKeyCategory.Category;
+        private readonly AGameKeyCategory _gameKeyCategory = RTSCameraGameKeyCategory.Category;
 
         public Mission Mission => _logic.Mission;
 

@@ -1,5 +1,5 @@
-﻿using MissionLibrary;
-using MissionLibrary.HotKey.View;
+﻿using MissionLibrary.HotKey;
+using MissionSharedLibrary.HotKey;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
@@ -56,7 +56,7 @@ namespace RTSCamera.Config
 
         public void Activate()
         {
-            _dataSource = new RTSCameraGameKeyConfigVM(Global.GameKeyCategoryManager, OnKeyBindRequest, Deactivate);
+            _dataSource = new RTSCameraGameKeyConfigVM(AGameKeyCategoryManager.Get(), OnKeyBindRequest, Deactivate);
             _gauntletLayer = new GauntletLayer(ViewOrderPriorty) {IsFocusLayer = true};
             _gauntletLayer.LoadMovie("RTSCameraOptionsGameKeyPage", _dataSource);
             _gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));

@@ -62,6 +62,7 @@ namespace RTSCamera.Patch
             {
                 if (!_patched)
                     return;
+                _patched = false;
                 Harmony.UnpatchAll(Harmony.Id);
             }
             catch (Exception e)

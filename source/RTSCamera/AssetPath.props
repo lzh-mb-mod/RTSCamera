@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <PackagePath>$(SolutionDir)package\</PackagePath>
+    <AssetPath>$(PackagePath)RTSCamera\</AssetPath>
+  </PropertyGroup>
+</Project>

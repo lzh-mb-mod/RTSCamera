@@ -16,6 +16,7 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Screen;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.View
 {
@@ -42,13 +43,13 @@ namespace RTSCamera.View
         private MissionMainAgentController _missionMainAgentController;
         private RTSCameraOrderUIHandler _orderUIHandler;
 
-        private int _shiftSpeedMultiplier = 3;
+        private readonly int _shiftSpeedMultiplier = 3;
         private Vec3 _cameraSpeed;
         private float _cameraSpeedMultiplier;
         private bool _cameraSmoothMode;
         private float _cameraHeightToAdd;
         private float _cameraHeightLimit;
-        private bool _classicMode = true;
+        private readonly bool _classicMode = true;
         private bool _isOrderViewOpen;
         private bool _willEndDraggingMode;
         private bool _earlyDraggingMode;
@@ -191,7 +192,7 @@ namespace RTSCamera.View
 
         public FlyCameraMissionView()
         {
-            CameraController.Instance = this;
+            ACameraControllerManager.Get().Instance = this;
         }
 
         public void FocusOnAgent(Agent agent)
@@ -265,7 +266,7 @@ namespace RTSCamera.View
             _missionMainAgentController = null;
             _config = null;
 
-            CameraController.Clear();
+            ACameraControllerManager.Get().Clear();
         }
 
         public override bool UpdateOverridenCamera(float dt)
@@ -384,9 +385,9 @@ namespace RTSCamera.View
                 return;
 
             bool mouseVisibility =
-                ((_orderUIHandler?.IsDeployment ?? false) || _orderUIHandler.dataSource.IsTransferActive ||
+                (_orderUIHandler.IsDeployment || _orderUIHandler.dataSource.IsTransferActive ||
                  _isOrderViewOpen && (Input.IsAltDown() || MissionScreen.LastFollowedAgent == null)) &&
-                !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton);
+                !_rightButtonDraggingMode && !_earlyDraggingMode;
             if (mouseVisibility != _orderUIHandler.gauntletLayer.InputRestrictions.MouseVisibility)
             {
                 _orderUIHandler.gauntletLayer.InputRestrictions.SetInputRestrictions(mouseVisibility,
@@ -397,7 +398,7 @@ namespace RTSCamera.View
             {
                 bool orderFlagVisibility = (_isOrderViewOpen || _orderUIHandler.IsDeployment) &&
                                            !_orderUIHandler.dataSource.IsTransferActive &&
-                                           !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton);
+                                           !_rightButtonDraggingMode && !_earlyDraggingMode;
                 if (orderFlagVisibility != MissionScreen.OrderFlag.IsVisible)
                 {
                     MissionScreen.SetOrderFlagVisibility(orderFlagVisibility);
@@ -414,9 +415,7 @@ namespace RTSCamera.View
             }
             else if (!_isOrderViewOpen && !(_orderUIHandler?.IsDeployment ?? false) || MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton))
             {
-                if (_earlyDraggingMode)
-                    EndEarlyDragging();
-                if (_rightButtonDraggingMode)
+                if (_earlyDraggingMode || _rightButtonDraggingMode)
                     _willEndDraggingMode = true;
             }
             else if (_isOrderViewOpen || (_orderUIHandler?.IsDeployment ?? false))
@@ -538,7 +537,6 @@ namespace RTSCamera.View
             _cameraSpeed.z = MBMath.ClampFloat(_cameraSpeed.z, -verticalLimit, verticalLimit);
             if (_classicMode)
             {
-                Vec2 asVec2 = cameraFrame.origin.AsVec2;
                 cameraFrame.origin += _cameraSpeed.x * cameraFrame.rotation.s.AsVec2.ToVec3().NormalizedCopy() * dt;
                 ref Vec3 local = ref cameraFrame.origin;
                 Vec3 vec3_2 = local;

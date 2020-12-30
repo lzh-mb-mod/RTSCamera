@@ -4,6 +4,10 @@
 ### Fixed
 - Fix the problem that config key page is transparent.
 
+- Fix the problem that troop cards all show infantry icon, regardless of the actual troop type.
+
+- Fix several minor problems.
+
 ## [e3.9.5] - 2020-10-20
 ### Fixed
 - Fix the problem that UI becomes transparent in Bannerlord e1.5.4.

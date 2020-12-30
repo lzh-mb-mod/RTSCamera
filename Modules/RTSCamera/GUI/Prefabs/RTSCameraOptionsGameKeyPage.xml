@@ -11,7 +11,7 @@
       <Children>
         <Standard.Background />
 
-        <ListPanel Id="MainSectionListPanel" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="164">
+        <ListPanel Id="MainSectionListPanel" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="10">
           <Children>
 
             <Widget Id="CenterPanel" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">

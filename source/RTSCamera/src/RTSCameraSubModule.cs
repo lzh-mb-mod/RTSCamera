@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
-using MissionLibrary;
 using MissionLibrary.Extension;
+using MissionSharedLibrary;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
@@ -28,14 +28,14 @@ namespace RTSCamera
         public const string OldModuleId = "EnhancedMission";
 
         private readonly Harmony _harmony = new Harmony("RTSCameraPatch");
-        private bool successPatch;
+        private bool _successPatch;
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
 
             try
             {
-                Global.Initialize();
+                Initializer.Initialize();
                 RTSCameraGameKeyCategory.Initialize();
                 RTSCameraExtension.Clear();
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts(
@@ -43,7 +43,7 @@ namespace RTSCamera
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts(
                     BasePath.Name + "Modules/RTSCamera/ModuleData/MissionLibrary.xml");
 
-                successPatch = true;
+                _successPatch = true;
 
                 _harmony.Patch(
                     typeof(Formation).GetMethod("LeaveDetachment", BindingFlags.Instance | BindingFlags.NonPublic),
@@ -84,10 +84,10 @@ namespace RTSCamera
                         typeof(Patch_MissionBoundaryCrossingHandler).GetMethod("TickForMainAgent_Prefix",
                             BindingFlags.Static | BindingFlags.Public)));
 
-                var IMissionListener_OnMissionModeChange = typeof(IMissionListener).GetMethod("OnMissionModeChange", BindingFlags.Instance | BindingFlags.Public);
+                var missionListenerOnMissionModeChange = typeof(IMissionListener).GetMethod("OnMissionModeChange", BindingFlags.Instance | BindingFlags.Public);
 
-                var mapping = typeof(MissionScreen).GetInterfaceMap(IMissionListener_OnMissionModeChange.DeclaringType);
-                var index = Array.IndexOf(mapping.InterfaceMethods, IMissionListener_OnMissionModeChange);
+                var mapping = typeof(MissionScreen).GetInterfaceMap(missionListenerOnMissionModeChange.DeclaringType);
+                var index = Array.IndexOf(mapping.InterfaceMethods, missionListenerOnMissionModeChange);
                 _harmony.Patch(
                      mapping.TargetMethods[index],
                     prefix: new HarmonyMethod(typeof(Patch_MissionScreen).GetMethod("OnMissionModeChange_Prefix",
@@ -95,7 +95,7 @@ namespace RTSCamera
             }
             catch (Exception e)
             {
-                successPatch = false;
+                _successPatch = false;
                 MBDebug.ConsolePrint(e.ToString());
             }
         }
@@ -104,7 +104,7 @@ namespace RTSCamera
         {
             base.OnBeforeInitialModuleScreenSetAsRoot();
 
-            if (!successPatch)
+            if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera: patch failed"));
             }
@@ -137,8 +137,7 @@ namespace RTSCamera
             RTSCameraExtension.Clear();
             MissionExtensionCollection.Clear();
             _harmony.UnpatchAll(_harmony.Id);
-            RTSCameraGameKeyCategory.Clear();
-            Global.Clear();
+            Initializer.Clear();
         }
     }
 }

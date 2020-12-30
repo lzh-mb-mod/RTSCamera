@@ -1,11 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <Import Project="$(MSBuildProjectDirectory)\*.props" />
-
   <PropertyGroup>
-	  <TargetFramework>net472</TargetFramework>
-	  <ProcessorArchitecture>amd64</ProcessorArchitecture>
-	  <LangVersion>8</LangVersion>
+    <TargetFramework>net472</TargetFramework>
+    <ProcessorArchitecture>amd64</ProcessorArchitecture>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -16,6 +13,9 @@
     <PackageReference Include="KdTree" Version="1.4.1" />
     <PackageReference Include="Lib.Harmony" Version="2.0.2" />
   </ItemGroup>
+
+  <Import Project="$(MSBuildProjectDirectory)\*.props" />
+  <Import Project="..\library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems" Label="Shared" />
 
   <ItemGroup>
     <ProjectReference Include="..\library\mission-library\source\MissionLibrary\MissionLibrary.csproj" />
@@ -129,7 +129,14 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)MissionLibrary.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;Copy &quot;$(TargetDir)KdTreeLib.dll&quot; &quot;$(SolutionDir)..\Modules\RTSCamera\bin\Win64_Shipping_Client\&quot;&#xD;&#xA;xcopy &quot;$(SolutionDir)..\Modules&quot; &quot;$(GamePath)\Modules&quot; /E /C /I /Y" />
+    <Exec Command="rmdir &quot;$(PackagePath)&quot; /s /q" />
+    <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;$(AssetPath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
+    <Exec Command="xcopy &quot;$(TargetDir)MissionLibrary.dll&quot; &quot;$(AssetPath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
+    <Exec Command="xcopy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(AssetPath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
+    <Exec Command="xcopy &quot;$(TargetDir)KdTreeLib.dll&quot; &quot;$(AssetPath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
+    <Exec Command="xcopy &quot;$(SolutionDir)..\Modules&quot; &quot;$(PackagePath)&quot; /E /C /I /Y /F&#xD;&#xA;" />
+    <Exec Command="xcopy &quot;$(SolutionDir)..\*.html&quot; &quot;$(AssetPath)&quot; /C /I /Y /F&#xD;&#xA;" />
+    <Exec Command="xcopy &quot;$(PackagePath).&quot; &quot;$(GamePath)Modules&quot; /E /C /I /Y /F" />
   </Target>
 
 </Project>

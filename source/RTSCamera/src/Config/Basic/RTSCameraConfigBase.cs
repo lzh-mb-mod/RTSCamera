@@ -6,6 +6,7 @@ using TaleWorlds.Core;
 
 namespace RTSCamera.Config.Basic
 {
+    // legacy
     public abstract class RTSCameraConfigBase<T> where T : RTSCameraConfigBase<T>
     {
 

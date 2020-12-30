@@ -1,5 +1,4 @@
-﻿using RTSCamera.Config;
-using RTSCamera.Config.HotKey;
+﻿using RTSCamera.Config.HotKey;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;

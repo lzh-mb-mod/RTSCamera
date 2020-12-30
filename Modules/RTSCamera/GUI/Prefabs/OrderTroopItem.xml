@@ -7,9 +7,9 @@
     <Constant Name="Troop.Icon.Height" BrushName="Order.Troop.Icon" BrushLayer="Default" BrushValueType="Height" MultiplyResult="0.75"/>
   </Constants>
   <Window>
-    <OrderTroopItemWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height" CurrentMemberCount="@CurrentMemberCount" IsSelectable="@IsSelectable" IsSelected="@IsSelected" FormationClass="@FormationClass" FormationIconWidget="Icon" Brush="Order.Troop.Background">
+    <ButtonWidget Command.Click="ExecuteAction" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height">
       <Children>
-        <ButtonWidget Command.Click="ExecuteAction" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height">
+        <OrderTroopItemWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height" CurrentMemberCount="@CurrentMemberCount" IsSelectable="@IsSelectable" IsSelected="@IsSelected" FormationClass="@FormationClass" FormationIconWidget="Icon" Brush="Order.Troop.Background">
           <Children>
             <BrushWidget Id="Icon" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Icon.Width" SuggestedHeight="!Troop.Icon.Height" Brush="Order.Troop.Icon"/>
             <FillBar WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="13" VerticalAlignment="Bottom" MarginLeft="16" MarginRight="16" MarginBottom="18" MaxAmount="100" CurrentAmount="@Morale" InitialAmount="@Morale" Brush="Order.Troop.MoraleFillBar"/>
@@ -20,8 +20,8 @@
               </Children>
             </Widget>
           </Children>
-        </ButtonWidget>
+        </OrderTroopItemWidget>
       </Children>
-    </OrderTroopItemWidget>
+    </ButtonWidget>
   </Window>
 </Prefab>

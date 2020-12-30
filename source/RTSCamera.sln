@@ -11,8 +11,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MissionSharedLibrary", "lib
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{7c249cda-7bd3-4e67-ac00-3e59e0ffd07f}*SharedItemsImports = 5
 		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{bb80a10d-e971-4c13-8ea6-f31ef29ba86d}*SharedItemsImports = 13
-		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{f4dfefdf-55f2-4ef3-ba32-877f961bc403}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
