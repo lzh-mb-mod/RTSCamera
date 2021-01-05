@@ -344,14 +344,14 @@ namespace RTSCamera.View
         {
             EndEarlyDragging();
             _rightButtonDraggingMode = true;
-            _orderUIHandler.exitWithRightClick = false;
+            _orderUIHandler.ExitWithRightClick = false;
         }
 
         private void EndDrag()
         {
             EndEarlyDragging();
             _rightButtonDraggingMode = false;
-            _orderUIHandler.exitWithRightClick = true;
+            _orderUIHandler.ExitWithRightClick = true;
         }
 
         private void OnToggleOrderViewEvent(MissionPlayerToggledOrderViewEvent e)
@@ -385,19 +385,19 @@ namespace RTSCamera.View
                 return;
 
             bool mouseVisibility =
-                (_orderUIHandler.IsDeployment || _orderUIHandler.dataSource.IsTransferActive ||
+                (_orderUIHandler.IsDeployment || _orderUIHandler.DataSource.TroopController.IsTransferActive ||
                  _isOrderViewOpen && (Input.IsAltDown() || MissionScreen.LastFollowedAgent == null)) &&
                 !_rightButtonDraggingMode && !_earlyDraggingMode;
-            if (mouseVisibility != _orderUIHandler.gauntletLayer.InputRestrictions.MouseVisibility)
+            if (mouseVisibility != _orderUIHandler.GauntletLayer.InputRestrictions.MouseVisibility)
             {
-                _orderUIHandler.gauntletLayer.InputRestrictions.SetInputRestrictions(mouseVisibility,
+                _orderUIHandler.GauntletLayer.InputRestrictions.SetInputRestrictions(mouseVisibility,
                     mouseVisibility ? InputUsageMask.All : InputUsageMask.Invalid);
             }
 
             if (MissionScreen.OrderFlag != null )
             {
                 bool orderFlagVisibility = (_isOrderViewOpen || _orderUIHandler.IsDeployment) &&
-                                           !_orderUIHandler.dataSource.IsTransferActive &&
+                                           !_orderUIHandler.DataSource.TroopController.IsTransferActive &&
                                            !_rightButtonDraggingMode && !_earlyDraggingMode;
                 if (orderFlagVisibility != MissionScreen.OrderFlag.IsVisible)
                 {

@@ -128,8 +128,11 @@
     </Reference>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="BeforeBuild">
     <Exec Command="rmdir &quot;$(PackagePath)&quot; /s /q" />
+  </Target>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;$(AssetPath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
     <Exec Command="xcopy &quot;$(TargetDir)MissionLibrary.dll&quot; &quot;$(AssetPath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
     <Exec Command="xcopy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(AssetPath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />

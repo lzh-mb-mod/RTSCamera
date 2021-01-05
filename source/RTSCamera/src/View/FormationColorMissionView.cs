@@ -195,7 +195,7 @@ namespace RTSCamera.View
             if (_orderUIHandler == null)
                 return;
 
-            foreach (OrderTroopItemVM troop in _orderUIHandler.dataSource.TroopList)
+            foreach (OrderTroopItemVM troop in _orderUIHandler.DataSource.TroopController.TroopList)
             {
                 troop.IsSelectable = PlayerOrderController.IsFormationSelectable(troop.Formation);
                 troop.IsSelected = troop.IsSelectable && PlayerOrderController.IsFormationListening(troop.Formation);
