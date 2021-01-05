@@ -12,9 +12,6 @@ namespace RTSCamera.Patch.CircularFormation
 {
     public class Patch_OrderController
     {
-        private static readonly MethodInfo FacingOrderLookAtDirection =
-            typeof(FacingOrder).GetMethod("FacingOrderLookAtDirection", BindingFlags.Static | BindingFlags.NonPublic);
-
         private static int GetLineOrderByClass(FormationClass formationClass)
         {
             return Array.IndexOf(new FormationClass[8]
@@ -103,7 +100,7 @@ namespace RTSCamera.Patch.CircularFormation
                     if (!isLineShort)
                     {
                         element.MovementOrder = MovementOrder.MovementOrderMove(position);
-                        element.FacingOrder = (FacingOrder)FacingOrderLookAtDirection.Invoke(null, new object[] { direction });
+                        element.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
                         element.FormOrder = FormOrder.FormOrderCustom(customWidth1);
                         if (OnOrderIssued != null)
                         {
@@ -129,7 +126,7 @@ namespace RTSCamera.Patch.CircularFormation
                                 continue;
                             case OrderType.LookAtDirection:
                                 element.MovementOrder = MovementOrder.MovementOrderMove(position);
-                                element.FacingOrder = (FacingOrder)FacingOrderLookAtDirection.Invoke(null, new object[] { direction });
+                                element.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
                                 if (OnOrderIssued != null)
                                 {
                                     IEnumerable<Formation> local_21 = Enumerable.Repeat(element, 1);
