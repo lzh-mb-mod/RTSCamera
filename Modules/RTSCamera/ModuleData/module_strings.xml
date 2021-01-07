@@ -103,6 +103,7 @@
     <string id="str_key_name.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey}Control Troop" />
     <!-- same as str_rts_camera_toggle_ui -->
     <string id="str_key_name.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_toggleui}Toggle HUD" />
+    <!-- same as str_rts_camera_switch_team -->
     <string id="str_key_name.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_switchteam}Switch Team" />
     <!-- same as str_rts_camera_select_character -->
     <string id="str_key_name.RTSCameraHotKey_InitiateTeamChat" text="{=RTSCamera_select_character}Select Character" />
@@ -112,11 +113,11 @@
     <string id="str_key_description.RTSCameraHotKey_Down" text="{=RTSCamera_slowmotionkey_description}Enable slow motion mode. Press again to recover." />
     <!-- same as str_rts_camera_use_free_camera_by_default_hint -->
     <string id="str_key_description.RTSCameraHotKey_Left" text="{=RTSCamera_switch_free_camera_hint}Switch between free camera and player camera." />
-    <string id="str_key_description.RTSCameraHotKey_Right" text="{=RTSCamera_disable_death_desciption}All units will not die, for making video. Need to be in cheat mode and enabled in menu." />
-    <string id="str_key_description.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey_description}Control one of your teamates when you are killed, or switch to player camera when in free camera mode." />
+    <string id="str_key_description.RTSCameraHotKey_Right" text="{=RTSCamera_disable_death_desciption}All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
+    <string id="str_key_description.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey_description}Control one of your teammates when you are killed, or switch to player camera when in free camera mode." />
     <!-- same as str_rts_camera_toggle_ui_hint -->
     <string id="str_key_description.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
-    <string id="str_key_description.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_switchteam_description}Swap player's team, for making video. Need to be in cheat mode and enabled in menu." />
+    <string id="str_key_description.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_switchteam_description}Swap player's team, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
     <!-- same as str_rts_camera_select_character_hint -->
     <string id="str_key_description.RTSCameraHotKey_InitiateTeamChat" text="{=RTSCamera_select_character_hint}Select a character using mouse, then you can focus the camera to it or control it." />
 

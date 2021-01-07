@@ -106,6 +106,11 @@
     <string id="RTSCamera_disabledeathkey" text="全员无敌" />
     <string id="RTSCamera_controltroopkey" text="控制下属部队" />
 
+    <string id="RTSCamera_slowmotionkey_description" text="启用慢速模式。再按一次恢复。" />
+    <string id="RTSCamera_disable_death_desciption" text="所有单位都不会阵亡，可用于录制视频。作弊模式需要启用且需要在菜单中启用该快捷键。" />
+    <string id="RTSCamera_controltroopkey_description" text="当你阵亡后可按下该按键来控制你的一个队友，或当处于自由视角模式时切换到玩家角色的视角。" />
+    <string id="RTSCamera_switchteam_description" text="切换玩家的队伍，用于制作视频。作弊模式需要启用且需要在菜单中启用该快捷键。" />
+
     <string id="RTSCamera_enemywipedout" text="敌人已被消灭。" />
     <string id="RTSCamera_switchtoenemyteam" text="已切换至敌军队伍。" />
 

@@ -1,5 +1,6 @@
 ﻿using MissionLibrary.HotKey;
 using MissionSharedLibrary.HotKey.Category;
+using MissionSharedLibrary.View;
 using TaleWorlds.Core;
 
 namespace RTSCamera.Config
@@ -10,7 +11,6 @@ namespace RTSCamera.Config
         public RTSCameraMenuView()
             : base(24, nameof(RTSCameraMenuView))
         {
-            GetDataSource = () => new RTSCameraMenuVM(Mission, OnCloseMenu);
         }
 
         public override void OnMissionScreenInitialize()
@@ -32,8 +32,13 @@ namespace RTSCamera.Config
                 if (GauntletLayer.Input.IsKeyReleased(GeneralGameKeyCategories.GetKey(GeneralGameKey.OpenMenu)))
                     DeactivateMenu();
             }
-            else if (Input.IsKeyReleased(GeneralGameKeyCategories.GetKey((int)GeneralGameKey.OpenMenu)))
+            else if (Input.IsKeyReleased(GeneralGameKeyCategories.GetKey(GeneralGameKey.OpenMenu)))
                 ActivateMenu();
+        }
+
+        protected override MissionMenuVMBase GetDataSource()
+        {
+            return new RTSCameraMenuVM(Mission, OnCloseMenu);
         }
 
         public override void OnMissionScreenFinalize()

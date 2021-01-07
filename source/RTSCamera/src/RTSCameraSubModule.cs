@@ -1,4 +1,6 @@
 ﻿using HarmonyLib;
+using MissionLibrary;
+using MissionLibrary.Controller;
 using MissionLibrary.Extension;
 using MissionSharedLibrary;
 using RTSCamera.CampaignGame.Behavior;
@@ -36,8 +38,7 @@ namespace RTSCamera
             try
             {
                 Initializer.Initialize();
-                RTSCameraGameKeyCategory.Initialize();
-                RTSCameraExtension.Clear();
+                Initialize();
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts(
                     BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts(
@@ -98,6 +99,13 @@ namespace RTSCamera
                 _successPatch = false;
                 MBDebug.ConsolePrint(e.ToString());
             }
+        }
+
+        private void Initialize()
+        {
+            RTSCameraGameKeyCategory.Initialize();
+            RTSCameraExtension.Clear();
+            Global.GetProvider<AMissionStartingManager>().AddHandler(new MissionStartingHandler());
         }
 
         protected override void OnBeforeInitialModuleScreenSetAsRoot()

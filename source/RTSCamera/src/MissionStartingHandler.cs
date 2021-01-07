@@ -1,20 +1,21 @@
-﻿using MissionLibrary.Extension;
+﻿using MissionLibrary.Controller;
+using MissionLibrary.Extension;
+using MissionSharedLibrary.Controller;
 using RTSCamera.Config;
 using RTSCamera.Logic;
 using RTSCamera.Patch;
 using RTSCamera.Patch.CircularFormation;
+using RTSCamera.View;
 using System.Collections.Generic;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 
-namespace RTSCamera.View
+namespace RTSCamera
 {
-    [DefaultView]
-    class AddAdditionalMissionBehaviourView : MissionView
+    public class MissionStartingHandler : AMissionStartingHandler
     {
-        public override void OnCreated()
+        public override void OnCreated(MissionView entranceView)
         {
-            base.OnCreated();
             var config = RTSCameraConfig.Get();
             if (config.AttackSpecificFormation)
             {
@@ -42,39 +43,31 @@ namespace RTSCamera.View
 
             foreach (var missionBehaviour in list)
             {
-                if (missionBehaviour is AddAdditionalMissionBehaviourView)
-                    continue; // avoid accidentally add itself infinitely.
-                AddMissionBehaviour(missionBehaviour);
+                MissionStartingManager.AddMissionBehaviour(entranceView, missionBehaviour);
             }
 
             foreach (var extension in RTSCameraExtension.Extensions)
             {
-                foreach (var missionBehaviour in extension.CreateMissionBehaviours(Mission))
+                foreach (var missionBehaviour in extension.CreateMissionBehaviours(entranceView.Mission))
                 {
-                    AddMissionBehaviour(missionBehaviour);
+                    MissionStartingManager.AddMissionBehaviour(entranceView, missionBehaviour);
                 }
             }
 
             foreach (var extension in MissionExtensionCollection.Extensions)
             {
-                foreach (var missionBehaviour in extension.CreateMissionBehaviours(Mission))
+                foreach (var missionBehaviour in extension.CreateMissionBehaviours(entranceView.Mission))
                 {
-                    AddMissionBehaviour(missionBehaviour);
+                    MissionStartingManager.AddMissionBehaviour(entranceView, missionBehaviour);
                 }
             }
         }
 
-        public override void OnPreMissionTick(float dt)
+        public override void OnPreMissionTick(MissionView entranceView, float dt)
         {
-            var orderTroopPlacer = Mission.GetMissionBehaviour<OrderTroopPlacer>();
+            var orderTroopPlacer = entranceView.Mission.GetMissionBehaviour<OrderTroopPlacer>();
             if (orderTroopPlacer != null)
-                Mission.RemoveMissionBehaviour(orderTroopPlacer);
-        }
-
-        private void AddMissionBehaviour(MissionBehaviour behaviour)
-        {
-            behaviour.OnAfterMissionCreated();
-            Mission.AddMissionBehaviour(behaviour);
+                entranceView.Mission.RemoveMissionBehaviour(orderTroopPlacer);
         }
     }
 }
