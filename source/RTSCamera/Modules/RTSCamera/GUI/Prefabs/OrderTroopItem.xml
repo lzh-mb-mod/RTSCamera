@@ -9,7 +9,7 @@
   <Window>
     <ButtonWidget Command.Click="ExecuteAction" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height">
       <Children>
-        <OrderTroopItemWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height" CurrentMemberCount="@CurrentMemberCount" IsSelectable="@IsSelectable" IsSelected="@IsSelected" FormationClass="@FormationClass" FormationIconWidget="Icon" Brush="Order.Troop.Background">
+        <OrderTroopItemWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height" CurrentMemberCount="@CurrentMemberCount" IsSelectable="@IsSelectable" IsSelected="@IsSelected" FormationClass="@FormationClass" FormationIconWidget="Icon" Brush="Order.Troop.Background" SelectionFrameWidget="SelectionFrame" IsSelectionActive="@IsSelectionActive">
           <Children>
             <BrushWidget Id="Icon" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Icon.Width" SuggestedHeight="!Troop.Icon.Height" Brush="Order.Troop.Icon"/>
             <FillBar WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="13" VerticalAlignment="Bottom" MarginLeft="16" MarginRight="16" MarginBottom="18" MaxAmount="100" CurrentAmount="@Morale" InitialAmount="@Morale" Brush="Order.Troop.MoraleFillBar"/>
@@ -19,6 +19,8 @@
                 <TextWidget Text="@ShortcutText" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" PositionYOffset="2" Brush="Order.Troop.HotKeyText"/>
               </Children>
             </Widget>
+
+            <Widget Id="SelectionFrame" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="leader_frame_9" Color="#FF00FFFF" IsVisible="false"/>
           </Children>
         </OrderTroopItemWidget>
       </Children>

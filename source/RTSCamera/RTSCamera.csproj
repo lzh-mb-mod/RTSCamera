@@ -137,7 +137,7 @@
     <Exec Command="xcopy &quot;$(TargetDir)MissionLibrary.dll&quot; &quot;$(AssetPath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
     <Exec Command="xcopy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(AssetPath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
     <Exec Command="xcopy &quot;$(TargetDir)KdTreeLib.dll&quot; &quot;$(AssetPath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
-    <Exec Command="xcopy &quot;$(SolutionDir)..\Modules&quot; &quot;$(PackagePath)&quot; /E /C /I /Y /F&#xD;&#xA;" />
+    <Exec Command="xcopy &quot;$(ProjectDir)Modules&quot; &quot;$(PackagePath)&quot; /E /C /I /Y /F&#xD;&#xA;" />
     <Exec Command="xcopy &quot;$(SolutionDir)..\*.html&quot; &quot;$(AssetPath)&quot; /C /I /Y /F&#xD;&#xA;" />
     <Exec Command="xcopy &quot;$(PackagePath).&quot; &quot;$(GamePath)Modules&quot; /E /C /I /Y /F" />
   </Target>

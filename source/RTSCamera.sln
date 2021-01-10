@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MissionLibrary", "library\m
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MissionSharedLibrary", "library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.shproj", "{BB80A10D-E971-4C13-8EA6-F31EF29BA86D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandSystem", "CommandSystem\CommandSystem.csproj", "{49B9A59E-5FE6-4A67-860D-A1EB9587D34F}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{7c249cda-7bd3-4e67-ac00-3e59e0ffd07f}*SharedItemsImports = 5
@@ -27,6 +29,10 @@ Global
 		{F4DFEFDF-55F2-4EF3-BA32-877F961BC403}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4DFEFDF-55F2-4EF3-BA32-877F961BC403}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4DFEFDF-55F2-4EF3-BA32-877F961BC403}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49B9A59E-5FE6-4A67-860D-A1EB9587D34F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49B9A59E-5FE6-4A67-860D-A1EB9587D34F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49B9A59E-5FE6-4A67-860D-A1EB9587D34F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49B9A59E-5FE6-4A67-860D-A1EB9587D34F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

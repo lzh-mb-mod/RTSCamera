@@ -75,13 +75,13 @@ namespace RTSCamera.Config
 
         public string UnbalancedOptionsDescriptionString { get; } =
             GameTexts.FindText("str_rts_camera_unbalanced_options_description").ToString();
-        public string DisableDeathString { get; } = GameTexts.FindText("str_rts_camera_disable_death").ToString();
+        public string DisableDeathString { get; } = GameTexts.FindText("str_rts_camera_all_invulnerable").ToString();
 
-        public string DisableDeathHotkeyEnabledString { get; } = GameTexts.FindText("str_rts_camera_disable_death_hotkey_enabled").ToString();
+        public string DisableDeathHotkeyEnabledString { get; } = GameTexts.FindText("str_rts_camera_enable_all_invulnerable_hotkey").ToString();
 
         public string SwitchTeamString { get; } = GameTexts.FindText("str_rts_camera_switch_team").ToString();
 
-        public string SwitchTeamHotkeyEnabledString { get; } = GameTexts.FindText("str_rts_camera_switch_team_hotkey_enabled").ToString();
+        public string SwitchTeamHotkeyEnabledString { get; } = GameTexts.FindText("str_rts_camera_enable_switch_team_hotkey").ToString();
 
 
         public void SwitchFreeCamera()
@@ -422,7 +422,7 @@ namespace RTSCamera.Config
         }
 
         public HintViewModel DisableDeathHint { get; } =
-            new HintViewModel(GameTexts.FindText("str_rts_camera_disable_death_hint").ToString());
+            new HintViewModel(GameTexts.FindText("str_rts_camera_all_invulnerable_hint").ToString());
 
         [DataSourceProperty]
         public bool DisableDeathHotkeyEnabled

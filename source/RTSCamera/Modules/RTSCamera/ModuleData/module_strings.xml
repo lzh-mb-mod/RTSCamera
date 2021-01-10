@@ -32,7 +32,7 @@
     <string id="str_rts_camera_display_message_hint" text="{=RTSCamera_display_message_hint}Whether to display message of this mod." />
     <string id="str_rts_camera_toggle_ui_hint" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
     <string id="str_rts_camera_config_key_hint" text="{=RTSCamera_config_key_hint}Config hotkey of this mod." />
-    <string id="str_rts_camera_disable_death_hint" text="{=RTSCamera_disable_death_hint}All units will not die, for making video." />
+    <string id="str_rts_camera_all_invulnerable_hint" text="{=RTSCamera_disable_death_hint}All units will not die, for making video." />
     <string id="str_rts_camera_switch_team_hint" text="{=RTSCamera_switch_team_hint}Swap player's team, for making video." />
 
     <string id="str_rts_camera_create_default_config" text="{=RTSCamera_createdefaultconfig}Create default config" />
@@ -78,10 +78,10 @@
     <string id="str_rts_camera_slow_motion_factor" text="{=RTSCamera_slowmotionfactor}Slow Motion Factor" />
 
     <string id="str_rts_camera_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Cheat Options" />
-    <string id="str_rts_camera_disable_death" text="{=RTSCamera_disabledeath}All Invulnerable" />
-    <string id="str_rts_camera_disable_death_hotkey_enabled" text="{=RTSCamera_disable_death_hotkey_enabled}All Invulnerable Hotkey enabled" />
+    <string id="str_rts_camera_all_invulnerable" text="{=RTSCamera_disabledeath}All Invulnerable" />
+    <string id="str_rts_camera_enable_all_invulnerable_hotkey" text="{=RTSCamera_enable_all_invulnerable_hotkey}Enable All Invulnerable Hotkey" />
     <string id="str_rts_camera_switch_team" text="{=RTSCamera_switchteam}Switch Team" />
-    <string id="str_rts_camera_switch_team_hotkey_enabled" text="{=RTSCamera_switch_team_hotkey_enabled}Switch Team Hotkey enabled" />
+    <string id="str_rts_camera_enable_switch_team_hotkey" text="{=RTSCamera_enable_switch_team_hotkey}Enable Switch Team Hotkey" />
 
     <string id="str_rts_camera_mission_paused" text="{=RTSCamera_missionpaused}Mission paused." />
     <string id="str_rts_camera_mission_continued" text="{=RTSCamera_missioncontinue}Mission continued." />

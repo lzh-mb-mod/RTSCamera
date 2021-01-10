@@ -82,9 +82,9 @@
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="Cheat Options" />
     <string id="RTSCamera_disabledeath" text="All Invulnerable" />
-    <string id="RTSCamera_disable_death_hotkey_enabled" text="All Invulnerable Hotkey enabled" />
+    <string id="RTSCamera_enable_all_invulnerable_hotkey" text="Enable All Invulnerable Hotkey" />
     <string id="RTSCamera_switchteam" text="Switch Team" />
-    <string id="RTSCamera_switch_team_hotkey_enabled" text="Switch Team Hotkey enabled" />
+    <string id="RTSCamera_enable_switch_team_hotkey" text="Enable Switch Team Hotkey" />
 
     <string id="RTSCamera_missionpaused" text="Mission paused." />
     <string id="RTSCamera_missioncontinue" text="Mission continued." />

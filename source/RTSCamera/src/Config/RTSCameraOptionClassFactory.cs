@@ -7,6 +7,7 @@ using MissionSharedLibrary.View.ViewModelCollection.Options.Selection;
 using RTSCamera.Logic;
 using RTSCamera.View;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Config
@@ -182,6 +183,36 @@ namespace RTSCamera.Config
                         menuManager.RequestToCloseMenu();
                     }));
                 optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
+
+                if (NativeConfig.CheatMode)
+                {
+                    var cheatOptionCategory = new OptionCategory("Cheat",
+                        GameTexts.FindText("str_rts_camera_unbalanced_options_description"));
+                    cheatOptionCategory.AddOption(new BoolOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_all_invulnerable"),
+                        GameTexts.FindText("str_rts_camera_all_invulnerable_hint"),
+                        () => RTSCameraConfig.Get().DisableDeath,
+                        b =>
+                        {
+                            RTSCameraConfig.Get().DisableDeath = b;
+                            rtsCameraLogic.DisableDeathLogic.SetDisableDeath(b);
+                        }));
+                    cheatOptionCategory.AddOption(new BoolOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_enable_all_invulnerable_hotkey"), null,
+                        () => RTSCameraConfig.Get().DisableDeathHotkeyEnabled,
+                        b => RTSCameraConfig.Get().DisableDeathHotkeyEnabled = b));
+                    cheatOptionCategory.AddOption(new ActionOptionViewModel(GameTexts.FindText("str_rts_camera_switch_team"), GameTexts.FindText("str_rts_camera_switch_team_hint"),
+                        () =>
+                        {
+                            rtsCameraLogic.SwitchTeamLogic.SwapTeam();
+                            menuManager.RequestToCloseMenu();
+                        }));
+                    cheatOptionCategory.AddOption(new BoolOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_enable_switch_team_hotkey"), null,
+                        () => RTSCameraConfig.Get().SwitchTeamHotkeyEnabled,
+                        b => RTSCameraConfig.Get().SwitchTeamHotkeyEnabled = b));
+                    optionClass.AddOptionCategory(1, cheatOptionCategory);
+                }
 
                 return optionClass;
             }, RTSCameraSubModule.ModuleId);

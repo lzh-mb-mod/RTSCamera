@@ -83,9 +83,9 @@
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="作弊选项" />
     <string id="RTSCamera_disabledeath" text="全员无敌" />
-    <string id="RTSCamera_disable_death_hotkey_enabled" text="启用全员无敌的热键" />
+    <string id="RTSCamera_enable_all_invulnerable_hotkey" text="启用全员无敌的热键" />
     <string id="RTSCamera_switchteam" text="切换队伍" />
-    <string id="RTSCamera_switch_team_hotkey_enabled" text="启用切换队伍的热键" />
+    <string id="RTSCamera_enable_switch_team_hotkey" text="启用切换队伍的热键" />
 
     <string id="RTSCamera_missionpaused" text="已暂停关卡。" />
     <string id="RTSCamera_missioncontinue" text="关卡继续。" />

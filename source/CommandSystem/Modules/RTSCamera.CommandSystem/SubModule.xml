@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Module>
+	<Name value = "RTS Camera Command System"/>
+	<Id value = "RTSCamera.CommandSystem"/>
+	<Version value = "e3.9.6"/>
+	<SingleplayerModule value="true"/>
+	<MultiplayerModule value="false"/>
+	<DependedModules>
+         <DependedModule Id="Native"/>
+         <DependedModule Id="SandBoxCore"/>
+         <DependedModule Id="Sandbox"/>
+		 <DependedModule Id="StoryMode" />
+		 <DependedModule Id="RTSCamera" />
+	</DependedModules>
+	<SubModules>
+		<SubModule>
+			<Name value = "RTSCameraCommandSystemSubModule"/>
+			<DLLName value = "RTSCamera.CommandSystem.dll"/>
+			<SubModuleClassType value = "RTSCamera.CommandSystem.CommandSystemSubModule"/>
+			<Tags>
+				<Tag key="DedicatedServerType" value ="none" />
+				<Tag key="IsNoRenderModeElement" value ="false" />
+			</Tags>
+		</SubModule>
+	</SubModules>
+
+	<Xmls/>
+</Module>
