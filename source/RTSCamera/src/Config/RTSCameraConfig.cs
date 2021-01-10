@@ -75,7 +75,7 @@ namespace RTSCamera.Config
 
         public static void OnMenuClosed()
         {
-            RTSCameraConfig .Get().Serialize();
+            Get().Serialize();
         }
 
         protected override XmlSerializer Serializer => new XmlSerializer(typeof(RTSCameraConfig));

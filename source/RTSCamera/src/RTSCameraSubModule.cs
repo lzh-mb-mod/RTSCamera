@@ -2,6 +2,7 @@
 using MissionLibrary;
 using MissionLibrary.Controller;
 using MissionLibrary.Extension;
+using MissionLibrary.View;
 using MissionSharedLibrary;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
@@ -12,9 +13,6 @@ using SandBox;
 using SandBox.Source.Towns;
 using System;
 using System.Reflection;
-using MissionLibrary.View;
-using MissionSharedLibrary.Provider;
-using MissionSharedLibrary.View.ViewModelCollection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -105,10 +103,8 @@ namespace RTSCamera
 
         private void Initialize()
         {
-            if (Initializer.IsInitialized)
+            if (!Initializer.Initialize())
                 return;
-
-            Initializer.Initialize();
             RTSCameraExtension.Clear();
         }
 
@@ -116,7 +112,8 @@ namespace RTSCamera
         {
             base.OnBeforeInitialModuleScreenSetAsRoot();
 
-            SecondInitialize();
+            if (!SecondInitialize())
+                return;
 
             if (!_successPatch)
             {
@@ -127,17 +124,17 @@ namespace RTSCamera
             Utility.PrintUsageHint();
         }
 
-        private void SecondInitialize()
+        private bool SecondInitialize()
         {
-            if (Initializer.IsSecondInitialized)
-                return;
+            if (Initializer.SecondInitialize())
+                return false;
 
-            Initializer.SecondInitialize();
             RTSCameraGameKeyCategory.RegisterGameKeyCategory();
             Global.GetProvider<AMissionStartingManager>().AddHandler(new MissionStartingHandler());
             var menuClassCollection = AMenuManager.Get().MenuClassCollection;
             AMenuManager.Get().OnMenuClosedEvent += RTSCameraConfig.OnMenuClosed;
             menuClassCollection.AddOptionClass(RTSCameraOptionClassFactory.CreateOptionClassProvider(menuClassCollection));
+            return true;
         }
 
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)

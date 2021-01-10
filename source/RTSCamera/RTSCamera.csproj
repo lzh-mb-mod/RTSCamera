@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="KdTree" Version="1.4.1" />
-    <PackageReference Include="Lib.Harmony" Version="2.0.2" />
+    <PackageReference Include="Lib.Harmony" Version="2.0.4" />
   </ItemGroup>
 
   <Import Project="$(MSBuildProjectDirectory)\*.props" />
