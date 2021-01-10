@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <PackagePath>$(SolutionDir)package\</PackagePath>
-    <ModuleAlias>RTSCamera</ModuleAlias>
+    <ModuleAlias>RTSCamera.CommandSystem</ModuleAlias>
     <ModulePackagePath>$(PackagePath)$(ModuleAlias)\</ModulePackagePath>
   </PropertyGroup>
 </Project>

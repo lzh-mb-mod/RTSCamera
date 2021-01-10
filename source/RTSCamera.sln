@@ -11,10 +11,16 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MissionSharedLibrary", "lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandSystem", "CommandSystem\CommandSystem.csproj", "{49B9A59E-5FE6-4A67-860D-A1EB9587D34F}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "BasicSharedLibrary", "library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.shproj", "{035A7C54-5161-4057-BB0D-20D39A607B50}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{035a7c54-5161-4057-bb0d-20d39a607b50}*SharedItemsImports = 13
+		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{49b9a59e-5fe6-4a67-860d-a1eb9587d34f}*SharedItemsImports = 5
+		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{7c249cda-7bd3-4e67-ac00-3e59e0ffd07f}*SharedItemsImports = 5
 		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{7c249cda-7bd3-4e67-ac00-3e59e0ffd07f}*SharedItemsImports = 5
 		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{bb80a10d-e971-4c13-8ea6-f31ef29ba86d}*SharedItemsImports = 13
+		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{f4dfefdf-55f2-4ef3-ba32-877f961bc403}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
