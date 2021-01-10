@@ -555,7 +555,7 @@ namespace RTSCamera.View
 
         private void HandleRotateInput(float dt)
         {
-            float mouseSensitivity = MissionScreen.SceneLayer.Input.GetMouseSensivity();
+            float mouseSensitivity = MissionScreen.SceneLayer.Input.GetMouseSensitivity();
             float inputXRaw = 0.0f;
             float inputYRaw = 0.0f;
             if (!MBCommon.IsPaused && Mission.Mode != MissionMode.Barter)
