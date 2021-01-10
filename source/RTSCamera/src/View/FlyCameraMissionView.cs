@@ -13,6 +13,7 @@ using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.Missions.Handlers;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Screen;
@@ -41,7 +42,6 @@ namespace RTSCamera.View
         private RTSCameraLogic _rtsCameraLogic;
         private SwitchFreeCameraLogic _freeCameraLogic;
         private MissionMainAgentController _missionMainAgentController;
-        private RTSCameraOrderUIHandler _orderUIHandler;
 
         private readonly int _shiftSpeedMultiplier = 3;
         private Vec3 _cameraSpeed;
@@ -51,11 +51,6 @@ namespace RTSCamera.View
         private float _cameraHeightLimit;
         private readonly bool _classicMode = true;
         private bool _isOrderViewOpen;
-        private bool _willEndDraggingMode;
-        private bool _earlyDraggingMode;
-        private float _beginDraggingOffset;
-        private readonly float _beginDraggingOffsetThreshold = 100;
-        private bool _rightButtonDraggingMode;
         private bool _levelToEdge;
         private bool _lockToAgent;
         private GauntletLayer _showControlHintLayer;
@@ -203,7 +198,6 @@ namespace RTSCamera.View
             if (!_freeCameraLogic.IsSpectatorCamera)
                 _freeCameraLogic.SwitchCamera();
             Utility.SmoothMoveToAgent(MissionScreen, true, false);
-            UpdateMouseVisibility();
         }
 
         private void LeaveFromAgent()
@@ -235,9 +229,8 @@ namespace RTSCamera.View
             _rtsCameraLogic = Mission.GetMissionBehaviour<RTSCameraLogic>();
             _freeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
             _missionMainAgentController = Mission.GetMissionBehaviour<MissionMainAgentController>();
-            _orderUIHandler = Mission.GetMissionBehaviour<RTSCameraOrderUIHandler>();
 
-            _showControlHintVM = new ShowControlHintVM(_orderUIHandler?.IsDeployment ?? false);
+            _showControlHintVM = new ShowControlHintVM(Mission.GetMissionBehaviour<SiegeDeploymentHandler>() == null);
             _showControlHintLayer = new GauntletLayer(ViewOrderPriorty);
             _showControlHintLayer.LoadMovie("RTSCameraShowControlHint", _showControlHintVM);
             MissionScreen.AddLayer(_showControlHintLayer);
@@ -315,48 +308,9 @@ namespace RTSCamera.View
                 Mission.PlayerTeam?.ActiveAgents.Count > 0);
         }
 
-        private bool ShouldBeginEarlyDragging()
-        {
-            return !_earlyDraggingMode &&
-                   (MissionScreen.InputManager.IsAltDown() || MissionScreen.LastFollowedAgent == null) &&
-                   MissionScreen.SceneLayer.Input.IsKeyPressed(InputKey.RightMouseButton);
-        }
-
-        private void BeginEarlyDragging()
-        {
-            _earlyDraggingMode = true;
-            _beginDraggingOffset = 0;
-        }
-
-        private void EndEarlyDragging()
-        {
-            _earlyDraggingMode = false;
-            _beginDraggingOffset = 0;
-        }
-
-        private bool ShouldBeginDragging()
-        {
-            return _earlyDraggingMode && _beginDraggingOffset > _beginDraggingOffsetThreshold;
-        }
-
-        private void BeginDrag()
-        {
-            EndEarlyDragging();
-            _rightButtonDraggingMode = true;
-            _orderUIHandler.ExitWithRightClick = false;
-        }
-
-        private void EndDrag()
-        {
-            EndEarlyDragging();
-            _rightButtonDraggingMode = false;
-            _orderUIHandler.ExitWithRightClick = true;
-        }
-
         private void OnToggleOrderViewEvent(MissionPlayerToggledOrderViewEvent e)
         {
             _isOrderViewOpen = e.IsOrderEnabled;
-            UpdateMouseVisibility();
         }
 
         private void OnToggleFreeCamera(bool freeCamera)
@@ -375,69 +329,8 @@ namespace RTSCamera.View
                 BeginForcedMove(new Vec3(0, 0, _config.RaisedHeight));
                 LeaveFromAgent();
             }
-            UpdateMouseVisibility();
         }
 
-        private void UpdateMouseVisibility()
-        {
-            if (_orderUIHandler == null)
-                return;
-
-            bool mouseVisibility =
-                (_orderUIHandler.IsDeployment || _orderUIHandler.DataSource.TroopController.IsTransferActive ||
-                 _isOrderViewOpen && (Input.IsAltDown() || MissionScreen.LastFollowedAgent == null)) &&
-                !_rightButtonDraggingMode && !_earlyDraggingMode;
-            if (mouseVisibility != _orderUIHandler.GauntletLayer.InputRestrictions.MouseVisibility)
-            {
-                _orderUIHandler.GauntletLayer.InputRestrictions.SetInputRestrictions(mouseVisibility,
-                    mouseVisibility ? InputUsageMask.All : InputUsageMask.Invalid);
-            }
-
-            if (MissionScreen.OrderFlag != null )
-            {
-                bool orderFlagVisibility = (_isOrderViewOpen || _orderUIHandler.IsDeployment) &&
-                                           !_orderUIHandler.DataSource.TroopController.IsTransferActive &&
-                                           !_rightButtonDraggingMode && !_earlyDraggingMode;
-                if (orderFlagVisibility != MissionScreen.OrderFlag.IsVisible)
-                {
-                    MissionScreen.SetOrderFlagVisibility(orderFlagVisibility);
-                }
-            }
-        }
-
-        private void UpdateDragData()
-        {
-            if (_willEndDraggingMode)
-            {
-                _willEndDraggingMode = false;
-                EndDrag();
-            }
-            else if (!_isOrderViewOpen && !(_orderUIHandler?.IsDeployment ?? false) || MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton))
-            {
-                if (_earlyDraggingMode || _rightButtonDraggingMode)
-                    _willEndDraggingMode = true;
-            }
-            else if (_isOrderViewOpen || (_orderUIHandler?.IsDeployment ?? false))
-            {
-                if (ShouldBeginEarlyDragging())
-                {
-                    BeginEarlyDragging();
-                }
-                else if (MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
-                {
-                    if (ShouldBeginDragging())
-                    {
-                        BeginDrag();
-                    }
-                    else if (_earlyDraggingMode)
-                    {
-                        float inputXRaw = MissionScreen.SceneLayer.Input.GetMouseMoveX();
-                        float inputYRaw = MissionScreen.SceneLayer.Input.GetMouseMoveY();
-                        _beginDraggingOffset += inputYRaw * inputYRaw + inputXRaw * inputXRaw;
-                    }
-                }
-            }
-        }
 
         private void UpdateFlyCamera(float dt)
         {
@@ -731,9 +624,7 @@ namespace RTSCamera.View
         public override void OnPreDisplayMissionTick(float dt)
         {
             base.OnPreDisplayMissionTick(dt);
-
-            if (_orderUIHandler != null)
-                UpdateDragData();
+            
             //if (!_isOrderViewOpen &&
             //    (Input.IsGameKeyReleased(8) ||
             //     (Input.IsGameKeyReleased(9) && !_rightButtonDraggingMode)))
@@ -749,7 +640,6 @@ namespace RTSCamera.View
             {
                 LeaveFromAgent();
             }
-            UpdateMouseVisibility();
         }
     }
 }

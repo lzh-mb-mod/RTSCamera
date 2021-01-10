@@ -1,9 +1,10 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.Reflection;
+using HarmonyLib;
+using RTSCamera.Patch;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Patch
+namespace RTSCamera.CommandSystem.Patch
 {
     public class PatchChargeToFormation
     {
@@ -52,7 +53,7 @@ namespace RTSCamera.Patch
             }
             catch (Exception e)
             {
-                Utility.DisplayMessage(e.ToString());
+                RTSCamera.Utility.DisplayMessage(e.ToString());
             }
         }
 
@@ -67,7 +68,7 @@ namespace RTSCamera.Patch
             }
             catch (Exception e)
             {
-                Utility.DisplayMessage(e.ToString());
+                RTSCamera.Utility.DisplayMessage(e.ToString());
             }
         }
     }

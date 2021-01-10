@@ -12,9 +12,18 @@ namespace RTSCamera.CommandSystem.Config
         protected static Version BinaryVersion => new Version(1, 0);
         public string ConfigVersion { get; set; } = BinaryVersion.ToString();
 
+        public bool ClickToSelectFormation = true;
+
+        public bool AttackSpecificFormation = true;
+
+        public bool FixCircularArrangement = true;
+
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;
+            ClickToSelectFormation = other.ClickToSelectFormation;
+            AttackSpecificFormation = other.AttackSpecificFormation;
+            FixCircularArrangement = other.FixCircularArrangement;
         }
 
         public static void OnMenuClosed()

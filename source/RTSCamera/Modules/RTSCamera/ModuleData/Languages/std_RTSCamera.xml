@@ -5,7 +5,7 @@
     <tag language="English" />
   </tags>
   <strings>
-    <string id="RTSCamera_mod_name" text="RTS Camera" />
+    <string id="RTSCamera_option_class" text="RTS Camera" />
 
     <string id="RTSCamera_watch_battle" text="(RTS Camera)Watch the battle." />
     <string id="RTSCamera_cannot_control_agent_in_watch_mode" text="Cannot control units in watch mode." />
@@ -30,8 +30,6 @@
     <string id="RTSCamera_constant_speed_hint" text="Camera movement speed won't be affected by height." />
     <string id="RTSCamera_ignore_terrain_hint" text="Camera will not be blocked by terrain and buildings when enabled." />
     <string id="RTSCamera_ignore_boundaries_hint" text="Camera will not be restricted by boundaries when enabled." />
-    <string id="RTSCamera_click_to_select_formation_hint" text="You can directly select formation by clicking middle mouse button on them. Selected formation will be highlighted with outline." />
-    <string id="RTSCamera_attack_specific_formation_hint" text="You can give order to attack a specific formation by clicking on enemy formation. Also applied to AI." />
     <string id="RTSCamera_display_message_hint" text="Whether to display message of this mod." />
     <string id="RTSCamera_toggle_ui_hint" text="Toggle HUD of the game, for making video." />
     <string id="RTSCamera_config_key_hint" text="Config hotkey of this mod." />
@@ -64,9 +62,6 @@
     <string id="RTSCamera_constantspeed" text="Constant Camera Speed" />
     <string id="RTSCamera_ignore_terrain" text="Ignore Terrain" />
     <string id="RTSCamera_ignore_boundaries" text="Ignore Boundaries" />
-    <string id="RTSCamera_click_to_select_formation" text="Middle Click to select formation" />
-    <string id="RTSCamera_attack_specific_formation" text="Enable Attack Specific Formation" />
-    <string id="RTSCamera_fix_circular_arrangement" text="Fix Circular Arrangement" />
 
     <string id="RTSCamera_control_options" text="Control Options" />
     <string id="RTSCamera_controlallyafterdeath" text="Control Ally After Death" />

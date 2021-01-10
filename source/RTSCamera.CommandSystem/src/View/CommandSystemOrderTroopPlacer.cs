@@ -1,4 +1,5 @@
-﻿using RTSCamera.Config;
+﻿using RTSCamera.CommandSystem.Config;
+using RTSCamera.Config;
 using RTSCamera.QuerySystem;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,12 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.Missions.Handlers;
 using TaleWorlds.MountAndBlade.View.Missions;
 
-namespace RTSCamera.View
+namespace RTSCamera.CommandSystem.View
 {
-    public class RTSCameraOrderTroopPlacer : MissionView
+    public class CommandSystemOrderTroopPlacer : MissionView
     {
         private FormationColorMissionView _contourView;
-        private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
+        private readonly CommandSystemConfig _config = CommandSystemConfig.Get();
         private void RegisterReload()
         {
             MissionLibrary.Event.MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
@@ -484,7 +485,7 @@ namespace RTSCamera.View
             {
                 if (_clickedFormation.CountOfUnits > 0)
                 {
-                    bool isEnemy = Utility.IsEnemy(_clickedFormation);
+                    bool isEnemy = RTSCamera.Utility.IsEnemy(_clickedFormation);
                     if (!isEnemy)
                     {
                         HideNonSelectedOrderRotationEntities(_clickedFormation);

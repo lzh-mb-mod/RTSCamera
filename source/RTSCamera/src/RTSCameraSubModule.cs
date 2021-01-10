@@ -40,12 +40,11 @@ namespace RTSCamera
             {
                 Initialize();
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts(
-                    BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
+                    BasePath.Name + $"Modules/{ModuleId}/ModuleData/module_strings.xml");
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts(
-                    BasePath.Name + "Modules/RTSCamera/ModuleData/MissionLibrary.xml");
+                    BasePath.Name + $"Modules/{ModuleId}/ModuleData/MissionLibrary.xml");
 
                 _successPatch = true;
-
                 _harmony.Patch(
                     typeof(Formation).GetMethod("LeaveDetachment", BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(
@@ -120,13 +119,14 @@ namespace RTSCamera
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera: patch failed"));
             }
 
+            Patch_MissionOrderGauntletUIHandler.Patch();
             MissionSharedLibrary.Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;
             Utility.PrintUsageHint();
         }
 
         private bool SecondInitialize()
         {
-            if (Initializer.SecondInitialize())
+            if (!Initializer.SecondInitialize())
                 return false;
 
             RTSCameraGameKeyCategory.RegisterGameKeyCategory();
@@ -141,8 +141,8 @@ namespace RTSCamera
         {
             base.OnGameStart(game, gameStarterObject);
 
-            game.GameTextManager.LoadGameTexts(BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
-            game.GameTextManager.LoadGameTexts(BasePath.Name + "Modules/RTSCamera/ModuleData/MissionLibrary.xml");
+            game.GameTextManager.LoadGameTexts(BasePath.Name + $"Modules/{ModuleId}/ModuleData/module_strings.xml");
+            game.GameTextManager.LoadGameTexts(BasePath.Name + $"Modules/{ModuleId}/ModuleData/MissionLibrary.xml");
             AddCampaignBehavior(gameStarterObject);
         }
 

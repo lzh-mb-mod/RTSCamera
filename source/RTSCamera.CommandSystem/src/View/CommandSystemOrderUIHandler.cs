@@ -1,7 +1,7 @@
-﻿using System;
+﻿using MissionLibrary.Event;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using MissionLibrary.Event;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
@@ -18,10 +18,10 @@ using TaleWorlds.MountAndBlade.View.Screen;
 using TaleWorlds.MountAndBlade.ViewModelCollection;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
-namespace RTSCamera.View
+namespace RTSCamera.CommandSystem.View
 {
     [OverrideView(typeof(MissionOrderUIHandler))]
-    public class RTSCameraOrderUIHandler : MissionView, ISiegeDeploymentView
+    public class CommandSystemOrderUIHandler : MissionView, ISiegeDeploymentView
     {
         private void RegisterReload()
         {
@@ -55,7 +55,7 @@ namespace RTSCamera.View
         private bool _holdExecuted;
         private SiegeMissionView _siegeMissionView;
         private List<DeploymentSiegeMachineVM> _deploymentPointDataSources;
-        private RTSCameraOrderTroopPlacer _orderTroopPlacer;
+        private CommandSystemOrderTroopPlacer _orderTroopPlacer;
         public GauntletLayer GauntletLayer;
         private GauntletMovie _movie;
         public  MissionOrderVM DataSource;
@@ -68,7 +68,7 @@ namespace RTSCamera.View
 
         private bool _isGamepadActive => Input.GetIsControllerConnected() && !Input.GetIsMouseActive();
 
-        public RTSCameraOrderUIHandler() => ViewOrderPriorty = 19;
+        public CommandSystemOrderUIHandler() => ViewOrderPriorty = 19;
 
         public override void OnMissionScreenTick(float dt)
         {
@@ -173,7 +173,7 @@ namespace RTSCamera.View
         {
             MissionScreen.SceneLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("MissionOrderHotkeyCategory"));
             MissionScreen.OrderFlag = new OrderFlag(Mission, MissionScreen);
-            _orderTroopPlacer = Mission.GetMissionBehaviour<RTSCameraOrderTroopPlacer>();
+            _orderTroopPlacer = Mission.GetMissionBehaviour<CommandSystemOrderTroopPlacer>();
             MissionScreen.SetOrderFlagVisibility(false);
             _siegeDeploymentHandler = Mission.GetMissionBehaviour<SiegeDeploymentHandler>();
             IsDeployment = _siegeDeploymentHandler != null;

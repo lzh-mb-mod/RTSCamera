@@ -19,7 +19,7 @@ namespace RTSCamera.Config
             return IdProviderCreator.Create(() =>
             {
                 var optionClass = new OptionClass(RTSCameraSubModule.ModuleId,
-                    GameTexts.FindText("str_rts_camera_mod_name"), menuClassCollection);
+                    GameTexts.FindText("str_rts_camera_option_class"), menuClassCollection);
                 var rtsCameraLogic = Mission.Current.GetMissionBehaviour<RTSCameraLogic>();
                 var selectCharacterView = Mission.Current.GetMissionBehaviour<RTSCameraSelectCharacterView>();
                 var hideHudView = Mission.Current.GetMissionBehaviour<HideHUDView>();

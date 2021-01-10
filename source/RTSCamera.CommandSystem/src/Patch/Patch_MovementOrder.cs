@@ -1,7 +1,7 @@
 ﻿using RTSCamera.Logic;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Patch
+namespace RTSCamera.CommandSystem.Patch
 {
     //[HarmonyLib.HarmonyPatch(typeof(MovementOrder), "Tick")]
     public class Patch_MovementOrder

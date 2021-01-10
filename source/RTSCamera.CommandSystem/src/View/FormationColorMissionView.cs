@@ -1,4 +1,5 @@
-﻿using RTSCamera.Config;
+﻿using RTSCamera.CommandSystem.Config;
+using RTSCamera.Config;
 using RTSCamera.Logic.SubLogic.Component;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
-namespace RTSCamera.View
+namespace RTSCamera.CommandSystem.View
 {
     public class FormationColorMissionView : MissionView
     {
@@ -43,8 +44,8 @@ namespace RTSCamera.View
         private readonly List<Formation> _allySelectedFormations = new List<Formation>();
         private OrderController PlayerOrderController => Mission.PlayerTeam?.PlayerOrderController;
         private Formation _mouseOverFormation;
-        private RTSCameraOrderUIHandler _orderUIHandler;
-        private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
+        private CommandSystem.View.CommandSystemOrderUIHandler _commandSystemOrderUiHandler;
+        private readonly CommandSystemConfig _config = CommandSystemConfig.Get();
 
         private bool _isOrderShown;
         private bool HighlightEnabled => _isOrderShown && _config.ShouldHighlightWithOutline();
@@ -57,7 +58,7 @@ namespace RTSCamera.View
 
             Mission.Teams.OnPlayerTeamChanged += Mission_OnPlayerTeamChanged;
             Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
-            _orderUIHandler = Mission.GetMissionBehaviour<RTSCameraOrderUIHandler>();
+            _commandSystemOrderUiHandler = Mission.GetMissionBehaviour<CommandSystem.View.CommandSystemOrderUIHandler>();
         }
 
         public override void OnMissionScreenFinalize()
@@ -86,7 +87,7 @@ namespace RTSCamera.View
 
             if (agent.Formation != null)
             {
-                bool isEnemy = Utility.IsEnemy(agent.Formation);
+                bool isEnemy = RTSCamera.Utility.IsEnemy(agent.Formation);
                 if (agent.Formation == _mouseOverFormation)
                     SetAgentMouseOverContour(agent, isEnemy);
                 if (isEnemy)
@@ -120,9 +121,9 @@ namespace RTSCamera.View
                 ClearFormationMouseOverContour(_mouseOverFormation);
             if (formation != null)
             {
-                bool isEnemy = Utility.IsEnemy(formation);
+                bool isEnemy = RTSCamera.Utility.IsEnemy(formation);
                 if (isEnemy ? HighlightEnabledForAsTargetFormation : HighlightEnabledForSelectedFormation)
-                    SetFormationMouseOverContour(formation, Utility.IsEnemy(formation));
+                    SetFormationMouseOverContour(formation, RTSCamera.Utility.IsEnemy(formation));
             }
         }
 
@@ -192,10 +193,10 @@ namespace RTSCamera.View
             if (!HighlightEnabled)
                 return;
             UpdateContour();
-            if (_orderUIHandler == null)
+            if (_commandSystemOrderUiHandler == null)
                 return;
 
-            foreach (OrderTroopItemVM troop in _orderUIHandler.DataSource.TroopController.TroopList)
+            foreach (OrderTroopItemVM troop in _commandSystemOrderUiHandler.DataSource.TroopController.TroopList)
             {
                 troop.IsSelectable = PlayerOrderController.IsFormationSelectable(troop.Formation);
                 troop.IsSelected = troop.IsSelectable && PlayerOrderController.IsFormationListening(troop.Formation);

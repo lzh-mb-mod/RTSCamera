@@ -1,10 +1,10 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.Reflection;
+using HarmonyLib;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Patch.CircularFormation
+namespace RTSCamera.CommandSystem.Patch.CircularFormation
 {
     public class Patch_FormOrder
     {

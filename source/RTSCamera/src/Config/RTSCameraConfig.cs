@@ -53,12 +53,6 @@ namespace RTSCamera.Config
 
         public float SlowMotionFactor = 0.2f;
 
-        public bool ClickToSelectFormation = true;
-
-        public bool AttackSpecificFormation = true;
-
-        public bool FixCircularArrangement = true;
-
         public bool DisplayMessage = true;
 
         public bool ControlAllyAfterDeath;
@@ -92,9 +86,6 @@ namespace RTSCamera.Config
             IgnoreBoundaries = other.IgnoreBoundaries;
             SlowMotionMode = other.SlowMotionMode;
             SlowMotionFactor = other.SlowMotionFactor;
-            ClickToSelectFormation = other.ClickToSelectFormation;
-            AttackSpecificFormation = other.AttackSpecificFormation;
-            FixCircularArrangement = other.FixCircularArrangement;
             DisplayMessage = other.DisplayMessage;
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;
             PreferToControlCompanions = other.PreferToControlCompanions;

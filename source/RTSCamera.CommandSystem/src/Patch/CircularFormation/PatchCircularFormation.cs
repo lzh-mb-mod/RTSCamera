@@ -1,7 +1,7 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
+using HarmonyLib;
 
-namespace RTSCamera.Patch.CircularFormation
+namespace RTSCamera.CommandSystem.Patch.CircularFormation
 {
     public class PatchCircularFormation
     {
@@ -19,7 +19,7 @@ namespace RTSCamera.Patch.CircularFormation
             }
             catch (Exception e)
             {
-                Utility.DisplayMessage(e.ToString());
+                RTSCamera.Utility.DisplayMessage(e.ToString());
             }
         }
 
@@ -34,7 +34,7 @@ namespace RTSCamera.Patch.CircularFormation
             }
             catch (Exception e)
             {
-                Utility.DisplayMessage(e.ToString());
+                RTSCamera.Utility.DisplayMessage(e.ToString());
             }
         }
     }

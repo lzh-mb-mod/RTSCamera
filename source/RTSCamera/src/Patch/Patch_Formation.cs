@@ -1,7 +1,7 @@
-﻿using RTSCamera.Logic.SubLogic.Component;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using RTSCamera.Logic.SubLogic.Component;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
@@ -19,10 +19,6 @@ namespace RTSCamera.Patch
         private static readonly MethodInfo OnFormationLeaveDetachment =
             typeof(DetachmentManager).GetMethod("OnFormationLeaveDetachment",
                 BindingFlags.Instance | BindingFlags.NonPublic);
-
-        private static readonly MethodInfo GetOrderPositionOfUnitAux =
-            typeof(Formation).GetMethod("GetOrderPositionOfUnitAux", BindingFlags.Instance | BindingFlags.NonPublic);
-
         public static bool LeaveDetachment_Prefix(
             Formation __instance,
             List<IDetachment> ____detachments,
@@ -43,22 +39,6 @@ namespace RTSCamera.Patch
                 detachment
             });
             return false;
-        }
-
-        public static bool GetOrderPositionOfUnit_Prefix(Formation __instance, Agent unit, List<Agent> ___detachedUnits, ref WorldPosition __result)
-        {
-            if (!___detachedUnits.Contains(unit) &&
-                __instance.MovementOrder.OrderType == OrderType.ChargeWithTarget)
-            {
-                var component = unit.GetComponent<RTSCameraAgentComponent>();
-                if (component != null)
-                {
-                    __result = component.CurrentTargetPosition.Value;
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }

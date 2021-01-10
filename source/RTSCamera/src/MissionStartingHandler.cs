@@ -1,10 +1,7 @@
 ﻿using MissionLibrary.Controller;
 using MissionLibrary.Extension;
 using MissionSharedLibrary.Controller;
-using RTSCamera.Config;
 using RTSCamera.Logic;
-using RTSCamera.Patch;
-using RTSCamera.Patch.CircularFormation;
 using RTSCamera.View;
 using System.Collections.Generic;
 using TaleWorlds.MountAndBlade;
@@ -16,16 +13,7 @@ namespace RTSCamera
     {
         public override void OnCreated(MissionView entranceView)
         {
-            var config = RTSCameraConfig.Get();
-            if (config.AttackSpecificFormation)
-            {
-                PatchChargeToFormation.Patch();
-            }
 
-            if (config.FixCircularArrangement)
-            {
-                PatchCircularFormation.Patch();
-            }
             List<MissionBehaviour> list = new List<MissionBehaviour>
             {
                 new RTSCameraSelectCharacterView(),
@@ -33,11 +21,7 @@ namespace RTSCamera
                 new RTSCameraLogic(),
 
                 new HideHUDView(),
-                new RTSCameraMenuView(),
-                new FlyCameraMissionView(),
-                new RTSCameraGameKeyConfigView(),
-                new FormationColorMissionView(),
-                new RTSCameraOrderTroopPlacer()
+                new FlyCameraMissionView()
             };
 
 
@@ -65,9 +49,6 @@ namespace RTSCamera
 
         public override void OnPreMissionTick(MissionView entranceView, float dt)
         {
-            var orderTroopPlacer = entranceView.Mission.GetMissionBehaviour<OrderTroopPlacer>();
-            if (orderTroopPlacer != null)
-                entranceView.Mission.RemoveMissionBehaviour(orderTroopPlacer);
         }
     }
 }

@@ -5,7 +5,7 @@
     <tag language="简体中文" />
   </tags>
   <strings>
-    <string id="RTSCamera_mod_name" text="自由视角" />
+    <string id="RTSCamera_option_class" text="自由视角" />
 
     <string id="RTSCamera_watch_battle" text="(自由视角)观看这场战斗。" />
     <string id="RTSCamera_cannot_control_agent_in_watch_mode" text="旁观模式下无法控制单位。" />
@@ -30,8 +30,6 @@
     <string id="RTSCamera_constant_speed_hint" text="镜头移动速度不再受高度影响。" />
     <string id="RTSCamera_ignore_terrain_hint" text="启用后镜头不再受到地面或建筑的阻挡。" />
     <string id="RTSCamera_ignore_boundaries_hint" text="启用后镜头不再受到地图边界的限制。" />
-    <string id="RTSCamera_click_to_select_formation_hint" text="你可以点击鼠标中键来选择部队。选中的编队会用轮廓高亮。" />
-    <string id="RTSCamera_attack_specific_formation_hint" text="你用鼠标中键点击敌方编队来发出攻击指定的敌方编队的命令。对AI同样适用。" />
     <string id="RTSCamera_display_message_hint" text="是否显示本mod的消息。" />
     <string id="RTSCamera_toggle_ui_hint" text="开关游戏的HUD，用于制作视频。" />
     <string id="RTSCamera_config_key_hint" text="配置本mod的快捷键。" />
@@ -64,9 +62,6 @@
     <string id="RTSCamera_constantspeed" text="恒定镜头速度" />
     <string id="RTSCamera_ignore_terrain" text="镜头忽略地形" />
     <string id="RTSCamera_ignore_boundaries" text="镜头忽略边界限制" />
-    <string id="RTSCamera_click_to_select_formation" text="点击鼠标中键来选择部队" />
-    <string id="RTSCamera_attack_specific_formation" text="启用攻击特定编队" />
-    <string id="RTSCamera_fix_circular_arrangement" text="修复圆阵" />
 
     <string id="RTSCamera_control_options" text="控制选项" />
     <string id="RTSCamera_controlallyafterdeath" text="阵亡后控制队友" />
