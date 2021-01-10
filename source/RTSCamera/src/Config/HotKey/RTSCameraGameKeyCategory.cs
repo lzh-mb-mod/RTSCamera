@@ -23,7 +23,7 @@ namespace RTSCamera.Config.HotKey
 
         public static AGameKeyCategory Category => AGameKeyCategoryManager.Get().GetCategory(CategoryId);
 
-        public static void Initialize()
+        public static void RegisterGameKeyCategory()
         {
             AGameKeyCategoryManager.Get()?.AddCategory(CreateCategory, new Version(1, 0));
         }

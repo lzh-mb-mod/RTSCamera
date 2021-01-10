@@ -332,15 +332,15 @@
                           <Children>
                             <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
                               <Children>
-                                <TextWidget Text="@OutdoorString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                                <TextWidget Text="@IgnoreTerrainString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
                               </Children>
                             </Widget>
                             <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
                               <Children>
-                                <ButtonWidget IsSelected="@Outdoor" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                                <ButtonWidget IsSelected="@IgnoreTerrain" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
                                   <Children>
                                     <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
-                                    <HintWidget DataSource="{OutdoorHint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint"/>
+                                    <HintWidget DataSource="{IgnoreTerrainHint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint"/>
                                   </Children>
                                 </ButtonWidget>
                               </Children>
@@ -352,15 +352,15 @@
                           <Children>
                             <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
                               <Children>
-                                <TextWidget Text="@RestrictByBoundariesString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
+                                <TextWidget Text="@IgnoreBoundariesString" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="SPOptions.OptionName.Text" />
                               </Children>
                             </Widget>
                             <Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="100" HorizontalAlignment="Center" VerticalAlignment="Center">
                               <Children>
-                                <ButtonWidget IsSelected="@RestrictByBoundaries" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
+                                <ButtonWidget IsSelected="@IgnoreBoundaries" ButtonType="Toggle" DoNotPassEventsToChildren="true" ToggleIndicator="ToggleIndicator" HorizontalAlignment="Center" VerticalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="50" SuggestedHeight="50" Brush="SPOptions.Checkbox.Empty.Button">
                                   <Children>
                                     <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
-                                    <HintWidget DataSource="{RestrictByBoundariesHint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint"/>
+                                    <HintWidget DataSource="{IgnoreBoundariesHint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint"/>
                                   </Children>
                                 </ButtonWidget>
                               </Children>
@@ -582,7 +582,7 @@
 
                   </Children>
                 </ListPanel>
-                
+
               </Children>
             </ListPanel>
 

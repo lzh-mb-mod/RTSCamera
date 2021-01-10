@@ -128,7 +128,7 @@
     </Reference>
   </ItemGroup>
 
-  <Target Name="BeforeBuild">
+  <Target Name="RemovePackageDir" AfterTargets="BeforeBuild">
     <Exec Command="rmdir &quot;$(PackagePath)&quot; /s /q" />
   </Target>
   

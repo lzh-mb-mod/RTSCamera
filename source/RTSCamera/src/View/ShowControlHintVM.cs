@@ -1,4 +1,5 @@
-﻿using RTSCamera.Config.HotKey;
+﻿using MissionSharedLibrary.View.ViewModelCollection.Basic;
+using RTSCamera.Config.HotKey;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -7,40 +8,14 @@ namespace RTSCamera.View
 {
     public class ShowControlHintVM : ViewModel
     {
-        private string _text;
-        private bool _showText;
+        public TextViewModel Hint { get; }
 
-        [DataSourceProperty]
-        public string Text
+        public TextViewModel CharacterName { get; set; }
+
+        public ShowControlHintVM(bool showHint)
         {
-            get => _text;
-            set
-            {
-                if (_text == value)
-                    return;
-                _text = value;
-                OnPropertyChanged(nameof(Text));
-            }
-        }
-
-        [DataSourceProperty]
-        public bool ShowText
-        {
-            get => _showText;
-            set
-            {
-                _showText = value;
-                if (_showText) 
-                    RefreshValues();
-                OnPropertyChanged(nameof(ShowText));
-            }
-        }
-
-        private bool _focusedOnAgent;
-
-        public ShowControlHintVM(bool showText)
-        {
-            _showText = showText;
+            Hint = new TextViewModel(new TextObject(), showHint);
+            CharacterName = new TextViewModel(new TextObject(), false);
             RefreshValues();
         }
 
@@ -48,27 +23,34 @@ namespace RTSCamera.View
         {
             base.RefreshValues();
 
-            Text = GetText().ToString();
-
+            Hint.RefreshValues();
+            CharacterName.RefreshValues();
         }
 
-        public void SetShowText(bool focusedOnAgent, bool showText)
+        public void SetShowText(bool focusedOnAgent, bool showHint, string characterName = null)
         {
-            _focusedOnAgent = focusedOnAgent;
-            ShowText = showText;
-        }
-
-        private TextObject GetText()
-        {
-            GameTexts.SetVariable("KeyName", Utility.TextForKey(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop)));
-            if (_focusedOnAgent)
+            Hint.TextObject = GetHint(focusedOnAgent);
+            Hint.IsVisible = showHint;
+            if (characterName == null)
             {
-                return GameTexts.FindText("str_rts_camera_control_current_agent_hint");
+                CharacterName.IsVisible = false;
             }
             else
             {
-                return GameTexts.FindText("str_rts_camera_control_troop_hint");
+                CharacterName.IsVisible = true;
+                CharacterName.TextObject = new TextObject(characterName);
             }
+        }
+
+        private TextObject GetHint(bool focusedOnAgent)
+        {
+            var result = GameTexts.FindText(focusedOnAgent
+                ? "str_rts_camera_control_current_agent_hint"
+                : "str_rts_camera_control_troop_hint");
+
+            result.SetTextVariable("KeyName",
+                Utility.TextForKey(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop)));
+            return result;
         }
     }
 }

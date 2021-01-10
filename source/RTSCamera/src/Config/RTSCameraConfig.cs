@@ -20,8 +20,8 @@ namespace RTSCamera.Config
                     goto case "1.0";
                 case "1.0":
                     ConstantSpeed = false;
-                    Outdoor = true;
-                    RestrictByBoundaries = true;
+                    IgnoreTerrain = false;
+                    IgnoreBoundaries = false;
                     goto case "1.4";
                 case "1.1":
                 case "1.2":
@@ -45,9 +45,9 @@ namespace RTSCamera.Config
 
         public bool ConstantSpeed;
 
-        public bool Outdoor = true;
+        public bool IgnoreTerrain;
 
-        public bool RestrictByBoundaries = true;
+        public bool IgnoreBoundaries;
 
         public bool SlowMotionMode;
 
@@ -73,6 +73,11 @@ namespace RTSCamera.Config
 
         public bool SwitchTeamHotkeyEnabled;
 
+        public static void OnMenuClosed()
+        {
+            RTSCameraConfig .Get().Serialize();
+        }
+
         protected override XmlSerializer Serializer => new XmlSerializer(typeof(RTSCameraConfig));
 
         protected override void CopyFrom(RTSCameraConfig other)
@@ -83,8 +88,8 @@ namespace RTSCamera.Config
             PlayerFormation = other.PlayerFormation;
             AlwaysSetPlayerFormation = other.AlwaysSetPlayerFormation;
             ConstantSpeed = other.ConstantSpeed;
-            Outdoor = other.Outdoor;
-            RestrictByBoundaries = other.RestrictByBoundaries;
+            IgnoreTerrain = other.IgnoreTerrain;
+            IgnoreBoundaries = other.IgnoreBoundaries;
             SlowMotionMode = other.SlowMotionMode;
             SlowMotionFactor = other.SlowMotionFactor;
             ClickToSelectFormation = other.ClickToSelectFormation;

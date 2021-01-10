@@ -74,10 +74,10 @@ namespace RTSCamera.View
                 {
                     if (MissionScreen.LastFollowedAgent != null && MissionScreen.LastFollowedAgent.Team == Mission.PlayerTeam)
                     {
-                        _showControlHintVM.SetShowText(true, true);
+                        _showControlHintVM.SetShowText(true, true, MissionScreen.LastFollowedAgent.Name);
                     }
                 }
-                else
+                else if ((_freeCameraLogic == null || !_freeCameraLogic.IsSpectatorCamera))
                 {
                     _showControlHintVM.SetShowText(false, false);
                 }
@@ -97,9 +97,9 @@ namespace RTSCamera.View
 
         public bool ConstantSpeed;
 
-        public bool Outdoor = true;
+        public bool IgnoreTerrain = false;
 
-        public bool RestrictByBoundaries = true;
+        public bool IgnoreBoundaries = false;
 
         public float CameraViewAngle
         {
@@ -197,10 +197,9 @@ namespace RTSCamera.View
 
         public void FocusOnAgent(Agent agent)
         {
+            LockToAgent = true;
             typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true)
                 ?.Invoke(MissionScreen, new object[] { agent });
-            if (!LockToAgent)
-                LockToAgent = true;
             if (!_freeCameraLogic.IsSpectatorCamera)
                 _freeCameraLogic.SwitchCamera();
             Utility.SmoothMoveToAgent(MissionScreen, true, false);
@@ -209,6 +208,7 @@ namespace RTSCamera.View
 
         private void LeaveFromAgent()
         {
+            LockToAgent = false;
             CameraPosition = MissionScreen.CombatCamera.Position;
             CameraBearing = MissionScreen.CameraBearing +
                 (float?)CameraSpecialCurrentAddedBearing?.GetValue(MissionScreen) ?? 0;
@@ -230,8 +230,8 @@ namespace RTSCamera.View
 
             _config = RTSCameraConfig.Get();
             ConstantSpeed = _config.ConstantSpeed;
-            Outdoor = _config.Outdoor;
-            RestrictByBoundaries = _config.RestrictByBoundaries;
+            IgnoreTerrain = _config.IgnoreTerrain;
+            IgnoreBoundaries = _config.IgnoreBoundaries;
             _rtsCameraLogic = Mission.GetMissionBehaviour<RTSCameraLogic>();
             _freeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
             _missionMainAgentController = Mission.GetMissionBehaviour<MissionMainAgentController>();
@@ -297,7 +297,6 @@ namespace RTSCamera.View
 
             if (affectedAgent == MissionScreen.LastFollowedAgent && LockToAgent)
             {
-                LockToAgent = false;
                 LeaveFromAgent();
             }
         }
@@ -306,7 +305,7 @@ namespace RTSCamera.View
         {
             _showControlHintVM.SetShowText(true,
                 !WatchBattleBehavior.WatchMode && (LockToAgent || Mission.MainAgent == null) && agent.Team != null &&
-                agent.Team == Mission.PlayerTeam);
+                agent.Team == Mission.PlayerTeam, LockToAgent ? agent.Name : null);
         }
 
         private void MissionScreenOnSpectateAgentFocusOut(Agent agent)
@@ -585,10 +584,10 @@ namespace RTSCamera.View
             }
             if (!MBEditor.IsEditModeOn)
             {
-                if (RestrictByBoundaries && !Mission.IsPositionInsideBoundaries(cameraFrame.origin.AsVec2))
+                if (!IgnoreBoundaries && !Mission.IsPositionInsideBoundaries(cameraFrame.origin.AsVec2))
                     cameraFrame.origin.AsVec2 = Mission.GetClosestBoundaryPosition(cameraFrame.origin.AsVec2);
                 float heightAtPosition1 = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin + new Vec3(0.0f, 0.0f, 100f));
-                if (!MissionScreen.IsCheatGhostMode && Outdoor && heightAtPosition1 < 9999.0)
+                if (!MissionScreen.IsCheatGhostMode && !IgnoreTerrain && heightAtPosition1 < 9999.0)
                     cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition1 + 0.5f);
                 if (cameraFrame.origin.z > heightAtPosition1 + 80.0)
                     cameraFrame.origin.z = heightAtPosition1 + 80f;
@@ -748,7 +747,6 @@ namespace RTSCamera.View
                                  (Input.GetKeyState(InputKey.ControllerLStick).y != 0.0 ||
                                   Input.GetKeyState(InputKey.ControllerLStick).x != 0.0)))
             {
-                LockToAgent = false;
                 LeaveFromAgent();
             }
             UpdateMouseVisibility();

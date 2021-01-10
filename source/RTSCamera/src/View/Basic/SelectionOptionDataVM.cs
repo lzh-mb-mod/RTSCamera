@@ -10,7 +10,7 @@ namespace RTSCamera.View.Basic
     public class SelectionOptionDataVM : ViewModel
     {
         private readonly int _initialValue;
-        private SelectionOptionData _selectionOptionData;
+        private MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionOptionData _selectionOptionData;
         private SelectorVM<SelectorItemVM> _selector;
         private string _name;
 
@@ -40,16 +40,16 @@ namespace RTSCamera.View.Basic
             }
         }
 
-        public SelectionOptionDataVM(SelectionOptionData option, TextObject name)
+        public SelectionOptionDataVM(MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionOptionData option, TextObject name)
         {
             _selectionOptionData = option;
             Name = name.ToString();
 
-            IEnumerable<SelectionItem> selectableItems = option.GetSelectableOptionNames();
+            IEnumerable<MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem> selectableItems = option.GetSelectableOptionNames();
             if (selectableItems.All(n => n.IsLocalizationId))
             {
                 List<TextObject> textObjectList = new List<TextObject>();
-                foreach (SelectionItem selectionItem in selectableItems)
+                foreach (MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem selectionItem in selectableItems)
                 {
                     TextObject text = GameTexts.FindText(selectionItem.Data, selectionItem.Variation);
                     textObjectList.Add(text);
@@ -59,7 +59,7 @@ namespace RTSCamera.View.Basic
             else
             {
                 List<string> stringList = new List<string>();
-                foreach (SelectionItem selectionItem in selectableItems)
+                foreach (MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem selectionItem in selectableItems)
                 {
                     if (selectionItem.IsLocalizationId)
                     {

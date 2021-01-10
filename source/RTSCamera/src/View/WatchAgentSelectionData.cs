@@ -7,20 +7,20 @@ namespace RTSCamera.View
 {
     public class WatchAgentSelectionData
     {
-        public SelectionOptionData SelectionOptionData;
+        public MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionOptionData SelectionOptionData;
         private readonly FlyCameraMissionView _view = Mission.Current.GetMissionBehaviour<FlyCameraMissionView>();
 
         public WatchAgentSelectionData(MissionScreen missionScreen)
         {
             var agents = Mission.Current.PlayerTeam.ActiveAgents.Where(agent => agent.IsHero).ToList();
-            SelectionOptionData = new SelectionOptionData(i =>
+            SelectionOptionData = new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionOptionData(i =>
             {
                 if (i >= 0 && i < agents.Count)
                 {
                     WatchAgent(agents[i]);
                 }
             }, () => agents.IndexOf(missionScreen.LastFollowedAgent), agents.Count,
-                agents.Select(agent => new SelectionItem(false, agent.Name)));
+                agents.Select(agent => new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem(false, agent.Name)));
         }
 
         private void WatchAgent(Agent agent)

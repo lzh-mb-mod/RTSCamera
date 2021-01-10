@@ -12,6 +12,9 @@ using SandBox;
 using SandBox.Source.Towns;
 using System;
 using System.Reflection;
+using MissionLibrary.View;
+using MissionSharedLibrary.Provider;
+using MissionSharedLibrary.View.ViewModelCollection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -37,7 +40,6 @@ namespace RTSCamera
 
             try
             {
-                Initializer.Initialize();
                 Initialize();
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts(
                     BasePath.Name + "Modules/RTSCamera/ModuleData/module_strings.xml");
@@ -103,22 +105,39 @@ namespace RTSCamera
 
         private void Initialize()
         {
-            RTSCameraGameKeyCategory.Initialize();
+            if (Initializer.IsInitialized)
+                return;
+
+            Initializer.Initialize();
             RTSCameraExtension.Clear();
-            Global.GetProvider<AMissionStartingManager>().AddHandler(new MissionStartingHandler());
         }
 
         protected override void OnBeforeInitialModuleScreenSetAsRoot()
         {
             base.OnBeforeInitialModuleScreenSetAsRoot();
 
+            SecondInitialize();
+
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera: patch failed"));
             }
 
-            MissionSharedLibrary.Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage; 
+            MissionSharedLibrary.Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;
             Utility.PrintUsageHint();
+        }
+
+        private void SecondInitialize()
+        {
+            if (Initializer.IsSecondInitialized)
+                return;
+
+            Initializer.SecondInitialize();
+            RTSCameraGameKeyCategory.RegisterGameKeyCategory();
+            Global.GetProvider<AMissionStartingManager>().AddHandler(new MissionStartingHandler());
+            var menuClassCollection = AMenuManager.Get().MenuClassCollection;
+            AMenuManager.Get().OnMenuClosedEvent += RTSCameraConfig.OnMenuClosed;
+            menuClassCollection.AddOptionClass(RTSCameraOptionClassFactory.CreateOptionClassProvider(menuClassCollection));
         }
 
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
@@ -137,7 +156,7 @@ namespace RTSCamera
                 campaignGameStarter.AddBehavior(new WatchBattleBehavior());
             }
         }
-        
+
 
         protected override void OnSubModuleUnloaded()
         {

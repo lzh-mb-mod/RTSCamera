@@ -40,8 +40,8 @@ namespace RTSCamera.Config
         public string TogglePauseString { get; } = GameTexts.FindText("str_rts_camera_toggle_pause").ToString();
 
         public string ConstantSpeedString { get; } = GameTexts.FindText("str_rts_camera_constant_speed").ToString();
-        public string OutdoorString { get; } = GameTexts.FindText("str_rts_camera_outdoor").ToString();
-        public string RestrictByBoundariesString { get; } = GameTexts.FindText("str_rts_camera_restrict_by_boundaries").ToString();
+        public string IgnoreTerrainString { get; } = GameTexts.FindText("str_rts_camera_ignore_terrain").ToString();
+        public string IgnoreBoundariesString { get; } = GameTexts.FindText("str_rts_camera_ignore_boundaries").ToString();
 
         public string SlowMotionModeString { get; } = GameTexts.FindText("str_rts_camera_slow_motion_mode").ToString();
 
@@ -60,7 +60,7 @@ namespace RTSCamera.Config
         public string ConfigKeyString { get; } = GameTexts.FindText("str_rts_camera_gamekey_config").ToString();
 
         public string ControlAllyOptionsDescriptionString { get; } =
-            GameTexts.FindText("str_rts_camera_control_ally_options_description").ToString();
+            GameTexts.FindText("str_rts_camera_control_options").ToString();
 
         public string SelectCharacterString { get; } = GameTexts.FindText("str_rts_camera_select_character").ToString();
 
@@ -203,36 +203,36 @@ namespace RTSCamera.Config
             new HintViewModel(GameTexts.FindText("str_rts_camera_constant_speed_hint").ToString());
 
         [DataSourceProperty]
-        public bool Outdoor
+        public bool IgnoreTerrain
         {
-            get => _config.Outdoor;
+            get => _config.IgnoreTerrain;
             set
             {
-                _config.Outdoor = value;
+                _config.IgnoreTerrain = value;
                 var view = _mission.GetMissionBehaviour<FlyCameraMissionView>();
                 if (view != null)
-                    view.Outdoor = value;
+                    view.IgnoreTerrain = value;
             }
         }
 
-        public HintViewModel OutdoorHint { get; } =
-            new HintViewModel(GameTexts.FindText("str_rts_camera_outdoor_hint").ToString());
+        public HintViewModel IgnoreTerrainHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_ignore_terrain_hint").ToString());
 
         [DataSourceProperty]
-        public bool RestrictByBoundaries
+        public bool IgnoreBoundaries
         {
-            get => _config.RestrictByBoundaries;
+            get => _config.IgnoreBoundaries;
             set
             {
-                _config.RestrictByBoundaries = value;
+                _config.IgnoreBoundaries = value;
                 var view = _mission.GetMissionBehaviour<FlyCameraMissionView>();
                 if (view != null)
-                    view.RestrictByBoundaries = value;
+                    view.IgnoreBoundaries = value;
             }
         }
 
-        public HintViewModel RestrictByBoundariesHint { get; } =
-            new HintViewModel(GameTexts.FindText("str_rts_camera_restricted_by_boundaries_hint").ToString());
+        public HintViewModel IgnoreBoundariesHint { get; } =
+            new HintViewModel(GameTexts.FindText("str_rts_camera_ignore_boundaries_hint").ToString());
 
         [DataSourceProperty]
         public bool ClickToSelectFormation
@@ -475,7 +475,7 @@ namespace RTSCamera.Config
             _rtsCameraLogic = _mission.GetMissionBehaviour<RTSCameraLogic>();
             _switchFreeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
             _switchTeamLogic = _rtsCameraLogic.SwitchTeamLogic;
-            PlayerFormation = new SelectionOptionDataVM(new SelectionOptionData(
+            PlayerFormation = new SelectionOptionDataVM(new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionOptionData(
                 i =>
                 {
                     if ((i != _config.PlayerFormation || _config.AlwaysSetPlayerFormation) &&
@@ -488,14 +488,14 @@ namespace RTSCamera.Config
                 }, () => _config.PlayerFormation,
                 (int)FormationClass.NumberOfRegularFormations, new[]
                 {
-                    new SelectionItem(true, "str_troop_group_name", "0"),
-                    new SelectionItem(true, "str_troop_group_name", "1"),
-                    new SelectionItem(true, "str_troop_group_name", "2"),
-                    new SelectionItem(true, "str_troop_group_name", "3"),
-                    new SelectionItem(true, "str_troop_group_name", "4"),
-                    new SelectionItem(true, "str_troop_group_name", "5"),
-                    new SelectionItem(true, "str_troop_group_name", "6"),
-                    new SelectionItem(true, "str_troop_group_name", "7")
+                    new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem(true, "str_troop_group_name", "0"),
+                    new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem(true, "str_troop_group_name", "1"),
+                    new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem(true, "str_troop_group_name", "2"),
+                    new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem(true, "str_troop_group_name", "3"),
+                    new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem(true, "str_troop_group_name", "4"),
+                    new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem(true, "str_troop_group_name", "5"),
+                    new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem(true, "str_troop_group_name", "6"),
+                    new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem(true, "str_troop_group_name", "7")
                 }), GameTexts.FindText("str_rts_camera_player_formation"));
             RaisedHeight =
                 new NumericVM(GameTexts.FindText("str_rts_camera_raised_height_after_switching_to_free_camera").ToString(),

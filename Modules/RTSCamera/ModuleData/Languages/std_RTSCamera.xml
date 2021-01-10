@@ -27,9 +27,9 @@
     <string id="RTSCamera_control_ally_after_death_hint" text="Automatically control one of your ally after you die and continue fighting." />
     <string id="RTSCamera_prefer_to_control_companions_hint" text="Prefer to control companions when looking for target to control." />
     <string id="RTSCamera_control_troops_in_player_party_only_hint" text="Only consider troops in player party when looking for target to control." />
-    <string id="RTSCamera_constant_speed_hint" text="Camera movement speed won't be affected by height, for making videos." />
-    <string id="RTSCamera_outdoor_hint" text="Camera will not collide with terrain and buildings when disabled, for making video." />
-    <string id="RTSCamera_restricted_by_boundaries_hint" text="Camera will not be restricted by scene boundaries when disabled, for making video." />
+    <string id="RTSCamera_constant_speed_hint" text="Camera movement speed won't be affected by height." />
+    <string id="RTSCamera_ignore_terrain_hint" text="Camera will not be blocked by terrain and buildings when enabled." />
+    <string id="RTSCamera_ignore_boundaries_hint" text="Camera will not be restricted by boundaries when enabled." />
     <string id="RTSCamera_click_to_select_formation_hint" text="You can directly select formation by clicking middle mouse button on them. Selected formation will be highlighted with outline." />
     <string id="RTSCamera_attack_specific_formation_hint" text="You can give order to attack a specific formation by clicking on enemy formation. Also applied to AI." />
     <string id="RTSCamera_display_message_hint" text="Whether to display message of this mod." />
@@ -55,27 +55,30 @@
     <string id="RTSCamera_loadedconfig" text="Loading config succeeded." />
     <string id="RTSCamera_loadconfigfailed" text="Loading config failed." />
 
+    <string id="RTSCamera_camera_options" text="Camera Options" />
     <string id="RTSCamera_usefreecamerabydefault" text="Use Free Camera By Default" />
     <string id="RTSCamera_switchfreecamera" text="Switch Free Camera" />
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="Camera Raised Height" />
     <string id="RTSCamera_playerformation" text="Player Formation" />
     <string id="RTSCamera_always_set_player_formation" text="Always Set Player Formation" />
     <string id="RTSCamera_constantspeed" text="Constant Camera Speed" />
-    <string id="RTSCamera_outdoor" text="Outdoor" />
-    <string id="RTSCamera_restrictbyboundaries" text="Restrict By Boundaries" />
-    <string id="RTSCamera_togglepause" text="Toggle Pause" />
-    <string id="RTSCamera_slowmotionmode" text="Slow Motion Mode" />
-    <string id="RTSCamera_slowmotionfactor" text="Slow Motion Factor" />
+    <string id="RTSCamera_ignore_terrain" text="Ignore Terrain" />
+    <string id="RTSCamera_ignore_boundaries" text="Ignore Boundaries" />
     <string id="RTSCamera_click_to_select_formation" text="Middle Click to select formation" />
     <string id="RTSCamera_attack_specific_formation" text="Enable Attack Specific Formation" />
     <string id="RTSCamera_fix_circular_arrangement" text="Fix Circular Arrangement" />
 
-    <string id="RTSCamera_controlallyoptionsdescription" text="Control Ally" />
+    <string id="RTSCamera_control_options" text="Control Options" />
     <string id="RTSCamera_controlallyafterdeath" text="Control Ally After Death" />
     <string id="RTSCamera_prefertocontrolcompanions" text="Prefer To Control Companions" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
     <string id="RTSCamera_watchanotherhero" text="Watch Another Hero" />
     <string id="RTSCamera_select_character" text="Select Character" />
+
+    <string id="RTSCamera_miscellaneous_options" text="Miscellaneous Options" />
+    <string id="RTSCamera_togglepause" text="Toggle Pause" />
+    <string id="RTSCamera_slowmotionmode" text="Slow Motion Mode" />
+    <string id="RTSCamera_slowmotionfactor" text="Slow Motion Factor" />
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="Cheat Options" />
     <string id="RTSCamera_disabledeath" text="All Invulnerable" />

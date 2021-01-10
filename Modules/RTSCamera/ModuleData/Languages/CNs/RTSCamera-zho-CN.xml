@@ -27,9 +27,9 @@
     <string id="RTSCamera_control_ally_after_death_hint" text="阵亡后自动控制你的一个队友来继续战斗。" />
     <string id="RTSCamera_prefer_to_control_companions_hint" text="当寻找可控制的单位时倾向于控制同伴。" />
     <string id="RTSCamera_control_troops_in_player_party_only_hint" text="当寻找可控制的单位时只考虑玩家部队内的单位。" />
-    <string id="RTSCamera_constant_speed_hint" text="镜头移动速度不再受高度影响，用于制作视频。" />
-    <string id="RTSCamera_outdoor_hint" text="禁用后镜头不再受到地面或建筑的限制，用于制作视频。" />
-    <string id="RTSCamera_restricted_by_boundaries_hint" text="禁用后镜头不再受到地图边界的限制，用于制作视频。" />
+    <string id="RTSCamera_constant_speed_hint" text="镜头移动速度不再受高度影响。" />
+    <string id="RTSCamera_ignore_terrain_hint" text="启用后镜头不再受到地面或建筑的阻挡。" />
+    <string id="RTSCamera_ignore_boundaries_hint" text="启用后镜头不再受到地图边界的限制。" />
     <string id="RTSCamera_click_to_select_formation_hint" text="你可以点击鼠标中键来选择部队。选中的编队会用轮廓高亮。" />
     <string id="RTSCamera_attack_specific_formation_hint" text="你用鼠标中键点击敌方编队来发出攻击指定的敌方编队的命令。对AI同样适用。" />
     <string id="RTSCamera_display_message_hint" text="是否显示本mod的消息。" />
@@ -55,27 +55,30 @@
     <string id="RTSCamera_loadedconfig" text="加载配置成功。" />
     <string id="RTSCamera_loadconfigfailed" text="加载配置文件失败。" />
 
+    <string id="RTSCamera_camera_options" text="镜头选项" />
     <string id="RTSCamera_usefreecamerabydefault" text="默认自由视角" />
     <string id="RTSCamera_switchfreecamera" text="切换自由视角" />
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="相机提高的高度" />
     <string id="RTSCamera_playerformation" text="玩家编队" />
     <string id="RTSCamera_always_set_player_formation" text="总是设置玩家编队" />
     <string id="RTSCamera_constantspeed" text="恒定镜头速度" />
-    <string id="RTSCamera_outdoor" text="室外镜头" />
-    <string id="RTSCamera_restrictbyboundaries" text="镜头限制在边界内" />
-    <string id="RTSCamera_togglepause" text="切换暂停" />
-    <string id="RTSCamera_slowmotionmode" text="慢速模式" />
-    <string id="RTSCamera_slowmotionfactor" text="慢速倍率" />
+    <string id="RTSCamera_ignore_terrain" text="镜头忽略地形" />
+    <string id="RTSCamera_ignore_boundaries" text="镜头忽略边界限制" />
     <string id="RTSCamera_click_to_select_formation" text="点击鼠标中键来选择部队" />
     <string id="RTSCamera_attack_specific_formation" text="启用攻击特定编队" />
     <string id="RTSCamera_fix_circular_arrangement" text="修复圆阵" />
 
-    <string id="RTSCamera_controlallyoptionsdescription" text="控制队友" />
+    <string id="RTSCamera_control_options" text="控制选项" />
     <string id="RTSCamera_controlallyafterdeath" text="阵亡后控制队友" />
     <string id="RTSCamera_prefertocontrolcompanions" text="优先控制同伴" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
     <string id="RTSCamera_watchanotherhero" text="观察另一个英雄单位" />
     <string id="RTSCamera_select_character" text="选择角色" />
+
+    <string id="RTSCamera_miscellaneous_options" text="杂项" />
+    <string id="RTSCamera_togglepause" text="切换暂停" />
+    <string id="RTSCamera_slowmotionmode" text="慢速模式" />
+    <string id="RTSCamera_slowmotionfactor" text="慢速倍率" />
 
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="作弊选项" />
