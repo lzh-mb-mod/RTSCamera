@@ -44,7 +44,8 @@ jobs:
 
       - name: Read environment variables
         run: >-
-          Get-Content .\.github\resources\EnvironmentVariables.txt >> $GITHUB_ENV
+          Get-Content .\.github\resources\EnvironmentVariables.txt >> ${env:GITHUB_ENV}
+        shell: pwsh
         
       - name: Setup .NET Core
         uses: actions/setup-dotnet@master
@@ -85,10 +86,12 @@ jobs:
         run: >-
           nuget restore .\source\RTSCamera.sln;
           MSBuild.exe .\source\RTSCamera.sln /p:Configuration=Release /p:GamePath="$PWD\bannerlord-stable\";
+        shell: pwsh
           
       - name: Zip RTS Camera
         run: >-
-          Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera${GameStableVersion}.zip";
+          Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera${env:GameStableVersion}.zip";
+        shell: pwsh
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.2
