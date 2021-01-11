@@ -22,6 +22,9 @@
     <ProjectReference Include="..\library\mission-library\source\MissionLibrary\MissionLibrary.csproj" />
   </ItemGroup>
   <ItemGroup>
+	  <DotNetCliToolReference Include="dotnet-md2html" Version="1.0.0.1-preview1" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="SandBox">
       <HintPath>$(GamePath)Modules\SandBox\bin\Win64_Shipping_Client\SandBox.dll</HintPath>
     </Reference>
