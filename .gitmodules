@@ -1,3 +1,3 @@
 [submodule "source/library/mission-library"]
 	path = source/library/mission-library
-	url = git@github.com:lzh-mb-mod/MissionLibrary.git
+	url = https://github.com/lzh-mb-mod/MissionLibrary.git
