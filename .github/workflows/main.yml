@@ -32,19 +32,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Install SSH Key
-        # You may pin to the exact commit or the version.
-        # uses: shimataro/ssh-key-action@6f350ca8484d8d55c2e361e74d17e638dabe713a
-        uses: shimataro/ssh-key-action@v2.1.0
-        with:
-          # SSH private key
-          key: ${{secrets.SSH_PRIVATE_KEY}}
-          # SSH key file name (default: id_rsa)
-          # name: # optional, default is id_rsa
-          # public keys of SSH servers
-          # known_hosts: # default is 
-          # SSH config
-          # config: # optional, default is 
       
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repositiory
