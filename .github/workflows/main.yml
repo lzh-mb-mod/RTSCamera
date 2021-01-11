@@ -94,6 +94,6 @@ jobs:
           # Artifact name
           name: RTS Camera for Bannerlord $GameStableVersion
           # A file, directory or wildcard pattern that describes what to upload
-          path: "RTS Camera-for-Bannerlord-$GameStableVersion.zip"
+          path: "RTS Camera-for-Bannerlord-$(GameStableVersion).zip"
           # The desired behavior if no files are found using the provided path
         
