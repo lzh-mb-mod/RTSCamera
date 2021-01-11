@@ -88,7 +88,7 @@ jobs:
           
       - name: Zip RTS Camera
         run: >-
-          Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera.zip";
+          Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera${GameStableVersion}.zip";
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.2
@@ -96,6 +96,6 @@ jobs:
           # Artifact name
           name: RTS Camera for Bannerlord $GameStableVersion
           # A file, directory or wildcard pattern that describes what to upload
-          path: "RTS Camera.zip"
+          path: "RTS Camera${GameStableVersion}.zip"
           # The desired behavior if no files are found using the provided path
         
