@@ -87,9 +87,7 @@ jobs:
         shell: pwsh
           
       - name: Zip RTS Camera
-        run: >-
-          Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera${env:GameStableVersion}.zip";
-        shell: pwsh
+        run: Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera${GameStableVersion}.zip";
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.2
