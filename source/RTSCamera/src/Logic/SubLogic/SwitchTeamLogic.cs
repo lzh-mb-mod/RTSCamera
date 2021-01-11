@@ -3,6 +3,7 @@ using RTSCamera.Config.HotKey;
 using RTSCamera.Event;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.Missions.Handlers;
 
 namespace RTSCamera.Logic.SubLogic
 {
@@ -38,6 +39,8 @@ namespace RTSCamera.Logic.SubLogic
             if (!NativeConfig.CheatMode)
                 return;
             if (Mission.PlayerEnemyTeam == null)
+                return;
+            if (Mission.GetMissionBehaviour<SiegeDeploymentHandler>() != null)
                 return;
             bool firstTime = Mission.PlayerEnemyTeam.PlayerOrderController.Owner == null;
             var targetAgent = Mission.PlayerEnemyTeam.PlayerOrderController.Owner;
