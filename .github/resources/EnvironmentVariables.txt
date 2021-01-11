@@ -1,0 +1,2 @@
+GameStableVersion=e1.5.5
+GameBetaVersion=e1.5.6
