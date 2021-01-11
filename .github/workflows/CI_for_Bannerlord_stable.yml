@@ -88,10 +88,7 @@ jobs:
           pathTarget: depotdownloader
 
       - name: Download Bannerlord binaries
-        run: >-
-          dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta ${{steps.dotenv.outputs.game_stable_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord-stable;
-          # dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta ${{steps.dotenv.outputs.game_beta_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord-beta;
-        shell: pwsh
+        run: dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta ${{steps.dotenv.outputs.game_stable_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord-stable;
       
       - name: Build RTS Camera
         run: >-
