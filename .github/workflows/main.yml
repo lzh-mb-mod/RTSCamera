@@ -83,7 +83,7 @@ jobs:
           MSBuild.exe .\source\RTSCamera.sln /p:Configuration=Release /p:GamePath="$PWD\bannerlord-stable\";
           
       - name: Zip RTS Camera
-        run: 7z a tzip "RTS Camera-for-Bannerlord-${{secrets.SYNCED_GAME_STABLE_VERSION}}.zip" .\source\package\*;
+        run: 7z a tzip ".\RTS Camera-for-Bannerlord-${{secrets.SYNCED_GAME_STABLE_VERSION}}.zip" .\source\package\*;
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.2
