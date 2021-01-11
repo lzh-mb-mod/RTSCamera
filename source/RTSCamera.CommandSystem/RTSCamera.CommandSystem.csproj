@@ -130,7 +130,6 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
-    <Exec Command="xcopy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
     <Exec Command="xcopy &quot;$(ProjectDir)Modules\.&quot; &quot;$(PackagePath)&quot; /E /C /I /Y /F&#xD;&#xA;" />
     <Exec Command="xcopy &quot;$(ModulePackagePath).&quot; &quot;$(GamePath)Modules\$(ModuleAlias)&quot; /E /C /I /Y /F" />
   </Target>
