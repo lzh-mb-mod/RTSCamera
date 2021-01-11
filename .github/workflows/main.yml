@@ -43,7 +43,8 @@ jobs:
         uses: snickerbockers/submodules-init@v4
 
       - name: Read environment variables
-        run: Get-Content .\.github\resources\EnvironmentVariables.txt >> $GITHUB_ENV
+        run: >-
+          Get-Content .\.github\resources\EnvironmentVariables.txt >> $GITHUB_ENV
         
       - name: Setup .NET Core
         uses: actions/setup-dotnet@master
