@@ -1,0 +1,100 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI for Bannerlord stable
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master, test-workflow ]
+  pull_request:
+    branches: [ master ]
+    # will be triggereg when undrafting or requesting review
+    types: [review_requested, ready_for_review]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  # Disable the .NET logo in the console output.
+  DOTNET_NOLOGO: true
+  # Disable the .NET first time experience to skip caching NuGet packages and speed up the build.
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable sending .NET CLI telemetry to Microsoft.
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Repositiory
+        uses: actions/checkout@v2
+      
+      - name: submodules-init
+        # You may pin to the exact commit or the version.
+        # uses: snickerbockers/submodules-init@74927a8bb0fe1bb0f1f1e4d102384a8e69f19171
+        uses: snickerbockers/submodules-init@v4
+
+      - name: Read environment variables
+        run: Get-Content .\.github\resources\EnvironmentVariables.txt >> $GITHUB_ENV
+        
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@master
+        with:
+          dotnet-version: 3.1.x
+      - name: setup-msbuild
+        uses: microsoft/setup-msbuild@v1
+        # with:
+          # Folder location of where vswhere.exe is located if a self-hosted agent
+          # vswhere-path: # optional
+          # Version of Visual Studio to search; defaults to latest if not specified
+          # vs-version: # optional
+      - name: Setup NuGet.exe for use with actions
+        # You may pin to the exact commit or the version.
+        # uses: NuGet/setup-nuget@04b0c2b8d1b97922f67eca497d7cf0bf17b8ffe1
+        uses: NuGet/setup-nuget@v1.0.5
+          
+      - name: Download DepotDownloader_2.3.6
+        uses: i3h/download-release-asset@v1
+        with:
+          owner: SteamRE
+          repo: DepotDownloader
+          tag: DepotDownloader_2.3.6
+          file: depotdownloader-2.3.6.zip
+      - name: Extract DepotDownloader_2.3.6
+        uses: DuckSoft/extract-7z-action@v1.0
+        with:
+          pathSource: depotdownloader-2.3.6.zip
+          pathTarget: depotdownloader
+
+      - name: Download Bannerlord binaries
+        run: >-
+          dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta $GameStableVersion -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord-stable;
+          # dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta $GameBetaVersion -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord-beta;
+        shell: pwsh
+      
+      - name: Build RTS Camera
+        run: >-
+          nuget restore .\source\RTSCamera.sln;
+          MSBuild.exe .\source\RTSCamera.sln /p:Configuration=Release /p:GamePath="$PWD\bannerlord-stable\";
+          
+      - name: Zip RTS Camera
+        run: >-
+          Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera.zip";
+      
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          # Artifact name
+          name: RTS Camera for Bannerlord $GameStableVersion
+          # A file, directory or wildcard pattern that describes what to upload
+          path: "RTS Camera.zip"
+          # The desired behavior if no files are found using the provided path
+        
