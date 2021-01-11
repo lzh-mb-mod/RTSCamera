@@ -28,10 +28,7 @@ jobs:
   # This workflow contains a single job called "build"
   Build:
     # The type of runner that the job will run on
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        dotnet: [ '2.2.x', '3.1.x' ]
+    runs-on: windows-lates
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -56,10 +53,14 @@ jobs:
           # whether to log the variables to output or not
           log-variables: true # optional, default is false
 
-      - name: Setup .NET Core
+      - name: Setup .NET Core 2.2.x
         uses: actions/setup-dotnet@master
         with:
-          dotnet-version: ${{ matrix.dotnet }}
+          dotnet-version: '2.2.x'
+      - name: Setup .NET Core 3.1.x
+        uses: actions/setup-dotnet@master
+        with:
+          dotnet-version: '3.1.x'
 
       - name: setup-msbuild
         uses: microsoft/setup-msbuild@v1
