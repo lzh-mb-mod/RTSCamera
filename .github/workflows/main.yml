@@ -86,7 +86,7 @@ jobs:
           MSBuild.exe .\source\RTSCamera.sln /p:Configuration=Release /p:GamePath="$PWD\bannerlord-stable\";
           
       - name: Zip RTS Camera
-        run: 7z a tzip "RTSCamera-for-Bannerlord-${GameStableVersion}.zip" .\source\package\*;
+        run: 7za a tzip "RTS Camera.zip" .\source\package\*;
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.2
@@ -94,6 +94,6 @@ jobs:
           # Artifact name
           name: RTS Camera for Bannerlord $GameStableVersion
           # A file, directory or wildcard pattern that describes what to upload
-          path: "RTSCamera-for-Bannerlord-${GameStableVersion}.zip"
+          path: "RTS Camera.zip"
           # The desired behavior if no files are found using the provided path
         
