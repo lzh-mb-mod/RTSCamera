@@ -29,6 +29,9 @@ jobs:
   Build:
     # The type of runner that the job will run on
     runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet: [ '2.2.x', '3.1.x' ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -56,7 +59,8 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@master
         with:
-          dotnet-version: 3.1.x
+          dotnet-version: ${{ matrix.dotnet }}
+
       - name: setup-msbuild
         uses: microsoft/setup-msbuild@v1
         # with:
