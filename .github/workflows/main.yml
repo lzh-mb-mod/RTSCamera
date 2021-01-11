@@ -112,7 +112,7 @@ jobs:
         uses: actions/upload-artifact@v2.2.2
         with:
           # Artifact name
-          name: RTS Camera ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_stable_version}}.zip
+          name: RTS Camera ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_stable_version}}
           # A file, directory or wildcard pattern that describes what to upload
           path: "RTS Camera ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_stable_version}}.zip"
           # The desired behavior if no files are found using the provided path
