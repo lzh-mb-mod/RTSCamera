@@ -92,16 +92,7 @@ jobs:
         run: >-
           nuget restore .\source\RTSCamera.sln;
           MSBuild.exe .\source\RTSCamera.sln /p:Configuration=Release /p:GamePath="$PWD\bannerlord-stable\";
-          
-      - name: Generate html files
-        uses: ZacJW/markdown-html-action@1.1.0
-        with:
-          input_files: '[["README.md"], ["README.zh-CN.md"], ["CHANGELOG.md]]'
-          output_files: '["source\package\RTSCamera\README.html", "source\package\RTSCamera\README.zh-CN.html", "source\package\RTSCamera\CHANGELOG.zh-CN.html"]'
-          builtin_stylesheet: 'style.css'
-          packages: 'pymdown-extensions'
-          extensions: '["pymdownx.extra"]'
-          
+
       - name: Zip RTS Camera
         run: Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_stable_version}}.zip";
       
