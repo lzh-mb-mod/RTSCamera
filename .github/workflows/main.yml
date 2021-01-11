@@ -93,6 +93,15 @@ jobs:
           nuget restore .\source\RTSCamera.sln;
           MSBuild.exe .\source\RTSCamera.sln /p:Configuration=Release /p:GamePath="$PWD\bannerlord-stable\";
 
+      - name: Install dotnet-md2html
+        run: dotnet tool install -g dotnet-md2html --version 1.0.0.1-preview1
+      
+      - name: Generate html files
+        run: >-
+          dotnet md2html -i README.md -o .\source\package\RTSCamera\README.html;
+          dotnet md2html -i README.zh-CN.md -o .\source\package\RTSCamera\README.zh-CN.html;
+          dotnet md2html -i CHANGELOG.md -o .\source\package\RTSCamera\CHANGELOG.html;
+
       - name: Zip RTS Camera
         run: Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_stable_version}}.zip";
       
