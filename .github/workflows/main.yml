@@ -43,6 +43,7 @@ jobs:
         uses: snickerbockers/submodules-init@v4
 
       - name: Read environment variables
+        id: dotenv
         # You may pin to the exact commit or the version.
         # uses: falti/dotenv-action@cb77e3cb51b636f6833ceeb6928bf06ff66e82fa
         uses: falti/dotenv-action@v0.2.5
@@ -83,8 +84,8 @@ jobs:
 
       - name: Download Bannerlord binaries
         run: >-
-          dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta $GameStableVersion -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord-stable;
-          # dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta $GameBetaVersion -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord-beta;
+          dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta ${{steps.dotenv.outpus.gamestableversion}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord-stable;
+          # dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta ${{steps.dotenv.outpus.gamebetaversion}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord-beta;
         shell: pwsh
       
       - name: Build RTS Camera
@@ -94,14 +95,14 @@ jobs:
         shell: pwsh
           
       - name: Zip RTS Camera
-        run: Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera${GameStableVersion}.zip";
+        run: Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera${{steps.dotenv.outpus.gamestableversion}}.zip";
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.2
         with:
           # Artifact name
-          name: RTS Camera for Bannerlord $GameStableVersion
+          name: RTS Camera for Bannerlord ${{steps.dotenv.outpus.gamestableversion}}
           # A file, directory or wildcard pattern that describes what to upload
-          path: "RTS Camera${GameStableVersion}.zip"
+          path: "RTS Camera${{steps.dotenv.outpus.gamestableversion}}.zip"
           # The desired behavior if no files are found using the provided path
         
