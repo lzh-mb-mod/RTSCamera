@@ -104,9 +104,6 @@ jobs:
           dotnet md2html -i ..\..\README.zh-CN.md -o ..\package\RTSCamera\README.zh-CN.html;
           dotnet md2html -i ..\..\CHANGELOG.md -o ..\package\RTSCamera\CHANGELOG.html;
         working-directory: .\source\RTSCamera\
-
-      - name: Zip RTS Camera
-        run: Compress-Archive -Path .\source\package\* -DestinationPath "RTS Camera ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_stable_version}}.zip";
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.2
