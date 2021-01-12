@@ -2,11 +2,7 @@
 <Module>
 	<Name value = "RTS Camera"/>
 	<Id value = "RTSCamera"/>
-<<<<<<< HEAD
-	<Version value = "e3.9.8"/>
-=======
 	<Version value = "e3.9.9"/>
->>>>>>> master
 	<SingleplayerModule value="true"/>
 	<MultiplayerModule value="false"/>
 	<DependedModules>
