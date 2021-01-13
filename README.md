@@ -137,7 +137,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 ## Source Code
 
-Source code should be available within `source` folder in release of this mod. Or you can get it at [gitlab.com](https://gitlab.com/lzh_mb_mod/rts-camera).
+Source code should be available within `source` folder in release of this mod. Or you can get it at [github.com](https://github.com/lzh-mb-mod/RTSCamera).
 
 ## Contact with me
 - Email:
