@@ -2,7 +2,9 @@
 using System.Reflection;
 using HarmonyLib;
 using MissionLibrary.Event;
+using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI;
+using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.ViewModelCollection;
 
 namespace RTSCamera.Patch.Fix
@@ -16,6 +18,10 @@ namespace RTSCamera.Patch.Fix
 
         private static FieldInfo _dataSource =
             typeof(MissionOrderGauntletUIHandler).GetField(nameof(_dataSource),
+                BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly MethodInfo InitializeInADisgustingManner =
+            typeof(OrderTroopPlacer).GetMethod("InitializeInADisgustingManner",
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static bool _isInSwitchTeamEvent;
@@ -102,7 +108,10 @@ namespace RTSCamera.Patch.Fix
             _isInSwitchTeamEvent = true;
             _uiHandler.OnMissionScreenInitialize();
             _uiHandler.OnMissionScreenActivate();
+            InitializeInADisgustingManner?.Invoke(Mission.Current.GetMissionBehaviour<OrderTroopPlacer>(),
+                new object[] { });
             _isInSwitchTeamEvent = false;
+
         }
     }
 }
