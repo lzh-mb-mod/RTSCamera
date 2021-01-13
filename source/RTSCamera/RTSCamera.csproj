@@ -130,6 +130,9 @@
     <Reference Include="TaleWorlds.ObjectSystem">
       <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.ObjectSystem.dll</HintPath>
     </Reference>
+    <Reference Include="TaleWorlds.TwoDimension">
+      <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.TwoDimension.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="RemoveModulePackageDir" AfterTargets="BeforeBuild">
