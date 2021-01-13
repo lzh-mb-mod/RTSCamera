@@ -1,5 +1,25 @@
 # Changelog
 
+## [e3.9.11] [e3.9.12]
+### Fixed
+- Fix the problem that when CommandSystem is disabled, after switching to enemy team, the order troop placer still gives order to original team.
+
+## [e3.9.9] [e3.9.10]
+### Fixed
+- Fix the problem that hotkey are not saved.
+- Fix crash when watch tournament and open the mod menu.
+
+## [e3.9.8]
+### Fixed
+- Keep compatible with Bannerlord e1.5.6
+
+## [e3.9.7]
+### Fixed
+Keep compatible with Bannerlord e1.5.5.
+### Changed
+Refactored the UI system.
+Move features related to command system to a new mod called RTSCamera.CommandSystem.
+
 ## [e3.9.6] - 2020-10-25
 ### Fixed
 - Fix the problem that config key page is transparent.

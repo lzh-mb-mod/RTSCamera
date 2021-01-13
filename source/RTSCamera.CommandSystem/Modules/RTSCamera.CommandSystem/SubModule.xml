@@ -2,15 +2,15 @@
 <Module>
 	<Name value = "RTS Camera Command System"/>
 	<Id value = "RTSCamera.CommandSystem"/>
-	<Version value = "e3.9.8"/>
+	<Version value = "e3.9.14"/>
 	<SingleplayerModule value="true"/>
 	<MultiplayerModule value="false"/>
 	<DependedModules>
-         <DependedModule Id="Native" DependentVersion="e1.5.6" />
-         <DependedModule Id="SandBoxCore" DependentVersion="e1.5.6" />
-         <DependedModule Id="Sandbox" DependentVersion="e1.5.6" />
-         <DependedModule Id="StoryMode" DependentVersion="e1.5.6" />
-         <DependedModule Id="RTSCamera" DependentVersion="e3.9.8" />
+         <DependedModule Id="Native" DependentVersion="e1.5.7" />
+         <DependedModule Id="SandBoxCore" DependentVersion="e1.5.7" />
+         <DependedModule Id="Sandbox" DependentVersion="e1.5.7" />
+         <DependedModule Id="StoryMode" DependentVersion="e1.5.7" />
+         <DependedModule Id="RTSCamera" DependentVersion="e3.9.14" />
 	</DependedModules>
 	<SubModules>
 		<SubModule>
