@@ -1,4 +1,4 @@
-﻿using RTSCamera.Logic;
+﻿using RTSCamera.CommandSystem.Logic.CombatAI;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Patch
