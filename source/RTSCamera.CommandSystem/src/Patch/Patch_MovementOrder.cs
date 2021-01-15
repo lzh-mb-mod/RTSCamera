@@ -13,6 +13,10 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 var position = formation.QuerySystem.MedianPosition;
                 position.SetVec2(formation.CurrentPosition);
+                if (formation.Team == Mission.Current.PlayerTeam)
+                {
+                    Utility.DisplayFormationReadyMessage(formation);
+                }
                 __result = MovementOrder.MovementOrderMove(position);
                 return false;
             }

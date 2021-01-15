@@ -5,6 +5,8 @@
 ### Added
 - Add hotkey option for selecting formation.
 
+- Add hint text for "Charge to formation" order.
+
 ### Fixed
 - Fix the problem that disabling "Attack specific formation" option has no effect.
 
