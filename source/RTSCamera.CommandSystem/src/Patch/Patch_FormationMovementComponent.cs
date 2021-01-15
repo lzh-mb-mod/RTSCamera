@@ -18,7 +18,8 @@ namespace RTSCamera.CommandSystem.Patch
         private static readonly PropertyInfo arrangement =
             typeof(Formation).GetProperty("arragement", BindingFlags.Instance | BindingFlags.NonPublic);
 
-        public static bool GetFormationFrame_Prefix(ref bool __result, Agent ___Agent, ref FormationCohesionComponent ____cohesionComponent,
+        public static bool GetFormationFrame_Prefix(ref bool __result, Agent ___Agent,
+            ref FormationCohesionComponent ____cohesionComponent,
             ref WorldPosition formationPosition,
             ref Vec2 formationDirection,
             ref float speedLimit,
@@ -26,7 +27,8 @@ namespace RTSCamera.CommandSystem.Patch
             ref bool limitIsMultiplier)
         {
             var formation = ___Agent.Formation;
-            if (!___Agent.IsMount && formation != null && !(bool)IsUnitDetached.Invoke(formation, new object[] { ___Agent }))
+            if (!___Agent.IsMount && formation != null &&
+                !(bool) IsUnitDetached.Invoke(formation, new object[] {___Agent}))
             {
                 if (formation.MovementOrder.OrderType == OrderType.ChargeWithTarget)
                 {
@@ -35,7 +37,12 @@ namespace RTSCamera.CommandSystem.Patch
                     formationDirection = formation.GetDirectionOfUnit(___Agent);
 
                     limitIsMultiplier = true;
-                    speedLimit = ____cohesionComponent != null && FormationCohesionComponent.FormationSpeedAdjustmentEnabled ? ____cohesionComponent.GetDesiredSpeedInFormation(true) : -1f;
+                    speedLimit =
+                        !___Agent.HasMount && ____cohesionComponent != null &&
+                        FormationCohesionComponent.FormationSpeedAdjustmentEnabled
+                            ? ____cohesionComponent.GetDesiredSpeedInFormation(true)
+                            : -1f;
+                    speedLimit = -1f;
                     __result = true;
                     return false;
                 }

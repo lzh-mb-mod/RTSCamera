@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using RTSCamera.Logic.SubLogic.Component;
+﻿using RTSCamera.Logic.SubLogic.Component;
+using System.Collections.Generic;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
