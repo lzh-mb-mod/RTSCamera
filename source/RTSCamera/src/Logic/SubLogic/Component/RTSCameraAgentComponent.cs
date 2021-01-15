@@ -82,30 +82,32 @@ namespace RTSCamera.Logic.SubLogic.Component
 
                         if (targetAgent != null)
                         {
-                            if (targetAgent.HasMount)
-                                return targetAgent.GetWorldPosition();
+                            //if (targetAgent.HasMount)
+                            return targetAgent.GetWorldPosition();
 
-                            var targetPosition = targetAgent.GetWorldPosition();
-                            var targetDirection = targetPosition.AsVec2 - unit.Position.AsVec2;
-                            var distance = targetDirection.Normalize();
-                            var result = targetPosition;
+                            //var targetPosition = targetAgent.GetWorldPosition();
+                            //var targetDirection = targetPosition.AsVec2 - unit.Position.AsVec2;
+                            //var distance = targetDirection.Normalize();
+                            //var result = targetPosition;
 
-                            // new
-                            if (distance > 20)
-                            {
-                                CurrentDirection = targetDirection;
-                                result.SetVec2(targetDirection * 10 + targetPosition.AsVec2);
-                            }
-                            else if (distance > 5 && targetDirection.DotProduct(CurrentDirection) < 0)
-                            {
-                                result.SetVec2(
-                                    (CurrentDirection.DotProduct(targetDirection * distance) + 50) * CurrentDirection +
-                                    unit.Position.AsVec2);
-                            }
-                            else
-                            {
-                                result.SetVec2(CurrentDirection * 10 + targetPosition.AsVec2);
-                            }
+
+
+                            //// new
+                            //if (distance > 20)
+                            //{
+                            //    CurrentDirection = targetDirection;
+                            //    result.SetVec2(targetDirection * 10 + targetPosition.AsVec2);
+                            //}
+                            //else if (distance > 5 && targetDirection.DotProduct(CurrentDirection) < 0)
+                            //{
+                            //    result.SetVec2(
+                            //        (CurrentDirection.DotProduct(targetDirection * distance) + 50) * CurrentDirection +
+                            //        unit.Position.AsVec2);
+                            //}
+                            //else
+                            //{
+                            //    result.SetVec2(CurrentDirection * 10 + targetPosition.AsVec2);
+                            //}
 
 
                             // old
@@ -129,10 +131,10 @@ namespace RTSCamera.Logic.SubLogic.Component
                             //}
 
 
-                            return result.GetNavMesh() == UIntPtr.Zero ||
-                                   !Mission.Current.IsPositionInsideBoundaries(result.AsVec2)
-                                ? targetPosition
-                                : result;
+                            //return result.GetNavMesh() == UIntPtr.Zero ||
+                            //       !Mission.Current.IsPositionInsideBoundaries(result.AsVec2)
+                            //    ? targetPosition
+                            //    : result;
                         }
 
                         return WorldPosition.Invalid;

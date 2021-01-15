@@ -1,7 +1,6 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Reflection;
-using HarmonyLib;
-using RTSCamera.Patch;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Patch

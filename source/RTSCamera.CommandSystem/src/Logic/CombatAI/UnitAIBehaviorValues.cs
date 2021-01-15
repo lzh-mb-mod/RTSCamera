@@ -1,6 +1,6 @@
 ﻿using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Logic
+namespace RTSCamera.CommandSystem.Logic.CombatAI
 {
     public class UnitAIBehaviorValues
     {
@@ -14,13 +14,13 @@ namespace RTSCamera.Logic
             //unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityMelee, 5f, 12f, 7.5f, 30f, 4f);
             //unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityRanged, 0.0f, 12f, 0.0f, 30f, 0.0f);
 
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.GoToPos, 0f, 40f, 4f, 50f, 6f);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Melee, 5.5f, 7f, 1f, 10f, 0f);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Ranged, 0f, 7f, 1f, 11, 20f);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.ChargeHorseback, 5f, 40f, 4f, 60f, 0f);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.RangedHorseback, 5f, 7f, 10f, 8, 20f);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityMelee, 1f, 12f, 1f, 30f, 0f);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityRanged, 0.55f, 12f, 0.8f, 30f, 0.45f);
+            unit.SetAIBehaviorValues(AISimpleBehaviorKind.GoToPos, 0, 30, 4, 80, 8);
+            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Melee, 5.5f, 7, 1, 10, 0);
+            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Ranged, 0, 7, 1, 11, 20);
+            unit.SetAIBehaviorValues(AISimpleBehaviorKind.ChargeHorseback, 6, 30, 4, 31, 2);
+            unit.SetAIBehaviorValues(AISimpleBehaviorKind.RangedHorseback, 5, 7, 10, 8, 20);
+            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityMelee, 1, 12, 1, 30, 0);
+            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityRanged, 0.55f, 12, 0.8f, 30, 0.45f);
         }
     }
 }
