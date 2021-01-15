@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using RTSCamera.Logic.SubLogic.Component;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -33,7 +34,10 @@ namespace RTSCamera.CommandSystem.Patch
                 if (formation.MovementOrder.OrderType == OrderType.ChargeWithTarget)
                 {
                     isSettingDestinationSpeed = false;
-                    formationPosition = formation.GetOrderPositionOfUnit(___Agent);
+                    var component = ___Agent.GetComponent<RTSCameraAgentComponent>();
+                    if (component == null)
+                        return true;
+                    formationPosition = component.CurrentTargetPosition.Value;
                     formationDirection = formation.GetDirectionOfUnit(___Agent);
 
                     limitIsMultiplier = true;
@@ -42,7 +46,6 @@ namespace RTSCamera.CommandSystem.Patch
                         FormationCohesionComponent.FormationSpeedAdjustmentEnabled
                             ? ____cohesionComponent.GetDesiredSpeedInFormation(true)
                             : -1f;
-                    speedLimit = -1f;
                     __result = true;
                     return false;
                 }

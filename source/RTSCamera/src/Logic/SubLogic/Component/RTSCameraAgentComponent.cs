@@ -41,6 +41,8 @@ namespace RTSCamera.Logic.SubLogic.Component
 
         public QueryData<WorldPosition> CurrentTargetPosition { get; }
 
+        public QueryData<Agent> TargetAgent { get; }
+
         public RTSCameraAgentComponent(Agent agent) : base(agent)
         {
             for (int i = 0; i < _colors.Length; ++i)
@@ -70,87 +72,18 @@ namespace RTSCamera.Logic.SubLogic.Component
                         return targetAgent?.GetWorldPosition() ?? new WorldPosition();
                     }
 
+                    Vec2 offset;
                     if (QueryLibrary.IsCavalry(unit))
                     {
-                        var targetAgent = unit.GetTargetAgent();
-                        if (targetAgent == null || targetAgent.Formation != formation.TargetFormation)
-                        {
-                            Vec2 unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
-                                                unit.Position.AsVec2 * 0.8f;
-                            targetAgent = targetFormation.NearestOfAverageOfNearestPosition(unitPosition, 7);
-                        }
-
-                        if (targetAgent != null)
-                        {
-                            //if (targetAgent.HasMount)
-                            return targetAgent.GetWorldPosition();
-
-                            //var targetPosition = targetAgent.GetWorldPosition();
-                            //var targetDirection = targetPosition.AsVec2 - unit.Position.AsVec2;
-                            //var distance = targetDirection.Normalize();
-                            //var result = targetPosition;
-
-
-
-                            //// new
-                            //if (distance > 20)
-                            //{
-                            //    CurrentDirection = targetDirection;
-                            //    result.SetVec2(targetDirection * 10 + targetPosition.AsVec2);
-                            //}
-                            //else if (distance > 5 && targetDirection.DotProduct(CurrentDirection) < 0)
-                            //{
-                            //    result.SetVec2(
-                            //        (CurrentDirection.DotProduct(targetDirection * distance) + 50) * CurrentDirection +
-                            //        unit.Position.AsVec2);
-                            //}
-                            //else
-                            //{
-                            //    result.SetVec2(CurrentDirection * 10 + targetPosition.AsVec2);
-                            //}
-
-
-                            // old
-                            //if (distance < 3)
-                            //{
-                            //    result = unit.GetWorldPosition();
-                            //    result.SetVec2(CurrentDirection * 20 + result.AsVec2);
-                            //}
-                            //else
-                            //{
-                            //    if (distance < 20 && targetDirection.DotProduct(CurrentDirection) < 0)
-                            //    {
-                            //        result.SetVec2(-targetDirection * 50 + result.AsVec2);
-                            //    }
-                            //    else
-                            //    {
-                            //        CurrentDirection = targetDirection;
-                            //        result.SetVec2(targetDirection * 10 + result.AsVec2);
-                            //    }
-
-                            //}
-
-
-                            //return result.GetNavMesh() == UIntPtr.Zero ||
-                            //       !Mission.Current.IsPositionInsideBoundaries(result.AsVec2)
-                            //    ? targetPosition
-                            //    : result;
-                        }
-
-                        return WorldPosition.Invalid;
+                        offset = targetFormation.Formation.CurrentPosition - formation.CurrentPosition;
                     }
                     else
                     {
-                        var targetAgent = unit.GetTargetAgent();
-                        if (targetAgent == null || targetAgent.Formation != formation.TargetFormation)
-                        {
-                            Vec2 unitPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) * 0.2f +
-                                                unit.Position.AsVec2 * 0.8f;
-                            targetAgent = targetFormation.NearestAgent(unitPosition);
-                        }
-
-                        return targetAgent?.GetWorldPosition() ?? new WorldPosition();
+                        offset = targetFormation.NearestOfAverageOfNearestPosition(formation.CurrentPosition, 7).Position.AsVec2 -
+                                 formation.CurrentPosition;
                     }
+                    Vec2 targetPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) + offset;
+                    return targetFormation.NearestAgent(targetPosition)?.GetWorldPosition() ?? WorldPosition.Invalid;
                 }
                 catch (Exception e)
                 {
@@ -158,7 +91,7 @@ namespace RTSCamera.Logic.SubLogic.Component
                 }
 
                 return WorldPosition.Invalid;
-            }, 0.2f);
+            }, 0.3f);
         }
 
         public void SetContourColor(int level, uint? color, bool alwaysVisible)
