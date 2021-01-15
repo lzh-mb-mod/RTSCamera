@@ -184,6 +184,13 @@ namespace RTSCamera
                 agent.DisableScriptedMovement();
                 agent.AIUseGameObjectEnable(false);
             }
+
+            var component = agent.GetComponent<VictoryComponent>();
+            if (component != null)
+            {
+                agent.RemoveComponent(component);
+                agent.SetActionChannel(1, ActionIndexCache.act_none, true);
+            }
         }
 
         public static void AIControlMainAgent(bool changeAlarmed, bool alarmed = false)

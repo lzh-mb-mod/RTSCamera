@@ -511,6 +511,8 @@ namespace RTSCamera.CommandSystem.View
                     else if (_config.AttackSpecificFormation)
                     {
                         PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, _clickedFormation);
+                        Utility.DisplayChargeToFormationMessage(PlayerOrderController.SelectedFormations,
+                            _clickedFormation);
                     }
                 }
 
