@@ -1,5 +1,19 @@
 # Changelog
 
+## [e3.9.13] [e3.9.14]
+
+### Added
+- Add hotkey option for selecting formation.
+
+### Fixed
+- Fix the problem that disabling "Attack specific formation" option has no effect.
+
+### Changed
+- Improved AI under "Charge to Formation" order.
+
+### Removed
+- Remove "Fix circular arrangement" option.
+
 ## [e3.9.11] [e3.9.12]
 ### Fixed
 - Fix the problem that when CommandSystem is disabled, after switching to enemy team, the order troop placer still gives order to original team.

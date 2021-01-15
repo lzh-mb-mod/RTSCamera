@@ -9,9 +9,13 @@
 
     <string id="RTSCameraCommandSystem_command_system_options" text="Command System" />
     <string id="RTSCameraCommandSystem_click_to_select_formation" text="Middle Click to select formation" />
-    <string id="RTSCameraCommandSystem_click_to_select_formation_hint" text="You can directly select formation by clicking middle mouse button on them. Selected formation will be highlighted with outline." />
+    <string id="RTSCameraCommandSystem_click_to_select_formation_hint" text="You can directly select formation by pressing {KeyName} on them. Selected formation will be highlighted with outline." />
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="Enable Attack Specific Formation" />
-    <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="You can give order to attack a specific formation by clicking on enemy formation. Also applied to AI." />
-    <string id="RTSCameraCommandSystem_fix_circular_arrangement" text="Fix Circular Arrangement" />
+    <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="You can give order to attack a specific formation by pressing {KeyName} on enemy formation. Also applied to AI." />
+
+    <string id="RTSCameraCommandSystem_hotkeycategory" text="CommandSystem Hot Key" />
+    <string id="RTSCameraCommandSystem_select_formation" text="Select Formation" />
+    <string id="RTSCameraCommandSystem_select_formation_hint" text="Select your formation or order your selected formations to attack an enemy formation." />
+
   </strings>
 </base>

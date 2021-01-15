@@ -3,7 +3,6 @@ using MissionLibrary.Controller;
 using MissionSharedLibrary.Controller;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Patch;
-using RTSCamera.CommandSystem.Patch.CircularFormation;
 using RTSCamera.CommandSystem.View;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
@@ -19,10 +18,6 @@ namespace RTSCamera.CommandSystem
             if (config.AttackSpecificFormation)
             {
                 PatchChargeToFormation.Patch();
-            }
-            if (config.FixCircularArrangement)
-            {
-                PatchCircularFormation.Patch();
             }
             List<MissionBehaviour> list = new List<MissionBehaviour>
             {

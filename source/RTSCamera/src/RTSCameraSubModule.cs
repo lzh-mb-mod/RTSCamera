@@ -120,6 +120,7 @@ namespace RTSCamera
             }
 
             Patch_MissionOrderGauntletUIHandler.Patch();
+            Patch_MissionGauntletCrosshair.Patch(_harmony);
             MissionSharedLibrary.Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;
             Utility.PrintUsageHint();
         }

@@ -25,6 +25,7 @@ namespace RTSCamera.CommandSystem.Patch
             if (unit.Formation != null && unit.Formation.MovementOrder.OrderType == OrderType.ChargeWithTarget)
             {
                 UnitAIBehaviorValues.SetUnitAIBehaviorWhenChargeToFormation(unit);
+                unit.ForceAiBehaviourSelection();
                 return false;
             }
 
