@@ -72,8 +72,6 @@ namespace RTSCamera.Config
             Get().Serialize();
         }
 
-        protected override XmlSerializer Serializer => new XmlSerializer(typeof(RTSCameraConfig));
-
         protected override void CopyFrom(RTSCameraConfig other)
         {
             ConfigVersion = other.ConfigVersion;

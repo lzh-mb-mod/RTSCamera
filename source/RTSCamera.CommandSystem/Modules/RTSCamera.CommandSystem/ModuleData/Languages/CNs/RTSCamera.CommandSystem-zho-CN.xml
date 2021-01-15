@@ -8,10 +8,13 @@
     <string id="RTSCameraCommandSystem_option_class" text="指挥系统" />
 
     <string id="RTSCameraCommandSystem_command_system_options" text="指挥系统" />
-    <string id="RTSCameraCommandSystem_click_to_select_formation" text="点击鼠标中键来选择部队" />
-    <string id="RTSCameraCommandSystem_click_to_select_formation_hint" text="你可以点击鼠标中键来选择部队。选中的编队会用轮廓高亮。" />
+    <string id="RTSCameraCommandSystem_click_to_select_formation" text="用鼠标选择部队" />
+    <string id="RTSCameraCommandSystem_click_to_select_formation_hint" text="你可以按下{KeyName}来选择部队。选中的编队会用轮廓高亮。" />
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="启用攻击特定编队" />
-    <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="你用鼠标中键点击敌方编队来发出攻击指定的敌方编队的命令。对AI同样适用。" />
-    <string id="RTSCameraCommandSystem_fix_circular_arrangement" text="修复圆阵" />
+    <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="你在敌方编队上按下{KeyName}来发出攻击指定的敌方编队的命令。对AI同样适用。" />
+
+    <string id="RTSCameraCommandSystem_hotkeycategory" text="指挥系统热键" />
+    <string id="RTSCameraCommandSystem_select_formation" text="选择编队" />
+    <string id="RTSCameraCommandSystem_select_formation_hint" text="选择你的编队或发出让你的编队攻击指定的敌方编队的指令。" />
   </strings>
 </base>

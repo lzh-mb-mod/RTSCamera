@@ -50,7 +50,6 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnCreated()
         {
-
             QueryDataStore.EnsureInitialized();
         }
 

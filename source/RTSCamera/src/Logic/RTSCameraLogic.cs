@@ -14,6 +14,7 @@ namespace RTSCamera.Logic
         public SwitchFreeCameraLogic SwitchFreeCameraLogic;
         public SwitchTeamLogic SwitchTeamLogic;
         public ControlTroopLogic ControlTroopLogic;
+        public static RTSCameraLogic Instance;
 
         public RTSCameraLogic()
         {
@@ -30,6 +31,7 @@ namespace RTSCamera.Logic
         {
             base.OnCreated();
 
+            Instance = this;
             SwitchFreeCameraLogic.OnCreated();
         }
 
@@ -54,6 +56,7 @@ namespace RTSCamera.Logic
 
             MissionEvent.Clear();
             MissionLibrary.Event.MissionEvent.Clear();
+            Instance = null;
         }
 
         public override void AfterStart()

@@ -2,6 +2,7 @@
 using MissionLibrary.Controller;
 using MissionLibrary.View;
 using RTSCamera.CommandSystem.Config;
+using RTSCamera.CommandSystem.Config.HotKey;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -29,6 +30,7 @@ namespace RTSCamera.CommandSystem
                 return;
 
             _isInitialized = true;
+            CommandSystemGameKeyCategory.RegisterGameKeyCategory();
             AMenuManager.Get().OnMenuClosedEvent += CommandSystemConfig.OnMenuClosed;
             var menuClassCollection = AMenuManager.Get().MenuClassCollection;
             menuClassCollection.AddOptionClass(CommandSystemOptionClassFactory.CreateOptionClassProvider(menuClassCollection));

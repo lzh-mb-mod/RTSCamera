@@ -86,12 +86,10 @@ namespace RTSCamera
         public static void PrintUsageHint()
         {
             var keyName = TextForKey(GeneralGameKeyCategories.GetKey(GeneralGameKey.OpenMenu));
-            GameTexts.SetVariable("KeyName", keyName);
-            var hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_open_menu_hint").ToString();
+            var hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_open_menu_hint").SetTextVariable("KeyName", keyName).ToString();
             DisplayMessageOutOfMission(hint);
             keyName = TextForKey(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera));
-            GameTexts.SetVariable("KeyName", keyName);
-            hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_switch_camera_hint").ToString();
+            hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_switch_camera_hint").SetTextVariable("KeyName", keyName).ToString();
             DisplayMessageOutOfMission(hint);
         }
 
