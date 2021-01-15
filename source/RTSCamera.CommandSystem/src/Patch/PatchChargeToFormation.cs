@@ -17,10 +17,10 @@ namespace RTSCamera.CommandSystem.Patch
                 if (_patched)
                     return;
                 _patched = true;
-                Harmony.Patch(
-                    typeof(Formation).GetMethod("GetOrderPositionOfUnit", BindingFlags.Instance | BindingFlags.Public),
-                    prefix: new HarmonyMethod(
-                        typeof(Patch_Formation).GetMethod("GetOrderPositionOfUnit_Prefix", BindingFlags.Static | BindingFlags.Public)));
+                //Harmony.Patch(
+                //    typeof(Formation).GetMethod("GetOrderPositionOfUnit", BindingFlags.Instance | BindingFlags.Public),
+                //    prefix: new HarmonyMethod(
+                //        typeof(Patch_Formation).GetMethod("GetOrderPositionOfUnit_Prefix", BindingFlags.Static | BindingFlags.Public)));
 
                 //Harmony.Patch(typeof(MovementOrder).GetMethod("GetPosition", BindingFlags.Instance | BindingFlags.Public),
                 //    prefix: new HarmonyMethod(
