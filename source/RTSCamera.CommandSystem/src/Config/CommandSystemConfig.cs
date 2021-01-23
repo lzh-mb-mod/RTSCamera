@@ -16,14 +16,11 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool AttackSpecificFormation = true;
 
-        public bool FixCircularArrangement = true;
-
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;
             ClickToSelectFormation = other.ClickToSelectFormation;
             AttackSpecificFormation = other.AttackSpecificFormation;
-            FixCircularArrangement = other.FixCircularArrangement;
         }
 
         public static void OnMenuClosed()

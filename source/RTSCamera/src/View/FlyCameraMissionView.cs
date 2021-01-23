@@ -85,7 +85,7 @@ namespace RTSCamera.View
 
         private float _cameraBearingDelta;
         private float _cameraElevationDelta;
-        private float _cameraViewAngle = 65.0f;
+        private float _viewAngle = 65.0f;
         public float CameraBearing { get; private set; }
 
         public float CameraElevation { get; private set; }
@@ -96,12 +96,12 @@ namespace RTSCamera.View
 
         public bool IgnoreBoundaries = false;
 
-        public float CameraViewAngle
+        public float ViewAngle
         {
-            get => _cameraViewAngle;
+            get => _viewAngle;
             set
             {
-                _cameraViewAngle = value;
+                _viewAngle = value;
                 if (_freeCameraLogic == null || !_freeCameraLogic.IsSpectatorCamera || LockToAgent)
                     return;
                 UpdateViewAngle();
@@ -109,8 +109,6 @@ namespace RTSCamera.View
         }
 
         public float Zoom { get; set; } = 1.0f;
-
-        public float ViewAngle { get; set; }
 
         // legacy.
         public bool CameraRotateSmoothMode = true;
@@ -530,7 +528,7 @@ namespace RTSCamera.View
         private void UpdateViewAngle()
         {
             float newDNear = !Mission.CameraIsFirstPerson ? 0.1f : 0.065f;
-            CombatCamera.SetFovVertical((float)(CameraViewAngle * (Math.PI / 180.0)), Screen.AspectRatio, newDNear, 12500f);
+            CombatCamera.SetFovVertical((float)(ViewAngle * (Math.PI / 180.0)), Screen.AspectRatio, newDNear, 12500f);
         }
 
         private void BeginForcedMove(Vec3 vec)
