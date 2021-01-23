@@ -92,7 +92,7 @@ namespace RTSCamera.Config
                         {
                             var config = RTSCameraConfig.Get();
                             if ((i != config.PlayerFormation || config.AlwaysSetPlayerFormation) &&
-                                i > 0 && i < (int) FormationClass.NumberOfAllFormations)
+                                i >= 0 && i < (int) FormationClass.NumberOfAllFormations)
                             {
                                 config.PlayerFormation = i;
                                 rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass) i;

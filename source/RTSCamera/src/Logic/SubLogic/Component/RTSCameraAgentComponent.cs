@@ -60,7 +60,7 @@ namespace RTSCamera.Logic.SubLogic.Component
                         return WorldPosition.Invalid;
                     var targetFormation = QueryDataStore.Get(formation.TargetFormation);
 
-                    if (QueryLibrary.IsRangedCavalry(unit))
+                    if (QueryLibrary.IsRangedCavalry(unit) && formation.FiringOrder.OrderType == OrderType.FireAtWill)
                     {
                         var targetAgent = unit.GetTargetAgent();
                         if (targetAgent == null || targetAgent.Formation != formation.TargetFormation)
@@ -73,7 +73,7 @@ namespace RTSCamera.Logic.SubLogic.Component
                     }
 
                     Vec2 offset;
-                    if (QueryLibrary.IsCavalry(unit))
+                    if (QueryLibrary.IsCavalry(unit) || QueryLibrary.IsRangedCavalry(unit) && formation.FiringOrder.OrderType == OrderType.HoldFire)
                     {
                         offset = targetFormation.Formation.CurrentPosition - formation.CurrentPosition;
                     }

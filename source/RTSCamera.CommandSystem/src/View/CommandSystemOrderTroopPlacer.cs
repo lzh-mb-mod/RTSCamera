@@ -430,7 +430,9 @@ namespace RTSCamera.CommandSystem.View
                     BeginFormationDraggingOrClicking();
                     break;
                 case CursorState.Normal:
-                    if (_config.ShouldHighlightWithOutline() && Input.IsKeyDown(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
+                    if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation) != InputKey.LeftMouseButton &&
+                        _config.ShouldHighlightWithOutline() &&
+                        Input.IsKeyDown(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
                         return;
                     _formationDrawingMode = true;
                     BeginFormationDraggingOrClicking();
@@ -890,7 +892,7 @@ namespace RTSCamera.CommandSystem.View
         {
             MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out var rayBegin, out var rayEnd);
             var agent = Mission.RayCastForClosestAgent(rayBegin, rayEnd, out var agentDistance,
-                MissionScreen.LastFollowedAgent?.Index ?? -1, 0.5f);
+                MissionScreen.LastFollowedAgent?.Index ?? -1, 0.8f);
             return agentDistance > distance ? null : agent;
         }
 

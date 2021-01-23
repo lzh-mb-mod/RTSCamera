@@ -46,7 +46,7 @@ namespace RTSCamera.CommandSystem
                 message.SetTextVariable("STR2",
                     GameTexts.FindText("str_formation_ai_sergeant_instruction_behavior_text",
                             nameof(BehaviorTacticalCharge))
-                        .SetTextVariable("TARGET_FORMATION", targetFormation.PrimaryClass.GetLocalizedName()));
+                        .SetTextVariable("TARGET_FORMATION", GameTexts.FindText("str_troop_group_name", ((int)targetFormation.PrimaryClass).ToString())));
                 RTSCamera.Utility.DisplayMessage(message.ToString());
             }
         }
@@ -56,7 +56,7 @@ namespace RTSCamera.CommandSystem
             var message = GameTexts.FindText("str_formation_ai_behavior_text", nameof(BehaviorStop));
             message.SetTextVariable("IS_PLURAL", 0);
             message.SetTextVariable("TROOP_NAMES_BEGIN", "");
-            message.SetTextVariable("TROOP_NAMES_END", formation.PrimaryClass.GetLocalizedName());
+            message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PrimaryClass).ToString()));
             RTSCamera.Utility.DisplayMessage(message.ToString());
         }
     }
