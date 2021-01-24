@@ -1,4 +1,5 @@
-﻿using RTSCamera.CommandSystem.Logic.CombatAI;
+﻿using RTSCamera.CommandSystem.Config;
+using RTSCamera.CommandSystem.Logic.CombatAI;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Patch
@@ -9,7 +10,7 @@ namespace RTSCamera.CommandSystem.Patch
         public static bool GetSubstituteOrder_Prefix(MovementOrder __instance, ref MovementOrder __result,
             Formation formation)
         {
-            if (__instance.OrderType == OrderType.ChargeWithTarget)
+            if (__instance.OrderType == OrderType.ChargeWithTarget && CommandSystemConfig.Get().AttackSpecificFormation)
             {
                 var position = formation.QuerySystem.MedianPosition;
                 position.SetVec2(formation.CurrentPosition);
@@ -26,10 +27,9 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool SetChargeBehaviorValues_Prefix(Agent unit)
         {
-            if (unit.Formation != null && unit.Formation.MovementOrder.OrderType == OrderType.ChargeWithTarget)
+            if (unit.Formation != null && unit.Formation.MovementOrder.OrderType == OrderType.ChargeWithTarget && CommandSystemConfig.Get().AttackSpecificFormation)
             {
                 UnitAIBehaviorValues.SetUnitAIBehaviorWhenChargeToFormation(unit);
-                unit.ForceAiBehaviourSelection();
                 return false;
             }
 

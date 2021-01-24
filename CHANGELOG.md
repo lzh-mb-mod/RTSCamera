@@ -1,6 +1,10 @@
 # Changelog
 
-## [e3.9.13] [e3.9.14]
+## [e3.9.15] [e3.9.16] - 2021-01-24
+### Fixed
+- Fix the bug that player cannot be assigned to the infantry formation.
+
+## [e3.9.13] [e3.9.14] - 2021-01-16
 
 ### Added
 - Add hotkey option for selecting formation.
