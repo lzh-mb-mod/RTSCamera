@@ -43,6 +43,7 @@ namespace RTSCamera.CommandSystem.Config
                         else
                             PatchChargeToFormation.UnPatch();
                     }));
+                optionClass.AddOptionCategory(0, commandOptionCategory);
 
                 return optionClass;
             }, CommandSystemSubModule.ModuleId);

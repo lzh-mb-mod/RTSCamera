@@ -81,7 +81,20 @@ namespace RTSCamera.Logic.SubLogic.Component
                     var targetFormation = QueryDataStore.Get(formation.TargetFormation);
                     var selfFormationQuery = QueryDataStore.Get(formation);
 
-                    if (QueryLibrary.IsCavalry(unit))
+                    if (QueryLibrary.IsRangedCavalry(unit) && formation.FiringOrder.OrderType == OrderType.FireAtWill)
+                    {
+                        var targetAgent = unit.GetTargetAgent();
+                        if (targetAgent == null || targetAgent.Formation != formation.TargetFormation)
+                        {
+                            Vec2 unitPosition = unit.Position.AsVec2;
+                            targetAgent = targetFormation.NearestAgent(unitPosition);
+                        }
+
+                        return targetAgent?.GetWorldPosition() ?? new WorldPosition();
+                    }
+
+                    Vec2 offset;
+                    if (QueryLibrary.IsCavalry(unit) || QueryLibrary.IsRangedCavalry(unit) && formation.FiringOrder.OrderType == OrderType.HoldFire)
                     {
                         var offset = targetFormation.Formation.CurrentPosition - formation.CurrentPosition;
                         Vec2 targetPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) + offset;

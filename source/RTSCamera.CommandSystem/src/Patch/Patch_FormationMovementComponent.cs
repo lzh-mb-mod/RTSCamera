@@ -1,5 +1,6 @@
-﻿using System.Reflection;
+﻿using RTSCamera.CommandSystem.Config;
 using RTSCamera.Logic.SubLogic.Component;
+using System.Reflection;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -31,7 +32,7 @@ namespace RTSCamera.CommandSystem.Patch
             if (!___Agent.IsMount && formation != null &&
                 !(bool) IsUnitDetached.Invoke(formation, new object[] {___Agent}))
             {
-                if (formation.MovementOrder.OrderType == OrderType.ChargeWithTarget)
+                if (formation.MovementOrder.OrderType == OrderType.ChargeWithTarget && CommandSystemConfig.Get().AttackSpecificFormation)
                 {
                     isSettingDestinationSpeed = false;
                     var component = ___Agent.GetComponent<RTSCameraAgentComponent>();
