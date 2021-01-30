@@ -13,6 +13,7 @@ using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
 using SandBox;
+using SandBox.Source.Objects.SettlementObjects;
 using SandBox.Source.Towns;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
@@ -72,6 +73,12 @@ namespace RTSCamera
                     prefix: new HarmonyMethod(
                         typeof(Patch_ArenaPracticeFightMissionController).GetMethod("StartPractice_Prefix",
                             BindingFlags.Static | BindingFlags.Public)));
+                _harmony.Patch(
+                    typeof(PassageUsePoint).GetMethod(nameof(PassageUsePoint.IsDisabledForAgent),
+                        BindingFlags.Instance | BindingFlags.Public),
+                    new HarmonyMethod(typeof(Patch_PassageUsePoint).GetMethod(
+                        nameof(Patch_PassageUsePoint.IsDisabledForAgent_Prefix),
+                        BindingFlags.Static | BindingFlags.Public)));
 
                 _harmony.Patch(
                     typeof(MissionAgentLabelView).GetMethod("IsAllyInAllyTeam",

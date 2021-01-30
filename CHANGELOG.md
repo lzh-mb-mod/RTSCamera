@@ -1,6 +1,14 @@
 # Changelog
 
-## [e3.9.17] [e39=.9.18] - 2021-01-30
+## [e3.9.19] [e3.9.20] - 2021-01-31
+### Fixed
+- Fix wrong format of version number.
+
+- Fix a crash when wander around in a city, switch to free camera, and press alt.
+
+- Fix the problem that after victory, switch to free camera will cause the enemy cannot retreat.
+
+## [e3.9.17] [e3.9.18] - 2021-01-30
 ### Fixed
 -  Fix the bug when player is not the general and the 'always set player formation option' is on, the formation that player are assigned to will not be controlled by AI.
 
