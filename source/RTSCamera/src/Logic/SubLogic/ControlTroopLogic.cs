@@ -1,9 +1,9 @@
-﻿using MissionLibrary.HotKey;
+﻿using System;
+using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Event;
 using RTSCamera.View;
-using System;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;

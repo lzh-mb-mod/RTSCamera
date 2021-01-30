@@ -1,9 +1,9 @@
-﻿using MissionLibrary.Controller;
+﻿using System.Collections.Generic;
+using MissionLibrary.Controller;
 using MissionLibrary.Extension;
 using MissionSharedLibrary.Controller;
 using RTSCamera.Logic;
 using RTSCamera.View;
-using System.Collections.Generic;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 

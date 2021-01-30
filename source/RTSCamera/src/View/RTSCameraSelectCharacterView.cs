@@ -1,4 +1,4 @@
-﻿using RTSCamera.Config;
+﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Logic.SubLogic.Component;
 using TaleWorlds.Core;

@@ -6,12 +6,11 @@
     <LangVersion>8</LangVersion>
   </PropertyGroup>
 
+  <Import Project="$(MSBuildProjectDirectory)\*.props" />
+  <Import Project="..\library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems" Label="Shared" />
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" Version="2.0.4" />
   </ItemGroup>
-
-  <Import Project="$(MSBuildProjectDirectory)\*.props" />
-  <Import Project="..\library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems" Label="Shared" />
 
   <ItemGroup>
     <ProjectReference Include="..\RTSCamera\RTSCamera.csproj" />

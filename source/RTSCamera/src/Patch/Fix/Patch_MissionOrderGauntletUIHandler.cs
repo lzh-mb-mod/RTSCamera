@@ -2,6 +2,7 @@
 using System.Reflection;
 using HarmonyLib;
 using MissionLibrary.Event;
+using MissionSharedLibrary.Utilities;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI;
 using TaleWorlds.MountAndBlade.View.Missions;
@@ -63,7 +64,7 @@ namespace RTSCamera.Patch.Fix
             }
             catch (Exception e)
             {
-                RTSCamera.Utility.DisplayMessage(e.ToString());
+                Utility.DisplayMessage(e.ToString());
             }
         }
 

@@ -1,6 +1,6 @@
-﻿using KdTree;
+﻿using System.Collections.Generic;
+using KdTree;
 using KdTree.Math;
-using System.Collections.Generic;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 

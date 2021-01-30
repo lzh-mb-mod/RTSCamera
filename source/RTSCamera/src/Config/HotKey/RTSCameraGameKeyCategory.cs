@@ -1,6 +1,6 @@
-﻿using MissionLibrary.HotKey;
+﻿using System;
+using MissionLibrary.HotKey;
 using MissionSharedLibrary.HotKey.Category;
-using System;
 using TaleWorlds.InputSystem;
 
 namespace RTSCamera.Config.HotKey

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using MissionSharedLibrary.Utilities;
 using TaleWorlds.Core;
 
 namespace RTSCamera.Config.Basic

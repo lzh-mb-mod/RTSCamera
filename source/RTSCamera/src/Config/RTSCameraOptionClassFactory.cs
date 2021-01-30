@@ -1,6 +1,7 @@
 ﻿using MissionLibrary.Provider;
 using MissionLibrary.View;
 using MissionSharedLibrary.Provider;
+using MissionSharedLibrary.Utilities;
 using MissionSharedLibrary.View.ViewModelCollection;
 using MissionSharedLibrary.View.ViewModelCollection.Options;
 using MissionSharedLibrary.View.ViewModelCollection.Options.Selection;
@@ -118,9 +119,12 @@ namespace RTSCamera.Config
                     {
                         var config = RTSCameraConfig.Get();
                         config.AlwaysSetPlayerFormation = b;
-                        var formationClass = (FormationClass) config.PlayerFormation;
-                        rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = formationClass;
-                        Utility.SetPlayerFormation(formationClass);
+                        if (config.AlwaysSetPlayerFormation)
+                        {
+                            var formationClass = (FormationClass)config.PlayerFormation;
+                            rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = formationClass;
+                            Utility.SetPlayerFormation(formationClass);
+                        }
                     }));
                 controlOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_watch_another_hero"),
@@ -174,7 +178,7 @@ namespace RTSCamera.Config
                     () => RTSCameraConfig.Get().DisplayMessage, b =>
                     {
                         RTSCameraConfig.Get().DisplayMessage = b;
-                        MissionSharedLibrary.Utility.ShouldDisplayMessage = b;
+                        Utility.ShouldDisplayMessage = b;
                     }));
                 miscellaneousOptionCategory.AddOption(new ActionOptionViewModel(GameTexts.FindText("str_rts_camera_toggle_ui"), GameTexts.FindText("str_rts_camera_toggle_ui_hint"),
                     () =>
