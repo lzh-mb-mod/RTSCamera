@@ -1,8 +1,9 @@
-﻿using RTSCamera.CommandSystem.Config;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.Config;
 using RTSCamera.Logic.SubLogic.Component;
-using System.Collections.Generic;
-using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -44,7 +45,7 @@ namespace RTSCamera.CommandSystem.View
         private readonly List<Formation> _allySelectedFormations = new List<Formation>();
         private OrderController PlayerOrderController => Mission.PlayerTeam?.PlayerOrderController;
         private Formation _mouseOverFormation;
-        private CommandSystem.View.CommandSystemOrderUIHandler _commandSystemOrderUiHandler;
+        private CommandSystemOrderUIHandler _commandSystemOrderUiHandler;
         private readonly CommandSystemConfig _config = CommandSystemConfig.Get();
 
         private bool _isOrderShown;
@@ -87,7 +88,7 @@ namespace RTSCamera.CommandSystem.View
 
             if (agent.Formation != null)
             {
-                bool isEnemy = RTSCamera.Utility.IsEnemy(agent.Formation);
+                bool isEnemy = Utility.IsEnemy(agent.Formation);
                 if (agent.Formation == _mouseOverFormation)
                     SetAgentMouseOverContour(agent, isEnemy);
                 if (isEnemy)
@@ -121,9 +122,9 @@ namespace RTSCamera.CommandSystem.View
                 ClearFormationMouseOverContour(_mouseOverFormation);
             if (formation != null)
             {
-                bool isEnemy = RTSCamera.Utility.IsEnemy(formation);
+                bool isEnemy = Utility.IsEnemy(formation);
                 if (isEnemy ? HighlightEnabledForAsTargetFormation : HighlightEnabledForSelectedFormation)
-                    SetFormationMouseOverContour(formation, RTSCamera.Utility.IsEnemy(formation));
+                    SetFormationMouseOverContour(formation, Utility.IsEnemy(formation));
             }
         }
 

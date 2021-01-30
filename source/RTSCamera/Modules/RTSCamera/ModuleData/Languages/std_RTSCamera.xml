@@ -32,7 +32,6 @@
     <string id="RTSCamera_ignore_boundaries_hint" text="Camera will not be restricted by boundaries when enabled." />
     <string id="RTSCamera_display_message_hint" text="Whether to display message of this mod." />
     <string id="RTSCamera_toggle_ui_hint" text="Toggle HUD of the game, for making video." />
-    <string id="RTSCamera_config_key_hint" text="Config hotkey of this mod." />
     <string id="RTSCamera_disable_death_hint" text="All units will be invulnerable, for making video." />
     <string id="RTSCamera_switch_team_hint" text="Swap player's team, for making video." />
 
@@ -94,7 +93,6 @@
 
     <string id="RTSCamera_displaymodmessage" text="Display Mod Message" />
     <string id="RTSCamera_toggleui" text="Toggle HUD" />
-    <string id="RTSCamera_gamekeyconfigtitle" text="Config Key" />
 
     <string id="RTSCamera_hotkeycategory" text="RTS Camera Hot Key" />
     <string id="RTSCamera_pausekey" text="Pause" />

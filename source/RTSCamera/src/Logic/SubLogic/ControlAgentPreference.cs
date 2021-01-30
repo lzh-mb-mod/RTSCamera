@@ -1,4 +1,5 @@
-﻿using RTSCamera.Config;
+﻿using MissionSharedLibrary.Utilities;
+using RTSCamera.Config;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -34,7 +35,7 @@ namespace RTSCamera.Logic.SubLogic
 
         private void UpdateAgentPreference(Agent agent, Vec3 position)
         {
-            if (!CanControl(agent))
+            if (!CanControl(agent) || agent.IsRunningAway)
                 return;
             if (!_config.ControlTroopsInPlayerPartyOnly || Utility.IsInPlayerParty(agent))
             {

@@ -1,11 +1,12 @@
-﻿using MissionLibrary.Controller.Camera;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using MissionLibrary.Controller.Camera;
+using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Logic;
 using RTSCamera.Logic.SubLogic;
-using System;
-using System.Linq;
-using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
@@ -17,7 +18,6 @@ using TaleWorlds.MountAndBlade.Missions.Handlers;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Screen;
-using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.View
 {

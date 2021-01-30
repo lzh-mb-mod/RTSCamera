@@ -1,7 +1,8 @@
-﻿using MissionSharedLibrary.Config;
-using System;
+﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using MissionSharedLibrary.Config;
+using MissionSharedLibrary.Utilities;
 
 namespace RTSCamera.Config
 {

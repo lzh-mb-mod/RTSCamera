@@ -1,6 +1,5 @@
 ﻿using System;
 using TaleWorlds.Library;
-using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.View.Basic
 {

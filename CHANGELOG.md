@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.9.17] [e39=.9.18] - 2021-01-30
+### Fixed
+-  Fix the bug when player is not the general and the 'always set player formation option' is on, the formation that player are assigned to will not be controlled by AI.
+
 ## [e3.9.15] [e3.9.16] - 2021-01-24
 ### Fixed
 - Fix the bug that player cannot be assigned to the infantry formation.

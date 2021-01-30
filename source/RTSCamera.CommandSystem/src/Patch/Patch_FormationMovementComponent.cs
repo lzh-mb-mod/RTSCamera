@@ -1,6 +1,6 @@
-﻿using RTSCamera.CommandSystem.Config;
+﻿using System.Reflection;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.Logic.SubLogic.Component;
-using System.Reflection;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;

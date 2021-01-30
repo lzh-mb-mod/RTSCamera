@@ -1,4 +1,5 @@
-﻿using TaleWorlds.Core;
+﻿using MissionSharedLibrary.Utilities;
+using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade.View.Screen;
 
 namespace RTSCamera.Patch

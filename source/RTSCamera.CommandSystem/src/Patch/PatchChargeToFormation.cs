@@ -1,6 +1,7 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.Reflection;
+using HarmonyLib;
+using MissionSharedLibrary.Utilities;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Patch
@@ -52,7 +53,7 @@ namespace RTSCamera.CommandSystem.Patch
             }
             catch (Exception e)
             {
-                RTSCamera.Utility.DisplayMessage(e.ToString());
+                Utility.DisplayMessage(e.ToString());
             }
         }
 
@@ -67,7 +68,7 @@ namespace RTSCamera.CommandSystem.Patch
             }
             catch (Exception e)
             {
-                RTSCamera.Utility.DisplayMessage(e.ToString());
+                Utility.DisplayMessage(e.ToString());
             }
         }
     }

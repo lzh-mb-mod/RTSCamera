@@ -1,9 +1,12 @@
-﻿using HarmonyLib;
+﻿using System;
+using System.Reflection;
+using HarmonyLib;
 using MissionLibrary;
 using MissionLibrary.Controller;
 using MissionLibrary.Extension;
 using MissionLibrary.View;
 using MissionSharedLibrary;
+using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
@@ -11,8 +14,6 @@ using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
 using SandBox;
 using SandBox.Source.Towns;
-using System;
-using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -102,7 +103,7 @@ namespace RTSCamera
 
         private void Initialize()
         {
-            if (!Initializer.Initialize())
+            if (!Initializer.Initialize(ModuleId))
                 return;
             RTSCameraExtension.Clear();
         }
@@ -121,7 +122,7 @@ namespace RTSCamera
 
             Patch_MissionOrderGauntletUIHandler.Patch();
             Patch_MissionGauntletCrosshair.Patch(_harmony);
-            MissionSharedLibrary.Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;
+            Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;
             Utility.PrintUsageHint();
         }
 

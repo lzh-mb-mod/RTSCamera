@@ -1,12 +1,12 @@
-﻿using RTSCamera.CommandSystem.Config;
+﻿using System.Collections.Generic;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
-using System.Collections.Generic;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.CommandSystem
+namespace RTSCamera.CommandSystem.Utilities
 {
     public static class Utility
     {
@@ -14,17 +14,17 @@ namespace RTSCamera.CommandSystem
         {
             if (CommandSystemConfig.Get().ClickToSelectFormation)
             {
-                RTSCamera.Utility.DisplayMessage(GameTexts
+                MissionSharedLibrary.Utilities.Utility.DisplayMessage(GameTexts
                     .FindText("str_rts_camera_command_system_click_to_select_formation_hint").SetTextVariable("KeyName",
-                        RTSCamera.Utility.TextForKey(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
+                        MissionSharedLibrary.Utilities.Utility.TextForKey(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
                     .ToString());
             }
 
             if (CommandSystemConfig.Get().AttackSpecificFormation)
             {
-                RTSCamera.Utility.DisplayMessage(GameTexts
+                MissionSharedLibrary.Utilities.Utility.DisplayMessage(GameTexts
                     .FindText("str_rts_camera_command_system_attack_specific_formation_hint").SetTextVariable("KeyName",
-                        RTSCamera.Utility.TextForKey(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
+                        MissionSharedLibrary.Utilities.Utility.TextForKey(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
                     .ToString());
             }
         }
@@ -47,7 +47,7 @@ namespace RTSCamera.CommandSystem
                     GameTexts.FindText("str_formation_ai_sergeant_instruction_behavior_text",
                             nameof(BehaviorTacticalCharge))
                         .SetTextVariable("TARGET_FORMATION", GameTexts.FindText("str_troop_group_name", ((int)targetFormation.PrimaryClass).ToString())));
-                RTSCamera.Utility.DisplayMessage(message.ToString());
+                MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
             }
         }
 
@@ -57,7 +57,7 @@ namespace RTSCamera.CommandSystem
             message.SetTextVariable("IS_PLURAL", 0);
             message.SetTextVariable("TROOP_NAMES_BEGIN", "");
             message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PrimaryClass).ToString()));
-            RTSCamera.Utility.DisplayMessage(message.ToString());
+            MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
         }
     }
 }

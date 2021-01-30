@@ -1,11 +1,12 @@
-﻿using RTSCamera.CommandSystem.Config;
-using RTSCamera.Config;
-using RTSCamera.QuerySystem;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
+using RTSCamera.CommandSystem.Utilities;
+using RTSCamera.Config;
+using RTSCamera.QuerySystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.InputSystem;
@@ -488,7 +489,7 @@ namespace RTSCamera.CommandSystem.View
             {
                 if (_clickedFormation.CountOfUnits > 0)
                 {
-                    bool isEnemy = RTSCamera.Utility.IsEnemy(_clickedFormation);
+                    bool isEnemy = MissionSharedLibrary.Utilities.Utility.IsEnemy(_clickedFormation);
                     if (!isEnemy)
                     {
                         HideNonSelectedOrderRotationEntities(_clickedFormation);
@@ -808,13 +809,13 @@ namespace RTSCamera.CommandSystem.View
                 return;
 
             _currentCursorState = _cachedCursorState.Value;
-            //Utility.DisplayMessage(_currentCursorState.ToString());
+            //Utilities.DisplayMessage(_currentCursorState.ToString());
             // use middle mouse button to select formation
             if (Input.IsKeyPressed(InputKey.LeftMouseButton) || _config.ShouldHighlightWithOutline() && Input.IsKeyPressed(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
             {
                 _isMouseDown = true;
                 HandleMousePressed();
-                //Utility.DisplayMessage("key pressed");
+                //Utilities.DisplayMessage("key pressed");
             }
 
             if ((Input.IsKeyReleased(InputKey.LeftMouseButton) ||
@@ -823,16 +824,16 @@ namespace RTSCamera.CommandSystem.View
             {
                 _isMouseDown = false;
                 HandleMouseUp();
-                //Utility.DisplayMessage("key up");
+                //Utilities.DisplayMessage("key up");
             }
             else if (Input.IsKeyDown(InputKey.LeftMouseButton) && _isMouseDown)
             {
-                //Utility.DisplayMessage("key down");
+                //Utilities.DisplayMessage("key down");
                 if (formationDrawTimer.Check(MBCommon.GetTime(MBCommon.TimeType.Application)) &&
                     !IsDrawingFacing &&
                     !IsDrawingForming)
                 {
-                    //Utility.DisplayMessage("try transform");
+                    //Utilities.DisplayMessage("try transform");
                     TryTransformFromClickingToDragging();
                     if (_currentCursorState == CursorState.Ground)
                         UpdateFormationDrawing(false);
@@ -840,7 +841,7 @@ namespace RTSCamera.CommandSystem.View
             }
             else if (IsDrawingForced)
             {
-                //Utility.DisplayMessage("drawing forced");
+                //Utilities.DisplayMessage("drawing forced");
                 Reset();
                 _formationDrawingMode = true;
                 BeginFormationDraggingOrClicking();

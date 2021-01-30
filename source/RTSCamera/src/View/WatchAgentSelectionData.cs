@@ -1,5 +1,4 @@
-﻿using RTSCamera.View.Basic;
-using System.Linq;
+﻿using System.Linq;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Screen;
 

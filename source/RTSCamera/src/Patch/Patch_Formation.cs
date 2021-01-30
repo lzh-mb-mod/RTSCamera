@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using RTSCamera.Logic.SubLogic.Component;
-using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch

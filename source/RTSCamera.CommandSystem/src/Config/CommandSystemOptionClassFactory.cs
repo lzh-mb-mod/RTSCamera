@@ -4,12 +4,9 @@ using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.View.ViewModelCollection;
 using MissionSharedLibrary.View.ViewModelCollection.Options;
 using RTSCamera.CommandSystem.Patch;
-using RTSCamera.Logic.SubLogic.Component;
-using RTSCamera.View;
+using RTSCamera.CommandSystem.View;
 using TaleWorlds.Core;
-using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
-using FormationColorMissionView = RTSCamera.CommandSystem.View.FormationColorMissionView;
 
 namespace RTSCamera.CommandSystem.Config
 {
