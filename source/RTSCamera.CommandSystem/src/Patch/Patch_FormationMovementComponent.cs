@@ -32,7 +32,9 @@ namespace RTSCamera.CommandSystem.Patch
             if (!___Agent.IsMount && formation != null &&
                 !(bool) IsUnitDetached.Invoke(formation, new object[] {___Agent}))
             {
-                if (formation.MovementOrder.OrderType == OrderType.ChargeWithTarget && CommandSystemConfig.Get().AttackSpecificFormation)
+                if (formation.MovementOrder.OrderType == OrderType.ChargeWithTarget && CommandSystemConfig.Get().AttackSpecificFormation &&
+                    (QueryLibrary.IsCavalry(___Agent) || QueryLibrary.IsRangedCavalry(___Agent) && formation.FiringOrder.OrderType == OrderType.HoldFire ||
+                     QueryLibrary.IsInfantry(___Agent) || QueryLibrary.IsRanged(___Agent) && formation.FiringOrder.OrderType == OrderType.HoldFire))
                 {
                     isSettingDestinationSpeed = false;
                     var component = ___Agent.GetComponent<RTSCameraAgentComponent>();

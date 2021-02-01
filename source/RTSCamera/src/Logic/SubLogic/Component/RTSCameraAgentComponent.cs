@@ -78,10 +78,14 @@ namespace RTSCamera.Logic.SubLogic.Component
                     {
                         offset = targetFormation.Formation.CurrentPosition - formation.CurrentPosition;
                     }
-                    else
+                    else if (QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) && formation.FiringOrder.OrderType == OrderType.HoldFire)
                     {
                         offset = targetFormation.NearestOfAverageOfNearestPosition(formation.CurrentPosition, 7).Position.AsVec2 -
                                  formation.CurrentPosition;
+                    }
+                    else
+                    {
+                        return WorldPosition.Invalid;
                     }
                     Vec2 targetPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) + offset;
                     return targetFormation.NearestAgent(targetPosition)?.GetWorldPosition() ?? WorldPosition.Invalid;
