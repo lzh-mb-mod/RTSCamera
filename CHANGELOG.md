@@ -1,5 +1,11 @@
 # Changelog
 
+## [e3.9.21] [e3.9.22] - 2021-02-01
+### Fixed
+- Fix the problem that the player character may not be able to be controlled when battle wins in free camera mode.
+
+- Fix a crash when there's only player in the team, battle wins, then switch to free camera.
+
 ## [e3.9.19] [e3.9.20] - 2021-01-31
 ### Fixed
 - Fix wrong format of version number.

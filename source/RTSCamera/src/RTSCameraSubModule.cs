@@ -79,6 +79,12 @@ namespace RTSCamera
                     new HarmonyMethod(typeof(Patch_PassageUsePoint).GetMethod(
                         nameof(Patch_PassageUsePoint.IsDisabledForAgent_Prefix),
                         BindingFlags.Static | BindingFlags.Public)));
+                _harmony.Patch(
+                    typeof(TeamAIComponent).GetMethod("TickOccasionally",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_TeamAIComponent).GetMethod(
+                        nameof(Patch_TeamAIComponent.TickOccasionally_Prefix),
+                        BindingFlags.Static | BindingFlags.Public)));
 
                 _harmony.Patch(
                     typeof(MissionAgentLabelView).GetMethod("IsAllyInAllyTeam",
