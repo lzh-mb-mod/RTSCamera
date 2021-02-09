@@ -555,7 +555,7 @@ namespace RTSCamera.CommandSystem.View
             {
                 MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out var rayBegin, out var rayEnd);
                 if (!Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out var collisionDistance,
-                    out var collidedEntity, 0.3f))
+                    out GameEntity collidedEntity, 0.3f))
                     collisionDistance = 1000f;
                 if (cursorState == CursorState.Invisible && collisionDistance < 1000.0)
                 {
