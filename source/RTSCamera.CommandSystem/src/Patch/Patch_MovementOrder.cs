@@ -28,7 +28,9 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool SetChargeBehaviorValues_Prefix(Agent unit)
         {
-            if (unit.Formation != null && unit.Formation.MovementOrder.OrderType == OrderType.ChargeWithTarget && CommandSystemConfig.Get().AttackSpecificFormation)
+            if (unit.Formation != null && unit.Formation.MovementOrder.OrderType == OrderType.ChargeWithTarget && CommandSystemConfig.Get().AttackSpecificFormation &&
+                (QueryLibrary.IsCavalry(unit) || QueryLibrary.IsRangedCavalry(unit) && unit.Formation.FiringOrder.OrderType == OrderType.HoldFire ||
+                 QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) && unit.Formation.FiringOrder.OrderType == OrderType.HoldFire))
             {
                 UnitAIBehaviorValues.SetUnitAIBehaviorWhenChargeToFormation(unit);
                 return false;
