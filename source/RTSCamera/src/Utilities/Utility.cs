@@ -9,7 +9,7 @@ namespace RTSCamera.Utilities
         {
             var keyName = MissionSharedLibrary.Utilities.Utility. TextForKey(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera));
             var hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_switch_camera_hint").SetTextVariable("KeyName", keyName).ToString();
-            MissionSharedLibrary.Utilities.Utility.DisplayMessageOutOfMission(hint);
+            MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(hint);
         }
     }
 }
