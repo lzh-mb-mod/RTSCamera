@@ -36,14 +36,14 @@ namespace RTSCamera.CommandSystem.Patch
                     typeof(MovementOrder).GetMethod("SetChargeBehaviorValues",
                         BindingFlags.Static | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_MovementOrder).GetMethod("SetChargeBehaviorValues_Prefix",
-                        BindingFlags.Static | BindingFlags.Public)));
+                        BindingFlags.Static | BindingFlags.Public), Priority.First));
 
                 Harmony.Patch(
                     typeof(FormationMovementComponent).GetMethod("GetFormationFrame",
                         BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(
                         typeof(Patch_FormationMovementComponent).GetMethod("GetFormationFrame_Prefix",
-                            BindingFlags.Static | BindingFlags.Public)));
+                            BindingFlags.Static | BindingFlags.Public), Priority.First));
 
                 //Harmony.Patch(
                 //    typeof(FacingOrder).GetMethod("GetDirection", BindingFlags.Instance | BindingFlags.Public),

@@ -3,8 +3,10 @@ using MissionLibrary.Controller;
 using MissionLibrary.View;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
+using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem
@@ -13,10 +15,14 @@ namespace RTSCamera.CommandSystem
     {
         public static readonly string ModuleId = "RTSCamera.CommandSystem";
         public bool _isInitialized = false;
+        public static bool EnableChargeToFormationForInfantry = true;
 
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
+
+            EnableChargeToFormationForInfantry =
+                ModuleHelper.GetModules().FirstOrDefault(info => info.Id == "RealisticBattleAiModule") == null;
 
             Module.CurrentModule.GlobalTextManager.LoadGameTexts(BasePath.Name +
                                                                  $"Modules/{ModuleId}/ModuleData/module_strings.xml");

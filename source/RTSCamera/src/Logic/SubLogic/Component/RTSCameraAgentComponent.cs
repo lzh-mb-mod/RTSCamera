@@ -68,8 +68,11 @@ namespace RTSCamera.Logic.SubLogic.Component
                     }
                     else if (QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) && formation.FiringOrder.OrderType == OrderType.HoldFire)
                     {
-                        offset = targetFormation.NearestOfAverageOfNearestPosition(formation.CurrentPosition, 7).Position.AsVec2 -
-                                 formation.CurrentPosition;
+                       var targetAgent =
+                           targetFormation.NearestAgent(formation.CurrentPosition);
+                       if (targetAgent == null)
+                           return WorldPosition.Invalid;
+                       offset = targetAgent.Position.AsVec2 - formation.CurrentPosition;
                     }
                     else
                     {
