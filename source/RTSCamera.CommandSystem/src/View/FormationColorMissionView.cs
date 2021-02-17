@@ -4,6 +4,8 @@ using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.Config;
 using RTSCamera.Logic.SubLogic.Component;
+using System;
+using System.Collections;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -53,6 +55,8 @@ namespace RTSCamera.CommandSystem.View
         private bool HighlightEnabledForSelectedFormation => _isOrderShown && _config.ClickToSelectFormation;
         private bool HighlightEnabledForAsTargetFormation => _isOrderShown && _config.AttackSpecificFormation;
 
+        private readonly Queue<Action> _actionQueue = new Queue<Action>();
+
         public override void OnMissionScreenInitialize()
         {
             base.OnMissionScreenInitialize();
@@ -66,7 +70,26 @@ namespace RTSCamera.CommandSystem.View
         {
             base.OnMissionScreenFinalize();
 
+            _actionQueue.Clear();
+            _enemyAsTargetFormations.Clear();
+            _allyAsTargetFormations.Clear();
+            _allySelectedFormations.Clear();
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent); ;
+        }
+
+        public override void OnMissionScreenTick(float dt)
+        {
+            base.OnMissionScreenTick(dt);
+
+            try
+            {
+                if (!_actionQueue.IsEmpty())
+                    _actionQueue.Dequeue()?.Invoke();
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessageForced(e.ToString());
+            }
         }
 
         public override void AfterAddTeam(Team team)
@@ -193,7 +216,7 @@ namespace RTSCamera.CommandSystem.View
         {
             if (!HighlightEnabled)
                 return;
-            UpdateContour();
+            SetFocusContour();
             if (_commandSystemOrderUiHandler == null)
                 return;
 
@@ -219,62 +242,119 @@ namespace RTSCamera.CommandSystem.View
 
         private void SetFocusContour()
         {
-            ClearEnemyFocusContour();
-            ClearAllyFocusContour();
-            var formations = PlayerOrderController?.SelectedFormations;
-            if (formations == null)
-                return;
-            foreach (var formation in formations)
+            foreach (var formation in PlayerOrderController?.SelectedFormations ?? Enumerable.Empty<Formation>())
             {
-                SetFormationSelectedContour(formation, false);
-                switch (formation.MovementOrder.OrderType)
+                if (!_allySelectedFormations.Contains(formation))
                 {
-                    case OrderType.ChargeWithTarget:
-                    {
-                        if (HighlightEnabledForAsTargetFormation)
-                        {
-                            var enemyFormation = formation.MovementOrder.TargetFormation;
-                            if (enemyFormation != null)
-                            {
-                                SetFormationAsTargetContour(enemyFormation, true);
-                            }
-                        }
-
-                        break;
-                    }
-                    //case OrderType.Attach:
-                    //{
-                    //    var allyFormation = formation.MovementOrder.TargetFormation;
-                    //    if (allyFormation != null)
-                    //    {
-                    //        SetFormationAsTargetContour(allyFormation, false);
-                    //    }
-                    //    break;
-                    //}
+                    SetFormationSelectedContour(formation, false);
+                }
+            }
+            foreach (var formation in _allySelectedFormations)
+            {
+                if (!PlayerOrderController?.SelectedFormations.Contains(formation) ?? true)
+                {
+                    ClearFormationFocusContour(formation);
                 }
             }
 
-            if (Mission.PlayerEnemyTeam == null)
-                return;
-            foreach (var enemyFormation in Mission.PlayerEnemyTeam.FormationsIncludingSpecial)
-            {
-                switch (enemyFormation.MovementOrder.OrderType)
-                {
-                    case OrderType.ChargeWithTarget:
-                    {
-                        if (HighlightEnabledForAsTargetFormation)
-                        {
-                            var targetFormation = enemyFormation.MovementOrder.TargetFormation;
-                            if (targetFormation != null)
-                            {
-                                SetFormationAsTargetContour(targetFormation, false);
-                            }
-                        }
+            _allySelectedFormations.Clear();
+            _allySelectedFormations.AddRange(PlayerOrderController?.SelectedFormations ?? Enumerable.Empty<Formation>());
 
-                        break;
-                    }
-                }
+
+            var enemyAsTargetFormations = PlayerOrderController?.SelectedFormations
+                .Select(formation => formation.MovementOrder.TargetFormation).Where(formation => formation != null).ToList() ?? new List<Formation>();
+
+            foreach (var formation in enemyAsTargetFormations)
+            {
+                if (HighlightEnabledForAsTargetFormation && !_enemyAsTargetFormations.Contains(formation))
+                    SetFormationAsTargetContour(formation, true);
             }
+            foreach (var formation in _enemyAsTargetFormations)
+            {
+                if (!HighlightEnabledForAsTargetFormation || !enemyAsTargetFormations.Contains(formation))
+                    ClearFormationFocusContour(formation);
+            }
+
+            _enemyAsTargetFormations.Clear();
+            _enemyAsTargetFormations.AddRange(enemyAsTargetFormations);
+
+            if (Mission.PlayerEnemyTeam != null)
+            {
+                var allyAsTargetFormations = Mission.PlayerEnemyTeam.FormationsIncludingSpecial
+                    .Where(formation => formation.MovementOrder.OrderType == OrderType.ChargeWithTarget)
+                    .Select(formation => formation.MovementOrder.TargetFormation).ToList();
+
+
+                foreach (var formation in allyAsTargetFormations)
+                {
+                    if (HighlightEnabledForAsTargetFormation && !_allyAsTargetFormations.Contains(formation))
+                        SetFormationAsTargetContour(formation, false);
+                }
+                foreach (var formation in _allyAsTargetFormations)
+                {
+                    if (!HighlightEnabledForAsTargetFormation || !allyAsTargetFormations.Contains(formation))
+                        ClearFormationFocusContour(formation);
+                }
+
+                _allyAsTargetFormations.Clear();
+                _allyAsTargetFormations.AddRange(allyAsTargetFormations);
+            }
+
+            //_allyAsTargetFormations.Clear();
+            //var formations = PlayerOrderController?.SelectedFormations;
+            //if (formations == null)
+            //    return;
+            //foreach (var formation in formations)
+            //{
+            //    SetFormationSelectedContour(formation, false);
+            //    switch (formation.MovementOrder.OrderType)
+            //    {
+            //        case OrderType.ChargeWithTarget:
+            //            {
+            //                if (HighlightEnabledForAsTargetFormation)
+            //                {
+            //                    var enemyFormation = formation.MovementOrder.TargetFormation;
+            //                    if (enemyFormation != null)
+            //                    {
+            //                        SetFormationAsTargetContour(enemyFormation, true);
+            //                    }
+            //                }
+
+            //                break;
+            //            }
+            //            //case OrderType.Attach:
+            //            //{
+            //            //    var allyFormation = formation.MovementOrder.TargetFormation;
+            //            //    if (allyFormation != null)
+            //            //    {
+            //            //        SetFormationAsTargetContour(allyFormation, false);
+            //            //    }
+            //            //    break;
+            //            //}
+            //    }
+            //}
+
+            //if (Mission.PlayerEnemyTeam == null)
+            //    return;
+            //foreach (var enemyFormation in Mission.PlayerEnemyTeam.FormationsIncludingSpecial)
+            //{
+            //    switch (enemyFormation.MovementOrder.OrderType)
+            //    {
+            //        case OrderType.ChargeWithTarget:
+            //            {
+            //                if (HighlightEnabledForAsTargetFormation)
+            //                {
+            //                    var targetFormation = enemyFormation.MovementOrder.TargetFormation;
+            //                    if (targetFormation != null)
+            //                    {
+            //                        SetFormationAsTargetContour(targetFormation, false);
+            //                    }
+            //                }
+
+            //                break;
+            //            }
+            //    }
+            //}
         }
 
         private void ClearContour()
@@ -336,7 +416,10 @@ namespace RTSCamera.CommandSystem.View
         private void SetFormationMouseOverContour(Formation formation, bool isEnemy)
         {
             _mouseOverFormation = formation;
-            formation.ApplyActionOnEachUnit(agent => SetAgentMouseOverContour(agent, isEnemy));
+            _actionQueue.Enqueue(() =>
+            {
+                formation.ApplyActionOnEachUnit(agent => SetAgentMouseOverContour(agent, isEnemy));
+            });
         }
 
         private void SetFormationAsTargetContour(Formation formation, bool isEnemy)
@@ -345,7 +428,10 @@ namespace RTSCamera.CommandSystem.View
                 _enemyAsTargetFormations.Add(formation);
             else
                 _allyAsTargetFormations.Add(formation);
-            formation.ApplyActionOnEachUnit(agent => SetAgentAsTargetContour(agent, isEnemy));
+            _actionQueue.Enqueue(() =>
+            {
+                formation.ApplyActionOnEachUnit(agent => SetAgentAsTargetContour(agent, isEnemy));
+            });
         }
 
         private void SetFormationSelectedContour(Formation formation, bool isEnemy)
@@ -353,7 +439,10 @@ namespace RTSCamera.CommandSystem.View
             if (!isEnemy)
                 _allySelectedFormations.Add(formation);
             if (HighlightEnabledForSelectedFormation)
-                formation.ApplyActionOnEachUnit(agent => SetAgentSelectedContour(agent, isEnemy));
+                _actionQueue.Enqueue(() =>
+                {
+                    formation.ApplyActionOnEachUnit(agent => SetAgentSelectedContour(agent, isEnemy));
+                });
         }
 
         private void SetAgentMouseOverContour(Agent agent, bool enemy)
@@ -382,18 +471,28 @@ namespace RTSCamera.CommandSystem.View
 
         private void ClearFormationFocusContour(Formation formation)
         {
-            formation.ApplyActionOnEachUnit(agent =>
-                agent.GetComponent<RTSCameraAgentComponent>()?.ClearTargetOrSelectedFormationColor());
+            _actionQueue.Enqueue(() =>
+            {
+                formation.ApplyActionOnEachUnit(agent =>
+                    agent.GetComponent<RTSCameraAgentComponent>()?.ClearTargetOrSelectedFormationColor());
+            });
         }
 
         private void ClearFormationContour(Formation formation, ColorLevel level)
         {
-            formation.ApplyActionOnEachUnit(agent => agent.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)level, null, true));
+            _actionQueue.Enqueue(() =>
+            {
+                formation.ApplyActionOnEachUnit(agent =>
+                    agent.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)level, null, true));
+            });
         }
 
-        private static void ClearFormationAllContour(Formation formation)
+        private void ClearFormationAllContour(Formation formation)
         {
-            formation.ApplyActionOnEachUnit(ClearAgentFormationContour);
+            _actionQueue.Enqueue(() =>
+            {
+                formation.ApplyActionOnEachUnit(ClearAgentFormationContour);
+            });
         }
 
         private static void ClearAgentFormationContour(Agent agent)
