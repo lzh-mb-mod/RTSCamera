@@ -37,8 +37,6 @@ namespace RTSCamera.CommandSystem.Config
                         CommandSystemConfig.Get().AttackSpecificFormation = b;
                         if (b)
                             PatchChargeToFormation.Patch();
-                        else
-                            PatchChargeToFormation.UnPatch();
                     }));
                 optionClass.AddOptionCategory(0, commandOptionCategory);
 

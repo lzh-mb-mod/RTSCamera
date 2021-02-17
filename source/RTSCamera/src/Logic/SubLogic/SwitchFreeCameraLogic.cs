@@ -134,7 +134,7 @@ namespace RTSCamera.Logic.SubLogic
                 {
                     agent.MountAgent.SetMaximumSpeedLimit(-1, false);
                 }
-                agent.StopRetreating();
+                //agent.StopRetreating();
                 if (_config.AlwaysSetPlayerFormation)
                     Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
                 if (agent.Formation == null)

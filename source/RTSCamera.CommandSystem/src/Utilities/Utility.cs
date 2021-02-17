@@ -59,5 +59,15 @@ namespace RTSCamera.CommandSystem.Utilities
             message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PrimaryClass).ToString()));
             MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
         }
+
+        public static bool ShouldChargeToFormation(Agent agent)
+        {
+            return agent.Formation != null && agent.Formation.MovementOrder.OrderType == OrderType.ChargeWithTarget &&
+                   CommandSystemConfig.Get().AttackSpecificFormation &&
+                       (QueryLibrary.IsCavalry(agent) ||
+                        QueryLibrary.IsRangedCavalry(agent) && agent.Formation.FiringOrder.OrderType == OrderType.HoldFire ||
+                        CommandSystemSubModule.EnableChargeToFormationForInfantry &&
+                            (QueryLibrary.IsInfantry(agent) || QueryLibrary.IsRanged(agent) && agent.Formation.FiringOrder.OrderType == OrderType.HoldFire));
+        }
     }
 }

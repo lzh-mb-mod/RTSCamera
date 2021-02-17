@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using RTSCamera.CommandSystem.Config;
+using RTSCamera.CommandSystem.Utilities;
 using RTSCamera.Logic.SubLogic.Component;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
@@ -32,9 +33,7 @@ namespace RTSCamera.CommandSystem.Patch
             if (!___Agent.IsMount && formation != null &&
                 !(bool) IsUnitDetached.Invoke(formation, new object[] {___Agent}))
             {
-                if (formation.MovementOrder.OrderType == OrderType.ChargeWithTarget && CommandSystemConfig.Get().AttackSpecificFormation &&
-                    (QueryLibrary.IsCavalry(___Agent) || QueryLibrary.IsRangedCavalry(___Agent) && formation.FiringOrder.OrderType == OrderType.HoldFire ||
-                     QueryLibrary.IsInfantry(___Agent) || QueryLibrary.IsRanged(___Agent) && formation.FiringOrder.OrderType == OrderType.HoldFire))
+                if (Utility.ShouldChargeToFormation(___Agent))
                 {
                     isSettingDestinationSpeed = false;
                     var component = ___Agent.GetComponent<RTSCameraAgentComponent>();

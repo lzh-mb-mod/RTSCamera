@@ -14,12 +14,7 @@ namespace RTSCamera.QuerySystem
 
         public Agent NearestAgent(Vec2 position, bool refresh = false)
         {
-            if (refresh)
-            {
-                KdTree.Expire();
-            }
-            var result = KdTree.Value.GetNearestNeighbours(new float[2] { position.x, position.y }, 1);
-            return result.Length == 0 ? null : result[0].Value.Agent;
+            return KdTreeNearestAgentFromFormation(position);
         }
 
         public Agent NearestOfAverageOfNearestPosition(Vec2 position, int count)
@@ -102,6 +97,32 @@ namespace RTSCamera.QuerySystem
             }
 
             return result;
+        }
+
+        private Agent KdTreeNearestAgentFromFormation(Vec2 position, bool refresh = false)
+        {
+            if (refresh)
+            {
+                KdTree.Expire();
+            }
+            var result = KdTree.Value.GetNearestNeighbours(new float[2] { position.x, position.y }, 1);
+            return result.Length == 0 ? null : result[0].Value.Agent;
+        }
+
+        private Agent SimpleNearestAgentFromFormation(Vec2 pos)
+        {
+            Agent nearestAgent = null;
+            float nearestDistance = float.MaxValue;
+            Formation.ApplyActionOnEachUnit(agent =>
+            {
+                float distance = pos.Distance(agent.GetWorldPosition().AsVec2);
+                if (distance < nearestDistance)
+                {
+                    nearestAgent = agent;
+                    nearestDistance = distance;
+                }
+            });
+            return nearestAgent;
         }
     }
 }
