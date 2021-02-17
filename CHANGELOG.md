@@ -4,6 +4,8 @@
 ### Fixed
 - Remove modify to infantry AI when Realistic Battle AI Module is enabled to avoid problems.
 
+- Improve stability.
+
 ## [e3.9.21] [e3.9.22] - 2021-02-01
 ### Fixed
 - Fix the problem that the player character may not be able to be controlled when battle wins in free camera mode.
