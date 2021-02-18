@@ -2,7 +2,7 @@
 
 ## [e3.9.24] - 2021-02-18
 ### Fixed
-- Remove modify to infantry AI when Realistic Battle AI Module is enabled to avoid problems.
+- Remove modification to infantry AI when Realistic Battle AI Module is enabled to avoid problems.
 
 - Improve stability.
 

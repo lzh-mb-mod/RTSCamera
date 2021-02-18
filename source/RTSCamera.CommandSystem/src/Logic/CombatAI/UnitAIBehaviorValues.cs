@@ -15,7 +15,7 @@ namespace RTSCamera.CommandSystem.Logic.CombatAI
             //unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityRanged, 0.0f, 12f, 0.0f, 30f, 0.0f);
 
             unit.SetAIBehaviorValues(AISimpleBehaviorKind.GoToPos, 0, 40, 6, 100, 12);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Melee, 2, 10, 1.5f, 20, 0.5f);
+            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Melee, 2, 7, 1, 10, 0);
             unit.SetAIBehaviorValues(AISimpleBehaviorKind.Ranged, 0, 7, 1, 10, 20);
             unit.SetAIBehaviorValues(AISimpleBehaviorKind.ChargeHorseback, 8, 40, 6, 80, 3f);
             unit.SetAIBehaviorValues(AISimpleBehaviorKind.RangedHorseback, 5, 7, 10, 8, 20);
