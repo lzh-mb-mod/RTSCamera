@@ -22,7 +22,7 @@ namespace RTSCamera.CommandSystem
             base.OnSubModuleLoad();
 
             EnableChargeToFormationForInfantry =
-                ModuleHelper.GetModules().FirstOrDefault(info => info.Id == "RealisticBattleAiModule") == null;
+                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info => info.Id == "RealisticBattleAiModule") == null;
 
             Module.CurrentModule.GlobalTextManager.LoadGameTexts(BasePath.Name +
                                                                  $"Modules/{ModuleId}/ModuleData/module_strings.xml");
