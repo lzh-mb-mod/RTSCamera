@@ -14,7 +14,7 @@ namespace RTSCamera.QuerySystem
 
         public Agent NearestAgent(Vec2 position, bool refresh = false)
         {
-            return KdTreeNearestAgentFromFormation(position);
+            return SimpleNearestAgentFromFormation(position);
         }
 
         public Agent NearestOfAverageOfNearestPosition(Vec2 position, int count)
