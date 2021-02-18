@@ -56,6 +56,8 @@ namespace RTSCamera.Logic.SubLogic.Component
                 try
                 {
                     var unit = Agent;
+                    if (!unit.IsActive())
+                        return WorldPosition.Invalid;
                     var formation = unit.Formation;
                     if (formation == null)
                         return WorldPosition.Invalid;
@@ -84,8 +86,7 @@ namespace RTSCamera.Logic.SubLogic.Component
                     Vec2 targetPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) + offset;
                     var result = targetFormation.NearestAgent(targetPosition)?.GetWorldPosition() ??
                                  WorldPosition.Invalid;
-                    return !result.IsValid || result.GetNavMesh() == UIntPtr.Zero ||
-                           !Mission.Current.IsPositionInsideBoundaries(result.AsVec2)
+                    return !result.IsValid || result.GetNavMesh() == UIntPtr.Zero
                         ? unit.GetWorldPosition()
                         : result;
                 }
