@@ -62,28 +62,36 @@ namespace RTSCamera.Logic.SubLogic.Component
                     var targetFormation = QueryDataStore.Get(formation.TargetFormation);
 
                     Vec2 offset;
-                    if (QueryLibrary.IsCavalry(unit) || QueryLibrary.IsRangedCavalry(unit) && formation.FiringOrder.OrderType == OrderType.HoldFire)
+                    if (QueryLibrary.IsCavalry(unit) || QueryLibrary.IsRangedCavalry(unit) &&
+                        formation.FiringOrder.OrderType == OrderType.HoldFire)
                     {
                         offset = targetFormation.Formation.CurrentPosition - formation.CurrentPosition;
                     }
-                    else if (QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) && formation.FiringOrder.OrderType == OrderType.HoldFire)
+                    else if (QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) &&
+                        formation.FiringOrder.OrderType == OrderType.HoldFire)
                     {
-                       var targetAgent =
-                           targetFormation.NearestAgent(formation.CurrentPosition);
-                       if (targetAgent == null)
-                           return WorldPosition.Invalid;
-                       offset = targetAgent.Position.AsVec2 - formation.CurrentPosition;
+                        var targetAgent =
+                            targetFormation.NearestAgent(formation.CurrentPosition);
+                        if (targetAgent == null)
+                            return WorldPosition.Invalid;
+                        offset = targetAgent.Position.AsVec2 - formation.CurrentPosition;
                     }
                     else
                     {
                         return WorldPosition.Invalid;
                     }
+
                     Vec2 targetPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) + offset;
-                    var result = targetFormation.NearestAgent(targetPosition)?.GetWorldPosition() ?? WorldPosition.Invalid;
-                    return result.GetNavMesh() == UIntPtr.Zero ||
+                    var result = targetFormation.NearestAgent(targetPosition)?.GetWorldPosition() ??
+                                 WorldPosition.Invalid;
+                    return !result.IsValid || result.GetNavMesh() == UIntPtr.Zero ||
                            !Mission.Current.IsPositionInsideBoundaries(result.AsVec2)
                         ? unit.GetWorldPosition()
                         : result;
+                }
+                catch (AccessViolationException e)
+                {
+                    Utility.DisplayMessage(e.ToString());
                 }
                 catch (Exception e)
                 {
