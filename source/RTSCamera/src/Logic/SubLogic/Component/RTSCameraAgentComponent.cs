@@ -79,7 +79,11 @@ namespace RTSCamera.Logic.SubLogic.Component
                         return WorldPosition.Invalid;
                     }
                     Vec2 targetPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) + offset;
-                    return targetFormation.NearestAgent(targetPosition)?.GetWorldPosition() ?? WorldPosition.Invalid;
+                    var result = targetFormation.NearestAgent(targetPosition)?.GetWorldPosition() ?? WorldPosition.Invalid;
+                    return result.GetNavMesh() == UIntPtr.Zero ||
+                           !Mission.Current.IsPositionInsideBoundaries(result.AsVec2)
+                        ? unit.GetWorldPosition()
+                        : result;
                 }
                 catch (Exception e)
                 {
