@@ -115,7 +115,7 @@ namespace RTSCamera.QuerySystem
             float nearestDistance = float.MaxValue;
             Formation.ApplyActionOnEachUnit(agent =>
             {
-                float distance = pos.Distance(agent.GetWorldPosition().AsVec2);
+                float distance = pos.Distance(agent.Position.AsVec2);
                 if (distance < nearestDistance)
                 {
                     nearestAgent = agent;
