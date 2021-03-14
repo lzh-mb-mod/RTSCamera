@@ -139,10 +139,12 @@ namespace RTSCamera.CommandSystem.View
 
         public void MouseOver(Formation formation)
         {
-            if (!HighlightEnabled || formation == _mouseOverFormation)
+            if (formation == _mouseOverFormation)
                 return;
             if (_mouseOverFormation != null)
                 ClearFormationMouseOverContour(_mouseOverFormation);
+            if (!HighlightEnabled)
+                return;
             if (formation != null)
             {
                 bool isEnemy = Utility.IsEnemy(formation);
