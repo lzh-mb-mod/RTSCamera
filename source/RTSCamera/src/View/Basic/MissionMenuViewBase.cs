@@ -15,7 +15,7 @@ namespace RTSCamera.View.Basic
         private readonly string _movieName;
         private MissionMenuVMBase _dataSource;
         protected GauntletLayer GauntletLayer;
-        private GauntletMovie _movie;
+        private IGauntletMovie _movie;
 
         protected Func<MissionMenuVMBase> GetDataSource;
         public bool IsActivated { get; set; }

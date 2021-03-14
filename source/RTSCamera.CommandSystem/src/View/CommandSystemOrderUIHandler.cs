@@ -57,7 +57,7 @@ namespace RTSCamera.CommandSystem.View
         private List<DeploymentSiegeMachineVM> _deploymentPointDataSources;
         private CommandSystemOrderTroopPlacer _orderTroopPlacer;
         public GauntletLayer GauntletLayer;
-        private GauntletMovie _movie;
+        private IGauntletMovie _movie;
         public  MissionOrderVM DataSource;
         private SiegeDeploymentHandler _siegeDeploymentHandler;
         public bool IsDeployment;

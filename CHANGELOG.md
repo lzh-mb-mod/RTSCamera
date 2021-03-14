@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.9.25] - 2021-03-14
+### Fixed
+- Keep compatible with Bannerlord e1.5.9.
+
 ## [e3.9.24] - 2021-02-18
 ### Fixed
 - Remove modification to infantry AI when Realistic Battle AI Module is enabled to avoid problems.
