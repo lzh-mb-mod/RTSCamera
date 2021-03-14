@@ -2,6 +2,7 @@
 using System.Runtime.ExceptionServices;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.QuerySystem;
+using System.Security;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -51,56 +52,61 @@ namespace RTSCamera.Logic.SubLogic.Component
                 _colors[i] = new Contour(null, false);
             }
 
-            CurrentTargetPosition = new QueryData<WorldPosition>(() =>
+            CurrentTargetPosition = new QueryData<WorldPosition>(() => GetTargetPosition(Agent), 0.3f);
+        }
+
+
+        [HandleProcessCorruptedStateExceptions]
+        [SecurityCritical]
+        private static WorldPosition GetTargetPosition(Agent agent)
+        {
+            try
             {
-                try
-                {
-                    var unit = Agent;
-                    if (!unit.IsActive())
-                        return WorldPosition.Invalid;
-                    var formation = unit.Formation;
-                    if (formation == null)
-                        return WorldPosition.Invalid;
-                    var targetFormation = QueryDataStore.Get(formation.TargetFormation);
+                var unit = agent;
+                if (!unit.IsActive())
+                    return WorldPosition.Invalid;
+                var formation = unit.Formation;
+                if (formation == null)
+                    return WorldPosition.Invalid;
+                var targetFormation = QueryDataStore.Get(formation.TargetFormation);
 
-                    Vec2 offset;
-                    if (QueryLibrary.IsCavalry(unit) || QueryLibrary.IsRangedCavalry(unit) &&
-                        formation.FiringOrder.OrderType == OrderType.HoldFire)
-                    {
-                        offset = targetFormation.Formation.CurrentPosition - formation.CurrentPosition;
-                    }
-                    else if (QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) &&
-                        formation.FiringOrder.OrderType == OrderType.HoldFire)
-                    {
-                        var targetAgent =
-                            targetFormation.NearestAgent(formation.CurrentPosition);
-                        if (targetAgent == null)
-                            return WorldPosition.Invalid;
-                        offset = targetAgent.Position.AsVec2 - formation.CurrentPosition;
-                    }
-                    else
-                    {
+                Vec2 offset;
+                if (QueryLibrary.IsCavalry(unit) || QueryLibrary.IsRangedCavalry(unit) &&
+                    formation.FiringOrder.OrderType == OrderType.HoldFire)
+                {
+                    offset = targetFormation.Formation.CurrentPosition - formation.CurrentPosition;
+                }
+                else if (QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) &&
+                    formation.FiringOrder.OrderType == OrderType.HoldFire)
+                {
+                    var targetAgent =
+                        targetFormation.NearestAgent(formation.CurrentPosition);
+                    if (targetAgent == null)
                         return WorldPosition.Invalid;
-                    }
-
-                    Vec2 targetPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) + offset;
-                    var result = targetFormation.NearestAgent(targetPosition)?.GetWorldPosition() ??
-                                 WorldPosition.Invalid;
-                    return !result.IsValid || result.GetNavMesh() == UIntPtr.Zero
-                        ? unit.GetWorldPosition()
-                        : result;
+                    offset = targetAgent.Position.AsVec2 - formation.CurrentPosition;
                 }
-                catch (AccessViolationException e)
+                else
                 {
-                    Utility.DisplayMessage(e.ToString());
-                }
-                catch (Exception e)
-                {
-                    Utility.DisplayMessage(e.ToString());
+                    return WorldPosition.Invalid;
                 }
 
-                return WorldPosition.Invalid;
-            }, 0.3f);
+                Vec2 targetPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) + offset;
+                var result = targetFormation.NearestAgent(targetPosition)?.GetWorldPosition() ??
+                             WorldPosition.Invalid;
+                return !result.IsValid || result.GetNavMesh() == UIntPtr.Zero
+                    ? unit.GetWorldPosition()
+                    : result;
+            }
+            catch (AccessViolationException e)
+            {
+                Utility.DisplayMessage(e.ToString());
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
+            }
+
+            return WorldPosition.Invalid;
         }
 
         public void SetContourColor(int level, uint? color, bool alwaysVisible)
@@ -130,6 +136,7 @@ namespace RTSCamera.Logic.SubLogic.Component
         }
 
         [HandleProcessCorruptedStateExceptions]
+        [SecurityCritical]
         public void ClearContourColor()
         {
             try
@@ -167,6 +174,7 @@ namespace RTSCamera.Logic.SubLogic.Component
         }
 
         [HandleProcessCorruptedStateExceptions]
+        [SecurityCritical]
         protected override void OnMount(Agent mount)
         {
             base.OnMount(mount);
@@ -182,6 +190,7 @@ namespace RTSCamera.Logic.SubLogic.Component
         }
 
         [HandleProcessCorruptedStateExceptions]
+        [SecurityCritical]
         protected override void OnDismount(Agent mount)
         {
             base.OnDismount(mount);
@@ -221,6 +230,7 @@ namespace RTSCamera.Logic.SubLogic.Component
         }
 
         [HandleProcessCorruptedStateExceptions]
+        [SecurityCritical]
         private void SetColor()
         {
             try
