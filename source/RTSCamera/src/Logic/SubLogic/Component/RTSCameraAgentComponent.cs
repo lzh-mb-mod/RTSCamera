@@ -70,11 +70,12 @@ namespace RTSCamera.Logic.SubLogic.Component
                     return WorldPosition.Invalid;
                 var targetFormation = QueryDataStore.Get(formation.TargetFormation);
 
-                Vec2 offset;
+                Vec2 offset, velocity = Vec2.Zero;
                 if (QueryLibrary.IsCavalry(unit) || QueryLibrary.IsRangedCavalry(unit) &&
                     formation.FiringOrder.OrderType == OrderType.HoldFire)
                 {
                     offset = targetFormation.Formation.CurrentPosition - formation.CurrentPosition;
+                    velocity = targetFormation.Formation.QuerySystem.FormationIntegrityData.AverageVelocityExcludeFarAgents;
                 }
                 else if (QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) &&
                     formation.FiringOrder.OrderType == OrderType.HoldFire)
@@ -84,6 +85,7 @@ namespace RTSCamera.Logic.SubLogic.Component
                     if (targetAgent == null)
                         return WorldPosition.Invalid;
                     offset = targetAgent.Position.AsVec2 - formation.CurrentPosition;
+                    velocity = targetAgent.GetCurrentVelocity();
                 }
                 else
                 {
@@ -91,11 +93,20 @@ namespace RTSCamera.Logic.SubLogic.Component
                 }
 
                 Vec2 targetPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) + offset;
+
                 var result = targetFormation.NearestAgent(targetPosition)?.GetWorldPosition() ??
                              WorldPosition.Invalid;
-                return !result.IsValid || result.GetNavMesh() == UIntPtr.Zero
-                    ? unit.GetWorldPosition()
-                    : result;
+                if (!result.IsValid || result.GetNavMesh() == UIntPtr.Zero)
+                {
+                    result = unit.GetWorldPosition();
+                    result.SetVec2(result.AsVec2 + unit.GetMovementDirection().AsVec2 * 0.1f);
+                    return result;
+                }
+                else
+                {
+                    result.SetVec2((unit.Position.AsVec2 - result.AsVec2).Normalized() * 0.8f + result.AsVec2 + velocity * 2);
+                    return result;
+                }
             }
             catch (AccessViolationException e)
             {
