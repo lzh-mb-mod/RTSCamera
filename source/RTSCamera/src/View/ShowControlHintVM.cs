@@ -49,8 +49,7 @@ namespace RTSCamera.View
                 ? "str_rts_camera_control_current_agent_hint"
                 : "str_rts_camera_control_troop_hint");
 
-            result.SetTextVariable("KeyName",
-                Utility.TextForKey(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop)));
+            result.SetTextVariable("KeyName",RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).ToSequenceString());
             return result;
         }
     }

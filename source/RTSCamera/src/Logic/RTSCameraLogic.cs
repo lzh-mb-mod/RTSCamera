@@ -55,7 +55,6 @@ namespace RTSCamera.Logic
             SwitchFreeCameraLogic.OnRemoveBehaviour();
 
             MissionEvent.Clear();
-            MissionLibrary.Event.MissionEvent.Clear();
             Instance = null;
         }
 

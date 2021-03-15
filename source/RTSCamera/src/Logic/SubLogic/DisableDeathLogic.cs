@@ -29,7 +29,7 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (!NativeConfig.CheatMode)
                 return;
-            if (_config.DisableDeathHotkeyEnabled && Mission.InputManager.IsKeyPressed(_gameKeyCategory.GetKey((int)GameKeyEnum.DisableDeath)))
+            if (_config.DisableDeathHotkeyEnabled && _gameKeyCategory.GetGameKeySequence((int)GameKeyEnum.DisableDeath).IsKeyPressed(Mission.InputManager))
             {
                 _config.DisableDeath = !_config.DisableDeath;
                 SetDisableDeath(_config.DisableDeath);

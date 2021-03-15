@@ -1,6 +1,8 @@
 ﻿using System;
 using MissionLibrary.HotKey;
+using MissionSharedLibrary.Config.HotKey;
 using MissionSharedLibrary.HotKey.Category;
+using System.Collections.Generic;
 using TaleWorlds.InputSystem;
 
 namespace RTSCamera.CommandSystem.Config.HotKey
@@ -24,14 +26,18 @@ namespace RTSCamera.CommandSystem.Config.HotKey
         {
             var result = new GameKeyCategory(CategoryId,
                 (int)GameKeyEnum.NumberOfGameKeyEnums, CommandSystemGameKeyConfig.Get());
-            result.AddGameKey(new GameKey((int) GameKeyEnum.SelectFormation, nameof(GameKeyEnum.SelectFormation),
-                CategoryId, InputKey.MiddleMouseButton, CategoryId));
+            result.AddGameKeySequence(new GameKeySequence((int) GameKeyEnum.SelectFormation,
+                nameof(GameKeyEnum.SelectFormation),
+                CategoryId, new List<InputKey>
+                {
+                    InputKey.MiddleMouseButton
+                }));
             return result;
         }
 
-        public static InputKey GetKey(GameKeyEnum key)
+        public static IGameKeySequence GetKey(GameKeyEnum key)
         {
-            return Category?.GetKey((int)key) ?? InputKey.Invalid;
+            return Category?.GetGameKeySequence((int)key);
         }
     }
 }

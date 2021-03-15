@@ -1,9 +1,9 @@
-﻿using System;
-using MissionSharedLibrary.Utilities;
+﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Event;
 using RTSCamera.View;
+using System;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -56,7 +56,7 @@ namespace RTSCamera.Logic.SubLogic
                 else
                 {
                     Utility.PlayerControlAgent(agent);
-                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, true);
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
                 }
 
                 return true;
@@ -100,11 +100,9 @@ namespace RTSCamera.Logic.SubLogic
 
                     return true;
                 }
-                else
-                {
-                    Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
-                    return false;
-                }
+
+                Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
+                return false;
             }
             catch (Exception e)
             {
@@ -231,7 +229,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnMissionTick(float dt)
         {
-            if (MissionScreen.SceneLayer.Input.IsKeyPressed(RTSCameraGameKeyCategory.GetKey(Config.HotKey.GameKeyEnum.ControlTroop)))
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).IsKeyPressed(Mission.InputManager))
             {
                 if (_selectCharacterView.LockOnAgent())
                     return;

@@ -33,8 +33,7 @@ namespace RTSCamera.View
                 _isSelectingCharacter = value;
                 if (_isSelectingCharacter)
                 {
-                    GameTexts.SetVariable("KeyName",
-                        Utility.TextForKey(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop)));
+                    GameTexts.SetVariable("KeyName",RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).ToSequenceString());
                     Activate();
                 }
                 else
@@ -144,7 +143,7 @@ namespace RTSCamera.View
         {
             base.OnMissionScreenTick(dt);
 
-            if (Input.IsKeyPressed(RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SelectCharacter)) ||
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SelectCharacter).IsKeyPressed(Input) ||
                 IsSelectingCharacter && _gauntletLayer.Input.IsKeyPressed(InputKey.RightMouseButton))
             {
                 IsSelectingCharacter = !IsSelectingCharacter;

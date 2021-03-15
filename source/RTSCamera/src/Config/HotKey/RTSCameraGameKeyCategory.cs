@@ -1,6 +1,8 @@
 ﻿using System;
 using MissionLibrary.HotKey;
+using MissionSharedLibrary.Config.HotKey;
 using MissionSharedLibrary.HotKey.Category;
+using System.Collections.Generic;
 using TaleWorlds.InputSystem;
 
 namespace RTSCamera.Config.HotKey
@@ -32,28 +34,52 @@ namespace RTSCamera.Config.HotKey
         {
             var result = new GameKeyCategory(CategoryId,
                 (int)GameKeyEnum.NumberOfGameKeyEnums, GameKeyConfig.Get());
-            result.AddGameKey(new GameKey((int)GameKeyEnum.Pause, nameof(GameKeyEnum.Pause),
-                CategoryId, InputKey.OpenBraces, CategoryId));
-            result.AddGameKey(new GameKey((int)GameKeyEnum.SlowMotion,
-                nameof(GameKeyEnum.SlowMotion), CategoryId, InputKey.Apostrophe, CategoryId));
-            result.AddGameKey(new GameKey((int)GameKeyEnum.FreeCamera,
-                nameof(GameKeyEnum.FreeCamera), CategoryId, InputKey.F10, CategoryId));
-            result.AddGameKey(new GameKey((int)GameKeyEnum.DisableDeath,
-                nameof(GameKeyEnum.DisableDeath), CategoryId, InputKey.End, CategoryId));
-            result.AddGameKey(new GameKey((int)GameKeyEnum.ControlTroop,
-                nameof(GameKeyEnum.ControlTroop), CategoryId, InputKey.F, CategoryId));
-            result.AddGameKey(new GameKey((int)GameKeyEnum.ToggleHUD, nameof(GameKeyEnum.ToggleHUD),
-                CategoryId, InputKey.CloseBraces, CategoryId));
-            result.AddGameKey(new GameKey((int)GameKeyEnum.SwitchTeam,
-                nameof(GameKeyEnum.SwitchTeam), CategoryId, InputKey.F11, CategoryId));
-            result.AddGameKey(new GameKey((int)GameKeyEnum.SelectCharacter,
-                nameof(GameKeyEnum.SelectCharacter), CategoryId, InputKey.SemiColon, CategoryId));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.Pause, nameof(GameKeyEnum.Pause),
+                CategoryId, new List<InputKey>
+                {
+                    InputKey.OpenBraces
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int) GameKeyEnum.SlowMotion,
+                nameof(GameKeyEnum.SlowMotion), CategoryId, new List<InputKey>
+                {
+                    InputKey.Apostrophe
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.FreeCamera,
+                nameof(GameKeyEnum.FreeCamera), CategoryId, new List<InputKey>
+                {
+                    InputKey.F10
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int) GameKeyEnum.DisableDeath,
+                nameof(GameKeyEnum.DisableDeath), CategoryId, new List<InputKey>
+                {
+                    InputKey.End
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.ControlTroop,
+                nameof(GameKeyEnum.ControlTroop), CategoryId, new List<InputKey>
+                {
+                    InputKey.F
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int) GameKeyEnum.ToggleHUD, nameof(GameKeyEnum.ToggleHUD),
+                CategoryId, new List<InputKey>
+                {
+                    InputKey.CloseBraces
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int) GameKeyEnum.SwitchTeam,
+                nameof(GameKeyEnum.SwitchTeam), CategoryId, new List<InputKey>
+                {
+                    InputKey.F11
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int) GameKeyEnum.SelectCharacter,
+                nameof(GameKeyEnum.SelectCharacter), CategoryId, new List<InputKey>
+                {
+                    InputKey.SemiColon
+                }));
             return result;
         }
 
-        public static InputKey GetKey(GameKeyEnum key)
+        public static IGameKeySequence GetKey(GameKeyEnum key)
         {
-            return Category?.GetKey((int) key) ?? InputKey.Invalid;
+            return Category?.GetGameKeySequence((int)key);
         }
     }
 }

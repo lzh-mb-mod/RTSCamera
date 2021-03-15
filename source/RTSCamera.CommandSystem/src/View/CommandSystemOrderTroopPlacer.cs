@@ -406,7 +406,7 @@ namespace RTSCamera.CommandSystem.View
             switch (_currentCursorState)
             {
                 case CursorState.Enemy:
-                    if (_config.AttackSpecificFormation && Input.IsKeyDown(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
+                    if (_config.AttackSpecificFormation && CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(Input))
                     {
                         _clickedFormation = _mouseOverFormation;
                     }
@@ -417,7 +417,7 @@ namespace RTSCamera.CommandSystem.View
                     BeginFormationDraggingOrClicking();
                     break;
                 case CursorState.Friend:
-                    if (_config.ClickToSelectFormation && Input.IsKeyDown(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
+                    if (_config.ClickToSelectFormation && CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(Input))
                     {
                         if (_mouseOverFormation != null && PlayerOrderController.IsFormationSelectable(_mouseOverFormation))
                         {
@@ -431,10 +431,6 @@ namespace RTSCamera.CommandSystem.View
                     BeginFormationDraggingOrClicking();
                     break;
                 case CursorState.Normal:
-                    if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation) != InputKey.LeftMouseButton &&
-                        _config.ShouldHighlightWithOutline() &&
-                        Input.IsKeyDown(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
-                        return;
                     _formationDrawingMode = true;
                     BeginFormationDraggingOrClicking();
                     break;
@@ -485,7 +481,7 @@ namespace RTSCamera.CommandSystem.View
         private void HandleMouseUp()
         {
             var cursorState = _currentCursorState;
-            if (_clickedFormation != null && Input.IsKeyDown(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
+            if (_clickedFormation != null && CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(Input))
             {
                 if (_clickedFormation.CountOfUnits > 0)
                 {
@@ -610,7 +606,7 @@ namespace RTSCamera.CommandSystem.View
                 cursorState = _currentCursorState;
             }
             if (cursorState == CursorState.Invisible &&
-                !(Input.IsKeyDown(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)) && _config.ShouldHighlightWithOutline()) || // press middle mouse button to avoid accidentally click on ground.
+                !(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(Input) && _config.ShouldHighlightWithOutline()) || // press middle mouse button to avoid accidentally click on ground.
                 _formationDrawingMode)
             {
                 cursorState = IsCursorStateGroundOrNormal();
@@ -811,7 +807,7 @@ namespace RTSCamera.CommandSystem.View
             _currentCursorState = _cachedCursorState.Value;
             //Utilities.DisplayMessage(_currentCursorState.ToString());
             // use middle mouse button to select formation
-            if (Input.IsKeyPressed(InputKey.LeftMouseButton) || _config.ShouldHighlightWithOutline() && Input.IsKeyPressed(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)))
+            if (Input.IsKeyPressed(InputKey.LeftMouseButton) || _config.ShouldHighlightWithOutline() && CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyPressed(Input))
             {
                 _isMouseDown = true;
                 HandleMousePressed();
@@ -819,7 +815,7 @@ namespace RTSCamera.CommandSystem.View
             }
 
             if ((Input.IsKeyReleased(InputKey.LeftMouseButton) ||
-                 _config.ShouldHighlightWithOutline() && Input.IsKeyPressed(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)) &&
+                 _config.ShouldHighlightWithOutline() && CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyPressed(Input) &&
                  !_formationDrawingMode) && _isMouseDown)
             {
                 _isMouseDown = false;
