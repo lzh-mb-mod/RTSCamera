@@ -2,6 +2,7 @@
 using MissionLibrary.Controller;
 using MissionSharedLibrary.Controller;
 using RTSCamera.CommandSystem.Config;
+using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.View;
 using TaleWorlds.MountAndBlade;
@@ -21,7 +22,7 @@ namespace RTSCamera.CommandSystem
             }
             List<MissionBehaviour> list = new List<MissionBehaviour>
             {
-                new FormationColorMissionView(),
+                new CommandSystemLogic(),
                 new CommandSystemOrderTroopPlacer(),
                 new DragWhenCommandView()
             };

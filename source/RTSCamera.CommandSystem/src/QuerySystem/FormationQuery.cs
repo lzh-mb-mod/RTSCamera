@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
-using KdTree;
+﻿using KdTree;
 using KdTree.Math;
+using RTSCamera.CommandSystem.Logic.Component;
+using System.Collections.Generic;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.QuerySystem
+namespace RTSCamera.CommandSystem.QuerySystem
 {
     public class FormationQuery
     {
         public Formation Formation { get; }
+
+        public QueryData<Vec2> AverageOfTargetAgents { get; }
 
         public QueryData<KdTree<float, AgentPointInfo>> KdTree { get; }
 
@@ -39,6 +42,26 @@ namespace RTSCamera.QuerySystem
                 });
                 return tree;
             }, 0.1f);
+
+            AverageOfTargetAgents = new QueryData<Vec2>(() =>
+            {
+                Vec2 result = Vec2.Zero;
+                int count = 0;
+                formation.ApplyActionOnEachUnit(agent =>
+                {
+                    var component = agent.GetComponent<CommandSystemAgentComponent>();
+                    if (component == null)
+                        return;
+
+                    var targetPosition = component.PositionOfTargetAgent.Value;
+                    result += targetPosition.IsValid ? targetPosition : agent.Position.AsVec2;
+                    ++count;
+                });
+                if (count == 0)
+                    return Vec2.Invalid;
+
+                return result * (1.0f / count);
+            }, 1f);
         }
 
         private static void AddAgent(KdTree<float, AgentPointInfo> tree, Agent agent)

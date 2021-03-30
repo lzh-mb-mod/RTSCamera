@@ -1,21 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MissionSharedLibrary.Utilities;
+﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
+using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.Config;
-using RTSCamera.Logic.SubLogic.Component;
+using RTSCamera.Logic.Component;
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View;
-using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera.CommandSystem.View
 {
-    public class FormationColorMissionView : MissionView
+    public class FormationColorMissionView
     {
         private static readonly OrderType[] movementOrderTypes =
         {
@@ -45,7 +44,7 @@ namespace RTSCamera.CommandSystem.View
         private readonly List<Formation> _enemyAsTargetFormations = new List<Formation>();
         private readonly List<Formation> _allyAsTargetFormations = new List<Formation>();
         private readonly List<Formation> _allySelectedFormations = new List<Formation>();
-        private OrderController PlayerOrderController => Mission.PlayerTeam?.PlayerOrderController;
+        private OrderController PlayerOrderController => Mission.Current.PlayerTeam?.PlayerOrderController;
         private Formation _mouseOverFormation;
         private CommandSystemOrderUIHandler _commandSystemOrderUiHandler;
         private readonly CommandSystemConfig _config = CommandSystemConfig.Get();
@@ -57,19 +56,15 @@ namespace RTSCamera.CommandSystem.View
 
         private readonly Queue<Action> _actionQueue = new Queue<Action>();
 
-        public override void OnMissionScreenInitialize()
+        public  void OnMissionScreenInitialize()
         {
-            base.OnMissionScreenInitialize();
-
-            Mission.Teams.OnPlayerTeamChanged += Mission_OnPlayerTeamChanged;
+            Mission.Current.Teams.OnPlayerTeamChanged += Mission_OnPlayerTeamChanged;
             Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
-            _commandSystemOrderUiHandler = Mission.GetMissionBehaviour<CommandSystem.View.CommandSystemOrderUIHandler>();
+            _commandSystemOrderUiHandler = Mission.Current.GetMissionBehaviour<CommandSystemOrderUIHandler>();
         }
 
-        public override void OnMissionScreenFinalize()
+        public  void OnMissionScreenFinalize()
         {
-            base.OnMissionScreenFinalize();
-
             _actionQueue.Clear();
             _enemyAsTargetFormations.Clear();
             _allyAsTargetFormations.Clear();
@@ -77,10 +72,8 @@ namespace RTSCamera.CommandSystem.View
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent); ;
         }
 
-        public override void OnMissionScreenTick(float dt)
+        public  void OnMissionScreenTick(float dt)
         {
-            base.OnMissionScreenTick(dt);
-
             try
             {
                 if (!_actionQueue.IsEmpty())
@@ -92,10 +85,8 @@ namespace RTSCamera.CommandSystem.View
             }
         }
 
-        public override void AfterAddTeam(Team team)
+        public  void AfterAddTeam(Team team)
         {
-            base.AfterAddTeam(team);
-
             team.OnOrderIssued += OnOrderIssued;
             team.OnFormationsChanged += OnFormationsChanged;
             team.PlayerOrderController.OnSelectedFormationsChanged += OrderController_OnSelectedFormationsChanged;
@@ -105,10 +96,8 @@ namespace RTSCamera.CommandSystem.View
             //}
         }
 
-        public override void OnAgentBuild(Agent agent, Banner banner)
+        public  void OnAgentBuild(Agent agent, Banner banner)
         {
-            base.OnAgentBuild(agent, banner);
-
             if (agent.Formation != null)
             {
                 bool isEnemy = Utility.IsEnemy(agent.Formation);
@@ -127,13 +116,10 @@ namespace RTSCamera.CommandSystem.View
                         SetAgentAsTargetContour(agent, false);
                 }
             }
-
         }
 
-        public override void OnAgentFleeing(Agent affectedAgent)
+        public  void OnAgentFleeing(Agent affectedAgent)
         {
-            base.OnAgentFleeing(affectedAgent);
-
             ClearAgentFormationContour(affectedAgent);
         }
 
@@ -280,9 +266,9 @@ namespace RTSCamera.CommandSystem.View
             _enemyAsTargetFormations.Clear();
             _enemyAsTargetFormations.AddRange(enemyAsTargetFormations);
 
-            if (Mission.PlayerEnemyTeam != null)
+            if (Mission.Current.PlayerEnemyTeam != null)
             {
-                var allyAsTargetFormations = Mission.PlayerEnemyTeam.FormationsIncludingSpecial
+                var allyAsTargetFormations = Mission.Current.PlayerEnemyTeam.FormationsIncludingSpecial
                     .Where(formation => formation.MovementOrder.OrderType == OrderType.ChargeWithTarget)
                     .Select(formation => formation.MovementOrder.TargetFormation).ToList();
 

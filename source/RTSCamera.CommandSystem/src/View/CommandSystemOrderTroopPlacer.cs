@@ -4,9 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
+using RTSCamera.CommandSystem.Logic;
+using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.CommandSystem.Utilities;
 using RTSCamera.Config;
-using RTSCamera.QuerySystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.InputSystem;
@@ -33,7 +34,7 @@ namespace RTSCamera.CommandSystem.View
         {
             base.OnMissionScreenInitialize();
             RegisterReload();
-            _contourView = Mission.GetMissionBehaviour<FormationColorMissionView>();
+            _contourView = Mission.GetMissionBehaviour<CommandSystemLogic>().FormationColorMissionView;
         }
 
         public override void OnMissionScreenFinalize()
@@ -431,8 +432,11 @@ namespace RTSCamera.CommandSystem.View
                     BeginFormationDraggingOrClicking();
                     break;
                 case CursorState.Normal:
-                    _formationDrawingMode = true;
-                    BeginFormationDraggingOrClicking();
+                    if (Input.IsKeyPressed(InputKey.LeftMouseButton))
+                    {
+                        _formationDrawingMode = true;
+                        BeginFormationDraggingOrClicking();
+                    }
                     break;
                 case CursorState.Rotation:
                     if (_mouseOverFormation.CountOfUnits <= 0)

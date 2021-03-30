@@ -1,13 +1,10 @@
-﻿using System;
+﻿using MissionSharedLibrary.Utilities;
+using System;
 using System.Runtime.ExceptionServices;
-using MissionSharedLibrary.Utilities;
-using RTSCamera.QuerySystem;
 using System.Security;
-using TaleWorlds.Engine;
-using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Logic.SubLogic.Component
+namespace RTSCamera.Logic.Component
 {
     public struct Contour
     {
@@ -39,85 +36,22 @@ namespace RTSCamera.Logic.SubLogic.Component
         private uint? CurrentColor => _currentLevel < 0 ? null : _colors[_currentLevel].Color;
         private bool CurrentAlwaysVisible => _currentLevel < 0 || _colors[_currentLevel].AlwaysVisible;
 
-        public Vec2 CurrentDirection;
-
-        public QueryData<WorldPosition> CurrentTargetPosition { get; }
-
-        public QueryData<Agent> TargetAgent { get; }
-
         public RTSCameraAgentComponent(Agent agent) : base(agent)
         {
             for (int i = 0; i < _colors.Length; ++i)
             {
                 _colors[i] = new Contour(null, false);
             }
-
-            CurrentTargetPosition = new QueryData<WorldPosition>(() => GetTargetPosition(Agent), 0.3f);
         }
 
-
-        [HandleProcessCorruptedStateExceptions]
-        [SecurityCritical]
-        private static WorldPosition GetTargetPosition(Agent agent)
+        protected override void OnStopUsingGameObject()
         {
-            try
-            {
-                var unit = agent;
-                if (!unit.IsActive())
-                    return WorldPosition.Invalid;
-                var formation = unit.Formation;
-                if (formation == null)
-                    return WorldPosition.Invalid;
-                var targetFormation = QueryDataStore.Get(formation.TargetFormation);
+            base.OnStopUsingGameObject();
 
-                Vec2 offset, velocity = Vec2.Zero;
-                if (QueryLibrary.IsCavalry(unit) || QueryLibrary.IsRangedCavalry(unit) &&
-                    formation.FiringOrder.OrderType == OrderType.HoldFire)
-                {
-                    offset = targetFormation.Formation.CurrentPosition - formation.CurrentPosition;
-                    velocity = targetFormation.Formation.QuerySystem.FormationIntegrityData.AverageVelocityExcludeFarAgents;
-                }
-                else if (QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) &&
-                    formation.FiringOrder.OrderType == OrderType.HoldFire)
-                {
-                    var targetAgent =
-                        targetFormation.NearestAgent(formation.CurrentPosition);
-                    if (targetAgent == null)
-                        return WorldPosition.Invalid;
-                    offset = targetAgent.Position.AsVec2 - formation.CurrentPosition;
-                    velocity = targetAgent.GetCurrentVelocity();
-                }
-                else
-                {
-                    return WorldPosition.Invalid;
-                }
-
-                Vec2 targetPosition = formation.GetCurrentGlobalPositionOfUnit(unit, true) + offset;
-
-                var result = targetFormation.NearestAgent(targetPosition)?.GetWorldPosition() ??
-                             WorldPosition.Invalid;
-                if (!result.IsValid || result.GetNavMesh() == UIntPtr.Zero)
-                {
-                    result = unit.GetWorldPosition();
-                    result.SetVec2(result.AsVec2 + unit.GetMovementDirection().AsVec2 * 0.1f);
-                    return result;
-                }
-                else
-                {
-                    result.SetVec2((unit.Position.AsVec2 - result.AsVec2).Normalized() * 0.8f + result.AsVec2 + velocity * 2);
-                    return result;
-                }
-            }
-            catch (AccessViolationException e)
-            {
-                Utility.DisplayMessage(e.ToString());
-            }
-            catch (Exception e)
-            {
-                Utility.DisplayMessage(e.ToString());
-            }
-
-            return WorldPosition.Invalid;
+            Agent.DisableScriptedMovement();
+            Agent.AIUseGameObjectEnable(false);
+            Agent.AIMoveToGameObjectDisable();
+            Agent.SetScriptedFlags(Agent.GetScriptedFlags() & ~Agent.AIScriptedFrameFlags.NoAttack);
         }
 
         public void SetContourColor(int level, uint? color, bool alwaysVisible)
@@ -213,19 +147,6 @@ namespace RTSCamera.Logic.SubLogic.Component
             catch (Exception e)
             {
                 Utility.DisplayMessage(e.ToString());
-            }
-        }
-
-        protected override void OnStopUsingGameObject()
-        {
-            base.OnStopUsingGameObject();
-
-            if (Agent.Controller == Agent.ControllerType.Player)
-            {
-                Agent.DisableScriptedMovement();
-                Agent.AIUseGameObjectEnable(false);
-                Agent.AIMoveToGameObjectDisable();
-                Agent.SetScriptedFlags(Agent.GetScriptedFlags() & ~Agent.AIScriptedFrameFlags.NoAttack);
             }
         }
 

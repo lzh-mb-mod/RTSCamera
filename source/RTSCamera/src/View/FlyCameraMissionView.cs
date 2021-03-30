@@ -502,26 +502,34 @@ namespace RTSCamera.View
 
         private void UpdateDof()
         {
-            Mission.Scene.SetDepthOfFieldParameters(DepthOfFieldStart, DepthOfFieldEnd, false);
-            if (Math.Abs(DepthOfFieldDistance) < 0.0001f)
+            if (DepthOfFieldEnd < 0.0001f)
             {
-                Mission.Scene.RayCastForClosestEntityOrTerrain(CombatCamera.Position, CombatCamera.Position + CombatCamera.Direction * 3000f, out var terrainCollisionDistance, out GameEntity _, 0.5f, BodyFlags.CameraCollisionRayCastExludeFlags);
-                Mission.RayCastForClosestAgent(CameraPosition,
-                    CombatCamera.Position + CombatCamera.Direction * 3000f, out var agentCollisionDistance);
-                if (float.IsNaN(terrainCollisionDistance))
-                {
-                    terrainCollisionDistance = float.MaxValue;
-                }
-
-                if (float.IsNaN(agentCollisionDistance))
-                {
-                    agentCollisionDistance = float.MaxValue;
-                }
-                Mission.Scene.SetDepthOfFieldFocus(Math.Min(terrainCollisionDistance, agentCollisionDistance));
+                Mission.Scene.SetDepthOfFieldParameters(0, 0, false);
+                Mission.Scene.SetDepthOfFieldFocus(0);
             }
             else
             {
-                Mission.Scene.SetDepthOfFieldFocus(DepthOfFieldDistance);
+                Mission.Scene.SetDepthOfFieldParameters(DepthOfFieldStart, DepthOfFieldEnd, false);
+                if (Math.Abs(DepthOfFieldDistance) < 0.0001f)
+                {
+                    Mission.Scene.RayCastForClosestEntityOrTerrain(CombatCamera.Position, CombatCamera.Position + CombatCamera.Direction * 3000f, out var terrainCollisionDistance, out GameEntity _, 0.5f, BodyFlags.CameraCollisionRayCastExludeFlags);
+                    Mission.RayCastForClosestAgent(CameraPosition,
+                        CombatCamera.Position + CombatCamera.Direction * 3000f, out var agentCollisionDistance);
+                    if (float.IsNaN(terrainCollisionDistance))
+                    {
+                        terrainCollisionDistance = float.MaxValue;
+                    }
+
+                    if (float.IsNaN(agentCollisionDistance))
+                    {
+                        agentCollisionDistance = float.MaxValue;
+                    }
+                    Mission.Scene.SetDepthOfFieldFocus(Math.Min(terrainCollisionDistance, agentCollisionDistance));
+                }
+                else
+                {
+                    Mission.Scene.SetDepthOfFieldFocus(DepthOfFieldDistance);
+                }
             }
         }
 

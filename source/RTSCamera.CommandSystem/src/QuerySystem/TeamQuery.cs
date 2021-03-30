@@ -1,7 +1,7 @@
 ﻿using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.QuerySystem
+namespace RTSCamera.CommandSystem.QuerySystem
 {
     public class TeamQuery
     {

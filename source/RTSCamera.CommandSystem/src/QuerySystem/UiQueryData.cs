@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.QuerySystem
+namespace RTSCamera.CommandSystem.QuerySystem
 {
     public class UiQueryData<T> : IQueryData
     {

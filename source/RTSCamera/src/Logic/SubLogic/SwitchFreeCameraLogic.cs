@@ -5,7 +5,6 @@ using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Event;
-using RTSCamera.QuerySystem;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -13,7 +12,7 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Logic.SubLogic
 {
-    public class SwitchFreeCameraLogic 
+    public class SwitchFreeCameraLogic
     {
         private readonly RTSCameraLogic _logic;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
@@ -49,11 +48,6 @@ namespace RTSCamera.Logic.SubLogic
             _logic = logic;
         }
 
-        public void OnCreated()
-        {
-            QueryDataStore.EnsureInitialized();
-        }
-
         public void OnBehaviourInitialize()
         {
             _controlTroopLogic = _logic.ControlTroopLogic;
@@ -64,13 +58,11 @@ namespace RTSCamera.Logic.SubLogic
         public void AfterAddTeam(Team team)
         {
             PlayerFormations.Add((FormationClass)_config.PlayerFormation);
-            QueryDataStore.AddTeam(team);
         }
 
         public void OnRemoveBehaviour()
         {
             Mission.OnMainAgentChanged -= OnMainAgentChanged;
-            QueryDataStore.Clear();
             WatchBattleBehavior.WatchMode = false;
         }
 
@@ -130,12 +122,9 @@ namespace RTSCamera.Logic.SubLogic
             if (agent.Controller == Agent.ControllerType.Player)
             {
                 agent.SetMaximumSpeedLimit(-1, false);
-                if (agent.HasMount)
-                {
-                    agent.MountAgent.SetMaximumSpeedLimit(-1, false);
-                }
+                agent.MountAgent?.SetMaximumSpeedLimit(-1, false);
                 //agent.StopRetreating();
-                if (_config.AlwaysSetPlayerFormation)
+                if (_config.AlwaysSetPlayerFormation && !WatchBattleBehavior.WatchMode)
                     Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
                 if (agent.Formation == null)
                     return;
@@ -148,7 +137,7 @@ namespace RTSCamera.Logic.SubLogic
                     Utility.SetHasPlayer(agent.Formation, false);
                 }
 
-                if (_config.AlwaysSetPlayerFormation)
+                if (_config.AlwaysSetPlayerFormation && !WatchBattleBehavior.WatchMode)
                     Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
                 // the game may crash if team has ai, no formation has agents and there are agents controlled by AI.
                 else if (agent.Team != null && agent.Team.HasTeamAi && agent.Formation == null)
@@ -225,6 +214,14 @@ namespace RTSCamera.Logic.SubLogic
                 {
                     GameTexts.SetVariable("KeyName",RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).ToSequenceString());
                     Utility.DisplayLocalizedText("str_rts_camera_control_troop_hint");
+                }
+            }
+
+            if (affectedAgent.Team != null)
+            {
+                if (affectedAgent.Team.PlayerOrderController.Owner == affectedAgent)
+                {
+                    affectedAgent.Team.PlayerOrderController.Owner = null;
                 }
             }
         }

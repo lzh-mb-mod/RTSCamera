@@ -1,6 +1,6 @@
 ﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.Config.HotKey;
-using RTSCamera.Logic.SubLogic.Component;
+using RTSCamera.Logic.Component;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;

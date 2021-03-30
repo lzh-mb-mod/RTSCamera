@@ -5,6 +5,7 @@ using MissionSharedLibrary.Utilities;
 using MissionSharedLibrary.View.ViewModelCollection;
 using MissionSharedLibrary.View.ViewModelCollection.Options;
 using MissionSharedLibrary.View.ViewModelCollection.Options.Selection;
+using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Logic;
 using RTSCamera.View;
 using TaleWorlds.Core;
@@ -97,6 +98,8 @@ namespace RTSCamera.Config
                             {
                                 config.PlayerFormation = i;
                                 rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass) i;
+                                if (WatchBattleBehavior.WatchMode)
+                                    return;
                                 Utility.SetPlayerFormation((FormationClass) i);
                             }
                         }, () => RTSCameraConfig.Get().PlayerFormation,
@@ -123,6 +126,8 @@ namespace RTSCamera.Config
                         {
                             var formationClass = (FormationClass)config.PlayerFormation;
                             rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = formationClass;
+                            if (WatchBattleBehavior.WatchMode)
+                                return;
                             Utility.SetPlayerFormation(formationClass);
                         }
                     }));

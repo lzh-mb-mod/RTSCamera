@@ -1,7 +1,8 @@
-﻿using System.Reflection;
-using RTSCamera.CommandSystem.Config;
+﻿using RTSCamera.CommandSystem.Logic.Component;
+using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.CommandSystem.Utilities;
-using RTSCamera.Logic.SubLogic.Component;
+using RTSCamera.Logic.Component;
+using System.Reflection;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -36,7 +37,7 @@ namespace RTSCamera.CommandSystem.Patch
                 if (Utility.ShouldChargeToFormation(___Agent))
                 {
                     isSettingDestinationSpeed = false;
-                    var component = ___Agent.GetComponent<RTSCameraAgentComponent>();
+                    var component = ___Agent.GetComponent<CommandSystemAgentComponent>();
                     if (component == null)
                         return true;
                     formationPosition = component.CurrentTargetPosition.Value;

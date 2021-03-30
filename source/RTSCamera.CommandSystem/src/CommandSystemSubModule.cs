@@ -5,7 +5,6 @@ using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using System.Linq;
 using TaleWorlds.Core;
-using TaleWorlds.Library;
 using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 
@@ -20,12 +19,10 @@ namespace RTSCamera.CommandSystem
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
-
+            
             EnableChargeToFormationForInfantry =
                 TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info => info.Id == "RealisticBattleAiModule") == null;
-
-            Module.CurrentModule.GlobalTextManager.LoadGameTexts(BasePath.Name +
-                                                                 $"Modules/{ModuleId}/ModuleData/module_strings.xml");
+            Module.CurrentModule.GlobalTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
         }
 
         protected override void OnBeforeInitialModuleScreenSetAsRoot()
@@ -47,8 +44,7 @@ namespace RTSCamera.CommandSystem
         {
             base.OnGameStart(game, gameStarterObject);
 
-
-            game.GameTextManager.LoadGameTexts(BasePath.Name + $"Modules/{ModuleId}/ModuleData/module_strings.xml");
+            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
         }
     }
 }
