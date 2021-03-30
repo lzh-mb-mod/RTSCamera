@@ -50,7 +50,7 @@ namespace RTSCamera.Logic.SubLogic
                 ? Mission.PlayerEnemyTeam.PlayerOrderController.Owner
                 : !Utility.IsAgentDead(Mission.PlayerEnemyTeam.GeneralAgent) ? Mission.PlayerEnemyTeam.GeneralAgent : Mission.PlayerEnemyTeam.Leader;
             
-            if (targetAgent == null)
+            if (Utility.IsAgentDead(targetAgent))
             {
                 Utility.DisplayLocalizedText("str_rts_camera_enemy_wiped_out");
                 return;

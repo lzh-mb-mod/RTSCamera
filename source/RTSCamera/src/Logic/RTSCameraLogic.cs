@@ -32,7 +32,6 @@ namespace RTSCamera.Logic
             base.OnCreated();
 
             Instance = this;
-            SwitchFreeCameraLogic.OnCreated();
         }
 
         public override void OnBehaviourInitialize()

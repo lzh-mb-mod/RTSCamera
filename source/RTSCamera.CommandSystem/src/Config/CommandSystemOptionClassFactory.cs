@@ -3,6 +3,7 @@ using MissionLibrary.View;
 using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.View.ViewModelCollection;
 using MissionSharedLibrary.View.ViewModelCollection.Options;
+using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.View;
 using TaleWorlds.Core;
@@ -16,7 +17,7 @@ namespace RTSCamera.CommandSystem.Config
         {
             return IdProviderCreator.Create(() =>
             {
-                var contourView = Mission.Current.GetMissionBehaviour<FormationColorMissionView>();
+                var contourView = Mission.Current.GetMissionBehaviour<CommandSystemLogic>().FormationColorMissionView;
 
                 var optionClass = new OptionClass(CommandSystemSubModule.ModuleId,
                     GameTexts.FindText("str_rts_camera_command_system_option_class"), menuClassCollection);

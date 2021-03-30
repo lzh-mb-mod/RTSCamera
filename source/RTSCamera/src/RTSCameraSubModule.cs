@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
 using MissionLibrary;
 using MissionLibrary.Controller;
 using MissionLibrary.Extension;
@@ -15,10 +13,12 @@ using RTSCamera.Patch.Fix;
 using SandBox;
 using SandBox.Source.Objects.SettlementObjects;
 using SandBox.Source.Towns;
+using System;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
-using TaleWorlds.Library;
+using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
@@ -42,9 +42,9 @@ namespace RTSCamera
             {
                 Initialize();
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts(
-                    BasePath.Name + $"Modules/{ModuleId}/ModuleData/module_strings.xml");
+                    ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts(
-                    BasePath.Name + $"Modules/{ModuleId}/ModuleData/MissionLibrary.xml");
+                    ModuleHelper.GetXmlPath(ModuleId, "MissionLibrary"));
 
                 _successPatch = true;
                 _harmony.Patch(
@@ -156,8 +156,8 @@ namespace RTSCamera
         {
             base.OnGameStart(game, gameStarterObject);
 
-            game.GameTextManager.LoadGameTexts(BasePath.Name + $"Modules/{ModuleId}/ModuleData/module_strings.xml");
-            game.GameTextManager.LoadGameTexts(BasePath.Name + $"Modules/{ModuleId}/ModuleData/MissionLibrary.xml");
+            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
+            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "MissionLibrary"));
             AddCampaignBehavior(gameStarterObject);
         }
 
