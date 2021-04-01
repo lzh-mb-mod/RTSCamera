@@ -5,6 +5,7 @@ using System.Linq;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
+using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.CommandSystem.Utilities;
 using RTSCamera.Config;
@@ -20,7 +21,7 @@ namespace RTSCamera.CommandSystem.View
 {
     public class CommandSystemOrderTroopPlacer : MissionView
     {
-        private FormationColorMissionView _contourView;
+        private FormationColorSubLogic _contourView;
         private readonly CommandSystemConfig _config = CommandSystemConfig.Get();
         private void RegisterReload()
         {
@@ -34,7 +35,7 @@ namespace RTSCamera.CommandSystem.View
         {
             base.OnMissionScreenInitialize();
             RegisterReload();
-            _contourView = Mission.GetMissionBehaviour<CommandSystemLogic>().FormationColorMissionView;
+            _contourView = Mission.GetMissionBehaviour<CommandSystemLogic>().FormationColorSubLogic;
         }
 
         public override void OnMissionScreenFinalize()

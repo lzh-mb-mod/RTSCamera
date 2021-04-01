@@ -9,7 +9,7 @@ namespace RTSCamera.CommandSystem.Logic
     public class CommandSystemLogic : MissionLogic
     {
         private readonly QuerySystemSubLogic _querySystemSubLogic = new QuerySystemSubLogic();
-        public readonly FormationColorMissionView FormationColorMissionView = new FormationColorMissionView();
+        public readonly FormationColorSubLogic FormationColorSubLogic = new FormationColorSubLogic();
 
         public override void OnCreated()
         {
@@ -20,39 +20,39 @@ namespace RTSCamera.CommandSystem.Logic
         {
             base.OnBehaviourInitialize();
 
-            FormationColorMissionView.OnMissionScreenInitialize();
+            FormationColorSubLogic.OnBehaviourInitialize();
         }
 
         public override void OnRemoveBehaviour()
         {
             _querySystemSubLogic.OnRemoveBehaviour();
-            FormationColorMissionView.OnMissionScreenFinalize();
+            FormationColorSubLogic.OnRemoveBehaviour();
         }
 
         public override void OnPreDisplayMissionTick(float dt)
         {
             base.OnPreDisplayMissionTick(dt);
 
-            FormationColorMissionView.OnMissionScreenTick(dt);
+            FormationColorSubLogic.OnPreDisplayMissionTick(dt);
         }
 
         public override void AfterAddTeam(Team team)
         {
             _querySystemSubLogic.AfterAddTeam(team);
-            FormationColorMissionView.AfterAddTeam(team);
+            FormationColorSubLogic.AfterAddTeam(team);
         }
 
         public override void OnAgentBuild(Agent agent, Banner banner)
         {
             _querySystemSubLogic.OnAgentBuild(agent, banner);
-            FormationColorMissionView.OnAgentBuild(agent, banner);
+            FormationColorSubLogic.OnAgentBuild(agent, banner);
         }
 
         public override void OnAgentFleeing(Agent affectedAgent)
         {
             base.OnAgentFleeing(affectedAgent);
 
-            FormationColorMissionView.OnAgentFleeing(affectedAgent);
+            FormationColorSubLogic.OnAgentFleeing(affectedAgent);
         }
 
         public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
