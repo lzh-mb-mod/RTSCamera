@@ -1,6 +1,6 @@
 ﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
-using RTSCamera.CommandSystem.QuerySystem;
+using RTSCamera.CommandSystem.View;
 using RTSCamera.Config;
 using RTSCamera.Logic.Component;
 using System;
@@ -12,9 +12,9 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
-namespace RTSCamera.CommandSystem.View
+namespace RTSCamera.CommandSystem.Logic.SubLogic
 {
-    public class FormationColorMissionView
+    public class FormationColorSubLogic
     {
         private static readonly OrderType[] movementOrderTypes =
         {
@@ -56,14 +56,14 @@ namespace RTSCamera.CommandSystem.View
 
         private readonly Queue<Action> _actionQueue = new Queue<Action>();
 
-        public  void OnMissionScreenInitialize()
+        public  void OnBehaviourInitialize()
         {
             Mission.Current.Teams.OnPlayerTeamChanged += Mission_OnPlayerTeamChanged;
             Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
             _commandSystemOrderUiHandler = Mission.Current.GetMissionBehaviour<CommandSystemOrderUIHandler>();
         }
 
-        public  void OnMissionScreenFinalize()
+        public  void OnRemoveBehaviour()
         {
             _actionQueue.Clear();
             _enemyAsTargetFormations.Clear();
@@ -72,7 +72,7 @@ namespace RTSCamera.CommandSystem.View
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent); ;
         }
 
-        public  void OnMissionScreenTick(float dt)
+        public  void OnPreDisplayMissionTick(float dt)
         {
             try
             {
