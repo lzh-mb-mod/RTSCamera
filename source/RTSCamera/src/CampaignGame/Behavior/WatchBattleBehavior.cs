@@ -106,7 +106,7 @@ namespace RTSCamera.CampaignGame.Behavior
                 if (PlayerEncounter.IsActive)
                     PlayerEncounter.LeaveEncounter = false;
                 else
-                    TaleWorlds.CampaignSystem.Campaign.Current.HandleSettlementEncounter(MobileParty.MainParty, PlayerSiege.PlayerSiegeEvent.BesiegedSettlement);
+                    EncounterManager.StartSettlementEncounter(MobileParty.MainParty, PlayerSiege.PlayerSiegeEvent.BesiegedSettlement);
                 WatchMode = true;
                 GameMenu.SwitchToMenu("assault_town");
             }

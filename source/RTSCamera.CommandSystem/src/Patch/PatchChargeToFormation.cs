@@ -39,10 +39,10 @@ namespace RTSCamera.CommandSystem.Patch
                         BindingFlags.Static | BindingFlags.Public), Priority.First));
 
                 Harmony.Patch(
-                    typeof(FormationMovementComponent).GetMethod("GetFormationFrame",
-                        BindingFlags.Instance | BindingFlags.Public),
+                    typeof(HumanAIComponent).GetMethod("GetFormationFrame",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(
-                        typeof(Patch_FormationMovementComponent).GetMethod("GetFormationFrame_Prefix",
+                        typeof(Patch_HumanAIComponent).GetMethod("GetFormationFrame_Prefix",
                             BindingFlags.Static | BindingFlags.Public), Priority.First));
 
                 //Harmony.Patch(

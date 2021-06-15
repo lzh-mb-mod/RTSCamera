@@ -9,11 +9,11 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Patch
 {
-    //[HarmonyLib.HarmonyPatch(typeof(FormationMovementComponent), "GetFormationFrame")]
-    public class Patch_FormationMovementComponent
+    //[HarmonyLib.HarmonyPatch(typeof(Patch_HumanAIComponent), "GetFormationFrame")]
+    public class Patch_HumanAIComponent
     {
-        private static readonly MethodInfo IsUnitDetached =
-            typeof(Formation).GetMethod("IsUnitDetached", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly PropertyInfo IsDetachedFromFormation =
+            typeof(Agent).GetProperty("IsDetachedFromFormation", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static readonly MethodInfo GetMovementSpeedRestriction =
             typeof(ArrangementOrder).GetMethod("GetMovementSpeedRestriction",
@@ -23,7 +23,7 @@ namespace RTSCamera.CommandSystem.Patch
             typeof(Formation).GetProperty("arragement", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static bool GetFormationFrame_Prefix(ref bool __result, Agent ___Agent,
-            ref FormationCohesionComponent ____cohesionComponent,
+            ref HumanAIComponent __instance,
             ref WorldPosition formationPosition,
             ref Vec2 formationDirection,
             ref float speedLimit,
@@ -32,7 +32,7 @@ namespace RTSCamera.CommandSystem.Patch
         {
             var formation = ___Agent.Formation;
             if (!___Agent.IsMount && formation != null &&
-                !(bool) IsUnitDetached.Invoke(formation, new object[] {___Agent}))
+                !(bool)IsDetachedFromFormation.GetValue(___Agent))
             {
                 if (Utility.ShouldChargeToFormation(___Agent))
                 {
@@ -45,9 +45,9 @@ namespace RTSCamera.CommandSystem.Patch
 
                     limitIsMultiplier = true;
                     speedLimit =
-                        !___Agent.HasMount && ____cohesionComponent != null &&
-                        FormationCohesionComponent.FormationSpeedAdjustmentEnabled
-                            ? ____cohesionComponent.GetDesiredSpeedInFormation(true)
+                        !___Agent.HasMount && __instance != null &&
+                        HumanAIComponent.FormationSpeedAdjustmentEnabled
+                            ? __instance.GetDesiredSpeedInFormation(true)
                             : -1f;
                     __result = true;
                     return false;

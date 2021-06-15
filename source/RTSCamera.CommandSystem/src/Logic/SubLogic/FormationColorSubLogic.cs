@@ -250,7 +250,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
 
             var enemyAsTargetFormations = PlayerOrderController?.SelectedFormations
-                .Select(formation => formation.MovementOrder.TargetFormation).Where(formation => formation != null).ToList() ?? new List<Formation>();
+                .Select(formation => formation.GetReadonlyMovementOrderReference().TargetFormation).Where(formation => formation != null).ToList() ?? new List<Formation>();
 
             foreach (var formation in enemyAsTargetFormations)
             {
@@ -269,8 +269,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             if (Mission.Current.PlayerEnemyTeam != null)
             {
                 var allyAsTargetFormations = Mission.Current.PlayerEnemyTeam.FormationsIncludingSpecial
-                    .Where(formation => formation.MovementOrder.OrderType == OrderType.ChargeWithTarget)
-                    .Select(formation => formation.MovementOrder.TargetFormation).ToList();
+                    .Where(formation => formation.GetReadonlyMovementOrderReference().OrderType == OrderType.ChargeWithTarget)
+                    .Select(formation => formation.GetReadonlyMovementOrderReference().TargetFormation).ToList();
 
 
                 foreach (var formation in allyAsTargetFormations)

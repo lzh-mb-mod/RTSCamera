@@ -14,13 +14,13 @@ namespace RTSCamera.CommandSystem.Logic.CombatAI
             //unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityMelee, 5f, 12f, 7.5f, 30f, 4f);
             //unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityRanged, 0.0f, 12f, 0.0f, 30f, 0.0f);
 
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.GoToPos, 3, 10, 5, 50, 12);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Melee, 7f, 10, 5, 20, 0.1f);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.Ranged, 0.01f, 10, 5, 20, 15f);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.ChargeHorseback, 11, 10, 10.7f, 60, 9);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.RangedHorseback, 0.01f, 7, 5, 8, 15);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityMelee, 0.5f, 12f, 0.6f, 30f, 0.4f);
-            unit.SetAIBehaviorValues(AISimpleBehaviorKind.AttackEntityRanged, 0.55f, 12f, 0.8f, 30f, 0.45f);
+            unit.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.GoToPos, 3, 10, 5, 50, 12);
+            unit.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.Melee, 7f, 10, 5, 20, 0.1f);
+            unit.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.Ranged, 0.01f, 10, 5, 20, 15f);
+            unit.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.ChargeHorseback, 11, 10, 10.7f, 60, 9);
+            unit.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.RangedHorseback, 0.01f, 7, 5, 8, 15);
+            unit.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.AttackEntityMelee, 0.5f, 12f, 0.6f, 30f, 0.4f);
+            unit.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.AttackEntityRanged, 0.55f, 12f, 0.8f, 30f, 0.45f);
         }
     }
 }
