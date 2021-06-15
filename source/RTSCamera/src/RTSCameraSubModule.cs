@@ -34,6 +34,7 @@ namespace RTSCamera
 
         private readonly Harmony _harmony = new Harmony("RTSCameraPatch");
         private bool _successPatch;
+
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();

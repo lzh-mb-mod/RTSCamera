@@ -11,7 +11,7 @@ namespace RTSCamera.View
 
         public WatchAgentSelectionData(MissionScreen missionScreen)
         {
-            var agents = (Mission.Current.PlayerTeam?.ActiveAgents ?? Mission.Current.Agents).Where(agent => agent.IsHero).ToList();
+            var agents = (Mission.Current.PlayerTeam?.ActiveAgents ?? Mission.Current.Agents).Where(agent => agent.Character != null && agent.IsHero).ToList();
             SelectionOptionData = new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionOptionData(i =>
             {
                 if (i >= 0 && i < agents.Count)
