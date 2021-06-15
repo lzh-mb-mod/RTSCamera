@@ -6,6 +6,6 @@ namespace RTSCamera.CommandSystem.Config.HotKey
 {
     public class CommandSystemGameKeyConfig : GameKeyConfigBase<CommandSystemGameKeyConfig>
     {
-        protected override string SaveName { get; } = Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(CommandSystemGameKeyConfig) + ".xml");
+        protected override string SaveName { get; } = Path.Combine(ConfigPath.ConfigDir, "RTSCamera", nameof(CommandSystemGameKeyConfig) + ".xml");
     }
 }

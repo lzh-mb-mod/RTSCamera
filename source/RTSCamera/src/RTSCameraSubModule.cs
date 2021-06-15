@@ -147,6 +147,7 @@ namespace RTSCamera
 
             RTSCameraGameKeyCategory.RegisterGameKeyCategory();
             Global.GetProvider<AMissionStartingManager>().AddHandler(new MissionStartingHandler());
+            Global.GetProvider<AMissionStartingManager>().AddHandler(new RTSCameraAgentComponent.MissionStartingHandler());
             var menuClassCollection = AMenuManager.Get().MenuClassCollection;
             AMenuManager.Get().OnMenuClosedEvent += RTSCameraConfig.OnMenuClosed;
             menuClassCollection.AddOptionClass(RTSCameraOptionClassFactory.CreateOptionClassProvider(menuClassCollection));

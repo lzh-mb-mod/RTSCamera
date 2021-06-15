@@ -40,7 +40,7 @@ namespace RTSCamera.CommandSystem.Config
         }
 
         [XmlIgnore]
-        protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(CommandSystemConfig) + ".xml");
+        protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, "RTSCamera", nameof(CommandSystemConfig) + ".xml");
     }
 }
 

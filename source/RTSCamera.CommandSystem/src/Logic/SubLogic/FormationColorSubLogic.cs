@@ -1,8 +1,9 @@
-﻿using MissionSharedLibrary.Utilities;
+﻿
+using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.View;
 using RTSCamera.Config;
-using RTSCamera.Logic.Component;
+using RTSCameraAgentComponent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -435,19 +436,19 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         private void SetAgentMouseOverContour(Agent agent, bool enemy)
         {
-            agent.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)ColorLevel.MouseOverFormation,
+            agent.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.MouseOverFormation,
                 enemy ? _mouseOverEnemyColor : _mouseOverAllyColor, true);
         }
 
         private void SetAgentAsTargetContour(Agent agent, bool enemy)
         {
-            agent.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)ColorLevel.TargetFormation,
+            agent.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.TargetFormation,
                 enemy ? _enemyTargetColor : _allyTargetColor, true);
         }
 
         private void SetAgentSelectedContour(Agent agent, bool enemy)
         {
-            agent.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)ColorLevel.SelectedFormation,
+            agent.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.SelectedFormation,
                 enemy ? _enemySelectedColor : _allySelectedColor, true);
         }
 
@@ -462,7 +463,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _actionQueue.Enqueue(() =>
             {
                 formation.ApplyActionOnEachUnit(agent =>
-                    agent.GetComponent<RTSCameraAgentComponent>()?.ClearTargetOrSelectedFormationColor());
+                    agent.GetComponent<RTSCameraComponent>()?.ClearTargetOrSelectedFormationColor());
             });
         }
 
@@ -471,7 +472,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _actionQueue.Enqueue(() =>
             {
                 formation.ApplyActionOnEachUnit(agent =>
-                    agent.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)level, null, true));
+                    agent.GetComponent<RTSCameraComponent>()?.SetContourColor((int)level, null, true));
             });
         }
 
@@ -485,7 +486,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         private static void ClearAgentFormationContour(Agent agent)
         {
-            agent.GetComponent<RTSCameraAgentComponent>()?.ClearFormationColor();
+            agent.GetComponent<RTSCameraComponent>()?.ClearFormationColor();
         }
     }
 }

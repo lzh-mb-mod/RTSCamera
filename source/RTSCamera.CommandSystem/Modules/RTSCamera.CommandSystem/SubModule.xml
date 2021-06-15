@@ -10,7 +10,6 @@
          <DependedModule Id="SandBoxCore" DependentVersion="e1.5.10" />
          <DependedModule Id="Sandbox" DependentVersion="e1.5.10" />
          <DependedModule Id="StoryMode" DependentVersion="e1.5.10" />
-         <DependedModule Id="RTSCamera" DependentVersion="e3.9.28" />
 	</DependedModules>
 	<SubModules>
 		<SubModule>

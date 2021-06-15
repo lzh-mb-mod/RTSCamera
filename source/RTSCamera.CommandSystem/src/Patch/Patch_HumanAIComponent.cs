@@ -1,7 +1,6 @@
 ﻿using RTSCamera.CommandSystem.Logic.Component;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.CommandSystem.Utilities;
-using RTSCamera.Logic.Component;
 using System.Reflection;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;

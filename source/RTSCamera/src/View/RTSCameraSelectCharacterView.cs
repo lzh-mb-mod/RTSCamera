@@ -1,6 +1,6 @@
 ﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.Config.HotKey;
-using RTSCamera.Logic.Component;
+using RTSCameraAgentComponent;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
@@ -52,7 +52,7 @@ namespace RTSCamera.View
             {
                 if (_mouseOverAgent == value)
                     return;
-                _mouseOverAgent?.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)ColorLevel.MouseOverAgent, null, false);
+                _mouseOverAgent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.MouseOverAgent, null, false);
                 _mouseOverAgent = value;
                 SetMouseOver(value);
             }
@@ -65,7 +65,7 @@ namespace RTSCamera.View
             {
                 if (_selectedAgent == value)
                     return;
-                _selectedAgent?.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)ColorLevel.SelectedAgent, null, false);
+                _selectedAgent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.SelectedAgent, null, false);
                 _selectedAgent = value;
                 SetSelected(value);
             }
@@ -90,18 +90,11 @@ namespace RTSCamera.View
             MissionLibrary.Event.MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
         }
 
-        public override void OnAgentCreated(Agent agent)
-        {
-            base.OnAgentCreated(agent);
-
-            agent.AddComponent(new RTSCameraAgentComponent(agent));
-        }
-
         public override void OnEarlyAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
         {
             base.OnEarlyAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
 
-            affectedAgent.GetComponent<RTSCameraAgentComponent>()?.ClearContourColor();
+            affectedAgent.GetComponent<RTSCameraComponent>()?.ClearContourColor();
         }
 
         public bool LockOnAgent()
@@ -185,12 +178,12 @@ namespace RTSCamera.View
 
         private void SetMouseOver(Agent agent)
         {
-            agent?.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)ColorLevel.MouseOverAgent, Utility.IsEnemy(agent) ? EnemyMouseOverColor : MouseOverColor, true);
+            agent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.MouseOverAgent, Utility.IsEnemy(agent) ? EnemyMouseOverColor : MouseOverColor, true);
         }
 
         private void SetSelected(Agent agent)
         {
-            agent?.GetComponent<RTSCameraAgentComponent>()?.SetContourColor((int)ColorLevel.SelectedAgent, Utility.IsEnemy(agent) ? EnemySelectedColor : SelectedColor, true);
+            agent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.SelectedAgent, Utility.IsEnemy(agent) ? EnemySelectedColor : SelectedColor, true);
         }
 
         private void UpdateMouseOverCharacter()

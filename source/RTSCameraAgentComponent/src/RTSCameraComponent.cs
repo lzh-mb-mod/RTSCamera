@@ -1,10 +1,10 @@
-﻿using MissionSharedLibrary.Utilities;
-using System;
+﻿using System;
 using System.Runtime.ExceptionServices;
 using System.Security;
+using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.Logic.Component
+namespace RTSCameraAgentComponent
 {
     public struct Contour
     {
@@ -28,7 +28,7 @@ namespace RTSCamera.Logic.Component
         NumberOfLevel
     }
 
-    public class RTSCameraAgentComponent : AgentComponent
+    public class RTSCameraComponent : AgentComponent
     {
         private readonly Contour[] _colors = new Contour[(int)ColorLevel.NumberOfLevel];
         private int _currentLevel = -1;
@@ -36,7 +36,7 @@ namespace RTSCamera.Logic.Component
         private uint? CurrentColor => _currentLevel < 0 ? null : _colors[_currentLevel].Color;
         private bool CurrentAlwaysVisible => _currentLevel < 0 || _colors[_currentLevel].AlwaysVisible;
 
-        public RTSCameraAgentComponent(Agent agent) : base(agent)
+        public RTSCameraComponent(Agent agent) : base(agent)
         {
             for (int i = 0; i < _colors.Length; ++i)
             {
@@ -97,7 +97,7 @@ namespace RTSCamera.Logic.Component
             }
             catch (Exception e)
             {
-                Utility.DisplayMessage(e.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(e.ToString()));
             }
         }
 
@@ -130,7 +130,7 @@ namespace RTSCamera.Logic.Component
             }
             catch (Exception e)
             {
-                Utility.DisplayMessage(e.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(e.ToString()));
             }
         }
 
@@ -146,7 +146,7 @@ namespace RTSCamera.Logic.Component
             }
             catch (Exception e)
             {
-                Utility.DisplayMessage(e.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(e.ToString()));
             }
         }
 
@@ -173,7 +173,7 @@ namespace RTSCamera.Logic.Component
             }
             catch (Exception e)
             {
-                Utility.DisplayMessage(e.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(e.ToString()));
             }
         }
     }
