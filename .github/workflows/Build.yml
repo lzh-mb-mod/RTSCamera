@@ -118,7 +118,7 @@ jobs:
           # Artifact name
           name: ${{env.RTSCAMERA_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}
           # A file, directory or wildcard pattern that describes what to upload
-          path: .\source\package\RTSCamera*
+          path: .\source\package\*RTSCamera
           # The desired behavior if no files are found using the provided path
 
       - name: Upload a Build Artifact
@@ -127,7 +127,7 @@ jobs:
           # Artifact name
           name: ${{env.COMMANDSYSTEM_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}
           # A file, directory or wildcard pattern that describes what to upload
-          path: .\source\package\RTSCamera.CommandSystem*
+          path: .\source\package\*RTSCamera.CommandSystem
           # The desired behavior if no files are found using the provided path
 
       - name: Zip RTS Camera
