@@ -11,8 +11,6 @@ namespace RTSCamera.CommandSystem.Patch
     //[HarmonyLib.HarmonyPatch(typeof(Patch_HumanAIComponent), "GetFormationFrame")]
     public class Patch_HumanAIComponent
     {
-        private static readonly PropertyInfo IsDetachedFromFormation =
-            typeof(Agent).GetProperty("IsDetachedFromFormation", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static readonly MethodInfo GetMovementSpeedRestriction =
             typeof(ArrangementOrder).GetMethod("GetMovementSpeedRestriction",
@@ -31,7 +29,7 @@ namespace RTSCamera.CommandSystem.Patch
         {
             var formation = ___Agent.Formation;
             if (!___Agent.IsMount && formation != null &&
-                !(bool)IsDetachedFromFormation.GetValue(___Agent))
+                !___Agent.IsDetachedFromFormation)
             {
                 if (Utility.ShouldChargeToFormation(___Agent))
                 {

@@ -50,7 +50,7 @@ namespace RTSCamera
 
                 _successPatch = true;
                 _harmony.Patch(
-                    typeof(Formation).GetMethod("LeaveDetachment", BindingFlags.Instance | BindingFlags.NonPublic),
+                    typeof(Formation).GetMethod("LeaveDetachment", BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(
                         typeof(Patch_Formation).GetMethod("LeaveDetachment_Prefix",
                             BindingFlags.Static | BindingFlags.Public)));
@@ -83,7 +83,7 @@ namespace RTSCamera
                         BindingFlags.Static | BindingFlags.Public)));
                 _harmony.Patch(
                     typeof(TeamAIComponent).GetMethod("TickOccasionally",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
+                        BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(typeof(Patch_TeamAIComponent).GetMethod(
                         nameof(Patch_TeamAIComponent.TickOccasionally_Prefix),
                         BindingFlags.Static | BindingFlags.Public)));
