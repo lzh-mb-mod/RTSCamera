@@ -60,8 +60,8 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo "RTSCAMERA_ARTIFACT_NAME=RTS Camera ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_version}}\n" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          echo "COMMANDSYSTEM_ARTIFACT_NAME=Command System ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_version}}\n" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "RTSCAMERA_ARTIFACT_NAME=RTS Camera ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_version}}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "COMMANDSYSTEM_ARTIFACT_NAME=Command System ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_version}}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       # additional .net core for md2html package.
       - name: Setup .NET Core 2.2.x
