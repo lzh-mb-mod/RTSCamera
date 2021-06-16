@@ -8,15 +8,6 @@ namespace RTSCamera.Patch
     //[HarmonyLib.HarmonyPatch(typeof(Formation), "LeaveDetachment")]
     public class Patch_Formation
     {
-        private static readonly MethodInfo AttachUnit =
-            typeof(Formation).GetMethod("AttachUnit", BindingFlags.Instance | BindingFlags.NonPublic);
-
-        private static readonly PropertyInfo DetachmentManager =
-            typeof(Team).GetProperty("DetachmentManager", BindingFlags.Instance | BindingFlags.NonPublic);
-
-        private static readonly MethodInfo OnFormationLeaveDetachment =
-            typeof(DetachmentManager).GetMethod("OnFormationLeaveDetachment",
-                BindingFlags.Instance | BindingFlags.NonPublic);
         public static bool LeaveDetachment_Prefix(
             Formation __instance,
             List<IDetachment> ____detachments,
@@ -26,16 +17,12 @@ namespace RTSCamera.Patch
             foreach (Agent agent in detachment.Agents.Where(a => a.Formation == __instance && a.IsAIControlled).ToList())
             {
                 detachment.RemoveAgent(agent);
-                AttachUnit?.Invoke(__instance, new object[] { agent });
+                __instance.AttachUnit(agent);
             }
 
             ____detachments.Remove(detachment);
-            var detachmentManager = (DetachmentManager)DetachmentManager?.GetValue(__instance.Team);
-            OnFormationLeaveDetachment?.Invoke(detachmentManager, new object[2]
-            {
-                __instance,
-                detachment
-            });
+
+            __instance.Team.DetachmentManager.OnFormationLeaveDetachment(__instance, detachment);
             return false;
         }
     }
