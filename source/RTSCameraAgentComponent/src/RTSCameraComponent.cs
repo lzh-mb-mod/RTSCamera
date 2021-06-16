@@ -44,7 +44,7 @@ namespace RTSCameraAgentComponent
             }
         }
 
-        protected override void OnStopUsingGameObject()
+        public override void OnStopUsingGameObject()
         {
             base.OnStopUsingGameObject();
 
@@ -120,7 +120,7 @@ namespace RTSCameraAgentComponent
 
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
-        protected override void OnMount(Agent mount)
+        public override void OnMount(Agent mount)
         {
             base.OnMount(mount);
 
@@ -136,7 +136,7 @@ namespace RTSCameraAgentComponent
 
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
-        protected override void OnDismount(Agent mount)
+        public override void OnDismount(Agent mount)
         {
             base.OnDismount(mount);
 

@@ -495,7 +495,7 @@ namespace RTSCamera.View
             UpdateDof();
             UpdateViewAngle();
             MissionScreen.SceneView?.SetCamera(CombatCamera);
-            Mission.SetCameraFrame(matrixFrame, Zoom);
+            Mission.SetCameraFrame(ref matrixFrame, Zoom);
             SetCameraBearing?.Invoke(MissionScreen, new object[1] { CameraBearing });
             SetCameraElevation?.Invoke(MissionScreen, new object[1] { CameraElevation });
         }
