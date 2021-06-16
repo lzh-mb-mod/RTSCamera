@@ -4,6 +4,7 @@ using MissionLibrary.Controller;
 using MissionLibrary.Extension;
 using MissionLibrary.View;
 using MissionSharedLibrary;
+using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
@@ -146,8 +147,10 @@ namespace RTSCamera
                 return false;
 
             RTSCameraGameKeyCategory.RegisterGameKeyCategory();
-            Global.GetProvider<AMissionStartingManager>().AddHandler(new MissionStartingHandler());
-            Global.GetProvider<AMissionStartingManager>().AddHandler(new RTSCameraAgentComponent.MissionStartingHandler());
+            Global.RegisterProvider(
+                VersionProviderCreator.Create(() => new RTSCameraAgentComponent.MissionStartingHandler(),
+                    new Version(1, 0, 0)), "RTSCameraAgentComponent.MissionStartingHandler");
+            Global.GetProvider<AMissionStartingManager>().AddHandler(new MissionStartingHandler.MissionStartingHandler());
             var menuClassCollection = AMenuManager.Get().MenuClassCollection;
             AMenuManager.Get().OnMenuClosedEvent += RTSCameraConfig.OnMenuClosed;
             menuClassCollection.AddOptionClass(RTSCameraOptionClassFactory.CreateOptionClassProvider(menuClassCollection));

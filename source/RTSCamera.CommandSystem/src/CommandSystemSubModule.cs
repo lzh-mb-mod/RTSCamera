@@ -2,8 +2,10 @@
 using MissionLibrary.Controller;
 using MissionLibrary.View;
 using MissionSharedLibrary;
+using MissionSharedLibrary.Provider;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
+using System;
 using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.ModuleManager;
@@ -51,7 +53,9 @@ namespace RTSCamera.CommandSystem
             var menuClassCollection = AMenuManager.Get().MenuClassCollection;
             menuClassCollection.AddOptionClass(CommandSystemOptionClassFactory.CreateOptionClassProvider(menuClassCollection));
             Global.GetProvider<AMissionStartingManager>().AddHandler(new CommandSystemMissionStartingHandler());
-            Global.GetProvider<AMissionStartingManager>().AddHandler(new RTSCameraAgentComponent.MissionStartingHandler());
+            Global.RegisterProvider(
+                VersionProviderCreator.Create(() => new RTSCameraAgentComponent.MissionStartingHandler(),
+                    new Version(1, 0, 0)), "RTSCameraAgentComponent.MissionStartingHandler");
             return true;
         }
 
