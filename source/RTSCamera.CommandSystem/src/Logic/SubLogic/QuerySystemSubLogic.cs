@@ -26,10 +26,5 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         {
             agent.AddComponent(new CommandSystemAgentComponent(agent));
         }
-
-        public void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
-        {
-            affectedAgent.RemoveComponent(affectedAgent.GetComponent<CommandSystemAgentComponent>());
-        }
     }
 }
