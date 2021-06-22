@@ -54,10 +54,5 @@ namespace RTSCamera.CommandSystem.Logic
 
             FormationColorSubLogic.OnAgentFleeing(affectedAgent);
         }
-
-        public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
-        {
-            _querySystemSubLogic.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
-        }
     }
 }
