@@ -64,6 +64,7 @@ namespace RTSCamera.CommandSystem
             base.OnGameStart(game, gameStarterObject);
 
             game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
+            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "MissionLibrary"));
         }
     }
 }
