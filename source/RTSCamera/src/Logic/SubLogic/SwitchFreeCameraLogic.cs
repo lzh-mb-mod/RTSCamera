@@ -9,6 +9,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace RTSCamera.Logic.SubLogic
 {
@@ -119,7 +120,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnAgentControllerChanged(Agent agent)
         {
-            if (agent.Controller == Agent.ControllerType.Player)
+            if (agent.Controller == Agent.ControllerType.Player || agent.Controller == Agent.ControllerType.None)
             {
                 agent.SetMaximumSpeedLimit(-1, false);
                 agent.MountAgent?.SetMaximumSpeedLimit(-1, false);
@@ -166,13 +167,14 @@ namespace RTSCamera.Logic.SubLogic
                     }
                     if (Mission.MainAgent.Formation != null)
                         CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
-                    if (IsSpectatorCamera)
+                    if (IsSpectatorCamera && _config.PlayerControllerInFreeCamera == (int)Agent.ControllerType.AI)
                     {
                         EnsureMainAgentControlledByAI();
                     }
                     else
                     {
-                        _controlTroopLogic.ControlMainAgent(false);
+                        if (Mission.MainAgent.Controller != Agent.ControllerType.Player)
+                            _controlTroopLogic.ControlMainAgent(false);
                     }
                 }
             }
@@ -204,6 +206,7 @@ namespace RTSCamera.Logic.SubLogic
                     // Otherwise MissionScreen will reset camera elevate and bearing.
                     if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
                         Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
+                    // Restore the variables to initial state
                     else if (shouldSmoothToAgent)
                     {
                         Utility.ShouldSmoothMoveToAgent = true;
@@ -212,7 +215,7 @@ namespace RTSCamera.Logic.SubLogic
                 }
                 else if (Mission.PlayerTeam?.ActiveAgents.Count > 0)
                 {
-                    GameTexts.SetVariable("KeyName",RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).ToSequenceString());
+                    GameTexts.SetVariable("KeyName", RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).ToSequenceString());
                     Utility.DisplayLocalizedText("str_rts_camera_control_troop_hint");
                 }
             }
@@ -244,6 +247,10 @@ namespace RTSCamera.Logic.SubLogic
                 Utility.DisplayLocalizedText("str_rts_camera_player_dead");
                 _controlTroopLogic.SetMainAgent();
             }
+
+            Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
+                (Agent.ControllerType) _config.PlayerControllerInFreeCamera);
+
             MissionEvent.OnToggleFreeCamera(false);
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(false);
         }
@@ -251,9 +258,11 @@ namespace RTSCamera.Logic.SubLogic
         private void SwitchToFreeCamera()
         {
             IsSpectatorCamera = true;
-            if (Mission.MainAgent != null)
+            if (!Utility.IsPlayerDead())
             {
-                Utility.AIControlMainAgent(true, true);
+                Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.MainAgent, (Agent.ControllerType)_config.PlayerControllerInFreeCamera);
+                Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
+                    (Agent.ControllerType) _config.PlayerControllerInFreeCamera);
             }
 
             MissionEvent.OnToggleFreeCamera(true);

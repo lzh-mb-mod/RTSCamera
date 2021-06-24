@@ -17,6 +17,7 @@
     <string id="RTSCamera_switch_free_camera_hint" text="Switch between free camera and player camera." />
     <string id="RTSCamera_use_free_camera_by_default_hint" text="Switch to free camera when entering battle." />
     <string id="RTSCamera_raised_height_hint" text="Camera raised height after switching to free camera." />
+    <string id="RTSCamera_player_controller_in_free_camera_hint" text="Player control mode in Free Camera. If set to none, player character will not be controlled. If set to AI, AI will control player character. If set to Player, you can still directly control your character." />
     <string id="RTSCamera_player_formation_hint" text="Assign player to the selected formation." />
     <string id="RTSCamera_always_set_player_formation_hint" text="Automatically set player to the specified formation, for example when switching to free camera, when controlling another solider, etc." />
     <string id="RTSCamera_toggle_pause_hint" text="Pause or unpause the game." />
@@ -56,6 +57,10 @@
     <string id="RTSCamera_usefreecamerabydefault" text="Use Free Camera By Default" />
     <string id="RTSCamera_switchfreecamera" text="Switch Free Camera" />
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="Camera Raised Height" />
+    <string id="RTSCamera_player_controller_in_free_camera" text="Player Controller in Free Camera" />
+    <string id="RTSCamera_controller_type_none" text="None" />
+    <string id="RTSCamera_controller_type_AI" text="AI" />
+    <string id="RTSCamera_controller_type_player" text="Player" />
     <string id="RTSCamera_playerformation" text="Player Formation" />
     <string id="RTSCamera_always_set_player_formation" text="Always Set Player Formation" />
     <string id="RTSCamera_constantspeed" text="Constant Camera Speed" />
@@ -63,11 +68,11 @@
     <string id="RTSCamera_ignore_boundaries" text="Ignore Boundaries" />
 
     <string id="RTSCamera_control_options" text="Control Options" />
+    <string id="RTSCamera_watchanotherhero" text="Watch Another Hero" />
+    <string id="RTSCamera_select_character" text="Select Character" />
     <string id="RTSCamera_controlallyafterdeath" text="Control Ally After Death" />
     <string id="RTSCamera_prefertocontrolcompanions" text="Prefer To Control Companions" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
-    <string id="RTSCamera_watchanotherhero" text="Watch Another Hero" />
-    <string id="RTSCamera_select_character" text="Select Character" />
 
     <string id="RTSCamera_miscellaneous_options" text="Miscellaneous Options" />
     <string id="RTSCamera_togglepause" text="Toggle Pause" />
@@ -100,11 +105,23 @@
     <string id="RTSCamera_freecamerakey" text="Free Camera" />
     <string id="RTSCamera_disabledeathkey" text="All Invulnerable" />
     <string id="RTSCamera_controltroopkey" text="Control Troop" />
+    <string id="RTSCamera_camera_move_forward" text="Camera Move Forward" />
+    <string id="RTSCamera_camera_move_backward" text="Camera Move Backward" />
+    <string id="RTSCamera_camera_move_left" text="Camera Move Left" />
+    <string id="RTSCamera_camera_move_right" text="Camera Move Right" />
+    <string id="RTSCamera_camera_move_up" text="Camera Move Up" />
+    <string id="RTSCamera_camera_move_down" text="Camera Move Down" />
 
     <string id="RTSCamera_slowmotionkey_description" text="Enable slow motion mode. Press again to recover." />
     <string id="RTSCamera_disable_death_desciption" text="All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
     <string id="RTSCamera_controltroopkey_description" text="Control one of your teammates when you are killed, or switch to player camera when in free camera mode." />
     <string id="RTSCamera_switchteam_description" text="Swap player's team, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
+    <string id="RTSCamera_camera_move_forward_description" text="Move the camera forward" />
+    <string id="RTSCamera_camera_move_backward_description" text="Move the camera backward" />
+    <string id="RTSCamera_camera_move_left_description" text="Move the camera to the left" />
+    <string id="RTSCamera_camera_move_right_description" text="Move the camera to the right" />
+    <string id="RTSCamera_camera_move_up_description" text="Move the camera up" />
+    <string id="RTSCamera_camera_move_down_description" text="Move the camera down" />
 
     <string id="RTSCamera_enemywipedout" text="Enemy has been wiped out." />
     <string id="RTSCamera_switchtoenemyteam" text="Switched to the enemy team." />

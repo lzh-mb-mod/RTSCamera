@@ -22,7 +22,7 @@ namespace RTSCamera.View
         {
             base.OnMissionScreenTick(dt);
 
-            if ((RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ToggleHUD).IsKeyPressed()) || MBDebug.DisableAllUI && TaleWorlds.InputSystem.Input.IsKeyPressed(InputKey.Home))
+            if ((RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ToggleHUD).IsKeyPressed(Input)) || MBDebug.DisableAllUI && TaleWorlds.InputSystem.Input.IsKeyPressed(InputKey.Home))
                 ToggleUI();
 
             if (!_isTemporarilyOpenUI)
