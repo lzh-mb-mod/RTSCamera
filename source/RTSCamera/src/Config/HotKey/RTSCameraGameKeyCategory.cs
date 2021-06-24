@@ -3,6 +3,7 @@ using MissionLibrary.HotKey;
 using MissionSharedLibrary.Config.HotKey;
 using MissionSharedLibrary.HotKey.Category;
 using System.Collections.Generic;
+using System.Reflection;
 using TaleWorlds.InputSystem;
 
 namespace RTSCamera.Config.HotKey
@@ -28,6 +29,9 @@ namespace RTSCamera.Config.HotKey
     public class RTSCameraGameKeyCategory
     {
         public const string CategoryId = "RTSCameraHotKey";
+
+        private static readonly MethodInfo GetGameKey =
+            typeof(GameKeyContext).GetMethod("GetGameKey", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static AGameKeyCategory Category => AGameKeyCategoryManager.Get().GetCategory(CategoryId);
 
@@ -84,32 +88,32 @@ namespace RTSCamera.Config.HotKey
             result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.CameraMoveForward,
                 nameof(GameKeyEnum.CameraMoveForward), CategoryId, new List<InputKey>
                 {
-                    nativeCategory?.GetGameKey("Up")?.KeyboardKey?.InputKey ?? InputKey.W
+                    ((GameKey) GetGameKey.Invoke(nativeCategory, new object[] {"Up"})).KeyboardKey?.InputKey ?? InputKey.W
                 }));
             result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.CameraMoveBackward,
                 nameof(GameKeyEnum.CameraMoveBackward), CategoryId, new List<InputKey>
                 {
-                    nativeCategory?.GetGameKey("Down")?.KeyboardKey?.InputKey ?? InputKey.S
+                    ((GameKey) GetGameKey.Invoke(nativeCategory, new object[] {"Down"})).KeyboardKey?.InputKey ?? InputKey.S
                 }));
             result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.CameraMoveLeft,
                 nameof(GameKeyEnum.CameraMoveLeft), CategoryId, new List<InputKey>
                 {
-                    nativeCategory?.GetGameKey("Left")?.KeyboardKey?.InputKey ?? InputKey.A
+                    ((GameKey) GetGameKey.Invoke(nativeCategory, new object[] {"Left"})).KeyboardKey?.InputKey ?? InputKey.A
                 }));
             result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.CameraMoveRight,
                 nameof(GameKeyEnum.CameraMoveRight), CategoryId, new List<InputKey>
                 {
-                    nativeCategory?.GetGameKey("Right")?.KeyboardKey?.InputKey ?? InputKey.D
+                    ((GameKey) GetGameKey.Invoke(nativeCategory, new object[] {"Right"})).KeyboardKey?.InputKey ?? InputKey.D
                 }));
             result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.CameraMoveUp,
                 nameof(GameKeyEnum.CameraMoveUp), CategoryId, new List<InputKey>
                 {
-                    nativeCategory?.GetGameKey("Jump")?.KeyboardKey?.InputKey ?? InputKey.Space
+                    ((GameKey) GetGameKey.Invoke(nativeCategory, new object[] {"Jump"})).KeyboardKey?.InputKey ?? InputKey.Space
                 }));
             result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.CameraMoveDown,
                 nameof(GameKeyEnum.CameraMoveDown), CategoryId, new List<InputKey>
                 {
-                    nativeCategory?.GetGameKey("Crouch")?.KeyboardKey?.InputKey ?? InputKey.X
+                    ((GameKey) GetGameKey.Invoke(nativeCategory, new object[] {"Crouch"})).KeyboardKey?.InputKey ?? InputKey.Z
                 }));
             return result;
         }
