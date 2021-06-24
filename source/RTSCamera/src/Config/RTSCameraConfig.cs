@@ -3,6 +3,7 @@ using System.IO;
 using System.Xml.Serialization;
 using MissionSharedLibrary.Config;
 using MissionSharedLibrary.Utilities;
+using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Config
 {
@@ -39,6 +40,8 @@ namespace RTSCamera.Config
         public bool UseFreeCameraByDefault;
 
         public float RaisedHeight = 10;
+
+        public int PlayerControllerInFreeCamera = (int)Agent.ControllerType.AI;
 
         public int PlayerFormation = 4;
 
@@ -78,6 +81,7 @@ namespace RTSCamera.Config
             ConfigVersion = other.ConfigVersion;
             UseFreeCameraByDefault = other.UseFreeCameraByDefault;
             RaisedHeight = other.RaisedHeight;
+            PlayerControllerInFreeCamera = other.PlayerControllerInFreeCamera;
             PlayerFormation = other.PlayerFormation;
             AlwaysSetPlayerFormation = other.AlwaysSetPlayerFormation;
             ConstantSpeed = other.ConstantSpeed;

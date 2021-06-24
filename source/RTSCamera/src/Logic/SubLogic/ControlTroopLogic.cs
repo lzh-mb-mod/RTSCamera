@@ -43,6 +43,7 @@ namespace RTSCamera.Logic.SubLogic
                 {
                     MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                     MissionLibrary.Event.MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
+                    // Let AI control previous main agent.
                     Utility.AIControlMainAgent(false);
                 }
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
@@ -77,18 +78,20 @@ namespace RTSCamera.Logic.SubLogic
             {
                 if (agent != null)
                 {
-                    if (agent.Controller == Agent.ControllerType.Player || agent.Team != Mission.PlayerTeam)
+                    if ((!_switchFreeCameraLogic.IsSpectatorCamera && agent.Controller == Agent.ControllerType.Player) || agent.Team != Mission.PlayerTeam)
                         return false;
                     if (!Utility.IsPlayerDead() && Mission.MainAgent != agent)
                     {
                         MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                         MissionLibrary.Event.MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
+                        // Let AI control previous main agent.
                         Utility.AIControlMainAgent(false);
                     }
                     bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
                     if (_switchFreeCameraLogic.IsSpectatorCamera)
                     {
-                        Mission.MainAgent = agent;
+                        if (Mission.MainAgent != agent)
+                            Mission.MainAgent = agent;
                         _switchFreeCameraLogic.SwitchCamera();
                     }
                     else
@@ -118,19 +121,16 @@ namespace RTSCamera.Logic.SubLogic
             {
                 if (Mission.MainAgent != null)
                 {
-                    if (Mission.MainAgent.Controller != Agent.ControllerType.Player)
+                    if (displayMessage)
                     {
-                        if (displayMessage)
-                        {
-                            GameTexts.SetVariable("ControlledTroopName", Mission.MainAgent.Name);
-                            Utility.DisplayLocalizedText("str_rts_camera_control_troop");
-                        }
-                        bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
-                        Utility.PlayerControlAgent(Mission.MainAgent);
-                        Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
-
-                        return true;
+                        GameTexts.SetVariable("ControlledTroopName", Mission.MainAgent.Name);
+                        Utility.DisplayLocalizedText("str_rts_camera_control_troop");
                     }
+                    bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
+                    Utility.PlayerControlAgent(Mission.MainAgent);
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
+
+                    return true;
                 }
                 else
                 {
@@ -234,7 +234,7 @@ namespace RTSCamera.Logic.SubLogic
                 if (_selectCharacterView.LockOnAgent())
                     return;
 
-                if (Mission.MainAgent?.Controller == Agent.ControllerType.Player)
+                if (!_switchFreeCameraLogic.IsSpectatorCamera && Mission.MainAgent?.Controller == Agent.ControllerType.Player)
                     return;
 
                 ForceControlAgent();

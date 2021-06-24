@@ -17,6 +17,7 @@
     <string id="RTSCamera_switch_free_camera_hint" text="在自由视角和玩家视角间切换。" />
     <string id="RTSCamera_use_free_camera_by_default_hint" text="进入战斗时自动切换到自由视角。" />
     <string id="RTSCamera_raised_height_hint" text="切换到自由视角后相机提高的高度。" />
+    <string id="RTSCamera_player_controller_in_free_camera_hint" text="自由视角中玩家角色的控制模式。如果设为无，你的角色不会被控制。如果设为AI，你的角色会被AI控制。如果设为玩家，你仍然可以直接控制你的角色。" />
     <string id="RTSCamera_player_formation_hint" text="将玩家分配到指定的编队。" />
     <string id="RTSCamera_always_set_player_formation_hint" text="自动将玩家分配到指定编队，例如当切换到自由视角时，当控制另一个士兵时，等等。" />
     <string id="RTSCamera_toggle_pause_hint" text="暂停游戏或取消暂停游戏。" />
@@ -57,23 +58,26 @@
     <string id="RTSCamera_switchfreecamera" text="切换自由视角" />
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="相机提高的高度" />
     <string id="RTSCamera_playerformation" text="玩家编队" />
+    <string id="RTSCamera_player_controller_in_free_camera" text="玩家角色的控制模式" />
+    <string id="RTSCamera_controller_type_none" text="无" />
+    <string id="RTSCamera_controller_type_AI" text="AI" />
+    <string id="RTSCamera_controller_type_player" text="玩家" />
     <string id="RTSCamera_always_set_player_formation" text="总是设置玩家编队" />
     <string id="RTSCamera_constantspeed" text="恒定镜头速度" />
     <string id="RTSCamera_ignore_terrain" text="镜头忽略地形" />
     <string id="RTSCamera_ignore_boundaries" text="镜头忽略边界限制" />
 
     <string id="RTSCamera_control_options" text="控制选项" />
+    <string id="RTSCamera_watchanotherhero" text="观察另一个英雄单位" />
+    <string id="RTSCamera_select_character" text="选择角色" />
     <string id="RTSCamera_controlallyafterdeath" text="阵亡后控制队友" />
     <string id="RTSCamera_prefertocontrolcompanions" text="优先控制同伴" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
-    <string id="RTSCamera_watchanotherhero" text="观察另一个英雄单位" />
-    <string id="RTSCamera_select_character" text="选择角色" />
 
     <string id="RTSCamera_miscellaneous_options" text="杂项" />
     <string id="RTSCamera_togglepause" text="切换暂停" />
     <string id="RTSCamera_slowmotionmode" text="慢速模式" />
     <string id="RTSCamera_slowmotionfactor" text="慢速倍率" />
-
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="作弊选项" />
     <string id="RTSCamera_disabledeath" text="全员无敌" />
@@ -101,11 +105,24 @@
     <string id="RTSCamera_freecamerakey" text="自由视角" />
     <string id="RTSCamera_disabledeathkey" text="全员无敌" />
     <string id="RTSCamera_controltroopkey" text="控制下属部队" />
+    <string id="RTSCamera_camera_move_forward" text="相机向前移动" />
+    <string id="RTSCamera_camera_move_backward" text="相机向后移动" />
+    <string id="RTSCamera_camera_move_left" text="相机向左移动" />
+    <string id="RTSCamera_camera_move_right" text="相机向右移动" />
+    <string id="RTSCamera_camera_move_up" text="相机向上移动" />
+    <string id="RTSCamera_camera_move_down" text="相机向下移动" />
 
     <string id="RTSCamera_slowmotionkey_description" text="启用慢速模式。再按一次恢复。" />
     <string id="RTSCamera_disable_death_desciption" text="所有单位都不会阵亡，可用于录制视频。作弊模式需要启用且需要在菜单中启用该快捷键。" />
     <string id="RTSCamera_controltroopkey_description" text="当你阵亡后可按下该按键来控制你的一个队友，或当处于自由视角模式时切换到玩家角色的视角。" />
     <string id="RTSCamera_switchteam_description" text="切换玩家的队伍，用于制作视频。作弊模式需要启用且需要在菜单中启用该快捷键。" />
+    <string id="RTSCamera_camera_move_forward_description" text="相机向前移动" />
+    <string id="RTSCamera_camera_move_backward_description" text="相机向后移动" />
+    <string id="RTSCamera_camera_move_left_description" text="相机向左移动" />
+    <string id="RTSCamera_camera_move_right_description" text="相机向右移动" />
+    <string id="RTSCamera_camera_move_up_description" text="相机向上移动" />
+    <string id="RTSCamera_camera_move_down_description" text="相机向下移动" />
+
 
     <string id="RTSCamera_enemywipedout" text="敌人已被消灭。" />
     <string id="RTSCamera_switchtoenemyteam" text="已切换至敌军队伍。" />

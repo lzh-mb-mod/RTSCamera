@@ -5,6 +5,7 @@ using MissionLibrary.Controller.Camera;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
+using RTSCamera.Config.HotKey;
 using RTSCamera.Logic;
 using RTSCamera.Logic.SubLogic;
 using TaleWorlds.Core;
@@ -112,7 +113,7 @@ namespace RTSCamera.View
 
         // legacy.
         public bool CameraRotateSmoothMode = true;
-        public bool SmoothRotationMode 
+        public bool SmoothRotationMode
         {
             get => CameraRotateSmoothMode;
             set => CameraRotateSmoothMode = value;
@@ -313,11 +314,6 @@ namespace RTSCamera.View
 
         private void OnToggleFreeCamera(bool freeCamera)
         {
-            if (_missionMainAgentController != null)
-            {
-                _missionMainAgentController.IsDisabled = freeCamera;
-            }
-
             if (!freeCamera)
             {
                 LockToAgent = false;
@@ -385,17 +381,17 @@ namespace RTSCamera.View
             {
                 Vec3 keyInput = Vec3.Zero;
                 Vec3 mouseInput = Vec3.Zero;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.MoveForward))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveForward).IsKeyDown(Input))
                     ++keyInput.y;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.MoveBackward))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveBackward).IsKeyDown(Input))
                     --keyInput.y;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.MoveLeft))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveLeft).IsKeyDown(Input))
                     --keyInput.x;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.MoveRight))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveRight).IsKeyDown(Input))
                     ++keyInput.x;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.Jump))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveUp).IsKeyDown(Input))
                     ++keyInput.z;
-                if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.Crouch))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveDown).IsKeyDown(Input))
                     --keyInput.z;
                 if (MissionScreen.MouseVisible && !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
                 {
@@ -630,7 +626,7 @@ namespace RTSCamera.View
         public override void OnPreDisplayMissionTick(float dt)
         {
             base.OnPreDisplayMissionTick(dt);
-            
+
             //if (!_isOrderViewOpen &&
             //    (Input.IsGameKeyReleased(8) ||
             //     (Input.IsGameKeyReleased(9) && !_rightButtonDraggingMode)))
@@ -639,10 +635,15 @@ namespace RTSCamera.View
             //}
 
             if (LockToAgent && (Math.Abs(Input.GetDeltaMouseScroll()) > 0.0001f ||
-                                 Input.IsGameKeyDown(CombatHotKeyCategory.MoveForward) || Input.IsGameKeyDown(CombatHotKeyCategory.MoveBackward) ||
-                                 Input.IsGameKeyDown(CombatHotKeyCategory.MoveLeft) || Input.IsGameKeyDown(CombatHotKeyCategory.MoveRight) || Input.GetIsControllerConnected() &&
-                                 (Input.GetKeyState(InputKey.ControllerLStick).y != 0.0 ||
-                                  Input.GetKeyState(InputKey.ControllerLStick).x != 0.0)))
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveForward).IsKeyDown(Input) ||
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveBackward).IsKeyDown(Input) ||
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveLeft).IsKeyDown(Input) ||
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveRight).IsKeyDown(Input) ||
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveUp).IsKeyDown(Input) ||
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveDown).IsKeyDown(Input) ||
+                                Input.GetIsControllerConnected() &&
+                                (Input.GetKeyState(InputKey.ControllerLStick).y != 0.0 ||
+                                 Input.GetKeyState(InputKey.ControllerLStick).x != 0.0)))
             {
                 LeaveFromAgent();
             }
