@@ -11,6 +11,7 @@ using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
+using RTSCamera.src.Patch.Fix;
 using SandBox;
 using SandBox.Source.Objects.SettlementObjects;
 using SandBox.Source.Towns;
@@ -24,6 +25,7 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
 using TaleWorlds.MountAndBlade.View.Screen;
+using TaleWorlds.MountAndBlade.ViewModelCollection.HUD;
 using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace RTSCamera
@@ -99,6 +101,12 @@ namespace RTSCamera
                     prefix: new HarmonyMethod(
                         typeof(Patch_MissionBoundaryCrossingHandler).GetMethod("TickForMainAgent_Prefix",
                             BindingFlags.Static | BindingFlags.Public)));
+                _harmony.Patch(
+                    typeof(MissionFormationMarkerVM).GetMethod("RefreshFormationPositions",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_MissionFormationMarkerVM).GetMethod(
+                        nameof(Patch_MissionFormationMarkerVM.RefreshFormationPositions_Prefix),
+                        BindingFlags.Static | BindingFlags.Public)));
 
                 var missionListenerOnMissionModeChange = typeof(IMissionListener).GetMethod("OnMissionModeChange", BindingFlags.Instance | BindingFlags.Public);
 
@@ -168,10 +176,13 @@ namespace RTSCamera
 
         private void AddCampaignBehavior(object gameStarter)
         {
-            if (gameStarter is CampaignGameStarter campaignGameStarter)
-            {
-                campaignGameStarter.AddBehavior(new WatchBattleBehavior());
-            }
+            //if (gameStarter is CampaignGameStarter campaignGameStarter)
+            //{
+            //    campaignGameStarter.AddBehavior(new WatchBattleBehavior());
+            //}
+
+            // Use Patch to add game menu
+            WatchBattleBehavior.Patch(_harmony);
         }
 
 

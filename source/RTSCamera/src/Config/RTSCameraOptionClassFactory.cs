@@ -118,20 +118,20 @@ namespace RTSCamera.Config
 
                 var controlOptionCategory = new OptionCategory("Control",
                     GameTexts.FindText("str_rts_camera_control_options"));
-                controlOptionCategory.AddOption(new SelectionOptionViewModel(
+                var playerFormationOption = new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_player_formation"),
                     GameTexts.FindText("str_rts_camera_player_formation_hint"), new SelectionOptionData(
                         i =>
                         {
                             var config = RTSCameraConfig.Get();
                             if ((i != config.PlayerFormation || config.AlwaysSetPlayerFormation) &&
-                                i >= 0 && i < (int)FormationClass.NumberOfAllFormations)
+                                i >= 0 && i < (int) FormationClass.NumberOfAllFormations)
                             {
                                 config.PlayerFormation = i;
-                                rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)i;
+                                rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass) i;
                                 if (WatchBattleBehavior.WatchMode)
                                     return;
-                                Utility.SetPlayerFormation((FormationClass)i);
+                                Utility.SetPlayerFormation((FormationClass) i);
                             }
                         }, () =>
                         {
@@ -147,7 +147,7 @@ namespace RTSCamera.Config
 
                             return Mission.Current.MainAgent.Formation.Index;
                         },
-                        (int)FormationClass.NumberOfRegularFormations, new[]
+                        (int) FormationClass.NumberOfRegularFormations, new[]
                         {
                             new SelectionItem(true, "str_troop_group_name", "0"),
                             new SelectionItem(true, "str_troop_group_name", "1"),
@@ -159,7 +159,8 @@ namespace RTSCamera.Config
                             new SelectionItem(true, "str_troop_group_name", "7"),
                             new SelectionItem(true, "str_troop_group_name", "8"),
                             new SelectionItem(true, "str_troop_group_name", "9")
-                        }), true));
+                        }), true);
+                controlOptionCategory.AddOption(playerFormationOption);
                 controlOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_always_set_player_formation"),
                     GameTexts.FindText("str_rts_camera_always_set_player_formation_hint"),
@@ -175,6 +176,7 @@ namespace RTSCamera.Config
                             if (WatchBattleBehavior.WatchMode)
                                 return;
                             Utility.SetPlayerFormation(formationClass);
+                            playerFormationOption.UpdateData(false);
                         }
                     }));
                 controlOptionCategory.AddOption(new SelectionOptionViewModel(

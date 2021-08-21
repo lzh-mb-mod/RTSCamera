@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Module>
-	<Name value = "RTS Camera"/>
-	<Id value = "RTSCamera"/>
-	<Version value = "e3.9.31"/>
+	<Name value="RTS Camera"/>
+	<Id value="RTSCamera"/>
+	<Version value="e3.10.0"/>
 	<SingleplayerModule value="true"/>
 	<MultiplayerModule value="false"/>
 	<DependedModules>
-         <DependedModule Id="Native" DependentVersion="e1.6.0" />
-         <DependedModule Id="SandBoxCore" DependentVersion="e1.6.0" />
-         <DependedModule Id="Sandbox" DependentVersion="e1.6.0" />
-         <DependedModule Id="StoryMode" DependentVersion="e1.6.0" />
+		<DependedModule Id="Native" DependentVersion="e1.6.1" />
+		<DependedModule Id="SandBoxCore" DependentVersion="e1.6.1" />
+		<DependedModule Id="Sandbox" DependentVersion="e1.6.1" />
+		<DependedModule Id="CustomBattle" DependentVersion="e1.6.1"/>
+		<DependedModule Id="StoryMode" DependentVersion="e1.6.1" />
 	</DependedModules>
 	<SubModules>
 		<SubModule>
-			<Name value = "RTSCameraSubModule"/>
-			<DLLName value = "RTSCamera.dll"/>
-			<SubModuleClassType value = "RTSCamera.RTSCameraSubModule"/>
+			<Name value="RTSCameraSubModule"/>
+			<DLLName value="RTSCamera.dll"/>
+			<SubModuleClassType value="RTSCamera.RTSCameraSubModule"/>
 			<Tags>
-				<Tag key="DedicatedServerType" value ="none" />
-				<Tag key="IsNoRenderModeElement" value ="false" />
+				<Tag key="DedicatedServerType" value="none" />
+				<Tag key="IsNoRenderModeElement" value="false" />
 			</Tags>
 		</SubModule>
 	</SubModules>

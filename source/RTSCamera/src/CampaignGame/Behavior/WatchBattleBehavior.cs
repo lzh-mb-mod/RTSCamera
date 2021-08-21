@@ -1,8 +1,11 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using Helpers;
 using MissionSharedLibrary.Utilities;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameMenus;
+using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
 
@@ -18,11 +21,35 @@ namespace RTSCamera.CampaignGame.Behavior
 
         public override void RegisterEvents()
         {
-            CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, starter =>
-                {
-                    AddMenuOption(Game.Current, starter);
-                });
+            //CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, starter =>
+            //    {
+            //        AddMenuOption(Game.Current, starter);
+            //    });
         }
+
+        // Use harmony to add menu option to "encounter" menu because the original way (through OnSessionLauncherEvent doesn't work any more)
+        public static void Patch(Harmony harmony)
+        {
+            try
+            {
+                harmony.Patch(
+                    typeof(EncounterGameMenuBehavior).GetMethod("AddGameMenus",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    postfix: new HarmonyMethod(typeof(WatchBattleBehavior).GetMethod(nameof(Postfix),
+                        BindingFlags.Static | BindingFlags.Public)));
+
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
+            }
+        }
+
+        public static void Postfix(CampaignGameStarter gameSystemInitializer)
+        {
+            AddMenuOption(Game.Current, gameSystemInitializer);
+        }
+
 
         private static void AddMenuOption(Game game, CampaignGameStarter gameStarter)
         {
