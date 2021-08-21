@@ -82,8 +82,6 @@ namespace RTSCamera.CommandSystem.View
                 _orderTroopPlacer.IsDrawingForced = DataSource.IsMovementSubOrdersShown;
                 _orderTroopPlacer.IsDrawingFacing = DataSource.IsFacingSubOrdersShown;
                 _orderTroopPlacer.IsDrawingForming = false;
-                _orderTroopPlacer.IsDrawingAttaching = cursorState == MissionOrderVM.CursorState.Attach;
-                _orderTroopPlacer.UpdateAttachVisuals(cursorState == MissionOrderVM.CursorState.Attach);
                 if (cursorState == MissionOrderVM.CursorState.Face)
                     MissionScreen.OrderFlag.SetArrowVisibility(true, OrderController.GetOrderLookAtDirection(Mission.MainAgent.Team.PlayerOrderController.SelectedFormations, MissionScreen.OrderFlag.Position.AsVec2));
                 else

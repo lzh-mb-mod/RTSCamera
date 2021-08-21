@@ -67,7 +67,7 @@ namespace RTSCamera.CommandSystem.Logic.Component
                 if (targetAgent == null || !result.IsValid || result.GetNavMesh() == UIntPtr.Zero)
                 {
                     result = unit.GetWorldPosition();
-                    result.SetVec2(result.AsVec2 + unit.GetMovementDirection().AsVec2 * 0.1f);
+                    result.SetVec2(result.AsVec2 + unit.GetMovementDirection() * 0.1f);
                     return result;
                 }
 
