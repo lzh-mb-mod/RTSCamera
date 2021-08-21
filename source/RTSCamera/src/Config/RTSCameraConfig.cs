@@ -3,6 +3,7 @@ using System.IO;
 using System.Xml.Serialization;
 using MissionSharedLibrary.Config;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CampaignGame.Behavior;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Config
@@ -42,6 +43,13 @@ namespace RTSCamera.Config
         public float RaisedHeight = 10;
 
         public int PlayerControllerInFreeCamera = (int)Agent.ControllerType.AI;
+
+        public Agent.ControllerType GetPlayerControllerInFreeCamera()
+        {
+            if (WatchBattleBehavior.WatchMode)
+                return Agent.ControllerType.AI;
+            return (Agent.ControllerType) PlayerControllerInFreeCamera;
+        }
 
         public int PlayerFormation = 4;
 

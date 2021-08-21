@@ -50,39 +50,44 @@ namespace RTSCamera.Config
                     {
                         RTSCameraConfig.Get().RaisedHeight = f;
                     }, 0, 50, true, true));
-                cameraOptionCategory.AddOption(new SelectionOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_player_controller_in_free_camera"), GameTexts.FindText("str_rts_camera_player_controller_in_free_camera_hint"),
-                    new SelectionOptionData(i =>
-                    {
-                        if (i < 0 || i >= (int)Agent.ControllerType.Count)
-                            return;
-                        RTSCameraConfig.Get().PlayerControllerInFreeCamera = i;
-                        if (rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera && !Utility.IsPlayerDead())
+                if (!WatchBattleBehavior.WatchMode)
+                {
+                    cameraOptionCategory.AddOption(new SelectionOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_player_controller_in_free_camera"),
+                        GameTexts.FindText("str_rts_camera_player_controller_in_free_camera_hint"),
+                        new SelectionOptionData(i =>
                         {
-                            Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.Current.MainAgent, (Agent.ControllerType)i);
-                            Utilities.Utility.UpdateMainAgentControllerState(Mission.Current.MainAgent,
-                                rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera, (Agent.ControllerType) i);
-                        }
-                    }, () =>
-                    {
-                        if (rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera && !Utility.IsPlayerDead())
+                            if (i < 0 || i >= (int) Agent.ControllerType.Count)
+                                return;
+                            RTSCameraConfig.Get().PlayerControllerInFreeCamera = i;
+                            if (rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera && !Utility.IsPlayerDead())
+                            {
+                                Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.Current.MainAgent,
+                                    (Agent.ControllerType) i);
+                                Utilities.Utility.UpdateMainAgentControllerState(Mission.Current.MainAgent,
+                                    rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera, (Agent.ControllerType) i);
+                            }
+                        }, () =>
                         {
-                            if (Mission.Current.MainAgent.Controller == Agent.ControllerType.AI)
-                                return (int)Agent.ControllerType.AI;
-                            var controller = Mission.Current.GetMissionBehaviour<MissionMainAgentController>();
-                            if (controller == null || controller.IsDisabled ||
-                                Mission.Current.MainAgent.Controller == Agent.ControllerType.None)
-                                return (int) Agent.ControllerType.None;
-                            return (int) Agent.ControllerType.Player;
-                        }
+                            if (rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera && !Utility.IsPlayerDead())
+                            {
+                                if (Mission.Current.MainAgent.Controller == Agent.ControllerType.AI)
+                                    return (int) Agent.ControllerType.AI;
+                                var controller = Mission.Current.GetMissionBehaviour<MissionMainAgentController>();
+                                if (controller == null || controller.IsDisabled ||
+                                    Mission.Current.MainAgent.Controller == Agent.ControllerType.None)
+                                    return (int) Agent.ControllerType.None;
+                                return (int) Agent.ControllerType.Player;
+                            }
 
-                        return RTSCameraConfig.Get().PlayerControllerInFreeCamera;
-                    }, 3, new[]
-                    {
-                        new SelectionItem(true, "str_rts_camera_controller_type", "none"),
-                        new SelectionItem(true, "str_rts_camera_controller_type", "AI"),
-                        new SelectionItem(true, "str_rts_camera_controller_type", "Player")
-                    }), true));
+                            return RTSCameraConfig.Get().PlayerControllerInFreeCamera;
+                        }, 3, new[]
+                        {
+                            new SelectionItem(true, "str_rts_camera_controller_type", "none"),
+                            new SelectionItem(true, "str_rts_camera_controller_type", "AI"),
+                            new SelectionItem(true, "str_rts_camera_controller_type", "Player")
+                        }), true));
+                }
                 cameraOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_constant_speed"),
                     GameTexts.FindText("str_rts_camera_constant_speed_hint"), () => RTSCameraConfig.Get().ConstantSpeed,
@@ -125,13 +130,13 @@ namespace RTSCamera.Config
                         {
                             var config = RTSCameraConfig.Get();
                             if ((i != config.PlayerFormation || config.AlwaysSetPlayerFormation) &&
-                                i >= 0 && i < (int) FormationClass.NumberOfAllFormations)
+                                i >= 0 && i < (int)FormationClass.NumberOfAllFormations)
                             {
                                 config.PlayerFormation = i;
-                                rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass) i;
+                                rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)i;
                                 if (WatchBattleBehavior.WatchMode)
                                     return;
-                                Utility.SetPlayerFormation((FormationClass) i);
+                                Utility.SetPlayerFormation((FormationClass)i);
                             }
                         }, () =>
                         {
@@ -147,7 +152,7 @@ namespace RTSCamera.Config
 
                             return Mission.Current.MainAgent.Formation.Index;
                         },
-                        (int) FormationClass.NumberOfRegularFormations, new[]
+                        (int)FormationClass.NumberOfRegularFormations, new[]
                         {
                             new SelectionItem(true, "str_troop_group_name", "0"),
                             new SelectionItem(true, "str_troop_group_name", "1"),
