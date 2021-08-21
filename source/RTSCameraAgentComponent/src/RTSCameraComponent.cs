@@ -176,5 +176,12 @@ namespace RTSCameraAgentComponent
                 InformationManager.DisplayMessage(new InformationMessage(e.ToString()));
             }
         }
+
+        public override void OnAgentRemoved()
+        {
+            base.OnAgentRemoved();
+
+            ClearContourColor();
+        }
     }
 }
