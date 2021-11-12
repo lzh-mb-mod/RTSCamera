@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lib.Harmony" Version="2.0.4" />
+    <PackageReference Include="Lib.Harmony" Version="2.1.1" />
   </ItemGroup>
 
   <Import Project="$(MSBuildProjectDirectory)\*.props" />

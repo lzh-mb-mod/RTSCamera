@@ -53,7 +53,7 @@ namespace RTSCamera.src.Patch.Fix
                 float w = 0.0f;
                 WorldPosition medianPosition = target.Formation.QuerySystem.MedianPosition;
                 medianPosition.SetVec2(target.Formation.QuerySystem.AveragePosition);
-                double insideUsableArea = MBWindowManager.WorldToScreenInsideUsableArea(____missionCamera, medianPosition.Position + ____heightOffset, ref screenX, ref screenY, ref w);
+                double insideUsableArea = MBWindowManager.WorldToScreenInsideUsableArea(____missionCamera, medianPosition.GetGroundVec3() + ____heightOffset, ref screenX, ref screenY, ref w);
                 if (w < 0.0 || !MathF.IsValidValue(screenX) || !MathF.IsValidValue(screenY))
                 {
                     screenX = -10000f;

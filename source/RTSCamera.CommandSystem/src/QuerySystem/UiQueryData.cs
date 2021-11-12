@@ -42,7 +42,7 @@ namespace RTSCamera.CommandSystem.QuerySystem
 
         public T GetCachedValueWithMaxAge(float age)
         {
-            if (MBCommon.GetTime(MBCommon.TimeType.Application) <= _expireTime - (double)_lifetime + Math.Min(_lifetime, age))
+            if (MBCommon.GetApplicationTime() <= _expireTime - (double)_lifetime + Math.Min(_lifetime, age))
                 return _cachedValue;
             Expire();
             return Value;
@@ -52,7 +52,7 @@ namespace RTSCamera.CommandSystem.QuerySystem
         {
             get
             {
-                float time = MBCommon.GetTime(MBCommon.TimeType.Application);
+                float time = MBCommon.GetApplicationTime();
                 if (time >= (double)_expireTime)
                 {
                     if (_syncGroup != null)

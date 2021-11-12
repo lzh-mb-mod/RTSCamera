@@ -28,7 +28,6 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             OrderType.FollowMe,
             OrderType.FollowEntity,
             OrderType.GuardMe,
-            OrderType.Attach,
             OrderType.Retreat,
             OrderType.AdvanceTenPaces,
             OrderType.FallBackTenPaces,

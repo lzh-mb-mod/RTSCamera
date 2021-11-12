@@ -21,7 +21,7 @@ namespace RTSCamera.Utilities
             {
                 case Agent.ControllerType.None:
                     MissionSharedLibrary.Utilities.Utility.PlayerControlAgent(agent);
-                    agent.LookDirection = agent.GetMovementDirection();
+                    agent.LookDirection = agent.GetMovementDirection().ToVec3();
                     break;
                 case Agent.ControllerType.AI:
                     MissionSharedLibrary.Utilities.Utility.AIControlMainAgent(true, true);

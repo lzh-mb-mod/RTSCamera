@@ -63,11 +63,11 @@ namespace RTSCamera.CommandSystem.Logic.Component
 
                 var targetAgent = targetFormation.NearestAgent(targetPosition);
                 var result = targetAgent?.GetWorldPosition() ?? WorldPosition.Invalid;
-                PositionOfTargetAgent.SetValue(result.AsVec2, MBCommon.GetTime(MBCommon.TimeType.Mission));
+                PositionOfTargetAgent.SetValue(result.AsVec2, MBCommon.GetTotalMissionTime());
                 if (targetAgent == null || !result.IsValid || result.GetNavMesh() == UIntPtr.Zero)
                 {
                     result = unit.GetWorldPosition();
-                    result.SetVec2(result.AsVec2 + unit.GetMovementDirection().AsVec2 * 0.1f);
+                    result.SetVec2(result.AsVec2 + unit.GetMovementDirection() * 0.1f);
                     return result;
                 }
 

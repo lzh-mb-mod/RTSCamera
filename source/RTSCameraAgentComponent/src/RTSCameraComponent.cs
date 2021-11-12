@@ -49,8 +49,13 @@ namespace RTSCameraAgentComponent
             base.OnStopUsingGameObject();
 
             Agent.DisableScriptedMovement();
-            Agent.AIUseGameObjectEnable(false);
-            Agent.AIMoveToGameObjectDisable();
+
+            if (Agent.IsMine && Agent.HumanAIComponent != null) 
+            {
+                Agent.AIUseGameObjectEnable(false);
+                Agent.AIMoveToGameObjectDisable();
+            }
+
             Agent.SetScriptedFlags(Agent.GetScriptedFlags() & ~Agent.AIScriptedFrameFlags.NoAttack);
         }
 
