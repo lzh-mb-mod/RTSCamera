@@ -453,31 +453,24 @@ namespace RTSCamera.CommandSystem.View
                 case CursorState.Rotation:
                     if (_mouseOverFormation.CountOfUnits <= 0)
                         break;
+
                     HideNonSelectedOrderRotationEntities(_mouseOverFormation);
                     PlayerOrderController.ClearSelectedFormations();
                     PlayerOrderController.SelectFormation(_mouseOverFormation);
+
                     _formationDrawingMode = true;
-                    WorldPosition orderPosition = _mouseOverFormation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.None);
+
+                    WorldPosition orderWorldPosition = _mouseOverFormation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.None);
 
                     Vec2 direction = _mouseOverFormation.Direction;
                     direction.RotateCCW(-1.570796f);
 
-                    _formationDrawingStartingPosition = orderPosition;
+                    _formationDrawingStartingPosition = orderWorldPosition;
+                    _formationDrawingStartingPosition.Value.SetVec2(_formationDrawingStartingPosition.Value.AsVec2 + direction * (_mouseOverDirection == 1 ? 0.5f : -0.5f) * _mouseOverFormation.Width);
 
-                    _formationDrawingStartingPosition.Value.SetVec2(
-                        _formationDrawingStartingPosition.Value.AsVec2 + direction *
-                        (_mouseOverDirection == 1 ? 0.5f : -0.5f) * _mouseOverFormation.Width);
+                    orderWorldPosition.SetVec2(orderWorldPosition.AsVec2 + direction * (_mouseOverDirection == 1 ? -0.5f : 0.5f) * _mouseOverFormation.Width);
 
-                    WorldPosition worldPosition = orderPosition;
-
-                    worldPosition.SetVec2(worldPosition.AsVec2 + direction *
-                        (_mouseOverDirection == 1 ? -0.5f : 0.5f) *
-                        _mouseOverFormation.Width);
-
-                    _deltaMousePosition =
-                        MissionScreen.SceneView.WorldPointToScreenPoint(worldPosition.GetGroundVec3()) -
-                        GetScreenPoint();
-
+                    _deltaMousePosition = MissionScreen.SceneView.WorldPointToScreenPoint(orderWorldPosition.GetGroundVec3()) - GetScreenPoint();
                     _lastMousePosition = Input.GetMousePositionRanged();
                     break;
             }
