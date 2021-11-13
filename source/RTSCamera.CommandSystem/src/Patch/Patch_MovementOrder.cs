@@ -2,13 +2,14 @@
 using RTSCamera.CommandSystem.Logic.CombatAI;
 using RTSCamera.CommandSystem.Utilities;
 using TaleWorlds.MountAndBlade;
+using static TaleWorlds.MountAndBlade.MovementOrder;
 
 namespace RTSCamera.CommandSystem.Patch
 {
     //[HarmonyLib.HarmonyPatch(typeof(MovementOrder), "Tick")]
     public class Patch_MovementOrder
     {
-        public static bool GetSubstituteOrder_Prefix(MovementOrder __instance, ref MovementOrder __result,
+        public static bool GetSubstituteOrder_Prefix(MovementOrder __instance, ref MovementOrderEnum movementOrderEnum, ref MovementOrder __result,
             Formation formation)
         {
             if (__instance.OrderType == OrderType.ChargeWithTarget && CommandSystemConfig.Get().AttackSpecificFormation)

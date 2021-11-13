@@ -63,7 +63,7 @@ namespace RTSCamera.CommandSystem.Logic.Component
 
                 var targetAgent = targetFormation.NearestAgent(targetPosition);
                 var result = targetAgent?.GetWorldPosition() ?? WorldPosition.Invalid;
-                PositionOfTargetAgent.SetValue(result.AsVec2, MBCommon.GetTime(MBCommon.TimeType.Mission));
+                PositionOfTargetAgent.SetValue(result.AsVec2, MBCommon.GetTotalMissionTime());
                 if (targetAgent == null || !result.IsValid || result.GetNavMesh() == UIntPtr.Zero)
                 {
                     result = unit.GetWorldPosition();

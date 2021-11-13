@@ -1,5 +1,5 @@
 # RTS Camera
-(Old name: EnhancedMission, Enhanced Mission RTS Camera)
+Forked from original RTS Camera for keeping supporting.
 
 A mod for Mount&Blade II Bannerlord that provides free camera and more features in battle.
 
@@ -114,33 +114,20 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - Please start steam first, and make sure that Bannerlord is in your steam account.
 
-- If the game crashed after starting:
-
-  - If you upgraded this mod from version lower than e3.2.0, pleas remove the old mod folder "EnhancedMission" to prevent crash.
-  
-  - I would appreciate it if you send dump file to me to help me to solve the crash by followinig steps below:
-
-    - Click `Yes` when the game crashes and ask whether to collect information.
-
-    - Before sending files to TaleWorlds, go to `C:\ProgramData\Mount and Blade II Bannerlord\crashes`(**Not the game installation path**) and find the folder related to the crash by timestamp.
-
-    - Then send `dump.dmp` file in the folder to me.
-
 - If you forget the hotkey set for opening menu:
 
   - You can remove the config file so that config will be reset to default.
-
-## Optional File
-- ["Improved Combat AI"](https://www.nexusmods.com/mountandblade2bannerlord/mods/449/): Adjusting combat AI.
-
-- ["Cinematic Camera"](https://www.nexusmods.com/mountandblade2bannerlord/mods/1627): Adjusting camera parameters such as moving speed, depth of field, etc.
-
+  - 
 ## Source Code
 
-Source code should be available within `source` folder in release of this mod. Or you can get it at [github.com](https://github.com/lzh-mb-mod/RTSCamera).
+Source code should be available within `source` folder in release of this mod. Or you can get it at [github.com](https://github.com/gediorios/RTSCamera).
 
-## Contact with me
-- Email:
+## Contacts
+- My email:
+  
+  - gediorios@gmail.com
+
+- Author of original:
 
   - lizhenhuan1019@outlook.com
 

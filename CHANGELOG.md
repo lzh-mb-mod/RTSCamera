@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.10.1] - 2021-11-12
+### Fixed
+- Keep compatible with Bannerlord e1.6.4.
+
 ## [e3.9.25] - 2021-03-14
 ### Fixed
 - Keep compatible with Bannerlord e1.5.9.

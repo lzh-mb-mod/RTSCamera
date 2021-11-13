@@ -261,8 +261,7 @@ namespace RTSCamera.Logic.SubLogic
             if (!Utility.IsPlayerDead())
             {
                 Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.MainAgent, _config.GetPlayerControllerInFreeCamera());
-                Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
-                    _config.GetPlayerControllerInFreeCamera());
+                Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera, _config.GetPlayerControllerInFreeCamera());
             }
 
             MissionEvent.OnToggleFreeCamera(true);

@@ -44,16 +44,23 @@ namespace RTSCamera.View
         private SwitchFreeCameraLogic _freeCameraLogic;
         private MissionMainAgentController _missionMainAgentController;
 
+        private bool _zoomToggled;
+        private float _zoomToggleTime = float.MaxValue;
+        private float _zoomAmount;
+
         private readonly int _shiftSpeedMultiplier = 3;
         private Vec3 _cameraSpeed;
         private float _cameraSpeedMultiplier;
         private bool _cameraSmoothMode;
         private float _cameraHeightToAdd;
         private float _cameraHeightLimit;
-        private readonly bool _classicMode = true;
+
+
+        private readonly bool _classicMode = false;
         private bool _isOrderViewOpen;
         private bool _levelToEdge;
         private bool _lockToAgent;
+
         private GauntletLayer _showControlHintLayer;
         private ShowControlHintVM _showControlHintVM;
 
@@ -87,9 +94,10 @@ namespace RTSCamera.View
         private float _cameraBearingDelta;
         private float _cameraElevationDelta;
         private float _viewAngle = 65.0f;
-        public float CameraBearing { get; private set; }
 
+        public float CameraBearing { get; private set; }
         public float CameraElevation { get; private set; }
+
 
         public bool ConstantSpeed;
 
@@ -105,6 +113,7 @@ namespace RTSCamera.View
                 _viewAngle = value;
                 if (_freeCameraLogic == null || !_freeCameraLogic.IsSpectatorCamera || LockToAgent)
                     return;
+
                 UpdateViewAngle();
             }
         }
@@ -168,6 +177,7 @@ namespace RTSCamera.View
                 _depthOfFieldEnd = value;
                 if (_freeCameraLogic == null || !_freeCameraLogic.IsSpectatorCamera || LockToAgent)
                     return;
+
                 UpdateDof();
             }
         }
@@ -192,21 +202,23 @@ namespace RTSCamera.View
         public void FocusOnAgent(Agent agent)
         {
             LockToAgent = true;
-            typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true)
-                ?.Invoke(MissionScreen, new object[] { agent });
+
+            typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true) ?.Invoke(MissionScreen, new object[] { agent });
+
             if (!_freeCameraLogic.IsSpectatorCamera)
                 _freeCameraLogic.SwitchCamera();
+
             Utility.SmoothMoveToAgent(MissionScreen, true, false);
         }
 
         private void LeaveFromAgent()
         {
             LockToAgent = false;
+
             CameraPosition = MissionScreen.CombatCamera.Position;
-            CameraBearing = MissionScreen.CameraBearing +
-                (float?)CameraSpecialCurrentAddedBearing?.GetValue(MissionScreen) ?? 0;
-            CameraElevation = MissionScreen.CameraElevation +
-                (float?)CameraSpecialCurrentAddedElevation?.GetValue(MissionScreen) ?? 0;
+            CameraBearing = MissionScreen.CameraBearing + (float?)CameraSpecialCurrentAddedBearing?.GetValue(MissionScreen) ?? 0;
+            CameraElevation = MissionScreen.CameraElevation + (float?)CameraSpecialCurrentAddedElevation?.GetValue(MissionScreen) ?? 0;
+
             SetLastFollowedAgent?.Invoke(MissionScreen, new object[] { null });
             MissionScreen.LastFollowedAgentVisuals = null;
         }
@@ -288,23 +300,20 @@ namespace RTSCamera.View
             base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
 
             if (affectedAgent == MissionScreen.LastFollowedAgent && LockToAgent)
-            {
                 LeaveFromAgent();
-            }
         }
 
         private void MissionScreenOnSpectateAgentFocusIn(Agent agent)
         {
-            _showControlHintVM.SetShowText(true,
+            _showControlHintVM.SetShowText(
+                true,
                 !WatchBattleBehavior.WatchMode && (LockToAgent || Mission.MainAgent == null) && agent.Team != null &&
                 agent.Team == Mission.PlayerTeam, LockToAgent ? agent.Name : null);
         }
 
         private void MissionScreenOnSpectateAgentFocusOut(Agent agent)
         {
-            _showControlHintVM.SetShowText(false,
-                !WatchBattleBehavior.WatchMode && Mission.MainAgent == null &&
-                Mission.PlayerTeam?.ActiveAgents.Count > 0);
+            _showControlHintVM.SetShowText(false, !WatchBattleBehavior.WatchMode && Mission.MainAgent == null && Mission.PlayerTeam?.ActiveAgents.Count > 0);
         }
 
         private void OnToggleOrderViewEvent(MissionPlayerToggledOrderViewEvent e)
@@ -329,54 +338,65 @@ namespace RTSCamera.View
         private void UpdateFlyCamera(float dt)
         {
             HandleRotateInput(dt);
+
             MatrixFrame cameraFrame = MatrixFrame.Identity;
             cameraFrame.rotation.RotateAboutSide(1.570796f);
             cameraFrame.rotation.RotateAboutForward(CameraBearing);
-            cameraFrame.rotation.RotateAboutSide(
-                CameraElevation + (float?)CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);
+            cameraFrame.rotation.RotateAboutSide(CameraElevation + (float?)CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);
             cameraFrame.origin = CameraPosition;
+
             if (_forceMove)
                 cameraFrame.origin += ForcedMoveTick(dt);
+
             float heightFactorForHorizontalMove;
             float heightFactorForVerticalMove;
+
             if (!ConstantSpeed)
             {
-                float heightAtPosition =
-                    Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags);
-                heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
-                    1, 30);
-                heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
-                    1, 20);
+                float heightAtPosition = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags);
+
+                heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2), 1, 30);
+                heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2), 1, 20);
             }
             else
             {
                 heightFactorForHorizontalMove = 1;
                 heightFactorForVerticalMove = 1;
             }
+
             if (MissionScreen.InputManager.IsHotKeyPressed("MissionScreenHotkeyIncreaseCameraSpeed"))
                 _cameraSpeedMultiplier *= 1.5f;
+
             if (MissionScreen.InputManager.IsHotKeyPressed("MissionScreenHotkeyDecreaseCameraSpeed"))
                 _cameraSpeedMultiplier *= 0.6666667f;
+
             if (MissionScreen.InputManager.IsHotKeyPressed("ResetCameraSpeed"))
                 _cameraSpeedMultiplier = 1f;
+
             _cameraSpeed *= (float)(1.0 - 10 * (double)dt);
+
             if (MissionScreen.InputManager.IsControlDown())
             {
                 float num = MissionScreen.SceneLayer.Input.GetDeltaMouseScroll() * 0.008333334f;
+
                 if (num > 0.00999999977648258)
                     _cameraSpeedMultiplier *= 1.25f;
+
                 else if (num < -0.00999999977648258)
                     _cameraSpeedMultiplier *= 0.8f;
             }
+
             float num1 = 3f * _cameraSpeedMultiplier * MovementSpeedFactor;
             if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.Zoom))
                 num1 *= _shiftSpeedMultiplier;
+
             if (!_cameraSmoothMode)
             {
                 _cameraSpeed.x = 0.0f;
                 _cameraSpeed.y = 0.0f;
                 _cameraSpeed.z = 0.0f;
             }
+
             if (!MissionScreen.InputManager.IsControlDown() || !MissionScreen.InputManager.IsAltDown())
             {
                 Vec3 keyInput = Vec3.Zero;
@@ -393,6 +413,7 @@ namespace RTSCamera.View
                     ++keyInput.z;
                 if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveDown).IsKeyDown(Input))
                     --keyInput.z;
+
                 if (MissionScreen.MouseVisible && !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
                 {
                     if (Mission.Mode != MissionMode.Conversation)
@@ -416,24 +437,31 @@ namespace RTSCamera.View
                     mouseInput.Normalize();
                 _cameraSpeed += (keyInput + mouseInput) * num1 * heightFactorForHorizontalMove;
             }
+
             float horizontalLimit = heightFactorForHorizontalMove * num1;
             float verticalLimit = heightFactorForVerticalMove * num1 * VerticalMovementSpeedFactor;
             _cameraSpeed.x = MBMath.ClampFloat(_cameraSpeed.x, -horizontalLimit, horizontalLimit);
             _cameraSpeed.y = MBMath.ClampFloat(_cameraSpeed.y, -horizontalLimit, horizontalLimit);
             _cameraSpeed.z = MBMath.ClampFloat(_cameraSpeed.z, -verticalLimit, verticalLimit);
+
             if (_classicMode)
             {
                 cameraFrame.origin += _cameraSpeed.x * cameraFrame.rotation.s.AsVec2.ToVec3().NormalizedCopy() * dt;
+
                 ref Vec3 local = ref cameraFrame.origin;
+
                 Vec3 vec3_2 = local;
                 double y = _cameraSpeed.y;
                 Vec3 vec3_1 = cameraFrame.rotation.u.AsVec2.ToVec3();
                 Vec3 vec3_3 = vec3_1.NormalizedCopy();
                 Vec3 vec3_4 = (float)y * vec3_3 * dt;
+
                 local = vec3_2 - vec3_4;
                 cameraFrame.origin.z += _cameraSpeed.z * dt;
+
                 if (!MissionScreen.SceneLayer.Input.IsControlDown())
                     _cameraHeightToAdd -= (float)(TaleWorlds.InputSystem.Input.DeltaMouseScroll / 200.0) * verticalLimit;
+
                 // hold middle button and move mouse vertically to adjust height
                 if (MissionScreen.SceneLayer.Input.IsHotKeyDown("DeploymentCameraIsActive"))
                 {
@@ -449,6 +477,7 @@ namespace RTSCamera.View
                     _levelToEdge = false;
                     ScreenManager.FirstHitLayer.InputRestrictions.SetMouseVisibility(false);
                 }
+
                 _cameraHeightToAdd = MathF.Clamp(_cameraHeightToAdd, -verticalLimit, verticalLimit);
                 if (MathF.Abs(_cameraHeightToAdd) > 1.0 / 1000.0)
                 {
@@ -460,6 +489,7 @@ namespace RTSCamera.View
                     cameraFrame.origin.z += _cameraHeightToAdd * dt;
                     _cameraHeightToAdd = 0.0f;
                 }
+
                 if (_cameraHeightLimit > 0.0 && cameraFrame.origin.z > (double)_cameraHeightLimit)
                     cameraFrame.origin.z = _cameraHeightLimit;
             }
@@ -469,6 +499,7 @@ namespace RTSCamera.View
                 cameraFrame.origin -= _cameraSpeed.y * cameraFrame.rotation.u * dt;
                 cameraFrame.origin += _cameraSpeed.z * cameraFrame.rotation.f * dt;
             }
+
             if (!MBEditor.IsEditModeOn)
             {
                 if (!IgnoreBoundaries && !Mission.IsPositionInsideBoundaries(cameraFrame.origin.AsVec2))
@@ -481,6 +512,7 @@ namespace RTSCamera.View
                 if (cameraFrame.origin.z < -100.0)
                     cameraFrame.origin.z = -100f;
             }
+
             UpdateCameraFrameAndDof(cameraFrame);
         }
 
@@ -560,36 +592,35 @@ namespace RTSCamera.View
             float mouseSensitivity = MissionScreen.SceneLayer.Input.GetMouseSensitivity();
             float inputXRaw = 0.0f;
             float inputYRaw = 0.0f;
+
             if (!MBCommon.IsPaused && Mission.Mode != MissionMode.Barter)
             {
-                if (MissionScreen.MouseVisible)
+                if (MissionScreen.MouseVisible && !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
                 {
                     float x = MissionScreen.SceneLayer.Input.GetMousePositionRanged().x;
                     float y = MissionScreen.SceneLayer.Input.GetMousePositionRanged().y;
+
                     if (x <= 0.01 && y >= 0.01 && y <= 0.25)
                         inputXRaw = -1000f * dt;
                     else if (x >= 0.99 && y >= 0.01 && y <= 0.25)
                         inputXRaw = 1000f * dt;
                 }
+                else if (!MissionScreen.SceneLayer.Input.GetIsMouseActive())
+                {
+                    double num3 = dt / 0.000600000028498471;
+                    inputXRaw = (float)num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisX") + MissionScreen.SceneLayer.Input.GetMouseMoveX();
+                    inputYRaw = (float)-num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisY") + MissionScreen.SceneLayer.Input.GetMouseMoveY();
+                }
                 else
                 {
-                    if (!MissionScreen.SceneLayer.Input.GetIsMouseActive())
-                    {
-                        double num3 = dt / 0.000600000028498471;
-                        inputXRaw = (float)num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisX") +
-                                    MissionScreen.SceneLayer.Input.GetMouseMoveX();
-                        inputYRaw = (float)-num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisY") +
-                                    MissionScreen.SceneLayer.Input.GetMouseMoveY();
-                    }
-                    else
-                    {
-                        inputXRaw = MissionScreen.SceneLayer.Input.GetMouseMoveX();
-                        inputYRaw = MissionScreen.SceneLayer.Input.GetMouseMoveY();
-                    }
+                    inputXRaw = MissionScreen.SceneLayer.Input.GetMouseMoveX();
+                    inputYRaw = MissionScreen.SceneLayer.Input.GetMouseMoveY();
                 }
             }
+
             float num4 = 5.4E-05f;
             float smoothFading;
+
             if (SmoothRotationMode)
             {
                 num4 *= 0.10f;
@@ -597,20 +628,26 @@ namespace RTSCamera.View
             }
             else
                 smoothFading = 0.0f;
+
             _cameraBearingDelta *= smoothFading;
             _cameraElevationDelta *= smoothFading;
+
             bool isSessionActive = GameNetwork.IsSessionActive;
+
             float inputScale = num4 * mouseSensitivity * MissionScreen.CameraViewAngle;
             float inputX = -inputXRaw * inputScale;
             float inputY = (NativeConfig.InvertMouse ? inputYRaw : -inputYRaw) * inputScale;
+
             if (isSessionActive)
             {
                 float maxValue = (float)(0.300000011920929 + 10.0 * dt);
                 inputX = MBMath.ClampFloat(inputX, -maxValue, maxValue);
                 inputY = MBMath.ClampFloat(inputY, -maxValue, maxValue);
             }
+
             _cameraBearingDelta += inputX;
             _cameraElevationDelta += inputY;
+
             if (isSessionActive)
             {
                 float maxValue = (float)(0.300000011920929 + 10.0 * dt);

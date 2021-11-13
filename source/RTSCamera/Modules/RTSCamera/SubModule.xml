@@ -2,15 +2,15 @@
 <Module>
 	<Name value="RTS Camera"/>
 	<Id value="RTSCamera"/>
-	<Version value="e3.10.0"/>
+	<Version value="e3.10.1"/>
 	<SingleplayerModule value="true"/>
 	<MultiplayerModule value="false"/>
 	<DependedModules>
-		<DependedModule Id="Native" DependentVersion="e1.6.2" />
-		<DependedModule Id="SandBoxCore" DependentVersion="e1.6.2" />
-		<DependedModule Id="Sandbox" DependentVersion="e1.6.2" />
-		<DependedModule Id="CustomBattle" DependentVersion="e1.6.2"/>
-		<DependedModule Id="StoryMode" DependentVersion="e1.6.2" />
+		<DependedModule Id="Native" DependentVersion="e1.6.4" />
+		<DependedModule Id="SandBoxCore" DependentVersion="e1.6.4" />
+		<DependedModule Id="Sandbox" DependentVersion="e1.6.4" />
+		<DependedModule Id="CustomBattle" DependentVersion="e1.6.4"/>
+		<DependedModule Id="StoryMode" DependentVersion="e1.6.4" />
 	</DependedModules>
 	<SubModules>
 		<SubModule>
