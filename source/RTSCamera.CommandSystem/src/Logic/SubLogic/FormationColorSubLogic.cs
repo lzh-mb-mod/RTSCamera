@@ -60,7 +60,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         {
             Mission.Current.Teams.OnPlayerTeamChanged += Mission_OnPlayerTeamChanged;
             Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
-            _commandSystemOrderUiHandler = Mission.Current.GetMissionBehaviour<CommandSystemOrderUIHandler>();
+            _commandSystemOrderUiHandler = Mission.Current.GetMissionBehavior<CommandSystemOrderUIHandler>();
         }
 
         public  void OnRemoveBehaviour()

@@ -221,10 +221,10 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnBehaviourInitialize()
         {
-            _rtsCameraLogic = Mission.GetMissionBehaviour<RTSCameraLogic>();
+            _rtsCameraLogic = Mission.GetMissionBehavior<RTSCameraLogic>();
             _switchFreeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
-            _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
-            _selectCharacterView = Mission.GetMissionBehaviour<RTSCameraSelectCharacterView>();
+            _flyCameraMissionView = Mission.GetMissionBehavior<FlyCameraMissionView>();
+            _selectCharacterView = Mission.GetMissionBehavior<RTSCameraSelectCharacterView>();
         }
 
         public void OnMissionTick(float dt)

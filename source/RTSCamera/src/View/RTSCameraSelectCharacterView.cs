@@ -75,8 +75,8 @@ namespace RTSCamera.View
         {
             base.OnMissionScreenInitialize();
 
-            ViewOrderPriorty = 23;
-            _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
+            ViewOrderPriority = 23;
+            _flyCameraMissionView = Mission.GetMissionBehavior<FlyCameraMissionView>();
             MissionLibrary.Event.MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
         }
 
@@ -113,7 +113,7 @@ namespace RTSCamera.View
 
         private void Activate()
         {
-            _gauntletLayer = new GauntletLayer(ViewOrderPriorty) { IsFocusLayer = false };
+            _gauntletLayer = new GauntletLayer(ViewOrderPriority) { IsFocusLayer = false };
             _dataSource = new SelectCharacterVM();
             _gauntletLayer.LoadMovie(nameof(RTSCameraSelectCharacterView), _dataSource);
             _gauntletLayer.InputRestrictions.SetInputRestrictions();

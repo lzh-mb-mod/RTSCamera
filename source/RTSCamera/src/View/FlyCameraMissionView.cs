@@ -231,18 +231,18 @@ namespace RTSCamera.View
             _cameraHeightToAdd = 0.0f;
             _cameraHeightLimit = 0.0f;
             _cameraSmoothMode = true;
-            ViewOrderPriorty = 1;
+            ViewOrderPriority = 1;
 
             _config = RTSCameraConfig.Get();
             ConstantSpeed = _config.ConstantSpeed;
             IgnoreTerrain = _config.IgnoreTerrain;
             IgnoreBoundaries = _config.IgnoreBoundaries;
-            _rtsCameraLogic = Mission.GetMissionBehaviour<RTSCameraLogic>();
+            _rtsCameraLogic = Mission.GetMissionBehavior<RTSCameraLogic>();
             _freeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
-            _missionMainAgentController = Mission.GetMissionBehaviour<MissionMainAgentController>();
+            _missionMainAgentController = Mission.GetMissionBehavior<MissionMainAgentController>();
 
-            _showControlHintVM = new ShowControlHintVM(Mission.GetMissionBehaviour<SiegeDeploymentHandler>() == null);
-            _showControlHintLayer = new GauntletLayer(ViewOrderPriorty);
+            _showControlHintVM = new ShowControlHintVM(Mission.GetMissionBehavior<SiegeDeploymentHandler>() == null);
+            _showControlHintLayer = new GauntletLayer(ViewOrderPriority);
             _showControlHintLayer.LoadMovie("RTSCameraShowControlHint", _showControlHintVM);
             MissionScreen.AddLayer(_showControlHintLayer);
 
@@ -285,7 +285,7 @@ namespace RTSCamera.View
         public SpectatorCameraTypes GetMissionCameraLockMode(bool lockedToMainPlayer)
         {
             ICameraModeLogic otherCameraModeLogic =
-                Mission.MissionBehaviours.FirstOrDefault(
+                Mission.MissionBehaviors.FirstOrDefault(
                         b => !(b is FlyCameraMissionView) && b is ICameraModeLogic) as
                     ICameraModeLogic;
             if (_freeCameraLogic?.IsSpectatorCamera ?? false)

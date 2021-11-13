@@ -35,7 +35,7 @@ namespace RTSCamera.CommandSystem.View
         {
             base.OnMissionScreenInitialize();
             RegisterReload();
-            _contourView = Mission.GetMissionBehaviour<CommandSystemLogic>().FormationColorSubLogic;
+            _contourView = Mission.GetMissionBehavior<CommandSystemLogic>().FormationColorSubLogic;
         }
 
         public override void OnMissionScreenFinalize()
@@ -934,7 +934,7 @@ namespace RTSCamera.CommandSystem.View
             return null;
         }
 
-        private bool IsDeployment => Mission.GetMissionBehaviour<SiegeDeploymentHandler>() != null;
+        private bool IsDeployment => Mission.GetMissionBehavior<SiegeDeploymentHandler>() != null;
 
         protected enum CursorState
         {

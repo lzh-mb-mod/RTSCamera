@@ -11,9 +11,9 @@ namespace RTSCamera.View
         private bool _hideUI;
         private bool _isTemporarilyOpenUI;
 
-        public override void OnRemoveBehaviour()
+        public override void OnRemoveBehavior()
         {
-            base.OnRemoveBehaviour();
+            base.OnRemoveBehavior();
 
             MBDebug.DisableAllUI = false;
         }

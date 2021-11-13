@@ -20,7 +20,7 @@ namespace RTSCamera.CommandSystem
             {
                 PatchChargeToFormation.Patch();
             }
-            List<MissionBehaviour> list = new List<MissionBehaviour>
+            List<MissionBehavior> list = new List<MissionBehavior>
             {
                 new CommandSystemLogic(),
                 new CommandSystemOrderTroopPlacer(),
@@ -35,9 +35,9 @@ namespace RTSCamera.CommandSystem
 
         public override void OnPreMissionTick(MissionView entranceView, float dt)
         {
-            var orderTroopPlacer = entranceView.Mission.GetMissionBehaviour<OrderTroopPlacer>();
+            var orderTroopPlacer = entranceView.Mission.GetMissionBehavior<OrderTroopPlacer>();
             if (orderTroopPlacer != null)
-                entranceView.Mission.RemoveMissionBehaviour(orderTroopPlacer);
+                entranceView.Mission.RemoveMissionBehavior(orderTroopPlacer);
         }
     }
 }

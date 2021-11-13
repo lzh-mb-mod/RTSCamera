@@ -70,7 +70,7 @@ namespace RTSCamera.CommandSystem.View
 
         private bool _isGamepadActive => Input.GetIsControllerConnected() && !Input.GetIsMouseActive();
 
-        public CommandSystemOrderUIHandler() => ViewOrderPriorty = 19;
+        public CommandSystemOrderUIHandler() => ViewOrderPriority = 19;
 
         public override void OnMissionScreenTick(float dt)
         {
@@ -179,15 +179,15 @@ namespace RTSCamera.CommandSystem.View
             MissionScreen.SceneLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("MissionOrderHotkeyCategory"));
             MissionScreen.OrderFlag = new OrderFlag(Mission, MissionScreen);
 
-            _orderTroopPlacer = Mission.GetMissionBehaviour<CommandSystemOrderTroopPlacer>();
+            _orderTroopPlacer = Mission.GetMissionBehavior<CommandSystemOrderTroopPlacer>();
             MissionScreen.SetOrderFlagVisibility(false);
 
-            _siegeDeploymentHandler = Mission.GetMissionBehaviour<SiegeDeploymentHandler>();
+            _siegeDeploymentHandler = Mission.GetMissionBehavior<SiegeDeploymentHandler>();
             IsDeployment = _siegeDeploymentHandler != null;
 
             if (IsDeployment)
             {
-                _siegeMissionView = Mission.GetMissionBehaviour<SiegeMissionView>();
+                _siegeMissionView = Mission.GetMissionBehavior<SiegeMissionView>();
 
                 if (_siegeMissionView != null)
                     _siegeMissionView.OnDeploymentFinish += OnDeploymentFinish;
@@ -235,7 +235,7 @@ namespace RTSCamera.CommandSystem.View
                 }
             }
 
-            GauntletLayer = new GauntletLayer(ViewOrderPriorty);
+            GauntletLayer = new GauntletLayer(ViewOrderPriority);
             GauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
             _movie = GauntletLayer.LoadMovie(BannerlordConfig.OrderType == 0 ? _barOrderMovieName : _radialOrderMovieName, DataSource);
 

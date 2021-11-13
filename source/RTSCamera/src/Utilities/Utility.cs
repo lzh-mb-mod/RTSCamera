@@ -35,7 +35,7 @@ namespace RTSCamera.Utilities
         public static void UpdateMainAgentControllerState(Agent agent, bool isSpectatorCamera, Agent.ControllerType playerControllerInFreeCamera)
         {
 
-            var controller = Mission.Current.GetMissionBehaviour<MissionMainAgentController>();
+            var controller = Mission.Current.GetMissionBehavior<MissionMainAgentController>();
             if (controller != null)
             {
                 if (agent.Controller == Agent.ControllerType.Player && (!isSpectatorCamera || playerControllerInFreeCamera == Agent.ControllerType.Player))

@@ -20,7 +20,7 @@ namespace RTSCamera.CommandSystem.View
             base.OnMissionScreenInitialize();
 
             Utility.PrintOrderHint();
-            _orderUIHandler = Mission.GetMissionBehaviour<CommandSystemOrderUIHandler>();
+            _orderUIHandler = Mission.GetMissionBehavior<CommandSystemOrderUIHandler>();
         }
 
         private bool ShouldBeginEarlyDragging()
