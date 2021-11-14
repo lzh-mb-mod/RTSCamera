@@ -108,6 +108,9 @@ namespace RTSCamera
                         nameof(Patch_MissionFormationMarkerVM.RefreshFormationPositions_Prefix),
                         BindingFlags.Static | BindingFlags.Public)));
 
+                // Use Patch to add game menu
+                WatchBattleBehavior.Patch(_harmony);
+
                 var missionListenerOnMissionModeChange = typeof(IMissionListener).GetMethod("OnMissionModeChange", BindingFlags.Instance | BindingFlags.Public);
 
                 var mapping = typeof(MissionScreen).GetInterfaceMap(missionListenerOnMissionModeChange.DeclaringType);
@@ -184,9 +187,6 @@ namespace RTSCamera
             //{
             //    campaignGameStarter.AddBehavior(new WatchBattleBehavior());
             //}
-
-            // Use Patch to add game menu
-            WatchBattleBehavior.Patch(_harmony);
         }
 
 
