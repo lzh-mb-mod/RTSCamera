@@ -21,7 +21,7 @@ namespace MissionSharedLibrary.View
 
         protected MissionMenuViewBase(int viewOrderPriority, string movieName)
         {
-            ViewOrderPriorty = viewOrderPriority;
+            ViewOrderPriority = viewOrderPriority;
             _movieName = movieName;
         }
 
@@ -50,7 +50,7 @@ namespace MissionSharedLibrary.View
             DataSource = GetDataSource();
             if (DataSource == null)
                 return;
-            GauntletLayer = new GauntletLayer(ViewOrderPriorty) { IsFocusLayer = true };
+            GauntletLayer = new GauntletLayer(ViewOrderPriority) { IsFocusLayer = true };
             GauntletLayer.InputRestrictions.SetInputRestrictions();
             GauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
             _movie = GauntletLayer.LoadMovie(_movieName, DataSource);
@@ -90,9 +90,9 @@ namespace MissionSharedLibrary.View
             }
         }
 
-        public override void OnRemoveBehaviour()
+        public override void OnRemoveBehavior()
         {
-            base.OnRemoveBehaviour();
+            base.OnRemoveBehavior();
 
             Game.Current.GameStateManager.ActiveStateDisabledByUser = false;
         }

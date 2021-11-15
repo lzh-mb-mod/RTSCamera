@@ -10,6 +10,6 @@ namespace MissionLibrary.Extension
         string ExtensionName { get; }
         string ButtonName { get; }
 
-        List<MissionBehaviour> CreateMissionBehaviours(Mission mission);
+        List<MissionBehavior> CreateMissionBehaviours(Mission mission);
     }
 }

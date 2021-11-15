@@ -22,7 +22,7 @@ namespace MissionSharedLibrary.View.HotKey
 
         public GameKeyConfigView()
         {
-            ViewOrderPriorty = 1000;
+            ViewOrderPriority = 1000;
         }
 
         public override void OnMissionScreenInitialize()
@@ -60,7 +60,7 @@ namespace MissionSharedLibrary.View.HotKey
         public void Activate()
         {
             _dataSource = new GameKeyConfigVM(AGameKeyCategoryManager.Get(), OnKeyBindRequest, Deactivate);
-            _gauntletLayer = new GauntletLayer(ViewOrderPriorty) {IsFocusLayer = true};
+            _gauntletLayer = new GauntletLayer(ViewOrderPriority) {IsFocusLayer = true};
             _gauntletLayer.LoadMovie("MissionLibraryOptionsGameKeyScreen", _dataSource);
             _gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
             _gauntletLayer.InputRestrictions.SetInputRestrictions();

@@ -42,7 +42,7 @@ namespace MissionSharedLibrary.View
         public HintViewModel ConfigKeyHint { get; set; } =
             new HintViewModel(GameTexts.FindText("str_mission_library_config_key_hint"));
 
-        private readonly GameKeyConfigView _gameKeyConfigView = Mission.Current.GetMissionBehaviour<GameKeyConfigView>();
+        private readonly GameKeyConfigView _gameKeyConfigView = Mission.Current.GetMissionBehavior<GameKeyConfigView>();
 
         public void ConfigKey()
         {

@@ -18,10 +18,10 @@ namespace MissionLibrary.Controller.MissionBehaviors
 
             Global.GetProvider<AMissionStartingManager>().OnPreMissionTick(this, dt);
 
-            var self = Mission.GetMissionBehaviour<AddMissionBehaviourView>();
+            var self = Mission.GetMissionBehavior<AddMissionBehaviourView>();
             if (self == this)
             {
-                Mission.RemoveMissionBehaviour(self);
+                Mission.RemoveMissionBehavior(self);
             }
         }
     }

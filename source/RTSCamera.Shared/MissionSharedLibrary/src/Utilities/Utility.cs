@@ -225,7 +225,7 @@ namespace MissionSharedLibrary.Utilities
                 return;
             try
             {
-                mission.GetMissionBehaviour<MissionMainAgentController>()?.InteractionComponent.ClearFocus();
+                mission.GetMissionBehavior<MissionMainAgentController>()?.InteractionComponent.ClearFocus();
                 if (mission.MainAgent.Controller == Agent.ControllerType.Player)
                 {
                     if (mission.MainAgent.Formation != null && mission.MainAgent.IsUsingGameObject && !(mission.MainAgent.CurrentlyUsedGameObject is SpawnedItemEntity))

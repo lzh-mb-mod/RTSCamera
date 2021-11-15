@@ -21,12 +21,12 @@ namespace MissionSharedLibrary.View
 
         public override void RequestToOpenMenu()
         {
-            Mission.Current.GetMissionBehaviour<OptionView>()?.ActivateMenu();
+            Mission.Current.GetMissionBehavior<OptionView>()?.ActivateMenu();
         }
 
         public override void RequestToCloseMenu()
         {
-            Mission.Current.GetMissionBehaviour<OptionView>()?.DeactivateMenu();
+            Mission.Current.GetMissionBehavior<OptionView>()?.DeactivateMenu();
         }
     }
 }

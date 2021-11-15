@@ -16,10 +16,10 @@ namespace MissionSharedLibrary.Controller
         private readonly Dictionary<string, AMissionStartingHandler> _dictionary =
             new Dictionary<string, AMissionStartingHandler>();
 
-        public static void AddMissionBehaviour(MissionView entranceView, MissionBehaviour behaviour)
+        public static void AddMissionBehaviour(MissionView entranceView, MissionBehavior behaviour)
         {
             behaviour.OnAfterMissionCreated();
-            entranceView.Mission.AddMissionBehaviour(behaviour);
+            entranceView.Mission.AddMissionBehavior(behaviour);
         }
 
         public override void OnCreated(MissionView entranceView)
