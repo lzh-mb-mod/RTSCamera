@@ -1,30 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <ProcessorArchitecture>amd64</ProcessorArchitecture>
-    <LangVersion>8</LangVersion>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Lib.Harmony" Version="2.1.1" />
-  </ItemGroup>
-
-  <Import Project="..\RTSCamera.Shared\BasicSharedLibrary\BasicSharedLibrary.projitems" Label="Shared" />
-
-  <Import Project="..\RTSCamera.Shared\MissionSharedLibrary\MissionSharedLibrary.projitems" Label="Shared" />
+  <Import Project="..\BasicSharedLibrary\BasicSharedLibrary.projitems" Label="Shared" />
 
   <Import Project="$(MSBuildProjectDirectory)\*.props" />
-  <ItemGroup>
-	  <DotNetCliToolReference Include="dotnet-md2html" Version="1.0.0.1-preview1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RTSCamera.Shared\MissionLibrary\MissionLibrary.csproj" />
-    <ProjectReference Include="..\RTSCameraAgentComponent\RTSCameraAgentComponent.csproj" />
-  </ItemGroup>
+
+  <PropertyGroup>
+	  <TargetFramework>net472</TargetFramework>
+	  <ProcessorArchitecture>amd64</ProcessorArchitecture>
+	  <LangVersion>8</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="SandBox">
       <HintPath>$(GamePath)Modules\SandBox\bin\Win64_Shipping_Client\SandBox.dll</HintPath>
@@ -101,9 +86,6 @@
     <Reference Include="TaleWorlds.Localization">
       <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.Localization.dll</HintPath>
     </Reference>
-    <Reference Include="TaleWorlds.ModuleManager">
-      <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.ModuleManager.dll</HintPath>
-    </Reference>
     <Reference Include="TaleWorlds.MountAndBlade">
       <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.dll</HintPath>
     </Reference>
@@ -138,18 +120,5 @@
       <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.TwoDimension.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-  <Target Name="RemoveModulePackageDir" AfterTargets="BeforeBuild">
-    <Exec Command="rmdir &quot;$(ModulePackagePath)&quot; /s /q" />
-  </Target>
-  
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
-    <Exec Command="xcopy &quot;$(TargetDir)MissionLibrary.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
-    <Exec Command="xcopy &quot;$(TargetDir)RTSCameraAgentComponent.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
-    <Exec Command="xcopy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
-    <Exec Command="xcopy &quot;$(ProjectDir)Modules\.&quot; &quot;$(PackagePath)&quot; /E /C /I /Y /F" />
-    <Exec Command="xcopy &quot;$(ModulePackagePath).&quot; &quot;$(GamePath)Modules\$(ModuleAlias) &quot; /E /C /I /Y /F" />
-  </Target>
 
 </Project>
