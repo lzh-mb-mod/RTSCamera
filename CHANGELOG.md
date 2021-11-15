@@ -1,5 +1,9 @@
 # Changelog
 
+## [e3.10.2] - 2021-11-14
+### Fixed
+- Fix dublicating of '(RTS Camera)Watch the battle.' option.
+
 ## [e3.10.1] - 2021-11-12
 ### Fixed
 - Keep compatible with Bannerlord e1.6.4.

@@ -13,16 +13,17 @@
     <PackageReference Include="Lib.Harmony" Version="2.1.1" />
   </ItemGroup>
 
-  <Import Project="$(MSBuildProjectDirectory)\*.props" />
-  <Import Project="..\library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems" Label="Shared" />
-  <Import Project="..\library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems" Label="Shared" />
+  <Import Project="..\RTSCamera.Shared\BasicSharedLibrary\BasicSharedLibrary.projitems" Label="Shared" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\library\mission-library\source\MissionLibrary\MissionLibrary.csproj" />
-    <ProjectReference Include="..\RTSCameraAgentComponent\RTSCameraAgentComponent.csproj" />
-  </ItemGroup>
+  <Import Project="..\RTSCamera.Shared\MissionSharedLibrary\MissionSharedLibrary.projitems" Label="Shared" />
+
+  <Import Project="$(MSBuildProjectDirectory)\*.props" />
   <ItemGroup>
 	  <DotNetCliToolReference Include="dotnet-md2html" Version="1.0.0.1-preview1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RTSCamera.Shared\MissionLibrary\MissionLibrary.csproj" />
+    <ProjectReference Include="..\RTSCameraAgentComponent\RTSCameraAgentComponent.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SandBox">

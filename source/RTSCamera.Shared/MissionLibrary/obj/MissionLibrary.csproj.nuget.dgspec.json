@@ -1,0 +1,47 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Repos\\gediorios\\RTSCamera\\source\\RTSCamera.Shared\\MissionLibrary\\MissionLibrary.csproj": {}
+  },
+  "projects": {
+    "D:\\Repos\\gediorios\\RTSCamera\\source\\RTSCamera.Shared\\MissionLibrary\\MissionLibrary.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Repos\\gediorios\\RTSCamera\\source\\RTSCamera.Shared\\MissionLibrary\\MissionLibrary.csproj",
+        "projectName": "MissionLibrary",
+        "projectPath": "D:\\Repos\\gediorios\\RTSCamera\\source\\RTSCamera.Shared\\MissionLibrary\\MissionLibrary.csproj",
+        "packagesPath": "C:\\Users\\Kwill\\.nuget\\packages\\",
+        "outputPath": "D:\\Repos\\gediorios\\RTSCamera\\source\\RTSCamera.Shared\\MissionLibrary\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Kwill\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "targetAlias": "net472",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "targetAlias": "net472",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
