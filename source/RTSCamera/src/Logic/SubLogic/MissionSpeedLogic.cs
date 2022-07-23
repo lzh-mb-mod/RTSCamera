@@ -12,6 +12,7 @@ namespace RTSCamera.Logic.SubLogic
     {
         private readonly RTSCameraLogic _logic;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
+        private const int TimeSpeedConstant = 23454;
 
         public Mission Mission => _logic.Mission;
 
@@ -22,9 +23,10 @@ namespace RTSCamera.Logic.SubLogic
 
         public void AfterStart()
         {
-
-            Mission.Scene.SlowMotionFactor = _config.SlowMotionFactor;
-            Mission.Scene.SlowMotionMode = _config.SlowMotionMode;
+            if (_config.SlowMotionMode)
+            {
+                Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, TimeSpeedConstant));
+            }
         }
 
         public void OnMissionTick(float dt)
@@ -36,7 +38,7 @@ namespace RTSCamera.Logic.SubLogic
 
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SlowMotion).IsKeyPressed(Mission.InputManager))
             {
-                SetSlowMotionMode(!Mission.Scene.SlowMotionMode);
+                SetSlowMotionMode(!_config.SlowMotionMode);
             }
         }
 
@@ -49,7 +51,16 @@ namespace RTSCamera.Logic.SubLogic
 
         public void SetSlowMotionMode(bool slowMotionMode)
         {
-            Mission.Scene.SlowMotionMode = slowMotionMode;
+            if (_config.SlowMotionMode == slowMotionMode)
+                return;
+            if (!_config.SlowMotionMode && slowMotionMode)
+            {
+                Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, TimeSpeedConstant));
+            }
+            else
+            {
+                Mission.RemoveTimeSpeedRequest(TimeSpeedConstant);
+            }
             _config.SlowMotionMode = slowMotionMode;
             Utility.DisplayLocalizedText(slowMotionMode ? "str_rts_camera_slow_motion_enabled" : "str_rts_camera_normal_mode_enabled");
             _config.Serialize();
@@ -57,8 +68,12 @@ namespace RTSCamera.Logic.SubLogic
 
         public void SetSlowMotionFactor(float factor)
         {
-            Mission.Scene.SlowMotionFactor = factor;
             _config.SlowMotionFactor = factor;
+            if (_config.SlowMotionMode)
+            {
+                Mission.RemoveTimeSpeedRequest(TimeSpeedConstant);
+                Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(factor, TimeSpeedConstant));
+            }
         }
 
         //public void ApplySlowMotionFactor()

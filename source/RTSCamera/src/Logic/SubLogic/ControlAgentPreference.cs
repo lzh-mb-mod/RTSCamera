@@ -14,15 +14,15 @@ namespace RTSCamera.Logic.SubLogic
         private Mission Mission => Mission.Current;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
 
-        public void UpdateAgentPreferenceFromTeam(Team team, Vec3 position)
+        public void UpdateAgentPreferenceFromTeam(Team team, Vec3 position, bool ignoreRetreatingAgents)
         {
             foreach (var agent in team.ActiveAgents)
             {
-                UpdateAgentPreference(agent, position);
+                UpdateAgentPreference(agent, position, ignoreRetreatingAgents);
             }
         }
 
-        public void UpdateAgentPreferenceFromFormation(FormationClass formationClass, Vec3 position)
+        public void UpdateAgentPreferenceFromFormation(FormationClass formationClass, Vec3 position, bool ignoreRetreatingAgents)
         {
             if (formationClass < 0 || formationClass > FormationClass.NumberOfAllFormations)
             {
@@ -30,12 +30,12 @@ namespace RTSCamera.Logic.SubLogic
             }
 
             var formation = Mission.PlayerTeam.GetFormation(formationClass);
-            formation.ApplyActionOnEachUnit(agent => UpdateAgentPreference(agent, position));
+            formation.ApplyActionOnEachUnit(agent => UpdateAgentPreference(agent, position, ignoreRetreatingAgents));
         }
 
-        private void UpdateAgentPreference(Agent agent, Vec3 position)
+        private void UpdateAgentPreference(Agent agent, Vec3 position, bool ignoreRetreatingAgents)
         {
-            if (!CanControl(agent) || agent.IsRunningAway)
+            if (!CanControl(agent) || (ignoreRetreatingAgents && agent.IsRunningAway))
                 return;
             if (!_config.ControlTroopsInPlayerPartyOnly || Utility.IsInPlayerParty(agent))
             {

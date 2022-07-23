@@ -1,4 +1,5 @@
 ﻿using RTSCamera.CommandSystem.Logic.SubLogic;
+using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.CommandSystem.View;
 using TaleWorlds.Core;
@@ -16,17 +17,18 @@ namespace RTSCamera.CommandSystem.Logic
             _querySystemSubLogic.OnCreated();
         }
 
-        public override void OnBehaviourInitialize()
+        public override void OnBehaviorInitialize()
         {
-            base.OnBehaviourInitialize();
+            base.OnBehaviorInitialize();
 
             FormationColorSubLogic.OnBehaviourInitialize();
         }
 
-        public override void OnRemoveBehaviour()
+        public override void OnRemoveBehavior()
         {
             _querySystemSubLogic.OnRemoveBehaviour();
             FormationColorSubLogic.OnRemoveBehaviour();
+            Patch_OrderTroopPlacer.OnMissionEnded();
         }
 
         public override void OnPreDisplayMissionTick(float dt)

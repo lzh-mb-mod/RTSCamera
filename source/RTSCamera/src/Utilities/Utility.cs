@@ -24,6 +24,12 @@ namespace RTSCamera.Utilities
                     agent.LookDirection = agent.GetMovementDirection().ToVec3();
                     break;
                 case Agent.ControllerType.AI:
+                    // TODO: Check the bug in future version.
+                    // Bug fix: Set main agent's controller to AI when mission is ending may cause the game core crash during mission ticking. Guess it's because that player character should not be controlled by AI when mission is ending.
+                    if (Mission.Current.IsMissionEnding)
+                    {
+                        goto case Agent.ControllerType.None;
+                    }
                     MissionSharedLibrary.Utilities.Utility.AIControlMainAgent(true, true);
                     break;
                 case Agent.ControllerType.Player:
@@ -35,10 +41,12 @@ namespace RTSCamera.Utilities
         public static void UpdateMainAgentControllerState(Agent agent, bool isSpectatorCamera, Agent.ControllerType playerControllerInFreeCamera)
         {
 
-            var controller = Mission.Current.GetMissionBehaviour<MissionMainAgentController>();
+            var controller = Mission.Current.GetMissionBehavior<MissionMainAgentController>();
             if (controller != null)
             {
-                if (agent.Controller == Agent.ControllerType.Player && (!isSpectatorCamera || playerControllerInFreeCamera == Agent.ControllerType.Player))
+                if (agent.Controller == Agent.ControllerType.Player &&
+                    (!isSpectatorCamera ||
+                     playerControllerInFreeCamera == Agent.ControllerType.Player))
                 {
                     controller.CustomLookDir = isSpectatorCamera ? agent.LookDirection : Vec3.Zero;
                     controller.IsDisabled = false;

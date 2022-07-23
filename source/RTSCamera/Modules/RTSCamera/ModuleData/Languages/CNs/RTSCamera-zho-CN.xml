@@ -28,12 +28,13 @@
     <string id="RTSCamera_control_ally_after_death_hint" text="阵亡后自动控制你的一个队友来继续战斗。" />
     <string id="RTSCamera_prefer_to_control_companions_hint" text="当寻找可控制的单位时倾向于控制同伴。" />
     <string id="RTSCamera_control_troops_in_player_party_only_hint" text="当寻找可控制的单位时只考虑玩家部队内的单位。" />
+    <string id="RTSCamera_ignore_retreating_troops_hint" text="当寻找可控制的单位时忽略正在撤退的单位" />
     <string id="RTSCamera_constant_speed_hint" text="镜头移动速度不再受高度影响。" />
     <string id="RTSCamera_ignore_terrain_hint" text="启用后镜头不再受到地面或建筑的阻挡。" />
     <string id="RTSCamera_ignore_boundaries_hint" text="启用后镜头不再受到地图边界的限制。" />
     <string id="RTSCamera_display_message_hint" text="是否显示本mod的消息。" />
     <string id="RTSCamera_toggle_ui_hint" text="开关游戏的HUD，用于制作视频。" />
-    <string id="RTSCamera_disable_death_hint" text="所有单位无敌，不会阵亡，用于制作视频。" />
+    <string id="RTSCamera_disable_death_hint" text="所有单位无敌不会阵亡，用于制作视频。" />
     <string id="RTSCamera_switch_team_hint" text="交换玩家所在的队伍，用于制作视频。" />
 
     <string id="RTSCamera_createdefaultconfig" text="创建默认配置" />
@@ -73,6 +74,7 @@
     <string id="RTSCamera_controlallyafterdeath" text="阵亡后控制队友" />
     <string id="RTSCamera_prefertocontrolcompanions" text="优先控制同伴" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
+    <string id="RTSCamera_ignoreretreatingtroops" text="忽略正在撤退的单位" />
 
     <string id="RTSCamera_miscellaneous_options" text="杂项" />
     <string id="RTSCamera_togglepause" text="切换暂停" />

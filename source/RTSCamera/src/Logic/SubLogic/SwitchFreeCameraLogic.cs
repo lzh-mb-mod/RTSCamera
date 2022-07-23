@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using MissionSharedLibrary.Utilities;
+﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Event;
+using System.Collections.Generic;
+using System.ComponentModel;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace RTSCamera.Logic.SubLogic
 {
@@ -22,7 +21,7 @@ namespace RTSCamera.Logic.SubLogic
 
         private bool _isFirstTimeMainAgentChanged = true;
         private bool _switchToFreeCameraAfter100ms;
-        private float _timer;
+        private float _switchToFreeCameraTimer;
         private List<FormationClass> _playerFormations;
         private float _updatePlayerFormationTime;
 
@@ -83,11 +82,11 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (_switchToFreeCameraAfter100ms)
             {
-                _timer += dt;
-                if (_timer > 0.1)
+                _switchToFreeCameraTimer += dt;
+                if (_switchToFreeCameraTimer > 0.1)
                 {
                     _switchToFreeCameraAfter100ms = false;
-                    _timer = 0;
+                    _switchToFreeCameraTimer = 0;
                     SwitchToFreeCamera();
                 }
             }
@@ -162,7 +161,7 @@ namespace RTSCamera.Logic.SubLogic
                         if (_config.UseFreeCameraByDefault || WatchBattleBehavior.WatchMode)
                         {
                             _switchToFreeCameraAfter100ms = true;
-                            _timer = 0;
+                            _switchToFreeCameraTimer = 0;
                         }
                     }
                     if (Mission.MainAgent.Formation != null)
@@ -199,18 +198,21 @@ namespace RTSCamera.Logic.SubLogic
                         Mission.MainAgent.Character == CharacterObject.PlayerCharacter)
                         Utility.DisplayLocalizedText("str_rts_camera_player_dead", null, new Color(1, 0, 0));
                     // mask code in Mission.OnAgentRemoved so that formations will not be delegated to AI after player dead.
-                    affectedAgent.OnMainAgentWieldedItemChange = null;
-                    bool shouldSmoothToAgent = Utility.BeforeSetMainAgent();
-                    Mission.MainAgent = null;
-                    // Set smooth move again if controls another agent instantly.
-                    // Otherwise MissionScreen will reset camera elevate and bearing.
-                    if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
-                        Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
-                    // Restore the variables to initial state
-                    else if (shouldSmoothToAgent)
+                    if (_controlTroopLogic.GetAgentToControl() != null)
                     {
-                        Utility.ShouldSmoothMoveToAgent = true;
-                        Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, false);
+                        affectedAgent.OnMainAgentWieldedItemChange = null;
+                        bool shouldSmoothToAgent = Utility.BeforeSetMainAgent();
+                        Mission.MainAgent = null;
+                        // Set smooth move again if controls another agent instantly.
+                        // Otherwise MissionScreen will reset camera elevate and bearing.
+                        if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
+                            Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
+                        // Restore the variables to initial state
+                        else if (shouldSmoothToAgent)
+                        {
+                            Utility.ShouldSmoothMoveToAgent = true;
+                            Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, false);
+                        }
                     }
                 }
                 else if (Mission.PlayerTeam?.ActiveAgents.Count > 0)

@@ -13,10 +13,11 @@ using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
 using RTSCamera.src.Patch.Fix;
 using SandBox;
-using SandBox.Source.Objects.SettlementObjects;
-using SandBox.Source.Towns;
 using System;
 using System.Reflection;
+using SandBox.CampaignBehaviors;
+using SandBox.Missions.MissionLogics.Arena;
+using SandBox.Objects;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -116,6 +117,9 @@ namespace RTSCamera
                      mapping.TargetMethods[index],
                     prefix: new HarmonyMethod(typeof(Patch_MissionScreen).GetMethod("OnMissionModeChange_Prefix",
                         BindingFlags.Static | BindingFlags.Public)));
+
+                Patch_MissionOrderVM.Patch();
+                Patch_MissionSpectatorControl.Patch();
             }
             catch (Exception e)
             {

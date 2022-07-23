@@ -18,7 +18,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnBehaviourInitialize()
         {
-            _scoreUI = Mission.GetMissionBehaviour<MissionGauntletBattleScoreUI>();
+            _scoreUI = Mission.GetMissionBehavior<MissionGauntletBattleScoreUI>();
 
             Mission.OnMainAgentChanged += OnMainAgentChanged;
         }

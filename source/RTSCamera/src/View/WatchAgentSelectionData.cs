@@ -7,7 +7,7 @@ namespace RTSCamera.View
     public class WatchAgentSelectionData
     {
         public MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionOptionData SelectionOptionData;
-        private readonly FlyCameraMissionView _view = Mission.Current.GetMissionBehaviour<FlyCameraMissionView>();
+        private readonly FlyCameraMissionView _view = Mission.Current.GetMissionBehavior<FlyCameraMissionView>();
 
         public WatchAgentSelectionData(MissionScreen missionScreen)
         {

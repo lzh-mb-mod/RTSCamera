@@ -28,6 +28,7 @@
     <string id="RTSCamera_control_ally_after_death_hint" text="Automatically control one of your ally after you die and continue fighting." />
     <string id="RTSCamera_prefer_to_control_companions_hint" text="Prefer to control companions when looking for target to control." />
     <string id="RTSCamera_control_troops_in_player_party_only_hint" text="Only consider troops in player party when looking for target to control." />
+    <string id="RTSCamera_ignore_retreating_troops_hint" text="Won't consider retreating troops when looking for target to contorl." />
     <string id="RTSCamera_constant_speed_hint" text="Camera movement speed won't be affected by height." />
     <string id="RTSCamera_ignore_terrain_hint" text="Camera will not be blocked by terrain and buildings when enabled." />
     <string id="RTSCamera_ignore_boundaries_hint" text="Camera will not be restricted by boundaries when enabled." />
@@ -73,6 +74,7 @@
     <string id="RTSCamera_controlallyafterdeath" text="Control Ally After Death" />
     <string id="RTSCamera_prefertocontrolcompanions" text="Prefer To Control Companions" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
+    <string id="RTSCamera_ignoreretreatingtroops" text="Ignore Retreating Troops" />
 
     <string id="RTSCamera_miscellaneous_options" text="Miscellaneous Options" />
     <string id="RTSCamera_togglepause" text="Toggle Pause" />

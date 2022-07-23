@@ -23,9 +23,9 @@ namespace RTSCamera.Config
             {
                 var optionClass = new OptionClass(RTSCameraSubModule.ModuleId,
                     GameTexts.FindText("str_rts_camera_option_class"), menuClassCollection);
-                var rtsCameraLogic = Mission.Current.GetMissionBehaviour<RTSCameraLogic>();
-                var selectCharacterView = Mission.Current.GetMissionBehaviour<RTSCameraSelectCharacterView>();
-                var hideHudView = Mission.Current.GetMissionBehaviour<HideHUDView>();
+                var rtsCameraLogic = Mission.Current.GetMissionBehavior<RTSCameraLogic>();
+                var selectCharacterView = Mission.Current.GetMissionBehavior<RTSCameraSelectCharacterView>();
+                var hideHudView = Mission.Current.GetMissionBehavior<HideHUDView>();
                 var missionScreen = selectCharacterView.MissionScreen;
                 var menuManager = AMenuManager.Get();
 
@@ -73,7 +73,7 @@ namespace RTSCamera.Config
                             {
                                 if (Mission.Current.MainAgent.Controller == Agent.ControllerType.AI)
                                     return (int) Agent.ControllerType.AI;
-                                var controller = Mission.Current.GetMissionBehaviour<MissionMainAgentController>();
+                                var controller = Mission.Current.GetMissionBehavior<MissionMainAgentController>();
                                 if (controller == null || controller.IsDisabled ||
                                     Mission.Current.MainAgent.Controller == Agent.ControllerType.None)
                                     return (int) Agent.ControllerType.None;
@@ -94,7 +94,7 @@ namespace RTSCamera.Config
                     b =>
                     {
                         RTSCameraConfig.Get().ConstantSpeed = b;
-                        var view = Mission.Current.GetMissionBehaviour<FlyCameraMissionView>();
+                        var view = Mission.Current.GetMissionBehavior<FlyCameraMissionView>();
                         if (view != null)
                             view.ConstantSpeed = b;
                     }));
@@ -104,7 +104,7 @@ namespace RTSCamera.Config
                     b =>
                     {
                         RTSCameraConfig.Get().IgnoreTerrain = b;
-                        var view = Mission.Current.GetMissionBehaviour<FlyCameraMissionView>();
+                        var view = Mission.Current.GetMissionBehavior<FlyCameraMissionView>();
                         if (view != null)
                             view.IgnoreTerrain = b;
                     }));
@@ -115,7 +115,7 @@ namespace RTSCamera.Config
                         b =>
                         {
                             RTSCameraConfig.Get().IgnoreBoundaries = b;
-                            var view = Mission.Current.GetMissionBehaviour<FlyCameraMissionView>();
+                            var view = Mission.Current.GetMissionBehavior<FlyCameraMissionView>();
                             if (view != null)
                                 view.IgnoreBoundaries = b;
                         }));
@@ -210,6 +210,11 @@ namespace RTSCamera.Config
                     GameTexts.FindText("str_rts_camera_control_troops_in_player_party_only_hint"),
                     () => RTSCameraConfig.Get().ControlTroopsInPlayerPartyOnly,
                     b => RTSCameraConfig.Get().ControlTroopsInPlayerPartyOnly = b));
+                controlOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_ignore_retreating_troops"),
+                    GameTexts.FindText("str_rts_camera_ignore_retreating_troops_hint"),
+                    () => RTSCameraConfig.Get().IgnoreRetreatingTroops,
+                    b => RTSCameraConfig.Get().IgnoreRetreatingTroops = b));
                 optionClass.AddOptionCategory(0, controlOptionCategory);
 
                 var miscellaneousOptionCategory = new OptionCategory("Miscellaneous",
@@ -222,12 +227,12 @@ namespace RTSCamera.Config
                     }));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_mode"),
-                    GameTexts.FindText("str_rts_camera_slow_motion_hint"), () => Mission.Current.Scene.SlowMotionMode,
+                    GameTexts.FindText("str_rts_camera_slow_motion_hint"), () => RTSCameraConfig.Get().SlowMotionMode,
                     b => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionMode(b)));
                 miscellaneousOptionCategory.AddOption(new NumericOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_factor"),
                     GameTexts.FindText("str_rts_camera_slow_motion_factor_hint"),
-                    () => Mission.Current.Scene.SlowMotionFactor,
+                    () => RTSCameraConfig.Get().SlowMotionFactor,
                     f => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionFactor(f), 0, 3, false, true));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_display_mod_message"),

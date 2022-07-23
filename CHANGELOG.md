@@ -1,5 +1,9 @@
 # Changelog
 
+## [e4.0.0] - 2022-07-23
+### Fixed
+- Keep compatible with Bannlerord e1.7.2
+
 ## [e3.9.25] - 2021-03-14
 ### Fixed
 - Keep compatible with Bannerlord e1.5.9.

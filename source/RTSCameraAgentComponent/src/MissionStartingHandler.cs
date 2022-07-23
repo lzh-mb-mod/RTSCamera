@@ -8,16 +8,16 @@ namespace RTSCameraAgentComponent
     {
         public override void OnCreated(MissionView entranceView)
         {
-            AddMissionBehaviour(entranceView, new ComponentAdder());
+            AddMissionBehavior(entranceView, new ComponentAdder());
         }
 
         public override void OnPreMissionTick(MissionView entranceView, float dt)
         {
         }
-        public static void AddMissionBehaviour(MissionView entranceView, MissionBehaviour behaviour)
+        public static void AddMissionBehavior(MissionView entranceView, MissionBehavior behaviour)
         {
             behaviour.OnAfterMissionCreated();
-            entranceView.Mission.AddMissionBehaviour(behaviour);
+            entranceView.Mission.AddMissionBehavior(behaviour);
         }
     }
 }

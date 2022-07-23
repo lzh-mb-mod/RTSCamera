@@ -73,6 +73,8 @@ namespace RTSCamera.Config
 
         public bool ControlTroopsInPlayerPartyOnly = true;
 
+        public bool IgnoreRetreatingTroops = true;
+
         public bool DisableDeath;
 
         public bool DisableDeathHotkeyEnabled;
@@ -99,6 +101,7 @@ namespace RTSCamera.Config
             SlowMotionFactor = other.SlowMotionFactor;
             DisplayMessage = other.DisplayMessage;
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;
+            IgnoreRetreatingTroops = other.IgnoreRetreatingTroops;
             PreferToControlCompanions = other.PreferToControlCompanions;
             ControlTroopsInPlayerPartyOnly = other.ControlTroopsInPlayerPartyOnly;
             DisableDeath = other.DisableDeath;

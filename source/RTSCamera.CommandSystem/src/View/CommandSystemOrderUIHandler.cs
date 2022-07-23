@@ -17,11 +17,12 @@ using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.View.Screen;
 using TaleWorlds.MountAndBlade.ViewModelCollection;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
+using TaleWorlds.ScreenSystem;
 using TaleWorlds.TwoDimension;
 
 namespace RTSCamera.CommandSystem.View
 {
-    [OverrideView(typeof(MissionOrderUIHandler))]
+    //[OverrideView(typeof(MissionOrderUIHandler))]
     public class CommandSystemOrderUIHandler : MissionView, ISiegeDeploymentView
     {
         private void RegisterReload()
@@ -52,9 +53,11 @@ namespace RTSCamera.CommandSystem.View
 
         private const string _radialOrderMovieName = "OrderRadial";
         private const string _barOrderMovieName = "OrderBar";
+        private const float _slowDownAmountWhileOrderIsOpen = 0.25f;
+        private const int _missionTimeSpeedRequestID = 864;
         private float _holdTime;
         private bool _holdExecuted;
-        private SiegeMissionView _siegeMissionView;
+        private DeploymentMissionView _deploymentMissionView;
         private List<DeploymentSiegeMachineVM> _deploymentPointDataSources;
         private CommandSystemOrderTroopPlacer _orderTroopPlacer;
         public GauntletLayer GauntletLayer;
@@ -62,19 +65,31 @@ namespace RTSCamera.CommandSystem.View
         private SpriteCategory _spriteCategory;
         public  MissionOrderVM DataSource;
         private SiegeDeploymentHandler _siegeDeploymentHandler;
-        public bool IsDeployment;
-        private bool isInitialized;
+        private BattleDeploymentHandler _battleDeploymentHandler;
+
+        private bool _isInitialized;
+        private bool _slowedDownMission;
+        private float _latestDt;
         private bool _isTransferEnabled;
 
         private float _minHoldTimeForActivation => 0.0f;
 
-        private bool _isGamepadActive => Input.GetIsControllerConnected() && !Input.GetIsMouseActive();
+        public bool IsSiegeDeployment { get; private set; }
 
-        public CommandSystemOrderUIHandler() => ViewOrderPriorty = 19;
+        public bool IsBattleDeployment { get; private set; }
+
+        public bool IsAnyDeployment => this.IsSiegeDeployment || this.IsBattleDeployment;
+
+        public event Action<bool> OnCameraControlsToggled;
+
+        public CommandSystemOrderUIHandler() => ViewOrderPriority = 12;
 
         public override void OnMissionScreenTick(float dt)
         {
             base.OnMissionScreenTick(dt);
+            this._latestDt = dt;
+            if (this.MissionScreen.IsPhotoModeEnabled)
+                return;
             TickInput(dt);
             DataSource.Update();
             if (DataSource.IsToggleOrderShown)
@@ -90,7 +105,7 @@ namespace RTSCamera.CommandSystem.View
                     MissionScreen.OrderFlag.SetWidthVisibility(true, OrderController.GetOrderFormCustomWidth(Mission.MainAgent.Team.PlayerOrderController.SelectedFormations, MissionScreen.OrderFlag.Position));
                 else
                     MissionScreen.OrderFlag.SetWidthVisibility(false, -1f);
-                if (_isGamepadActive)
+                if (TaleWorlds.InputSystem.Input.IsGamepadActive)
                 {
                     OrderItemVM selectedOrderItem = DataSource.LastSelectedOrderItem;
                     if ((selectedOrderItem != null ? (selectedOrderItem.IsTitle ? 1 : 0) : 1) != 0)
@@ -117,12 +132,18 @@ namespace RTSCamera.CommandSystem.View
                     _orderTroopPlacer.SuspendTroopPlacer = true;
                 GauntletLayer.InputRestrictions.ResetInputRestrictions();
             }
-            if (IsDeployment)
+            if (IsAnyDeployment)
             {
                 if (MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton) || MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.ControllerLTrigger))
+                {
                     GauntletLayer.InputRestrictions.SetMouseVisibility(false);
+                    this.OnCameraControlsToggled?.Invoke(true);
+                }
                 else
+                {
                     GauntletLayer.InputRestrictions.SetInputRestrictions();
+                    this.OnCameraControlsToggled?.Invoke(false);
+                }
             }
             MissionScreen.OrderFlag.IsTroop = DataSource.ActiveTargetState == 0;
             MissionScreen.OrderFlag.Tick(dt);
@@ -130,21 +151,21 @@ namespace RTSCamera.CommandSystem.View
 
         public override bool OnEscape()
         {
-            int num = DataSource.IsToggleOrderShown ? 1 : 0;
+            bool toggleOrderShown = DataSource.IsToggleOrderShown;
             DataSource.OnEscape();
-            return num != 0;
+            return !this.IsAnyDeployment && toggleOrderShown;
         }
 
         public override void OnMissionScreenActivate()
         {
             base.OnMissionScreenActivate();
             DataSource.AfterInitialize();
-            isInitialized = true;
+            _isInitialized = true;
         }
 
         public override void OnAgentBuild(Agent agent, Banner banner)
         {
-            if (!isInitialized || !agent.IsHuman)
+            if (!_isInitialized || !agent.IsHuman)
                 return;
             DataSource.TroopController.AddTroops(agent);
         }
@@ -173,19 +194,21 @@ namespace RTSCamera.CommandSystem.View
         {
             MissionScreen.SceneLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("MissionOrderHotkeyCategory"));
             MissionScreen.OrderFlag = new OrderFlag(Mission, MissionScreen);
-            _orderTroopPlacer = Mission.GetMissionBehaviour<CommandSystemOrderTroopPlacer>();
+            _orderTroopPlacer = Mission.GetMissionBehavior<CommandSystemOrderTroopPlacer>();
             MissionScreen.SetOrderFlagVisibility(false);
-            _siegeDeploymentHandler = Mission.GetMissionBehaviour<SiegeDeploymentHandler>();
-            IsDeployment = _siegeDeploymentHandler != null;
-            if (IsDeployment)
+            _siegeDeploymentHandler = Mission.GetMissionBehavior<SiegeDeploymentHandler>();
+            _battleDeploymentHandler = Mission.GetMissionBehavior<BattleDeploymentHandler>();
+            this.IsSiegeDeployment = this._siegeDeploymentHandler != null;
+            this.IsBattleDeployment = this._battleDeploymentHandler != null;
+            if (IsAnyDeployment)
             {
-                _siegeMissionView = Mission.GetMissionBehaviour<SiegeMissionView>();
-                if (_siegeMissionView != null)
-                    _siegeMissionView.OnDeploymentFinish += OnDeploymentFinish;
+                _deploymentMissionView = Mission.GetMissionBehavior<DeploymentMissionView>();
+                if (_deploymentMissionView != null)
+                    _deploymentMissionView.OnDeploymentFinish += OnDeploymentFinish;
                 _deploymentPointDataSources = new List<DeploymentSiegeMachineVM>();
             }
-            DataSource = new MissionOrderVM(MissionScreen.CombatCamera, IsDeployment ? _siegeDeploymentHandler.DeploymentPoints.ToList() : new List<DeploymentPoint>(), ToggleScreenRotation, IsDeployment, MissionScreen.GetOrderFlagPosition, RefreshVisuals, SetSuspendTroopPlacer, OnActivateToggleOrder, OnDeactivateToggleOrder, OnTransferFinished, false);
-            if (IsDeployment)
+            DataSource = new MissionOrderVM(MissionScreen.CombatCamera, IsSiegeDeployment ? _siegeDeploymentHandler.DeploymentPoints.ToList() : new List<DeploymentPoint>(), ToggleScreenRotation, IsAnyDeployment, MissionScreen.GetOrderFlagPosition, RefreshVisuals, SetSuspendTroopPlacer, OnActivateToggleOrder, OnDeactivateToggleOrder, OnTransferFinished, new OnBeforeOrderDelegate(OnBeforeOrder),  false);
+            if (IsSiegeDeployment)
             {
                 foreach (DeploymentPoint deploymentPoint in _siegeDeploymentHandler.DeploymentPoints)
                 {
@@ -203,7 +226,7 @@ namespace RTSCamera.CommandSystem.View
                     deploymentSiegeMachineVm.RemainingCount = 0;
                 }
             }
-            GauntletLayer = new GauntletLayer(ViewOrderPriorty);
+            GauntletLayer = new GauntletLayer(ViewOrderPriority);
             GauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
             _movie = GauntletLayer.LoadMovie(BannerlordConfig.OrderType == 0 ? _barOrderMovieName : _radialOrderMovieName, DataSource);
             SpriteData spriteData = UIResourceManager.SpriteData;
@@ -212,7 +235,9 @@ namespace RTSCamera.CommandSystem.View
             this._spriteCategory = spriteData.SpriteCategories["ui_order"];
             this._spriteCategory.Load((ITwoDimensionResourceContext)resourceContext, uiResourceDepot);
             MissionScreen.AddLayer(GauntletLayer);
-            if (IsDeployment)
+            if (BannerlordConfig.HideBattleUI)
+                GauntletLayer._gauntletUIContext.ContextAlpha = 0.0f;
+            if (IsAnyDeployment)
                 GauntletLayer.InputRestrictions.SetInputRestrictions();
             else if (!DataSource.IsToggleOrderShown)
                 ScreenManager.SetSuspendLayer(GauntletLayer, true);
@@ -223,10 +248,24 @@ namespace RTSCamera.CommandSystem.View
         private void OnManagedOptionChanged(
             ManagedOptions.ManagedOptionsType changedManagedOptionsType)
         {
-            if (changedManagedOptionsType != ManagedOptions.ManagedOptionsType.OrderType)
-                return;
-            GauntletLayer.ReleaseMovie(_movie);
-            _movie = GauntletLayer.LoadMovie(BannerlordConfig.OrderType == 0 ? _barOrderMovieName : _radialOrderMovieName, DataSource);
+            switch (changedManagedOptionsType)
+            {
+                case ManagedOptions.ManagedOptionsType.OrderType:
+                    this.GauntletLayer.ReleaseMovie(this._movie);
+                    this._movie = this.GauntletLayer.LoadMovie(BannerlordConfig.OrderType == 0 ? "OrderBar" : "OrderRadial", (ViewModel)DataSource);
+                    break;
+                case ManagedOptions.ManagedOptionsType.OrderLayoutType:
+                    this.DataSource?.OnOrderLayoutTypeChanged();
+                    break;
+                case ManagedOptions.ManagedOptionsType.SlowDownOnOrder:
+                    if (BannerlordConfig.SlowDownOnOrder || !this._slowedDownMission)
+                        break;
+                    this.Mission.RemoveTimeSpeedRequest(864);
+                    break;
+                case ManagedOptions.ManagedOptionsType.HideBattleUI:
+                    this.GauntletLayer._gauntletUIContext.ContextAlpha = BannerlordConfig.HideBattleUI ? 0.0f : 1f;
+                    break;
+            }
         }
 
         public override void OnMissionScreenFinalize()
@@ -247,6 +286,7 @@ namespace RTSCamera.CommandSystem.View
             DataSource.OnFinalize();
             DataSource = null;
             _siegeDeploymentHandler = null;
+            _battleDeploymentHandler = null;
             _spriteCategory.Unload();
         }
 
@@ -267,10 +307,14 @@ namespace RTSCamera.CommandSystem.View
 
         private void OnTransferFinished()
         {
-            if (this.IsDeployment)
+            if (this.IsAnyDeployment)
                 return;
             SetLayerEnabled(false);
         }
+
+        public void OnAutoDeploy() => DataSource.DeploymentController.ExecuteAutoDeploy();
+
+        public void OnBeginMission() => DataSource.DeploymentController.ExecuteBeginSiege();
 
         private void SetLayerEnabled(bool isEnabled)
         {
@@ -279,6 +323,11 @@ namespace RTSCamera.CommandSystem.View
                 ExitWithRightClick = true;
                 if (DataSource == null || DataSource.ActiveTargetState == 0)
                     _orderTroopPlacer.SuspendTroopPlacer = false;
+                if (!this._slowedDownMission && BannerlordConfig.SlowDownOnOrder)
+                {
+                    this.Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(0.25f, 864));
+                    this._slowedDownMission = true;
+                }
                 MissionScreen.SetOrderFlagVisibility(true);
                 if (GauntletLayer != null)
                     ScreenManager.SetSuspendLayer(GauntletLayer, false);
@@ -290,6 +339,11 @@ namespace RTSCamera.CommandSystem.View
                 MissionScreen.SetOrderFlagVisibility(false);
                 if (GauntletLayer != null)
                     ScreenManager.SetSuspendLayer(GauntletLayer, true);
+                if (this._slowedDownMission)
+                {
+                    this.Mission.RemoveTimeSpeedRequest(864);
+                    this._slowedDownMission = false;
+                }
                 MissionScreen.SetRadialMenuActiveState(false);
                 Game.Current.EventManager.TriggerEvent(new MissionPlayerToggledOrderViewEvent(false));
             }
@@ -297,19 +351,20 @@ namespace RTSCamera.CommandSystem.View
 
         private void OnDeploymentFinish()
         {
-            IsDeployment = false;
+            this.IsSiegeDeployment = false;
+            this.IsBattleDeployment = false;
             DataSource.DeploymentController.FinalizeDeployment();
             _deploymentPointDataSources.Clear();
             _orderTroopPlacer.SuspendTroopPlacer = true;
             MissionScreen.SetOrderFlagVisibility(false);
-            if (_siegeMissionView == null)
+            if (_deploymentMissionView == null)
                 return;
-            _siegeMissionView.OnDeploymentFinish -= OnDeploymentFinish;
+            _deploymentMissionView.OnDeploymentFinish -= OnDeploymentFinish;
         }
 
         private void RefreshVisuals()
         {
-            if (!IsDeployment)
+            if (!IsSiegeDeployment)
                 return;
             foreach (DeploymentSiegeMachineVM deploymentPointDataSource in _deploymentPointDataSources)
                 deploymentPointDataSource.RefreshWithDeployedWeapon();
@@ -321,6 +376,24 @@ namespace RTSCamera.CommandSystem.View
         {
             _orderTroopPlacer.SuspendTroopPlacer = value;
             MissionScreen.SetOrderFlagVisibility(!value);
+        }
+
+        public void SelectFormationAtIndex(int index) => this.DataSource.OnSelect(index);
+
+        public void DeselectFormationAtIndex(int index) => this.DataSource.TroopController.OnDeselectFormation(index);
+
+        public void OnFiltersSet(List<(int, List<int>)> filterData) => this.DataSource.OnFiltersSet(filterData);
+
+        public void SetIsOrderPreconfigured(bool isOrderPreconfigured) => this.DataSource.DeploymentController.SetIsOrderPreconfigured(isOrderPreconfigured);
+
+
+        private void OnBeforeOrder() => this.TickOrderFlag(this._latestDt, true);
+
+        private void TickOrderFlag(float dt, bool forceUpdate)
+        {
+            if (!(this.MissionScreen.OrderFlag.IsVisible | forceUpdate) || TaleWorlds.Engine.Utilities.EngineFrameNo == this.MissionScreen.OrderFlag.LatestUpdateFrameNo)
+                return;
+            this.MissionScreen.OrderFlag.Tick(this._latestDt);
         }
 
         void ISiegeDeploymentView.OnEntityHover(GameEntity hoveredEntity)
@@ -352,8 +425,8 @@ namespace RTSCamera.CommandSystem.View
                 if (_holdExecuted && DataSource.IsToggleOrderShown)
                 {
                     DataSource.TryCloseToggleOrder();
-                    _holdExecuted = false;
                 }
+                _holdExecuted = false;
                 _holdTime = 0.0f;
             }
             if (DataSource.IsToggleOrderShown)
@@ -377,7 +450,7 @@ namespace RTSCamera.CommandSystem.View
                 if (DataSource.ActiveTargetState == 0 && (Input.IsKeyReleased(InputKey.LeftMouseButton) || Input.IsKeyReleased(InputKey.ControllerRTrigger)))
                 {
                     OrderItemVM selectedOrderItem = DataSource.LastSelectedOrderItem;
-                    if ((selectedOrderItem != null ? (!selectedOrderItem.IsTitle ? 1 : 0) : 0) != 0 && _isGamepadActive)
+                    if ((selectedOrderItem != null ? (!selectedOrderItem.IsTitle ? 1 : 0) : 0) != 0 && TaleWorlds.InputSystem.Input.IsGamepadActive)
                     {
                         DataSource.ApplySelectedOrder();
                     }
@@ -405,7 +478,7 @@ namespace RTSCamera.CommandSystem.View
                     DataSource.OnEscape();
             }
             int pressedIndex = -1;
-            if ((!_isGamepadActive || DataSource.IsToggleOrderShown) && !Input.IsControlDown())
+            if ((!TaleWorlds.InputSystem.Input.IsGamepadActive || DataSource.IsToggleOrderShown) && !Input.IsControlDown())
             {
                 if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder1))
                     pressedIndex = 0;
@@ -447,12 +520,15 @@ namespace RTSCamera.CommandSystem.View
                 formationTroopIndex = 6;
             else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group7Hear))
                 formationTroopIndex = 7;
-            if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectNextGroup))
-                DataSource.SelectNextTroop(1);
-            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectPreviousGroup))
-                DataSource.SelectNextTroop(-1);
-            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.ToggleGroupSelection))
-                DataSource.ToggleSelectionForCurrentTroop();
+            if (!this.IsBattleDeployment && !IsSiegeDeployment)
+            {
+                if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectNextGroup))
+                    DataSource.SelectNextTroop(1);
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectPreviousGroup))
+                    DataSource.SelectNextTroop(-1);
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.ToggleGroupSelection))
+                    DataSource.ToggleSelectionForCurrentTroop();
+            }
             if (formationTroopIndex != -1)
                 DataSource.OnSelect(formationTroopIndex);
             if (!Input.IsGameKeyPressed(MissionOrderHotkeyCategory.ViewOrders))

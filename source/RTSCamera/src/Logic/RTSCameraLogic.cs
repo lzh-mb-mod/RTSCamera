@@ -34,9 +34,9 @@ namespace RTSCamera.Logic
             Instance = this;
         }
 
-        public override void OnBehaviourInitialize()
+        public override void OnBehaviorInitialize()
         {
-            base.OnBehaviourInitialize();
+            base.OnBehaviorInitialize();
 
             CommanderLogic.OnBehaviourInitialize();
             FixScoreBoardAfterPlayerDeadLogic.OnBehaviourInitialize();
@@ -45,9 +45,9 @@ namespace RTSCamera.Logic
             ControlTroopLogic.OnBehaviourInitialize();
         }
 
-        public override void OnRemoveBehaviour()
+        public override void OnRemoveBehavior()
         {
-            base.OnRemoveBehaviour();
+            base.OnRemoveBehavior();
 
             CommanderLogic.OnRemoveBehaviour();
             FixScoreBoardAfterPlayerDeadLogic.OnRemoveBehaviour();
@@ -90,9 +90,9 @@ namespace RTSCamera.Logic
             ControlTroopLogic.OnMissionTick(dt);
         }
 
-        protected override void OnAgentControllerChanged(Agent agent)
+        protected override void OnAgentControllerChanged(Agent agent, Agent.ControllerType oldController)
         {
-            base.OnAgentControllerChanged(agent);
+            base.OnAgentControllerChanged(agent, oldController);
 
             SwitchFreeCameraLogic.OnAgentControllerChanged(agent);
         }

@@ -6,6 +6,7 @@ using TaleWorlds.GauntletUI.Data;
 using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.ScreenSystem;
 
 namespace RTSCamera.View.Basic
 {
@@ -22,7 +23,7 @@ namespace RTSCamera.View.Basic
 
         public MissionMenuViewBase(int viewOrderPriority, string movieName)
         {
-            ViewOrderPriorty = viewOrderPriority;
+            ViewOrderPriority = viewOrderPriority;
             _movieName = movieName;
         }
 
@@ -49,7 +50,7 @@ namespace RTSCamera.View.Basic
             if (GetDataSource == null)
                 return;
             _dataSource = GetDataSource?.Invoke();
-            GauntletLayer = new GauntletLayer(ViewOrderPriorty) { IsFocusLayer = true };
+            GauntletLayer = new GauntletLayer(ViewOrderPriority) { IsFocusLayer = true };
             GauntletLayer.InputRestrictions.SetInputRestrictions();
             GauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
             _movie = GauntletLayer.LoadMovie(_movieName, _dataSource);
@@ -85,9 +86,9 @@ namespace RTSCamera.View.Basic
             }
         }
 
-        public override void OnRemoveBehaviour()
+        public override void OnRemoveBehavior()
         {
-            base.OnRemoveBehaviour();
+            base.OnRemoveBehavior();
 
             Game.Current.GameStateManager.ActiveStateDisabledByUser = false;
         }

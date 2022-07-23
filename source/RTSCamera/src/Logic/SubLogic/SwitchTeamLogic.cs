@@ -41,7 +41,7 @@ namespace RTSCamera.Logic.SubLogic
                 return;
             if (Mission.PlayerEnemyTeam == null)
                 return;
-            if (Mission.GetMissionBehaviour<SiegeDeploymentHandler>() != null)
+            if (Mission.GetMissionBehavior<SiegeDeploymentHandler>() != null)
                 return;
             bool firstTime = Mission.PlayerEnemyTeam.PlayerOrderController.Owner == null;
             var targetAgent = Mission.PlayerEnemyTeam.PlayerOrderController.Owner;
@@ -65,13 +65,15 @@ namespace RTSCamera.Logic.SubLogic
             MissionLibrary.Event.MissionEvent.OnPostSwitchTeam();
             MissionEvent.OnPostSwitchTeam();
 
+            // TODO
             if (firstTime)
             {
                 foreach (var formation in Mission.PlayerTeam.FormationsIncludingEmpty)
                 {
                     bool isAIControlled = formation.IsAIControlled;
+                    bool isSplittableByAI = formation.IsSplittableByAI;
                     formation.PlayerOwner = Mission.MainAgent;
-                    formation.IsAIControlled = isAIControlled;
+                    formation.SetControlledByAI(isAIControlled, isSplittableByAI);
                 }
             }
         }

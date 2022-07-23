@@ -9,7 +9,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 ## Features
 - Free camera mode switchable at any time.
 
-- Clickable troop cards.
+- ~~Clickable troop cards.~~
 
 - Command your troops to attack any enemy formation.
 

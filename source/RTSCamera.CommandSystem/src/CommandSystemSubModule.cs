@@ -7,6 +7,8 @@ using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using System;
 using System.Linq;
+using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Patch;
 using TaleWorlds.Core;
 using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
@@ -22,6 +24,7 @@ namespace RTSCamera.CommandSystem
         {
             base.OnSubModuleLoad();
 
+            Utility.ShouldDisplayMessage = true;
             Initialize();
             EnableChargeToFormationForInfantry =
                 TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info => info.Id == "RealisticBattleAiModule") == null;
@@ -56,6 +59,14 @@ namespace RTSCamera.CommandSystem
             Global.RegisterProvider(
                 VersionProviderCreator.Create(() => new RTSCameraAgentComponent.MissionStartingHandler(),
                     new Version(1, 0, 0)), "RTSCameraAgentComponent.MissionStartingHandler");
+
+            bool successPatch = true;
+            successPatch &=  Patch_OrderTroopPlacer.Patch();
+
+            if (!successPatch)
+            {
+                InformationManager.DisplayMessage(new InformationMessage("RTS Camera Command System: patch failed"));
+            }
             return true;
         }
 

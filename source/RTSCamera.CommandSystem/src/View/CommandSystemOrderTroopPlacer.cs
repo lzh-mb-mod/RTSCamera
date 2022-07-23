@@ -35,7 +35,7 @@ namespace RTSCamera.CommandSystem.View
         {
             base.OnMissionScreenInitialize();
             RegisterReload();
-            _contourView = Mission.GetMissionBehaviour<CommandSystemLogic>().FormationColorSubLogic;
+            _contourView = Mission.GetMissionBehavior<CommandSystemLogic>().FormationColorSubLogic;
         }
 
         public override void OnMissionScreenFinalize()
@@ -60,6 +60,7 @@ namespace RTSCamera.CommandSystem.View
         private WorldPosition? _formationDrawingStartingPosition;
         private Vec2? _formationDrawingStartingPointOfMouse;
         private float? _formationDrawingStartingTime;
+        private bool _restrictOrdersToDeploymentBoundaries;
         private OrderController PlayerOrderController;
         private Team PlayerTeam;
         public bool Initialized;
@@ -67,7 +68,6 @@ namespace RTSCamera.CommandSystem.View
         public bool IsDrawingForced;
         public bool IsDrawingFacing;
         public bool IsDrawingForming;
-        public bool IsDrawingAttaching;
         private bool _wasDrawingForced;
         private bool _wasDrawingFacing;
         private bool _wasDrawingForming;
@@ -75,6 +75,7 @@ namespace RTSCamera.CommandSystem.View
         private GameEntity widthEntityRight;
         private bool isDrawnThisFrame;
         private bool wasDrawnPreviousFrame;
+        public Action OnUnitDeployed;
         private static Material _meshMaterial;
 
         public bool SuspendTroopPlacer
@@ -91,12 +92,6 @@ namespace RTSCamera.CommandSystem.View
             }
         }
 
-        public Formation AttachTarget { get; private set; }
-
-        public MovementOrder.Side AttachSide { get; private set; }
-
-        public WorldPosition AttachPosition { get; private set; }
-
         public override void AfterStart()
         {
             base.AfterStart();
@@ -105,7 +100,7 @@ namespace RTSCamera.CommandSystem.View
             _formationDrawingStartingTime = new float?();
             _orderRotationEntities = new List<GameEntity>();
             _orderPositionEntities = new List<GameEntity>();
-            formationDrawTimer = new Timer(MBCommon.GetTime(MBCommon.TimeType.Application), 0.03333334f);
+            formationDrawTimer = new Timer(MBCommon.GetApplicationTime(), 0.03333334f);
             widthEntityLeft = GameEntity.CreateEmpty(Mission.Scene);
             widthEntityLeft.AddComponent(MetaMesh.GetCopy("order_arrow_a"));
             widthEntityLeft.SetVisibilityExcludeParents(false);
@@ -136,6 +131,8 @@ namespace RTSCamera.CommandSystem.View
             InitializeInADisgustingManner();
             Initialized = true;
         }
+        
+        public void RestrictOrdersToDeploymentBoundaries(bool enabled) => this._restrictOrdersToDeploymentBoundaries = enabled;
 
         private void UpdateFormationDrawingForFacingOrder(bool giveOrder)
         {
@@ -218,7 +215,7 @@ namespace RTSCamera.CommandSystem.View
             }
 
             if (_formationDrawingStartingTime.HasValue &&
-                MBCommon.GetTime(MBCommon.TimeType.Application) -
+                MBCommon.GetApplicationTime() -
                 _formationDrawingStartingTime.Value >= 0.300000011920929)
             {
                 return true;
@@ -261,7 +258,7 @@ namespace RTSCamera.CommandSystem.View
             }
             else
                 worldPosition = _formationDrawingStartingPosition.Value;
-            if (!OrderFlag.IsPositionOnValidGround(worldPosition))
+            if (!OrderFlag.IsPositionOnValidGround(worldPosition) || this._restrictOrdersToDeploymentBoundaries && (!this.Mission.IsPositionInsideDeploymentBoundaries(this.Mission.PlayerTeam.Side, worldPosition.AsVec2) || !this.Mission.IsPositionInsideDeploymentBoundaries(this.Mission.PlayerTeam.Side, formationRealEndingPosition.AsVec2)))
                 return;
             bool isFormationLayoutVertical = !Input.IsControlDown();
             UpdateFormationDrawingForMovementOrder(giveOrder, worldPosition, formationRealEndingPosition,
@@ -292,7 +289,7 @@ namespace RTSCamera.CommandSystem.View
             int entityIndex = 0;
             foreach (WorldPosition worldPosition in simulationAgentFrames)
             {
-                Vec3 groundVec3 = worldPosition.GetGroundVec3();
+                var groundVec3 = worldPosition.GetGroundVec3();
                 AddOrderPositionEntity(entityIndex, in groundVec3, giveOrder);
                 ++entityIndex;
             }
@@ -312,7 +309,7 @@ namespace RTSCamera.CommandSystem.View
                 _formationDrawingStartingPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, rayBegin + vec3 * collisionDistance,
                     false);
                 _formationDrawingStartingPointOfMouse = Input.GetMousePositionPixel();
-                _formationDrawingStartingTime = MBCommon.GetTime(MBCommon.TimeType.Application);
+                _formationDrawingStartingTime = MBCommon.GetApplicationTime();
                 return;
             }
 
@@ -451,7 +448,10 @@ namespace RTSCamera.CommandSystem.View
                 else
                     UpdateFormationDrawing(true);
                 if (IsDeployment)
+                {
+                    OnUnitDeployed?.Invoke();
                     SoundEvent.PlaySound2D("event:/ui/mission/deploy");
+                }
             }
 
             _formationDrawingMode = false;
@@ -471,7 +471,6 @@ namespace RTSCamera.CommandSystem.View
         private CursorState GetCursorState()
         {
             CursorState cursorState = CursorState.Invisible;
-            AttachTarget = null;
             if (!PlayerOrderController.SelectedFormations.IsEmpty() && _clickedFormation == null)
             {
                 MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out var rayBegin, out var rayEnd);
@@ -611,6 +610,8 @@ namespace RTSCamera.CommandSystem.View
 
         private void HideOrderPositionEntities()
         {
+
+            // TODO
             if (MissionState.Current.Paused)
             {
                 foreach (GameEntity orderPositionEntity in _orderPositionEntities)
@@ -681,7 +682,7 @@ namespace RTSCamera.CommandSystem.View
             else if (Input.IsKeyDown(InputKey.LeftMouseButton) && _isMouseDown)
             {
                 //Utilities.DisplayMessage("key down");
-                if (formationDrawTimer.Check(MBCommon.GetTime(MBCommon.TimeType.Application)) &&
+                if (formationDrawTimer.Check(MBCommon.GetApplicationTime()) &&
                     !IsDrawingFacing &&
                     !IsDrawingForming)
                 {
@@ -724,8 +725,6 @@ namespace RTSCamera.CommandSystem.View
             }
             UpdateInputForContour();
 
-
-
             foreach (GameEntity orderPositionEntity in _orderPositionEntities)
                 orderPositionEntity.SetPreviousFrameInvalid();
             foreach (GameEntity orderRotationEntity in _orderRotationEntities)
@@ -766,8 +765,8 @@ namespace RTSCamera.CommandSystem.View
             return null;
         }
 
-        private bool IsDeployment => Mission.GetMissionBehaviour<SiegeDeploymentHandler>() != null;
-        
+        private bool IsDeployment => this.Mission.GetMissionBehavior<SiegeDeploymentHandler>() != null || this.Mission.GetMissionBehavior<BattleDeploymentHandler>() != null;
+
         protected enum CursorState
         {
             Invisible,

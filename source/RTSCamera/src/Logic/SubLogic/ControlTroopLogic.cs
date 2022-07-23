@@ -126,6 +126,7 @@ namespace RTSCamera.Logic.SubLogic
                         GameTexts.SetVariable("ControlledTroopName", Mission.MainAgent.Name);
                         Utility.DisplayLocalizedText("str_rts_camera_control_troop");
                     }
+
                     bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
                     Utility.PlayerControlAgent(Mission.MainAgent);
                     Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
@@ -160,34 +161,40 @@ namespace RTSCamera.Logic.SubLogic
             if (Mission.PlayerTeam == null)
                 return null;
 
+            return GetOtherAgentToControl(true) ??
+                   (RTSCameraConfig.Get().IgnoreRetreatingTroops ? null : GetOtherAgentToControl(false));
+        }
+
+        private Agent GetOtherAgentToControl(bool ignoreRetreatingAgents)
+        {
             var cameraPosition = Mission.Scene.LastFinalRenderCameraPosition;
             if (_config.PreferToControlCompanions)
             {
                 var firstPreference =
-                    AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation, cameraPosition);
+                    AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation, cameraPosition, ignoreRetreatingAgents);
                 if (firstPreference.companion != null)
                     return firstPreference.companion;
 
                 if ((int)_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
                 {
                     var secondPreference =
-                        AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation, cameraPosition);
+                        AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation, cameraPosition, ignoreRetreatingAgents);
                     if (secondPreference.companion != null)
                         return secondPreference.companion;
-                    var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition);
+                    var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents);
                     return thirdPreference.companion ??
                            firstPreference.agent ?? secondPreference.agent ?? thirdPreference.agent;
                 }
                 else
                 {
-                    var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition);
+                    var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents);
                     return thirdPreference.companion ??
                            firstPreference.agent ?? thirdPreference.agent;
                 }
 
             }
 
-            var agent = AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation, cameraPosition).agent;
+            var agent = AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation, cameraPosition, ignoreRetreatingAgents).agent;
             if (agent != null)
             {
                 return agent;
@@ -195,36 +202,37 @@ namespace RTSCamera.Logic.SubLogic
 
             if ((int)_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
             {
-                var secondPreference = AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation, cameraPosition);
+                var secondPreference = AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation, cameraPosition, ignoreRetreatingAgents);
                 if (secondPreference.agent != null)
                 {
                     return secondPreference.agent;
                 }
             }
-            return AgentPreferenceFromPlayerTeam(cameraPosition).agent ?? Mission.PlayerTeam.Leader;
+            return AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents).agent;
         }
-        private (Agent agent, Agent companion) AgentPreferenceFromPlayerTeam(Vec3 position)
+
+        private (Agent agent, Agent companion) AgentPreferenceFromPlayerTeam(Vec3 position, bool ignoreRetreatingAgents)
         {
             var preference = new ControlAgentPreference();
-            preference.UpdateAgentPreferenceFromTeam(Mission.PlayerTeam, position);
+            preference.UpdateAgentPreferenceFromTeam(Mission.PlayerTeam, position, ignoreRetreatingAgents);
             return (preference.NearestAgent, preference.NearestCompanion);
         }
 
 
         private (Agent agent, Agent companion) AgentPreferenceFromFormation(FormationClass formationClass,
-            Vec3 position)
+            Vec3 position, bool ignoreRetreatingAgents)
         {
             var preference = new ControlAgentPreference();
-            preference.UpdateAgentPreferenceFromFormation(formationClass, position);
+            preference.UpdateAgentPreferenceFromFormation(formationClass, position, ignoreRetreatingAgents);
             return (preference.NearestAgent, preference.NearestCompanion);
         }
 
         public void OnBehaviourInitialize()
         {
-            _rtsCameraLogic = Mission.GetMissionBehaviour<RTSCameraLogic>();
+            _rtsCameraLogic = Mission.GetMissionBehavior<RTSCameraLogic>();
             _switchFreeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
-            _flyCameraMissionView = Mission.GetMissionBehaviour<FlyCameraMissionView>();
-            _selectCharacterView = Mission.GetMissionBehaviour<RTSCameraSelectCharacterView>();
+            _flyCameraMissionView = Mission.GetMissionBehavior<FlyCameraMissionView>();
+            _selectCharacterView = Mission.GetMissionBehavior<RTSCameraSelectCharacterView>();
         }
 
         public void OnMissionTick(float dt)

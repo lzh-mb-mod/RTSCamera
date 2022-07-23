@@ -32,6 +32,6 @@ namespace RTSCamera
         public abstract string ExtensionName { get; }
         public abstract string ButtonName { get; }
 
-        public abstract List<MissionBehaviour> CreateMissionBehaviours(Mission mission);
+        public abstract List<MissionBehavior> CreateMissionBehaviors(Mission mission);
     }
 }

@@ -14,7 +14,7 @@ namespace RTSCamera.MissionStartingHandler
         public override void OnCreated(MissionView entranceView)
         {
 
-            List<MissionBehaviour> list = new List<MissionBehaviour>
+            List<MissionBehavior> list = new List<MissionBehavior>
             {
                 new RTSCameraSelectCharacterView(),
 
@@ -25,24 +25,24 @@ namespace RTSCamera.MissionStartingHandler
             };
 
 
-            foreach (var missionBehaviour in list)
+            foreach (var missionBehavior in list)
             {
-                MissionStartingManager.AddMissionBehaviour(entranceView, missionBehaviour);
+                MissionStartingManager.AddMissionBehavior(entranceView, missionBehavior);
             }
 
             foreach (var extension in RTSCameraExtension.Extensions)
             {
-                foreach (var missionBehaviour in extension.CreateMissionBehaviours(entranceView.Mission))
+                foreach (var missionBehavior in extension.CreateMissionBehaviors(entranceView.Mission))
                 {
-                    MissionStartingManager.AddMissionBehaviour(entranceView, missionBehaviour);
+                    MissionStartingManager.AddMissionBehavior(entranceView, missionBehavior);
                 }
             }
 
             foreach (var extension in MissionExtensionCollection.Extensions)
             {
-                foreach (var missionBehaviour in extension.CreateMissionBehaviours(entranceView.Mission))
+                foreach (var missionBehavior in extension.CreateMissionBehaviors(entranceView.Mission))
                 {
-                    MissionStartingManager.AddMissionBehaviour(entranceView, missionBehaviour);
+                    MissionStartingManager.AddMissionBehavior(entranceView, missionBehavior);
                 }
             }
         }

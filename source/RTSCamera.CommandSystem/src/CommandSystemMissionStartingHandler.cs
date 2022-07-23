@@ -15,29 +15,24 @@ namespace RTSCamera.CommandSystem
     {
         public override void OnCreated(MissionView entranceView)
         {
-            var config = CommandSystemConfig.Get();
-            if (config.AttackSpecificFormation)
-            {
-                PatchChargeToFormation.Patch();
-            }
-            List<MissionBehaviour> list = new List<MissionBehaviour>
+            List<MissionBehavior> list = new List<MissionBehavior>
             {
                 new CommandSystemLogic(),
-                new CommandSystemOrderTroopPlacer(),
-                new DragWhenCommandView()
             };
 
-            foreach (var missionBehaviour in list)
+            foreach (var MissionBehavior in list)
             {
-                MissionStartingManager.AddMissionBehaviour(entranceView, missionBehaviour);
+                MissionStartingManager.AddMissionBehavior(entranceView, MissionBehavior);
             }
         }
 
         public override void OnPreMissionTick(MissionView entranceView, float dt)
         {
-            var orderTroopPlacer = entranceView.Mission.GetMissionBehaviour<OrderTroopPlacer>();
-            if (orderTroopPlacer != null)
-                entranceView.Mission.RemoveMissionBehaviour(orderTroopPlacer);
+            var config = CommandSystemConfig.Get();
+            if (config.AttackSpecificFormation)
+            {
+                PatchChargeToFormation.Patch();
+            }
         }
     }
 }
