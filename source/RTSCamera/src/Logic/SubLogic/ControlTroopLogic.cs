@@ -63,7 +63,10 @@ namespace RTSCamera.Logic.SubLogic
                 return true;
             }
 
-            Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
+            if (Utilities.Utility.IsBattleCombat(Mission))
+            {
+                Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
+            }
             return false;
         }
 

@@ -1,4 +1,6 @@
 ﻿using RTSCamera.Config.HotKey;
+using SandBox.Missions.MissionLogics.Arena;
+using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
@@ -30,7 +32,7 @@ namespace RTSCamera.Utilities
                     {
                         goto case Agent.ControllerType.None;
                     }
-                    MissionSharedLibrary.Utilities.Utility.AIControlMainAgent(true, true);
+                    MissionSharedLibrary.Utilities.Utility.AIControlMainAgent(Mission.Current.Mode == MissionMode.Battle, true);
                     break;
                 case Agent.ControllerType.Player:
                     MissionSharedLibrary.Utilities.Utility.PlayerControlAgent(agent);
@@ -58,6 +60,23 @@ namespace RTSCamera.Utilities
                     controller.InteractionComponent.ClearFocus();
                 }
             }
+        }
+
+        public static bool IsArenaCombat(Mission mission)
+        {
+            foreach (var missionLogic in mission.MissionLogics)
+            {
+                if (missionLogic is ArenaAgentStateDeciderLogic)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool IsBattleCombat(Mission mission)
+        {
+            return mission.Mode == MissionMode.Battle && mission.CombatType == Mission.MissionCombatType.Combat &&
+                   !IsArenaCombat(mission);
         }
     }
 }

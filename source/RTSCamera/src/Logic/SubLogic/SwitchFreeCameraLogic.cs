@@ -5,6 +5,7 @@ using RTSCamera.Config.HotKey;
 using RTSCamera.Event;
 using System.Collections.Generic;
 using System.ComponentModel;
+using SandBox.Missions.MissionLogics.Arena;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -194,7 +195,7 @@ namespace RTSCamera.Logic.SubLogic
             {
                 if (_config.ControlAllyAfterDeath || IsSpectatorCamera)
                 {
-                    if (Mission.Mode == MissionMode.Battle &&
+                    if (Utilities.Utility.IsBattleCombat(Mission) &&
                         Mission.MainAgent.Character == CharacterObject.PlayerCharacter)
                         Utility.DisplayLocalizedText("str_rts_camera_player_dead", null, new Color(1, 0, 0));
                     // mask code in Mission.OnAgentRemoved so that formations will not be delegated to AI after player dead.

@@ -2,7 +2,13 @@
 
 ## [e4.0.0] - 2022-07-23
 ### Fixed
-- Keep compatible with Bannlerord e1.7.2
+- Keep compatible with Bannlerord e1.7.2.
+
+- Fix the issue that switching to free camera after victory may cause the game crash.
+
+  I found that the game may crash if letting AI control the player character after victory.
+
+  So the solution is not to set the player to AI mode after victory.
 
 ## [e3.9.25] - 2021-03-14
 ### Fixed
