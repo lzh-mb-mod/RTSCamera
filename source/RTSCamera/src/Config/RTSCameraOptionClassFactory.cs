@@ -257,10 +257,9 @@ namespace RTSCamera.Config
                     cheatOptionCategory.AddOption(new BoolOptionViewModel(
                         GameTexts.FindText("str_rts_camera_all_invulnerable"),
                         GameTexts.FindText("str_rts_camera_all_invulnerable_hint"),
-                        () => RTSCameraConfig.Get().DisableDeath,
+                        () => rtsCameraLogic.DisableDeathLogic.GetDisableDeath(),
                         b =>
                         {
-                            RTSCameraConfig.Get().DisableDeath = b;
                             rtsCameraLogic.DisableDeathLogic.SetDisableDeath(b);
                         }));
                     cheatOptionCategory.AddOption(new BoolOptionViewModel(

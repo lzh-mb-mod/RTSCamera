@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using RTSCamera.Logic;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch.Fix
@@ -15,7 +16,7 @@ namespace RTSCamera.Patch.Fix
             {
                 Agent.Main,
                 Agent.Main.Controller == Agent.ControllerType.Player &&
-                !__instance.Mission.IsPositionInsideBoundaries(Agent.Main.Position.AsVec2),
+                !__instance.Mission.IsPositionInsideBoundaries(Agent.Main.Position.AsVec2) && !__instance.Mission.GetMissionBehavior<RTSCameraLogic>().SwitchFreeCameraLogic.IsSpectatorCamera,
                 ____mainAgentLeaveTimer != null, ____mainAgentLeaveTimer
             });
             return false;

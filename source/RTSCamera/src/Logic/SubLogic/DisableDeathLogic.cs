@@ -31,16 +31,20 @@ namespace RTSCamera.Logic.SubLogic
                 return;
             if (_config.DisableDeathHotkeyEnabled && _gameKeyCategory.GetGameKeySequence((int)GameKeyEnum.DisableDeath).IsKeyPressed(Mission.InputManager))
             {
-                _config.DisableDeath = !_config.DisableDeath;
-                SetDisableDeath(_config.DisableDeath);
+                SetDisableDeath(!Mission.Current.DisableDying);
             }
+        }
+
+        public bool GetDisableDeath()
+        {
+            return _config.DisableDeath = Mission.DisableDying;
         }
 
         public void SetDisableDeath(bool disableDeath, bool atStart = false)
         {
             if (!NativeConfig.CheatMode)
                 return;
-            Mission.DisableDying = disableDeath;
+            _config.DisableDeath = Mission.DisableDying = disableDeath;
             if (atStart && !disableDeath)
                 return;
             PrintDeathStatus(disableDeath);

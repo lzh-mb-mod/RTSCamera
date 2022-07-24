@@ -45,8 +45,7 @@ namespace RTSCamera.CommandSystem.Logic.Component
                     
                     offset = averageOfTargetAgents.IsValid ? formation.TargetFormation.QuerySystem.AveragePosition * 0.2f + averageOfTargetAgents * 0.8f - formation.QuerySystem.AveragePosition : Vec2.Zero;
                 }
-                else if (QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) &&
-                    formation.FiringOrder.OrderType == OrderType.HoldFire)
+                else if (QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) && formation.FiringOrder.OrderType == OrderType.HoldFire)
                 {
                     var targetCenterAgent =
                         targetFormation.NearestAgent(formation.CurrentPosition);
