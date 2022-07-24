@@ -4,6 +4,7 @@ using RTSCamera.Config.HotKey;
 using RTSCamera.Event;
 using RTSCamera.View;
 using System;
+using RTSCamera.CampaignGame.Behavior;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -49,7 +50,7 @@ namespace RTSCamera.Logic.SubLogic
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
                 Utility.DisplayLocalizedText("str_rts_camera_control_troop");
                 bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
-                if (_switchFreeCameraLogic.IsSpectatorCamera)
+                if (_switchFreeCameraLogic.IsSpectatorCamera || WatchBattleBehavior.WatchMode)
                 {
                     Mission.MainAgent = agent;
                     Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, false);

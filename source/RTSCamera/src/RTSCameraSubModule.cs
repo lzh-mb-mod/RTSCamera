@@ -120,6 +120,9 @@ namespace RTSCamera
 
                 Patch_MissionOrderVM.Patch();
                 Patch_MissionSpectatorControl.Patch();
+
+                // Use Patch to add game menu
+                WatchBattleBehavior.Patch(_harmony);
             }
             catch (Exception e)
             {
@@ -184,9 +187,6 @@ namespace RTSCamera
             //{
             //    campaignGameStarter.AddBehavior(new WatchBattleBehavior());
             //}
-
-            // Use Patch to add game menu
-            WatchBattleBehavior.Patch(_harmony);
         }
 
 

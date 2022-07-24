@@ -167,7 +167,7 @@ namespace RTSCamera.Logic.SubLogic
                     }
                     if (Mission.MainAgent.Formation != null)
                         CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
-                    if (IsSpectatorCamera && _config.GetPlayerControllerInFreeCamera() == Agent.ControllerType.AI)
+                    if (IsSpectatorCamera && _config.GetPlayerControllerInFreeCamera() == Agent.ControllerType.AI || WatchBattleBehavior.WatchMode)
                     {
                         EnsureMainAgentControlledByAI();
                     }
