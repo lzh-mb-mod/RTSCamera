@@ -1,5 +1,5 @@
 # RTS Camera
-Forked from original RTS Camera for keeping supporting.
+Forked from forked RTS Camera to keep supporting the continued support.
 
 A mod for Mount&Blade II Bannerlord that provides free camera and more features in battle.
 
@@ -120,14 +120,13 @@ This mod does not read or write stuffs to your game save. Installing or removing
   - 
 ## Source Code
 
-Source code should be available within `source` folder in release of this mod. Or you can get it at [github.com](https://github.com/gediorios/RTSCamera).
+Source code should be available within `source` folder in release of this mod. Or you can get it at [github.com](https://github.com/lkoinw/RTSCamera).
 
-## Contacts
-- My email:
-  
-  - gediorios@gmail.com
+## Credits
 
-- Author of original:
+Thanks to Gediorios for initial support.
+
+Thanks to the author of original mod:
 
   - lizhenhuan1019@outlook.com
 
