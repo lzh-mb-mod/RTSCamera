@@ -123,11 +123,5 @@ This mod does not read or write stuffs to your game save. Installing or removing
 Source code should be available within `source` folder in release of this mod. Or you can get it at [github.com](https://github.com/lkoinw/RTSCamera).
 
 ## Credits
-
+Thanks to LiZhenhuan1019, the author of the original mod.
 Thanks to Gediorios for initial support.
-
-Thanks to the author of original mod:
-
-  - lizhenhuan1019@outlook.com
-
-  - lizhenhuan1019@qq.com
