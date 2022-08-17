@@ -2,26 +2,30 @@
 <Module>
 	<Name value="RTS Camera"/>
 	<Id value="RTSCamera"/>
-	<Version value="e3.10.2"/>
+	<Version value="e3.11.0"/>
 	<SingleplayerModule value="true"/>
 	<MultiplayerModule value="false"/>
 	<DependedModules>
-		<DependedModule Id="Native" DependentVersion="e1.6.5" />
-		<DependedModule Id="SandBoxCore" DependentVersion="e1.6.5" />
-		<DependedModule Id="Sandbox" DependentVersion="e1.6.5" />
-		<DependedModule Id="CustomBattle" DependentVersion="e1.6.5"/>
-		<DependedModule Id="StoryMode" DependentVersion="e1.6.5" />
+		<DependedModule Id="Native" />
+		<DependedModule Id="SandBoxCore" />
+		<DependedModule Id="Sandbox" />
+		<DependedModule Id="CustomBattle" />
+		<DependedModule Id="StoryMode" />
 	</DependedModules>
 	<SubModules>
 		<SubModule>
 			<Name value="RTSCameraSubModule"/>
 			<DLLName value="RTSCamera.dll"/>
 			<SubModuleClassType value="RTSCamera.RTSCameraSubModule"/>
-			<Tags>
-				<Tag key="DedicatedServerType" value="none" />
-				<Tag key="IsNoRenderModeElement" value="false" />
-			</Tags>
+			<Tags />
 		</SubModule>
 	</SubModules>
-	<Xmls/>
+	<Xmls>
+		<XmlNode>
+			<XmlName id="GameText" path="module_strings"/>
+		</XmlNode>
+		<XmlNode>
+			<XmlName id="GameText" path="MissionLibrary"/>
+		</XmlNode>
+	</Xmls>
 </Module>

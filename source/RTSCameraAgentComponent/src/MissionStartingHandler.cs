@@ -1,6 +1,6 @@
 ﻿using MissionLibrary.Controller;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace RTSCameraAgentComponent
 {
@@ -14,6 +14,7 @@ namespace RTSCameraAgentComponent
         public override void OnPreMissionTick(MissionView entranceView, float dt)
         {
         }
+
         public static void AddMissionBehaviour(MissionView entranceView, MissionBehavior behaviour)
         {
             behaviour.OnAfterMissionCreated();

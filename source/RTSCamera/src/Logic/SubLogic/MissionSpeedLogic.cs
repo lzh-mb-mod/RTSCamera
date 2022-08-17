@@ -1,11 +1,7 @@
 ﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
-using TaleWorlds.Engine.Screens;
-using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Screen;
-
 namespace RTSCamera.Logic.SubLogic
 {
     public class MissionSpeedLogic
@@ -21,10 +17,8 @@ namespace RTSCamera.Logic.SubLogic
         }
 
         public void AfterStart()
-        {
-
-            Mission.Scene.SlowMotionFactor = _config.SlowMotionFactor;
-            Mission.Scene.SlowMotionMode = _config.SlowMotionMode;
+        {            
+            Mission.Scene.TimeSpeed = _config.SlowMotionFactor;
         }
 
         public void OnMissionTick(float dt)
@@ -35,8 +29,8 @@ namespace RTSCamera.Logic.SubLogic
             }
 
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SlowMotion).IsKeyPressed(Mission.InputManager))
-            {
-                SetSlowMotionMode(!Mission.Scene.SlowMotionMode);
+            {                
+                SetSlowMotionMode(Mission.Scene.TimeSpeed == 1);
             }
         }
 
@@ -49,35 +43,29 @@ namespace RTSCamera.Logic.SubLogic
 
         public void SetSlowMotionMode(bool slowMotionMode)
         {
-            Mission.Scene.SlowMotionMode = slowMotionMode;
             _config.SlowMotionMode = slowMotionMode;
-            Utility.DisplayLocalizedText(slowMotionMode ? "str_rts_camera_slow_motion_enabled" : "str_rts_camera_normal_mode_enabled");
+            if (slowMotionMode)
+            {
+                if (!Mission.Current.GetRequestedTimeSpeed(69, out _))
+                {
+                    Mission.Current.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, 69));
+                }
+            }
+            else
+            {
+                if (Mission.Current.GetRequestedTimeSpeed(69, out _))
+                {
+                    Mission.Current.RemoveTimeSpeedRequest(69);
+                }
+            }
+            Utility.DisplayLocalizedText(slowMotionMode ? "str_rts_camera_slow_motion_enabled" : "str_rts_camera_normal_mode_enabled", null);
             _config.Serialize();
         }
 
         public void SetSlowMotionFactor(float factor)
         {
-            Mission.Scene.SlowMotionFactor = factor;
+            Mission.Scene.TimeSpeed = factor;
             _config.SlowMotionFactor = factor;
         }
-
-        //public void ApplySlowMotionFactor()
-        //{
-        //    if (Math.Abs(_config.SlowMotionFactor - 1.0f) < 0.01f)
-        //        SetNormalMode();
-        //    else
-        //    {
-        //        SetFastForwardModeImpl(false);
-        //        SetSlowMotionModeImpl(_config.SlowMotionFactor);
-        //        SetFastForwardModeImpl(false);
-        //        Utility.DisplayLocalizedText("str_rts_camera_slow_motion_enabled");
-        //    }
-        //}
-
-        //public void SetFastForwardMode()
-        //{
-        //    Mission.SetFastForwardingFromUI(true);
-        //    Utility.DisplayLocalizedText("str_rts_camera_fast_forward_mode_enabled");
-        //}
     }
 }

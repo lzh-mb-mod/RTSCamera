@@ -12,21 +12,21 @@ using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
 using RTSCamera.src.Patch.Fix;
-using SandBox;
-using SandBox.Source.Objects.SettlementObjects;
-using SandBox.Source.Towns;
 using System;
 using System.Reflection;
-using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
-using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
-using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
-using TaleWorlds.MountAndBlade.View.Screen;
-using TaleWorlds.MountAndBlade.ViewModelCollection.HUD;
+using TaleWorlds.MountAndBlade.View.MissionViews;
+using TaleWorlds.MountAndBlade.View.MissionViews.SiegeWeapon;
+using SandBox.CampaignBehaviors;
+using SandBox.Missions.MissionLogics.Arena;
+using SandBox.Objects;
+using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
+using TaleWorlds.MountAndBlade.View.Screens;
+using TaleWorlds.Library;
 using Module = TaleWorlds.MountAndBlade.Module;
+using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera
 {
@@ -45,10 +45,7 @@ namespace RTSCamera
             try
             {
                 Initialize();
-                Module.CurrentModule.GlobalTextManager.LoadGameTexts(
-                    ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
-                Module.CurrentModule.GlobalTextManager.LoadGameTexts(
-                    ModuleHelper.GetXmlPath(ModuleId, "MissionLibrary"));
+                Module.CurrentModule.GlobalTextManager.LoadGameTexts();
 
                 _successPatch = true;
                 _harmony.Patch(
@@ -111,6 +108,22 @@ namespace RTSCamera
                 // Use Patch to add game menu
                 WatchBattleBehavior.Patch(_harmony);
 
+                //
+                this._harmony.Patch(
+                    typeof(Mission).GetMethod("UpdateSceneTimeSpeed",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_MissionScreen).GetMethod("UpdateSceneTimeSpeed_Prefix",
+                        BindingFlags.Static | BindingFlags.Public)));
+
+                // Patch to allow orders in camera mode
+                _harmony.Patch(
+                    typeof(MissionOrderVM).GetMethod("CheckCanBeOpened",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_MissionScreen).GetMethod(
+                        nameof(Patch_MissionScreen.CheckCanBeOpened_Prefix),
+                        BindingFlags.Static | BindingFlags.Public)));
+
+
                 var missionListenerOnMissionModeChange = typeof(IMissionListener).GetMethod("OnMissionModeChange", BindingFlags.Instance | BindingFlags.Public);
 
                 var mapping = typeof(MissionScreen).GetInterfaceMap(missionListenerOnMissionModeChange.DeclaringType);
@@ -131,7 +144,6 @@ namespace RTSCamera
         {
             if (!Initializer.Initialize(ModuleId))
                 return;
-            RTSCameraExtension.Clear();
         }
 
         protected override void OnBeforeInitialModuleScreenSetAsRoot()
@@ -145,8 +157,9 @@ namespace RTSCamera
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera: patch failed"));
             }
-
+                      
             Patch_MissionOrderGauntletUIHandler.Patch();
+
             Patch_MissionGauntletCrosshair.Patch(_harmony);
             Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;
             Utility.PrintUsageHint();
@@ -176,8 +189,7 @@ namespace RTSCamera
         {
             base.OnGameStart(game, gameStarterObject);
 
-            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
-            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "MissionLibrary"));
+            game.GameTextManager.LoadGameTexts();
             AddCampaignBehavior(gameStarterObject);
         }
 
@@ -193,7 +205,6 @@ namespace RTSCamera
         protected override void OnSubModuleUnloaded()
         {
             base.OnSubModuleUnloaded();
-            RTSCameraExtension.Clear();
             MissionExtensionCollection.Clear();
             _harmony.UnpatchAll(_harmony.Id);
             Initializer.Clear();

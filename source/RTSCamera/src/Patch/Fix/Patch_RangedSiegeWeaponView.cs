@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
+using TaleWorlds.MountAndBlade.View.MissionViews.SiegeWeapon;
 
 namespace RTSCamera.Patch.Fix
 {

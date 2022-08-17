@@ -208,7 +208,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             if (_commandSystemOrderUiHandler == null)
                 return;
 
-            foreach (OrderTroopItemVM troop in _commandSystemOrderUiHandler.DataSource.TroopController.TroopList)
+            foreach (OrderTroopItemVM troop in _commandSystemOrderUiHandler._dataSource.TroopController.TroopList)
             {
                 troop.IsSelectable = PlayerOrderController.IsFormationSelectable(troop.Formation);
                 troop.IsSelected = troop.IsSelectable && PlayerOrderController.IsFormationListening(troop.Formation);

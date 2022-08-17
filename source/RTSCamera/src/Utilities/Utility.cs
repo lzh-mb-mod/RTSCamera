@@ -1,7 +1,7 @@
 ﻿using RTSCamera.Config.HotKey;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace RTSCamera.Utilities
 {

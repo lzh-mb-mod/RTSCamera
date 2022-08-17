@@ -5,7 +5,8 @@ using RTSCamera.Logic;
 using RTSCamera.View;
 using System.Collections.Generic;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
+using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace RTSCamera.MissionStartingHandler
 {
@@ -29,26 +30,16 @@ namespace RTSCamera.MissionStartingHandler
             {
                 MissionStartingManager.AddMissionBehaviour(entranceView, missionBehaviour);
             }
-
-            foreach (var extension in RTSCameraExtension.Extensions)
-            {
-                foreach (var missionBehaviour in extension.CreateMissionBehaviours(entranceView.Mission))
-                {
-                    MissionStartingManager.AddMissionBehaviour(entranceView, missionBehaviour);
-                }
-            }
-
-            foreach (var extension in MissionExtensionCollection.Extensions)
-            {
-                foreach (var missionBehaviour in extension.CreateMissionBehaviours(entranceView.Mission))
-                {
-                    MissionStartingManager.AddMissionBehaviour(entranceView, missionBehaviour);
-                }
-            }
         }
 
         public override void OnPreMissionTick(MissionView entranceView, float dt)
         {
+            var spectatorControl = entranceView.Mission.GetMissionBehavior<MissionGauntletSpectatorControl>();
+            if (spectatorControl != null)
+            {
+                entranceView.Mission.RemoveMissionBehavior(spectatorControl);
+            }
+            
         }
     }
 }

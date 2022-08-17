@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
-  <strings>
-
-
-
+<strings>
     <string id="str_rts_camera_option_class" text="{=RTSCamera_option_class}RTS Camera" />
 
     <string id="str_rts_camera_watch_battle" text="{=RTSCamera_watch_battle}(RTS Camera)Watch the battle." />
@@ -144,5 +139,4 @@
     <string id="str_rts_camera_select_character_view_hint" text="{=RTSCamera_select_character_view_hint}Please Select a character by left click. Then press {KeyName} to lock to it and press again to control it." />
     <string id="str_rts_camera_control_troop_hint" text="{=RTSCamera_control_troop_hint}Press {KeyName} to control one of your teammates." />
     <string id="str_rts_camera_control_current_agent_hint" text="{=RTSCamera_control_current_agent_hint}Press {KeyName} to control the character" />
-  </strings>
-</base>
+</strings>

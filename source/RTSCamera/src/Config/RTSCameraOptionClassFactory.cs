@@ -11,7 +11,7 @@ using RTSCamera.View;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace RTSCamera.Config
 {
@@ -222,13 +222,13 @@ namespace RTSCamera.Config
                     }));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_mode"),
-                    GameTexts.FindText("str_rts_camera_slow_motion_hint"), () => Mission.Current.Scene.SlowMotionMode,
+                    GameTexts.FindText("str_rts_camera_slow_motion_hint"), () => Mission.Current.Scene.TimeSpeed != 1,
                     b => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionMode(b)));
                 miscellaneousOptionCategory.AddOption(new NumericOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_factor"),
                     GameTexts.FindText("str_rts_camera_slow_motion_factor_hint"),
-                    () => Mission.Current.Scene.SlowMotionFactor,
-                    f => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionFactor(f), 0, 3, false, true));
+                    () => RTSCameraConfig.Get().SlowMotionFactor,
+                    f => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionFactor(f), 0, 1, false, true));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_display_mod_message"),
                     GameTexts.FindText("str_rts_camera_display_message_hint"),

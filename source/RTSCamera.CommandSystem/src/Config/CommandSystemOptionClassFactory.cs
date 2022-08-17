@@ -1,11 +1,11 @@
 ﻿using MissionLibrary.Provider;
 using MissionLibrary.View;
 using MissionSharedLibrary.Provider;
+using MissionSharedLibrary.Utilities;
 using MissionSharedLibrary.View.ViewModelCollection;
 using MissionSharedLibrary.View.ViewModelCollection.Options;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
-using RTSCamera.CommandSystem.View;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
@@ -38,8 +38,20 @@ namespace RTSCamera.CommandSystem.Config
                         CommandSystemConfig.Get().AttackSpecificFormation = b;
                         if (b)
                             PatchChargeToFormation.Patch();
-                    }));
+                    }));       
                 optionClass.AddOptionCategory(0, commandOptionCategory);
+
+                var miscellaneousOptionCategory = new OptionCategory("Miscellaneous",
+                                    GameTexts.FindText("str_rts_camera_miscellaneous_options"));
+                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_display_mod_message"),
+                    GameTexts.FindText("str_rts_camera_display_message_hint"),
+                    () => CommandSystemConfig.Get().DisplayMessage, b =>
+                    {
+                        CommandSystemConfig.Get().DisplayMessage = b;
+                        Utility.ShouldDisplayMessage = b;
+                    }));
+                optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
 
                 return optionClass;
             }, CommandSystemSubModule.ModuleId);

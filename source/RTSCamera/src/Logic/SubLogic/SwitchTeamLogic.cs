@@ -1,7 +1,7 @@
 ﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
-using RTSCamera.Event;
+using MissionLibrary.Event;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.Missions.Handlers;
@@ -58,11 +58,9 @@ namespace RTSCamera.Logic.SubLogic
             Utility.DisplayLocalizedText("str_rts_camera_switch_to_enemy_team");
 
             MissionEvent.OnPreSwitchTeam();
-            MissionLibrary.Event.MissionEvent.OnPreSwitchTeam();
             Mission.PlayerEnemyTeam.PlayerOrderController.Owner = targetAgent;
             Mission.PlayerTeam = Mission.PlayerEnemyTeam;
             _controlTroopLogic.SetToMainAgent(targetAgent);
-            MissionLibrary.Event.MissionEvent.OnPostSwitchTeam();
             MissionEvent.OnPostSwitchTeam();
 
             if (firstTime)
@@ -71,7 +69,7 @@ namespace RTSCamera.Logic.SubLogic
                 {
                     bool isAIControlled = formation.IsAIControlled;
                     formation.PlayerOwner = Mission.MainAgent;
-                    formation.IsAIControlled = isAIControlled;
+                    formation.SetControlledByAI(isAIControlled);
                 }
             }
         }

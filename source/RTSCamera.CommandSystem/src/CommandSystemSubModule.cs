@@ -25,7 +25,7 @@ namespace RTSCamera.CommandSystem
             Initialize();
             EnableChargeToFormationForInfantry =
                 TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info => info.Id == "RealisticBattleAiModule") == null;
-            Module.CurrentModule.GlobalTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
+            Module.CurrentModule.GlobalTextManager.LoadGameTexts();
         }
 
         private void Initialize()
@@ -63,8 +63,7 @@ namespace RTSCamera.CommandSystem
         {
             base.OnGameStart(game, gameStarterObject);
 
-            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
-            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "MissionLibrary"));
+            game.GameTextManager.LoadGameTexts();
         }
     }
 }

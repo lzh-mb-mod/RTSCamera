@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.GauntletUI;
+using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 
 namespace RTSCamera.Logic.SubLogic
 {
     public class FixScoreBoardAfterPlayerDeadLogic
     {
         private readonly RTSCameraLogic _logic;
-        private MissionGauntletBattleScoreUI _scoreUI;
+        private MissionGauntletBattleScore _scoreUI;
 
         public Mission Mission => _logic.Mission;
 
@@ -18,7 +18,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnBehaviourInitialize()
         {
-            _scoreUI = Mission.GetMissionBehavior<MissionGauntletBattleScoreUI>();
+            _scoreUI = Mission.GetMissionBehavior<MissionGauntletBattleScore>();
 
             Mission.OnMainAgentChanged += OnMainAgentChanged;
         }

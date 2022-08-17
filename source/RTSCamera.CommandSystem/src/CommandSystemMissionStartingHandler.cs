@@ -6,7 +6,8 @@ using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.View;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.MissionViews;
+using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 
 namespace RTSCamera.CommandSystem
 {
@@ -15,15 +16,9 @@ namespace RTSCamera.CommandSystem
     {
         public override void OnCreated(MissionView entranceView)
         {
-            var config = CommandSystemConfig.Get();
-            if (config.AttackSpecificFormation)
-            {
-                PatchChargeToFormation.Patch();
-            }
             List<MissionBehavior> list = new List<MissionBehavior>
-            {
-                new CommandSystemLogic(),
-                new CommandSystemOrderTroopPlacer(),
+            {    
+                new CommandSystemLogic(),              
                 new DragWhenCommandView()
             };
 
@@ -32,12 +27,22 @@ namespace RTSCamera.CommandSystem
                 MissionStartingManager.AddMissionBehaviour(entranceView, missionBehaviour);
             }
         }
-
+                
         public override void OnPreMissionTick(MissionView entranceView, float dt)
         {
             var orderTroopPlacer = entranceView.Mission.GetMissionBehavior<OrderTroopPlacer>();
             if (orderTroopPlacer != null)
+            {
                 entranceView.Mission.RemoveMissionBehavior(orderTroopPlacer);
+            }
+
+            MissionStartingManager.AddMissionBehaviour(entranceView, new CommandSystemOrderTroopPlacer());
+
+            var config = CommandSystemConfig.Get();
+            if (config.AttackSpecificFormation)
+            {
+                PatchChargeToFormation.Patch();
+            }
         }
     }
 }

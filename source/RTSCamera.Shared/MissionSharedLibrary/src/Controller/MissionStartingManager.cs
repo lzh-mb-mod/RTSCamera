@@ -5,7 +5,7 @@ using MissionSharedLibrary.Provider;
 using System;
 using System.Linq;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace MissionSharedLibrary.Controller
 {

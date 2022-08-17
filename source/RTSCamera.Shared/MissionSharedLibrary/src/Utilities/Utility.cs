@@ -2,14 +2,15 @@
 using System;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.AgentOrigins;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
-using TaleWorlds.MountAndBlade.View.Screen;
+using TaleWorlds.MountAndBlade.View.MissionViews;
+using TaleWorlds.MountAndBlade.View.Screens;
 using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace MissionSharedLibrary.Utilities
@@ -122,7 +123,7 @@ namespace MissionSharedLibrary.Utilities
                 {
                     bool isAIControlled = formation.IsAIControlled;
                     formation.PlayerOwner = mission.MainAgent;
-                    formation.IsAIControlled = isAIControlled;
+                    formation.SetControlledByAI(isAIControlled);
                 }
             }
         }
@@ -144,7 +145,7 @@ namespace MissionSharedLibrary.Utilities
                     {
                         // Fix the bug when player is a sergeant of another formation, and the target formation is led by another sergeant, the formation will not be controlled by AI.
                         if (Mission.Current.PlayerTeam.IsPlayerGeneral && formation.IsAIControlled)
-                            formation.IsAIControlled = false;
+                            formation.SetControlledByAI(false);
                         if (originalFormation == null)
                         {
                             // fix crash when begin a battle and assign player to an empty formation, then give it an shield wall order.
@@ -159,8 +160,8 @@ namespace MissionSharedLibrary.Utilities
                             formation.SetPositioning(unitSpacing: originalFormation.UnitSpacing);
                             formation.RidingOrder = originalFormation.RidingOrder;
                             formation.WeaponUsageOrder = originalFormation.WeaponUsageOrder;
-                            formation.FiringOrder = originalFormation.FiringOrder;
-                            formation.IsAIControlled = originalFormation.IsAIControlled || !originalFormation.Team.IsPlayerGeneral;
+                            formation.FiringOrder = originalFormation.FiringOrder;                            
+                            formation.SetControlledByAI(originalFormation.IsAIControlled || !originalFormation.Team.IsPlayerGeneral);
                             formation.AI.Side = originalFormation.AI.Side;
                             formation.SetMovementOrder(originalFormation.GetReadonlyMovementOrderReference());
                             formation.FacingOrder = originalFormation.FacingOrder;

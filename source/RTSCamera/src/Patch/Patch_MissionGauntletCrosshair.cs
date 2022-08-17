@@ -3,7 +3,7 @@ using System.Reflection;
 using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Logic;
-using TaleWorlds.MountAndBlade.GauntletUI;
+using TaleWorlds.MountAndBlade.GauntletUI.Mission;
 
 namespace RTSCamera.Patch
 {

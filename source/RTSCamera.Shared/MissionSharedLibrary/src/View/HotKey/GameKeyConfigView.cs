@@ -1,11 +1,9 @@
-﻿using MissionLibrary.Event;
-using MissionLibrary.HotKey;
-using MissionSharedLibrary.View.ViewModelCollection.HotKey;
+﻿using MissionLibrary.HotKey;
 using TaleWorlds.Engine.GauntletUI;
-using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade.GauntletUI;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.MissionViews;
+using TaleWorlds.ScreenSystem;
 
 namespace MissionSharedLibrary.View.HotKey
 {

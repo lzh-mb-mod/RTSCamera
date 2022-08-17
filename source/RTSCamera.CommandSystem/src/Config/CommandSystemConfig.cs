@@ -16,11 +16,14 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool AttackSpecificFormation = true;
 
+        public bool DisplayMessage = true;
+
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;
             ClickToSelectFormation = other.ClickToSelectFormation;
             AttackSpecificFormation = other.AttackSpecificFormation;
+            DisplayMessage = other.DisplayMessage;
         }
 
         public static void OnMenuClosed()

@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="KdTree" Version="1.4.1" />
-    <PackageReference Include="Lib.Harmony" Version="2.1.1" />
+    <PackageReference Include="Lib.Harmony" Version="2.2.2" />
   </ItemGroup>
 
   <Import Project="..\RTSCamera.Shared\BasicSharedLibrary\BasicSharedLibrary.projitems" Label="Shared" />
@@ -131,6 +131,9 @@
     </Reference>
     <Reference Include="TaleWorlds.ObjectSystem">
       <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.ObjectSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.ScreenSystem">
+      <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.ScreenSystem.dll</HintPath>
     </Reference>
     <Reference Include="TaleWorlds.TwoDimension">
       <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.TwoDimension.dll</HintPath>

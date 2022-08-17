@@ -29,6 +29,10 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (!NativeConfig.CheatMode)
                 return;
+
+            // Ugly, but since DisableDying is changed by native MissionLogic at some point (mb DeploymentMissionController), force it back to config value
+            Mission.DisableDying = _config.DisableDeath;
+
             if (_config.DisableDeathHotkeyEnabled && _gameKeyCategory.GetGameKeySequence((int)GameKeyEnum.DisableDeath).IsKeyPressed(Mission.InputManager))
             {
                 _config.DisableDeath = !_config.DisableDeath;

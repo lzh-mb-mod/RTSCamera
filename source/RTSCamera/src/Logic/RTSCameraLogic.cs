@@ -1,4 +1,4 @@
-﻿using RTSCamera.Event;
+﻿using MissionLibrary.Event;
 using RTSCamera.Logic.SubLogic;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
@@ -90,9 +90,9 @@ namespace RTSCamera.Logic
             ControlTroopLogic.OnMissionTick(dt);
         }
 
-        protected override void OnAgentControllerChanged(Agent agent)
+        protected override void OnAgentControllerChanged(Agent agent, Agent.ControllerType controller)
         {
-            base.OnAgentControllerChanged(agent);
+            base.OnAgentControllerChanged(agent, agent.Controller);
 
             SwitchFreeCameraLogic.OnAgentControllerChanged(agent);
         }

@@ -15,7 +15,8 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.Missions.Handlers;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.MissionViews;
+using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 
 namespace RTSCamera.CommandSystem.View
 {
@@ -44,6 +45,8 @@ namespace RTSCamera.CommandSystem.View
 
             MissionLibrary.Event.MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
         }
+
+        public Action OnUnitDeployed;
 
         private CursorState _currentCursorState = CursorState.Invisible;
         private UiQueryData<CursorState> _cachedCursorState;
@@ -78,6 +81,15 @@ namespace RTSCamera.CommandSystem.View
         private bool isDrawnThisFrame;
         private bool wasDrawnPreviousFrame;
         private static Material _meshMaterial;
+        private bool _restrictOrdersToDeploymentBoundaries;
+
+        private bool IsDeployment
+        {
+            get
+            {
+                return Mission.GetMissionBehavior<SiegeDeploymentHandler>() != null || Mission.GetMissionBehavior<BattleDeploymentHandler>() != null;
+            }
+        }
 
         public bool SuspendTroopPlacer
         {
@@ -102,22 +114,17 @@ namespace RTSCamera.CommandSystem.View
         public override void AfterStart()
         {
             base.AfterStart();
-            _formationDrawingStartingPosition = new WorldPosition?();
-            _formationDrawingStartingPointOfMouse = new Vec2?();
-            _formationDrawingStartingTime = new float?();
+            _formationDrawingStartingPosition = null;
+            _formationDrawingStartingPointOfMouse = null;
+            _formationDrawingStartingTime = null;
             _orderRotationEntities = new List<GameEntity>();
             _orderPositionEntities = new List<GameEntity>();
-            formationDrawTimer = new Timer(MBCommon.GetApplicationTime(), 0.03333334f);
-            attachArrow = GameEntity.CreateEmpty(Mission.Scene);
-            attachArrow.AddComponent(MetaMesh.GetCopy("order_arrow_a"));
-            attachArrow.SetVisibilityExcludeParents(false);
-            BoundingBox boundingBox = attachArrow.GetMetaMesh(0).GetBoundingBox();
-            attachArrowLength = boundingBox.max.y - boundingBox.min.y;
-            widthEntityLeft = GameEntity.CreateEmpty(Mission.Scene);
-            widthEntityLeft.AddComponent(MetaMesh.GetCopy("order_arrow_a"));
+            formationDrawTimer = new Timer(MBCommon.GetApplicationTime(), 0.0333333351f, true);
+            widthEntityLeft = GameEntity.CreateEmpty(base.Mission.Scene, true);
+            widthEntityLeft.AddComponent(MetaMesh.GetCopy("order_arrow_a", true, false));
             widthEntityLeft.SetVisibilityExcludeParents(false);
-            widthEntityRight = GameEntity.CreateEmpty(Mission.Scene);
-            widthEntityRight.AddComponent(MetaMesh.GetCopy("order_arrow_a"));
+            widthEntityRight = GameEntity.CreateEmpty(base.Mission.Scene, true);
+            widthEntityRight.AddComponent(MetaMesh.GetCopy("order_arrow_a", true, false));
             widthEntityRight.SetVisibilityExcludeParents(false);
         }
 
@@ -142,6 +149,11 @@ namespace RTSCamera.CommandSystem.View
                 return;
             InitializeInADisgustingManner();
             Initialized = true;
+        }
+
+        public void RestrictOrdersToDeploymentBoundaries(bool enabled)
+        {
+            _restrictOrdersToDeploymentBoundaries = enabled;
         }
 
         public void UpdateAttachVisuals(bool isVisible)
@@ -184,33 +196,33 @@ namespace RTSCamera.CommandSystem.View
         private void UpdateFormationDrawingForFacingOrder(bool giveOrder)
         {
             isDrawnThisFrame = true;
-            PlayerOrderController.SimulateNewFacingOrder(
-                OrderController.GetOrderLookAtDirection(PlayerOrderController.SelectedFormations,
-                    MissionScreen.GetOrderFlagPosition().AsVec2), out var simulationAgentFrames);
-
-            int entityIndex = 0;
+            Vec3 vec = MissionScreen.GetOrderFlagPosition();
+            Vec2 asVec = vec.AsVec2;
+            Vec2 orderLookAtDirection = OrderController.GetOrderLookAtDirection(PlayerOrderController.SelectedFormations, asVec);
+            PlayerOrderController.SimulateNewFacingOrder(orderLookAtDirection, out List<WorldPosition> list);
+            int num = 0;
             HideOrderPositionEntities();
-            foreach (var wordPosition in simulationAgentFrames)
+            foreach (WorldPosition worldPosition in list)
             {
-                var wordFrameAsBasic = new WorldFrame(Mat3.Identity, wordPosition);
-                AddOrderPositionEntity(entityIndex, ref wordFrameAsBasic, giveOrder);
-                ++entityIndex;
+                int entityIndex = num;
+                vec = worldPosition.GetGroundVec3();
+                AddOrderPositionEntity(entityIndex, vec, giveOrder, -1f);
+                num++;
             }
         }
 
         private void UpdateFormationDrawingForDestination(bool giveOrder)
         {
             isDrawnThisFrame = true;
-            PlayerOrderController.SimulateDestinationFrames(out var simulationAgentFrames);
-
-            int entityIndex = 0;
+            PlayerOrderController.SimulateDestinationFrames(out List<WorldPosition> list, 3f);
+            int num = 0;
             HideOrderPositionEntities();
-
-            foreach (var wordPosition in simulationAgentFrames)
+            foreach (WorldPosition worldPosition in list)
             {
-                var wordFrameAsBasic = new WorldFrame(Mat3.Identity, wordPosition);
-                AddOrderPositionEntity(entityIndex, ref wordFrameAsBasic, giveOrder, 0.7f);
-                ++entityIndex;
+                int entityIndex = num;
+                Vec3 groundVec = worldPosition.GetGroundVec3();
+                AddOrderPositionEntity(entityIndex, groundVec, giveOrder, 0.7f);
+                num++;
             }
         }
 
@@ -218,39 +230,34 @@ namespace RTSCamera.CommandSystem.View
         {
             isDrawnThisFrame = true;
             MatrixFrame orderFlagFrame = MissionScreen.GetOrderFlagFrame();
-            Vec3 origin1 = orderFlagFrame.origin;
-            Vec2 asVec2 = orderFlagFrame.rotation.f.AsVec2;
-
-            float orderFormCustomWidth = OrderController.GetOrderFormCustomWidth(PlayerOrderController.SelectedFormations, origin1);
-            PlayerOrderController.SimulateNewCustomWidthOrder(orderFormCustomWidth, out var simulationAgentFrames);
-
-            Formation formation =PlayerOrderController.SelectedFormations.MaxBy(f => f.CountOfUnits);
-
-            int entityIndex = 0;
+            Vec3 origin = orderFlagFrame.origin;
+            Vec2 asVec = orderFlagFrame.rotation.f.AsVec2;
+            float orderFormCustomWidth = OrderController.GetOrderFormCustomWidth(PlayerOrderController.SelectedFormations, origin);
+            List<WorldPosition> list;
+            PlayerOrderController.SimulateNewCustomWidthOrder(orderFormCustomWidth, out list);
+            Formation formation = PlayerOrderController.SelectedFormations.MaxBy((Formation f) => f.CountOfUnits);
+            int num = 0;
             HideOrderPositionEntities();
-
-            foreach (var wordPosition in simulationAgentFrames)
+            foreach (WorldPosition worldPosition in list)
             {
-                var wordFrameAsBasic = new WorldFrame(Mat3.Identity, wordPosition);
-                AddOrderPositionEntity(entityIndex, ref wordFrameAsBasic, giveOrder);
-                ++entityIndex;
+                int entityIndex = num;
+                Vec3 groundVec = worldPosition.GetGroundVec3();
+                AddOrderPositionEntity(entityIndex, groundVec, giveOrder, -1f);
+                num++;
             }
-
             float unitDiameter = formation.UnitDiameter;
             float interval = formation.Interval;
-            int num1 = Math.Max(0,
-                (int)((orderFormCustomWidth - (double)unitDiameter) /
-                    (interval + (double)unitDiameter) + 9.99999974737875E-06)) + 1;
-            float num2 = (num1 - 1) * (interval + unitDiameter);
-            for (int index = 0; index < num1; ++index)
+            int num2 = MathF.Max(0, (int)((orderFormCustomWidth - unitDiameter) / (interval + unitDiameter) + 1E-05f)) + 1;
+            float num3 = (float)(num2 - 1) * (interval + unitDiameter);
+            for (int i = 0; i < num2; i++)
             {
-                Vec2 a = new Vec2(
-                    (float)(index * (interval + (double)unitDiameter) - num2 / 2.0), 0.0f);
-                Vec2 parentUnitF = asVec2.TransformToParentUnitF(a);
-                WorldPosition origin2 = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, origin1, false);
-                origin2.SetVec2(origin2.AsVec2 + parentUnitF);
-                WorldFrame frame2 = new WorldFrame(orderFlagFrame.rotation, origin2);
-                AddOrderPositionEntity(entityIndex++, ref frame2, false);
+                Vec2 a = new Vec2((float)i * (interval + unitDiameter) - num3 / 2f, 0f);
+                Vec2 v = asVec.TransformToParentUnitF(a);
+                WorldPosition worldPosition2 = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, origin, false);
+                worldPosition2.SetVec2(worldPosition2.AsVec2 + v);
+                int entityIndex2 = num++;
+                Vec3 groundVec = worldPosition2.GetGroundVec3();
+                AddOrderPositionEntity(entityIndex2, groundVec, false, -1f);
             }
         }
 
@@ -277,51 +284,79 @@ namespace RTSCamera.CommandSystem.View
         {
             isDrawnThisFrame = true;
             HideOrderPositionEntities();
-
-            if (!_formationDrawingStartingPosition.HasValue)
+            if (_formationDrawingStartingPosition == null)
+            {
                 return;
-
-            WorldPosition formationRealEndingPosition;
-
-            if (!IsDraggingFormation())
-            {
-                formationRealEndingPosition = _formationDrawingStartingPosition.Value;
             }
-            else
+            WorldPosition worldPosition = WorldPosition.Invalid;
+            bool flag = false;
+            if (MissionScreen.MouseVisible && _formationDrawingStartingPointOfMouse != null)
             {
-                Vec3 rayBegin;
-                Vec3 rayEnd;
-                MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out rayBegin, out rayEnd);
-                float collisionDistance;
-
-                if (!Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out collisionDistance, 0.3f))
+                Vec2 vec = _formationDrawingStartingPointOfMouse.Value - Input.GetMousePositionPixel();
+                if (MathF.Abs(vec.x) < 10f && MathF.Abs(vec.y) < 10f)
+                {
+                    flag = true;
+                    worldPosition = _formationDrawingStartingPosition.Value;
+                }
+            }
+            if (MissionScreen.MouseVisible && _formationDrawingStartingTime != null && Mission.CurrentTime - _formationDrawingStartingTime.Value < 0.3f)
+            {
+                flag = true;
+                worldPosition = _formationDrawingStartingPosition.Value;
+            }
+            if (!flag)
+            {
+                Vec3 vec2;
+                Vec3 vec3;
+                MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out vec2, out vec3);
+                float f;
+                if (!Mission.Scene.RayCastForClosestEntityOrTerrain(vec2, vec3, out f, 0.3f, BodyFlags.Disabled | BodyFlags.AILimiter | BodyFlags.Barrier | BodyFlags.Barrier3D | BodyFlags.Ragdoll | BodyFlags.RagdollLimiter | BodyFlags.DoNotCollideWithRaycast | BodyFlags.BodyOwnerFlora))
+                {
                     return;
-
-                Vec3 vec3 = rayEnd - rayBegin;
-                double num = vec3.Normalize();
-                formationRealEndingPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, rayBegin + vec3 * collisionDistance, false);
+                }
+                Vec3 v = vec3 - vec2;
+                v.Normalize();
+                worldPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, vec2 + v * f, false);
             }
-
-            WorldPosition worldPosition;
+            WorldPosition worldPosition2;
             if (_mouseOverDirection == 1)
             {
-                worldPosition = formationRealEndingPosition;
-                formationRealEndingPosition = _formationDrawingStartingPosition.Value;
+                worldPosition2 = worldPosition;
+                worldPosition = _formationDrawingStartingPosition.Value;
             }
             else
-                worldPosition = _formationDrawingStartingPosition.Value;
-
-            if (!OrderFlag.IsPositionOnValidGround(worldPosition))
+            {
+                worldPosition2 = _formationDrawingStartingPosition.Value;
+            }
+            if (!OrderFlag.IsPositionOnValidGround(worldPosition2))
+            {
                 return;
-
-            bool isFormationLayoutVertical = !Input.IsControlDown();
-
-            if ((!InputKey.LeftMouseButton.IsDown() || _formationDrawingStartingPointOfMouse.HasValue) && IsDrawingAttaching)
-                UpdateFormationDrawingForAttachOrder(giveOrder, isFormationLayoutVertical);
-            else if (true)
-                UpdateFormationDrawingForMovementOrder(giveOrder, worldPosition, formationRealEndingPosition, isFormationLayoutVertical);
-
-            _deltaMousePosition *= Math.Max((float)(1.0 - (Input.GetMousePositionRanged() - _lastMousePosition).Length * 10.0), 0.0f);
+            }
+            Vec2 vec4;
+            if (_restrictOrdersToDeploymentBoundaries)
+            {
+                IMissionDeploymentPlan deploymentPlan = Mission.DeploymentPlan;
+                BattleSideEnum side = Mission.PlayerTeam.Side;
+                vec4 = worldPosition2.AsVec2;
+                if (deploymentPlan.IsPositionInsideDeploymentBoundaries(side, vec4, DeploymentPlanType.Initial))
+                {
+                    IMissionDeploymentPlan deploymentPlan2 = Mission.DeploymentPlan;
+                    BattleSideEnum side2 = Mission.PlayerTeam.Side;
+                    Vec2 asVec = worldPosition.AsVec2;
+                    if (deploymentPlan2.IsPositionInsideDeploymentBoundaries(side2, asVec, DeploymentPlanType.Initial))
+                    {
+                        goto IL_1DC;
+                    }
+                }
+                return;
+            }
+        IL_1DC:
+            bool isFormationLayoutVertical = !DebugInput.IsControlDown();
+            UpdateFormationDrawingForMovementOrder(giveOrder, worldPosition2, worldPosition, isFormationLayoutVertical);
+            Vec2 deltaMousePosition = _deltaMousePosition;
+            float num = 1f;
+            vec4 = Input.GetMousePositionRanged() - _lastMousePosition;
+            _deltaMousePosition = deltaMousePosition * MathF.Max(num - vec4.Length * 10f, 0f);
             _lastMousePosition = Input.GetMousePositionRanged();
         }
 
@@ -332,63 +367,28 @@ namespace RTSCamera.CommandSystem.View
             bool isFormationLayoutVertical)
         {
             isDrawnThisFrame = true;
-            PlayerOrderController.SimulateNewOrderWithPositionAndDirection(formationRealStartingPosition,
-                formationRealEndingPosition, out var simulationAgentFrames, isFormationLayoutVertical);
+            PlayerOrderController.SimulateNewOrderWithPositionAndDirection(formationRealStartingPosition, formationRealEndingPosition, out List<WorldPosition> list, isFormationLayoutVertical);
             if (giveOrder)
             {
                 if (!isFormationLayoutVertical)
-                    PlayerOrderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegmentWithHorizontalLayout,
-                        formationRealStartingPosition, formationRealEndingPosition);
-                else
-                    PlayerOrderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegment,
-                        formationRealStartingPosition, formationRealEndingPosition);
-            }
-
-            int entityIndex = 0;
-            foreach (var wordPosition in simulationAgentFrames)
-            {
-                var wordFrameAsBasic = new WorldFrame(Mat3.Identity, wordPosition);
-                AddOrderPositionEntity(entityIndex, ref wordFrameAsBasic, giveOrder);
-                ++entityIndex;
-            }
-        }
-
-        private void UpdateFormationDrawingForAttachOrder(
-            bool giveOrder,
-            bool isFormationLayoutVertical)
-        {
-            isDrawnThisFrame = true;
-            int entityIndex = 0;
-            foreach (Formation selectedFormation in PlayerOrderController.SelectedFormations)
-            {
-                WorldPosition attachPosition = AttachTarget.QuerySystem.MedianPosition;
-
-                Vec2 vec2 = AttachTarget.Direction.LeftVec() * (selectedFormation.Width / 2f);
-
-                WorldPosition formationLineBegin = attachPosition;
-                formationLineBegin.SetVec2(formationLineBegin.AsVec2 + vec2);
-
-                WorldPosition formationLineEnd = attachPosition;
-                formationLineEnd.SetVec2(formationLineEnd.AsVec2 - vec2);
-
-                OrderController.SimulateNewOrderWithPositionAndDirection(
-                    Enumerable.Repeat(selectedFormation, 1), PlayerOrderController.simulationFormations,
-                    formationLineBegin, formationLineEnd, out var simulationAgentFrames, isFormationLayoutVertical);
-
-                foreach (var wordPosition in simulationAgentFrames)
                 {
-                    var wordFrameAsBasic = new WorldFrame(Mat3.Identity, wordPosition);
-                    AddOrderPositionEntity(entityIndex, ref wordFrameAsBasic, giveOrder);
-                    ++entityIndex;
+                    PlayerOrderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegmentWithHorizontalLayout, formationRealStartingPosition, formationRealEndingPosition);
+                }
+                else
+                {
+                    PlayerOrderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegment, formationRealStartingPosition, formationRealEndingPosition);
                 }
             }
-
-            if (!giveOrder)
-                return;
-
-            PlayerOrderController.SetOrderWithFormationAndNumber(OrderType.Transfer, AttachTarget, (int)AttachSide);
+            int num = 0;
+            foreach (WorldPosition worldPosition in list)
+            {
+                int entityIndex = num;
+                Vec3 groundVec = worldPosition.GetGroundVec3();
+                AddOrderPositionEntity(entityIndex, groundVec, giveOrder, -1f);
+                num++;
+            }
         }
-
+        
         private void BeginFormationDraggingOrClicking()
         {
             Vec3 rayBegin;
@@ -494,6 +494,63 @@ namespace RTSCamera.CommandSystem.View
             }
         }
 
+        private void HandleMouseDown()
+        {
+            if (!PlayerOrderController.SelectedFormations.IsEmpty<Formation>() && _clickedFormation == null)
+            {
+                switch (GetCursorState())
+                {
+                    case CursorState.Invisible:
+                    case CursorState.Ground:
+                        break;
+                    case CursorState.Normal:
+                        {
+                            _formationDrawingMode = true;
+                            MissionScreen.ScreenPointToWorldRay(GetScreenPoint(), out Vec3 vec, out Vec3 vec2);
+                            if (Mission.Scene.RayCastForClosestEntityOrTerrain(vec, vec2, out float f, 0.3f, BodyFlags.Disabled | BodyFlags.AILimiter | BodyFlags.Barrier | BodyFlags.Barrier3D | BodyFlags.Ragdoll | BodyFlags.RagdollLimiter | BodyFlags.DoNotCollideWithRaycast | BodyFlags.BodyOwnerFlora))
+                            {
+                                Vec3 v = vec2 - vec;
+                                v.Normalize();
+                                _formationDrawingStartingPosition = new WorldPosition?(new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, vec + v * f, false));
+                                _formationDrawingStartingPointOfMouse = new Vec2?(Input.GetMousePositionPixel());
+                                _formationDrawingStartingTime = new float?(Mission.CurrentTime);
+                                return;
+                            }
+                            _formationDrawingStartingPosition = null;
+                            _formationDrawingStartingPointOfMouse = null;
+                            _formationDrawingStartingTime = null;
+                            return;
+                        }
+                    case CursorState.Enemy:
+                    case CursorState.Friend:
+                        _clickedFormation = _mouseOverFormation;
+                        return;
+                    case CursorState.Rotation:
+                        if (_mouseOverFormation.CountOfUnits > 0)
+                        {
+                            HideNonSelectedOrderRotationEntities(_mouseOverFormation);
+                            PlayerOrderController.ClearSelectedFormations();
+                            PlayerOrderController.SelectFormation(_mouseOverFormation);
+                            _formationDrawingMode = true;
+                            WorldPosition worldPosition = _mouseOverFormation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.GroundVec3);
+                            Vec2 direction = _mouseOverFormation.Direction;
+                            direction.RotateCCW(-1.57079637f);
+                            _formationDrawingStartingPosition = new WorldPosition?(worldPosition);
+                            _formationDrawingStartingPosition.Value.SetVec2(_formationDrawingStartingPosition.Value.AsVec2 + direction * ((_mouseOverDirection == 1) ? 0.5f : -0.5f) * _mouseOverFormation.Width);
+                            WorldPosition worldPosition2 = worldPosition;
+                            worldPosition2.SetVec2(worldPosition2.AsVec2 + direction * ((_mouseOverDirection == 1) ? -0.5f : 0.5f) * _mouseOverFormation.Width);
+                            Vec2 v2 = MissionScreen.SceneView.WorldPointToScreenPoint(worldPosition2.GetGroundVec3());
+                            Vec2 screenPoint = GetScreenPoint();
+                            _deltaMousePosition = v2 - screenPoint;
+                            _lastMousePosition = Input.GetMousePositionRanged();
+                        }
+                        break;
+                    default:
+                        return;
+                }
+            }
+        }
+
         private void HandleMouseUp()
         {
             var cursorState = _currentCursorState;
@@ -554,9 +611,11 @@ namespace RTSCamera.CommandSystem.View
 
         private Vec2 GetScreenPoint()
         {
-            return !MissionScreen.MouseVisible
-                ? new Vec2(0.5f, 0.5f) + _deltaMousePosition
-                : Input.GetMousePositionRanged() + _deltaMousePosition;
+            if (!MissionScreen.MouseVisible)
+            {
+                return new Vec2(0.5f, 0.5f) + _deltaMousePosition;
+            }
+            return Input.GetMousePositionRanged() + _deltaMousePosition;
         }
 
         private CursorState GetCursorState()
@@ -638,9 +697,11 @@ namespace RTSCamera.CommandSystem.View
 
         private CursorState IsCursorStateGroundOrNormal()
         {
-            return !_formationDrawingMode
-                ? CursorState.Normal
-                : CursorState.Ground;
+            if (!_formationDrawingMode)
+            {
+                return CursorState.Normal;
+            }
+            return CursorState.Ground;
         }
 
         private void UpdateAttachData()
@@ -714,89 +775,68 @@ namespace RTSCamera.CommandSystem.View
         }
 
         private void AddOrderPositionEntity(
-            int entityIndex,
-            ref WorldFrame frame,
-            bool fadeOut,
+            int entityIndex, 
+            in Vec3 groundPosition, 
+            bool fadeOut, 
             float alpha = -1f)
         {
             while (_orderPositionEntities.Count <= entityIndex)
             {
-                GameEntity empty = GameEntity.CreateEmpty(Mission.Scene);
-                empty.EntityFlags |= EntityFlags.NotAffectedBySeason;
-                MetaMesh copy = MetaMesh.GetCopy("order_flag_small");
-
+                GameEntity gameEntity = GameEntity.CreateEmpty(Mission.Scene, true);
+                gameEntity.EntityFlags |= EntityFlags.NotAffectedBySeason;
+                MetaMesh copy = MetaMesh.GetCopy("order_flag_small", true, false);
                 if (_meshMaterial == null)
                 {
                     _meshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
                     _meshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
                 }
-
                 copy.SetMaterial(_meshMaterial);
-                copy.SetContourColor(new Color(0, 0.6f, 1).ToUnsignedInteger());
-                copy.SetContourState(true);
-                empty.AddComponent(copy);
-                empty.SetVisibilityExcludeParents(false);
-                _orderPositionEntities.Add(empty);
+                gameEntity.AddComponent(copy);
+                gameEntity.SetVisibilityExcludeParents(false);
+                _orderPositionEntities.Add(gameEntity);
             }
-
-            GameEntity orderPositionEntity = _orderPositionEntities[entityIndex];
-
-            Vec3 rayBegin;
-            MissionScreen.ScreenPointToWorldRay(Vec2.One * 0.5f, out rayBegin, out Vec3 _);
-            float rotationZ = MatrixFrame.CreateLookAt(rayBegin, frame.Origin.GetGroundVec3(), Vec3.Up).rotation.f.RotationZ;
-
-            frame.Rotation = Mat3.Identity;
-            frame.Rotation.RotateAboutUp(rotationZ);
-
-            MatrixFrame groundMatrixFrame = frame.ToGroundMatrixFrame();
-            orderPositionEntity.SetFrame(ref groundMatrixFrame);
-
-            if (alpha != -1.0)
+            GameEntity gameEntity2 = _orderPositionEntities[entityIndex];
+            MatrixFrame matrixFrame = new MatrixFrame(Mat3.Identity, groundPosition);
+            gameEntity2.SetFrame(ref matrixFrame);
+            if (alpha != -1f)
             {
-                orderPositionEntity.SetVisibilityExcludeParents(true);
-                orderPositionEntity.SetAlpha(alpha);
+                gameEntity2.SetVisibilityExcludeParents(true);
+                gameEntity2.SetAlpha(alpha);
+                return;
             }
-            else if (fadeOut)
-                orderPositionEntity.FadeOut(0.3f, false);
-            else
-                orderPositionEntity.FadeIn();
+            if (fadeOut)
+            {
+                gameEntity2.FadeOut(0.3f, false);
+                return;
+            }
+            gameEntity2.FadeIn(true);
         }
 
         private void HideNonSelectedOrderRotationEntities(Formation formation)
         {
-            for (int index = 0; index < _orderRotationEntities.Count; ++index)
+            for (int i = 0; i < _orderRotationEntities.Count; i++)
             {
-                GameEntity orderRotationEntity = _orderRotationEntities[index];
-                if (orderRotationEntity == null &&
-                    orderRotationEntity.IsVisibleIncludeParents() &&
-                    PlayerOrderController.SelectedFormations.ElementAt(index / 2) != formation)
+                GameEntity gameEntity = _orderRotationEntities[i];
+                if (gameEntity == null && gameEntity.IsVisibleIncludeParents() && 
+                    PlayerOrderController.SelectedFormations.ElementAt(i / 2) != formation)
                 {
-                    orderRotationEntity.SetVisibilityExcludeParents(false);
-                    orderRotationEntity.BodyFlag |= BodyFlags.Disabled;
+                    gameEntity.SetVisibilityExcludeParents(false);
+                    gameEntity.BodyFlag |= BodyFlags.Disabled;
                 }
             }
         }
 
         private void HideOrderPositionEntities()
         {
-            if (MissionState.Current.Paused)
+            foreach (GameEntity gameEntity in _orderPositionEntities)
             {
-                foreach (GameEntity orderPositionEntity in _orderPositionEntities)
-                {
-                    orderPositionEntity.FadeIn();
-                    orderPositionEntity.HideIfNotFadingOut();
-                }
+                gameEntity.HideIfNotFadingOut();
             }
-            else
+            for (int i = 0; i < _orderRotationEntities.Count; i++)
             {
-                foreach (GameEntity orderPositionEntity in _orderPositionEntities)
-                    orderPositionEntity.HideIfNotFadingOut();
-            }
-            for (int index = 0; index < _orderRotationEntities.Count; ++index)
-            {
-                GameEntity orderRotationEntity = _orderRotationEntities[index];
-                orderRotationEntity.SetVisibilityExcludeParents(false);
-                orderRotationEntity.BodyFlag |= BodyFlags.Disabled;
+                GameEntity gameEntity2 = _orderRotationEntities[i];
+                gameEntity2.SetVisibilityExcludeParents(false);
+                gameEntity2.BodyFlag |= BodyFlags.Disabled;
             }
         }
 
@@ -810,9 +850,9 @@ namespace RTSCamera.CommandSystem.View
         {
             _isMouseDown = false;
             _formationDrawingMode = false;
-            _formationDrawingStartingPosition = new WorldPosition?();
-            _formationDrawingStartingPointOfMouse = new Vec2?();
-            _formationDrawingStartingTime = new float?();
+            _formationDrawingStartingPosition = null;
+            _formationDrawingStartingPointOfMouse = null;
+            _formationDrawingStartingTime = null;
             _mouseOverFormation = null;
             _clickedFormation = null;
         }
@@ -933,8 +973,6 @@ namespace RTSCamera.CommandSystem.View
 
             return null;
         }
-
-        private bool IsDeployment => Mission.GetMissionBehavior<SiegeDeploymentHandler>() != null;
 
         protected enum CursorState
         {

@@ -3,7 +3,7 @@ using MissionLibrary.View;
 using MissionSharedLibrary.View.HotKey;
 using MissionSharedLibrary.View.ViewModelCollection.Basic;
 using TaleWorlds.Core;
-using TaleWorlds.Core.ViewModelCollection;
+using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -46,7 +46,8 @@ namespace MissionSharedLibrary.View
 
         public void ConfigKey()
         {
-            InformationManager.HideInformations();
+            //InformationManager.HideInformations();
+            InformationManager.HideInquiry();
             _gameKeyConfigView?.Activate();
         }
 
