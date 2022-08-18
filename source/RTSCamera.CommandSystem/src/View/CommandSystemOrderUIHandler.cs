@@ -29,7 +29,7 @@ namespace RTSCamera.CommandSystem.View
         public bool ExitWithRightClick = true;
         private const string _radialOrderMovieName = "OrderRadial";
         private const string _barOrderMovieName = "OrderBar";
-        private const float _slowDownAmountWhileOrderIsOpen = 0.25f;        
+        private const float _slowDownAmountWhileOrderIsOpen = 0.25f;
         private const int _missionTimeSpeedRequestID = 864;
         private float _holdTime;
         private bool _holdExecuted;
@@ -82,7 +82,7 @@ namespace RTSCamera.CommandSystem.View
             MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
         }
         private void OnPreSwitchTeam()
-        {   
+        {
             _dataSource.TryCloseToggleOrder();
             _isInSwitchTeamEvent = true;
             OnMissionScreenFinalize();
@@ -93,7 +93,7 @@ namespace RTSCamera.CommandSystem.View
         {
             _isInSwitchTeamEvent = true;
             OnMissionScreenInitialize();
-            OnMissionScreenActivate();            
+            OnMissionScreenActivate();
             _isInSwitchTeamEvent = false;
         }
 
@@ -374,7 +374,10 @@ namespace RTSCamera.CommandSystem.View
             dataSource.TryCloseToggleOrder(true);
         }
 
-        public void OnActivateToggleOrder() => SetLayerEnabled(true);
+        public void OnActivateToggleOrder()
+        {
+            SetLayerEnabled(true);
+        }
 
         public void OnDeactivateToggleOrder()
         {

@@ -50,7 +50,7 @@ namespace RTSCamera.CommandSystem.View
 
         private void BeginDrag()
         {
-            EndEarlyDragging();
+            BeginEarlyDragging();
             _rightButtonDraggingMode = true;
             _orderUIHandler.ExitWithRightClick = false;
         }

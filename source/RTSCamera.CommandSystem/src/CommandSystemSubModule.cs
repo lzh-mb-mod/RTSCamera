@@ -3,6 +3,7 @@ using MissionLibrary.Controller;
 using MissionLibrary.View;
 using MissionSharedLibrary;
 using MissionSharedLibrary.Provider;
+using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using System;
@@ -56,6 +57,9 @@ namespace RTSCamera.CommandSystem
             Global.RegisterProvider(
                 VersionProviderCreator.Create(() => new RTSCameraAgentComponent.MissionStartingHandler(),
                     new Version(1, 0, 0)), "RTSCameraAgentComponent.MissionStartingHandler");
+
+            Utility.ShouldDisplayMessage = CommandSystemConfig.Get().DisplayMessage;
+
             return true;
         }
 
