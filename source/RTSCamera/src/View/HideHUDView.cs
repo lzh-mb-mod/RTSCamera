@@ -1,8 +1,8 @@
 ﻿using RTSCamera.Config.HotKey;
 using TaleWorlds.Engine;
+using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
-using TaleWorlds.MountAndBlade.View.MissionViews;
-using TaleWorlds.ScreenSystem;
+using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace RTSCamera.View
 {

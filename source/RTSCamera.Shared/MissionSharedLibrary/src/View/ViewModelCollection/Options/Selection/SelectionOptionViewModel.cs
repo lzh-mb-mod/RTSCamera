@@ -2,7 +2,7 @@
 using System.Linq;
 using MissionLibrary.View;
 using TaleWorlds.Core;
-using TaleWorlds.Core.ViewModelCollection.Selector;
+using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade.ViewModelCollection.GameOptions;

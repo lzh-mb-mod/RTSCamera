@@ -4,9 +4,9 @@ using HarmonyLib;
 using MissionLibrary.Event;
 using MissionSharedLibrary.Utilities;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
-using TaleWorlds.MountAndBlade.View.MissionViews.Order;
-using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
+using TaleWorlds.MountAndBlade.GauntletUI;
+using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.ViewModelCollection;
 
 namespace RTSCamera.Patch.Fix
 {
@@ -15,10 +15,10 @@ namespace RTSCamera.Patch.Fix
     {
         private static readonly Harmony Harmony = new Harmony(RTSCameraSubModule.ModuleId + "_" + nameof(Patch_MissionOrderGauntletUIHandler));
         private static bool _patched;        
-        private static MissionGauntletSingleplayerOrderUIHandler _uiHandler;
+        private static MissionOrderGauntletUIHandler _uiHandler;
 
         private static FieldInfo _dataSource =
-            typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_dataSource),
+            typeof(MissionOrderGauntletUIHandler).GetField(nameof(_dataSource),
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static readonly MethodInfo InitializeInADisgustingManner =
@@ -36,12 +36,12 @@ namespace RTSCamera.Patch.Fix
                 _patched = true;
 
                 Harmony.Patch(
-                    typeof(MissionGauntletSingleplayerOrderUIHandler).GetMethod("OnMissionScreenInitialize",
+                    typeof(MissionOrderGauntletUIHandler).GetMethod("OnMissionScreenInitialize",
                         BindingFlags.Public | BindingFlags.Instance),
                     new HarmonyMethod(typeof(Patch_MissionOrderGauntletUIHandler).GetMethod(
                         nameof(Prefix_OnMissionScreenInitialize), BindingFlags.Static | BindingFlags.Public)));
                 Harmony.Patch(
-                    typeof(MissionGauntletSingleplayerOrderUIHandler).GetMethod("OnMissionScreenFinalize",
+                    typeof(MissionOrderGauntletUIHandler).GetMethod("OnMissionScreenFinalize",
                         BindingFlags.Public | BindingFlags.Instance),
                     postfix: new HarmonyMethod(typeof(Patch_MissionOrderGauntletUIHandler).GetMethod(
                         nameof(Postfix_OnMissionScreenFinalize), BindingFlags.Static | BindingFlags.Public)));
@@ -68,7 +68,7 @@ namespace RTSCamera.Patch.Fix
             }
         }
 
-        public static bool Prefix_OnMissionScreenInitialize(MissionGauntletSingleplayerOrderUIHandler __instance)
+        public static bool Prefix_OnMissionScreenInitialize(MissionOrderGauntletUIHandler __instance)
         {
             RegisterReload(__instance);
             return true;
@@ -79,7 +79,7 @@ namespace RTSCamera.Patch.Fix
             UnregisterReload();
         }
 
-        private static void RegisterReload(MissionGauntletSingleplayerOrderUIHandler uiHandler)
+        private static void RegisterReload(MissionOrderGauntletUIHandler uiHandler)
         {
             if (_isInSwitchTeamEvent)
                 return;

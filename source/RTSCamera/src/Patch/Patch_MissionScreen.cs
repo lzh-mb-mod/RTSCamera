@@ -4,8 +4,8 @@ using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Screens;
-using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
+using TaleWorlds.MountAndBlade.View.Screen;
+using TaleWorlds.MountAndBlade.ViewModelCollection;
 
 namespace RTSCamera.Patch
 {
@@ -20,47 +20,6 @@ namespace RTSCamera.Patch
 			}
 
 			return true;
-		}
-
-		public static bool UpdateSceneTimeSpeed_Prefix(Mission __instance, ref List<Mission.TimeSpeedRequest> ____timeSpeedRequests)
-		{
-			bool flag = !(__instance.Scene != null);
-			bool result;
-			if (flag)
-			{
-				result = false;
-			}
-			else
-			{
-				float num = 10f;
-				int num2 = -1;
-				for (int i = 0; i < ____timeSpeedRequests.Count; i++)
-				{
-					bool flag2 = ____timeSpeedRequests[i].RequestedTimeSpeed < num;
-					if (flag2)
-					{
-						num = ____timeSpeedRequests[i].RequestedTimeSpeed;
-						num2 = ____timeSpeedRequests[i].RequestID;
-					}
-				}
-				bool flag3 = !__instance.Scene.TimeSpeed.ApproximatelyEqualsTo(num, 1E-05f);
-				if (flag3)
-				{
-					bool flag4 = num2 != -1;
-					if (flag4)
-					{
-						Debug.Print(string.Format("Updated mission time speed with request ID:{0}, time speed{1}", num2, num), 0, Debug.DebugColor.White, 17592186044416UL);
-						__instance.Scene.TimeSpeed = num;
-					}
-					else
-					{
-						Debug.Print(string.Format("Reverted time speed back to default({0})", 1), 0, Debug.DebugColor.White, 17592186044416UL);
-						__instance.Scene.TimeSpeed = 1f;
-					}
-				}
-				result = false;
-			}
-			return result;
 		}
 
 		public static bool CheckCanBeOpened_Prefix(ref MissionOrderVM __instance, ref bool __result, bool displayMessage = false)

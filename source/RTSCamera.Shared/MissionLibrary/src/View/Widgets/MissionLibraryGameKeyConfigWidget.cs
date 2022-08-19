@@ -1,5 +1,4 @@
 ﻿using TaleWorlds.GauntletUI;
-using TaleWorlds.GauntletUI.BaseTypes;
 using TaleWorlds.TwoDimension;
 
 namespace MissionLibrary.View.Widgets

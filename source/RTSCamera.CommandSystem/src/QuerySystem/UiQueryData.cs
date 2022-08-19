@@ -74,11 +74,11 @@ namespace RTSCamera.CommandSystem.QuerySystem
         public static void SetupSyncGroup(params IQueryData[] groupItems)
         {
             List<IQueryData> queryDataList = new List<IQueryData>(groupItems);
-            foreach (IQueryData groupItem in groupItems)                
-                groupItem.SetSyncGroup(queryDataList.ToArray());
+            foreach (IQueryData groupItem in groupItems)
+                groupItem.SetSyncGroup(queryDataList);
         }
 
-        public void SetSyncGroup(IQueryData[] syncGroup)
+        public void SetSyncGroup(IEnumerable<IQueryData> syncGroup)
         {
             _syncGroup = syncGroup;
         }

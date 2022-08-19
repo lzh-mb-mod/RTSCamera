@@ -7,12 +7,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
-using TaleWorlds.CampaignSystem.CampaignBehaviors;
-using TaleWorlds.CampaignSystem.Party;
-using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.CampaignSystem.Siege;
-using TaleWorlds.CampaignSystem.Encounters;
-using TaleWorlds.CampaignSystem.MapEvents;
+using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
 
 namespace RTSCamera.CampaignGame.Behavior
 {

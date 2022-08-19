@@ -43,7 +43,7 @@ namespace RTSCamera.CommandSystem.Utilities
             if (!formationNames.IsEmpty())
             {
                 var message = new TextObject("{=ApD0xQXT}{STR1}: {STR2}");
-                message.SetTextVariable("STR1", GameTexts.GameTextHelper.MergeTextObjectsWithComma(formationNames, false));
+                message.SetTextVariable("STR1", GameTexts.MergeTextObjectsWithComma(formationNames, false));
                 message.SetTextVariable("STR2",
                     GameTexts.FindText("str_formation_ai_sergeant_instruction_behavior_text",
                             nameof(BehaviorTacticalCharge))

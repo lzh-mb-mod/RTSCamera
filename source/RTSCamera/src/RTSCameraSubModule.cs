@@ -17,16 +17,16 @@ using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.MissionViews;
-using TaleWorlds.MountAndBlade.View.MissionViews.SiegeWeapon;
-using SandBox.CampaignBehaviors;
-using SandBox.Missions.MissionLogics.Arena;
-using SandBox.Objects;
-using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
-using TaleWorlds.MountAndBlade.View.Screens;
-using TaleWorlds.Library;
+using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
+using SandBox.Source.Towns;
+using SandBox;
+using SandBox.Source.Objects.SettlementObjects;
+using TaleWorlds.MountAndBlade.ViewModelCollection.HUD;
+using TaleWorlds.MountAndBlade.ViewModelCollection;
+using TaleWorlds.MountAndBlade.View.Screen;
 using Module = TaleWorlds.MountAndBlade.Module;
-using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
+using TaleWorlds.ModuleManager;
 
 namespace RTSCamera
 {
@@ -45,7 +45,8 @@ namespace RTSCamera
             try
             {
                 Initialize();
-                Module.CurrentModule.GlobalTextManager.LoadGameTexts();
+                Module.CurrentModule.GlobalTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
+                Module.CurrentModule.GlobalTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "MissionLibrary"));
 
                 _successPatch = true;
                 _harmony.Patch(
@@ -109,11 +110,6 @@ namespace RTSCamera
                 WatchBattleBehavior.Patch(_harmony);
 
                 //
-                this._harmony.Patch(
-                    typeof(Mission).GetMethod("UpdateSceneTimeSpeed",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(typeof(Patch_MissionScreen).GetMethod("UpdateSceneTimeSpeed_Prefix",
-                        BindingFlags.Static | BindingFlags.Public)));
 
                 // Patch to allow orders in camera mode
                 _harmony.Patch(
@@ -189,7 +185,8 @@ namespace RTSCamera
         {
             base.OnGameStart(game, gameStarterObject);
 
-            game.GameTextManager.LoadGameTexts();
+            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
+            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "MissionLibrary"));
             AddCampaignBehavior(gameStarterObject);
         }
 

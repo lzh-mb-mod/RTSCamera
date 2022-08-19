@@ -1,7 +1,7 @@
 ﻿using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
+using TaleWorlds.MountAndBlade.ViewModelCollection.HUD;
 
 namespace RTSCamera.src.Patch.Fix
 {

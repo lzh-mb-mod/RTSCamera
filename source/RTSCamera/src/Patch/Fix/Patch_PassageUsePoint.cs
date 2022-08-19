@@ -1,4 +1,4 @@
-﻿using SandBox.Objects;
+﻿using SandBox.Source.Objects.SettlementObjects;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.MountAndBlade;
 

@@ -6,8 +6,7 @@ using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.View;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.MissionViews;
-using TaleWorlds.MountAndBlade.View.MissionViews.Order;
+using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace RTSCamera.CommandSystem
 {

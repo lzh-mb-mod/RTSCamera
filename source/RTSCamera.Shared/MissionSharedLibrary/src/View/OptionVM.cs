@@ -3,7 +3,7 @@ using MissionLibrary.View;
 using MissionSharedLibrary.View.HotKey;
 using MissionSharedLibrary.View.ViewModelCollection.Basic;
 using TaleWorlds.Core;
-using TaleWorlds.Core.ViewModelCollection.Information;
+using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 

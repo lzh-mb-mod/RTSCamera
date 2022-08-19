@@ -1,5 +1,5 @@
 ﻿using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.MissionViews;
+using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace RTSCamera.Patch.Fix
 {

@@ -4,8 +4,8 @@ using TaleWorlds.GauntletUI.Data;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.MissionViews;
-using TaleWorlds.ScreenSystem;
+using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.Engine.Screens;
 using TaleWorlds.TwoDimension;
 
 namespace MissionSharedLibrary.View

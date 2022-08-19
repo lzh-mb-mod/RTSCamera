@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using TaleWorlds.Engine.GauntletUI;
+using TaleWorlds.Engine.Screens;
 using TaleWorlds.GauntletUI.Data;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View;
-using TaleWorlds.MountAndBlade.View.MissionViews;
-using TaleWorlds.MountAndBlade.View.MissionViews.Order;
-using TaleWorlds.MountAndBlade.View.MissionViews.Singleplayer;
+using TaleWorlds.MountAndBlade.LegacyGUI.Missions.Order;
+using TaleWorlds.MountAndBlade.View.Missions;
 using TaleWorlds.MountAndBlade.ViewModelCollection.OrderOfBattle;
-using TaleWorlds.ScreenSystem;
 using TaleWorlds.TwoDimension;
 
 namespace RTSCamera.CommandSystem.View
@@ -48,7 +46,7 @@ namespace RTSCamera.CommandSystem.View
 			this._orderOfBattleCategory.Load(resourceContext, uiresourceDepot);
 			base.MissionScreen.AddLayer(this._gauntletLayer);
 			OrderOfBattleVM dataSource = this._dataSource;
-			dataSource.OnHeroSelectionToggle = (Action)Delegate.Combine(dataSource.OnHeroSelectionToggle, new Action(this.OnHeroSelectionToggled));
+			//dataSource.OnHeroSelectionToggle = (Action)Delegate.Combine(dataSource.OnHeroSelectionToggle, new Action(this.OnHeroSelectionToggled));
 			this._gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
 		}
 

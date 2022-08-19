@@ -2,15 +2,14 @@
 using System;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.AgentOrigins;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.MissionViews;
-using TaleWorlds.MountAndBlade.View.Screens;
+using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.Screen;
 using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace MissionSharedLibrary.Utilities

@@ -18,7 +18,8 @@ namespace RTSCamera.Logic.SubLogic
 
         public void AfterStart()
         {            
-            Mission.Scene.TimeSpeed = _config.SlowMotionFactor;
+            Mission.Scene.SlowMotionFactor = _config.SlowMotionFactor;
+            Mission.Scene.SlowMotionMode = _config.SlowMotionMode;
         }
 
         public void OnMissionTick(float dt)
@@ -30,7 +31,7 @@ namespace RTSCamera.Logic.SubLogic
 
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SlowMotion).IsKeyPressed(Mission.InputManager))
             {                
-                SetSlowMotionMode(Mission.Scene.TimeSpeed == 1);
+                SetSlowMotionMode(!Mission.Scene.SlowMotionMode);
             }
         }
 
@@ -43,28 +44,15 @@ namespace RTSCamera.Logic.SubLogic
 
         public void SetSlowMotionMode(bool slowMotionMode)
         {
+            Mission.Scene.SlowMotionMode = slowMotionMode;
             _config.SlowMotionMode = slowMotionMode;
-            if (slowMotionMode)
-            {
-                if (!Mission.Current.GetRequestedTimeSpeed(69, out _))
-                {
-                    Mission.Current.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, 69));
-                }
-            }
-            else
-            {
-                if (Mission.Current.GetRequestedTimeSpeed(69, out _))
-                {
-                    Mission.Current.RemoveTimeSpeedRequest(69);
-                }
-            }
-            Utility.DisplayLocalizedText(slowMotionMode ? "str_rts_camera_slow_motion_enabled" : "str_rts_camera_normal_mode_enabled", null);
+            Utility.DisplayLocalizedText(slowMotionMode ? "str_rts_camera_slow_motion_enabled" : "str_rts_camera_normal_mode_enabled");
             _config.Serialize();
         }
 
         public void SetSlowMotionFactor(float factor)
         {
-            Mission.Scene.TimeSpeed = factor;
+            Mission.Scene.SlowMotionFactor = factor;
             _config.SlowMotionFactor = factor;
         }
     }

@@ -2,14 +2,13 @@
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission;
-using TaleWorlds.MountAndBlade.View;
-using TaleWorlds.MountAndBlade.View.MissionViews.Singleplayer;
-using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
+using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.ViewModelCollection.HUD;
 
 namespace RTSCamera.CommandSystem.View
 {
 	[OverrideView(typeof(MissionFormationMarkerUIHandler))]
-	public class CommandSystemMissionGauntletFormationMarker : MissionGauntletBattleUIBase
+	public class CommandSystemMissionGauntletFormationMarker : MissionGauntletSingleplayerBattleUIBase
 	{
 		private MissionFormationMarkerVM _dataSource;
 

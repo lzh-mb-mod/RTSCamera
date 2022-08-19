@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Screens;
+using TaleWorlds.MountAndBlade.View.Screen;
 
 namespace RTSCamera.View
 {

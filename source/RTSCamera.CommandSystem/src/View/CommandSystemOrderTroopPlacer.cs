@@ -15,8 +15,7 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.Missions.Handlers;
-using TaleWorlds.MountAndBlade.View.MissionViews;
-using TaleWorlds.MountAndBlade.View.MissionViews.Order;
+using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace RTSCamera.CommandSystem.View
 {

@@ -1,5 +1,4 @@
-﻿using TaleWorlds.MountAndBlade.View;
-using TaleWorlds.MountAndBlade.View.MissionViews;
+﻿using TaleWorlds.MountAndBlade.View.Missions;
 
 namespace MissionLibrary.Controller.MissionBehaviors
 {

@@ -2,22 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using MissionLibrary.Event;
-using SandBox.View.Missions;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
+using TaleWorlds.Engine.Screens;
 using TaleWorlds.GauntletUI.Data;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.LegacyGUI.Missions.Order;
 using TaleWorlds.MountAndBlade.Missions.Handlers;
 using TaleWorlds.MountAndBlade.View;
-using TaleWorlds.MountAndBlade.View.MissionViews;
-using TaleWorlds.MountAndBlade.View.MissionViews.Order;
-using TaleWorlds.MountAndBlade.View.MissionViews.Singleplayer;
-using TaleWorlds.MountAndBlade.View.Screens;
+using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.Screen;
+using TaleWorlds.MountAndBlade.ViewModelCollection;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
-using TaleWorlds.ScreenSystem;
 using TaleWorlds.TwoDimension;
 
 namespace RTSCamera.CommandSystem.View
@@ -33,7 +32,6 @@ namespace RTSCamera.CommandSystem.View
         private const int _missionTimeSpeedRequestID = 864;
         private float _holdTime;
         private bool _holdExecuted;
-        private MissionSiegePrepareView _siegeMissionView;
         private DeploymentMissionView _deploymentMissionView;
         private List<DeploymentSiegeMachineVM> _deploymentPointDataSources;
         private CommandSystemOrderTroopPlacer _orderTroopPlacer;
@@ -250,7 +248,6 @@ namespace RTSCamera.CommandSystem.View
                 new OnToggleActivateOrderStateDelegate(OnActivateToggleOrder),
                 new OnToggleActivateOrderStateDelegate(OnDeactivateToggleOrder),
                 new OnToggleActivateOrderStateDelegate(OnTransferFinished),
-                new OnBeforeOrderDelegate(OnBeforeOrder),
                 false);
 
             if (IsSiegeDeployment)
@@ -499,7 +496,7 @@ namespace RTSCamera.CommandSystem.View
 
         private void TickOrderFlag(float dt, bool forceUpdate)
         {
-            if ((MissionScreen.OrderFlag.IsVisible || forceUpdate) && TaleWorlds.Engine.Utilities.EngineFrameNo != MissionScreen.OrderFlag.LatestUpdateFrameNo)
+            if ((MissionScreen.OrderFlag.IsVisible || forceUpdate) /*&& TaleWorlds.Engine.Utilities.EngineFrameNo != MissionScreen.OrderFlag.LatestUpdateFrameNo*/)
             {
                 MissionScreen.OrderFlag.Tick(_latestDt);
             }
@@ -534,38 +531,29 @@ namespace RTSCamera.CommandSystem.View
 
         private void TickInput(float dt)
         {
-            if (_dataSource is null)
+            if (Input.IsGameKeyDown(MissionOrderHotkeyCategory.HoldOrder) && !_dataSource.IsToggleOrderShown)
             {
-                return;
+                _holdTime += dt;
+                if (_holdTime >= (double)_minHoldTimeForActivation)
+                {
+                    _dataSource.OpenToggleOrder(true);
+                    _holdExecuted = true;
+                }
             }
-
-            if (!IsSiegeDeployment && !IsBattleDeployment)
+            else if (!Input.IsGameKeyDown(MissionOrderHotkeyCategory.HoldOrder))
             {
-                if (Input.IsGameKeyDown(86) && !_dataSource.IsToggleOrderShown)
+                if (_holdExecuted && _dataSource.IsToggleOrderShown)
                 {
-                    _holdTime += dt;
-                    if (_holdTime >= _minHoldTimeForActivation)
-                    {
-                        _dataSource.OpenToggleOrder(true, !_holdExecuted);
-                        _holdExecuted = true;
-                    }
-                }
-                else if (!Input.IsGameKeyDown(86))
-                {
-                    if (_holdExecuted && _dataSource.IsToggleOrderShown)
-                    {
-                        _dataSource.TryCloseToggleOrder(false);
-                    }
+                    _dataSource.TryCloseToggleOrder();
                     _holdExecuted = false;
-                    _holdTime = 0f;
                 }
+                _holdTime = 0.0f;
             }
             if (_dataSource.IsToggleOrderShown)
             {
                 if (_dataSource.TroopController.IsTransferActive && _gauntletLayer.Input.IsHotKeyPressed("Exit"))
-                {
                     _dataSource.TroopController.IsTransferActive = false;
-                }
+
                 if (_dataSource.TroopController.IsTransferActive != _isTransferEnabled)
                 {
                     _isTransferEnabled = _dataSource.TroopController.IsTransferActive;
@@ -582,8 +570,8 @@ namespace RTSCamera.CommandSystem.View
                 }
                 if (_dataSource.ActiveTargetState == 0 && (Input.IsKeyReleased(InputKey.LeftMouseButton) || Input.IsKeyReleased(InputKey.ControllerRTrigger)))
                 {
-                    OrderItemVM lastSelectedOrderItem = _dataSource.LastSelectedOrderItem;
-                    if (lastSelectedOrderItem != null && !lastSelectedOrderItem.IsTitle && TaleWorlds.InputSystem.Input.IsGamepadActive)
+                    OrderItemVM selectedOrderItem = _dataSource.LastSelectedOrderItem;
+                    if ((selectedOrderItem != null ? (!selectedOrderItem.IsTitle ? 1 : 0) : 0) != 0 && _isGamepadActive)
                     {
                         _dataSource.ApplySelectedOrder();
                     }
@@ -592,135 +580,84 @@ namespace RTSCamera.CommandSystem.View
                         switch (cursorState)
                         {
                             case MissionOrderVM.CursorState.Move:
+                                IOrderable focusedOrderableObject = GetFocusedOrderableObject();
+                                if (focusedOrderableObject != null)
                                 {
-                                    IOrderable focusedOrderableObject = GetFocusedOrderableObject();
-                                    if (focusedOrderableObject != null)
-                                    {
-                                        _dataSource.OrderController.SetOrderWithOrderableObject(focusedOrderableObject);
-                                    }
-                                    break;
+                                    _dataSource.OrderController.SetOrderWithOrderableObject(focusedOrderableObject);
                                 }
+                                break;
                             case MissionOrderVM.CursorState.Face:
                                 _dataSource.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, MissionScreen.GetOrderFlagPosition(), false));
                                 break;
                             case MissionOrderVM.CursorState.Form:
                                 _dataSource.OrderController.SetOrderWithPosition(OrderType.FormCustom, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, MissionScreen.GetOrderFlagPosition(), false));
                                 break;
-                            default:
-                                Debug.FailedAssert("false", "C:\\Develop\\mb3\\Source\\Bannerlord\\TaleWorlds.MountAndBlade.GauntletUI\\Mission\\Singleplayer\\MissionGauntletSingleplayerOrderUIHandler.cs", "TickInput", 621);
-                                break;
                         }
                     }
                 }
-                if (Input.IsKeyReleased(InputKey.RightMouseButton) && !_isAnyDeployment)
-                {
+                if (ExitWithRightClick && Input.IsKeyReleased(InputKey.RightMouseButton))
                     _dataSource.OnEscape();
-                }
             }
-            int num = -1;
-            if ((!TaleWorlds.InputSystem.Input.IsGamepadActive || _dataSource.IsToggleOrderShown) && !DebugInput.IsControlDown())
+
+            int pressedIndex = -1;
+            if ((!_isGamepadActive || _dataSource.IsToggleOrderShown) && !Input.IsControlDown())
             {
-                if (Input.IsGameKeyPressed(68))
-                {
-                    num = 0;
-                }
-                else if (Input.IsGameKeyPressed(69))
-                {
-                    num = 1;
-                }
-                else if (Input.IsGameKeyPressed(70))
-                {
-                    num = 2;
-                }
-                else if (Input.IsGameKeyPressed(71))
-                {
-                    num = 3;
-                }
-                else if (Input.IsGameKeyPressed(72))
-                {
-                    num = 4;
-                }
-                else if (Input.IsGameKeyPressed(73))
-                {
-                    num = 5;
-                }
-                else if (Input.IsGameKeyPressed(74))
-                {
-                    num = 6;
-                }
-                else if (Input.IsGameKeyPressed(75))
-                {
-                    num = 7;
-                }
-                else if (Input.IsGameKeyPressed(76))
-                {
-                    num = 8;
-                }
+                if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder1))
+                    pressedIndex = 0;
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder2))
+                    pressedIndex = 1;
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder3))
+                    pressedIndex = 2;
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder4))
+                    pressedIndex = 3;
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder5))
+                    pressedIndex = 4;
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder6))
+                    pressedIndex = 5;
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder7))
+                    pressedIndex = 6;
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder8))
+                    pressedIndex = 7;
+                else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrderReturn))
+                    pressedIndex = 8;
             }
-            if (num > -1)
-            {
-                _dataSource.OnGiveOrder(num);
-            }
-            int num2 = -1;
-            if (Input.IsGameKeyPressed(77))
-            {
-                num2 = 100;
-            }
-            else if (Input.IsGameKeyPressed(78))
-            {
-                num2 = 0;
-            }
-            else if (Input.IsGameKeyPressed(79))
-            {
-                num2 = 1;
-            }
-            else if (Input.IsGameKeyPressed(80))
-            {
-                num2 = 2;
-            }
-            else if (Input.IsGameKeyPressed(81))
-            {
-                num2 = 3;
-            }
-            else if (Input.IsGameKeyPressed(82))
-            {
-                num2 = 4;
-            }
-            else if (Input.IsGameKeyPressed(83))
-            {
-                num2 = 5;
-            }
-            else if (Input.IsGameKeyPressed(84))
-            {
-                num2 = 6;
-            }
-            else if (Input.IsGameKeyPressed(85))
-            {
-                num2 = 7;
-            }
-            if (!IsBattleDeployment && !IsSiegeDeployment)
-            {
-                if (Input.IsGameKeyPressed(87))
-                {
-                    _dataSource.SelectNextTroop(1);
-                }
-                else if (Input.IsGameKeyPressed(88))
-                {
-                    _dataSource.SelectNextTroop(-1);
-                }
-                else if (Input.IsGameKeyPressed(89))
-                {
-                    _dataSource.ToggleSelectionForCurrentTroop();
-                }
-            }
-            if (num2 != -1)
-            {
-                _dataSource.OnSelect(num2);
-            }
-            if (Input.IsGameKeyPressed(67))
-            {
-                _dataSource.ViewOrders();
-            }
+
+            if (pressedIndex > -1)
+                _dataSource.OnGiveOrder(pressedIndex);
+
+            int formationTroopIndex = -1;
+            if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.EveryoneHear))
+                formationTroopIndex = 100;
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group0Hear))
+                formationTroopIndex = 0;
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group1Hear))
+                formationTroopIndex = 1;
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group2Hear))
+                formationTroopIndex = 2;
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group3Hear))
+                formationTroopIndex = 3;
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group4Hear))
+                formationTroopIndex = 4;
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group5Hear))
+                formationTroopIndex = 5;
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group6Hear))
+                formationTroopIndex = 6;
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.Group7Hear))
+                formationTroopIndex = 7;
+            if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectNextGroup))
+                _dataSource.SelectNextTroop(1);
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectPreviousGroup))
+                _dataSource.SelectNextTroop(-1);
+            else if (Input.IsGameKeyPressed(MissionOrderHotkeyCategory.ToggleGroupSelection))
+                _dataSource.ToggleSelectionForCurrentTroop();
+
+            if (formationTroopIndex != -1)
+                _dataSource.OnSelect(formationTroopIndex);
+
+            if (!Input.IsGameKeyPressed(MissionOrderHotkeyCategory.ViewOrders))
+                return;
+
+            _dataSource.ViewOrders();
         }
     }
 }
