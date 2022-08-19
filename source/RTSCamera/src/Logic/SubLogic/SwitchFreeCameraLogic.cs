@@ -219,7 +219,8 @@ namespace RTSCamera.Logic.SubLogic
                 }
             }
 
-            if (affectedAgent.Team != null)
+            // Add check to prevent prison break crash
+            if (affectedAgent.Team != null && affectedAgent.Team.IsValid)
             {
                 if (affectedAgent.Team.PlayerOrderController.Owner == affectedAgent)
                 {
