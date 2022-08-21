@@ -1,19 +1,18 @@
-﻿using System;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Logic;
 using RTSCamera.View;
+using System;
+using System.Reflection;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.GauntletUI;
-using TaleWorlds.MountAndBlade.View.Screen;
+using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.ViewModelCollection.HUD;
 
 namespace RTSCamera.Patch
 {
-    public class Patch_MissionSpectatorControl
+    public class Patch_MissionGauntletSpectatorControl
     {
-        private static readonly Harmony Harmony = new Harmony(RTSCameraSubModule.ModuleId + "_" + nameof(Patch_MissionSpectatorControl));
+        private static readonly Harmony Harmony = new Harmony(RTSCameraSubModule.ModuleId + "_" + nameof(Patch_MissionGauntletSpectatorControl));
 
         private static bool _patched;
         public static bool Patch()
@@ -25,9 +24,9 @@ namespace RTSCamera.Patch
                 _patched = true;
 
                 Harmony.Patch(
-                    typeof(MissionSpectatorControl).GetMethod("OnMissionTick",
+                    typeof(MissionGauntletSpectatorControl).GetMethod(nameof(MissionGauntletSpectatorControl.OnMissionTick),
                         BindingFlags.Instance | BindingFlags.Public),
-                    postfix: new HarmonyMethod(typeof(Patch_MissionSpectatorControl).GetMethod(
+                    postfix: new HarmonyMethod(typeof(Patch_MissionGauntletSpectatorControl).GetMethod(
                         nameof(Postfix_OnMissionTick), BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
@@ -39,7 +38,7 @@ namespace RTSCamera.Patch
 
             return true;
         }
-        public static void Postfix_OnMissionTick(MissionSpectatorControl __instance, MissionSpectatorControlVM ____dataSource)
+        public static void Postfix_OnMissionTick(MissionGauntletSpectatorControl __instance, MissionSpectatorControlVM ____dataSource)
         {
             if (RTSCameraLogic.Instance.SwitchFreeCameraLogic.IsSpectatorCamera && !Mission.Current.GetMissionBehavior<FlyCameraMissionView>().LockToAgent)
             {

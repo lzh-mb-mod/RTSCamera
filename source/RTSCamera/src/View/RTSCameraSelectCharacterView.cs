@@ -6,7 +6,7 @@ using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace RTSCamera.View
 {
@@ -97,13 +97,14 @@ namespace RTSCamera.View
             affectedAgent.GetComponent<RTSCameraComponent>()?.ClearContourColor();
         }
 
-        public bool LockOnAgent()
+        public bool LockOnAgent(Agent candidate)
         {
             if (Mission.Mode == MissionMode.Conversation || Mission.Mode == MissionMode.Barter)
                 return false;
-            if (SelectedAgent != null)
+            var agentToLock = SelectedAgent ?? candidate;
+            if (agentToLock != null && MissionScreen.LastFollowedAgent != agentToLock)
             {
-                _flyCameraMissionView.FocusOnAgent(SelectedAgent);
+                _flyCameraMissionView.FocusOnAgent(agentToLock);
                 IsSelectingCharacter = false;
                 return true;
             }

@@ -1,14 +1,14 @@
 ﻿using MissionSharedLibrary.Utilities;
+using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Event;
 using RTSCamera.View;
 using System;
-using RTSCamera.CampaignGame.Behavior;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Screen;
+using TaleWorlds.MountAndBlade.View.Screens;
 
 namespace RTSCamera.Logic.SubLogic
 {
@@ -243,7 +243,7 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).IsKeyPressed(Mission.InputManager))
             {
-                if (_selectCharacterView.LockOnAgent())
+                if (_selectCharacterView.LockOnAgent(GetAgentToControl()))
                     return;
 
                 if (!_switchFreeCameraLogic.IsSpectatorCamera && Mission.MainAgent?.Controller == Agent.ControllerType.Player)

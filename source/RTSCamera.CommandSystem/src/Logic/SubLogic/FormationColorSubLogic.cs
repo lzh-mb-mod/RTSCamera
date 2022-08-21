@@ -1,15 +1,16 @@
 ﻿
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
-using RTSCamera.CommandSystem.View;
 using RTSCamera.Config;
 using RTSCameraAgentComponent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
@@ -46,7 +47,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private readonly List<Formation> _allySelectedFormations = new List<Formation>();
         private OrderController PlayerOrderController => Mission.Current.PlayerTeam?.PlayerOrderController;
         private Formation _mouseOverFormation;
-        private CommandSystemOrderUIHandler _commandSystemOrderUiHandler;
+        private MissionGauntletSingleplayerOrderUIHandler _orderUiHandler;
         private readonly CommandSystemConfig _config = CommandSystemConfig.Get();
 
         private bool _isOrderShown;
@@ -60,7 +61,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         {
             Mission.Current.Teams.OnPlayerTeamChanged += Mission_OnPlayerTeamChanged;
             Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
-            _commandSystemOrderUiHandler = Mission.Current.GetMissionBehavior<CommandSystemOrderUIHandler>();
+            _orderUiHandler = Mission.Current.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
         }
 
         public  void OnRemoveBehaviour()
@@ -205,10 +206,10 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             if (!HighlightEnabled)
                 return;
             SetFocusContour();
-            if (_commandSystemOrderUiHandler == null)
+            if (_orderUiHandler == null)
                 return;
 
-            foreach (OrderTroopItemVM troop in _commandSystemOrderUiHandler.DataSource.TroopController.TroopList)
+            foreach (OrderTroopItemVM troop in ((MissionOrderVM)typeof(MissionGauntletSingleplayerOrderUIHandler).GetField("_dataSource", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_orderUiHandler)).TroopController.TroopList)
             {
                 troop.IsSelectable = PlayerOrderController.IsFormationSelectable(troop.Formation);
                 troop.IsSelected = troop.IsSelectable && PlayerOrderController.IsFormationListening(troop.Formation);

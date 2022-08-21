@@ -12,21 +12,19 @@ using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
 using RTSCamera.src.Patch.Fix;
-using SandBox;
-using System;
-using System.Reflection;
 using SandBox.CampaignBehaviors;
 using SandBox.Missions.MissionLogics.Arena;
 using SandBox.Objects;
-using TaleWorlds.CampaignSystem;
+using System;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
-using TaleWorlds.ModuleManager;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
-using TaleWorlds.MountAndBlade.View.Missions.SiegeWeapon;
-using TaleWorlds.MountAndBlade.View.Screen;
-using TaleWorlds.MountAndBlade.ViewModelCollection.HUD;
+using TaleWorlds.MountAndBlade.View.MissionViews;
+using TaleWorlds.MountAndBlade.View.MissionViews.SiegeWeapon;
+using TaleWorlds.MountAndBlade.View.Screens;
+using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
 using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace RTSCamera
@@ -45,11 +43,8 @@ namespace RTSCamera
 
             try
             {
+                Module.CurrentModule.GlobalTextManager.LoadGameTexts();
                 Initialize();
-                Module.CurrentModule.GlobalTextManager.LoadGameTexts(
-                    ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
-                Module.CurrentModule.GlobalTextManager.LoadGameTexts(
-                    ModuleHelper.GetXmlPath(ModuleId, "MissionLibrary"));
 
                 _successPatch = true;
                 _harmony.Patch(
@@ -119,7 +114,8 @@ namespace RTSCamera
                         BindingFlags.Static | BindingFlags.Public)));
 
                 Patch_MissionOrderVM.Patch();
-                Patch_MissionSpectatorControl.Patch();
+                Patch_MissionGauntletSpectatorControl.Patch();
+                Patch_ScoreboardScreenWidget.Patch();
 
                 // Use Patch to add game menu
                 WatchBattleBehavior.Patch(_harmony);
@@ -150,7 +146,7 @@ namespace RTSCamera
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera: patch failed"));
             }
 
-            Patch_MissionOrderGauntletUIHandler.Patch();
+            Patch_MissionGauntletSingleplayerOrderUIHandler.Patch();
             Patch_MissionGauntletCrosshair.Patch(_harmony);
             Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;
             Utility.PrintUsageHint();
@@ -176,8 +172,6 @@ namespace RTSCamera
         {
             base.OnGameStart(game, gameStarterObject);
 
-            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
-            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "MissionLibrary"));
             AddCampaignBehavior(gameStarterObject);
         }
 

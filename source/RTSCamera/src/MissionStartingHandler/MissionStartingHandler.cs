@@ -5,7 +5,7 @@ using RTSCamera.Logic;
 using RTSCamera.View;
 using System.Collections.Generic;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace RTSCamera.MissionStartingHandler
 {

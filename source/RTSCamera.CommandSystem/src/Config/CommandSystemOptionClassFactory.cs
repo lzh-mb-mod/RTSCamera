@@ -5,7 +5,6 @@ using MissionSharedLibrary.View.ViewModelCollection;
 using MissionSharedLibrary.View.ViewModelCollection.Options;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
-using RTSCamera.CommandSystem.View;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 

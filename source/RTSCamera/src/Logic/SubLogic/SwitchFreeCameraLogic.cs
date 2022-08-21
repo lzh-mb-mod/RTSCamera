@@ -178,7 +178,7 @@ namespace RTSCamera.Logic.SubLogic
                     }
                 }
             }
-            else if (IsSpectatorCamera || _config.ControlAllyAfterDeath)
+            else if (IsSpectatorCamera || (_config.ControlAllyAfterDeath && !Mission.IsFastForward))
             {
                 _controlTroopLogic.SetMainAgent();
             }

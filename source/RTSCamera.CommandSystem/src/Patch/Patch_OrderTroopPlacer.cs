@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
@@ -10,15 +6,19 @@ using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.Config;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.GauntletUI;
-using TaleWorlds.MountAndBlade.View.Missions;
-using TaleWorlds.MountAndBlade.ViewModelCollection;
-using static TaleWorlds.MountAndBlade.View.Missions.OrderTroopPlacer;
+using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
+using TaleWorlds.MountAndBlade.View.MissionViews.Order;
+using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
+using CursorState = TaleWorlds.MountAndBlade.View.MissionViews.Order.OrderTroopPlacer.CursorState;
 
 namespace RTSCamera.CommandSystem.Patch
 {
@@ -29,7 +29,7 @@ namespace RTSCamera.CommandSystem.Patch
 
 
         private static FieldInfo _dataSource =
-            typeof(MissionOrderGauntletUIHandler).GetField(nameof(_dataSource),
+            typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_dataSource),
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static CursorState _currentCursorState = CursorState.Invisible;
@@ -228,7 +228,8 @@ namespace RTSCamera.CommandSystem.Patch
 
                             if (___PlayerOrderController.IsFormationSelectable(____clickedFormation))
                             {
-                                SelectFormationFromUI(__instance, ____clickedFormation);
+                                //SelectFormationFromUI(__instance, ____clickedFormation);
+                                SelectFormationFromController(__instance, ___PlayerOrderController, ____clickedFormation);
                             }
                         }
                         else if (CommandSystemConfig.Get().AttackSpecificFormation)
@@ -381,7 +382,12 @@ namespace RTSCamera.CommandSystem.Patch
         {
             __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance, ref ____deltaMousePosition), out var rayBegin, out var rayEnd);
             var agent = __instance.Mission.RayCastForClosestAgent(rayBegin, rayEnd, out var agentDistance,
-                __instance.MissionScreen.LastFollowedAgent?.Index ?? -1, 0.8f);
+                __instance.MissionScreen.LastFollowedAgent?.Index ?? -1, 0.3f);
+            if (agentDistance > distance || agent == null)
+            {
+                agent = __instance.Mission.RayCastForClosestAgent(rayBegin, rayEnd, out agentDistance,
+                    __instance.MissionScreen.LastFollowedAgent?.Index ?? -1, 0.8f);
+            }
             return agentDistance > distance ? null : agent;
         }
 
@@ -549,7 +555,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static void SelectFormationFromUI(OrderTroopPlacer __instance, Formation ____clickedFormation)
         {
-            var uiHandler = __instance.Mission.GetMissionBehavior<MissionOrderGauntletUIHandler>();
+            var uiHandler = __instance.Mission.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
             if (uiHandler == null)
                 return;
             var dataSource = (MissionOrderVM)_dataSource.GetValue(uiHandler);

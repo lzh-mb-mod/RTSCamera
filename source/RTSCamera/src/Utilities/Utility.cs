@@ -3,7 +3,7 @@ using SandBox.Missions.MissionLogics.Arena;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace RTSCamera.Utilities
 {
@@ -26,12 +26,12 @@ namespace RTSCamera.Utilities
                     agent.LookDirection = agent.GetMovementDirection().ToVec3();
                     break;
                 case Agent.ControllerType.AI:
-                    // TODO: Check the bug in future version.
-                    // Bug fix: Set main agent's controller to AI when mission is ending may cause the game core crash during mission ticking. Guess it's because that player character should not be controlled by AI when mission is ending.
-                    if (Mission.Current.IsMissionEnding)
-                    {
-                        goto case Agent.ControllerType.None;
-                    }
+                    //// TODO: Check the bug in future version.
+                    //// Bug fix: Set main agent's controller to AI when mission is ending may cause the game core crash during mission ticking. Guess it's because that player character should not be controlled by AI when mission is ending.
+                    //if (Mission.Current.IsMissionEnding)
+                    //{
+                    //    goto case Agent.ControllerType.None;
+                    //}
                     MissionSharedLibrary.Utilities.Utility.AIControlMainAgent(Mission.Current.Mode == MissionMode.Battle, true);
                     break;
                 case Agent.ControllerType.Player:

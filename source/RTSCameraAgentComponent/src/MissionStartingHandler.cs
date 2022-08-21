@@ -1,6 +1,6 @@
 ﻿using MissionLibrary.Controller;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Missions;
+using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace RTSCameraAgentComponent
 {

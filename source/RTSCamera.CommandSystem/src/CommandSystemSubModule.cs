@@ -3,13 +3,14 @@ using MissionLibrary.Controller;
 using MissionLibrary.View;
 using MissionSharedLibrary;
 using MissionSharedLibrary.Provider;
+using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
+using RTSCamera.CommandSystem.Patch;
 using System;
 using System.Linq;
-using MissionSharedLibrary.Utilities;
-using RTSCamera.CommandSystem.Patch;
 using TaleWorlds.Core;
+using TaleWorlds.Library;
 using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 
@@ -24,11 +25,12 @@ namespace RTSCamera.CommandSystem
         {
             base.OnSubModuleLoad();
 
+            Module.CurrentModule.GlobalTextManager.LoadGameTexts();
+
             Utility.ShouldDisplayMessage = true;
             Initialize();
             EnableChargeToFormationForInfantry =
                 TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info => info.Id == "RealisticBattleAiModule") == null;
-            Module.CurrentModule.GlobalTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
         }
 
         private void Initialize()
@@ -74,8 +76,7 @@ namespace RTSCamera.CommandSystem
         {
             base.OnGameStart(game, gameStarterObject);
 
-            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
-            game.GameTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "MissionLibrary"));
+            //game.GameTextManager.LoadGameTexts();
         }
     }
 }
