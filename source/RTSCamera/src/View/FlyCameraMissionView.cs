@@ -287,9 +287,13 @@ namespace RTSCamera.View
         {
             base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
 
-            if (affectedAgent == MissionScreen.LastFollowedAgent && LockToAgent)
+            if (affectedAgent == MissionScreen.LastFollowedAgent && _freeCameraLogic.IsSpectatorCamera && LockToAgent)
             {
                 LeaveFromAgent();
+                if (!Utility.IsAgentDead(Mission.MainAgent))
+                {
+                    FocusOnAgent(Mission.MainAgent);
+                }
             }
         }
 
