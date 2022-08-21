@@ -141,7 +141,7 @@ namespace RTSCamera.Logic.SubLogic
                 if (_config.AlwaysSetPlayerFormation && !WatchBattleBehavior.WatchMode)
                     Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
                 // the game may crash if team has ai, no formation has agents and there are agents controlled by AI.
-                else if (agent.Team != null && agent.Team.HasTeamAi && agent.Formation == null)
+                else if (Utility.IsTeamValid(agent.Team) && agent.Team.HasTeamAi && agent.Formation == null)
                     Utility.SetPlayerFormation(CurrentPlayerFormation);
                 if (agent.Formation == null)
                     return;
@@ -223,7 +223,7 @@ namespace RTSCamera.Logic.SubLogic
                 }
             }
 
-            if (affectedAgent.Team != null)
+            if (Utility.IsTeamValid(affectedAgent.Team))
             {
                 if (affectedAgent.Team.PlayerOrderController.Owner == affectedAgent)
                 {

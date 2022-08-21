@@ -297,7 +297,7 @@ namespace RTSCamera.View
         private void MissionScreenOnSpectateAgentFocusIn(Agent agent)
         {
             _showControlHintVM.SetShowText(true,
-                !WatchBattleBehavior.WatchMode && (LockToAgent || Mission.MainAgent == null) && agent.Team != null &&
+                !WatchBattleBehavior.WatchMode && (LockToAgent || Mission.MainAgent == null) && Utility.IsTeamValid(agent.Team) &&
                 agent.Team == Mission.PlayerTeam, LockToAgent ? agent.Name : null);
         }
 
@@ -342,8 +342,9 @@ namespace RTSCamera.View
             float heightFactorForVerticalMove;
             if (!ConstantSpeed)
             {
-                float heightAtPosition =
-                    Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags);
+                float heightAtPosition = IgnoreTerrain ? 
+                    Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags) :
+                    Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2);
                 heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
                     1, 30);
                 heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),

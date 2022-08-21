@@ -124,9 +124,9 @@ namespace RTSCamera.CommandSystem.View
             MissionPeer missionPeer = GameNetwork.IsMyPeerReady
                 ? GameNetwork.MyPeer.GetComponent<MissionPeer>()
                 : null;
-            if (Mission.PlayerTeam == null && (missionPeer == null ||
-                                                    missionPeer.Team != Mission.AttackerTeam &&
-                                                    missionPeer.Team != Mission.DefenderTeam))
+            if (!MissionSharedLibrary.Utilities.Utility.IsTeamValid(Mission.PlayerTeam) && (missionPeer == null ||
+                                                                   missionPeer.Team != Mission.AttackerTeam &&
+                                                                   missionPeer.Team != Mission.DefenderTeam))
                 return;
             InitializeInADisgustingManner();
             Initialized = true;

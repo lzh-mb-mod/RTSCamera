@@ -162,7 +162,7 @@ namespace RTSCamera.Logic.SubLogic
                 return Mission.MainAgent;
             }
 
-            if (Mission.PlayerTeam == null)
+            if (!Utility.IsTeamValid(Mission.PlayerTeam))
                 return null;
 
             return GetOtherAgentToControl(true) ??

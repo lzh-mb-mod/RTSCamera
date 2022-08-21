@@ -39,16 +39,16 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (!NativeConfig.CheatMode)
                 return;
-            if (Mission.PlayerEnemyTeam == null)
+            if (!Utility.IsTeamValid(Mission.PlayerEnemyTeam))
                 return;
             if (Mission.GetMissionBehavior<SiegeDeploymentHandler>() != null)
                 return;
             bool firstTime = Mission.PlayerEnemyTeam.PlayerOrderController.Owner == null;
             var targetAgent = Mission.PlayerEnemyTeam.PlayerOrderController.Owner;
             // Fix a rare crash in e1.4.3 when targetAgent.Team == null && targetAgent.IsDeleted == true and even **targetAgent.IsActive() == true**.
-            targetAgent = !Utility.IsAgentDead(targetAgent) && targetAgent?.Team != null
+            targetAgent = !Utility.IsAgentDead(targetAgent) && Utility.IsTeamValid(targetAgent?.Team)
                 ? Mission.PlayerEnemyTeam.PlayerOrderController.Owner
-                : !Utility.IsAgentDead(Mission.PlayerEnemyTeam.GeneralAgent) ? Mission.PlayerEnemyTeam.GeneralAgent : Mission.PlayerEnemyTeam.Leader;
+                : !Utility.IsAgentDead(Mission.PlayerEnemyTeam.GeneralAgent) && Utility.IsTeamValid(Mission.PlayerEnemyTeam.GeneralAgent?.Team) ? Mission.PlayerEnemyTeam.GeneralAgent : Mission.PlayerEnemyTeam.Leader;
             
             if (Utility.IsAgentDead(targetAgent))
             {

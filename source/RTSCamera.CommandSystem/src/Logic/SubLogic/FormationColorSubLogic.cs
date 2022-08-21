@@ -266,7 +266,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _enemyAsTargetFormations.Clear();
             _enemyAsTargetFormations.AddRange(enemyAsTargetFormations);
 
-            if (Mission.Current.PlayerEnemyTeam != null)
+            if (Utility.IsTeamValid(Mission.Current.PlayerEnemyTeam))
             {
                 var allyAsTargetFormations = Mission.Current.PlayerEnemyTeam.FormationsIncludingSpecial
                     .Where(formation => formation.GetReadonlyMovementOrderReference().OrderType == OrderType.ChargeWithTarget)

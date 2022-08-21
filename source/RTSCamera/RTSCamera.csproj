@@ -22,7 +22,7 @@
     <ProjectReference Include="..\RTSCameraAgentComponent\RTSCameraAgentComponent.csproj" />
   </ItemGroup>
   <ItemGroup>
-	  <DotNetCliToolReference Include="dotnet-md2html" Version="1.0.0.1-preview1" />
+    <DotNetCliToolReference Include="dotnet-md2html" Version="1.0.0.1-preview1" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SandBox">
