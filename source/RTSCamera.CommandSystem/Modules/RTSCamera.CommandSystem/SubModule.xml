@@ -11,6 +11,7 @@
     <DependedModule Id="Sandbox" />
     <DependedModule Id="CustomBattle" />
     <DependedModule Id="StoryMode" />
+	<DependedModule Id="RTSCamera"/>
   </DependedModules>
   <SubModules>
     <SubModule>
