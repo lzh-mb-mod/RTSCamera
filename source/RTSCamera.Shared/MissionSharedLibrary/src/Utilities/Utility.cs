@@ -203,11 +203,16 @@ namespace MissionSharedLibrary.Utilities
         public static void PlayerControlAgent(Agent agent)
         {
             bool isUsingGameObject = agent.IsUsingGameObject;
-            agent.Controller = Agent.ControllerType.Player;
+            agent.Controller = Agent.ControllerType.Player;    
+            
             if (isUsingGameObject)
             {
                 agent.DisableScriptedMovement();
-                agent.AIUseGameObjectEnable(false);
+                // Check to avoid crash when trying to control a troop who was using siege weapon
+                if (agent.HumanAIComponent != null)
+                {
+                    agent.AIUseGameObjectEnable(false);
+                }
             }
 
             var component = agent.GetComponent<VictoryComponent>();
@@ -217,6 +222,9 @@ namespace MissionSharedLibrary.Utilities
                 agent.SetActionChannel(1, ActionIndexCache.act_none, true);
                 agent.ClearTargetFrame();
             }
+
+            // Add HumanAIComponent back to agent after player control to avoid crash by the laddermanager
+            agent.AddComponent(new HumanAIComponent(agent));
         }
 
         public static void AIControlMainAgent(bool changeAlarmed, bool alarmed = false)
