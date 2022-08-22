@@ -252,7 +252,6 @@ namespace RTSCamera.Logic.SubLogic
                 _config.GetPlayerControllerInFreeCamera());
 
             MissionEvent.OnToggleFreeCamera(false);
-            MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(false);
         }
 
         private void SwitchToFreeCamera()
@@ -265,7 +264,6 @@ namespace RTSCamera.Logic.SubLogic
             }
 
             MissionEvent.OnToggleFreeCamera(true);
-            MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(true);
             Utility.DisplayLocalizedText("str_rts_camera_switch_to_free_camera");
         }
     }

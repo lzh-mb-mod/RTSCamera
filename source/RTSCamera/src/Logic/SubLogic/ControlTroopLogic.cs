@@ -42,7 +42,6 @@ namespace RTSCamera.Logic.SubLogic
                 if (!Utility.IsPlayerDead())
                 {
                     MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
-                    MissionLibrary.Event.MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                     // Let AI control previous main agent.
                     Utility.AIControlMainAgent(false);
                 }
@@ -83,7 +82,6 @@ namespace RTSCamera.Logic.SubLogic
                     if (!Utility.IsPlayerDead() && Mission.MainAgent != agent)
                     {
                         MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
-                        MissionLibrary.Event.MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                         // Let AI control previous main agent.
                         Utility.AIControlMainAgent(false);
                     }
