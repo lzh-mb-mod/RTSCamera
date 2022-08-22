@@ -20,7 +20,7 @@
     <string id="str_rts_camera_slow_motion_factor_hint" text="{=RTSCamera_slow_motion_factor_hint}The factor of time speed." />
     <string id="str_rts_camera_watch_another_hero_hint" text="{=RTSCamera_watch_another_hero_hint}Watch the hero you selected." />
     <string id="str_rts_camera_select_character_hint" text="{=RTSCamera_select_character_hint}Select a character using mouse, then you can focus the camera to it or control it." />
-    <string id="str_rts_camera_control_ally_after_death_hint" text="{=RTSCamera_control_ally_after_death_hint}Automatically control one of your ally after you die." />
+    <string id="str_rts_camera_control_ally_after_death_hint" text="{=RTSCamera_control_ally_after_death_hint}Automatically control one of your ally after you die. Also prevents the game from delegating commands without your consent." />
     <string id="str_rts_camera_prefer_to_control_companions_hint" text="{=RTSCamera_prefer_to_control_companions_hint}Prefer to control companions when looking for target to control." />
     <string id="str_rts_camera_control_troops_in_player_party_only_hint" text="{=RTSCamera_control_troops_in_player_party_only_hint}Only consider troops in player party when looking for target to control." />
     <string id="str_rts_camera_constant_speed_hint" text="{=RTSCamera_constant_speed_hint}Camera movement speed won't be affected by height." />
