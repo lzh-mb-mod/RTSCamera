@@ -4,6 +4,7 @@ using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.Utilities;
 using MissionSharedLibrary.View.ViewModelCollection;
 using MissionSharedLibrary.View.ViewModelCollection.Options;
+using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using TaleWorlds.Core;
@@ -24,7 +25,8 @@ namespace RTSCamera.CommandSystem.Config
                 var commandOptionCategory = new OptionCategory("Command", GameTexts.FindText("str_rts_camera_command_system_command_system_options"));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_click_to_select_formation"),
-                    GameTexts.FindText("str_rts_camera_command_system_click_to_select_formation_hint"),
+                    GameTexts.FindText("str_rts_camera_command_system_click_to_select_formation_hint").SetTextVariable("KeyName",
+                        CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString()),
                     () => CommandSystemConfig.Get().ClickToSelectFormation, b =>
                     {
                         CommandSystemConfig.Get().ClickToSelectFormation = b;
@@ -32,7 +34,8 @@ namespace RTSCamera.CommandSystem.Config
                     }));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_attack_specific_formation"),
-                    GameTexts.FindText("str_rts_camera_command_system_attack_specific_formation_hint"),
+                    GameTexts.FindText("str_rts_camera_command_system_attack_specific_formation_hint").SetTextVariable("KeyName",
+                        CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString()),
                     () => CommandSystemConfig.Get().AttackSpecificFormation, b =>
                     {
                         CommandSystemConfig.Get().AttackSpecificFormation = b;
