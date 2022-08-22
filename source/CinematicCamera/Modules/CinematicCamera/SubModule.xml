@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <Name value="Cinematic Camera"/>
+  <Id value="CinematicCamera"/>
+  <Version value="e1.1.0"/>
+  <SingleplayerModule value="true"/>
+  <MultiplayerModule value="false"/>
+  <DependedModules>
+    <DependedModule Id="Native"/>
+    <DependedModule Id="SandBoxCore"/>
+    <DependedModule Id="Sandbox"/>
+    <DependedModule Id="CustomBattle"/>
+    <DependedModule Id="StoryMode"/>
+    <DependedModule Id="RTSCamera"/>
+  </DependedModules>
+  <SubModules>
+    <SubModule>
+      <Name value="CinematicCameraSubModule"/>
+      <DLLName value="CinematicCamera.dll"/>
+      <SubModuleClassType value="CinematicCamera.CinematicCameraSubModule"/>
+      <Tags>
+        <Tag key="DedicatedServerType" value="none" />
+        <Tag key="IsNoRenderModeElement" value="false" />
+      </Tags>
+    </SubModule>
+  </SubModules>
+  <Xmls>
+	  <XmlNode>
+		  <XmlName id="GameText" path="module_strings"/>
+	  </XmlNode>
+  </Xmls>
+</Module>

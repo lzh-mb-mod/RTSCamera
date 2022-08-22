@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <PackagePath>$(SolutionDir)package\</PackagePath>
+    <ModuleAlias>CinematicCamera</ModuleAlias>
+    <ModulePackagePath>$(PackagePath)$(ModuleAlias)\</ModulePackagePath>
+  </PropertyGroup>
+</Project>

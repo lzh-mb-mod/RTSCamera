@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<strings>
+	<string id="str_cinematic_camera_cinematic_camera" text="{=CinematicCamera_cinematiccamera}Cinematic Camera" />
+	<string id="str_cinematic_camera_open_menu" text="{=CinematicCamera_open_menu}Open Menu" />
+	<string id="str_cinematic_camera_player_invulnerable" text="{=CinematicCamera_playerinvulnerable}Player Invulnerable" />
+
+	<string id="str_cinematic_camera_camera_parameters" text="{=CinematicCamera_camera_parameters}Camera Parameters" />
+	<string id="str_cinematic_camera_vertical_fov" text="{=CinematicCamera_verticalfov}Vertical Fov" />
+	<string id="str_cinematic_camera_reset" text="{=CinematicCamera_reset}Reset" />
+	<string id="str_cinematic_camera_zoom" text="{=CinematicCamera_zoom}Zoom" />
+	<string id="str_cinematic_camera_rotate_smooth_mode" text="{=CinematicCamera_rotatesmoothmode}Rotate Smooth Mode" />
+	<string id="str_cinematic_camera_speed_factor" text="{=CinematicCamera_speedfactor}Movement Speed Factor" />
+	<string id="str_cinematic_camera_vertical_speed_factor" text="{=CinematicCamera_verticalspeedfactor}Vertical Movement Speed Factor" />
+	<string id="str_cinematic_camera_depth_of_field_distance" text="{=CinematicCamera_depthoffielddistance}Depth of Field Distance" />
+	<string id="str_cinematic_camera_depth_of_field_start" text="{=CinematicCamera_depthoffieldstart}Depth of Field Focus Start" />
+	<string id="str_cinematic_camera_depth_of_field_End" text="{=CinematicCamera_depthoffieldend}Depth of Field Focus End" />
+
+
+	<string id="str_key_category_name.CinematicCameraHotKey" text="{=CinematicCamera_hotkey_category}Cinematic Camera Hot Key" />
+	<string id="str_key_name.CinematicCameraHotKey_Up" text="{=CinematicCamera_toggle_player_invulnerable}Toggle Player Invulnerable" />
+	<string id="str_key_description.CinematicCameraHotKey_Up" text="{=CinematicCamera_toggle_player_invulnerable_hint}Toggle Player Invulnerable." />
+	<string id="str_key_name.CinematicCameraHotKey_Down" text="{=CinematicCamera_increase_dof_distance}Increase DOF distance" />
+	<string id="str_key_description.CinematicCameraHotKey_Down" text="{=CinematicCamera_increase_dof_distance_hint}Increase Depth Of Field Distance." />
+	<string id="str_key_name.CinematicCameraHotKey_Left" text="{=CinematicCamera_decrease_dof_distance}Decrease DOF distance" />
+	<string id="str_key_description.CinematicCameraHotKey_Left" text="{=CinematicCamera_decrease_dof_distance_hint}Decrease Depth Of Field Distance." />
+
+	<string id="str_key_name.CinematicCameraHotKey_Right" text="{=CinematicCamera_increase_dof_start}Increase DOF Start" />
+	<string id="str_key_description.CinematicCameraHotKey_Right" text="{=CinematicCamera_increase_dof_start_hint}Increase Depth Of Field Start Position." />
+	<string id="str_key_name.CinematicCameraHotKey_Leave" text="{=CinematicCamera_decrease_dof_start}Decrease DOF Start" />
+	<string id="str_key_description.CinematicCameraHotKey_Leave" text="{=CinematicCamera_decrease_dof_start_hint}Decrease Depth Of Field Start Position." />
+
+	<string id="str_key_name.CinematicCameraHotKey_ShowIndicators" text="{=CinematicCamera_increase_dof_end}Increase DOF End" />
+	<string id="str_key_description.CinematicCameraHotKey_ShowIndicators" text="{=CinematicCamera_increase_dof_end_hint}Increase Depth Of Field End Position." />
+	<string id="str_key_name.CinematicCameraHotKey_InitiateAllChat" text="{=CinematicCamera_decrease_dof_end}Decrease DOF End" />
+	<string id="str_key_description.CinematicCameraHotKey_InitiateAllChat" text="{=CinematicCamera_decrease_dof_end_hint}Decrease Depth Of Field End Position." />
+</strings>

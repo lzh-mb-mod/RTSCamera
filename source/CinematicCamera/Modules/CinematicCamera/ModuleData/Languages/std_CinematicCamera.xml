@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="English" />
+  </tags>
+  <strings>
+    <string id="CinematicCamera_cinematiccamera" text="Cinematic Camera" />
+    <string id="CinematicCamera_open_menu" text="Open Menu" />
+
+    <string id="CinematicCamera_playerinvulnerable" text="Player Invulnerable" />
+
+    <string id="CinematicCamera_camera_parameters" text="Camera Parameters" />
+    <string id="CinematicCamera_verticalfov" text="Vertical Fov" />
+    <string id="CinematicCamera_reset" text="Reset" />
+    <string id="CinematicCamera_zoom" text="Zoom" />
+    <string id="CinematicCamera_rotatesmoothmode" text="Rotate Smooth Mode" />
+    <string id="CinematicCamera_speedfactor" text="Movement Speed Factor" />
+    <string id="CinematicCamera_verticalspeedfactor" text="Vertical Movement Speed Factor" />
+    <string id="CinematicCamera_depthoffielddistance" text="Depth of Field Distance" />
+    <string id="CinematicCamera_depthoffieldstart" text="Depth of Field Focus Start" />
+    <string id="CinematicCamera_depthoffieldend" text="Depth of Field Focus End" />
+
+
+    <string id="CinematicCamera_hotkey_category" text="Cinematic Camera Hot Key" />
+    <string id="CinematicCamera_toggle_player_invulnerable" text="Toggle Player Invulnerable" />
+    <string id="CinematicCamera_toggle_player_invulnerable_hint" text="Toggle Player Invulnerable." />
+    <string id="CinematicCamera_increase_dof_distance" text="Increase DOF distance" />
+    <string id="CinematicCamera_increase_dof_distance_hint" text="Increase Depth Of Field Distance." />
+    <string id="CinematicCamera_decrease_dof_distance" text="Decrease DOF distance" />
+    <string id="CinematicCamera_decrease_dof_distance_hint" text="Decrease Depth Of Field Distance." />
+
+    <string id="CinematicCamera_increase_dof_start" text="Increase DOF Start" />
+    <string id="CinematicCamera_increase_dof_start_hint" text="Increase Depth Of Field Start Position." />
+    <string id="CinematicCamera_decrease_dof_start" text="Decrease DOF Start" />
+    <string id="CinematicCamera_decrease_dof_start_hint" text="Decrease Depth Of Field Start Position." />
+
+    <string id="CinematicCamera_increase_dof_end" text="Increase DOF End" />
+    <string id="CinematicCamera_increase_dof_end_hint" text="Increase Depth Of Field End Position." />
+    <string id="CinematicCamera_decrease_dof_end" text="Decrease DOF End" />
+    <string id="CinematicCamera_decrease_dof_end_hint" text="Decrease Depth Of Field End Position." />
+    
+  </strings>
+</base>
