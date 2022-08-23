@@ -81,17 +81,17 @@ jobs:
         # uses: NuGet/setup-nuget@04b0c2b8d1b97922f67eca497d7cf0bf17b8ffe1
         uses: NuGet/setup-nuget@v1.0.5
           
-      - name: Download DepotDownloader_2.3.6
+      - name: Download DepotDownloader_2.4.7
         uses: i3h/download-release-asset@v1
         with:
           owner: SteamRE
           repo: DepotDownloader
-          tag: DepotDownloader_2.3.6
-          file: depotdownloader-2.3.6.zip
-      - name: Extract DepotDownloader_2.3.6
+          tag: DepotDownloader_2.4.7
+          file: depotdownloader-2.4.7.zip
+      - name: Extract DepotDownloader_2.4.7
         uses: DuckSoft/extract-7z-action@v1.0
         with:
-          pathSource: depotdownloader-2.3.6.zip
+          pathSource: depotdownloader-2.4.7.zip
           pathTarget: depotdownloader
 
       - name: Download Bannerlord binaries
