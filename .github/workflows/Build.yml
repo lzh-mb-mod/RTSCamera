@@ -69,6 +69,12 @@ jobs:
         with:
           dotnet-version: '2.2.x'
 
+      # additional .net core for DepotDownloader.
+      - name: Setup .NET Core 6.0.x
+        uses: actions/setup-dotnet@master
+        with:
+          dotnet-version: '6.0.x'
+
       - name: setup-msbuild
         uses: microsoft/setup-msbuild@v1
         # with:
@@ -94,8 +100,11 @@ jobs:
           pathSource: depotdownloader-2.4.7.zip
           pathTarget: depotdownloader
 
-      - name: Download Bannerlord binaries
+      - name: Download Bannerlord binaries 1
         run: dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
+
+      - name: Download Bannerlord binaries 2
+        run: dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261552 -beta ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
       
       - name: Build RTS Camera
         run: >-
