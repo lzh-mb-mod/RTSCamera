@@ -653,5 +653,46 @@ namespace RTSCamera.View
                 LeaveFromAgent();
             }
         }
+
+
+        public bool RequestCameraGoTo(Vec3 position, Vec3 direction = new Vec3())
+        {
+            if (!_freeCameraLogic.IsSpectatorCamera)
+            {
+                _freeCameraLogic.SwitchCamera();
+                _forceMove = false;
+            }
+            else if (LockToAgent)
+            {
+                LeaveFromAgent();
+            }
+
+            //Utility.SmoothMoveToPositionAndDirection(MissionScreen, position,
+            //    MathF.Asin(Vec3.DotProduct(direction, Vec3.Up)), direction.AsVec2.AngleBetween(Vec2.Forward),
+            //    direction.Length > 0.5, direction.Length > 0.5);
+            BeginForcedMove(position - MissionScreen.CombatCamera.Position);
+
+            return true;
+        }
+
+        public bool RequestCameraGoTo(Vec2 position, Vec2 direction = new Vec2())
+        {
+            if (!_freeCameraLogic.IsSpectatorCamera)
+            {
+                _freeCameraLogic.SwitchCamera();
+                _forceMove = false;
+            }
+            else if (LockToAgent)
+            {
+                LeaveFromAgent();
+            }
+
+            //Utility.SmoothMoveToPositionAndDirection(MissionScreen,
+            //    position.ToVec3(MissionScreen.CombatCamera.Position.Z), 0, direction.AngleBetween(Vec2.Forward), false,
+            //    direction.Length > 0.5);
+            
+            BeginForcedMove(position.ToVec3(MissionScreen.CombatCamera.Position.Z) - MissionScreen.CombatCamera.Position);
+            return true;
+        }
     }
 }

@@ -102,7 +102,7 @@ namespace RTSCamera.View
             if (Mission.Mode == MissionMode.Conversation || Mission.Mode == MissionMode.Barter)
                 return false;
             var agentToLock = SelectedAgent ?? candidate;
-            if (agentToLock != null && MissionScreen.LastFollowedAgent != agentToLock)
+            if ((SelectedAgent != null && IsSelectingCharacter) || candidate != null && MissionScreen.LastFollowedAgent != agentToLock)
             {
                 _flyCameraMissionView.FocusOnAgent(agentToLock);
                 IsSelectingCharacter = false;

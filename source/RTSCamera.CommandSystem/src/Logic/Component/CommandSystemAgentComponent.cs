@@ -47,6 +47,9 @@ namespace RTSCamera.CommandSystem.Logic.Component
                 }
                 else if (QueryLibrary.IsInfantry(unit) || QueryLibrary.IsRanged(unit) && formation.FiringOrder.OrderType == OrderType.HoldFire)
                 {
+                    if (unit.GetTargetAgent()?.Formation == formation.TargetFormation)
+                        return WorldPosition.Invalid;
+
                     var targetCenterAgent =
                         targetFormation.NearestAgent(formation.CurrentPosition);
                     if (targetCenterAgent == null)

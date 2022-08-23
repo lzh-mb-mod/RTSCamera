@@ -4,6 +4,8 @@ using RTSCamera.Config.HotKey;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
+using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 
 namespace RTSCamera.View
 {
@@ -38,7 +40,7 @@ namespace RTSCamera.View
             }
             else
             {
-                CharacterName.IsVisible = true;
+                CharacterName.IsVisible = Mission.Current?.GetMissionBehavior<MissionGauntletSpectatorControl>() == null;
                 CharacterName.TextObject = new TextObject(characterName);
             }
         }

@@ -4,7 +4,7 @@
       <Children>
         <TextWidget DataSource="{Hint}" Text="@Text" IsVisible="@IsVisible" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="100" Brush="AgentHUD.Interaction.Text" />
       
-        <!-- <TextWidget DataSource="{CharacterName}" Text="@Text" IsVisible="@IsVisible" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="50" Brush="AgentHUD.Interaction.Text" /> -->
+        <TextWidget DataSource="{CharacterName}" Text="@Text" IsVisible="@IsVisible" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="50" Brush="AgentHUD.Interaction.Text" />
       </Children>
     </Widget>
   </Window>
