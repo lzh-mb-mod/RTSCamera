@@ -26,8 +26,14 @@ namespace RTSCamera.CommandSystem
 
             Utility.ShouldDisplayMessage = true;
             Initialize();
+
+            // If RBM is loaded, disable the ChargeToFormation feature for infantry to not break RBM frontline behavior
             EnableChargeToFormationForInfantry =
-                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info => info.Id == "RealisticBattleAiModule") == null;
+                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
+                info.Id == "RBM") == null
+            &&
+                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
+                info.Id == "RealisticBattleAiModule") == null;
             Module.CurrentModule.GlobalTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
         }
 
