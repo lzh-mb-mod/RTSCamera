@@ -47,11 +47,6 @@ namespace RTSCamera
                 Initialize();
 
                 _successPatch = true;
-                _harmony.Patch(
-                    typeof(Formation).GetMethod("LeaveDetachment", BindingFlags.Instance | BindingFlags.Public),
-                    prefix: new HarmonyMethod(
-                        typeof(Patch_Formation).GetMethod("LeaveDetachment_Prefix",
-                            BindingFlags.Static | BindingFlags.Public)));
 
                 _harmony.Patch(
                     typeof(RangedSiegeWeaponView).GetMethod("HandleUserInput",
