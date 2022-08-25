@@ -160,7 +160,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_HandleMouseDown(OrderTroopPlacer __instance, ref Formation ____clickedFormation, ref Formation ____mouseOverFormation,
             ref bool ____formationDrawingMode, ref Vec2 ____deltaMousePosition,
-            ref WorldPosition? ____formationDrawingStartingPosition, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime)
+            ref WorldPosition? ____formationDrawingStartingPosition, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime, bool ____isMouseDown)
         {
             if (__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.IsEmpty() || ____clickedFormation != null)
                 return false;
@@ -197,7 +197,7 @@ namespace RTSCamera.CommandSystem.Patch
                         ref ____formationDrawingStartingTime);
                     break;
                 case CursorState.Normal:
-                    if (!(CommandSystemConfig.Get().ShouldHighlightWithOutline() && CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyPressed(__instance.Input)))
+                    if (____isMouseDown)
                     {
                         ____formationDrawingMode = true;
                         BeginFormationDraggingOrClicking(__instance, ref ____deltaMousePosition,
@@ -216,7 +216,7 @@ namespace RTSCamera.CommandSystem.Patch
             ref bool ____formationDrawingMode, ref Vec2 ____deltaMousePosition,
             ref WorldPosition? ____formationDrawingStartingPosition, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime)
         {
-            if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyReleased(__instance.Input))
+            if (!____formationDrawingMode)
             {
                 if (____clickedFormation != null)
                 {
@@ -285,8 +285,8 @@ namespace RTSCamera.CommandSystem.Patch
                              __instance.Input.IsKeyDown(InputKey.ControllerRTrigger)) && ____isMouseDown)
                         {
                             ____formationDrawingMode = true;
+                            ____clickedFormation = null;
                         }
-                        ____clickedFormation = null;
                     }
 
                     break;
@@ -294,7 +294,7 @@ namespace RTSCamera.CommandSystem.Patch
         }
 
         public static bool Prefix_GetCursorState(OrderTroopPlacer __instance, ref CursorState __result, OrderController ___PlayerOrderController, ref Formation ____clickedFormation, ref Formation ____mouseOverFormation,
-            List<GameEntity> ____orderRotationEntities, ref Vec2 ____deltaMousePosition, ref bool ____formationDrawingMode, ref int ____mouseOverDirection)
+            List<GameEntity> ____orderRotationEntities, ref Vec2 ____deltaMousePosition, ref bool ____formationDrawingMode, ref int ____mouseOverDirection, bool ____isMouseDown)
         {
             CursorState cursorState = CursorState.Invisible;
             if (!___PlayerOrderController.SelectedFormations.IsEmpty() && ____clickedFormation == null)
@@ -358,7 +358,7 @@ namespace RTSCamera.CommandSystem.Patch
                 cursorState = _currentCursorState;
             }
             if (cursorState == CursorState.Invisible &&
-                !(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(__instance.Input) && CommandSystemConfig.Get().ShouldHighlightWithOutline()) || // press middle mouse button to avoid accidentally click on ground.
+                 (____isMouseDown || !(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(__instance.Input) && CommandSystemConfig.Get().ShouldHighlightWithOutline())) || // press middle mouse button to avoid accidentally click on ground.
                 ____formationDrawingMode)
             {
                 cursorState = IsCursorStateGroundOrNormal(____formationDrawingMode);
@@ -459,22 +459,32 @@ namespace RTSCamera.CommandSystem.Patch
                 return false;
 
             bool executeOriginal = false;
+            bool isSelectFormationKeyPressed = CommandSystemConfig.Get().ShouldHighlightWithOutline() &&
+                                            CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
+                                                .IsKeyPressed(__instance.Input);
+            bool isSelectFormationKeyReleased = CommandSystemConfig.Get().ShouldHighlightWithOutline() &&
+                                                CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
+                                                    .IsKeyReleased(__instance.Input);
+            bool isSelectFormationKeyDown = CommandSystemConfig.Get().ShouldHighlightWithOutline() &&
+                                            CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
+                                                .IsKeyDown(__instance.Input);
             _currentCursorState = _cachedCursorState.Value;
-            if (__instance.Input.IsKeyPressed(InputKey.LeftMouseButton) || __instance.Input.IsKeyPressed(InputKey.ControllerRTrigger) ||
-                CommandSystemConfig.Get().ShouldHighlightWithOutline() && CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyPressed(__instance.Input))
+            bool isLeftButtonPressed = __instance.Input.IsKeyPressed(InputKey.LeftMouseButton) ||
+                              __instance.Input.IsKeyPressed(InputKey.ControllerRTrigger);
+            if (isLeftButtonPressed || isSelectFormationKeyPressed)
             {
-                ____isMouseDown = true;
+                if (isLeftButtonPressed)
+                    ____isMouseDown = true;
                 typeof(OrderTroopPlacer).GetMethod("HandleMouseDown", BindingFlags.Instance | BindingFlags.NonPublic)
                     ?.Invoke(__instance, new object[] { });
             }
-            if ((__instance.Input.IsKeyReleased(InputKey.LeftMouseButton) || __instance.Input.IsKeyReleased(InputKey.ControllerRTrigger) ||
-                 (CommandSystemConfig.Get().ShouldHighlightWithOutline() && CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyReleased(__instance.Input))) && ____isMouseDown)
-            {
+            if ((__instance.Input.IsKeyReleased(InputKey.LeftMouseButton) || __instance.Input.IsKeyReleased(InputKey.ControllerRTrigger)) && ____isMouseDown || isSelectFormationKeyReleased)
+            { 
                 ____isMouseDown = false;
                 typeof(OrderTroopPlacer).GetMethod("HandleMouseUp", BindingFlags.Instance | BindingFlags.NonPublic)
                     ?.Invoke(__instance, new object[] { });
             }
-            else if (CommandSystemConfig.Get().ShouldHighlightWithOutline() && CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(__instance.Input) && ____isMouseDown)
+            else if (____isMouseDown && isSelectFormationKeyDown)
             {
                 if (!__instance.IsDrawingFacing && !__instance.IsDrawingForming)
                 {
@@ -483,7 +493,7 @@ namespace RTSCamera.CommandSystem.Patch
                         ref ____formationDrawingMode, ____isMouseDown);
                 }
             }
-            else if ((__instance.Input.IsKeyDown(InputKey.LeftMouseButton) || __instance.Input.IsKeyDown(InputKey.ControllerRTrigger)) && ____isMouseDown)
+            if ((__instance.Input.IsKeyDown(InputKey.LeftMouseButton) || __instance.Input.IsKeyDown(InputKey.ControllerRTrigger)) && ____isMouseDown)
             {
                 if (___formationDrawTimer.Check(MBCommon.GetApplicationTime()) &&
                     !__instance.IsDrawingFacing &&
