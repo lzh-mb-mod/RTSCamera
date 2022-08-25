@@ -114,9 +114,9 @@ namespace RTSCamera
                         BindingFlags.Static | BindingFlags.Public)));
 
                 Patch_MissionOrderVM.Patch();
-                Patch_MissionGauntletSpectatorControl.Patch();
-                Patch_ScoreboardScreenWidget.Patch();
-
+                _successPatch &= Patch_MissionGauntletSpectatorControl.Patch();
+                _successPatch &= Patch_ScoreboardScreenWidget.Patch();
+                _successPatch &= Patch_Mission_UpdateSceneTimeSpeed.Patch();
                 // Use Patch to add game menu
                 WatchBattleBehavior.Patch(_harmony);
             }

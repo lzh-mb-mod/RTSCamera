@@ -166,7 +166,7 @@ namespace RTSCamera.Logic.SubLogic
                 return null;
 
             return GetOtherAgentToControl(true) ??
-                   (RTSCameraConfig.Get().IgnoreRetreatingTroops ? null : GetOtherAgentToControl(false));
+                   (RTSCameraConfig.Get().IgnoreRetreatingTroops && !_switchFreeCameraLogic.IsSpectatorCamera ? null : GetOtherAgentToControl(false));
         }
 
         private Agent GetOtherAgentToControl(bool ignoreRetreatingAgents)

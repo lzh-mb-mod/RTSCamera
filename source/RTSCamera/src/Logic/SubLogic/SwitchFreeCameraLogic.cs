@@ -251,10 +251,12 @@ namespace RTSCamera.Logic.SubLogic
                 _controlTroopLogic.SetMainAgent();
             }
 
-            Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
-                _config.GetPlayerControllerInFreeCamera());
+            if (Mission.MainAgent != null)
+            {
+                Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
+                    _config.GetPlayerControllerInFreeCamera());
+            }
 
-            MissionEvent.OnToggleFreeCamera(false);
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(false);
         }
 
@@ -267,8 +269,7 @@ namespace RTSCamera.Logic.SubLogic
                 Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
                     _config.GetPlayerControllerInFreeCamera());
             }
-
-            MissionEvent.OnToggleFreeCamera(true);
+            
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(true);
             Utility.DisplayLocalizedText("str_rts_camera_switch_to_free_camera");
         }

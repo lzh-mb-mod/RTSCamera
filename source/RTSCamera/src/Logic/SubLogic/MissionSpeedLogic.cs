@@ -50,14 +50,16 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (_config.SlowMotionMode == slowMotionMode)
                 return;
-            if (!_config.SlowMotionMode && slowMotionMode)
-            {
-                Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, TimeSpeedConstant));
-            }
-            else
-            {
-                Mission.RemoveTimeSpeedRequest(TimeSpeedConstant);
-            }
+            // Implemented through patch
+
+            //if (!_config.SlowMotionMode && slowMotionMode)
+            //{
+            //    Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, TimeSpeedConstant));
+            //}
+            //else
+            //{
+            //    Mission.RemoveTimeSpeedRequest(TimeSpeedConstant);
+            //}
             _config.SlowMotionMode = slowMotionMode;
             Utility.DisplayLocalizedText(slowMotionMode ? "str_rts_camera_slow_motion_enabled" : "str_rts_camera_normal_mode_enabled");
             _config.Serialize();
@@ -66,11 +68,14 @@ namespace RTSCamera.Logic.SubLogic
         public void SetSlowMotionFactor(float factor)
         {
             _config.SlowMotionFactor = factor;
-            if (_config.SlowMotionMode)
-            {
-                Mission.RemoveTimeSpeedRequest(TimeSpeedConstant);
-                Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(factor, TimeSpeedConstant));
-            }
+
+            // Implemented through patch
+
+            //if (_config.SlowMotionMode)
+            //{
+            //    Mission.RemoveTimeSpeedRequest(TimeSpeedConstant);
+            //    Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(factor, TimeSpeedConstant));
+            //}
         }
 
         //public void ApplySlowMotionFactor()
