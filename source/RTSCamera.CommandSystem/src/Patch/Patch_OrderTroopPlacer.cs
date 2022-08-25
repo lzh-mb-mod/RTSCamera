@@ -148,7 +148,8 @@ namespace RTSCamera.CommandSystem.Patch
                 ____formationDrawingStartingPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, rayBegin + vec3 * collisionDistance,
                     false);
                 ____formationDrawingStartingPointOfMouse = __instance.Input.GetMousePositionPixel();
-                ____formationDrawingStartingTime = __instance.Mission.CurrentTime;
+                // Fix the issue that can't drag when slow motion is enabled and mouse is visible.
+                ____formationDrawingStartingTime = 0;
                 return;
             }
 
