@@ -66,7 +66,7 @@ namespace RTSCamera.CommandSystem.Utilities
                    CommandSystemConfig.Get().AttackSpecificFormation &&
                        (QueryLibrary.IsCavalry(agent) ||
                         QueryLibrary.IsRangedCavalry(agent) && agent.Formation.FiringOrder.OrderType == OrderType.HoldFire ||
-                        CommandSystemSubModule.EnableChargeToFormationForInfantry &&
+                        CommandSystemSubModule.IsRealisticBattleModuleNotInstalled &&
                             (QueryLibrary.IsInfantry(agent) || QueryLibrary.IsRanged(agent) && agent.Formation.FiringOrder.OrderType == OrderType.HoldFire));
         }
     }

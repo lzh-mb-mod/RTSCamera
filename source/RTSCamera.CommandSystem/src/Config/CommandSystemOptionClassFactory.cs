@@ -1,8 +1,10 @@
-﻿using MissionLibrary.Provider;
+﻿using System.Collections.Generic;
+using MissionLibrary.Provider;
 using MissionLibrary.View;
 using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.View.ViewModelCollection;
 using MissionSharedLibrary.View.ViewModelCollection.Options;
+using MissionSharedLibrary.View.ViewModelCollection.Options.Selection;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.View;
@@ -39,6 +41,15 @@ namespace RTSCamera.CommandSystem.Config
                         if (b)
                             PatchChargeToFormation.Patch();
                     }));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_after_enemy_formation_eliminated"),
+                    GameTexts.FindText("str_rts_camera_command_system_after_enemy_formation_eliminated_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().BehaviorAfterCharge = (BehaviorAfterCharge)i,
+                        () => (int)CommandSystemConfig.Get().BehaviorAfterCharge, 2, new List<SelectionItem>
+                        {
+                            new SelectionItem(true, "str_rts_camera_command_system_after_charge_behavior", "charge"),
+                            new SelectionItem(true, "str_rts_camera_command_system_after_charge_behavior", "hold")
+                        }), false));
                 optionClass.AddOptionCategory(0, commandOptionCategory);
 
                 return optionClass;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
   <tags>
     <tag language="English" />
@@ -12,6 +12,10 @@
     <string id="RTSCameraCommandSystem_click_to_select_formation_hint" text="You can directly select formation by pressing {KeyName} on them. Selected formation will be highlighted with outline." />
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="Enable Attack Specific Formation" />
     <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="You can give order to attack a specific formation by pressing {KeyName} on enemy formation. Also applied to AI." />
+    <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="After enemy formation eliminated" />
+    <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="Behavior when the attacked enemy formation is eliminated." />
+    <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="Charge" />
+    <string id="RTSCameraCommandSystem_after_charge_behavior_hold" text="Hold" />
 
     <string id="RTSCameraCommandSystem_hotkeycategory" text="CommandSystem Hot Key" />
     <string id="RTSCameraCommandSystem_select_formation" text="Select Formation" />

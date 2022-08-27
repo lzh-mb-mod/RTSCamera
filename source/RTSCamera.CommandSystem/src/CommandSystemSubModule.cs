@@ -18,24 +18,23 @@ namespace RTSCamera.CommandSystem
     public class CommandSystemSubModule : MBSubModuleBase
     {
         public static readonly string ModuleId = "RTSCamera.CommandSystem";
-        public static bool EnableChargeToFormationForInfantry = true;
+        public static bool IsRealisticBattleModuleNotInstalled = true;
 
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
 
-            Utility.ShouldDisplayMessage = true;
-            Initialize();
-
             // If RBM is loaded, disable the ChargeToFormation feature for infantry to not break RBM frontline behavior
-            EnableChargeToFormationForInfantry =
+            IsRealisticBattleModuleNotInstalled =
                 TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                info.Id == "RBM") == null
-            &&
+                    info.Id == "RBM") == null
+                &&
                 TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
                 info.Id == "RealisticBattleAiModule") == null;
             Module.CurrentModule.GlobalTextManager.LoadGameTexts(ModuleHelper.GetXmlPath(ModuleId, "module_strings"));
-        }
+        
+            Utility.ShouldDisplayMessage = true;
+            Initialize();}
 
         private void Initialize()
         {
