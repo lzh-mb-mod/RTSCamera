@@ -191,6 +191,10 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
         {
+            if (affectedAgent == null)
+            {
+                return;
+            }
             if (Mission.MainAgent == affectedAgent)
             {
                 if (_config.ControlAllyAfterDeath || IsSpectatorCamera)
@@ -216,7 +220,7 @@ namespace RTSCamera.Logic.SubLogic
                         }
                     }
                 }
-                else if (Mission.PlayerTeam?.ActiveAgents.Count > 0)
+                else if (!Utility.IsTeamValid(Mission.PlayerTeam) || Mission.PlayerTeam.ActiveAgents.Count > 0)
                 {
                     GameTexts.SetVariable("KeyName", RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).ToSequenceString());
                     Utility.DisplayLocalizedText("str_rts_camera_control_troop_hint");

@@ -7,6 +7,11 @@
   <string id="str_rts_camera_command_system_click_to_select_formation_hint" text="{=RTSCameraCommandSystem_click_to_select_formation_hint}You can directly select formation by pressing {KeyName} on them. Selected formation will be highlighted with outline." />
   <string id="str_rts_camera_command_system_attack_specific_formation" text="{=RTSCameraCommandSystem_attack_specific_formation}Enable Attack Specific Formation" />
   <string id="str_rts_camera_command_system_attack_specific_formation_hint" text="{=RTSCameraCommandSystem_attack_specific_formation_hint}You can give order to attack a specific formation by pressing {KeyName} on enemy formation. Also applied to AI." />
+  <string id="str_rts_camera_command_system_after_enemy_formation_eliminated" text="{=RTSCameraCommandSystem_after_enemy_eliminated}After enemy formation eliminated" />
+  <string id="str_rts_camera_command_system_after_enemy_formation_eliminated_hint" text="{=RTSCameraCommandSystem_after_enemy_formation_eliminated_hint}Behavior when the attacked enemy formation is eliminated." />
+  <string id="str_rts_camera_command_system_after_charge_behavior.charge" text="{=RTSCameraCommandSystem_after_charge_behavior_charge}Charge" />
+  <string id="str_rts_camera_command_system_after_charge_behavior.hold" text="{=RTSCameraCommandSystem_after_charge_behavior_hold}Hold" />
+  
 
   <string id="str_key_category_name.RTSCameraCommandSystemHotKey" text="{=RTSCameraCommandSystem_hotkeycategory}CommandSystem Hot Key" />
   <string id="str_key_name.RTSCameraCommandSystemHotKey_Up" text="{=RTSCameraCommandSystem_select_formation}Select Formation" />

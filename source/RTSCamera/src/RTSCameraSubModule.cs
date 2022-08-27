@@ -167,6 +167,7 @@ namespace RTSCamera
         {
             base.OnGameStart(game, gameStarterObject);
 
+            game.GameTextManager.LoadGameTexts();
             AddCampaignBehavior(gameStarterObject);
         }
 

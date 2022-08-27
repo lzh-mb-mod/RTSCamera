@@ -19,24 +19,24 @@ namespace RTSCamera.CommandSystem
     public class CommandSystemSubModule : MBSubModuleBase
     {
         public static readonly string ModuleId = "RTSCamera.CommandSystem";
-        public static bool EnableChargeToFormationForInfantry = true;
+        public static bool IsRealisticBattleModuleNotInstalled = true;
 
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
 
+            // If RBM is loaded, disable the ChargeToFormation feature for infantry to not break RBM frontline behavior
+            IsRealisticBattleModuleNotInstalled =
+                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
+                    info.Id == "RBM") == null
+                &&
+                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
+                    info.Id == "RealisticBattleAiModule") == null;
+
             Module.CurrentModule.GlobalTextManager.LoadGameTexts();
 
             Utility.ShouldDisplayMessage = true;
             Initialize();
-
-            // If RBM is loaded, disable the ChargeToFormation feature for infantry to not break RBM frontline behavior
-            EnableChargeToFormationForInfantry =
-                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                info.Id == "RBM") == null
-            &&
-                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                info.Id == "RealisticBattleAiModule") == null;
         }
 
         private void Initialize()
@@ -82,7 +82,7 @@ namespace RTSCamera.CommandSystem
         {
             base.OnGameStart(game, gameStarterObject);
 
-            //game.GameTextManager.LoadGameTexts();
+            game.GameTextManager.LoadGameTexts();
         }
     }
 }

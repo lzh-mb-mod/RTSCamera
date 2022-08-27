@@ -55,10 +55,6 @@ namespace RTSCamera.CommandSystem.Patch
                     prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_HandleMouseDown),
                         BindingFlags.Static | BindingFlags.Public)));
                 Harmony.Patch(
-                    typeof(OrderTroopPlacer).GetMethod("HandleMouseUp", BindingFlags.Instance | BindingFlags.NonPublic),
-                    new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_HandleMouseUp),
-                        BindingFlags.Static | BindingFlags.Public)));
-                Harmony.Patch(
                     typeof(OrderTroopPlacer).GetMethod("GetCursorState",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_GetCursorState),
@@ -111,12 +107,12 @@ namespace RTSCamera.CommandSystem.Patch
                 }
             }
 
-            if (____formationDrawingStartingTime.HasValue &&
-                __instance.Mission.CurrentTime -
-                ____formationDrawingStartingTime.Value >= 0.300000011920929)
-            {
-                return true;
-            }
+            //if (____formationDrawingStartingTime.HasValue &&
+            //    __instance.Mission.CurrentTime -
+            //    ____formationDrawingStartingTime.Value >= 0.300000011920929)
+            //{
+            //    return true;
+            //}
 
             return false;
         }
@@ -166,94 +162,19 @@ namespace RTSCamera.CommandSystem.Patch
                 return false;
             switch (_currentCursorState)
             {
-                case CursorState.Enemy:
-                    if (!____formationDrawingMode && CommandSystemConfig.Get().AttackSpecificFormation && CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(__instance.Input))
-                    {
-                        ____clickedFormation = ____mouseOverFormation;
-                    }
-                    else
-                    {
-                        ____formationDrawingMode = true;
-                    }
-
-                    BeginFormationDraggingOrClicking(__instance, ref ____deltaMousePosition,
-                        ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
-                        ref ____formationDrawingStartingTime);
-                    break;
-                case CursorState.Friend:
-                    if (!____formationDrawingMode && CommandSystemConfig.Get().ClickToSelectFormation && CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(__instance.Input))
-                    {
-                        if (____mouseOverFormation != null && __instance.Mission.PlayerTeam.PlayerOrderController.IsFormationSelectable(____mouseOverFormation))
-                        {
-                            ____clickedFormation = ____mouseOverFormation;
-                        }
-                    }
-                    else
-                    {
-                        ____formationDrawingMode = true;
-                    }
-                    BeginFormationDraggingOrClicking(__instance, ref ____deltaMousePosition,
-                        ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
-                        ref ____formationDrawingStartingTime);
-                    break;
                 case CursorState.Normal:
-                    if (____isMouseDown)
-                    {
-                        ____formationDrawingMode = true;
-                        BeginFormationDraggingOrClicking(__instance, ref ____deltaMousePosition,
-                            ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
-                            ref ____formationDrawingStartingTime);
-                    }
+                case CursorState.Enemy:
+                case CursorState.Friend:
+                    ____formationDrawingMode = true;
+                    BeginFormationDraggingOrClicking(__instance, ref ____deltaMousePosition,
+                        ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
+                        ref ____formationDrawingStartingTime);
                     break;
                 case CursorState.Rotation:
                     return true;
             }
 
             return false;
-        }
-
-        public static bool Prefix_HandleMouseUp(OrderTroopPlacer __instance, ref Formation ____clickedFormation, OrderController ___PlayerOrderController, List<GameEntity> ____orderRotationEntities,
-            ref bool ____formationDrawingMode, ref Vec2 ____deltaMousePosition,
-            ref WorldPosition? ____formationDrawingStartingPosition, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime)
-        {
-            if (!____formationDrawingMode)
-            {
-                if (____clickedFormation != null)
-                {
-                    if (____clickedFormation.CountOfUnits > 0)
-                    {
-                        bool isEnemy = Utility.IsEnemy(____clickedFormation);
-                        if (!isEnemy)
-                        {
-                            HideNonSelectedOrderRotationEntities(___PlayerOrderController, ____orderRotationEntities, ____clickedFormation);
-
-                            if (___PlayerOrderController.IsFormationSelectable(____clickedFormation))
-                            {
-                                //SelectFormationFromUI(__instance, ____clickedFormation);
-                                SelectFormationFromController(__instance, ___PlayerOrderController, ____clickedFormation);
-                            }
-                        }
-                        else if (CommandSystemConfig.Get().AttackSpecificFormation)
-                        {
-                            ___PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, ____clickedFormation);
-                            Utilities.Utility.DisplayChargeToFormationMessage(___PlayerOrderController.SelectedFormations,
-                                ____clickedFormation);
-                        }
-                    }
-
-                    ____clickedFormation = null;
-
-                    ____formationDrawingMode = false;
-                    ____formationDrawingStartingPosition = null;
-                    ____formationDrawingStartingPointOfMouse = null;
-                    ____formationDrawingStartingTime = null;
-                    ____deltaMousePosition = Vec2.Zero;
-                }
-
-                return false;
-            }
-
-            return true;
         }
 
 
@@ -352,17 +273,17 @@ namespace RTSCamera.CommandSystem.Patch
                             }
                         }
                     }
+                    if (cursorState == CursorState.Invisible &&
+                        !(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(__instance.Input) && CommandSystemConfig.Get().ShouldHighlightWithOutline()) || // press middle mouse button to avoid accidentally click on ground.
+                        ____formationDrawingMode)
+                    {
+                        cursorState = IsCursorStateGroundOrNormal(____formationDrawingMode);
+                    }
                 }
             }
             else if (____clickedFormation != null) // click on formation and hold.
             {
                 cursorState = _currentCursorState;
-            }
-            if (cursorState == CursorState.Invisible &&
-                 (____isMouseDown || !(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(__instance.Input) && CommandSystemConfig.Get().ShouldHighlightWithOutline())) || // press middle mouse button to avoid accidentally click on ground.
-                ____formationDrawingMode)
-            {
-                cursorState = IsCursorStateGroundOrNormal(____formationDrawingMode);
             }
 
             if (cursorState != CursorState.Ground &&
@@ -449,10 +370,79 @@ namespace RTSCamera.CommandSystem.Patch
             return false;
         }
 
+        private static void HandleSelectFormationKeyDown(OrderTroopPlacer __instance, ref Formation ____clickedFormation, ref Formation ____mouseOverFormation,
+            ref bool ____formationDrawingMode, ref Vec2 ____deltaMousePosition,
+            ref WorldPosition? ____formationDrawingStartingPosition, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime)
+        {
+            if (__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.IsEmpty() || ____clickedFormation != null)
+                return;
+            switch (_currentCursorState)
+            {
+                case CursorState.Enemy:
+                    ____formationDrawingMode = false;
+                    ____clickedFormation = ____mouseOverFormation;
+
+                    BeginFormationDraggingOrClicking(__instance, ref ____deltaMousePosition,
+                        ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
+                        ref ____formationDrawingStartingTime);
+                    break;
+                case CursorState.Friend:
+                    ____formationDrawingMode = false;
+                    if (____mouseOverFormation != null && __instance.Mission.PlayerTeam.PlayerOrderController.IsFormationSelectable(____mouseOverFormation))
+                    {
+                        ____clickedFormation = ____mouseOverFormation;
+                    }
+                    BeginFormationDraggingOrClicking(__instance, ref ____deltaMousePosition,
+                        ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
+                        ref ____formationDrawingStartingTime);
+                    break;
+            }
+        }
+
+        private static void HandleSelectFormationKeyUp(OrderTroopPlacer __instance, ref Formation ____clickedFormation, OrderController ___PlayerOrderController, List<GameEntity> ____orderRotationEntities,
+            ref bool ____formationDrawingMode, ref Vec2 ____deltaMousePosition,
+            ref WorldPosition? ____formationDrawingStartingPosition, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime)
+        {
+            if (!____formationDrawingMode)
+            {
+                if (____clickedFormation != null)
+                {
+                    if (____clickedFormation.CountOfUnits > 0)
+                    {
+                        bool isEnemy = Utility.IsEnemy(____clickedFormation);
+                        if (!isEnemy)
+                        {
+                            HideNonSelectedOrderRotationEntities(___PlayerOrderController, ____orderRotationEntities, ____clickedFormation);
+
+                            if (___PlayerOrderController.IsFormationSelectable(____clickedFormation))
+                            {
+                                //SelectFormationFromUI(__instance, ____clickedFormation);
+                                SelectFormationFromController(__instance, ___PlayerOrderController, ____clickedFormation);
+                            }
+                        }
+                        else if (CommandSystemConfig.Get().AttackSpecificFormation)
+                        {
+                            ___PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, ____clickedFormation);
+                            Utilities.Utility.DisplayChargeToFormationMessage(___PlayerOrderController.SelectedFormations,
+                                ____clickedFormation);
+                        }
+                    }
+
+                    ____clickedFormation = null;
+
+                    ____formationDrawingMode = false;
+                    ____formationDrawingStartingPosition = null;
+                    ____formationDrawingStartingPointOfMouse = null;
+                    ____formationDrawingStartingTime = null;
+                    ____deltaMousePosition = Vec2.Zero;
+                }
+            }
+        }
+
         public static bool Prefix_OnMissionScreenTick(OrderTroopPlacer __instance, ref bool ____initialized, ref OrderController ___PlayerOrderController,
             ref bool ___isDrawnThisFrame, ref bool ____isMouseDown, ref Timer ___formationDrawTimer, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime,
             ref Formation ____clickedFormation, ref bool ____formationDrawingMode, Formation ____mouseOverFormation,
-            ref List<GameEntity> ____orderPositionEntities, ref List<GameEntity> ____orderRotationEntities, 
+            ref List<GameEntity> ____orderPositionEntities, ref List<GameEntity> ____orderRotationEntities,
             ref bool ____wasDrawingForced, ref bool ____wasDrawingFacing, ref bool ____wasDrawingForming, ref bool ___wasDrawnPreviousFrame, ref WorldPosition? ____formationDrawingStartingPosition,
             ref Vec2 ____deltaMousePosition)
         {
@@ -463,8 +453,7 @@ namespace RTSCamera.CommandSystem.Patch
             ___isDrawnThisFrame = false;
             if (__instance.SuspendTroopPlacer)
                 return false;
-
-            bool executeOriginal = false;
+            
             bool isSelectFormationKeyPressed = CommandSystemConfig.Get().ShouldHighlightWithOutline() &&
                                             CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
                                                 .IsKeyPressed(__instance.Input);
@@ -477,15 +466,28 @@ namespace RTSCamera.CommandSystem.Patch
             _currentCursorState = _cachedCursorState.Value;
             bool isLeftButtonPressed = __instance.Input.IsKeyPressed(InputKey.LeftMouseButton) ||
                               __instance.Input.IsKeyPressed(InputKey.ControllerRTrigger);
-            if (isLeftButtonPressed || isSelectFormationKeyPressed)
+
+            if (isLeftButtonPressed)
             {
-                if (isLeftButtonPressed)
-                    ____isMouseDown = true;
+                ____isMouseDown = true;
                 typeof(OrderTroopPlacer).GetMethod("HandleMouseDown", BindingFlags.Instance | BindingFlags.NonPublic)
                     ?.Invoke(__instance, new object[] { });
             }
+            if (isSelectFormationKeyPressed)
+            {
+                HandleSelectFormationKeyDown(__instance, ref ____clickedFormation, ref ____mouseOverFormation,
+                    ref ____formationDrawingMode, ref ____deltaMousePosition, ref ____formationDrawingStartingPosition,
+                    ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime);
+            }
+            if (isSelectFormationKeyReleased)
+            {
+                HandleSelectFormationKeyUp(__instance, ref ____clickedFormation, ___PlayerOrderController,
+                    ____orderRotationEntities, ref ____formationDrawingMode, ref ____deltaMousePosition,
+                    ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
+                    ref ____formationDrawingStartingTime);
+            }
             if ((__instance.Input.IsKeyReleased(InputKey.LeftMouseButton) || __instance.Input.IsKeyReleased(InputKey.ControllerRTrigger)) && ____isMouseDown || isSelectFormationKeyReleased)
-            { 
+            {
                 ____isMouseDown = false;
                 typeof(OrderTroopPlacer).GetMethod("HandleMouseUp", BindingFlags.Instance | BindingFlags.NonPublic)
                     ?.Invoke(__instance, new object[] { });
@@ -526,26 +528,56 @@ namespace RTSCamera.CommandSystem.Patch
                     .GetMethod("UpdateFormationDrawing", BindingFlags.Instance | BindingFlags.NonPublic)
                     .Invoke(__instance, new object[] { false });
             }
+            else if (__instance.IsDrawingFacing || ____wasDrawingFacing)
+            {
+                if (__instance.IsDrawingFacing)
+                {
+                    Reset(ref ____isMouseDown, ref ____formationDrawingMode, ref ____formationDrawingStartingPosition,
+                        ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
+                        ref ____mouseOverFormation, ref ____clickedFormation);
+
+                    typeof(OrderTroopPlacer)
+                        .GetMethod("UpdateFormationDrawingForFacingOrder", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .Invoke(__instance, new object[] { false });
+                }
+            }
+            else if (__instance.IsDrawingForming || ____wasDrawingForming)
+            {
+                if (__instance.IsDrawingForming)
+                {
+                    Reset(ref ____isMouseDown, ref ____formationDrawingMode, ref ____formationDrawingStartingPosition,
+                        ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
+                        ref ____mouseOverFormation, ref ____clickedFormation);
+
+                    typeof(OrderTroopPlacer)
+                        .GetMethod("UpdateFormationDrawingForFormingOrder", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .Invoke(__instance, new object[] { false });
+                }
+            }
+            else if (____wasDrawingForced)
+            {
+                Reset(ref ____isMouseDown, ref ____formationDrawingMode, ref ____formationDrawingStartingPosition,
+                    ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
+                    ref ____mouseOverFormation, ref ____clickedFormation);
+            }
             else
             {
-                executeOriginal = true;
+                typeof(OrderTroopPlacer)
+                    .GetMethod("UpdateFormationDrawingForDestination", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(__instance, new object[] { false });
             }
 
             UpdateInputForContour(____mouseOverFormation);
-            if (!executeOriginal)
-            {
+            foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
+                orderPositionEntity.SetPreviousFrameInvalid();
+            foreach (GameEntity orderRotationEntity in ____orderRotationEntities)
+                orderRotationEntity.SetPreviousFrameInvalid();
+            ____wasDrawingForced = __instance.IsDrawingForced;
+            ____wasDrawingFacing = __instance.IsDrawingFacing;
+            ____wasDrawingForming = __instance.IsDrawingForming;
+            ___wasDrawnPreviousFrame = ___isDrawnThisFrame;
 
-                foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
-                    orderPositionEntity.SetPreviousFrameInvalid();
-                foreach (GameEntity orderRotationEntity in ____orderRotationEntities)
-                    orderRotationEntity.SetPreviousFrameInvalid();
-                ____wasDrawingForced = __instance.IsDrawingForced;
-                ____wasDrawingFacing = __instance.IsDrawingFacing;
-                ____wasDrawingForming = __instance.IsDrawingForming;
-                ___wasDrawnPreviousFrame = ___isDrawnThisFrame;
-            }
-
-            return executeOriginal;
+            return false;
         }
         private static void UpdateInputForContour(Formation ____mouseOverFormation)
         {

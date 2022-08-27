@@ -5,6 +5,11 @@ using MissionSharedLibrary.Config;
 
 namespace RTSCamera.CommandSystem.Config
 {
+    public enum BehaviorAfterCharge
+    {
+        Charge, Hold
+    }
+
     public class CommandSystemConfig : MissionConfigBase<CommandSystemConfig>
     {
         protected override XmlSerializer Serializer => new XmlSerializer(typeof(CommandSystemConfig));
@@ -16,11 +21,14 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool AttackSpecificFormation = true;
 
+        public BehaviorAfterCharge BehaviorAfterCharge = CommandSystemSubModule.IsRealisticBattleModuleNotInstalled ? BehaviorAfterCharge.Hold : BehaviorAfterCharge.Charge;
+
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;
             ClickToSelectFormation = other.ClickToSelectFormation;
             AttackSpecificFormation = other.AttackSpecificFormation;
+            BehaviorAfterCharge = other.BehaviorAfterCharge;
         }
 
         public static void OnMenuClosed()
