@@ -1,4 +1,5 @@
 ﻿using MissionSharedLibrary.Utilities;
+using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
@@ -37,7 +38,7 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (!CanControl(agent) || (ignoreRetreatingAgents && agent.IsRunningAway))
                 return;
-            if (!_config.ControlTroopsInPlayerPartyOnly || Utility.IsInPlayerParty(agent))
+            if (!_config.ControlTroopsInPlayerPartyOnly || Utility.IsInPlayerParty(agent) || WatchBattleBehavior.WatchMode)
             {
                 if (agent.IsHero)
                 {

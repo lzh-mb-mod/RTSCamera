@@ -11,7 +11,7 @@ namespace RTSCamera.CommandSystem.Patch
         public static bool GetSubstituteOrder_Prefix(MovementOrder __instance, ref MovementOrder __result,
             Formation formation)
         {
-            if (__instance.OrderType == OrderType.ChargeWithTarget && CommandSystemConfig.Get().AttackSpecificFormation && CommandSystemConfig.Get().BehaviorAfterCharge == BehaviorAfterCharge.Hold)
+            if (__instance.OrderType == OrderType.ChargeWithTarget && CommandSystemConfig.Get().AttackSpecificFormation && CommandSystemConfig.Get().BehaviorAfterCharge == BehaviorAfterCharge.Hold && !formation.IsAIControlled)
             {
                 var position = formation.QuerySystem.MedianPosition;
                 position.SetVec2(formation.CurrentPosition);

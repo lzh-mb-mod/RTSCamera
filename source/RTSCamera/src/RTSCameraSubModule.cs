@@ -121,7 +121,7 @@ namespace RTSCamera
                 Patch_MissionOrderVM.Patch();
                 _successPatch &= Patch_MissionSpectatorControl.Patch();
                 _successPatch &= Patch_Mission_UpdateSceneTimeSpeed.Patch();
-
+                _successPatch &= Patch_OrderOfBattleVM.Patch();
                 // Use Patch to add game menu
                 WatchBattleBehavior.Patch(_harmony);
             }
