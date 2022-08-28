@@ -241,6 +241,11 @@ namespace RTSCamera.Logic.SubLogic
             if (WatchBattleBehavior.WatchMode)
             {
                 Utility.DisplayLocalizedText("str_rts_camera_cannot_control_agent_in_watch_mode");
+                if (Mission.MainAgent == null)
+                {
+                    Utility.DisplayLocalizedText("str_rts_camera_player_dead");
+                    _controlTroopLogic.SetMainAgent();
+                }
                 return;
             }
             IsSpectatorCamera = false;
