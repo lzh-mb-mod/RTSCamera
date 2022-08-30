@@ -227,12 +227,12 @@ namespace RTSCamera.Config
                     }));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_mode"),
-                    GameTexts.FindText("str_rts_camera_slow_motion_hint"), () => RTSCameraConfig.Get().SlowMotionMode,
+                    GameTexts.FindText("str_rts_camera_slow_motion_hint"), () => Mission.Current.Scene.SlowMotionMode,
                     b => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionMode(b)));
                 miscellaneousOptionCategory.AddOption(new NumericOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_factor"),
                     GameTexts.FindText("str_rts_camera_slow_motion_factor_hint"),
-                    () => RTSCameraConfig.Get().SlowMotionFactor,
+                    () => Mission.Current.Scene.SlowMotionFactor,
                     f => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionFactor(f), 0, 3, false, true));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_display_mod_message"),
