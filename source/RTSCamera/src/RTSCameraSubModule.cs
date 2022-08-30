@@ -11,14 +11,11 @@ using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
-using RTSCamera.src.Patch.Fix;
-using SandBox;
-using System;
-using System.Reflection;
 using SandBox.CampaignBehaviors;
 using SandBox.Missions.MissionLogics.Arena;
 using SandBox.Objects;
-using TaleWorlds.CampaignSystem;
+using System;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.ModuleManager;
@@ -136,7 +133,6 @@ namespace RTSCamera
         {
             if (!Initializer.Initialize(ModuleId))
                 return;
-            RTSCameraExtension.Clear();
         }
 
         protected override void OnBeforeInitialModuleScreenSetAsRoot()
@@ -194,7 +190,6 @@ namespace RTSCamera
         protected override void OnSubModuleUnloaded()
         {
             base.OnSubModuleUnloaded();
-            RTSCameraExtension.Clear();
             MissionExtensionCollection.Clear();
             _harmony.UnpatchAll(_harmony.Id);
             Initializer.Clear();

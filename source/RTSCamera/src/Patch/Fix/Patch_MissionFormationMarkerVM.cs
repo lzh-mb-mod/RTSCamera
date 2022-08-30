@@ -1,16 +1,9 @@
-﻿using RTSCamera.Logic.SubLogic;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.Engine;
+﻿using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.HUD;
 
-namespace RTSCamera.src.Patch.Fix
+namespace RTSCamera.Patch.Fix
 {
     public class Patch_MissionFormationMarkerVM
     {

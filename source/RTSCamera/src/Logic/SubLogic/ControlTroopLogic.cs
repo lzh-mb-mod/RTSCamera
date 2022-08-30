@@ -1,10 +1,9 @@
 ﻿using MissionSharedLibrary.Utilities;
+using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
-using RTSCamera.Event;
 using RTSCamera.View;
 using System;
-using RTSCamera.CampaignGame.Behavior;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -42,7 +41,6 @@ namespace RTSCamera.Logic.SubLogic
                     return false;
                 if (!Utility.IsPlayerDead())
                 {
-                    MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                     MissionLibrary.Event.MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                     // Let AI control previous main agent.
                     Utility.AIControlMainAgent(false);
@@ -86,7 +84,6 @@ namespace RTSCamera.Logic.SubLogic
                         return false;
                     if (!Utility.IsPlayerDead() && Mission.MainAgent != agent)
                     {
-                        MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                         MissionLibrary.Event.MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                         // Let AI control previous main agent.
                         Utility.AIControlMainAgent(false);

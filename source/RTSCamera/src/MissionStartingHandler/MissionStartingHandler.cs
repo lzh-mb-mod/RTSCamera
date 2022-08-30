@@ -30,14 +30,6 @@ namespace RTSCamera.MissionStartingHandler
                 MissionStartingManager.AddMissionBehavior(entranceView, missionBehavior);
             }
 
-            foreach (var extension in RTSCameraExtension.Extensions)
-            {
-                foreach (var missionBehavior in extension.CreateMissionBehaviors(entranceView.Mission))
-                {
-                    MissionStartingManager.AddMissionBehavior(entranceView, missionBehavior);
-                }
-            }
-
             foreach (var extension in MissionExtensionCollection.Extensions)
             {
                 foreach (var missionBehavior in extension.CreateMissionBehaviors(entranceView.Mission))

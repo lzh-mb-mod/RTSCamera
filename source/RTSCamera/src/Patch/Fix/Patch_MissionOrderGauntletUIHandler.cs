@@ -1,15 +1,14 @@
-﻿using System;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
 using MissionLibrary.Event;
 using MissionSharedLibrary.Utilities;
+using System;
+using System.Reflection;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI;
 using TaleWorlds.MountAndBlade.View.Missions;
-using TaleWorlds.MountAndBlade.View.Screen;
 using TaleWorlds.MountAndBlade.ViewModelCollection;
 
 namespace RTSCamera.Patch.Fix

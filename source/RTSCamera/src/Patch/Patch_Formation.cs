@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch

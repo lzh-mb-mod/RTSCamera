@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using RTSCamera.Logic;
+﻿using RTSCamera.Logic;
+using System.Reflection;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch.Fix

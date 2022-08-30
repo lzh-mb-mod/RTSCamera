@@ -1,5 +1,4 @@
-﻿using RTSCamera.Event;
-using RTSCamera.Logic.SubLogic;
+﻿using RTSCamera.Logic.SubLogic;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
@@ -52,8 +51,7 @@ namespace RTSCamera.Logic
             CommanderLogic.OnRemoveBehaviour();
             FixScoreBoardAfterPlayerDeadLogic.OnRemoveBehaviour();
             SwitchFreeCameraLogic.OnRemoveBehaviour();
-
-            MissionEvent.Clear();
+            
             Instance = null;
         }
 
