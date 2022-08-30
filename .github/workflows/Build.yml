@@ -103,9 +103,6 @@ jobs:
       - name: Download Bannerlord binaries 1
         run: dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
 
-      - name: Download Bannerlord binaries 2
-        run: dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261552 -beta ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
-      
       - name: Build RTS Camera
         run: >-
           nuget restore .\source\RTSCamera.sln;
