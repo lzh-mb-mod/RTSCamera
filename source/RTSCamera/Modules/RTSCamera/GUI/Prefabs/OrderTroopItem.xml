@@ -17,7 +17,7 @@
   <Window>
     <ButtonWidget Command.Click="ExecuteAction" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height">
       <Children>
-        <OrderTroopItemWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height" RangedCardBrush="Order.Card.Background.Ranged" MeleeCardBrush="Order.Card.Background.Melee" HasAmmo="@IsAmmoAvailable" CurrentMemberCount="@CurrentMemberCount" IsSelectable="@IsSelectable" IsSelected="@IsSelected" FormationClass="@OrderOfBattleFormationClass" Brush="Order.Card.Background" MarginTop="25" SelectionFrameWidget="SelectionFrame" IsSelectionActive="@IsSelectionActive">
+        <OrderTroopItemWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height" CurrentMemberCount="@CurrentMemberCount" IsSelectable="@IsSelectable" IsSelected="@IsSelected" FormationClass="@OrderOfBattleFormationClass" Brush="Order.Card.Background" MarginTop="25" SelectionFrameWidget="SelectionFrame" IsSelectionActive="@IsSelectionActive">
           <Children>
 
             <!-- Troop Type Icons and Troop Counts -->
