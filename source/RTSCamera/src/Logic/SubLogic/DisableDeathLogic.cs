@@ -31,7 +31,7 @@ namespace RTSCamera.Logic.SubLogic
                 return;
             if (_config.DisableDeathHotkeyEnabled && _gameKeyCategory.GetGameKeySequence((int)GameKeyEnum.DisableDeath).IsKeyPressed(Mission.InputManager))
             {
-                SetDisableDeath(!Mission.Current.DisableDying);
+                SetDisableDeath(!Mission.DisableDying);
             }
         }
 

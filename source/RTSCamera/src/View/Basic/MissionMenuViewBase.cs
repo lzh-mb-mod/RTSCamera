@@ -6,7 +6,6 @@ using TaleWorlds.GauntletUI.Data;
 using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Missions;
-using TaleWorlds.ScreenSystem;
 
 namespace RTSCamera.View.Basic
 {

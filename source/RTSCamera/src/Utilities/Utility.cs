@@ -1,5 +1,5 @@
 ﻿using RTSCamera.Config.HotKey;
-using SandBox.Missions.MissionLogics.Arena;
+using SandBox;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;

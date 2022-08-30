@@ -38,7 +38,7 @@ namespace RTSCamera.Patch
         public static void Postfix_UpdateSceneTimeSpeed(Mission __instance)
         {
             if (RTSCameraConfig.Get().SlowMotionMode)
-                __instance.Scene.TimeSpeed = RTSCameraConfig.Get().SlowMotionFactor;
+                __instance.Scene.SlowMotionFactor = RTSCameraConfig.Get().SlowMotionFactor;
         }
     }
 }

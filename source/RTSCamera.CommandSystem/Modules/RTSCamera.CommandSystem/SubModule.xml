@@ -6,11 +6,11 @@
   <SingleplayerModule value="true"/>
   <MultiplayerModule value="false"/>
   <DependedModules>
-    <DependedModule Id="Native" DependentVersion="e1.7.2" />
-    <DependedModule Id="SandBoxCore" DependentVersion="e1.7.2" />
-    <DependedModule Id="Sandbox" DependentVersion="e1.7.2" />
-    <DependedModule Id="CustomBattle" DependentVersion="e1.7.2"/>
-    <DependedModule Id="StoryMode" DependentVersion="e1.7.2" />
+    <DependedModule Id="Native" DependentVersion="e1.7.1" />
+    <DependedModule Id="SandBoxCore" DependentVersion="e1.7.1" />
+    <DependedModule Id="Sandbox" DependentVersion="e1.7.1" />
+    <DependedModule Id="CustomBattle" DependentVersion="e1.7.1"/>
+    <DependedModule Id="StoryMode" DependentVersion="e1.7.1" />
   </DependedModules>
   <SubModules>
     <SubModule>

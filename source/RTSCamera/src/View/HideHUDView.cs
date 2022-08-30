@@ -3,7 +3,6 @@ using TaleWorlds.Engine;
 using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade.View.Missions;
-using TaleWorlds.ScreenSystem;
 
 namespace RTSCamera.View
 {
