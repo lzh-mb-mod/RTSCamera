@@ -2,12 +2,8 @@
 using MissionSharedLibrary.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using TaleWorlds.Core;
-using TaleWorlds.Core.ViewModelCollection.Information;
-using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.OrderOfBattle;
 

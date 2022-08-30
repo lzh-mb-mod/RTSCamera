@@ -127,7 +127,6 @@ namespace RTSCamera
         {
             if (!Initializer.Initialize(ModuleId))
                 return;
-            RTSCameraExtension.Clear();
         }
 
         protected override void OnBeforeInitialModuleScreenSetAsRoot()
@@ -184,7 +183,6 @@ namespace RTSCamera
         protected override void OnSubModuleUnloaded()
         {
             base.OnSubModuleUnloaded();
-            RTSCameraExtension.Clear();
             MissionExtensionCollection.Clear();
             _harmony.UnpatchAll(_harmony.Id);
             Initializer.Clear();

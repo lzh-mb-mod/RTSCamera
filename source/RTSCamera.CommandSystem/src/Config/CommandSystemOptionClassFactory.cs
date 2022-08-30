@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MissionLibrary.Provider;
+﻿using MissionLibrary.Provider;
 using MissionLibrary.View;
 using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.View.ViewModelCollection;
@@ -7,6 +6,7 @@ using MissionSharedLibrary.View.ViewModelCollection.Options;
 using MissionSharedLibrary.View.ViewModelCollection.Options.Selection;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
+using System.Collections.Generic;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 

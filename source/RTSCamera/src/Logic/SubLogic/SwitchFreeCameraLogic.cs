@@ -2,10 +2,8 @@
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
-using RTSCamera.Event;
 using System.Collections.Generic;
 using System.ComponentModel;
-using SandBox.Missions.MissionLogics.Arena;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -126,7 +124,7 @@ namespace RTSCamera.Logic.SubLogic
                 agent.MountAgent?.SetMaximumSpeedLimit(-1, false);
                 //agent.StopRetreating();
                 if (_config.AlwaysSetPlayerFormation && !WatchBattleBehavior.WatchMode)
-                    Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
+                    Utility.SetPlayerFormationClass((FormationClass)_config.PlayerFormation);
                 if (agent.Formation == null)
                     return;
                 CurrentPlayerFormation = agent.Formation.FormationIndex;
@@ -139,10 +137,8 @@ namespace RTSCamera.Logic.SubLogic
                 }
 
                 if (_config.AlwaysSetPlayerFormation && !WatchBattleBehavior.WatchMode)
-                    Utility.SetPlayerFormation((FormationClass)_config.PlayerFormation);
-                // the game may crash if team has ai, no formation has agents and there are agents controlled by AI.
-                else if (Utility.IsTeamValid(agent.Team) && agent.Team.HasTeamAi && agent.Formation == null)
-                    Utility.SetPlayerFormation(CurrentPlayerFormation);
+                    Utility.SetPlayerFormationClass((FormationClass)_config.PlayerFormation);
+
                 if (agent.Formation == null)
                     return;
                 CurrentPlayerFormation = agent.Formation.FormationIndex;

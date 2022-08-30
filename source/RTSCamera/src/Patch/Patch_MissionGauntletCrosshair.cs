@@ -1,9 +1,8 @@
-﻿using System;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Logic;
-using TaleWorlds.MountAndBlade.GauntletUI;
+using System;
+using System.Reflection;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission;
 
 namespace RTSCamera.Patch

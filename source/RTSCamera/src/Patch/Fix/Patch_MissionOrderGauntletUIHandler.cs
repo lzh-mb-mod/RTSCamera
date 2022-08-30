@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using MissionLibrary.Event;
 using MissionSharedLibrary.Utilities;
 using System;
 using System.Reflection;
@@ -209,8 +208,8 @@ namespace RTSCamera.Patch.Fix
             if (_isInSwitchTeamEvent)
                 return;
             _uiHandler = uiHandler;
-            MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
-            MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
         }
 
         private static void UnregisterReload()
@@ -218,8 +217,8 @@ namespace RTSCamera.Patch.Fix
             if (_isInSwitchTeamEvent)
                 return;
             _uiHandler = null;
-            MissionEvent.PreSwitchTeam -= OnPreSwitchTeam;
-            MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PreSwitchTeam -= OnPreSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
         }
         private static void OnPreSwitchTeam()
         {
