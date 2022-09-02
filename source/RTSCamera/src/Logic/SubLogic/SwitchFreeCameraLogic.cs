@@ -131,10 +131,7 @@ namespace RTSCamera.Logic.SubLogic
             }
             else if (agent == Mission.MainAgent)
             {
-                if (agent.Formation != null)
-                {
-                    Utility.SetHasPlayer(agent.Formation, false);
-                }
+                Utility.SetHasPlayer(agent.Formation, false);
 
                 if (_config.AlwaysSetPlayerFormation && !WatchBattleBehavior.WatchMode)
                     Utility.SetPlayerFormationClass((FormationClass)_config.PlayerFormation);
@@ -274,7 +271,7 @@ namespace RTSCamera.Logic.SubLogic
                 Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
                     _config.GetPlayerControllerInFreeCamera());
             }
-            
+
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(true);
             Utility.DisplayLocalizedText("str_rts_camera_switch_to_free_camera");
         }

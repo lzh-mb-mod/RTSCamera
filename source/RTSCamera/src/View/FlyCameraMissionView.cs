@@ -345,9 +345,8 @@ namespace RTSCamera.View
             float heightFactorForVerticalMove;
             if (!ConstantSpeed)
             {
-                float heightAtPosition = IgnoreTerrain ? 
-                    Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags) :
-                    Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2);
+                float heightAtPosition = IgnoreTerrain ? Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2) :
+                    Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags);
                 heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
                     1, 30);
                 heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),

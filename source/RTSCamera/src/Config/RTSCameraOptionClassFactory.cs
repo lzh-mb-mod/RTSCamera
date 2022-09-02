@@ -133,8 +133,6 @@ namespace RTSCamera.Config
                             {
                                 config.PlayerFormation = i;
                                 rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)i;
-                                if (WatchBattleBehavior.WatchMode)
-                                    return;
                                 Utility.SetPlayerFormationClass((FormationClass)i);
                             }
                         }, () =>

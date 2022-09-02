@@ -109,6 +109,7 @@ namespace RTSCamera
                         BindingFlags.Static | BindingFlags.Public)));
 
                 Patch_MissionOrderVM.Patch();
+                _successPatch &= Patch_CrosshairVM.Patch();
                 _successPatch &= Patch_MissionGauntletSpectatorControl.Patch();
                 _successPatch &= Patch_ScoreboardScreenWidget.Patch();
                 _successPatch &= Patch_Mission_UpdateSceneTimeSpeed.Patch();
