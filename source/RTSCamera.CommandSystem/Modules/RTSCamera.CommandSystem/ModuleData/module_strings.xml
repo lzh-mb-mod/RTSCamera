@@ -11,9 +11,10 @@
   <string id="str_rts_camera_command_system_after_enemy_formation_eliminated_hint" text="{=RTSCameraCommandSystem_after_enemy_formation_eliminated_hint}Behavior when the attacked enemy formation is eliminated." />
   <string id="str_rts_camera_command_system_after_charge_behavior.charge" text="{=RTSCameraCommandSystem_after_charge_behavior_charge}Charge" />
   <string id="str_rts_camera_command_system_after_charge_behavior.hold" text="{=RTSCameraCommandSystem_after_charge_behavior_hold}Hold" />
-  
 
   <string id="str_key_category_name.RTSCameraCommandSystemHotKey" text="{=RTSCameraCommandSystem_hotkeycategory}CommandSystem Hot Key" />
   <string id="str_key_name.RTSCameraCommandSystemHotKey_Up" text="{=RTSCameraCommandSystem_select_formation}Select Formation" />
   <string id="str_key_description.RTSCameraCommandSystemHotKey_Up" text="{=RTSCameraCommandSystem_select_formation_hint}Select your formation or order your selected formations to attack an enemy formation." />
+
+  <string id="str_rts_camera_command_system_tactic_level_required" text="{=RTSCameraCommandSystem_tactic_level_required}You tactic level should be at least {level}" />
 </strings>

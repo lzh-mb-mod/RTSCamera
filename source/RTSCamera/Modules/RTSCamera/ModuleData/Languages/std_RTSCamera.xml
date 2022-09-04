@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
   <tags>
     <tag language="English" />
@@ -17,12 +17,13 @@
     <string id="RTSCamera_switch_free_camera_hint" text="Switch between free camera and player camera." />
     <string id="RTSCamera_use_free_camera_by_default_hint" text="Switch to free camera when entering battle." />
     <string id="RTSCamera_raised_height_hint" text="Camera raised height after switching to free camera." />
-    <string id="RTSCamera_player_controller_in_free_camera_hint" text="Player control mode in Free Camera. If set to none, player character will not be controlled. If set to AI, AI will control player character. If set to Player, you can still directly control your character." />
-    <string id="RTSCamera_player_formation_hint" text="Assign player to the selected formation." />
-    <string id="RTSCamera_always_set_player_formation_hint" text="Automatically set player to the specified formation, for example when switching to free camera, when controlling another solider, etc." />
+    <string id="RTSCamera_limit_camera_distance_hint" text="Limit Camera Distance by tactics and scouting skill." />
     <string id="RTSCamera_toggle_pause_hint" text="Pause or unpause the game." />
     <string id="RTSCamera_slow_motion_hint" text="Whether to enable slow motion mode (to adjust time speed)." />
     <string id="RTSCamera_slow_motion_factor_hint" text="The factor of time speed." />
+    <string id="RTSCamera_player_controller_in_free_camera_hint" text="Player control mode in Free Camera. If set to none, player character will not be controlled. If set to AI, AI will control player character. If set to Player, you can still directly control your character." />
+    <string id="RTSCamera_player_formation_hint" text="Assign player to the selected formation." />
+    <string id="RTSCamera_always_set_player_formation_hint" text="Automatically set player to the specified formation, for example when switching to free camera, when controlling another solider, etc." />
     <string id="RTSCamera_watch_another_hero_hint" text="Watch the hero you selected." />
     <string id="RTSCamera_select_character_hint" text="Select a character using mouse, then you can focus the camera to it or control it." />
     <string id="RTSCamera_control_ally_after_death_hint" text="Automatically control one of your ally after you die and continue fighting." />
@@ -58,17 +59,19 @@
     <string id="RTSCamera_usefreecamerabydefault" text="Use Free Camera By Default" />
     <string id="RTSCamera_switchfreecamera" text="Switch Free Camera" />
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="Camera Raised Height" />
+    <string id="RTSCamera_limit_camera_distance" text="Limit Camera Distance" />
+    <string id="RTSCamera_camera_distance_limit" text="Camera Distance Limit" />
+    <string id="RTSCamera_constantspeed" text="Constant Camera Speed" />
+    <string id="RTSCamera_ignore_terrain" text="Ignore Terrain" />
+    <string id="RTSCamera_ignore_boundaries" text="Ignore Boundaries" />
+
+    <string id="RTSCamera_control_options" text="Control Options" />
     <string id="RTSCamera_player_controller_in_free_camera" text="Player Controller in Free Camera" />
     <string id="RTSCamera_controller_type_none" text="None" />
     <string id="RTSCamera_controller_type_AI" text="AI" />
     <string id="RTSCamera_controller_type_player" text="Player" />
     <string id="RTSCamera_playerformation" text="Player Formation" />
     <string id="RTSCamera_always_set_player_formation" text="Always Set Player Formation" />
-    <string id="RTSCamera_constantspeed" text="Constant Camera Speed" />
-    <string id="RTSCamera_ignore_terrain" text="Ignore Terrain" />
-    <string id="RTSCamera_ignore_boundaries" text="Ignore Boundaries" />
-
-    <string id="RTSCamera_control_options" text="Control Options" />
     <string id="RTSCamera_watchanotherhero" text="Watch Another Hero" />
     <string id="RTSCamera_select_character" text="Select Character" />
     <string id="RTSCamera_controlallyafterdeath" text="Control Ally After Death" />
@@ -113,6 +116,8 @@
     <string id="RTSCamera_camera_move_right" text="Camera Move Right" />
     <string id="RTSCamera_camera_move_up" text="Camera Move Up" />
     <string id="RTSCamera_camera_move_down" text="Camera Move Down" />
+    <string id="RTSCamera_camera_increase_camera_limit" text="Increase Camera Distance Limit" />
+    <string id="RTSCamera_camera_decrease_camera_limit" text="Decrease Camera Distance Limit" />
 
     <string id="RTSCamera_slowmotionkey_description" text="Enable slow motion mode. Press again to recover." />
     <string id="RTSCamera_disable_death_desciption" text="All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
@@ -124,6 +129,8 @@
     <string id="RTSCamera_camera_move_right_description" text="Move the camera to the right" />
     <string id="RTSCamera_camera_move_up_description" text="Move the camera up" />
     <string id="RTSCamera_camera_move_down_description" text="Move the camera down" />
+    <string id="RTSCamera_camera_increase_camera_limit_description" text="Increase Camera Distance Limit" />
+    <string id="RTSCamera_camera_decrease_camera_limit_description" text="Decrease Camera Distance Limit" />
 
     <string id="RTSCamera_enemywipedout" text="Enemy has been wiped out." />
     <string id="RTSCamera_switchtoenemyteam" text="Switched to the enemy team." />
@@ -131,5 +138,14 @@
     <string id="RTSCamera_select_character_view_hint" text="Please Select a character by left click. Then press {KeyName} to lock to it and press again to control it." />
     <string id="RTSCamera_control_troop_hint" text="You can press {KeyName} to control one of your teammates." />
     <string id="RTSCamera_control_current_agent_hint" text="Press {KeyName} to control the character" />
+
+    <string id="RTSCamera_tactics_skill_effect_description" text="RTS Camera Limit by Tactics: +{a0}m" />
+    <string id="RTSCamera_scouting_skill_effect_description" text=" RTS Camera Limit by Scouting: +{a0}%" />
+
+    <string id="RTSCamera_base_distance" text="Base Distance" />
+    <string id="RTSCamera_out_of_campaign" text="Out of Campaign" />
+    <string id="RTSCamera_no_main_hero" text="Main hero doesn't exist" />
+
+    <string id="RTSCamera_cheat_mode_required" text="Enable cheat mode to close this option." />
   </strings>
 </base>

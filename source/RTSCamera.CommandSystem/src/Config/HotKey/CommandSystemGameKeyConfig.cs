@@ -1,6 +1,6 @@
-﻿using System.IO;
-using MissionSharedLibrary.Config;
+﻿using MissionSharedLibrary.Config;
 using MissionSharedLibrary.Config.HotKey;
+using System.IO;
 
 namespace RTSCamera.CommandSystem.Config.HotKey
 {

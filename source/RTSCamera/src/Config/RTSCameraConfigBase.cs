@@ -1,5 +1,5 @@
-﻿using System.IO;
-using MissionSharedLibrary.Config;
+﻿using MissionSharedLibrary.Config;
+using System.IO;
 
 namespace RTSCamera.Config
 {

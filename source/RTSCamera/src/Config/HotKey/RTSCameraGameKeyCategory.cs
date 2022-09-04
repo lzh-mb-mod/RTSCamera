@@ -23,6 +23,8 @@ namespace RTSCamera.Config.HotKey
         CameraMoveRight,
         CameraMoveUp,
         CameraMoveDown,
+        IncreaseCameraDistanceLimit,
+        DecreaseCameraDistanceLimit,
         NumberOfGameKeyEnums
     }
     public class RTSCameraGameKeyCategory
@@ -110,6 +112,16 @@ namespace RTSCamera.Config.HotKey
                 nameof(GameKeyEnum.CameraMoveDown), CategoryId, new List<InputKey>
                 {
                     nativeCategory?.GetGameKey("Crouch")?.KeyboardKey?.InputKey ?? InputKey.X
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.IncreaseCameraDistanceLimit,
+                nameof(GameKeyEnum.IncreaseCameraDistanceLimit), CategoryId, new List<InputKey>
+                {
+                    InputKey.RightShift, InputKey.Equals
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.DecreaseCameraDistanceLimit,
+                nameof(GameKeyEnum.DecreaseCameraDistanceLimit), CategoryId, new List<InputKey>
+                {
+                    InputKey.RightShift, InputKey.Minus
                 }));
             return result;
         }

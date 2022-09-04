@@ -1,7 +1,7 @@
-﻿using System;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using System;
+using System.Reflection;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Patch
@@ -30,7 +30,7 @@ namespace RTSCamera.CommandSystem.Patch
                     typeof(MovementOrder).GetMethod("GetSubstituteOrder",
                         BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(typeof(Patch_MovementOrder).GetMethod("GetSubstituteOrder_Prefix",
-                        BindingFlags.Static | BindingFlags.Public)));
+                        BindingFlags.Static | BindingFlags.Public), Priority.First));
 
                 Harmony.Patch(
                     typeof(MovementOrder).GetMethod("SetChargeBehaviorValues",

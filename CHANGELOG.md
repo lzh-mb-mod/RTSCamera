@@ -1,5 +1,15 @@
 # Changelog
 
+## [e4.1.8] - 2022-09-05
+## Added
+- Limit camera distance by Tactics and Scouting skill.
+
+- Use free camera and issue orders in free camera will give Scouting and Tactics skill xp.
+
+## [e4.1.0] - 2022-08-23
+## Fixed
+- Keep compatible with Bannerlord e1.8.0
+
 ## [e4.0.0] - 2022-07-23
 ### Fixed
 - Keep compatible with Bannlerord e1.7.2.

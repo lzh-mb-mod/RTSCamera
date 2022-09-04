@@ -7,71 +7,78 @@ A mod for Mount&Blade II Bannerlord that provides free camera and more features 
 This mod does not read or write stuffs to your game save. Installing or removing this mod has no impact on your game save.
 
 ## Features
-- Free camera mode switchable at any time.
 
-- ~~Clickable troop cards.~~
+- RTS Camera
 
-- Command your troops to attack any enemy formation.
+  - Free camera mode switchable at any time.
 
-- Select your formation by middle clicking on units in formation.
+  - ~~Clickable troop cards.~~
 
-- Control one of your soldiers and continue fighting/commanding after player character is injured in battle.
+  - Control one of your soldiers and continue fighting/commanding after player character is injured in battle.
 
-- Watch any unit and optionally take control of any unit in player team.
+  - Watch any unit and optionally take control of any unit in player team.
 
-- Change time speed in battle, or pause the battle.
+  - Change time speed in battle, or pause the battle.
+
+- Command System
+
+  - Command your troops to attack any enemy formation.
+
+  - Select your formation by middle clicking on units in formation.
 
 ## How to Use
-- You can press `F10` to switch to free camera and press again to switch back. Player character will be controlled by AI when switched to free camera.
 
-  - You can press `L` and check `Use Free Camera By Default` to automatically switch to free camera when entering a battle.
+- RTS Camera
+  - You can press `F10` to switch to free camera and press again to switch back. Player character will be controlled by AI when switched to free camera.
 
-- You can make your formation **only charge to a specific enemy formation** by clicking middle mouse button on the enemy formation, rather than charging to all enemies when you press `F1` `F3`.
+    - You can press `L` and check `Use Free Camera By Default` to automatically switch to free camera when entering a battle.
+  
+  - ~~You can select your formations by clicking on troop cards.~~ You can press `Alt` to show the cursor and drag right mouse button to rotate the camera when cursor is shown.
+  
+  - After your character dies, you can press `F` to follow one of your soldiers and press `F` again to control it and continue fighting. Soldiers in the same formation as player character will be considered first when deciding which soldier to control.
 
-  - The target enemy formation that your selected troops are charging to will be highlighted with red outline when you open command panel.
+    - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your charater dies. Press `L` and check `Control Ally After Death` option to enable this feature. It's always enabled in free camera mode to ensure a smooth gaming experience.
 
-  - AI formation will also have the ability to charge to a specific formation. Your formation targeted by the enemy formation will be highlighted with dark blue outline when you open command panel.
+  - When the camera is following a character, you can press `F` to control the character. You can make the camera follow a character in the following ways:
 
-  - I didn't find a way to restrict range weapon's target to specific formation, so remember to hold fire when using this feature if they have javelins.
+    - In free camera press `F` to follow the player character.
 
-  - You can press `L` and uncheck `Enable Attack Specific Formation` to disable this feature.
+    - You can make the camera follow any hero by pressing `L` to open the menu and selecting a hero in `Watch Another Hero` drop-down list.
 
-- You can select your formations by clicking on troop cards. You can press `Alt` to show the cursor and drag right mouse button to rotate the camera when cursor is shown.
+    - You can make the camera follow any character by pressing `;` and clicking a character, then pressing `F`.
 
-- You can select your formations by clicking middle mouse button on soldiers. Selected troops will be highlighted with green outline.
+    - You can press left/right mouse button to change the character that the camera is following.
 
-  - You can press `L` and uncheck `Middle Click to select formation` to disable this feature.
+  - If your character is injured in campaign map and you encounter an enemy party, you can still choose "Watch the battle" option to begin the battle. In this battle you can command your troops in free camera but cannot directly control a character and fighting.
 
-- The bug in the base game that movement order may change width of circular arrangement is fixed.
+  - Pause game (`[`) or adjust time speed (`'`).
 
-  - You can press `L` and uncheck `Fix Circular Arrangement` to disable this feature.
+  - Toggle HUD by pressing `]`. If you rebind the key and forget the key set for toggling HUD, you can always use `HOME` key to enable HUD.
 
-- After your character dies, you can press `F` to control one of your soldiers and continue fighting. Soldiers in the same formation as player character will be considered first when deciding which soldier to control.
+- Command System
 
-  - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your charater dies. Press `L` and check `Control Ally After Death` option to enable this feature. It's always enabled in free camera mode to ensure a smooth gaming experience.
+  - You can make your formation **only charge to a specific enemy formation** by clicking middle mouse button on the enemy formation, rather than charging to all enemies when you press `F1` `F3`.
 
-- When the camera is following a character, you can press `F` to control the character. You can make the camera follow a character in the following ways:
+    - The target enemy formation that your selected troops are charging to will be highlighted with red outline when you open command panel.
 
-  - You can make the camera follow any hero by pressing `L` to open the menu and selecting a hero in `Watch Another Hero` drop-down list.
+    - AI formation will also have the ability to charge to a specific formation. Your formation targeted by the enemy formation will be highlighted with dark blue outline when you open command panel.
 
-  - You can make the camera follow any character by pressing `;` and clicking a character, then pressing `F`.
+    - I didn't find a way to restrict range weapon's target to specific formation, so remember to hold fire when using this feature if they have javelins.
 
-  - You can press left/right mouse button to change the character that the camera is following.
+    - You can press `L` and uncheck `Enable Attack Specific Formation` to disable this feature.
 
-- If your character is injured in campaign map and you encounter an enemy party, you can still choose "Watch the battle" option to begin the battle. In this battle you can command your troops in free camera but cannot directly control a character and fighting.
+  - You can select your formations by clicking middle mouse button on soldiers. Selected troops will be highlighted with green outline.
 
-- Pause game (`[`) or adjust time speed (`'`).
+    - You can press `L` and uncheck `Middle Click to select formation` to disable this feature.
 
 - You can rebind hotkeys by pressing `L` and click `Config Key`.
-
-- Toggle HUD by pressing `]`. If you rebind the key and forget the key set for toggling HUD, you can always use `HOME` key to enable HUD.
 
 - Configuration saving.
 
 ## How to Install
 1. Remove any old installation of this mod. You can go to `Modules` folder of bannerlord installation folder (For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord\Moudles\`) and remove folders like `RTSCamera` or `EnhancedMission`.
 
-2. Copy `RTSCamera` folder you downloaded into Bannerlord `Modules` folder. Or use Vortex to install it automatically.
+2. Copy `RTSCamera` and `RTSCamera.CommandSystem` folder you downloaded into Bannerlord `Modules` folder. Or use Vortex to install it automatically.
 
 ## Details
 

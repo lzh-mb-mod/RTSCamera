@@ -4,11 +4,13 @@ using MissionLibrary.View;
 using MissionSharedLibrary;
 using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.CampaignGame;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Patch;
 using System;
 using System.Linq;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.ModuleManager;
@@ -82,7 +84,13 @@ namespace RTSCamera.CommandSystem
         {
             base.OnGameStart(game, gameStarterObject);
 
+            CommandSystemSkillBehavior.CanIssueChargeToFormationOrder = true;
+
             game.GameTextManager.LoadGameTexts();
+            if (gameStarterObject is CampaignGameStarter campaignGameStarter)
+            {
+                campaignGameStarter.AddBehavior(new CommandSystemSkillBehavior());
+            }
         }
     }
 }

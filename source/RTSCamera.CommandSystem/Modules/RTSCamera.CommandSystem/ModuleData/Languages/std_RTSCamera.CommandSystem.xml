@@ -21,5 +21,6 @@
     <string id="RTSCameraCommandSystem_select_formation" text="Select Formation" />
     <string id="RTSCameraCommandSystem_select_formation_hint" text="Select your formation or order your selected formations to attack an enemy formation." />
 
+    <string id="RTSCameraCommandSystem_tactic_level_required" text="You tactic level should be at least {level}" />
   </strings>
 </base>

@@ -52,7 +52,7 @@ namespace RTSCamera.View
             {
                 if (_mouseOverAgent == value)
                     return;
-                _mouseOverAgent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.MouseOverAgent, null, false);
+                _mouseOverAgent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.MouseOverAgent, null, false, true);
                 _mouseOverAgent = value;
                 SetMouseOver(value);
             }
@@ -65,7 +65,7 @@ namespace RTSCamera.View
             {
                 if (_selectedAgent == value)
                     return;
-                _selectedAgent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.SelectedAgent, null, false);
+                _selectedAgent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.SelectedAgent, null, false, true);
                 _selectedAgent = value;
                 SetSelected(value);
             }
@@ -179,12 +179,12 @@ namespace RTSCamera.View
 
         private void SetMouseOver(Agent agent)
         {
-            agent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.MouseOverAgent, Utility.IsEnemy(agent) ? EnemyMouseOverColor : MouseOverColor, true);
+            agent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.MouseOverAgent, Utility.IsEnemy(agent) ? EnemyMouseOverColor : MouseOverColor, true, true);
         }
 
         private void SetSelected(Agent agent)
         {
-            agent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.SelectedAgent, Utility.IsEnemy(agent) ? EnemySelectedColor : SelectedColor, true);
+            agent?.GetComponent<RTSCameraComponent>()?.SetContourColor((int)ColorLevel.SelectedAgent, Utility.IsEnemy(agent) ? EnemySelectedColor : SelectedColor, true, true);
         }
 
         private void UpdateMouseOverCharacter()

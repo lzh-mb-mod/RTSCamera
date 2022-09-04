@@ -8,6 +8,7 @@ using RTSCamera.Logic.SubLogic;
 using System;
 using System.Linq;
 using System.Reflection;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
@@ -15,7 +16,6 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.Missions.Handlers;
-using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.MissionViews;
 using TaleWorlds.MountAndBlade.View.Screens;
 using TaleWorlds.ScreenSystem;
@@ -42,7 +42,6 @@ namespace RTSCamera.View
         private RTSCameraConfig _config;
         private RTSCameraLogic _rtsCameraLogic;
         private SwitchFreeCameraLogic _freeCameraLogic;
-        private MissionMainAgentController _missionMainAgentController;
 
         private readonly int _shiftSpeedMultiplier = 3;
         private Vec3 _cameraSpeed;
@@ -51,7 +50,6 @@ namespace RTSCamera.View
         private float _cameraHeightToAdd;
         private float _cameraHeightLimit;
         private readonly bool _classicMode = true;
-        private bool _isOrderViewOpen;
         private bool _levelToEdge;
         private bool _lockToAgent;
         private GauntletLayer _showControlHintLayer;
@@ -90,12 +88,6 @@ namespace RTSCamera.View
         public float CameraBearing { get; private set; }
 
         public float CameraElevation { get; private set; }
-
-        public bool ConstantSpeed;
-
-        public bool IgnoreTerrain = false;
-
-        public bool IgnoreBoundaries = false;
 
         public float ViewAngle
         {
@@ -222,19 +214,14 @@ namespace RTSCamera.View
             ViewOrderPriority = 1;
 
             _config = RTSCameraConfig.Get();
-            ConstantSpeed = _config.ConstantSpeed;
-            IgnoreTerrain = _config.IgnoreTerrain;
-            IgnoreBoundaries = _config.IgnoreBoundaries;
             _rtsCameraLogic = Mission.GetMissionBehavior<RTSCameraLogic>();
             _freeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
-            _missionMainAgentController = Mission.GetMissionBehavior<MissionMainAgentController>();
 
             _showControlHintVM = new ShowControlHintVM(Mission.GetMissionBehavior<SiegeDeploymentHandler>() == null);
             _showControlHintLayer = new GauntletLayer(ViewOrderPriority);
             _showControlHintLayer.LoadMovie("RTSCameraShowControlHint", _showControlHintVM);
             MissionScreen.AddLayer(_showControlHintLayer);
 
-            Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
             MissionLibrary.Event.MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
 
             MissionScreen.OnSpectateAgentFocusIn += MissionScreenOnSpectateAgentFocusIn;
@@ -252,10 +239,8 @@ namespace RTSCamera.View
             MissionScreen.OnSpectateAgentFocusIn -= MissionScreenOnSpectateAgentFocusIn;
             MissionScreen.OnSpectateAgentFocusOut -= MissionScreenOnSpectateAgentFocusOut;
 
-            Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
             MissionLibrary.Event.MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             _freeCameraLogic = null;
-            _missionMainAgentController = null;
             _config = null;
 
             ACameraControllerManager.Get().Clear();
@@ -311,11 +296,6 @@ namespace RTSCamera.View
                 Mission.PlayerTeam?.ActiveAgents.Count > 0);
         }
 
-        private void OnToggleOrderViewEvent(MissionPlayerToggledOrderViewEvent e)
-        {
-            _isOrderViewOpen = e.IsOrderEnabled;
-        }
-
         private void OnToggleFreeCamera(bool freeCamera)
         {
             if (!freeCamera)
@@ -328,7 +308,6 @@ namespace RTSCamera.View
                 LeaveFromAgent();
             }
         }
-
 
         private void UpdateFlyCamera(float dt)
         {
@@ -343,9 +322,9 @@ namespace RTSCamera.View
                 cameraFrame.origin += ForcedMoveTick(dt);
             float heightFactorForHorizontalMove;
             float heightFactorForVerticalMove;
-            if (!ConstantSpeed)
+            if (!_config.ConstantSpeed)
             {
-                float heightAtPosition = IgnoreTerrain ? Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2) :
+                float heightAtPosition = _config.IgnoreTerrain ? Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2) :
                     Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags);
                 heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
                     1, 30);
@@ -473,12 +452,17 @@ namespace RTSCamera.View
                 cameraFrame.origin -= _cameraSpeed.y * cameraFrame.rotation.u * dt;
                 cameraFrame.origin += _cameraSpeed.z * cameraFrame.rotation.f * dt;
             }
+
+            if (!WatchBattleBehavior.WatchMode && Campaign.Current != null && Mission.Mode != MissionMode.Deployment && _config.LimitCameraDistance && Mission.MainAgent != null && RTSCameraSkillBehavior.CameraDistanceLimit >= 0)
+            {
+                LimitCameraDistance(ref cameraFrame, dt, num1);
+            }
             if (!MBEditor.IsEditModeOn)
             {
-                if (!IgnoreBoundaries && !Mission.IsPositionInsideBoundaries(cameraFrame.origin.AsVec2))
+                if (!_config.IgnoreBoundaries && !Mission.IsPositionInsideBoundaries(cameraFrame.origin.AsVec2))
                     cameraFrame.origin.AsVec2 = Mission.GetClosestBoundaryPosition(cameraFrame.origin.AsVec2);
                 float heightAtPosition1 = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin + new Vec3(0.0f, 0.0f, 100f));
-                if (!MissionScreen.IsCheatGhostMode && !IgnoreTerrain && heightAtPosition1 < 9999.0)
+                if (!MissionScreen.IsCheatGhostMode && !_config.IgnoreTerrain && heightAtPosition1 < 9999.0)
                     cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition1 + 0.5f);
                 if (cameraFrame.origin.z > heightAtPosition1 + 80.0)
                     cameraFrame.origin.z = heightAtPosition1 + 80f;
@@ -486,6 +470,43 @@ namespace RTSCamera.View
                     cameraFrame.origin.z = -100f;
             }
             UpdateCameraFrameAndDof(cameraFrame);
+        }
+
+        private void LimitCameraDistance(ref MatrixFrame cameraFrame, float dt, float speed)
+        {
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.IncreaseCameraDistanceLimit).IsKeyDownInOrder(Input))
+            {
+                RTSCameraSkillBehavior.UpdateCameraDistanceLimit(RTSCameraSkillBehavior.CameraDistanceLimit + dt * speed);
+            }
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.DecreaseCameraDistanceLimit).IsKeyDownInOrder(Input))
+            {
+                RTSCameraSkillBehavior.UpdateCameraDistanceLimit(RTSCameraSkillBehavior.CameraDistanceLimit - dt * speed);
+            }
+            var mainAgentPosition = Utility.GetCameraTargetPositionWhenLockedToAgent(MissionScreen, Mission.MainAgent) + Vec3.Up;
+            var distanceLimit = RTSCameraSkillBehavior.CameraDistanceLimit;
+            var heightDiff = cameraFrame.origin.z - mainAgentPosition.z;
+            var verticalScale = 2;
+            Vec3 targetPosition = cameraFrame.origin;
+            if (heightDiff >= distanceLimit * verticalScale)
+            {
+                targetPosition = mainAgentPosition;
+                targetPosition.z += distanceLimit * verticalScale;
+            }
+            else if (heightDiff <= -distanceLimit * verticalScale)
+            {
+                targetPosition = mainAgentPosition;
+                targetPosition.z -= distanceLimit * verticalScale;
+            }
+            var centerPosition = mainAgentPosition.AsVec2.ToVec3(targetPosition.z);
+            var distance = targetPosition.Distance(centerPosition);
+            var maxDistance = MathF.Sqrt(distanceLimit * distanceLimit - (heightDiff / verticalScale) * (heightDiff / verticalScale));
+            if (distance > maxDistance)
+            {
+                targetPosition = Vec3.Lerp(centerPosition, targetPosition,
+                    maxDistance / MathF.Max(distance, 1f));
+            }
+
+            cameraFrame.origin = Vec3.Lerp(targetPosition, cameraFrame.origin, MathF.Pow(0.02f, dt));
         }
 
         private void UpdateCameraFrameAndDof(MatrixFrame matrixFrame)
@@ -689,7 +710,7 @@ namespace RTSCamera.View
             //Utility.SmoothMoveToPositionAndDirection(MissionScreen,
             //    position.ToVec3(MissionScreen.CombatCamera.Position.Z), 0, direction.AngleBetween(Vec2.Forward), false,
             //    direction.Length > 0.5);
-            
+
             BeginForcedMove(position.ToVec3(MissionScreen.CombatCamera.Position.Z) - MissionScreen.CombatCamera.Position);
             return true;
         }

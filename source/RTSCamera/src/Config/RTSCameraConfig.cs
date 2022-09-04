@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Xml.Serialization;
-using MissionSharedLibrary.Config;
+﻿using MissionSharedLibrary.Config;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
+using System;
+using System.IO;
+using System.Xml.Serialization;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Config
@@ -81,6 +81,10 @@ namespace RTSCamera.Config
 
         public bool SwitchTeamHotkeyEnabled;
 
+        public bool LimitCameraDistance = true;
+
+        public float CameraDistanceLimitFactor;
+
         public static void OnMenuClosed()
         {
             Get().Serialize();
@@ -107,6 +111,8 @@ namespace RTSCamera.Config
             DisableDeath = other.DisableDeath;
             DisableDeathHotkeyEnabled = other.DisableDeathHotkeyEnabled;
             SwitchTeamHotkeyEnabled = other.SwitchTeamHotkeyEnabled;
+            LimitCameraDistance = other.LimitCameraDistance;
+            CameraDistanceLimitFactor = other.CameraDistanceLimitFactor;
         }
         [XmlIgnore]
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");

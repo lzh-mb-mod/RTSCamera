@@ -1,15 +1,16 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.CampaignGame;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.QuerySystem;
-using RTSCamera.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.InputSystem;
@@ -422,9 +423,20 @@ namespace RTSCamera.CommandSystem.Patch
                         }
                         else if (CommandSystemConfig.Get().AttackSpecificFormation)
                         {
-                            ___PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, ____clickedFormation);
-                            Utilities.Utility.DisplayChargeToFormationMessage(___PlayerOrderController.SelectedFormations,
-                                ____clickedFormation);
+                            if (Campaign.Current == null || CommandSystemSkillBehavior.CanIssueChargeToFormationOrder)
+                            {
+                                ___PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, ____clickedFormation);
+                                Utilities.Utility.DisplayChargeToFormationMessage(___PlayerOrderController.SelectedFormations,
+                                    ____clickedFormation);
+                            }
+                            else
+                            {
+                                Utility.DisplayMessage(GameTexts
+                                    .FindText("str_rts_camera_command_system_tactic_level_required")
+                                    .SetTextVariable("level",
+                                        CommandSystemSkillBehavior.RequiredTacticsLevelToIssueChargeToFormationOrder)
+                                    .ToString());
+                            }
                         }
                     }
 

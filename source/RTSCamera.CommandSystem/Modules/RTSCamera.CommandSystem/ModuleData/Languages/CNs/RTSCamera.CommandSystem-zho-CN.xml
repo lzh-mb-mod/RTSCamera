@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
   <tags>
     <tag language="简体中文" />
@@ -20,5 +20,7 @@
     <string id="RTSCameraCommandSystem_hotkeycategory" text="指挥系统按键" />
     <string id="RTSCameraCommandSystem_select_formation" text="选择编队" />
     <string id="RTSCameraCommandSystem_select_formation_hint" text="选择你的编队或发出让你的编队攻击指定的敌方编队的指令。" />
+
+    <string id="RTSCameraCommandSystem_tactic_level_required" text="你的战术等级至少需要{level}级" />
   </strings>
 </base>

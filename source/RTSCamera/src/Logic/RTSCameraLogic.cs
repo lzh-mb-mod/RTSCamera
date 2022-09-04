@@ -13,6 +13,7 @@ namespace RTSCamera.Logic
         public SwitchFreeCameraLogic SwitchFreeCameraLogic;
         public SwitchTeamLogic SwitchTeamLogic;
         public ControlTroopLogic ControlTroopLogic;
+        public CampaignSkillLogic CampaignSkillLogic;
         public static RTSCameraLogic Instance;
 
         public RTSCameraLogic()
@@ -24,6 +25,7 @@ namespace RTSCamera.Logic
             SwitchFreeCameraLogic = new SwitchFreeCameraLogic(this);
             SwitchTeamLogic = new SwitchTeamLogic(this);
             ControlTroopLogic = new ControlTroopLogic(this);
+            CampaignSkillLogic = new CampaignSkillLogic(this);
         }
 
         public override void OnCreated()
@@ -42,6 +44,7 @@ namespace RTSCamera.Logic
             SwitchFreeCameraLogic.OnBehaviourInitialize();
             SwitchTeamLogic.OnBehaviourInitialize();
             ControlTroopLogic.OnBehaviourInitialize();
+            CampaignSkillLogic.OnBehaviourInitialize();
         }
 
         public override void OnRemoveBehavior()
@@ -68,6 +71,7 @@ namespace RTSCamera.Logic
             base.AfterAddTeam(team);
 
             SwitchFreeCameraLogic.AfterAddTeam(team);
+            CampaignSkillLogic.AfterAddTeam(team);
         }
 
         public override void OnFormationUnitsSpawned(Team team)

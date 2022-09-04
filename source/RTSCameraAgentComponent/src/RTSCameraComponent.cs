@@ -36,6 +36,8 @@ namespace RTSCameraAgentComponent
         private uint? CurrentColor => _currentLevel < 0 ? null : _colors[_currentLevel].Color;
         private bool CurrentAlwaysVisible => _currentLevel < 0 || _colors[_currentLevel].AlwaysVisible;
 
+        private bool _shouldUpdateColor = false;
+
         public RTSCameraComponent(Agent agent) : base(agent)
         {
             for (int i = 0; i < _colors.Length; ++i)
@@ -58,16 +60,24 @@ namespace RTSCameraAgentComponent
             Agent.SetScriptedFlags(Agent.GetScriptedFlags() & ~Agent.AIScriptedFrameFlags.NoAttack);
         }
 
-        public void SetContourColor(int level, uint? color, bool alwaysVisible)
+        public void SetContourColor(int level, uint? color, bool alwaysVisible, bool updateInstantly)
         {
             if (SetContourColorWithoutUpdate(level, color, alwaysVisible))
             {
                 _currentLevel = color.HasValue ? level : EffectiveLevel(level - 1);
-                SetColor();
+                if (updateInstantly)
+                {
+                    _shouldUpdateColor = false;
+                    SetColor();
+                }
+                else
+                {
+                    _shouldUpdateColor = true;
+                }
             }
         }
 
-        public bool SetContourColorWithoutUpdate(int level, uint? color, bool alwaysVisible)
+        private bool SetContourColorWithoutUpdate(int level, uint? color, bool alwaysVisible)
         {
             if (level < 0 || level >= _colors.Length)
                 return false;
@@ -78,10 +88,10 @@ namespace RTSCameraAgentComponent
             return _currentLevel <= level; // needs update.
         }
 
-        public void UpdateColor()
+        private void UpdateColor()
         {
             _currentLevel = EffectiveLevel();
-            SetColor();
+            _shouldUpdateColor = true;
         }
 
         [HandleProcessCorruptedStateExceptions]
@@ -151,6 +161,15 @@ namespace RTSCameraAgentComponent
             catch (Exception e)
             {
                 InformationManager.DisplayMessage(new InformationMessage(e.ToString()));
+            }
+        }
+
+        public void UpdateContour()
+        {
+            if (_shouldUpdateColor)
+            {
+                _shouldUpdateColor = false;
+                SetColor();
             }
         }
 

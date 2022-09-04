@@ -59,6 +59,14 @@ namespace RTSCamera.CommandSystem.Utilities
             message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PrimaryClass).ToString()));
             MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
         }
+        public static void DisplayFormationChargeMessage(Formation formation)
+        {
+            var message = GameTexts.FindText("str_formation_ai_behavior_text", nameof(BehaviorCharge));
+            message.SetTextVariable("IS_PLURAL", 0);
+            message.SetTextVariable("TROOP_NAMES_BEGIN", "");
+            message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PrimaryClass).ToString()));
+            MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
+        }
 
         public static bool ShouldChargeToFormation(Agent agent)
         {

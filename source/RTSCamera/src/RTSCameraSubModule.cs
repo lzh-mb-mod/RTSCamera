@@ -7,6 +7,7 @@ using MissionSharedLibrary;
 using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
+using RTSCamera.CampaignGame.Skills;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
@@ -17,6 +18,7 @@ using SandBox.Missions.MissionLogics.Arena;
 using SandBox.Objects;
 using System;
 using System.Reflection;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
@@ -172,12 +174,20 @@ namespace RTSCamera
             AddCampaignBehavior(gameStarterObject);
         }
 
+        public override void RegisterSubModuleObjects(bool isSavedCampaign)
+        {
+            base.RegisterSubModuleObjects(isSavedCampaign);
+            RTSCameraSkillEffects.Initialize();
+
+        }
+
         private void AddCampaignBehavior(object gameStarter)
         {
-            //if (gameStarter is CampaignGameStarter campaignGameStarter)
-            //{
-            //    campaignGameStarter.AddBehavior(new WatchBattleBehavior());
-            //}
+            if (gameStarter is CampaignGameStarter campaignGameStarter)
+            {
+                //campaignGameStarter.AddBehavior(new WatchBattleBehavior());
+                campaignGameStarter.AddBehavior(new RTSCameraSkillBehavior());
+            }
         }
 
 

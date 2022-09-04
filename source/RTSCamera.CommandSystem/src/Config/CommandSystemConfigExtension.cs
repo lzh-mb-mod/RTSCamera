@@ -1,6 +1,4 @@
-﻿using RTSCamera.CommandSystem.Config;
-
-namespace RTSCamera.Config
+﻿namespace RTSCamera.CommandSystem.Config
 {
     public static class CommandSystemConfigExtension
     {
