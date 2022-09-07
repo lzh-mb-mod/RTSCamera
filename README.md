@@ -10,7 +10,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 - RTS Camera
 
-  - Free camera mode switchable at any time.
+  - Free camera mode switchable at any time. The camera distance to your character is limited by the tactics and scouting skill level.
 
   - ~~Clickable troop cards.~~
 

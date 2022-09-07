@@ -10,7 +10,7 @@ namespace RTSCamera.Config
 {
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 4);
+        protected static Version BinaryVersion => new Version(1, 5);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -30,6 +30,9 @@ namespace RTSCamera.Config
                 case "1.2":
                 case "1.3":
                 case "1.4":
+                    goto case "1.5";
+                case "1.5":
+                    CameraDistanceLimitFactor = 1;
                     break;
             }
 
@@ -83,7 +86,7 @@ namespace RTSCamera.Config
 
         public bool LimitCameraDistance = true;
 
-        public float CameraDistanceLimitFactor;
+        public float CameraDistanceLimitFactor = 1;
 
         public static void OnMenuClosed()
         {
