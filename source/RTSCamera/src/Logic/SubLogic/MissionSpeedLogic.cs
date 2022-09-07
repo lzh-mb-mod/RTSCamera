@@ -20,10 +20,12 @@ namespace RTSCamera.Logic.SubLogic
 
         public void AfterStart()
         {
-            if (_config.SlowMotionMode)
-            {
-                Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, TimeSpeedConstant));
-            }
+            // Implemented through patch
+
+            //if (_config.SlowMotionMode)
+            //{
+            //    Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, TimeSpeedConstant));
+            //}
         }
 
         public void OnMissionTick(float dt)
