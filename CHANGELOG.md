@@ -1,5 +1,9 @@
 # Changelog
 
+## [e4.1.11] - 2022-09-10
+## Fixed
+- Fix the issue that pressing `G` will cause player drop weapon in free camera mode.
+
 ## [e4.1.8] - 2022-09-05
 ## Added
 - Limit camera distance by Tactics and Scouting skill.

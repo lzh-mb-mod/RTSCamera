@@ -83,21 +83,23 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
                 var list = _temporarilyUpdatedFormations.GroupBy(formation => formation).Select(grouping => grouping.Key).ToList();
                 var additionalFormationToUpdate = list.FirstOrDefault();
+
+                if (!noAction)
+                {
+                    foreach (var group in _enemyAsTargetFormations.Concat(_allyAsTargetFormations)
+                             .Concat(_allySelectedFormations).GroupBy(formation => formation))
+                    {
+                        if (group.Key != additionalFormationToUpdate)
+                        {
+                            group.Key?.ApplyActionOnEachUnit(a => a.GetComponent<RTSCameraComponent>()?.UpdateContour());
+                        }
+                    }
+                }
+
                 if (additionalFormationToUpdate != null)
                 {
                     _temporarilyUpdatedFormations.RemoveAll(f => f == additionalFormationToUpdate);
                     additionalFormationToUpdate.ApplyActionOnEachUnit(a => a.GetComponent<RTSCameraComponent>()?.UpdateContour());
-                }
-
-                if (noAction)
-                    return;
-                foreach (var group in _enemyAsTargetFormations.Concat(_allyAsTargetFormations)
-                             .Concat(_allySelectedFormations).GroupBy(formation => formation))
-                {
-                    if (group.Key != additionalFormationToUpdate)
-                    {
-                        group.Key?.ApplyActionOnEachUnit(a => a.GetComponent<RTSCameraComponent>()?.UpdateContour());
-                    }
                 }
             }
             catch (Exception e)

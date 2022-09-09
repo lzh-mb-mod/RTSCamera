@@ -66,7 +66,7 @@ namespace RTSCamera.Config.HotKey
             result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.ControlTroop,
                 nameof(GameKeyEnum.ControlTroop), CategoryId, new List<InputKey>
                 {
-                    InputKey.F
+                    InputKey.E
                 }));
             result.AddGameKeySequence(new GameKeySequence((int) GameKeyEnum.ToggleHUD, nameof(GameKeyEnum.ToggleHUD),
                 CategoryId, new List<InputKey>

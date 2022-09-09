@@ -116,6 +116,8 @@ namespace RTSCamera
                 _successPatch &= Patch_ScoreboardScreenWidget.Patch();
                 _successPatch &= Patch_Mission_UpdateSceneTimeSpeed.Patch();
                 _successPatch &= Patch_OrderOfBattleVM.Patch();
+                _successPatch &= Patch_MissionGauntletMainAgentEquipDropView.Patch();
+                _successPatch &= Patch_MissionGauntletMainAgentEquipmentControllerView.Patch();
                 // Use Patch to add game menu
                 WatchBattleBehavior.Patch(_harmony);
             }
