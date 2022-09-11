@@ -515,7 +515,6 @@ namespace RTSCamera.View
             CombatCamera.Frame = matrixFrame;
             UpdateDof();
             UpdateViewAngle();
-            MissionScreen.SceneView?.SetCamera(CombatCamera);
             Mission.SetCameraFrame(ref matrixFrame, Zoom);
             SetCameraBearing?.Invoke(MissionScreen, new object[1] { CameraBearing });
             SetCameraElevation?.Invoke(MissionScreen, new object[1] { CameraElevation });
@@ -558,6 +557,7 @@ namespace RTSCamera.View
         {
             float newDNear = !Mission.CameraIsFirstPerson ? 0.1f : 0.065f;
             CombatCamera.SetFovVertical((float)(ViewAngle * (Math.PI / 180.0)), Screen.AspectRatio, newDNear, 12500f);
+            MissionScreen.SceneView?.SetCamera(CombatCamera);            
         }
 
         private void BeginForcedMove(Vec3 vec)
