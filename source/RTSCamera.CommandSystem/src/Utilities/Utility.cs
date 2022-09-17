@@ -46,8 +46,10 @@ namespace RTSCamera.CommandSystem.Utilities
                 message.SetTextVariable("STR2",
                     GameTexts.FindText("str_formation_ai_sergeant_instruction_behavior_text",
                             nameof(BehaviorTacticalCharge))
-                        .SetTextVariable("TARGET_FORMATION", GameTexts.FindText("str_troop_group_name", ((int)targetFormation.PrimaryClass).ToString())));
-                MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
+                        .SetTextVariable("AI_SIDE", GameTexts.FindText("str_formation_ai_side_strings", targetFormation.AI.Side.ToString()))
+                        .SetTextVariable("CLASS", GameTexts.FindText("str_troop_group_name", ((int)targetFormation.PrimaryClass).ToString())));                
+                //MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
+                InformationManager.DisplayMessage(new InformationMessage(message.ToString()));
             }
         }
 
