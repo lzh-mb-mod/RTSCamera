@@ -49,6 +49,7 @@ namespace RTSCamera.View
         private bool _cameraSmoothMode;
         private float _cameraHeightToAdd;
         private float _cameraHeightLimit;
+        private float _groundHeightToAdd;
         private readonly bool _classicMode = true;
         private bool _levelToEdge;
         private bool _lockToAgent;
@@ -316,7 +317,7 @@ namespace RTSCamera.View
             cameraFrame.rotation.RotateAboutSide(1.570796f);
             cameraFrame.rotation.RotateAboutForward(CameraBearing);
             cameraFrame.rotation.RotateAboutSide(
-                CameraElevation + (float?)CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);
+                CameraElevation + (float?)CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);            
             cameraFrame.origin = CameraPosition;
             if (_forceMove)
                 cameraFrame.origin += ForcedMoveTick(dt);
@@ -336,6 +337,17 @@ namespace RTSCamera.View
                 heightFactorForHorizontalMove = 1;
                 heightFactorForVerticalMove = 1;
             }
+
+            if (_config.CameraHeightFollowsTerrain)
+            {
+                bool sceneCollision = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags) > Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2) + 0.5f;
+                if (_groundHeightToAdd != 0 && !sceneCollision)
+                {
+                    cameraFrame.origin.z += Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2) - _groundHeightToAdd;
+                }                
+                _groundHeightToAdd = Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2);
+            }
+
             if (MissionScreen.InputManager.IsHotKeyPressed("MissionScreenHotkeyIncreaseCameraSpeed"))
                 _cameraSpeedMultiplier *= 1.5f;
             if (MissionScreen.InputManager.IsHotKeyPressed("MissionScreenHotkeyDecreaseCameraSpeed"))
@@ -462,13 +474,14 @@ namespace RTSCamera.View
                 if (!_config.IgnoreBoundaries && !Mission.IsPositionInsideBoundaries(cameraFrame.origin.AsVec2))
                     cameraFrame.origin.AsVec2 = Mission.GetClosestBoundaryPosition(cameraFrame.origin.AsVec2);
                 float heightAtPosition1 = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin + new Vec3(0.0f, 0.0f, 100f));
-                if (!MissionScreen.IsCheatGhostMode && !_config.IgnoreTerrain && heightAtPosition1 < 9999.0)
+                if (!MissionScreen.IsCheatGhostMode && !_config.IgnoreTerrain && heightAtPosition1 < 9999.0)                    
                     cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition1 + 0.5f);
                 if (cameraFrame.origin.z > heightAtPosition1 + 80.0)
                     cameraFrame.origin.z = heightAtPosition1 + 80f;
                 if (cameraFrame.origin.z < -100.0)
                     cameraFrame.origin.z = -100f;
             }
+
             UpdateCameraFrameAndDof(cameraFrame);
         }
 
