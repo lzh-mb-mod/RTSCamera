@@ -31,6 +31,7 @@
     <string id="RTSCamera_control_troops_in_player_party_only_hint" text="Only consider troops in player party when looking for target to control." />
     <string id="RTSCamera_ignore_retreating_troops_hint" text="Won't consider retreating troops when looking for target to contorl." />
     <string id="RTSCamera_constant_speed_hint" text="Camera movement speed won't be affected by height." />
+    <string id="RTSCamera_camera_height_follows_terrain_hint" text="Camera elevation will follow terrain height, except when camera is inside or above a scene object (wall, house, stone...)" />
     <string id="RTSCamera_ignore_terrain_hint" text="Camera will not be blocked by terrain and buildings when enabled." />
     <string id="RTSCamera_ignore_boundaries_hint" text="Camera will not be restricted by boundaries when enabled." />
     <string id="RTSCamera_display_message_hint" text="Whether to display message of this mod." />
@@ -62,6 +63,7 @@
     <string id="RTSCamera_limit_camera_distance" text="Limit Camera Distance" />
     <string id="RTSCamera_camera_distance_limit" text="Camera Distance Limit" />
     <string id="RTSCamera_constantspeed" text="Constant Camera Speed" />
+    <string id="RTSCamera_camera_height_follows_terrain" text="Camera Height Follows Terrain" />
     <string id="RTSCamera_ignore_terrain" text="Ignore Terrain" />
     <string id="RTSCamera_ignore_boundaries" text="Ignore Boundaries" />
 

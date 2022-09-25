@@ -23,6 +23,10 @@ namespace RTSCamera.CommandSystem.Config
 
         public BehaviorAfterCharge BehaviorAfterCharge = CommandSystemSubModule.IsRealisticBattleModuleNotInstalled ? BehaviorAfterCharge.Hold : BehaviorAfterCharge.Charge;
 
+        public bool HighlightSelectedFormation = true;
+
+        public bool HighlightTargetFormation = true;
+
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;

@@ -10,7 +10,7 @@ namespace RTSCamera.Config
 {
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 5);
+        protected static Version BinaryVersion => new Version(1, 6);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -33,6 +33,9 @@ namespace RTSCamera.Config
                     goto case "1.5";
                 case "1.5":
                     CameraDistanceLimitFactor = 1;
+                    goto case "1.6";
+                case "1.6":
+                    CameraHeightFollowsTerrain = false;
                     break;
             }
 
@@ -59,6 +62,8 @@ namespace RTSCamera.Config
         public bool AlwaysSetPlayerFormation;
 
         public bool ConstantSpeed;
+
+        public bool CameraHeightFollowsTerrain;
 
         public bool IgnoreTerrain;
 
@@ -102,6 +107,7 @@ namespace RTSCamera.Config
             PlayerFormation = other.PlayerFormation;
             AlwaysSetPlayerFormation = other.AlwaysSetPlayerFormation;
             ConstantSpeed = other.ConstantSpeed;
+            CameraHeightFollowsTerrain = other.CameraHeightFollowsTerrain;
             IgnoreTerrain = other.IgnoreTerrain;
             IgnoreBoundaries = other.IgnoreBoundaries;
             SlowMotionMode = other.SlowMotionMode;

@@ -51,8 +51,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         private bool _isOrderShown;
         private bool HighlightEnabled => _isOrderShown && _config.ShouldHighlightWithOutline();
-        private bool HighlightEnabledForSelectedFormation => _isOrderShown && _config.ClickToSelectFormation;
-        private bool HighlightEnabledForAsTargetFormation => _isOrderShown && _config.AttackSpecificFormation;
+        private bool HighlightEnabledForSelectedFormation => _isOrderShown && _config.HighlightSelectedFormation;
+        private bool HighlightEnabledForAsTargetFormation => _isOrderShown && _config.AttackSpecificFormation && _config.HighlightTargetFormation;
 
         private readonly Queue<Action> _actionQueue = new Queue<Action>();
 

@@ -4,6 +4,7 @@ using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.View.ViewModelCollection;
 using MissionSharedLibrary.View.ViewModelCollection.Options;
 using MissionSharedLibrary.View.ViewModelCollection.Options.Selection;
+using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace RTSCamera.CommandSystem.Config
                 var commandOptionCategory = new OptionCategory("Command", GameTexts.FindText("str_rts_camera_command_system_command_system_options"));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_click_to_select_formation"),
-                    GameTexts.FindText("str_rts_camera_command_system_click_to_select_formation_hint"),
+                    GameTexts.FindText("str_rts_camera_command_system_click_to_select_formation_hint").SetTextVariable("KeyName", CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString()),
                     () => CommandSystemConfig.Get().ClickToSelectFormation, b =>
                     {
                         CommandSystemConfig.Get().ClickToSelectFormation = b;
@@ -33,7 +34,7 @@ namespace RTSCamera.CommandSystem.Config
                     }));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_attack_specific_formation"),
-                    GameTexts.FindText("str_rts_camera_command_system_attack_specific_formation_hint"),
+                    GameTexts.FindText("str_rts_camera_command_system_attack_specific_formation_hint").SetTextVariable("KeyName", CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString()),
                     () => CommandSystemConfig.Get().AttackSpecificFormation, b =>
                     {
                         CommandSystemConfig.Get().AttackSpecificFormation = b;
@@ -49,6 +50,20 @@ namespace RTSCamera.CommandSystem.Config
                             new SelectionItem(true, "str_rts_camera_command_system_after_charge_behavior", "charge"),
                             new SelectionItem(true, "str_rts_camera_command_system_after_charge_behavior", "hold")
                         }), false));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_selected_formation"),
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_selected_formation_hint"),
+                    () => CommandSystemConfig.Get().HighlightSelectedFormation, b =>
+                    {
+                        CommandSystemConfig.Get().HighlightSelectedFormation = b;
+                    }));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_target_formation"),
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_target_formation_hint"),
+                    () => CommandSystemConfig.Get().HighlightTargetFormation, b =>
+                    {
+                        CommandSystemConfig.Get().HighlightTargetFormation = b;
+                    }));
                 optionClass.AddOptionCategory(0, commandOptionCategory);
 
                 return optionClass;

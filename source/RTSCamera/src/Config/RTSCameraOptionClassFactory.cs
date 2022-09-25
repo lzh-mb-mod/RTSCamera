@@ -86,6 +86,13 @@ namespace RTSCamera.Config
                     }
                 }
                 cameraOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_camera_height_follows_terrain"),
+                    GameTexts.FindText("str_rts_camera_camera_height_follows_terrain_hint"), () => RTSCameraConfig.Get().CameraHeightFollowsTerrain,
+                    b =>
+                    {
+                        RTSCameraConfig.Get().CameraHeightFollowsTerrain = b;
+                    }));
+                cameraOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_constant_speed"),
                     GameTexts.FindText("str_rts_camera_constant_speed_hint"), () => RTSCameraConfig.Get().ConstantSpeed,
                     b =>
