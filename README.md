@@ -35,17 +35,17 @@ This mod does not read or write stuffs to your game save. Installing or removing
   
   - ~~You can select your formations by clicking on troop cards.~~ You can press `Alt` to show the cursor and drag right mouse button to rotate the camera when cursor is shown.
   
-  - After your character dies, you can press `F` to follow one of your soldiers and press `F` again to control it and continue fighting. Soldiers in the same formation as player character will be considered first when deciding which soldier to control.
+  - After your character dies, you can press ~~`F`~~`E` to follow one of your soldiers and press ~~`F`~~`E` again to control it and continue fighting. Soldiers in the same formation as player character will be considered first when deciding which soldier to control.
 
     - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your charater dies. Press `L` and check `Control Ally After Death` option to enable this feature. It's always enabled in free camera mode to ensure a smooth gaming experience.
 
-  - When the camera is following a character, you can press `F` to control the character. You can make the camera follow a character in the following ways:
+  - When the camera is following a character, you can press ~~`F`~~`E` to control the character. You can make the camera follow a character in the following ways:
 
-    - In free camera press `F` to follow the player character.
+    - In free camera press ~~`F`~~`E` to follow the player character.
 
     - You can make the camera follow any hero by pressing `L` to open the menu and selecting a hero in `Watch Another Hero` drop-down list.
 
-    - You can make the camera follow any character by pressing `;` and clicking a character, then pressing `F`.
+    - You can make the camera follow any character by pressing `;` and clicking a character, then pressing ~~`F`~~`E`.
 
     - You can press left/right mouse button to change the character that the camera is following.
 
@@ -73,7 +73,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 - You can rebind hotkeys by pressing `L` and click `Config Key`.
 
-- Configuration saving.
+- Configuration will be automatically saved.
 
 ## How to Install
 1. Remove any old installation of this mod. You can go to `Modules` folder of bannerlord installation folder (For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord\Moudles\`) and remove folders like `RTSCamera` or `EnhancedMission`.
