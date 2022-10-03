@@ -33,6 +33,8 @@ namespace RTSCamera.CommandSystem.Config
             ClickToSelectFormation = other.ClickToSelectFormation;
             AttackSpecificFormation = other.AttackSpecificFormation;
             BehaviorAfterCharge = other.BehaviorAfterCharge;
+            HighlightSelectedFormation = other.HighlightSelectedFormation;
+            HighlightTargetFormation = other.HighlightTargetFormation;
         }
 
         public static void OnMenuClosed()

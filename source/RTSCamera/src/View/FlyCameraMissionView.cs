@@ -39,6 +39,13 @@ namespace RTSCamera.View
         private static readonly FieldInfo CameraSpecialCurrentAddedBearing =
             typeof(MissionScreen).GetField("_cameraSpecialCurrentAddedBearing", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        private static readonly FieldInfo CameraBearingDelta =
+            typeof(MissionScreen).GetField("_cameraBearingDelta", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly FieldInfo CameraElevationDelta =
+            typeof(MissionScreen).GetField("_cameraElevationDelta", BindingFlags.Instance | BindingFlags.NonPublic);
+
+
         private RTSCameraConfig _config;
         private RTSCameraLogic _rtsCameraLogic;
         private SwitchFreeCameraLogic _freeCameraLogic;
@@ -49,7 +56,7 @@ namespace RTSCamera.View
         private bool _cameraSmoothMode;
         private float _cameraHeightToAdd;
         private float _cameraHeightLimit;
-        private float _groundHeightToAdd;
+        private float? _previousHeightToTerrain;
         private readonly bool _classicMode = true;
         private bool _levelToEdge;
         private bool _lockToAgent;
@@ -195,13 +202,16 @@ namespace RTSCamera.View
         private void LeaveFromAgent()
         {
             LockToAgent = false;
-            CameraPosition = MissionScreen.CombatCamera.Position;
+            CameraPosition = MissionScreen.CombatCamera.Frame.origin;
             CameraBearing = MissionScreen.CameraBearing +
                 (float?)CameraSpecialCurrentAddedBearing?.GetValue(MissionScreen) ?? 0;
             CameraElevation = MissionScreen.CameraElevation +
                 (float?)CameraSpecialCurrentAddedElevation?.GetValue(MissionScreen) ?? 0;
+            CameraBearingDelta?.SetValue(MissionScreen, 0);
+            CameraElevationDelta?.SetValue(MissionScreen, 0);
             SetLastFollowedAgent?.Invoke(MissionScreen, new object[] { null });
             MissionScreen.LastFollowedAgentVisuals = null;
+            _previousHeightToTerrain = null;
         }
 
         public override void OnMissionScreenInitialize()
@@ -314,19 +324,22 @@ namespace RTSCamera.View
         {
             HandleRotateInput(dt);
             MatrixFrame cameraFrame = MatrixFrame.Identity;
-            cameraFrame.rotation.RotateAboutSide(1.570796f);
+            cameraFrame.rotation.RotateAboutSide(1.57079637f);
             cameraFrame.rotation.RotateAboutForward(CameraBearing);
-            cameraFrame.rotation.RotateAboutSide(
-                CameraElevation + (float?)CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);            
+            cameraFrame.rotation.RotateAboutSide(CameraElevation);
+            if (!MissionScreen.IsPhotoModeEnabled)
+                cameraFrame.rotation.RotateAboutSide((float?)CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);
             cameraFrame.origin = CameraPosition;
             if (_forceMove)
                 cameraFrame.origin += ForcedMoveTick(dt);
             float heightFactorForHorizontalMove;
             float heightFactorForVerticalMove;
+            var groundHeight = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin);
+            var terrainHeight = Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2);
+
             if (!_config.ConstantSpeed)
             {
-                float heightAtPosition = _config.IgnoreTerrain ? Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2) :
-                    Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags);
+                float heightAtPosition = _config.IgnoreTerrain ? terrainHeight : groundHeight;
                 heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
                     1, 30);
                 heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
@@ -336,16 +349,6 @@ namespace RTSCamera.View
             {
                 heightFactorForHorizontalMove = 1;
                 heightFactorForVerticalMove = 1;
-            }
-
-            if (_config.CameraHeightFollowsTerrain)
-            {
-                bool sceneCollision = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin, BodyFlags.CommonCollisionExcludeFlags) > Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2) + 0.5f;
-                if (_groundHeightToAdd != 0 && !sceneCollision)
-                {
-                    cameraFrame.origin.z += Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2) - _groundHeightToAdd;
-                }                
-                _groundHeightToAdd = Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2);
             }
 
             if (MissionScreen.InputManager.IsHotKeyPressed("MissionScreenHotkeyIncreaseCameraSpeed"))
@@ -372,6 +375,8 @@ namespace RTSCamera.View
                 _cameraSpeed.y = 0.0f;
                 _cameraSpeed.z = 0.0f;
             }
+
+            bool hasVerticalInput = false;
             if (!MissionScreen.InputManager.IsControlDown() || !MissionScreen.InputManager.IsAltDown())
             {
                 Vec3 keyInput = Vec3.Zero;
@@ -409,6 +414,8 @@ namespace RTSCamera.View
                     keyInput.Normalize();
                 if (mouseInput.LengthSquared > 0.0)
                     mouseInput.Normalize();
+
+                hasVerticalInput = (keyInput.z + mouseInput.z) != 0 || Input.GetDeltaMouseScroll() != 0;
                 _cameraSpeed += (keyInput + mouseInput) * num1 * heightFactorForHorizontalMove;
             }
             float horizontalLimit = heightFactorForHorizontalMove * num1;
@@ -416,6 +423,15 @@ namespace RTSCamera.View
             _cameraSpeed.x = MBMath.ClampFloat(_cameraSpeed.x, -horizontalLimit, horizontalLimit);
             _cameraSpeed.y = MBMath.ClampFloat(_cameraSpeed.y, -horizontalLimit, horizontalLimit);
             _cameraSpeed.z = MBMath.ClampFloat(_cameraSpeed.z, -verticalLimit, verticalLimit);
+
+            if (_config.CameraHeightFollowsTerrain)
+            {
+                if (_previousHeightToTerrain.HasValue && !hasVerticalInput)
+                {
+                    cameraFrame.origin.z = _previousHeightToTerrain.Value + terrainHeight;
+                }
+            }
+
             if (_classicMode)
             {
                 cameraFrame.origin += _cameraSpeed.x * cameraFrame.rotation.s.AsVec2.ToVec3().NormalizedCopy() * dt;
@@ -469,13 +485,19 @@ namespace RTSCamera.View
             {
                 LimitCameraDistance(ref cameraFrame, dt, num1);
             }
+
+            if (_config.CameraHeightFollowsTerrain)
+            {
+                _previousHeightToTerrain = cameraFrame.origin.z - terrainHeight;
+            }
+
             if (!MBEditor.IsEditModeOn)
             {
                 if (!_config.IgnoreBoundaries && !Mission.IsPositionInsideBoundaries(cameraFrame.origin.AsVec2))
                     cameraFrame.origin.AsVec2 = Mission.GetClosestBoundaryPosition(cameraFrame.origin.AsVec2);
                 float heightAtPosition1 = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin + new Vec3(0.0f, 0.0f, 100f));
-                if (!MissionScreen.IsCheatGhostMode && !_config.IgnoreTerrain && heightAtPosition1 < 9999.0)                    
-                    cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition1 + 0.5f);
+                if (!MissionScreen.IsCheatGhostMode && !_config.IgnoreTerrain && heightAtPosition1 < 9999.0)
+                    cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition1 + 0.1f);
                 if (cameraFrame.origin.z > heightAtPosition1 + 80.0)
                     cameraFrame.origin.z = heightAtPosition1 + 80f;
                 if (cameraFrame.origin.z < -100.0)
@@ -570,7 +592,7 @@ namespace RTSCamera.View
         {
             float newDNear = !Mission.CameraIsFirstPerson ? 0.1f : 0.065f;
             CombatCamera.SetFovVertical((float)(ViewAngle * (Math.PI / 180.0)), Screen.AspectRatio, newDNear, 12500f);
-            MissionScreen.SceneView?.SetCamera(CombatCamera);            
+            MissionScreen.SceneView?.SetCamera(CombatCamera);
         }
 
         private void BeginForcedMove(Vec3 vec)

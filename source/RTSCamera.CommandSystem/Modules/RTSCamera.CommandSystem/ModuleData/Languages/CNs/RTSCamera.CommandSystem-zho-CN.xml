@@ -8,14 +8,18 @@
     <string id="RTSCameraCommandSystem_option_class" text="指挥系统" />
 
     <string id="RTSCameraCommandSystem_command_system_options" text="指挥系统" />
-    <string id="RTSCameraCommandSystem_click_to_select_formation" text="用鼠标选择部队" />
-    <string id="RTSCameraCommandSystem_click_to_select_formation_hint" text="你可以按下{KeyName}来选择部队。选中的编队会用轮廓高亮。" />
+    <string id="RTSCameraCommandSystem_click_to_select_formation" text="用鼠标选择编队" />
+    <string id="RTSCameraCommandSystem_click_to_select_formation_hint" text="你可以按下{KeyName}来选择编队。选中的编队会用轮廓高亮。" />
+    <string id="RTSCameraCommandSystem_highlight_selected_formation" text="高亮选中的编队" />
+    <string id="RTSCameraCommandSystem_highlight_selected_formation_hint" text="选中的编队会用轮廓高亮" />
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="启用攻击特定编队" />
     <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="你在敌方编队上按下{KeyName}来发出攻击指定的敌方编队的命令。对AI同样适用。" />
     <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="消灭敌方编队后" />
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="消灭指定的敌方编队后下一步的行为" />
     <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="冲锋" />
     <string id="RTSCameraCommandSystem_after_charge_behavior_hold" text="原地等待" />
+    <string id="RTSCameraCommandSystem_highlight_target_formation" text="高亮目标编队" />
+    <string id="RTSCameraCommandSystem_highlight_target_formation_hint" text="目标编队会用轮廓高亮" />
 
     <string id="RTSCameraCommandSystem_hotkeycategory" text="指挥系统按键" />
     <string id="RTSCameraCommandSystem_select_formation" text="选择编队" />

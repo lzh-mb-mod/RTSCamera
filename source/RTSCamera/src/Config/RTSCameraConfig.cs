@@ -33,9 +33,9 @@ namespace RTSCamera.Config
                     goto case "1.5";
                 case "1.5":
                     CameraDistanceLimitFactor = 1;
+                    CameraHeightFollowsTerrain = false;
                     goto case "1.6";
                 case "1.6":
-                    CameraHeightFollowsTerrain = false;
                     break;
             }
 
