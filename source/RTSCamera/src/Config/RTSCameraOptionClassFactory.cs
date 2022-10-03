@@ -194,7 +194,7 @@ namespace RTSCamera.Config
                             new SelectionItem(true, "str_troop_group_name", "7"),
                             new SelectionItem(true, "str_troop_group_name", "8"),
                             new SelectionItem(true, "str_troop_group_name", "9")
-                        }), true);
+                        }), true, true);
                 controlOptionCategory.AddOption(playerFormationOption);
                 controlOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_always_set_player_formation"),
