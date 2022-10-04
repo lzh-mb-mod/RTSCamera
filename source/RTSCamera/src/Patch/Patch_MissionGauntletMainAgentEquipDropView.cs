@@ -4,7 +4,6 @@ using RTSCamera.Logic;
 using System;
 using System.Reflection;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission;
-using TaleWorlds.MountAndBlade.ViewModelCollection.HUD;
 
 namespace RTSCamera.Patch
 {

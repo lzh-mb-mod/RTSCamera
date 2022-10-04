@@ -67,13 +67,19 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnFormationUnitsSpawned(Team team)
         {
-            if (WatchBattleBehavior.WatchMode && team == Mission.PlayerTeam && Mission.MainAgent == null)
+            if (team == Mission.PlayerTeam)
             {
-                _controlTroopLogic.SetMainAgent();
-                Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
-                if (Mission.PlayerTeam.IsPlayerGeneral)
-                    Utility.SetPlayerAsCommander(true);
-                team.PlayerOrderController?.SelectAllFormations();
+                if (WatchBattleBehavior.WatchMode && Mission.MainAgent == null)
+                {
+                    _controlTroopLogic.SetMainAgent();
+                    if (Mission.MainAgent != null)
+                    {
+                        Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
+                        if (Mission.PlayerTeam.IsPlayerGeneral)
+                            Utility.SetPlayerAsCommander(true);
+                        team.PlayerOrderController?.SelectAllFormations();
+                    }
+                }
             }
         }
 
