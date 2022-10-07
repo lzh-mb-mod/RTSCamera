@@ -61,8 +61,7 @@ namespace RTSCamera.Logic
         public override void AfterStart()
         {
             base.AfterStart();
-
-            DisableDeathLogic.AfterStart();
+            
             MissionSpeedLogic.AfterStart();
         }
 

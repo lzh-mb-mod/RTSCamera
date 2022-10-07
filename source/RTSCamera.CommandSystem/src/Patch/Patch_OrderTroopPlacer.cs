@@ -29,7 +29,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static bool _patched;
 
 
-        private static FieldInfo _dataSource =
+        private static readonly FieldInfo _dataSource =
             typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_dataSource),
                 BindingFlags.Instance | BindingFlags.NonPublic);
 

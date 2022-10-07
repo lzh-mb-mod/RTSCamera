@@ -83,8 +83,6 @@ namespace RTSCamera.Config
 
         public bool IgnoreRetreatingTroops = true;
 
-        public bool DisableDeath;
-
         public bool DisableDeathHotkeyEnabled;
 
         public bool SwitchTeamHotkeyEnabled;
@@ -92,6 +90,8 @@ namespace RTSCamera.Config
         public bool LimitCameraDistance = true;
 
         public float CameraDistanceLimitFactor = 1;
+
+        public bool OrderUIClickable = true;
 
         public static void OnMenuClosed()
         {
@@ -117,11 +117,11 @@ namespace RTSCamera.Config
             IgnoreRetreatingTroops = other.IgnoreRetreatingTroops;
             PreferToControlCompanions = other.PreferToControlCompanions;
             ControlTroopsInPlayerPartyOnly = other.ControlTroopsInPlayerPartyOnly;
-            DisableDeath = other.DisableDeath;
             DisableDeathHotkeyEnabled = other.DisableDeathHotkeyEnabled;
             SwitchTeamHotkeyEnabled = other.SwitchTeamHotkeyEnabled;
             LimitCameraDistance = other.LimitCameraDistance;
             CameraDistanceLimitFactor = other.CameraDistanceLimitFactor;
+            OrderUIClickable = other.OrderUIClickable;
         }
         [XmlIgnore]
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");

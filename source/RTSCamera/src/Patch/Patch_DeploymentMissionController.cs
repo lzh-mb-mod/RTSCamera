@@ -22,10 +22,10 @@ namespace RTSCamera.Patch
                     return false;
                 _patched = true;
                 Harmony.Patch(
-                    typeof(DeploymentMissionController).GetMethod("OnPlayerDeploymentFinishedAux",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    typeof(DeploymentMissionController).GetMethod("FinishPlayerDeployment",
+                        BindingFlags.Instance | BindingFlags.Public),
                     postfix: new HarmonyMethod(typeof(Patch_DeploymentMissionController).GetMethod(
-                        nameof(Postfix_OnPlayerDeploymentFinishedAux), BindingFlags.Static | BindingFlags.Public)));
+                        nameof(Postfix_FinishPlayerDeployment), BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {
@@ -37,7 +37,7 @@ namespace RTSCamera.Patch
             return true;
         }
 
-        public static void Postfix_OnPlayerDeploymentFinishedAux()
+        public static void Postfix_FinishPlayerDeployment()
         {
             if (Mission.Current?.PlayerTeam != null && Mission.Current.PlayerTeam.IsValid)
             {

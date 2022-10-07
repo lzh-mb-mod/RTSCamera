@@ -11,7 +11,7 @@ namespace RTSCamera.Patch.Fix
 {
     public class Patch_MissionOrderVM
     {
-        private static PropertyInfo LastSelectedOrderSetType =
+        private static readonly PropertyInfo LastSelectedOrderSetType =
             typeof(MissionOrderVM).GetProperty(nameof(MissionOrderVM.LastSelectedOrderSetType),
                 BindingFlags.Instance | BindingFlags.Public);
         private static readonly Harmony Harmony = new Harmony(RTSCameraSubModule.ModuleId + "_" + nameof(Patch_MissionOrderVM));

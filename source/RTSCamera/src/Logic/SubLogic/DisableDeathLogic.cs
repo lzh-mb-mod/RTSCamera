@@ -20,11 +20,6 @@ namespace RTSCamera.Logic.SubLogic
             _logic = logic;
         }
 
-        public void AfterStart()
-        {
-            SetDisableDeath(_config.DisableDeath, true);
-        }
-
         public void OnMissionTick(float dt)
         {
             if (!NativeConfig.CheatMode)
@@ -37,14 +32,14 @@ namespace RTSCamera.Logic.SubLogic
 
         public bool GetDisableDeath()
         {
-            return _config.DisableDeath = Mission.DisableDying;
+            return Mission.DisableDying;
         }
 
         public void SetDisableDeath(bool disableDeath, bool atStart = false)
         {
             if (!NativeConfig.CheatMode)
                 return;
-            _config.DisableDeath = Mission.DisableDying = disableDeath;
+            Mission.DisableDying = disableDeath;
             if (atStart && !disableDeath)
                 return;
             PrintDeathStatus(disableDeath);

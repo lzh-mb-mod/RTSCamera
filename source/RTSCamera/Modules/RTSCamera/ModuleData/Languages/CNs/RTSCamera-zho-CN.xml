@@ -36,6 +36,7 @@
     <string id="RTSCamera_ignore_boundaries_hint" text="启用后镜头不再受到地图边界的限制。" />
     <string id="RTSCamera_display_message_hint" text="是否显示本mod的消息。" />
     <string id="RTSCamera_toggle_ui_hint" text="开关游戏的HUD，用于制作视频。" />
+    <string id="RTSCamera_order_ui_clickable_hint" text="让命令界面可点击。退出到主菜单来生效。" />
     <string id="RTSCamera_disable_death_hint" text="所有单位无敌不会阵亡，用于制作视频。" />
     <string id="RTSCamera_switch_team_hint" text="交换玩家所在的队伍，用于制作视频。" />
 
@@ -105,6 +106,7 @@
 
     <string id="RTSCamera_displaymodmessage" text="显示mod消息" />
     <string id="RTSCamera_toggleui" text="切换HUD" />
+    <string id="RTSCamera_order_ui_clickable" text="命令界面可点击" />
 
     <string id="RTSCamera_hotkeycategory" text="自由视角按键" />
     <string id="RTSCamera_pausekey" text="暂停" />
