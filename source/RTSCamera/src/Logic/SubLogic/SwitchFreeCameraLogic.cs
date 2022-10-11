@@ -19,6 +19,8 @@ namespace RTSCamera.Logic.SubLogic
         private ControlTroopLogic _controlTroopLogic;
 
         private bool _isFirstTimeMainAgentChanged = true;
+        private bool _isDeploymentFinishing = false;
+        private FormationClass _formationClassInDeployment;
         private bool _switchToFreeCameraAfter100ms;
         private float _switchToFreeCameraTimer;
         private List<FormationClass> _playerFormations;
@@ -129,8 +131,10 @@ namespace RTSCamera.Logic.SubLogic
                 agent.SetMaximumSpeedLimit(-1, false);
                 agent.MountAgent?.SetMaximumSpeedLimit(-1, false);
                 //agent.StopRetreating();
-                if (_config.AlwaysSetPlayerFormation && !WatchBattleBehavior.WatchMode)
-                    Utility.SetPlayerFormationClass((FormationClass)_config.PlayerFormation);
+                TrySetPlayerFormation();
+
+                // If MainAgent.Controller = Controller.Player is called from DeploymentMissionController, then we will try set the player formation i then reset _isDeploymentFinishing.
+                _isDeploymentFinishing = false;
                 if (agent.Formation == null)
                     return;
                 CurrentPlayerFormation = agent.Formation.FormationIndex;
@@ -138,14 +142,42 @@ namespace RTSCamera.Logic.SubLogic
             else if (agent == Mission.MainAgent)
             {
                 Utility.SetHasPlayer(agent.Formation, false);
-
-                if (_config.AlwaysSetPlayerFormation && !WatchBattleBehavior.WatchMode)
-                    Utility.SetPlayerFormationClass((FormationClass)_config.PlayerFormation);
+                TrySetPlayerFormation();
 
                 if (agent.Formation == null)
                     return;
                 CurrentPlayerFormation = agent.Formation.FormationIndex;
             }
+        }
+
+        public void OnMissionModeChange(MissionMode oldMissionMode, bool atStart)
+        {
+            if (oldMissionMode == MissionMode.Deployment && Mission.Mode == MissionMode.Battle)
+            {
+                // CurrentPlayerFormation will be changed when player agent is set to Player controller because OnMainAgentChanged will be called.
+                // So we need to cache it here.
+                _formationClassInDeployment = CurrentPlayerFormation;
+                TrySetPlayerFormation(true);
+                // OnMissionModeChange is called before the player is promoted to general formation in DeploymentMissionController.
+                // So we need to still set player formation when player controller is set to Player in DeploymentMissionController later.
+                _isDeploymentFinishing = true;
+            }
+        }
+
+        private void TrySetPlayerFormation(bool isDeploymentFinishing = false)
+        {
+            // In watch mode, after deployment stage the player formation needs to be reset from General formation.
+            if (WatchBattleBehavior.WatchMode)
+            {
+                if (_isDeploymentFinishing || isDeploymentFinishing)
+                {
+                    Utility.SetPlayerFormationClass(_formationClassInDeployment);
+                }
+            }
+            else if (_config.AutoSetPlayerFormation == AutoSetPlayerFormation.Always ||
+                     _config.AutoSetPlayerFormation == AutoSetPlayerFormation.DeploymentStage &&
+                     (isDeploymentFinishing || _isDeploymentFinishing || Mission.Mode == MissionMode.Deployment))
+                Utility.SetPlayerFormationClass((FormationClass)_config.PlayerFormation);
         }
 
         private void OnMainAgentChanged(object sender, PropertyChangedEventArgs e)
@@ -166,7 +198,7 @@ namespace RTSCamera.Logic.SubLogic
                     }
                     if (Mission.MainAgent.Formation != null)
                         CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
-                    if (IsSpectatorCamera && _config.GetPlayerControllerInFreeCamera() == Agent.ControllerType.AI || WatchBattleBehavior.WatchMode)
+                    if (IsSpectatorCamera || WatchBattleBehavior.WatchMode)
                     {
                         EnsureMainAgentControlledByAI();
                     }

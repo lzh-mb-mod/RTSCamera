@@ -81,7 +81,7 @@ namespace RTSCamera.View
                 }
                 else if ((_freeCameraLogic == null || !_freeCameraLogic.IsSpectatorCamera))
                 {
-                    _showControlHintVM.SetShowText(false, false);
+                    DisableControlHint();
                 }
             }
         }
@@ -298,6 +298,11 @@ namespace RTSCamera.View
             _showControlHintVM.SetShowText(true,
                 !WatchBattleBehavior.WatchMode && (LockToAgent || Mission.MainAgent == null) && Utility.IsTeamValid(agent.Team) &&
                 agent.Team == Mission.PlayerTeam, LockToAgent ? agent.Name : null);
+        }
+
+        public void DisableControlHint()
+        {
+            _showControlHintVM.SetShowText(false, false);
         }
 
         private void MissionScreenOnSpectateAgentFocusOut(Agent agent)

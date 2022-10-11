@@ -1,17 +1,27 @@
 # Changelog
 
+## [e4.1.14] - 2022-10-12
+### Fixed
+- Fix the issue that control hint doesn't correctly disappear when free camera mode isn't on.
+
+### Changed
+- Change the "Always Set Player Formation" bool option to dropdown option "Auto Set Player Formation" that contains "Never", "Deployment Stage" and "Always".
+
+### Improved
+- Optimized the algorithm of looking for character to control. Hero appears first in party member list will be selected first. 
+
 ## [e4.1.11] - 2022-09-10
-## Fixed
+### Fixed
 - Fix the issue that pressing `G` will cause player drop weapon in free camera mode.
 
 ## [e4.1.8] - 2022-09-05
-## Added
+### Added
 - Limit camera distance by Tactics and Scouting skill.
 
 - Use free camera and issue orders in free camera will give Scouting and Tactics skill xp.
 
 ## [e4.1.0] - 2022-08-23
-## Fixed
+### Fixed
 - Keep compatible with Bannerlord e1.8.0
 
 ## [e4.0.0] - 2022-07-23

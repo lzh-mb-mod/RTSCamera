@@ -23,11 +23,11 @@
   <string id="str_rts_camera_slow_motion_factor_hint" text="{=RTSCamera_slow_motion_factor_hint}The factor of time speed." />
   <string id="str_rts_camera_player_controller_in_free_camera_hint" text="{=RTSCamera_player_controller_in_free_camera_hint}Player control mode in Free Camera. If set to none, player character will not be controlled. If set to AI, AI will control player character. If set to Player, you can still directly control your character." />
   <string id="str_rts_camera_player_formation_hint" text="{=RTSCamera_player_formation_hint}Assign player to the selected formation." />
-  <string id="str_rts_camera_always_set_player_formation_hint" text="{=RTSCamera_always_set_player_formation_hint}Automatically set player to the specified formation, for example when switching to free camera, when controlling another solider, etc." />
+  <string id="str_rts_camera_auto_set_player_formation_hint" text="{=RTSCamera_auto_set_player_formation_hint}When to automatically set player to the specified formation." />
   <string id="str_rts_camera_watch_another_hero_hint" text="{=RTSCamera_watch_another_hero_hint}Watch the hero you selected." />
   <string id="str_rts_camera_select_character_hint" text="{=RTSCamera_select_character_hint}Select a character using mouse, then you can focus the camera to it or control it." />
   <string id="str_rts_camera_control_ally_after_death_hint" text="{=RTSCamera_control_ally_after_death_hint}Automatically control one of your ally after you die." />
-  <string id="str_rts_camera_prefer_to_control_companions_hint" text="{=RTSCamera_prefer_to_control_companions_hint}Prefer to control companions when looking for target to control." />
+  <string id="str_rts_camera_prefer_unit_in_same_formation_hint" text="{=RTSCamera_prefer_unit_in_same_formation_hint}Prefer to control units in the same formation as player." />
   <string id="str_rts_camera_control_troops_in_player_party_only_hint" text="{=RTSCamera_control_troops_in_player_party_only_hint}Only consider troops in player party when looking for target to control." />
   <string id="str_rts_camera_ignore_retreating_troops_hint" text="{=RTSCamera_ignore_retreating_troops_hint}Won't consider retreating troops when looking for target to contorl." />
   <string id="str_rts_camera_constant_speed_hint" text="{=RTSCamera_constant_speed_hint}Camera movement speed won't be affected by height." />
@@ -74,11 +74,14 @@
   <string id="str_rts_camera_controller_type.AI" text="{=RTSCamera_controller_type_AI}AI" />
   <string id="str_rts_camera_controller_type.Player" text="{=RTSCamera_controller_type_player}Player" />
   <string id="str_rts_camera_player_formation" text="{=RTSCamera_playerformation}Player Formation" />
-  <string id="str_rts_camera_always_set_player_formation" text="{=RTSCamera_always_set_player_formation}Always Set Player Formation" />
+  <string id="str_rts_camera_auto_set_player_formation" text="{=RTSCamera_auto_set_player_formation}Auto Set Player Formation" />
+  <string id="str_rts_camera_auto_set_player_formation.Never" text="{=RTSCamera_auto_set_player_formation_never}Never" />
+  <string id="str_rts_camera_auto_set_player_formation.DeploymentStage" text="{=RTSCamera_auto_set_player_formation_deployment_stage}Deployment Stage" />
+  <string id="str_rts_camera_auto_set_player_formation.Always" text="{=RTSCamera_auto_set_player_formation_always}Always" />
   <string id="str_rts_camera_watch_another_hero" text="{=RTSCamera_watchanotherhero}Watch Another Hero" />
   <string id="str_rts_camera_select_character" text="{=RTSCamera_select_character}Select Character" />
   <string id="str_rts_camera_control_ally_after_death" text="{=RTSCamera_controlallyafterdeath}Control Ally After Death" />
-  <string id="str_rts_camera_prefer_to_control_companions" text="{=RTSCamera_prefertocontrolcompanions}Prefer To Control Companions" />
+  <string id="str_rts_camera_prefer_unit_in_same_formation" text="{=RTSCamera_prefer_unit_in_same_formation}Prefer Units In Same Formation" />
   <string id="str_rts_camera_control_troops_in_player_party_only" text="{=RTSCamera_controltroopsinplayerpartyonly}Control Troops In Player Party Only" />
   <string id="str_rts_camera_ignore_retreating_troops" text="{=RTSCamera_ignoreretreatingtroops}Ignore Retreating Troops" />
 

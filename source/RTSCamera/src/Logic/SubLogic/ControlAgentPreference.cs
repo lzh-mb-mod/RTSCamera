@@ -10,8 +10,8 @@ namespace RTSCamera.Logic.SubLogic
 {
     public class ControlAgentPreference
     {
-        public Agent NearestAgent;
-        public Agent NearestCompanion;
+        public Agent BestAgent;
+        public Agent BestHero;
         private Mission Mission => Mission.Current;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
 
@@ -40,29 +40,25 @@ namespace RTSCamera.Logic.SubLogic
                 return;
             if (!_config.ControlTroopsInPlayerPartyOnly || Utility.IsInPlayerParty(agent) || WatchBattleBehavior.WatchMode)
             {
-                if (agent.IsHero)
+                if (BestAgent == null || !BestAgent.IsHero && agent.IsHero ||
+                    BestAgent.IsHero && agent.IsHero && (Utility.IsHigherInMemberRoster(agent, BestAgent) ??
+                                                         BestAgent.Position.DistanceSquared(position) >
+                                                         agent.Position.DistanceSquared(position)) ||
+                    !BestAgent.IsHero && !agent.IsHero &&
+                    BestAgent.Position.DistanceSquared(position) > agent.Position.DistanceSquared(position))
                 {
-                    if (_config.PreferToControlCompanions)
-                    {
-                        if (agent.Character is CharacterObject character)
-                        {
-                            if (character.HeroObject.IsPlayerCompanion &&
-                                (NearestCompanion == null || NearestCompanion.Position.DistanceSquared(position) >
-                                    agent.Position.DistanceSquared(position)))
-                            {
-                                NearestCompanion = agent;
-                            }
-                        }
-                    }
-
+                    BestAgent = agent;
                 }
 
-                // Prefer hero agent.
-                if (NearestAgent == null || !NearestAgent.IsHero && agent.IsHero ||
-                    (!NearestAgent.IsHero || agent.IsHero) && 
-                    NearestAgent.Position.DistanceSquared(position) > agent.Position.DistanceSquared(position))
+                if (!_config.PreferUnitsInSameFormation && agent.IsHero)
                 {
-                    NearestAgent = agent;
+                    // intended to find best hero at team scope.
+                    if (BestHero == null || (Utility.IsHigherInMemberRoster(agent, BestHero) ??
+                                             BestHero.Position.DistanceSquared(position) >
+                                             agent.Position.DistanceSquared(position)))
+                    {
+                        BestHero = agent;
+                    }
                 }
             }
         }
