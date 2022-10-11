@@ -93,6 +93,8 @@ namespace RTSCamera.Config
 
         public float CameraDistanceLimitFactor = 1;
 
+        public bool OrderUIClickable = true;
+
         public static void OnMenuClosed()
         {
             Get().Serialize();

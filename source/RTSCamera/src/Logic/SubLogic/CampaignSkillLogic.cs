@@ -27,8 +27,6 @@ namespace RTSCamera.Logic.SubLogic
 
         private void OnToggleFreeCamera(bool isFreeCamera)
         {
-            if (Campaign.Current == null || (_logic.Mission.Mode != MissionMode.Battle && _logic.Mission.Mode != MissionMode.Deployment) || _logic.Mission.IsMissionEnding)
-                return;
             _isFreeCamera = isFreeCamera;
             if (isFreeCamera)
             {
@@ -45,10 +43,14 @@ namespace RTSCamera.Logic.SubLogic
             team.PlayerOrderController.OnOrderIssued += OnOnOrderIssued;
         }
 
+        private bool ShouldGainSkillXp()
+        {
+            return Campaign.Current != null && RTSCameraSkillBehavior.ShouldLimitCameraDistance(_logic.Mission) &&
+                _logic.Mission.Mode == MissionMode.Battle && !_logic.Mission.IsMissionEnding;
+        }
+
         private void OnOnOrderIssued(OrderType orderType, IEnumerable<Formation> appliedFormations, object[] delegateParams)
         {
-            if (Campaign.Current == null || _logic.Mission.IsMissionEnding)
-                return;
             if (Utility.IsTeamValid(_logic.Mission.PlayerTeam) &&
                 (MapEvent.PlayerMapEvent == null ||
                  MapEvent.PlayerMapEvent.PlayerSide == _logic.Mission.PlayerTeam.Side) &&
@@ -60,6 +62,8 @@ namespace RTSCamera.Logic.SubLogic
 
         private void UpdateSkillXp(bool hasOrderIssued)
         {
+            if (!ShouldGainSkillXp())
+                return;
             var duration = _logic.Mission.CurrentTime - _beginTime;
             _beginTime = _logic.Mission.CurrentTime;
             GiveXpForScouting(duration);

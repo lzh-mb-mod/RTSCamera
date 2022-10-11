@@ -156,7 +156,10 @@ namespace RTSCameraAgentComponent
 
             try
             {
-                mount.AgentVisuals?.SetContourColor(null);
+                if (CurrentColor != null)
+                {
+                    mount.AgentVisuals?.SetContourColor(null);
+                }
             }
             catch (Exception e)
             {

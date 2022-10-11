@@ -11,6 +11,7 @@ using RTSCamera.View;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
+using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews;
@@ -279,6 +280,11 @@ namespace RTSCamera.Config
                         hideHudView?.ToggleUI();
                         menuManager.RequestToCloseMenu();
                     }));
+                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_order_ui_clickable"),
+                    GameTexts.FindText("str_rts_camera_order_ui_clickable_hint"),
+                    () => RTSCameraConfig.Get().OrderUIClickable,
+                    b => RTSCameraConfig.Get().OrderUIClickable = UIConfig.DoNotUseGeneratedPrefabs = b));
                 optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
 
                 if (NativeConfig.CheatMode)

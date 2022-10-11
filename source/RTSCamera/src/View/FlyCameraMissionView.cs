@@ -481,7 +481,7 @@ namespace RTSCamera.View
                 cameraFrame.origin += _cameraSpeed.z * cameraFrame.rotation.f * dt;
             }
 
-            if (!WatchBattleBehavior.WatchMode && Campaign.Current != null && Mission.Mode != MissionMode.Deployment && _config.LimitCameraDistance && Mission.MainAgent != null && RTSCameraSkillBehavior.CameraDistanceLimit >= 0)
+            if (RTSCameraSkillBehavior.ShouldLimitCameraDistance(Mission))
             {
                 LimitCameraDistance(ref cameraFrame, dt, num1);
             }
