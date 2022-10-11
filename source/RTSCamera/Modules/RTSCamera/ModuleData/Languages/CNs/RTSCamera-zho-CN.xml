@@ -23,11 +23,11 @@
     <string id="RTSCamera_slow_motion_factor_hint" text="时间流逝速度倍率。" />
     <string id="RTSCamera_player_controller_in_free_camera_hint" text="自由视角中玩家角色的控制模式。如果设为无，你的角色不会被控制。如果设为AI，你的角色会被AI控制。如果设为玩家，你仍然可以直接控制你的角色。" />
     <string id="RTSCamera_player_formation_hint" text="将玩家分配到指定的编队。" />
-    <string id="RTSCamera_always_set_player_formation_hint" text="自动将玩家分配到指定编队，例如当切换到自由视角时，当控制另一个士兵时，等等。" />
+    <string id="RTSCamera_auto_set_player_formation_hint" text="何时自动将玩家分配到指定编队。" />
     <string id="RTSCamera_watch_another_hero_hint" text="观察一个你选择的英雄。" />
     <string id="RTSCamera_select_character_hint" text="用鼠标选择一个角色，然后你可以将相机对准它或者控制它。" />
     <string id="RTSCamera_control_ally_after_death_hint" text="阵亡后自动控制你的一个队友来继续战斗。" />
-    <string id="RTSCamera_prefer_to_control_companions_hint" text="当寻找可控制的单位时倾向于控制同伴。" />
+    <string id="RTSCamera_prefer_unit_in_same_formation_hint" text="当寻找可控制的单位时倾向于和玩家在同一编队中的单位。" />
     <string id="RTSCamera_control_troops_in_player_party_only_hint" text="当寻找可控制的单位时只考虑玩家部队内的单位。" />
     <string id="RTSCamera_ignore_retreating_troops_hint" text="当寻找可控制的单位时忽略正在撤退的单位" />
     <string id="RTSCamera_constant_speed_hint" text="镜头移动速度不再受高度影响。" />
@@ -74,11 +74,14 @@
     <string id="RTSCamera_controller_type_AI" text="AI" />
     <string id="RTSCamera_controller_type_player" text="玩家" />
     <string id="RTSCamera_playerformation" text="玩家编队" />
-    <string id="RTSCamera_always_set_player_formation" text="总是设置玩家编队" />
+    <string id="RTSCamera_auto_set_player_formation" text="自动设置玩家编队" />
+    <string id="RTSCamera_auto_set_player_formation_never" text="从不" />
+    <string id="RTSCamera_auto_set_player_formation_deployment_stage" text="部署阶段" />
+    <string id="RTSCamera_auto_set_player_formation_always" text="总是" />
     <string id="RTSCamera_watchanotherhero" text="观察另一个英雄单位" />
     <string id="RTSCamera_select_character" text="选择角色" />
     <string id="RTSCamera_controlallyafterdeath" text="阵亡后控制队友" />
-    <string id="RTSCamera_prefertocontrolcompanions" text="优先控制同伴" />
+    <string id="RTSCamera_prefer_unit_in_same_formation" text="优先控制同编队内的单位" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
     <string id="RTSCamera_ignoreretreatingtroops" text="忽略正在撤退的单位" />
 

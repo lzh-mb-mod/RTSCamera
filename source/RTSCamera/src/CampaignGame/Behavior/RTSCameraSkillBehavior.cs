@@ -17,6 +17,13 @@ namespace RTSCamera.CampaignGame.Behavior
 
         public static float CameraDistanceLimit { get; set; } = -1;
 
+        public static bool ShouldLimitCameraDistance(Mission mission)
+        {
+            return !WatchBattleBehavior.WatchMode && Campaign.Current != null && mission.Mode != MissionMode.Deployment &&
+                RTSCameraConfig.Get().LimitCameraDistance && mission.MainAgent != null &&
+                RTSCameraSkillBehavior.CameraDistanceLimit >= 0;
+        }
+
         public static void UpdateCameraDistanceLimit(float limit)
         {
             CameraDistanceLimit = MathF.Clamp(limit, 0, CameraDistanceMaxLimit);

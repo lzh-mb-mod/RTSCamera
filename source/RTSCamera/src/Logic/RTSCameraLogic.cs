@@ -91,6 +91,13 @@ namespace RTSCamera.Logic
             ControlTroopLogic.OnMissionTick(dt);
         }
 
+        public override void OnMissionModeChange(MissionMode oldMissionMode, bool atStart)
+        {
+            base.OnMissionModeChange(oldMissionMode, atStart);
+
+            SwitchFreeCameraLogic.OnMissionModeChange(oldMissionMode, atStart);
+        }
+
         protected override void OnAgentControllerChanged(Agent agent, Agent.ControllerType oldController)
         {
             base.OnAgentControllerChanged(agent, oldController);

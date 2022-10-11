@@ -150,7 +150,7 @@ namespace RTSCamera.Config
                             }
 
                             return RTSCameraConfig.Get().PlayerControllerInFreeCamera;
-                        }, 3, new[]
+                        }, (int)Agent.ControllerType.Count, new[]
                         {
                             new SelectionItem(true, "str_rts_camera_controller_type", "none"),
                             new SelectionItem(true, "str_rts_camera_controller_type", "AI"),
@@ -197,24 +197,38 @@ namespace RTSCamera.Config
                             new SelectionItem(true, "str_troop_group_name", "9")
                         }), true, true);
                 controlOptionCategory.AddOption(playerFormationOption);
-                controlOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_always_set_player_formation"),
-                    GameTexts.FindText("str_rts_camera_always_set_player_formation_hint"),
-                    () => RTSCameraConfig.Get().AlwaysSetPlayerFormation,
-                    b =>
+                controlOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_auto_set_player_formation"),
+                    GameTexts.FindText("str_rts_camera_auto_set_player_formation_hint"),
+                    new SelectionOptionData(i =>
                     {
-                        var config = RTSCameraConfig.Get();
-                        config.AlwaysSetPlayerFormation = b;
-                        if (config.AlwaysSetPlayerFormation)
+                        if (i < 0 || i >= (int)AutoSetPlayerFormation.Count)
                         {
-                            var formationClass = (FormationClass)config.PlayerFormation;
-                            rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = formationClass;
+                            return;
+                        }
+
+                        var config = RTSCameraConfig.Get();
+                        config.AutoSetPlayerFormation = (AutoSetPlayerFormation)i;
+                        if (config.AutoSetPlayerFormation == AutoSetPlayerFormation.Always ||
+                            config.AutoSetPlayerFormation == AutoSetPlayerFormation.DeploymentStage && rtsCameraLogic.Mission.Mode == MissionMode.Deployment)
+                        {
+                            var formationClass = (Utility.IsPlayerDead() || Mission.Current.MainAgent.Formation == null)
+                                ? config.PlayerFormation
+                                : Mission.Current.MainAgent.Formation.Index;
+                            config.PlayerFormation = formationClass;
+                            rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)formationClass;
                             if (WatchBattleBehavior.WatchMode)
                                 return;
-                            Utility.SetPlayerFormationClass(formationClass);
+                            Utility.SetPlayerFormationClass((FormationClass)formationClass);
                             playerFormationOption.UpdateData(false);
                         }
-                    }));
+                    }, () => (int)RTSCameraConfig.Get().AutoSetPlayerFormation, (int)AutoSetPlayerFormation.Count,
+                        new[]
+                        {
+                            new SelectionItem(true, "str_rts_camera_auto_set_player_formation", "Never"),
+                            new SelectionItem(true, "str_rts_camera_auto_set_player_formation", "DeploymentStage"),
+                            new SelectionItem(true, "str_rts_camera_auto_set_player_formation", "Always")
+                        }), true));
                 controlOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_watch_another_hero"),
                     GameTexts.FindText("str_rts_camera_watch_another_hero_hint"),
@@ -233,10 +247,10 @@ namespace RTSCamera.Config
                     () => RTSCameraConfig.Get().ControlAllyAfterDeath,
                     b => RTSCameraConfig.Get().ControlAllyAfterDeath = b));
                 controlOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_prefer_to_control_companions"),
-                    GameTexts.FindText("str_rts_camera_prefer_to_control_companions_hint"),
-                    () => RTSCameraConfig.Get().PreferToControlCompanions,
-                    b => RTSCameraConfig.Get().PreferToControlCompanions = b));
+                    GameTexts.FindText("str_rts_camera_prefer_unit_in_same_formation"),
+                    GameTexts.FindText("str_rts_camera_prefer_unit_in_same_formation_hint"),
+                    () => RTSCameraConfig.Get().PreferUnitsInSameFormation,
+                    b => RTSCameraConfig.Get().PreferUnitsInSameFormation = b));
                 controlOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_control_troops_in_player_party_only"),
                     GameTexts.FindText("str_rts_camera_control_troops_in_player_party_only_hint"),

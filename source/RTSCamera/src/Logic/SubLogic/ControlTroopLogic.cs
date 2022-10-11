@@ -98,6 +98,7 @@ namespace RTSCamera.Logic.SubLogic
                     else
                     {
                         Utility.PlayerControlAgent(agent);
+                        _flyCameraMissionView.DisableControlHint();
                     }
 
                     Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
@@ -169,63 +170,70 @@ namespace RTSCamera.Logic.SubLogic
         private Agent GetOtherAgentToControl(bool ignoreRetreatingAgents)
         {
             var cameraPosition = Mission.Scene.LastFinalRenderCameraPosition;
-            if (_config.PreferToControlCompanions)
+            if (_config.PreferUnitsInSameFormation)
+            {
+                var firstPreference = AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation,
+                    cameraPosition, ignoreRetreatingAgents);
+                if (firstPreference.agent != null)
+                {
+                    return firstPreference.agent;
+                }
+
+                if ((int)_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
+                {
+                    var secondPreference = AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation,
+                        cameraPosition, ignoreRetreatingAgents);
+                    if ((secondPreference.hero ?? secondPreference.agent) != null)
+                    {
+                        return secondPreference.hero ?? secondPreference.agent;
+                    }
+                }
+
+                var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents);
+                return thirdPreference.hero ?? thirdPreference.agent;
+            }
+            else
             {
                 var firstPreference =
-                    AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation, cameraPosition, ignoreRetreatingAgents);
-                if (firstPreference.companion != null)
-                    return firstPreference.companion;
+                    AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation, cameraPosition,
+                        ignoreRetreatingAgents);
+                if (firstPreference.hero != null)
+                    return firstPreference.hero;
 
                 if ((int)_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
                 {
                     var secondPreference =
-                        AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation, cameraPosition, ignoreRetreatingAgents);
-                    if (secondPreference.companion != null)
-                        return secondPreference.companion;
+                        AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation, cameraPosition,
+                            ignoreRetreatingAgents);
+                    if (secondPreference.hero != null)
+                        return secondPreference.hero;
                     var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents);
-                    return thirdPreference.companion ??
+                    return thirdPreference.hero ??
                            firstPreference.agent ?? secondPreference.agent ?? thirdPreference.agent;
                 }
                 else
                 {
                     var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents);
-                    return thirdPreference.companion ??
+                    return thirdPreference.hero ??
                            firstPreference.agent ?? thirdPreference.agent;
                 }
-
             }
-
-            var agent = AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation, cameraPosition, ignoreRetreatingAgents).agent;
-            if (agent != null)
-            {
-                return agent;
-            }
-
-            if ((int)_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
-            {
-                var secondPreference = AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation, cameraPosition, ignoreRetreatingAgents);
-                if (secondPreference.agent != null)
-                {
-                    return secondPreference.agent;
-                }
-            }
-            return AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents).agent;
         }
 
-        private (Agent agent, Agent companion) AgentPreferenceFromPlayerTeam(Vec3 position, bool ignoreRetreatingAgents)
+        private (Agent agent, Agent hero) AgentPreferenceFromPlayerTeam(Vec3 position, bool ignoreRetreatingAgents)
         {
             var preference = new ControlAgentPreference();
             preference.UpdateAgentPreferenceFromTeam(Mission.PlayerTeam, position, ignoreRetreatingAgents);
-            return (preference.NearestAgent, preference.NearestCompanion);
+            return (preference.BestAgent, preference.BestHero);
         }
 
 
-        private (Agent agent, Agent companion) AgentPreferenceFromFormation(FormationClass formationClass,
+        private (Agent agent, Agent hero) AgentPreferenceFromFormation(FormationClass formationClass,
             Vec3 position, bool ignoreRetreatingAgents)
         {
             var preference = new ControlAgentPreference();
             preference.UpdateAgentPreferenceFromFormation(formationClass, position, ignoreRetreatingAgents);
-            return (preference.NearestAgent, preference.NearestCompanion);
+            return (preference.BestAgent, preference.BestHero);
         }
 
         public void OnBehaviourInitialize()

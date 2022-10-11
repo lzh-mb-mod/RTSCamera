@@ -8,9 +8,16 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Config
 {
+    public enum AutoSetPlayerFormation
+    {
+        Never,
+        DeploymentStage,
+        Always,
+        Count
+    }
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 6);
+        protected static Version BinaryVersion => new Version(1, 7);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -36,6 +43,17 @@ namespace RTSCamera.Config
                     CameraHeightFollowsTerrain = false;
                     goto case "1.6";
                 case "1.6":
+                    if (AlwaysSetPlayerFormation)
+                    {
+                        AutoSetPlayerFormation = AutoSetPlayerFormation.DeploymentStage;
+                    }
+
+                    if (PreferToControlCompanions)
+                    {
+                        PreferUnitsInSameFormation = false;
+                    }
+                    break;
+                case "1.7":
                     break;
             }
 
@@ -59,7 +77,10 @@ namespace RTSCamera.Config
 
         public int PlayerFormation = 4;
 
+        // Use AutoSetPlayerFormation instead
         public bool AlwaysSetPlayerFormation;
+
+        public AutoSetPlayerFormation AutoSetPlayerFormation = AutoSetPlayerFormation.Never;
 
         public bool ConstantSpeed;
 
@@ -77,7 +98,10 @@ namespace RTSCamera.Config
 
         public bool ControlAllyAfterDeath;
 
+        // Use PreferToControlHeroesInSameFormation instead.
         public bool PreferToControlCompanions;
+
+        public bool PreferUnitsInSameFormation = true;
 
         public bool ControlTroopsInPlayerPartyOnly = true;
 
@@ -106,6 +130,7 @@ namespace RTSCamera.Config
             PlayerControllerInFreeCamera = other.PlayerControllerInFreeCamera;
             PlayerFormation = other.PlayerFormation;
             AlwaysSetPlayerFormation = other.AlwaysSetPlayerFormation;
+            AutoSetPlayerFormation = other.AutoSetPlayerFormation;
             ConstantSpeed = other.ConstantSpeed;
             CameraHeightFollowsTerrain = other.CameraHeightFollowsTerrain;
             IgnoreTerrain = other.IgnoreTerrain;
@@ -116,6 +141,7 @@ namespace RTSCamera.Config
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;
             IgnoreRetreatingTroops = other.IgnoreRetreatingTroops;
             PreferToControlCompanions = other.PreferToControlCompanions;
+            PreferUnitsInSameFormation = other.PreferUnitsInSameFormation;
             ControlTroopsInPlayerPartyOnly = other.ControlTroopsInPlayerPartyOnly;
             DisableDeathHotkeyEnabled = other.DisableDeathHotkeyEnabled;
             SwitchTeamHotkeyEnabled = other.SwitchTeamHotkeyEnabled;
