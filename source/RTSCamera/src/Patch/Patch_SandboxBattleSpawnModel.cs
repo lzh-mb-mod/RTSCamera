@@ -1,14 +1,11 @@
-﻿using System;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
-using RTSCamera.Logic;
 using SandBox.GameComponents;
+using System;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
-using TaleWorlds.GauntletUI.BaseTypes;
-using TaleWorlds.MountAndBlade.GauntletUI.Widgets.Scoreboard;
 
 namespace RTSCamera.Patch
 {

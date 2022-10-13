@@ -96,6 +96,7 @@ namespace RTSCamera.Logic
             base.OnMissionModeChange(oldMissionMode, atStart);
 
             SwitchFreeCameraLogic.OnMissionModeChange(oldMissionMode, atStart);
+            CampaignSkillLogic.OnMissionModeChange(oldMissionMode, atStart);
         }
 
         protected override void OnAgentControllerChanged(Agent agent, Agent.ControllerType oldController)
