@@ -15,6 +15,7 @@ namespace RTSCamera.Logic.SubLogic
         private readonly RTSCameraLogic _logic;
         private bool _isFreeCamera;
         private float _beginTime;
+
         public CampaignSkillLogic(RTSCameraLogic logic)
         {
             _logic = logic;
@@ -23,6 +24,17 @@ namespace RTSCamera.Logic.SubLogic
         public void OnBehaviourInitialize()
         {
             MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
+        }
+
+        public void OnMissionModeChange(MissionMode oldMissionMode, bool atStart)
+        {
+            if (oldMissionMode == MissionMode.Deployment && _logic.Mission.Mode == MissionMode.Battle)
+            {
+                if (_isFreeCamera)
+                {
+                    _beginTime = _logic.Mission.CurrentTime;
+                }
+            }
         }
 
         private void OnToggleFreeCamera(bool isFreeCamera)
@@ -51,7 +63,7 @@ namespace RTSCamera.Logic.SubLogic
 
         private void OnOnOrderIssued(OrderType orderType, IEnumerable<Formation> appliedFormations, object[] delegateParams)
         {
-            if (Utility.IsTeamValid(_logic.Mission.PlayerTeam) &&
+            if (Utility.IsTeamValid(_logic.Mission.PlayerTeam) && Campaign.Current != null &&
                 (MapEvent.PlayerMapEvent == null ||
                  MapEvent.PlayerMapEvent.PlayerSide == _logic.Mission.PlayerTeam.Side) &&
                 _logic.Mission.PlayerTeam.PlayerOrderController.Owner == _logic.Mission.MainAgent && _isFreeCamera)
@@ -67,7 +79,7 @@ namespace RTSCamera.Logic.SubLogic
             var duration = _logic.Mission.CurrentTime - _beginTime;
             _beginTime = _logic.Mission.CurrentTime;
             GiveXpForScouting(duration);
-            
+
             if (hasOrderIssued)
             {
                 RTSCameraSkillBehavior.GetHeroForTacticLevel()
