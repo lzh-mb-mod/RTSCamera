@@ -8,7 +8,7 @@
 - Change the "Always Set Player Formation" bool option to dropdown option "Auto Set Player Formation" that contains "Never", "Deployment Stage" and "Always".
 
 ### Improved
-- Optimized the algorithm of looking for character to control. Hero appears first in party member list will be selected first. 
+- Optimized the algorithm of looking for character to control. Hero appears first in party member list will be selected first.
 
 ## [e4.1.11] - 2022-09-10
 ### Fixed
