@@ -200,7 +200,7 @@ namespace RTSCamera.Logic.SubLogic
                         CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
                     if (IsSpectatorCamera || WatchBattleBehavior.WatchMode)
                     {
-                        EnsureMainAgentControlledByAI();
+                        UpdateMainAgentControllerInFreeCamera();
                     }
                     else
                     {
@@ -215,9 +215,11 @@ namespace RTSCamera.Logic.SubLogic
             }
         }
 
-        private void EnsureMainAgentControlledByAI()
+        private void UpdateMainAgentControllerInFreeCamera()
         {
-            Utility.AIControlMainAgent(false);
+            Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.MainAgent, _config.GetPlayerControllerInFreeCamera());
+            Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
+                _config.GetPlayerControllerInFreeCamera());
         }
 
         public void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
@@ -305,9 +307,7 @@ namespace RTSCamera.Logic.SubLogic
             IsSpectatorCamera = true;
             if (!Utility.IsPlayerDead())
             {
-                Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.MainAgent, _config.GetPlayerControllerInFreeCamera());
-                Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
-                    _config.GetPlayerControllerInFreeCamera());
+                UpdateMainAgentControllerInFreeCamera();
             }
 
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(true);
