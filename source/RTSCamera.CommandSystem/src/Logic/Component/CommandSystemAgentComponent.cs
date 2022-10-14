@@ -41,6 +41,8 @@ namespace RTSCamera.CommandSystem.Logic.Component
                 if (QueryLibrary.IsCavalry(unit) || QueryLibrary.IsRangedCavalry(unit) &&
                     formation.FiringOrder.OrderType == OrderType.HoldFire)
                 {
+                    if (unit.GetTargetAgent()?.Formation == formation.TargetFormation)
+                        return WorldPosition.Invalid;
                     var averageOfTargetAgents = QueryDataStore.Get(formation).AverageOfTargetAgents.Value;
                     
                     offset = averageOfTargetAgents.IsValid ? formation.TargetFormation.QuerySystem.AveragePosition * 0.2f + averageOfTargetAgents * 0.8f - formation.QuerySystem.AveragePosition : Vec2.Zero;
