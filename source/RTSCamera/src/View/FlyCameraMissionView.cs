@@ -1,14 +1,14 @@
-﻿using MissionLibrary.Controller.Camera;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using MissionLibrary.Controller.Camera;
+using MissionLibrary.Event;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Logic;
 using RTSCamera.Logic.SubLogic;
-using System;
-using System.Linq;
-using System.Reflection;
-using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
@@ -233,7 +233,7 @@ namespace RTSCamera.View
             _showControlHintLayer.LoadMovie("RTSCameraShowControlHint", _showControlHintVM);
             MissionScreen.AddLayer(_showControlHintLayer);
 
-            MissionLibrary.Event.MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
+            MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
 
             MissionScreen.OnSpectateAgentFocusIn += MissionScreenOnSpectateAgentFocusIn;
             MissionScreen.OnSpectateAgentFocusOut += MissionScreenOnSpectateAgentFocusOut;
@@ -250,7 +250,7 @@ namespace RTSCamera.View
             MissionScreen.OnSpectateAgentFocusIn -= MissionScreenOnSpectateAgentFocusIn;
             MissionScreen.OnSpectateAgentFocusOut -= MissionScreenOnSpectateAgentFocusOut;
 
-            MissionLibrary.Event.MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
+            MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             _freeCameraLogic = null;
             _config = null;
 
@@ -500,11 +500,27 @@ namespace RTSCamera.View
             {
                 if (!_config.IgnoreBoundaries && !Mission.IsPositionInsideBoundaries(cameraFrame.origin.AsVec2))
                     cameraFrame.origin.AsVec2 = Mission.GetClosestBoundaryPosition(cameraFrame.origin.AsVec2);
-                float heightAtPosition1 = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin + new Vec3(0.0f, 0.0f, 100f));
-                if (!MissionScreen.IsCheatGhostMode && !_config.IgnoreTerrain && heightAtPosition1 < 9999.0)
-                    cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition1 + 0.1f);
-                if (cameraFrame.origin.z > heightAtPosition1 + 80.0)
-                    cameraFrame.origin.z = heightAtPosition1 + 80f;
+                if (!_config.IgnoreBoundaries && Mission.Mode == MissionMode.Deployment)
+                {
+                    BattleSideEnum side = Mission.PlayerTeam.Side;
+                    IMissionDeploymentPlan deploymentPlan = Mission.DeploymentPlan;
+                    if (deploymentPlan?.HasDeploymentBoundaries(side, DeploymentPlanType.Initial) ?? false)
+                    {
+                        Vec2 cameraFrameVec2 = cameraFrame.origin.AsVec2;
+                        if (!deploymentPlan.IsPositionInsideDeploymentBoundaries(side, in cameraFrameVec2,
+                                DeploymentPlanType.Initial))
+                        {
+                            Vec2 boundaryPosition = deploymentPlan.GetClosestDeploymentBoundaryPosition(side,
+                                    in cameraFrameVec2, DeploymentPlanType.Initial);
+                            cameraFrame.origin.AsVec2 = boundaryPosition;
+                        }
+                    }
+                }
+                float heightAtPosition = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin + new Vec3(0.0f, 0.0f, 100f));
+                if (!MissionScreen.IsCheatGhostMode && !_config.IgnoreTerrain && heightAtPosition < 9999.0)
+                    cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition + 0.1f);
+                if (cameraFrame.origin.z > heightAtPosition + 80.0)
+                    cameraFrame.origin.z = heightAtPosition + 80f;
                 if (cameraFrame.origin.z < -100.0)
                     cameraFrame.origin.z = -100f;
             }
