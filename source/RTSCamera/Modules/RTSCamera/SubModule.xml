@@ -2,7 +2,7 @@
 <Module>
   <Name value="RTS Camera"/>
   <Id value="RTSCamera"/>
-  <Version value="e4.1.15"/>
+  <Version value="e4.1.16"/>
   <SingleplayerModule value="true"/>
   <MultiplayerModule value="false"/>
   <DependedModules>
