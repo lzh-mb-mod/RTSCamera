@@ -1,5 +1,11 @@
 # Changelog
 
+## [e4.1.16] - 2022-10-14
+### Fixed
+- Fix crash in custom battle when issue orders.
+
+- Fix the "Player Controller In Free Camera" option.
+
 ## [e4.1.15] - 2022-10-12
 ### Fixed
 - Fix the issue that control hint doesn't correctly disappear when free camera mode isn't on.
