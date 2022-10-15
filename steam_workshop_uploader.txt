@@ -1,0 +1,44 @@
+Starting...
+Status: k_EItemUpdateStatusPreparingConfig 0 / 0
+Status: k_EItemUpdateStatusPreparingConfig 0 / 0
+Status: k_EItemUpdateStatusPreparingConfig 0 / 0
+Status: k_EItemUpdateStatusPreparingContent 0 / 0
+Status: k_EItemUpdateStatusPreparingContent 0 / 0
+Status: k_EItemUpdateStatusPreparingContent 0 / 0
+Status: k_EItemUpdateStatusPreparingContent 0 / 0
+Status: k_EItemUpdateStatusPreparingContent 0 / 0
+Status: k_EItemUpdateStatusPreparingContent 0 / 0
+Status: k_EItemUpdateStatusPreparingContent 0 / 0
+Status: k_EItemUpdateStatusPreparingContent 0 / 0
+Status: k_EItemUpdateStatusPreparingContent 0 / 0
+Status: k_EItemUpdateStatusPreparingContent 0 / 1206528
+Status: k_EItemUpdateStatusUploadingContent 0 / 0
+Status: k_EItemUpdateStatusUploadingContent 0 / 0
+Status: k_EItemUpdateStatusUploadingContent 0 / 0
+Status: k_EItemUpdateStatusUploadingContent 0 / 0
+Status: k_EItemUpdateStatusUploadingContent 0 / 0
+Status: k_EItemUpdateStatusUploadingContent 0 / 0
+Status: k_EItemUpdateStatusUploadingContent 0 / 0
+Status: k_EItemUpdateStatusUploadingContent 0 / 0
+Status: k_EItemUpdateStatusUploadingContent 0 / 0
+Status: k_EItemUpdateStatusUploadingContent 0 / 150016
+Status: k_EItemUpdateStatusUploadingContent 0 / 150016
+Status: k_EItemUpdateStatusUploadingContent 0 / 150016
+Status: k_EItemUpdateStatusUploadingContent 0 / 150016
+Status: k_EItemUpdateStatusUploadingContent 0 / 150016
+Status: k_EItemUpdateStatusUploadingContent 0 / 150016
+Status: k_EItemUpdateStatusUploadingContent 0 / 150016
+Status: k_EItemUpdateStatusUploadingContent 150016 / 150016
+Status: k_EItemUpdateStatusUploadingContent 150016 / 150016
+Status: k_EItemUpdateStatusUploadingContent 150016 / 150016
+Status: k_EItemUpdateStatusUploadingContent 150016 / 150016
+Status: k_EItemUpdateStatusUploadingContent 150016 / 150016
+Status: k_EItemUpdateStatusUploadingContent 150016 / 150016
+Status: k_EItemUpdateStatusUploadingContent 150016 / 150016
+Status: k_EItemUpdateStatusCommittingChanges 0 / 0
+Status: k_EItemUpdateStatusCommittingChanges 0 / 0
+Status: k_EItemUpdateStatusCommittingChanges 0 / 0
+Status: k_EItemUpdateStatusCommittingChanges 0 / 0
+Status: k_EItemUpdateStatusInvalid 0 / 0
+Uploading done!
+Finished...

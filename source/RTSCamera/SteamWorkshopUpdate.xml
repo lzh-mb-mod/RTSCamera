@@ -1,0 +1,82 @@
+<Tasks>
+  <GetItem>
+    <ItemId Value="2875123813"/>
+    <!-- Can be found in the URL of your workshop item -->
+  </GetItem>
+  <UpdateItem>
+    <ModuleFolder Value="C:\game\develop\RTS Camera\source\package\RTSCamera\"/>
+    <!-- A direct path of your module -->
+    <ItemDescription Value="自由视角模式可让你像在玩全面战争一样指挥，步战指挥再也不怕被队友骑兵淹没了。
+你在战斗中倒下以后可以控制一个队友继续进行战斗和指挥，尽情砍砍砍吧。
+顺带修复1.9.0游戏本体带来的同伴编队bug。
+
+
+存档兼容性：
+这个mod不会向存档读写任何东西，放心随时启用随时卸载。
+
+
+使用指南：
+按F10可切换自由视角模式。
+当镜头未锁定一个单位时按E可将镜头锁定至某一个单位。
+当镜头锁定至某一个单位后按E可控制该单位。
+
+在场景中按L键可打开配置菜单。
+配置菜单中可勾选“阵亡后控制队友”可在玩家倒下后立即控制合适的队友，以避免部队被托管给AI指挥。
+
+快捷键列表：
+F10 - 切换自由视角模式
+E  -    让镜头锁定一个角色，或控制镜头锁定的角色
+L  -    打开配置菜单
+[   -    切换暂停战斗
+]   -    切换HUD
+;   -    选择单位模式。进入该模式后鼠标点击一个单位，然后按E可让镜头锁定该单位，再按一次E可控制该单位
+&apos;   -    切换慢速模式
+所有快捷键均可在配置菜单中设置。
+
+
+Free camera mode enables you issue orders as if you are playing Total War series.
+You can control a teammate to continue fight and issue orders if you are down in battle.
+Fix the bug that companions are always assigned to infantry formation introduced in e1.9.0.
+
+
+Save compatibility:
+This mod won&apos;t read/write anything from/into your save, so you can feel free to enable or uninstall this mod at any time.
+
+
+Usage:
+Press F10 to toggle free camera mode.
+Press E to lock to a unit when the camera is not locking to one.
+Press E to control the unit that the camera is locking to.
+
+Press L to open config menu during battles.
+Check the &quot;Control Ally After Death&quot; option to automatically control your teammate after you are down, to avoid your troops automatically charging or following AI&apos;s order.
+
+Hotkeys:
+F10  -    Toggle free camera mode
+E      -    Let the camera lock to a unit, or control the unit that the camera is locking to.
+L      -    Open the config menu.
+[       -    Pause/Unpause the battle.
+]       -    Toggle HUD.
+;       -    Select character mode. In this mode you can select a unit by clicking on it, then press E to lock the camera on it. Press E again to control it.
+&apos;       -     Toggle slow motion mode.
+All the hotkeys can be changed in config menu.
+
+
+links：
+Nexusmods: https://www.nexusmods.com/mountandblade2bannerlord/mods/355
+mountandblade.com.cn: https://bbs.mountblade.com.cn/thread-2061243-1-1.html"/>
+    <ChangeNotes Value="" />
+    <!-- Insert patch notes -->
+    <Tags>
+      <!-- You can use the following tags: -->
+      <!-- Type: Graphical Enhancement, Map Pack, Partial Conversion, Sound, Total Conversion, Troops, UI, Utility, Weapons and Armour -->
+      <!-- Setting: Native, Antiquity, Dark Ages, Medieval, Musket Era, Modern, Sci-Fi, Fantasy, Oriental, Apocalypse, Other -->
+      <!-- Game Mode: Singleplayer, Multiplayer -->
+      <!-- Compatible Version: e1.9.0, v1.0.0,... The currently available versions can be found at the Steam Workshop "Browse by Tag" section -->
+      <Tag Value="UI"/>
+      <Tag Value="AI"/>
+      <Tag Value="Singleplayer"/>
+      <Tag Value="e1.9.0" />
+    </Tags>
+  </UpdateItem>
+</Tasks>
