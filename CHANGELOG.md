@@ -6,7 +6,7 @@
 
 - Fix the "Player Controller In Free Camera" option.
 
-- Fix the issue that camera is not restricted by deployment boundary. 
+- Fix the issue that camera is not restricted by deployment boundary.
 
 ## [e4.1.15] - 2022-10-12
 ### Fixed

@@ -3,9 +3,15 @@
   <UpdateItem>
     <ModuleFolder Value="C:\game\develop\RTS Camera\source\package\RTSCamera\"/>
     <!--  A direct path of your module  -->
-    <ItemDescription Value="自由视角模式可让你像在玩全面战争一样指挥，步战指挥再也不怕被队友骑兵淹没了。
+    <ItemDescription Value="English below.
+
+自由视角模式可让你像在玩全面战争一样指挥，步战指挥再也不怕被队友骑兵淹没了。
 你在战斗中倒下以后可以控制一个队友继续进行战斗和指挥，尽情砍砍砍吧。
 顺带修复1.9.0游戏本体带来的同伴编队bug。
+
+Free camera mode enables you issue orders as if you are playing Total War series.
+You can control a teammate to continue fight and issue orders if you are down in battle.
+Fix the bug that companions are always assigned to infantry formation introduced in e1.9.0.
 
 
 存档兼容性：
@@ -29,11 +35,6 @@ L  -    打开配置菜单
 ;   -    选择单位模式。进入该模式后鼠标点击一个单位，然后按E可让镜头锁定该单位，再按一次E可控制该单位
 &apos;   -    切换慢速模式
 所有快捷键均可在配置菜单中设置。
-
-
-Free camera mode enables you issue orders as if you are playing Total War series.
-You can control a teammate to continue fight and issue orders if you are down in battle.
-Fix the bug that companions are always assigned to infantry formation introduced in e1.9.0.
 
 
 Save compatibility:
