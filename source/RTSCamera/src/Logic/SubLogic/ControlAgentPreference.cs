@@ -25,7 +25,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public void UpdateAgentPreferenceFromFormation(FormationClass formationClass, Vec3 position, bool ignoreRetreatingAgents)
         {
-            if (formationClass < 0 || formationClass > FormationClass.NumberOfAllFormations)
+            if (formationClass < 0 || formationClass >= FormationClass.NumberOfAllFormations)
             {
                 return;
             }

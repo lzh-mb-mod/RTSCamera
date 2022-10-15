@@ -4,6 +4,7 @@ using RTSCamera.CampaignGame.Behavior;
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Config
@@ -75,7 +76,7 @@ namespace RTSCamera.Config
             return (Agent.ControllerType) PlayerControllerInFreeCamera;
         }
 
-        public int PlayerFormation = 4;
+        public int PlayerFormation = (int)FormationClass.Unset;
 
         // Use AutoSetPlayerFormation instead
         public bool AlwaysSetPlayerFormation;
