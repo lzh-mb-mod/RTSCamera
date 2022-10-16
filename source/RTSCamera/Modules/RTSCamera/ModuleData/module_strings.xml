@@ -74,6 +74,7 @@
   <string id="str_rts_camera_controller_type.AI" text="{=RTSCamera_controller_type_AI}AI" />
   <string id="str_rts_camera_controller_type.Player" text="{=RTSCamera_controller_type_player}Player" />
   <string id="str_rts_camera_player_formation" text="{=RTSCamera_playerformation}Player Formation" />
+  <string id="str_rts_camera_player_formation_unset" text="{=RTSCamera_player_formation_unset}Unset" />
   <string id="str_rts_camera_auto_set_player_formation" text="{=RTSCamera_auto_set_player_formation}Auto Set Player Formation" />
   <string id="str_rts_camera_auto_set_player_formation.Never" text="{=RTSCamera_auto_set_player_formation_never}Never" />
   <string id="str_rts_camera_auto_set_player_formation.DeploymentStage" text="{=RTSCamera_auto_set_player_formation_deployment_stage}Deployment Stage" />

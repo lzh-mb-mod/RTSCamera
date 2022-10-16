@@ -74,6 +74,7 @@
     <string id="RTSCamera_controller_type_AI" text="AI" />
     <string id="RTSCamera_controller_type_player" text="玩家" />
     <string id="RTSCamera_playerformation" text="玩家编队" />
+    <string id="RTSCamera_player_formation_unset" text="未设定" />
     <string id="RTSCamera_auto_set_player_formation" text="自动设置玩家编队" />
     <string id="RTSCamera_auto_set_player_formation_never" text="从不" />
     <string id="RTSCamera_auto_set_player_formation_deployment_stage" text="部署阶段" />

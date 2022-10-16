@@ -20,7 +20,7 @@ You can control a teammate to continue fight and issue orders if you are down in
 
 
 使用指南：
-按F10可切换自由视角模式。
+按F10可切换自由视角模式。该模式下相机的移动范围由侦察和战术技能等级决定。
 当镜头未锁定一个单位时按E可将镜头锁定至某一个单位。
 当镜头锁定至某一个单位后按E可控制该单位。
 
@@ -43,7 +43,7 @@ This mod won&apos;t read/write anything from/into your save, so you can feel fre
 
 
 Usage:
-Press F10 to toggle free camera mode.
+Press F10 to toggle free camera mode. The camera movement range is determined by scouting and tactics skill level.
 Press E to lock to a unit when the camera is not locking to one.
 Press E to control the unit that the camera is locking to.
 

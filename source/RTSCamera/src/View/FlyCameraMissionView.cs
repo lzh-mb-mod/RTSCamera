@@ -335,8 +335,6 @@ namespace RTSCamera.View
             if (!MissionScreen.IsPhotoModeEnabled)
                 cameraFrame.rotation.RotateAboutSide((float?)CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);
             cameraFrame.origin = CameraPosition;
-            if (_forceMove)
-                cameraFrame.origin += ForcedMoveTick(dt);
             float heightFactorForHorizontalMove;
             float heightFactorForVerticalMove;
             var groundHeight = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin);
@@ -436,6 +434,8 @@ namespace RTSCamera.View
                     cameraFrame.origin.z = _previousHeightToTerrain.Value + terrainHeight;
                 }
             }
+            if (_forceMove)
+                cameraFrame.origin += ForcedMoveTick(dt);
 
             if (_classicMode)
             {
