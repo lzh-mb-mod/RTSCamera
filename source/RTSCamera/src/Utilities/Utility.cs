@@ -26,7 +26,13 @@ namespace RTSCamera.Utilities
                     agent.LookDirection = agent.GetMovementDirection().ToVec3();
                     break;
                 case Agent.ControllerType.AI:
-                    MissionSharedLibrary.Utilities.Utility.AIControlMainAgent(Mission.Current.Mode == MissionMode.Battle, true);
+                    MissionSharedLibrary.Utilities.Utility.AIControlMainAgent(
+                        Mission.Current.Mode != MissionMode.StartUp &&
+                        Mission.Current.Mode != MissionMode.Conversation &&
+                        Mission.Current.Mode != MissionMode.Stealth &&
+                        Mission.Current.Mode != MissionMode.Barter &&
+                        Mission.Current.Mode != MissionMode.Deployment &&
+                        Mission.Current.Mode != MissionMode.Replay, true);
                     break;
                 case Agent.ControllerType.Player:
                     MissionSharedLibrary.Utilities.Utility.PlayerControlAgent(agent);
@@ -45,12 +51,12 @@ namespace RTSCamera.Utilities
                      playerControllerInFreeCamera == Agent.ControllerType.Player))
                 {
                     controller.CustomLookDir = isSpectatorCamera ? agent.LookDirection : Vec3.Zero;
-                    controller.IsDisabled = false;
+                    controller.Enable();
                 }
                 else
                 {
                     controller.CustomLookDir = Vec3.Zero;
-                    controller.IsDisabled = true;
+                    controller.Disable();
                     controller.InteractionComponent.ClearFocus();
                 }
             }
