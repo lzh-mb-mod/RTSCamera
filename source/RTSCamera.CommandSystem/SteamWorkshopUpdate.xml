@@ -1,0 +1,76 @@
+<Tasks>
+  <GetItem>
+    <ItemId Value="2875843656"/>
+    <!-- Can be found in the URL of your workshop item -->
+  </GetItem>
+  <UpdateItem>
+    <ModuleFolder Value="C:\game\develop\RTS Camera\source\package\RTSCamera.CommandSystem\"/>
+    <!-- A direct path of your module -->
+    <ItemDescription Value="RTS Camera Command System
+
+English below.
+
+让你的编队攻击指定的敌方编队。仅对近战武器生效。
+让你可以用鼠标选择己方编队。
+
+Let your formation attack one of the enemy formation. Only effective with melee weapons.
+Allows you to select your formation using mouse.
+
+
+存档兼容性：
+这个mod不会向存档读写任何东西，放心随时启用随时卸载。
+
+
+使用指南：
+指挥时对着敌方士兵按下鼠标中键可让你的编队攻击该士兵所在的编队。仅对近战武器生效。
+对着己方士兵按下鼠标中键可选择该编队。
+被攻击的敌方编队会用红色轮廓标出。
+己方选中的编队会以绿色轮廓标出。
+己方被攻击的编队会以深蓝色轮廓标出。
+
+
+在场景中按L键可打开配置菜单以关闭轮廓高亮功能。
+
+快捷键列表：
+鼠标中键 - 选择/攻击编队
+L  -    打开配置菜单
+所有快捷键均可在配置菜单中设置。
+
+
+Save compatibility:
+This mod won&apos;t read/write anything from/into your save, so you can feel free to enable or uninstall this mod at any time.
+
+
+Usage:
+Click middle mouse button on the enemy formation to make your formation attack it. Only effective with melee weapons.
+Click middle mouse button on your formation to select it.
+The attacked enemy foramtion will be highlighted with red outline when you open command panel.
+Your attacked formation will be highlighted with dark blue outline when you open command panel.
+Your selected formation will be highlighted with green outline when you open command panel.
+
+Press L to open config menu during battles.
+
+Hotkeys:
+Click mouse middle button  -  Select/Attack formation.
+L      -    Open the config menu.
+All the hotkeys can be changed in config menu.
+
+
+links：
+Nexusmods: https://www.nexusmods.com/mountandblade2bannerlord/mods/355
+mountandblade.com.cn: https://bbs.mountblade.com.cn/thread-2061243-1-1.html"/>
+    <ChangeNotes Value="" />
+    <!-- Insert patch notes -->
+    <Tags>
+      <!-- You can use the following tags: -->
+      <!-- Type: Graphical Enhancement, Map Pack, Partial Conversion, Sound, Total Conversion, Troops, UI, Utility, Weapons and Armour -->
+      <!-- Setting: Native, Antiquity, Dark Ages, Medieval, Musket Era, Modern, Sci-Fi, Fantasy, Oriental, Apocalypse, Other -->
+      <!-- Game Mode: Singleplayer, Multiplayer -->
+      <!-- Compatible Version: e1.9.0, v1.0.0,... The currently available versions can be found at the Steam Workshop "Browse by Tag" section -->
+      <Tag Value="UI"/>
+      <Tag Value="AI"/>
+      <Tag Value="Singleplayer"/>
+      <Tag Value="e1.9.0" />
+    </Tags>
+  </UpdateItem>
+</Tasks>
