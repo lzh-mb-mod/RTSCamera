@@ -36,7 +36,7 @@ jobs:
       
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repositiory
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.1.0
       
       - name: submodules-init
         # You may pin to the exact commit or the version.
@@ -44,14 +44,14 @@ jobs:
         uses: snickerbockers/submodules-init@v4
 
       - name: Read tag name
-        uses: olegtarasov/get-tag@v2.1
+        uses: olegtarasov/get-tag@v2.1.1
         id: tagName
 
       - name: Read configuration file
         id: dotenv
         # You may pin to the exact commit or the version.
         # uses: falti/dotenv-action@cb77e3cb51b636f6833ceeb6928bf06ff66e82fa
-        uses: falti/dotenv-action@v0.2.5
+        uses: falti/dotenv-action@v0.2.8
         with:
           # the path to the .env file (including file name)
           path: .github/resources/config.env
@@ -76,7 +76,7 @@ jobs:
           dotnet-version: '6.0.x'
 
       - name: setup-msbuild
-        uses: microsoft/setup-msbuild@v1
+        uses: microsoft/setup-msbuild@v1.1.3
         # with:
           # Folder location of where vswhere.exe is located if a self-hosted agent
           # vswhere-path: # optional
@@ -85,10 +85,10 @@ jobs:
       - name: Setup NuGet.exe for use with actions
         # You may pin to the exact commit or the version.
         # uses: NuGet/setup-nuget@04b0c2b8d1b97922f67eca497d7cf0bf17b8ffe1
-        uses: NuGet/setup-nuget@v1.0.5
+        uses: NuGet/setup-nuget@v1.1.1
           
       - name: Download DepotDownloader_2.4.7
-        uses: i3h/download-release-asset@v1
+        uses: i3h/download-release-asset@v1.3.3
         with:
           owner: SteamRE
           repo: DepotDownloader
@@ -122,7 +122,7 @@ jobs:
         working-directory: .\source\RTSCamera\
 
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.2.2
+        uses: actions/upload-artifact@v3.1.0
         with:
           # Artifact name
           name: ${{env.RTSCAMERA_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}
@@ -131,7 +131,7 @@ jobs:
           # The desired behavior if no files are found using the provided path
 
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.2.2
+        uses: actions/upload-artifact@v3.1.0
         with:
           # Artifact name
           name: ${{env.COMMANDSYSTEM_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}
@@ -152,68 +152,17 @@ jobs:
           contains(github.ref, 'refs/tags/release-v') ||
           contains(github.ref, 'refs/tags/release-b') ||
           contains(github.ref, 'refs/tags/release-e')
-      
+
       - name: Create a Release
         id: create_release
-        uses: actions/create-release@v1.1.4
+        uses: ncipollo/release-action@v1.11.1
         if: >-
           contains(github.ref, 'refs/tags/release-v') ||
           contains(github.ref, 'refs/tags/release-b') ||
           contains(github.ref, 'refs/tags/release-e')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag
-          tag_name: ${{ steps.tagName.outputs.tag }}
-          # The name of the release. For example, `Release v1.0.1`
-          release_name: Release ${{env.RTSCAMERA_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}
-          # Text describing the contents of the tag.
-          # body: # optional
-          # Path to file with information about the tag.
-          # body_path: # optional
-          # `true` to create a draft (unpublished) release, `false` to create a published one. Default: `false`
-          # draft: # optional
-          # `true` to identify the release as a prerelease. `false` to identify the release as a full release. Default: `false`
-          # prerelease: # optional
-          # Any branch or commit SHA the Git tag is created from, unused if the Git tag already exists. Default: SHA of current commit
-          # commitish: # optional
-          # Owner of the repository if it is not the current one
-          # owner: # optional
-          # Repository on which to release.  Used only if you want to create the release on another repo
-          # repo: # optional
-
-      - name: Upload Release Asset for RTS Camera
-        uses: actions/upload-release-asset@v1.0.2
-        if: >-
-          contains(github.ref, 'refs/tags/release-v') ||
-          contains(github.ref, 'refs/tags/release-b') ||
-          contains(github.ref, 'refs/tags/release-e')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          # The URL for uploading assets to the release
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          # The path to the asset you want to upload
-          asset_path: ${{env.RTSCAMERA_ARTIFACT_NAME}}.zip
-          # The name of the asset you want to upload
-          asset_name: ${{env.RTSCAMERA_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}.zip
-          # The content-type of the asset you want to upload. See the supported Media Types here: https://www.iana.org/assignments/media-types/media-types.xhtml for more information
-          asset_content_type: application/zip
-
-      - name: Upload Release Asset for Command System
-        uses: actions/upload-release-asset@v1.0.2
-        if: >-
-          contains(github.ref, 'refs/tags/release-v') ||
-          contains(github.ref, 'refs/tags/release-b') ||
-          contains(github.ref, 'refs/tags/release-e')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          # The URL for uploading assets to the release
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          # The path to the asset you want to upload
-          asset_path: ${{env.COMMANDSYSTEM_ARTIFACT_NAME}}.zip
-          # The name of the asset you want to upload
-          asset_name: ${{env.COMMANDSYSTEM_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}.zip
-          # The content-type of the asset you want to upload. See the supported Media Types here: https://www.iana.org/assignments/media-types/media-types.xhtml for more information
-          asset_content_type: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts:  ${{env.RTSCAMERA_ARTIFACT_NAME}}.zip, ${{env.COMMANDSYSTEM_ARTIFACT_NAME}}.zip
+          name: Release ${{env.RTSCAMERA_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}
+          tag: ${{ steps.tagName.outputs.tag }}
+          artifactContentType: application/zip
