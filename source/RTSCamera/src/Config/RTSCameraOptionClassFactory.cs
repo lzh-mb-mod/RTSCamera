@@ -1,4 +1,5 @@
-﻿using MissionLibrary.Provider;
+﻿using System.Reflection;
+using MissionLibrary.Provider;
 using MissionLibrary.View;
 using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.Utilities;
@@ -143,7 +144,10 @@ namespace RTSCamera.Config
                                 if (Mission.Current.MainAgent.Controller == Agent.ControllerType.AI)
                                     return (int)Agent.ControllerType.AI;
                                 var controller = Mission.Current.GetMissionBehavior<MissionMainAgentController>();
-                                if (controller == null || controller.IsDisabled ||
+                                if (controller == null ||
+                                    !((bool?)typeof(MissionMainAgentController)
+                                        .GetField("_activated", BindingFlags.Instance | BindingFlags.NonPublic)
+                                        ?.GetValue(controller) ?? true) ||
                                     Mission.Current.MainAgent.Controller == Agent.ControllerType.None)
                                     return (int)Agent.ControllerType.None;
                                 return (int)Agent.ControllerType.Player;
