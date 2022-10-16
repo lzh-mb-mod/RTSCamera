@@ -167,10 +167,12 @@ namespace RTSCamera.Config
                         i =>
                         {
                             var config = RTSCameraConfig.Get();
+                            config.PlayerFormation = i;
                             if (i >= 0 && i < (int)FormationClass.NumberOfAllFormations)
                             {
-                                config.PlayerFormation = i;
                                 rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)i;
+                                if (WatchBattleBehavior.WatchMode)
+                                    return;
                                 Utility.SetPlayerFormationClass((FormationClass)i);
                             }
                         }, () =>
@@ -198,7 +200,8 @@ namespace RTSCamera.Config
                             new SelectionItem(true, "str_troop_group_name", "6"),
                             new SelectionItem(true, "str_troop_group_name", "7"),
                             new SelectionItem(true, "str_troop_group_name", "8"),
-                            new SelectionItem(true, "str_troop_group_name", "9")
+                            new SelectionItem(true, "str_troop_group_name", "9"),
+                            new SelectionItem(true, "str_rts_camera_player_formation_unset")
                         }), true, true);
                 controlOptionCategory.AddOption(playerFormationOption);
                 controlOptionCategory.AddOption(new SelectionOptionViewModel(

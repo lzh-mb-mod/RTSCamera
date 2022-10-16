@@ -75,6 +75,7 @@
     <string id="RTSCamera_controller_type_AI" text="AI" />
     <string id="RTSCamera_controller_type_player" text="Player" />
     <string id="RTSCamera_playerformation" text="Player Formation" />
+    <string id="RTSCamera_player_formation_unset" text="Unset" />
     <string id="RTSCamera_auto_set_player_formation" text="Auto Set Player Formation" />
     <string id="RTSCamera_auto_set_player_formation_never" text="Never" />
     <string id="RTSCamera_auto_set_player_formation_deployment_stage" text="Deployment Stage" />
