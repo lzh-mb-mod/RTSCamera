@@ -1,7 +1,7 @@
 <Tasks>
   <CreateItem/>
   <UpdateItem>
-    <ModuleFolder Value="C:\game\develop\RTS Camera\source\package\RTSCamera\"/>
+    <ModuleFolder Value="C:\game\develop\RTSCamera\source\package\RTSCamera\"/>
     <!--  A direct path of your module  -->
     <ItemDescription Value="English below.
 自由视角模式可让你在空中指挥，如同玩全面战争一样，步战指挥再也不怕被队友骑兵淹没了。
