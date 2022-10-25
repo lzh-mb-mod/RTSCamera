@@ -4,7 +4,7 @@
     <!-- Can be found in the URL of your workshop item -->
   </GetItem>
   <UpdateItem>
-    <ModuleFolder Value="C:\game\develop\RTS Camera\source\package\RTSCamera.CommandSystem\"/>
+    <ModuleFolder Value="C:\game\develop\RTSCamera\source\package\RTSCamera.CommandSystem\"/>
     <!-- A direct path of your module -->
     <ItemDescription Value="RTS Camera Command System
 
