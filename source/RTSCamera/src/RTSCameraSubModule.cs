@@ -61,8 +61,15 @@ namespace RTSCamera
                 _harmony.Patch(
                     typeof(CommonVillagersCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingThePlayer",
                         BindingFlags.Instance | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(typeof(Patch_CommonVillagersCampaignBehavior).GetMethod(
-                        "CheckIfConversationAgentIsEscortingThePlayer_Prefix",
+                    prefix: new HarmonyMethod(typeof(Patch_CheckIfConversationAgentIsEscortingThePlayer).GetMethod(
+                        nameof(Patch_CheckIfConversationAgentIsEscortingThePlayer.Prefix_CheckIfConversationAgentIsEscortingThePlayer),
+                        BindingFlags.Static | BindingFlags.Public)));
+                _harmony.Patch(
+                    typeof(GuardsCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingThePlayer",
+                        BindingFlags.Static | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_CheckIfConversationAgentIsEscortingThePlayer).GetMethod(
+                        nameof(Patch_CheckIfConversationAgentIsEscortingThePlayer
+                            .Prefix_CheckIfConversationAgentIsEscortingThePlayer),
                         BindingFlags.Static | BindingFlags.Public)));
 
                 _harmony.Patch(

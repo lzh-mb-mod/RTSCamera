@@ -7,7 +7,7 @@ namespace RTSCamera.Patch.Fix
     {
         public static bool IsAllyInAllyTeam_Prefix(MissionAgentLabelView __instance, Agent agent, ref bool __result)
         {
-            if (agent == __instance?.Mission?.MainAgent)
+            if (agent == __instance?.Mission?.MainAgent && __instance.MissionScreen.LastFollowedAgent != agent)
             {
                 __result = true;
                 return false;
