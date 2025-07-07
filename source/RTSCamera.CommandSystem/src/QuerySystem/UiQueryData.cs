@@ -4,6 +4,7 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.QuerySystem
 {
+    // TODO: to be replaced by the same class in MissionSharedLibrary
     public class UiQueryData<T> : IQueryData
     {
         private T _cachedValue;

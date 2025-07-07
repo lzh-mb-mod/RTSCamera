@@ -38,6 +38,10 @@ namespace RTSCameraAgentComponent
 
         private bool _shouldUpdateColor = false;
 
+        public delegate void OnComponentRemovedDelegate(RTSCameraComponent component);
+
+        public event OnComponentRemovedDelegate OnComponentRemovedEvent;
+
         public RTSCameraComponent(Agent agent) : base(agent)
         {
             for (int i = 0; i < _colors.Length; ++i)
@@ -54,7 +58,7 @@ namespace RTSCameraAgentComponent
             Agent.DisableScriptedMovement();
             if (Agent.HumanAIComponent != null)
             {
-                Agent.AIUseGameObjectEnable(false);
+                Agent.AIUseGameObjectDisable();
                 Agent.AIMoveToGameObjectDisable();
             }
             Agent.SetScriptedFlags(Agent.GetScriptedFlags() & ~Agent.AIScriptedFrameFlags.NoAttack);
@@ -208,6 +212,7 @@ namespace RTSCameraAgentComponent
             base.OnAgentRemoved();
 
             ClearContourColor();
+            OnComponentRemovedEvent?.Invoke(this);
         }
     }
 }

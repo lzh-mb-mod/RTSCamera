@@ -73,11 +73,18 @@ namespace RTSCamera.Logic
             CampaignSkillLogic.AfterAddTeam(team);
         }
 
-        public override void OnFormationUnitsSpawned(Team team)
+        public override void OnTeamDeployed(Team team)
         {
-            base.OnFormationUnitsSpawned(team);
+            base.OnTeamDeployed(team);
 
-            SwitchFreeCameraLogic.OnFormationUnitsSpawned(team);
+            SwitchFreeCameraLogic.OnTeamDeployed(team);
+        }
+
+        public override void OnDeploymentFinished()
+        {
+            base.OnDeploymentFinished();
+
+            SwitchFreeCameraLogic.OnDeploymentFinished();
         }
 
         public override void OnMissionTick(float dt)
@@ -97,6 +104,13 @@ namespace RTSCamera.Logic
 
             SwitchFreeCameraLogic.OnMissionModeChange(oldMissionMode, atStart);
             CampaignSkillLogic.OnMissionModeChange(oldMissionMode, atStart);
+        }
+
+        public override void ShowBattleResults()
+        {
+            base.ShowBattleResults();
+
+            CampaignSkillLogic.ShowBattleResults();
         }
 
         protected override void OnAgentControllerChanged(Agent agent, Agent.ControllerType oldController)

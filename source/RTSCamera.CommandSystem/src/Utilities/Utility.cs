@@ -36,7 +36,7 @@ namespace RTSCamera.CommandSystem.Utilities
             var formationNames = new List<TextObject>();
             foreach (var formation in selectedFormations)
             {
-                formationNames.Add(GameTexts.FindText("str_formation_class_string", formation.PrimaryClass.GetName()));
+                formationNames.Add(GameTexts.FindText("str_formation_class_string", formation.PhysicalClass.GetName()));
             }
 
             if (!formationNames.IsEmpty())
@@ -47,7 +47,8 @@ namespace RTSCamera.CommandSystem.Utilities
                     GameTexts.FindText("str_formation_ai_sergeant_instruction_behavior_text",
                             nameof(BehaviorTacticalCharge))
                         .SetTextVariable("AI_SIDE", GameTexts.FindText("str_formation_ai_side_strings", targetFormation.AI.Side.ToString()))
-                        .SetTextVariable("CLASS", GameTexts.FindText("str_troop_group_name", ((int)targetFormation.PrimaryClass).ToString())));                
+                        // TODO: Verify PhysicalClass
+                        .SetTextVariable("CLASS", GameTexts.FindText("str_troop_group_name", ((int)targetFormation.PhysicalClass).ToString())));                
                 //MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
                 InformationManager.DisplayMessage(new InformationMessage(message.ToString()));
             }
@@ -58,7 +59,7 @@ namespace RTSCamera.CommandSystem.Utilities
             var message = GameTexts.FindText("str_formation_ai_behavior_text", nameof(BehaviorStop));
             message.SetTextVariable("IS_PLURAL", 0);
             message.SetTextVariable("TROOP_NAMES_BEGIN", "");
-            message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PrimaryClass).ToString()));
+            message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PhysicalClass).ToString()));
             MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
         }
         public static void DisplayFormationChargeMessage(Formation formation)
@@ -66,7 +67,7 @@ namespace RTSCamera.CommandSystem.Utilities
             var message = GameTexts.FindText("str_formation_ai_behavior_text", nameof(BehaviorCharge));
             message.SetTextVariable("IS_PLURAL", 0);
             message.SetTextVariable("TROOP_NAMES_BEGIN", "");
-            message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PrimaryClass).ToString()));
+            message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PhysicalClass).ToString()));
             MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
         }
 

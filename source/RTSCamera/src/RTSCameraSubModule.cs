@@ -8,13 +8,14 @@ using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.CampaignGame.Skills;
+using RTSCamera.CommandSystem.Patch;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
+using RTSCamera.src.Patch;
 using RTSCamera.src.Patch.Fix;
 using SandBox.CampaignBehaviors;
-using SandBox.Missions.MissionLogics.Arena;
 using SandBox.Objects;
 using System;
 using System.Reflection;
@@ -24,10 +25,6 @@ using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.MissionViews;
-using TaleWorlds.MountAndBlade.View.MissionViews.SiegeWeapon;
-using TaleWorlds.MountAndBlade.View.Screens;
-using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
 using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace RTSCamera
@@ -39,6 +36,9 @@ namespace RTSCamera
 
         private readonly Harmony _harmony = new Harmony("RTSCameraPatch");
         private bool _successPatch;
+
+        // random generated
+        public const int MissionTimeSpeedRequestId = 936012602;
 
         protected override void OnSubModuleLoad()
         {
@@ -52,84 +52,46 @@ namespace RTSCamera
                 _successPatch = true;
 
                 _harmony.Patch(
-                    typeof(RangedSiegeWeaponView).GetMethod("HandleUserInput",
+                    typeof(CommonVillagersCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingTheMainAgent",
                         BindingFlags.Instance | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(
-                        typeof(Patch_RangedSiegeWeaponView).GetMethod("HandleUserInput_Prefix",
-                            BindingFlags.Static | BindingFlags.Public)));
-
-                _harmony.Patch(
-                    typeof(CommonVillagersCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingThePlayer",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(typeof(Patch_CheckIfConversationAgentIsEscortingThePlayer).GetMethod(
-                        nameof(Patch_CheckIfConversationAgentIsEscortingThePlayer.Prefix_CheckIfConversationAgentIsEscortingThePlayer),
+                    prefix: new HarmonyMethod(typeof(CheckIfConversationAgentIsEscortingTheMainAgent).GetMethod(
+                        nameof(CheckIfConversationAgentIsEscortingTheMainAgent.Prefix_CheckIfConversationAgentIsEscortingTheMainAgent),
                         BindingFlags.Static | BindingFlags.Public)));
                 _harmony.Patch(
-                    typeof(GuardsCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingThePlayer",
-                        BindingFlags.Static | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(typeof(Patch_CheckIfConversationAgentIsEscortingThePlayer).GetMethod(
-                        nameof(Patch_CheckIfConversationAgentIsEscortingThePlayer
-                            .Prefix_CheckIfConversationAgentIsEscortingThePlayer),
+                    typeof(GuardsCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingTheMainAgent",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(CheckIfConversationAgentIsEscortingTheMainAgent).GetMethod(
+                        nameof(CheckIfConversationAgentIsEscortingTheMainAgent
+                            .Prefix_CheckIfConversationAgentIsEscortingTheMainAgent),
                         BindingFlags.Static | BindingFlags.Public)));
 
-                _harmony.Patch(
-                    typeof(ArenaPracticeFightMissionController).GetMethod("StartPractice",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(
-                        typeof(Patch_ArenaPracticeFightMissionController).GetMethod("StartPractice_Prefix",
-                            BindingFlags.Static | BindingFlags.Public)));
                 _harmony.Patch(
                     typeof(PassageUsePoint).GetMethod(nameof(PassageUsePoint.IsDisabledForAgent),
                         BindingFlags.Instance | BindingFlags.Public),
                     new HarmonyMethod(typeof(Patch_PassageUsePoint).GetMethod(
                         nameof(Patch_PassageUsePoint.IsDisabledForAgent_Prefix),
                         BindingFlags.Static | BindingFlags.Public)));
-                _harmony.Patch(
-                    typeof(TeamAIComponent).GetMethod("TickOccasionally",
-                        BindingFlags.Instance | BindingFlags.Public),
-                    prefix: new HarmonyMethod(typeof(Patch_TeamAIComponent).GetMethod(
-                        nameof(Patch_TeamAIComponent.TickOccasionally_Prefix),
-                        BindingFlags.Static | BindingFlags.Public)));
 
-                _harmony.Patch(
-                    typeof(MissionAgentLabelView).GetMethod("IsAllyInAllyTeam",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(typeof(Patch_MissionAgentLabelView).GetMethod("IsAllyInAllyTeam_Prefix",
-                        BindingFlags.Static | BindingFlags.Public)));
-                _harmony.Patch(
-                    typeof(MissionBoundaryCrossingHandler).GetMethod("TickForMainAgent",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(
-                        typeof(Patch_MissionBoundaryCrossingHandler).GetMethod("TickForMainAgent_Prefix",
-                            BindingFlags.Static | BindingFlags.Public)));
-                _harmony.Patch(
-                    typeof(MissionFormationMarkerVM).GetMethod("RefreshFormationPositions",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(typeof(Patch_MissionFormationMarkerVM).GetMethod(
-                        nameof(Patch_MissionFormationMarkerVM.RefreshFormationPositions_Prefix),
-                        BindingFlags.Static | BindingFlags.Public)));
-
-                var missionListenerOnMissionModeChange = typeof(IMissionListener).GetMethod("OnMissionModeChange", BindingFlags.Instance | BindingFlags.Public);
-
-                var mapping = typeof(MissionScreen).GetInterfaceMap(missionListenerOnMissionModeChange.DeclaringType);
-                var index = Array.IndexOf(mapping.InterfaceMethods, missionListenerOnMissionModeChange);
-                _harmony.Patch(
-                     mapping.TargetMethods[index],
-                    prefix: new HarmonyMethod(typeof(Patch_MissionScreen).GetMethod("OnMissionModeChange_Prefix",
-                        BindingFlags.Static | BindingFlags.Public)));
-
-                Patch_MissionOrderVM.Patch();
+                //_successPatch &= Patch_OrderOfBattleVM.Patch();
+                //_successPatch &= Patch_DeploymentMissionController.Patch();
+                //_successPatch &= Patch_SandboxBattleSpawnModel.Patch();
+                // below checked
+                _successPatch &= Patch_LadderQueueManager.Patch(_harmony);
+                _successPatch &= Patch_MissionFormationTargetSelectionHandler.Patch(_harmony);
+                _successPatch &= Patch_OrderTroopPlacer.Patch(_harmony);
+                _successPatch &= Patch_RangedSiegeWeaponView.Patch(_harmony);
+                _successPatch &= Patch_ArenaPracticeFightMissionController.Patch(_harmony);
+                _successPatch &= Patch_TeamAIComponent.Patch(_harmony);
+                _successPatch &= Patch_MissionAgentLabelView.Patch(_harmony);
+                _successPatch &= Patch_MissionBoundaryCrossingHandler.Patch(_harmony);
+                _successPatch &= Patch_MissionFormationMarkerVM.Patch(_harmony);
+                _successPatch &= Patch_MissionOrderVM.Patch(_harmony);
                 _successPatch &= Patch_CrosshairVM.Patch();
                 _successPatch &= Patch_MissionGauntletSpectatorControl.Patch();
                 _successPatch &= Patch_ScoreboardScreenWidget.Patch();
-                _successPatch &= Patch_Mission_UpdateSceneTimeSpeed.Patch();
-                _successPatch &= Patch_OrderOfBattleVM.Patch();
                 _successPatch &= Patch_MissionGauntletMainAgentEquipDropView.Patch();
                 _successPatch &= Patch_MissionGauntletMainAgentEquipmentControllerView.Patch();
-                _successPatch &= Patch_DeploymentMissionController.Patch();
-                _successPatch &= Patch_SandboxBattleSpawnModel.Patch();
                 _successPatch &= Patch_AgentHumanAILogic.Patch();
-                _successPatch &= Patch_MissionOrderDeploymentControllerVM.Patch();
                 // Use Patch to add game menu
                 WatchBattleBehavior.Patch(_harmony);
 

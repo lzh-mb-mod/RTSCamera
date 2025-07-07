@@ -18,14 +18,15 @@ namespace RTSCamera.Patch
         {
             try
             {
+                // TODO: update this patch
                 if (_patched)
                     return false;
                 _patched = true;
-                Harmony.Patch(
-                    typeof(DeploymentMissionController).GetMethod("FinishPlayerDeployment",
-                        BindingFlags.Instance | BindingFlags.Public),
-                    postfix: new HarmonyMethod(typeof(Patch_DeploymentMissionController).GetMethod(
-                        nameof(Postfix_FinishPlayerDeployment), BindingFlags.Static | BindingFlags.Public)));
+                //Harmony.Patch(
+                //    typeof(DeploymentMissionController).GetMethod("FinishPlayerDeployment",
+                //        BindingFlags.Instance | BindingFlags.Public),
+                //    postfix: new HarmonyMethod(typeof(Patch_DeploymentMissionController).GetMethod(
+                //        nameof(Postfix_FinishPlayerDeployment), BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {

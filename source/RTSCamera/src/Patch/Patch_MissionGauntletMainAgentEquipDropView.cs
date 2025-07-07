@@ -37,6 +37,7 @@ namespace RTSCamera.Patch
 
         public static bool Prefix_IsMainAgentAvailable(ref bool __result)
         {
+            // Disable drop equipment view in free camera mode
             if (RTSCameraLogic.Instance.SwitchFreeCameraLogic.IsSpectatorCamera)
             {
                 __result = false;

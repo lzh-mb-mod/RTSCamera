@@ -1,7 +1,9 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
@@ -31,7 +33,7 @@ namespace RTSCamera.Patch.Fix
         private static bool _willEndDraggingMode;
         private static bool _earlyDraggingMode;
         private static float _beginDraggingOffset;
-        private static readonly float _beginDraggingOffsetThreshold = 100;
+        private static readonly float _beginDraggingOffsetThreshold = 10;
         private static bool _rightButtonDraggingMode;
 
         public static void Patch()
@@ -140,7 +142,7 @@ namespace RTSCamera.Patch.Fix
             if (__instance == null)
                 return;
 
-            bool mouseVisibility =
+            bool mouseVisibility =   
                 (IsAnyDeployment(__instance) || ____dataSource.TroopController.IsTransferActive ||
                  ____dataSource.IsToggleOrderShown && (__instance.Input.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null)) &&
                 !_rightButtonDraggingMode && !_earlyDraggingMode;
@@ -196,7 +198,7 @@ namespace RTSCamera.Patch.Fix
             }
         }
 
-        public static bool Prefix_OnMissionScreenTick(MissionGauntletSingleplayerOrderUIHandler __instance, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
+        public static bool Prefix_OnMissionScreenTick(MissionGauntletSingleplayerOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
         {
             UpdateDragData(__instance, ____dataSource);
             UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer);

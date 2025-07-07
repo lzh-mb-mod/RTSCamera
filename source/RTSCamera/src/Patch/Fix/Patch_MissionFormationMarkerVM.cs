@@ -1,4 +1,10 @@
-﻿using TaleWorlds.Engine;
+﻿using HarmonyLib;
+using MissionSharedLibrary.Utilities;
+using RTSCamera.Patch.Fix;
+using SandBox.Missions.MissionLogics.Arena;
+using System;
+using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
@@ -8,27 +14,69 @@ namespace RTSCamera.src.Patch.Fix
     public class Patch_MissionFormationMarkerVM
     {
 
+        private static bool _patched;
+        public static bool Patch(Harmony harmony)
+        {
+            try
+            {
+                if (_patched)
+                    return false;
+                _patched = true;
+
+                harmony.Patch(
+                    typeof(MissionFormationMarkerVM).GetMethod("RefreshFormationPositions",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_MissionFormationMarkerVM).GetMethod(
+                        nameof(RefreshFormationPositions_Prefix),
+                        BindingFlags.Static | BindingFlags.Public)));
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Utility.DisplayMessage(e.ToString());
+                return false;
+            }
+
+            return true;
+        }
+
         // original method:
         //private void RefreshFormationPositions()
         //{
-        //    foreach (MissionFormationMarkerTargetVM target in (Collection<MissionFormationMarkerTargetVM>)this.Targets)
+        //    for (int i = 0; i < Targets.Count; i++)
         //    {
-        //        float screenX = 0.0f;
-        //        float screenY = 0.0f;
-        //        float w = 0.0f;
-        //        WorldPosition medianPosition = target.Formation.QuerySystem.MedianPosition;
-        //        medianPosition.SetVec2(target.Formation.QuerySystem.AveragePosition);
-        //        double insideUsableArea = (double)MBWindowManager.WorldToScreenInsideUsableArea(this._missionCamera, medianPosition.Position + this._heightOffset, ref screenX, ref screenY, ref w);
-        //        if ((double)w < 0.0 || !MathF.IsValidValue(screenX) || !MathF.IsValidValue(screenY))
+        //        MissionFormationMarkerTargetVM missionFormationMarkerTargetVM = Targets[i];
+        //        float screenX = 0f;
+        //        float screenY = 0f;
+        //        float w = 0f;
+        //        WorldPosition medianPosition = missionFormationMarkerTargetVM.Formation.QuerySystem.MedianPosition;
+        //        medianPosition.SetVec2(missionFormationMarkerTargetVM.Formation.QuerySystem.AveragePosition);
+        //        if (medianPosition.IsValid)
+        //        {
+        //            MBWindowManager.WorldToScreen(_missionCamera, medianPosition.GetGroundVec3() + _heightOffset, ref screenX, ref screenY, ref w);
+        //            missionFormationMarkerTargetVM.IsInsideScreenBoundaries = !(screenX > Screen.RealScreenResolutionWidth) && !(screenY > Screen.RealScreenResolutionHeight) && !(screenX + 200f < 0f) && !(screenY + 100f < 0f);
+        //            missionFormationMarkerTargetVM.WSign = ((!(w < 0f)) ? 1 : (-1));
+        //        }
+
+        //        if (!missionFormationMarkerTargetVM.IsTargetingAFormation && (!medianPosition.IsValid || w < 0f || !MathF.IsValidValue(screenX) || !MathF.IsValidValue(screenY)))
         //        {
         //            screenX = -10000f;
         //            screenY = -10000f;
+        //            w = 0f;
         //        }
-        //        target.ScreenPosition = !this._prevIsEnabled || !this.IsEnabled ? new Vec2(screenX, screenY) : Vec2.Lerp(target.ScreenPosition, new Vec2(screenX, screenY), 0.9f);
-        //        MissionFormationMarkerTargetVM formationMarkerTargetVm = target;
+
+        //        if (_prevIsEnabled && IsEnabled)
+        //        {
+        //            missionFormationMarkerTargetVM.ScreenPosition = Vec2.Lerp(missionFormationMarkerTargetVM.ScreenPosition, new Vec2(screenX, screenY), 0.9f);
+        //        }
+        //        else
+        //        {
+        //            missionFormationMarkerTargetVM.ScreenPosition = new Vec2(screenX, screenY);
+        //        }
+
         //        Agent main = Agent.Main;
-        //        double num = (main != null ? (main.IsActive() ? 1 : 0) : 0) != 0 ? (double)Agent.Main.Position.Distance(medianPosition.Position) : (double)w;
-        //        formationMarkerTargetVm.Distance = (float)num;
+        //        missionFormationMarkerTargetVM.Distance = ((main != null && main.IsActive()) ? Agent.Main.Position.Distance(medianPosition.GetGroundVec3()) : w);
         //    }
         //}
 
@@ -39,21 +87,36 @@ namespace RTSCamera.src.Patch.Fix
             if (main != null && main.IsPlayerControlled)
                 return true;
 
-            foreach (MissionFormationMarkerTargetVM target in ____targets)
+            for (int i = 0; i < ____targets.Count; i++)
             {
-                float screenX = 0.0f;
-                float screenY = 0.0f;
-                float w = 0.0f;
-                WorldPosition medianPosition = target.Formation.QuerySystem.MedianPosition;
-                medianPosition.SetVec2(target.Formation.QuerySystem.AveragePosition);
-                double insideUsableArea = MBWindowManager.WorldToScreenInsideUsableArea(____missionCamera, medianPosition.GetGroundVec3() + ____heightOffset, ref screenX, ref screenY, ref w);
-                if (w < 0.0 || !MathF.IsValidValue(screenX) || !MathF.IsValidValue(screenY))
+                MissionFormationMarkerTargetVM missionFormationMarkerTargetVM = ____targets[i];
+                float screenX = 0f;
+                float screenY = 0f;
+                float w = 0f;
+                WorldPosition medianPosition = missionFormationMarkerTargetVM.Formation.QuerySystem.MedianPosition;
+                medianPosition.SetVec2(missionFormationMarkerTargetVM.Formation.QuerySystem.AveragePosition);
+                if (medianPosition.IsValid)
+                {
+                    MBWindowManager.WorldToScreen(____missionCamera, medianPosition.GetGroundVec3() + ____heightOffset, ref screenX, ref screenY, ref w);
+                    missionFormationMarkerTargetVM.IsInsideScreenBoundaries = !(screenX > Screen.RealScreenResolutionWidth) && !(screenY > Screen.RealScreenResolutionHeight) && !(screenX + 200f < 0f) && !(screenY + 100f < 0f);
+                    missionFormationMarkerTargetVM.WSign = ((!(w < 0f)) ? 1 : (-1));
+                }
+                if (!missionFormationMarkerTargetVM.IsTargetingAFormation && (!medianPosition.IsValid || w < 0f || !MathF.IsValidValue(screenX) || !MathF.IsValidValue(screenY)))
                 {
                     screenX = -10000f;
                     screenY = -10000f;
+                    w = 0f;
                 }
-                target.ScreenPosition = !____prevIsEnabled || !____isEnabled ? new Vec2(screenX, screenY) : Vec2.Lerp(target.ScreenPosition, new Vec2(screenX, screenY), 0.9f);
-                target.Distance = w;
+                if (____prevIsEnabled && ____isEnabled)
+                {
+                    missionFormationMarkerTargetVM.ScreenPosition = Vec2.Lerp(missionFormationMarkerTargetVM.ScreenPosition, new Vec2(screenX, screenY), 0.9f);
+                }
+                else
+                {
+                    missionFormationMarkerTargetVM.ScreenPosition = new Vec2(screenX, screenY);
+                }
+                // Here is the only change: set distance to w when main agent is not controlled by player
+                missionFormationMarkerTargetVM.Distance = w;
             }
 
             return false;

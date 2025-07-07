@@ -41,14 +41,15 @@ namespace RTSCamera.Patch
         {
             try
             {
-                if (RTSCameraConfig.Get().FixCompanionFormation)
-                {
-                    var character = origin.Troop as CharacterObject;
-                    if (character == null)
-                        return true;
-                    typeof(BasicCharacterObject).GetProperty(nameof(BasicCharacterObject.DefaultFormationClass))
-                        .GetSetMethod(true).Invoke(origin.Troop, new object[] { character.GetFormationClass() });
-                }
+                // TODO: not requried anymore.
+                //if (RTSCameraConfig.Get().FixCompanionFormation)
+                //{
+                //    var character = origin.Troop as CharacterObject;
+                //    if (character == null)
+                //        return true;
+                //    typeof(BasicCharacterObject).GetProperty(nameof(BasicCharacterObject.DefaultFormationClass))
+                //        .GetSetMethod(true).Invoke(origin.Troop, new object[] { character.GetFormationClass() });
+                //}
             }
             catch (Exception e)
             {

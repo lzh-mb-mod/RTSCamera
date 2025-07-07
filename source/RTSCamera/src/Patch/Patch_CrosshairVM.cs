@@ -41,6 +41,7 @@ namespace RTSCamera.Patch
 
         public static bool Prefix_ShowHitMarker()
         {
+            // Hide hit marker in spectator camera.
             if (RTSCameraLogic.Instance.SwitchFreeCameraLogic.IsSpectatorCamera)
                 return false;
             return true;
@@ -48,6 +49,7 @@ namespace RTSCamera.Patch
 
         public static void Postfix_SetReloadProperties(CrosshairVM __instance)
         {
+            // Hide reload phases in spectator camera.
             if (RTSCameraLogic.Instance.SwitchFreeCameraLogic.IsSpectatorCamera)
             {
                 __instance.IsReloadPhasesVisible = false;

@@ -189,7 +189,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             }
         }
 
-        private void OnOrderIssued(OrderType orderType, IEnumerable<Formation> appliedFormations, params object[] delegateParams)
+        private void OnOrderIssued(OrderType orderType, MBReadOnlyList<Formation> appliedFormations, OrderController orderController, params object[] delegateParams)
         {
             if (!HighlightEnabledForAsTargetFormation || movementOrderTypes.FindIndex(o => o == orderType) == -1)
                 return;
@@ -294,7 +294,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
             if (Utility.IsTeamValid(Mission.Current.PlayerEnemyTeam))
             {
-                var allyAsTargetFormations = Mission.Current.PlayerEnemyTeam.FormationsIncludingSpecial
+                var allyAsTargetFormations = Mission.Current.PlayerEnemyTeam.FormationsIncludingSpecialAndEmpty
                     .Where(formation => formation.GetReadonlyMovementOrderReference().OrderType == OrderType.ChargeWithTarget)
                     .Select(formation => formation.GetReadonlyMovementOrderReference().TargetFormation).ToList();
 

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.Config;
 using RTSCamera.Logic;
 using System;
 using System.Reflection;
@@ -38,7 +39,8 @@ namespace RTSCamera.Patch
         }
         public static void Postfix_UpdateControlButtons(ScoreboardScreenWidget __instance, Widget ____fastForwardWidget)
         {
-            if (RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? false)
+            // show fast forward button when ControlAllyAfterDeath is enabled
+            if (RTSCameraConfig.Instance?.ControlAllyAfterDeath == true)
             {
                 ____fastForwardWidget.IsVisible = __instance.ShowScoreboard;
             }

@@ -504,14 +504,13 @@ namespace RTSCamera.View
                 {
                     BattleSideEnum side = Mission.PlayerTeam.Side;
                     IMissionDeploymentPlan deploymentPlan = Mission.DeploymentPlan;
-                    if (deploymentPlan?.HasDeploymentBoundaries(side, DeploymentPlanType.Initial) ?? false)
+                    if (deploymentPlan?.HasDeploymentBoundaries(side) ?? false)
                     {
                         Vec2 cameraFrameVec2 = cameraFrame.origin.AsVec2;
-                        if (!deploymentPlan.IsPositionInsideDeploymentBoundaries(side, in cameraFrameVec2,
-                                DeploymentPlanType.Initial))
+                        if (!deploymentPlan.IsPositionInsideDeploymentBoundaries(side, in cameraFrameVec2))
                         {
                             Vec2 boundaryPosition = deploymentPlan.GetClosestDeploymentBoundaryPosition(side,
-                                    in cameraFrameVec2, DeploymentPlanType.Initial);
+                                    in cameraFrameVec2);
                             cameraFrame.origin.AsVec2 = boundaryPosition;
                         }
                     }
@@ -548,10 +547,9 @@ namespace RTSCamera.View
                 targetPosition = mainAgentPosition;
                 targetPosition.z += distanceLimit * verticalScale;
             }
-            else if (heightDiff <= -distanceLimit * verticalScale)
+            else if (heightDiff <= 0)
             {
-                targetPosition = mainAgentPosition;
-                targetPosition.z -= distanceLimit * verticalScale;
+                targetPosition.z = mainAgentPosition.z;
             }
             var centerPosition = mainAgentPosition.AsVec2.ToVec3(targetPosition.z);
             var distance = targetPosition.Distance(centerPosition);

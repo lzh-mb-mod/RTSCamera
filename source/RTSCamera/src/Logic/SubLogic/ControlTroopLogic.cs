@@ -48,7 +48,7 @@ namespace RTSCamera.Logic.SubLogic
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
                 Utility.DisplayLocalizedText("str_rts_camera_control_troop");
                 bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
-                if (_switchFreeCameraLogic.IsSpectatorCamera || WatchBattleBehavior.WatchMode)
+                if (_switchFreeCameraLogic.IsSpectatorCamera || WatchBattleBehavior.WatchMode || Mission.Current.Mode == MissionMode.Deployment)
                 {
                     Mission.MainAgent = agent;
                     Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, false);
@@ -88,7 +88,9 @@ namespace RTSCamera.Logic.SubLogic
                         // Let AI control previous main agent.
                         Utility.AIControlMainAgent(false);
                     }
-                    bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
+
+                    bool isInDeployment = Mission.Mode == MissionMode.Deployment;
+                    bool shouldSmoothMoveToAgent = isInDeployment ? false : Utility.BeforeSetMainAgent();
                     if (_switchFreeCameraLogic.IsSpectatorCamera)
                     {
                         if (Mission.MainAgent != agent)
@@ -248,9 +250,10 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).IsKeyPressed(Mission.InputManager))
             {
+                if (Mission.Current.Mode == MissionMode.Deployment)
+                    return;
                 if (_selectCharacterView.LockOnAgent(GetAgentToControl()))
                     return;
-
                 if (!_switchFreeCameraLogic.IsSpectatorCamera && Mission.MainAgent?.Controller == Agent.ControllerType.Player)
                     return;
 

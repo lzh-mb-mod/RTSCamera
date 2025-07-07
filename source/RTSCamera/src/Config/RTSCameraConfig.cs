@@ -69,9 +69,9 @@ namespace RTSCamera.Config
 
         public int PlayerControllerInFreeCamera = (int)Agent.ControllerType.AI;
 
-        public Agent.ControllerType GetPlayerControllerInFreeCamera()
+        public Agent.ControllerType GetPlayerControllerInFreeCamera(Mission mission)
         {
-            if (WatchBattleBehavior.WatchMode)
+            if (WatchBattleBehavior.WatchMode || mission?.Mode == MissionMode.Deployment)
                 return Agent.ControllerType.AI;
             return (Agent.ControllerType) PlayerControllerInFreeCamera;
         }
@@ -118,7 +118,7 @@ namespace RTSCamera.Config
 
         public bool OrderUIClickable = true;
 
-        public bool FixCompanionFormation = true;
+        //public bool FixCompanionFormation = true;
 
         public static void OnMenuClosed()
         {
@@ -151,7 +151,7 @@ namespace RTSCamera.Config
             LimitCameraDistance = other.LimitCameraDistance;
             CameraDistanceLimitFactor = other.CameraDistanceLimitFactor;
             OrderUIClickable = other.OrderUIClickable;
-            FixCompanionFormation = other.FixCompanionFormation;
+            //FixCompanionFormation = other.FixCompanionFormation;
         }
         [XmlIgnore]
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");

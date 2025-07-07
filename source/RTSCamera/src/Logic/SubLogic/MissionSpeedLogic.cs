@@ -9,7 +9,7 @@ namespace RTSCamera.Logic.SubLogic
     {
         private readonly RTSCameraLogic _logic;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
-        private const int TimeSpeedConstant = 23454;
+        private bool _slowMotionRequestAdded = false;
 
         public Mission Mission => _logic.Mission;
 
@@ -20,12 +20,10 @@ namespace RTSCamera.Logic.SubLogic
 
         public void AfterStart()
         {
-            // Implemented through patch
-
-            //if (_config.SlowMotionMode)
-            //{
-            //    Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, TimeSpeedConstant));
-            //}
+            if (_config.SlowMotionMode && !_slowMotionRequestAdded)
+            {
+                AddSlowMotionRequest();
+            }
         }
 
         public void OnMissionTick(float dt)
@@ -52,18 +50,16 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (_config.SlowMotionMode == slowMotionMode)
                 return;
-            // Implemented through patch
 
-            //if (!_config.SlowMotionMode && slowMotionMode)
-            //{
-            //    Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, TimeSpeedConstant));
-            //}
-            //else
-            //{
-            //    Mission.RemoveTimeSpeedRequest(TimeSpeedConstant);
-            //}
             _config.SlowMotionMode = slowMotionMode;
-            Utility.DisplayLocalizedText(slowMotionMode ? "str_rts_camera_slow_motion_enabled" : "str_rts_camera_normal_mode_enabled");
+            if (slowMotionMode)
+            {
+                AddSlowMotionRequest();
+            }
+            else
+            {
+                RemoveSlowMotionRequest();
+            }
             _config.Serialize();
         }
 
@@ -71,32 +67,35 @@ namespace RTSCamera.Logic.SubLogic
         {
             _config.SlowMotionFactor = factor;
 
-            // Implemented through patch
-
-            //if (_config.SlowMotionMode)
-            //{
-            //    Mission.RemoveTimeSpeedRequest(TimeSpeedConstant);
-            //    Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(factor, TimeSpeedConstant));
-            //}
+            if (_config.SlowMotionMode)
+            {
+                UpdateSlowMotionRequest();
+            }
+            _config.Serialize();
         }
 
-        //public void ApplySlowMotionFactor()
-        //{
-        //    if (Math.Abs(_config.SlowMotionFactor - 1.0f) < 0.01f)
-        //        SetNormalMode();
-        //    else
-        //    {
-        //        SetFastForwardModeImpl(false);
-        //        SetSlowMotionModeImpl(_config.SlowMotionFactor);
-        //        SetFastForwardModeImpl(false);
-        //        Utility.DisplayLocalizedText("str_rts_camera_slow_motion_enabled");
-        //    }
-        //}
+        private void AddSlowMotionRequest()
+        {
+            if (!_slowMotionRequestAdded)
+            {
+                Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, RTSCameraSubModule.MissionTimeSpeedRequestId));
+                Utility.DisplayLocalizedText("str_rts_camera_slow_motion_enabled");
+                _slowMotionRequestAdded = true;
+            }
+        }
 
-        //public void SetFastForwardMode()
-        //{
-        //    Mission.SetFastForwardingFromUI(true);
-        //    Utility.DisplayLocalizedText("str_rts_camera_fast_forward_mode_enabled");
-        //}
+        private void RemoveSlowMotionRequest()
+        {
+            Mission.RemoveTimeSpeedRequest(RTSCameraSubModule.MissionTimeSpeedRequestId);
+            Utility.DisplayLocalizedText("str_rts_camera_normal_mode_enabled");
+            _slowMotionRequestAdded = false;
+        }
+
+        private void UpdateSlowMotionRequest()
+        {
+            Mission.RemoveTimeSpeedRequest(RTSCameraSubModule.MissionTimeSpeedRequestId);
+            Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, RTSCameraSubModule.MissionTimeSpeedRequestId));
+            _slowMotionRequestAdded = true;
+        }
     }
 }

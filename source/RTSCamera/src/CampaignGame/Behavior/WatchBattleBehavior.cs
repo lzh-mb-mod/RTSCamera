@@ -65,6 +65,7 @@ namespace RTSCamera.CampaignGame.Behavior
                     {
                         try
                         {
+                            // TODO: optimize this section of code, by referencing the latest official code
                             CheckEnemyAttackableHonorably(args);
                             return EncounterAttackCondition(args);
                         }
@@ -98,6 +99,7 @@ namespace RTSCamera.CampaignGame.Behavior
 
         }
 
+        // TODO: need update by referencing the latest official code
         private static bool WatchSiegeCondition(MenuCallbackArgs args)
         {
             try
@@ -108,7 +110,7 @@ namespace RTSCamera.CampaignGame.Behavior
                     args.IsEnabled = false;
                     return false;
                 }
-                if (MobileParty.MainParty.BesiegedSettlement != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp.BesiegerParty == MobileParty.MainParty)
+                if (MobileParty.MainParty.BesiegedSettlement != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp != null && MobileParty.MainParty.BesiegedSettlement.SiegeEvent.BesiegerCamp.LeaderParty == MobileParty.MainParty)
                 {
                     Settlement settlement = PlayerEncounter.EncounteredParty != null ? PlayerEncounter.EncounteredParty.Settlement : PlayerSiege.PlayerSiegeEvent.BesiegedSettlement;
                     if (PlayerSiege.PlayerSide == BattleSideEnum.Attacker && !settlement.SiegeEvent.BesiegerCamp.IsPreparationComplete)
@@ -156,6 +158,7 @@ namespace RTSCamera.CampaignGame.Behavior
             if (MobileParty.MainParty.Army != null && MobileParty.MainParty.Army.LeaderParty != MobileParty.MainParty || PlayerEncounter.PlayerIsDefender)
                 return;
             IFaction mapFaction;
+            // TODO: optimize this section of code, by looking at latest official code
             if (PlayerEncounter.EncounteredMobileParty != null)
             {
                 mapFaction = PlayerEncounter.EncounteredMobileParty.MapFaction;

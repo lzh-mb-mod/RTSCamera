@@ -54,38 +54,35 @@ namespace RTSCamera.Config
                     {
                         RTSCameraConfig.Get().RaisedHeight = f;
                     }, 0, 50, true, true));
-                if (!WatchBattleBehavior.WatchMode)
+                if (Campaign.Current != null)
                 {
-                    if (Campaign.Current != null)
-                    {
-                        cameraOptionCategory.AddOption(new BoolOptionViewModel(
-                            GameTexts.FindText("str_rts_camera_limit_camera_distance"),
-                            GameTexts.FindText("str_rts_camera_limit_camera_distance_hint"),
-                            () => RTSCameraConfig.Get().LimitCameraDistance,
-                            b =>
+                    cameraOptionCategory.AddOption(new BoolOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_limit_camera_distance"),
+                        GameTexts.FindText("str_rts_camera_limit_camera_distance_hint"),
+                        () => RTSCameraConfig.Get().LimitCameraDistance,
+                        b =>
+                        {
+                            if (b)
                             {
-                                if (b)
+                                RTSCameraConfig.Get().LimitCameraDistance = true;
+                            }
+                            else
+                            {
+                                if (!NativeConfig.CheatMode)
                                 {
-                                    RTSCameraConfig.Get().LimitCameraDistance = true;
+                                    Utility.DisplayLocalizedText("str_rts_camera_cheat_mode_required");
                                 }
                                 else
                                 {
-                                    if (!NativeConfig.CheatMode)
-                                    {
-                                        Utility.DisplayLocalizedText("str_rts_camera_cheat_mode_required");
-                                    }
-                                    else
-                                    {
-                                        RTSCameraConfig.Get().LimitCameraDistance = false;
-                                    }
+                                    RTSCameraConfig.Get().LimitCameraDistance = false;
                                 }
-                            }));
-                        cameraOptionCategory.AddOption(new NumericOptionViewModel(
-                            GameTexts.FindText("str_rts_camera_camera_distance_limit"),
-                            new TextObject(RTSCameraSkillBehavior.UpdateCameraMaxDistance(true).GetExplanations()),
-                            () => RTSCameraSkillBehavior.CameraDistanceLimit,
-                            RTSCameraSkillBehavior.UpdateCameraDistanceLimit, 0, RTSCameraSkillBehavior.CameraDistanceMaxLimit, false, true));
-                    }
+                            }
+                        }));
+                    cameraOptionCategory.AddOption(new NumericOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_camera_distance_limit"),
+                        new TextObject(RTSCameraSkillBehavior.UpdateCameraMaxDistance(true).GetExplanations()),
+                        () => RTSCameraSkillBehavior.CameraDistanceLimit,
+                        RTSCameraSkillBehavior.UpdateCameraDistanceLimit, 0, RTSCameraSkillBehavior.CameraDistanceMaxLimit, false, true));
                 }
                 cameraOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_camera_height_follows_terrain"),
@@ -306,11 +303,11 @@ namespace RTSCamera.Config
                     GameTexts.FindText("str_rts_camera_order_ui_clickable_hint"),
                     () => RTSCameraConfig.Get().OrderUIClickable,
                     b => RTSCameraConfig.Get().OrderUIClickable = UIConfig.DoNotUseGeneratedPrefabs = b));
-                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_fix_companion_formation"),
-                    GameTexts.FindText("str_rts_camera_fix_companion_formation_hint"),
-                    () => RTSCameraConfig.Get().FixCompanionFormation,
-                    b => RTSCameraConfig.Get().FixCompanionFormation = b));
+                //miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                //    GameTexts.FindText("str_rts_camera_fix_companion_formation"),
+                //    GameTexts.FindText("str_rts_camera_fix_companion_formation_hint"),
+                //    () => RTSCameraConfig.Get().FixCompanionFormation,
+                //    b => RTSCameraConfig.Get().FixCompanionFormation = b));
                 optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
 
                 if (NativeConfig.CheatMode)

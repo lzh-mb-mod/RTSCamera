@@ -40,15 +40,17 @@ namespace RTSCamera.Patch
         }
         public static void Postfix_OnMissionTick(MissionGauntletSpectatorControl __instance, MissionSpectatorControlVM ____dataSource)
         {
-            if (RTSCameraLogic.Instance.SwitchFreeCameraLogic.IsSpectatorCamera)
+            if (RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true)
             {
-                if (!Mission.Current.GetMissionBehavior<FlyCameraMissionView>().LockToAgent)
+                // update 
+                if (Mission.Current.GetMissionBehavior<FlyCameraMissionView>()?.LockToAgent == true)
                 {
-                    ____dataSource.IsEnabled = false;
+                    // Do not consider main agent dead when lock to agent.
+                    ____dataSource.SetMainAgentStatus(false);
                 }
                 else
                 {
-                    ____dataSource.SetMainAgentStatus(false);
+                    ____dataSource.IsEnabled = false;
                 }
             }
         }
