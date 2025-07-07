@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.src.Patch;
 using System;
 using System.Reflection;
 using TaleWorlds.MountAndBlade;
@@ -32,11 +33,12 @@ namespace RTSCamera.CommandSystem.Patch
                     prefix: new HarmonyMethod(typeof(Patch_MovementOrder).GetMethod("GetSubstituteOrder_Prefix",
                         BindingFlags.Static | BindingFlags.Public), Priority.First));
 
-                Harmony.Patch(
-                    typeof(MovementOrder).GetMethod("SetChargeBehaviorValues",
-                        BindingFlags.Static | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(typeof(Patch_MovementOrder).GetMethod("SetChargeBehaviorValues_Prefix",
-                        BindingFlags.Static | BindingFlags.Public), Priority.First));
+                // TODO: need update
+                //Harmony.Patch(
+                //    typeof(MovementOrder).GetMethod("SetChargeBehaviorValues",
+                //        BindingFlags.Static | BindingFlags.NonPublic),
+                //    prefix: new HarmonyMethod(typeof(Patch_MovementOrder).GetMethod("SetChargeBehaviorValues_Prefix",
+                //        BindingFlags.Static | BindingFlags.Public), Priority.First));
 
                 Harmony.Patch(
                     typeof(HumanAIComponent).GetMethod("GetFormationFrame",
@@ -50,6 +52,7 @@ namespace RTSCamera.CommandSystem.Patch
                 //    prefix: new HarmonyMethod(typeof(Patch_FacingOrder).GetMethod("GetDirection_Prefix",
                 //        BindingFlags.Static | BindingFlags.Public)));
 
+                Patch_Formation.Patch(Harmony);
             }
             catch (Exception e)
             {

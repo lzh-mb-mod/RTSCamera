@@ -1,5 +1,4 @@
 ﻿using RTSCamera.CommandSystem.Config;
-using RTSCamera.CommandSystem.Logic.CombatAI;
 using RTSCamera.CommandSystem.Utilities;
 using TaleWorlds.MountAndBlade;
 
@@ -42,11 +41,12 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool SetChargeBehaviorValues_Prefix(Agent unit)
         {
-            if (Utility.ShouldChargeToFormation(unit))
-            {
-                UnitAIBehaviorValues.SetUnitAIBehaviorWhenChargeToFormation(unit);
-                return false;
-            }
+            // TODO: Need update
+            //if (Utility.ShouldChargeToFormation(unit))
+            //{
+            //    UnitAIBehaviorValues.SetUnitAIBehaviorWhenChargeToFormation(unit);
+            //    return false;
+            //}
 
             return true;
         }

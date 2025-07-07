@@ -26,29 +26,30 @@ namespace RTSCamera.CommandSystem.Patch
             ref bool isSettingDestinationSpeed,
             ref bool limitIsMultiplier)
         {
-            var formation = ___Agent.Formation;
-            if (!___Agent.IsMount && formation != null &&
-                !___Agent.IsDetachedFromFormation)
-            {
-                if (Utility.ShouldChargeToFormation(___Agent))
-                {
-                    isSettingDestinationSpeed = false;
-                    var component = ___Agent.GetComponent<CommandSystemAgentComponent>();
-                    if (component == null)
-                        return true;
-                    formationPosition = component.CurrentTargetPosition.Value;
-                    formationDirection = formation.GetDirectionOfUnit(___Agent);
+            // TODO: Need update
+            //var formation = ___Agent.Formation;
+            //if (!___Agent.IsMount && formation != null &&
+            //    !___Agent.IsDetachedFromFormation)
+            //{
+            //    if (Utility.ShouldChargeToFormation(___Agent))
+            //    {
+            //        isSettingDestinationSpeed = false;
+            //        var component = ___Agent.GetComponent<CommandSystemAgentComponent>();
+            //        if (component == null)
+            //            return true;
+            //        formationPosition = component.CurrentTargetPosition.Value;
+            //        formationDirection = formation.GetDirectionOfUnit(___Agent);
 
-                    limitIsMultiplier = true;
-                    speedLimit =
-                        !___Agent.HasMount && __instance != null &&
-                        HumanAIComponent.FormationSpeedAdjustmentEnabled
-                            ? __instance.GetDesiredSpeedInFormation(true)
-                            : -1f;
-                    __result = true;
-                    return false;
-                }
-            }
+            //        limitIsMultiplier = true;
+            //        speedLimit =
+            //            !___Agent.HasMount && __instance != null &&
+            //            HumanAIComponent.FormationSpeedAdjustmentEnabled
+            //                ? __instance.GetDesiredSpeedInFormation(true)
+            //                : -1f;
+            //        __result = true;
+            //        return false;
+            //    }
+            //}
 
             return true;
         }

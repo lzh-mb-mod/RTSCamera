@@ -1,6 +1,8 @@
-﻿using RTSCamera.CommandSystem.Config;
+﻿using NetworkMessages.FromClient;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using System.Collections.Generic;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -79,6 +81,24 @@ namespace RTSCamera.CommandSystem.Utilities
                         QueryLibrary.IsRangedCavalry(agent) && agent.Formation.FiringOrder.OrderType == OrderType.HoldFire ||
                         CommandSystemSubModule.IsRealisticBattleModuleNotInstalled &&
                             (QueryLibrary.IsInfantry(agent) || QueryLibrary.IsRanged(agent) && agent.Formation.FiringOrder.OrderType == OrderType.HoldFire));
+        }
+
+        public static MethodInfo BeforeSetOrder = typeof(OrderController).GetMethod("BeforeSetOrder", BindingFlags.NonPublic | BindingFlags.Instance);
+        public static MethodInfo AfterSetOrder = typeof(OrderController).GetMethod("AfterSetOrder", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        public static void ChargeToFormation(OrderController playerController, Formation targetFormation)
+        {
+            //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
+            foreach (Formation selectedFormation in playerController.SelectedFormations)
+            {
+                selectedFormation.SetTargetFormation(targetFormation);
+            }
+            playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
+
+            //AfterSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
+
+            //DisplayChargeToFormationMessage(playerController.SelectedFormations,
+            //    targetFormation);
         }
     }
 }

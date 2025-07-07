@@ -23,7 +23,6 @@ namespace RTSCamera.Logic.SubLogic
         private bool _isDeploymentFinishing = false;
         private FormationClass _formationClassInDeployment;
         private bool _switchToFreeCameraNextTick;
-        private float _switchToFreeCameraTimer;
         private List<FormationClass> _playerFormations;
         private float _updatePlayerFormationTime;
 
@@ -103,7 +102,6 @@ namespace RTSCamera.Logic.SubLogic
             if (_switchToFreeCameraNextTick)
             {
                 _switchToFreeCameraNextTick = false;
-                _switchToFreeCameraTimer = 0;
                 SwitchToFreeCamera();
             }
 

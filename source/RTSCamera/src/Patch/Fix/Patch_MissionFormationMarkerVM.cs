@@ -8,6 +8,7 @@ using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
+using static TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker.MissionFormationMarkerTargetVM;
 
 namespace RTSCamera.src.Patch.Fix
 {
@@ -90,6 +91,13 @@ namespace RTSCamera.src.Patch.Fix
             for (int i = 0; i < ____targets.Count; i++)
             {
                 MissionFormationMarkerTargetVM missionFormationMarkerTargetVM = ____targets[i];
+                // update team type, because team may be switched.
+                missionFormationMarkerTargetVM.TeamType =
+                    missionFormationMarkerTargetVM.Formation.Team.IsPlayerTeam ?
+                        (int)TeamTypes.PlayerTeam : 
+                        (missionFormationMarkerTargetVM.Formation.Team.IsPlayerAlly ? 
+                            (int)TeamTypes.PlayerAllyTeam :
+                            (int)TeamTypes.EnemyTeam);
                 float screenX = 0f;
                 float screenY = 0f;
                 float w = 0f;

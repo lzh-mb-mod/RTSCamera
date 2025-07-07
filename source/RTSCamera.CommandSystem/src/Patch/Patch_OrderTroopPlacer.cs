@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
+using MissionSharedLibrary.QuerySystem;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.CampaignGame;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Logic.SubLogic;
-using RTSCamera.CommandSystem.QuerySystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -425,9 +425,7 @@ namespace RTSCamera.CommandSystem.Patch
                         {
                             if (Campaign.Current == null || CommandSystemSkillBehavior.CanIssueChargeToFormationOrder)
                             {
-                                ___PlayerOrderController.SetOrderWithFormation(OrderType.ChargeWithTarget, ____clickedFormation);
-                                Utilities.Utility.DisplayChargeToFormationMessage(___PlayerOrderController.SelectedFormations,
-                                    ____clickedFormation);
+                                Utilities.Utility.ChargeToFormation(___PlayerOrderController, ____clickedFormation);
                             }
                             else
                             {

@@ -43,8 +43,10 @@ namespace RTSCamera.Logic.SubLogic
 
         internal void ShowBattleResults()
         {
-            _battleResultComesOut = true;
+            if (!ShouldGainSkillXp())
+                return;
             UpdateScoutingSkillXp();
+            _battleResultComesOut = true;
         }
 
         private bool ShouldGainSkillXp()
