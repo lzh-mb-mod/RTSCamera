@@ -45,6 +45,11 @@ namespace RTSCamera.Logic.SubLogic
                     // Let AI control previous main agent.
                     Utility.AIControlMainAgent(false);
                 }
+                else
+                {
+                    // avoid 2 agent with player controller appears in the same formation, which will cause stack overflow in formation logic.
+                    Mission.MainAgent.Controller = Agent.ControllerType.None;
+                }
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
                 Utility.DisplayLocalizedText("str_rts_camera_control_troop");
                 bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
@@ -62,7 +67,7 @@ namespace RTSCamera.Logic.SubLogic
                 return true;
             }
 
-            if (Utilities.Utility.IsBattleCombat(Mission))
+            if (Utilities.Utility.IsBattleCombat(Mission) && !Mission.MissionEnded)
             {
                 Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
             }

@@ -76,7 +76,8 @@ namespace RTSCamera.Logic.SubLogic
                     // Force control agent, setting controller to Player, to avoid the issue that,
                     // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
                     // DeploymentMissionController.FinishDeployment set controller of main agent to Player.
-                    _controlTroopLogic.ForceControlAgent();
+                    //_controlTroopLogic.ForceControlAgent();
+                    Utility.PlayerControlAgent(_controlTroopLogic.GetAgentToControl());
                     if (Mission.MainAgent != null)
                     {
                         Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
@@ -151,7 +152,7 @@ namespace RTSCamera.Logic.SubLogic
             }
             else if (agent == Mission.MainAgent)
             {
-                Utility.SetHasPlayer(agent.Formation, false);
+                //Utility.SetHasPlayerControlledTroop(agent.Formation, false);
                 TrySetPlayerFormation();
 
                 if (agent.Formation == null)
@@ -209,6 +210,10 @@ namespace RTSCamera.Logic.SubLogic
                     }
                 }
             }
+            else if (IsSpectatorCamera || (_config.ControlAllyAfterDeath && !Mission.IsFastForward))
+            {
+                _controlTroopLogic.SetMainAgent();
+            }
         }
 
         private void UpdateMainAgentControllerInFreeCamera()
@@ -236,30 +241,23 @@ namespace RTSCamera.Logic.SubLogic
                     {
                         affectedAgent.OnMainAgentWieldedItemChange = null;
                         // TODO: optimize this logic
-                        //bool shouldSmoothToAgent = Utility.BeforeSetMainAgent();
-                        // Use RTSCameraComponent to set new main agent, which should be the right timing,
-                        // where Agent.Formation is set to null in Agent.OnRemoved.
-                        var agentComponent = Mission.MainAgent.GetComponent<RTSCameraComponent>();
-                        if (agentComponent != null)
+                        bool shouldSmoothToAgent = Utility.BeforeSetMainAgent();
+                        if (IsSpectatorCamera || (_config.ControlAllyAfterDeath && !Mission.IsFastForward))
                         {
-                            agentComponent.OnComponentRemovedEvent += OnRTSCameraAgentComponentAgentRemoved;
+                            // will there be 2 agent with player controller in the same formation
+                            // if we set new main agent here?
+                            _controlTroopLogic.SetMainAgent();
                         }
-                        Mission.MainAgent = null;
-                        //if (IsSpectatorCamera || (_config.ControlAllyAfterDeath && !Mission.IsFastForward))
-                        //{
-                        //    _controlTroopLogic.SetMainAgent();
-                        //    //_controlAgentNextTick = true;
-                        //}
-                        //// Set smooth move again if controls another agent instantly.
-                        //// Otherwise MissionScreen will reset camera elevate and bearing.
-                        //if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
-                        //    Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
-                        //// Restore the variables to initial state
-                        //else if (shouldSmoothToAgent)
-                        //{
-                        //    Utility.ShouldSmoothMoveToAgent = true;
-                        //    Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, false);
-                        //}
+                        // Set smooth move again if controls another agent instantly.
+                        // Otherwise MissionScreen will reset camera elevate and bearing.
+                        if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
+                            Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
+                        // Restore the variables to initial state
+                        else if (shouldSmoothToAgent)
+                        {
+                            Utility.ShouldSmoothMoveToAgent = true;
+                            Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, false);
+                        }
                     }
                 }
                 else if (!Utility.IsTeamValid(Mission.PlayerTeam) || Mission.PlayerTeam.ActiveAgents.Count > 0)
@@ -325,27 +323,6 @@ namespace RTSCamera.Logic.SubLogic
 
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(true);
             Utility.DisplayLocalizedText("str_rts_camera_switch_to_free_camera");
-        }
-
-        public void OnRTSCameraAgentComponentAgentRemoved(RTSCameraComponent component)
-        {
-            component.OnComponentRemovedEvent -= OnRTSCameraAgentComponentAgentRemoved;
-            // This is the right timing to set new main agent.
-            bool shouldSmoothToAgent = Utility.BeforeSetMainAgent();
-            if (IsSpectatorCamera || (_config.ControlAllyAfterDeath && !Mission.IsFastForward))
-            {
-                _controlTroopLogic.SetMainAgent();
-            }
-            // Set smooth move again if controls another agent instantly.
-            // Otherwise MissionScreen will reset camera elevate and bearing.
-            if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
-                Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
-            // Restore the variables to initial state
-            else if (shouldSmoothToAgent)
-            {
-                Utility.ShouldSmoothMoveToAgent = true;
-                Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, false);
-            }
         }
     }
 }

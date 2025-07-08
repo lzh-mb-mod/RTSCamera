@@ -17,12 +17,12 @@ namespace RTSCamera.CommandSystem.Patch
                     return false;
                 _patched = true;
 
-                harmony.Patch(
-                    typeof(Formation).GetMethod("SetMovementOrder",
-                        BindingFlags.Instance | BindingFlags.Public),
-                    postfix: new HarmonyMethod(
-                        typeof(Patch_Formation).GetMethod(nameof(Postfix_SetMovementOrder),
-                            BindingFlags.Static | BindingFlags.Public)));
+                //harmony.Patch(
+                //    typeof(Formation).GetMethod("SetMovementOrder",
+                //        BindingFlags.Instance | BindingFlags.Public),
+                //    postfix: new HarmonyMethod(
+                //        typeof(Patch_Formation).GetMethod(nameof(Postfix_SetMovementOrder),
+                //            BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {
@@ -33,12 +33,12 @@ namespace RTSCamera.CommandSystem.Patch
 
             return true;
         }
-        public static void Postfix_SetMovementOrder(Formation __instance, MovementOrder input)
-        {
-            if (input.OrderEnum == MovementOrder.MovementOrderEnum.ChargeToTarget)
-            {
-                input.OnApply(__instance);
-            }
-        }
+        //public static void Postfix_SetMovementOrder(Formation __instance, MovementOrder input)
+        //{
+        //    if (input.OrderEnum == MovementOrder.MovementOrderEnum.ChargeToTarget)
+        //    {
+        //        input.OnApply(__instance);
+        //    }
+        //}
     }
 }

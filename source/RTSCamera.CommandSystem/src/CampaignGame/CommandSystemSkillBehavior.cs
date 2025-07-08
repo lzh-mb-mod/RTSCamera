@@ -6,7 +6,7 @@ namespace RTSCamera.CommandSystem.CampaignGame
 {
     public class CommandSystemSkillBehavior : CampaignBehaviorBase
     {
-        public static int RequiredTacticsLevelToIssueChargeToFormationOrder = 25;
+        public static int RequiredTacticsLevelToIssueChargeToFormationOrder = 0;
         public override void RegisterEvents()
         {
             CampaignEvents.HeroGainedSkill.AddNonSerializedListener(this, OnHeroGainedSKill);

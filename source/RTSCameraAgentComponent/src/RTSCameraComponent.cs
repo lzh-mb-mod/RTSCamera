@@ -54,14 +54,14 @@ namespace RTSCameraAgentComponent
         {
             base.OnStopUsingGameObject();
 
-            // TODO
-            Agent.DisableScriptedMovement();
-            if (Agent.HumanAIComponent != null)
-            {
-                Agent.AIUseGameObjectDisable();
-                Agent.AIMoveToGameObjectDisable();
-            }
-            Agent.SetScriptedFlags(Agent.GetScriptedFlags() & ~Agent.AIScriptedFrameFlags.NoAttack);
+            // TODO; verify the need to this
+            //Agent.DisableScriptedMovement();
+            //if (Agent.HumanAIComponent != null)
+            //{
+            //    Agent.AIUseGameObjectDisable();
+            //    Agent.AIMoveToGameObjectDisable();
+            //}
+            //Agent.SetScriptedFlags(Agent.GetScriptedFlags() & ~Agent.AIScriptedFrameFlags.NoAttack);
         }
 
         public void SetContourColor(int level, uint? color, bool alwaysVisible, bool updateInstantly)
