@@ -120,6 +120,10 @@ namespace RTSCamera.Config
 
         public bool OrderUIClickable = true;
 
+        public bool SwitchCameraOnOrdering = false;
+
+        public bool OrderOnSwitchingCamera = true;
+
         public static void OnMenuClosed()
         {
             Get().Serialize();
@@ -152,6 +156,8 @@ namespace RTSCamera.Config
             LimitCameraDistance = other.LimitCameraDistance;
             CameraDistanceLimitFactor = other.CameraDistanceLimitFactor;
             OrderUIClickable = other.OrderUIClickable;
+            SwitchCameraOnOrdering = other.SwitchCameraOnOrdering;
+            OrderOnSwitchingCamera = other.OrderOnSwitchingCamera;
         }
         [XmlIgnore]
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");

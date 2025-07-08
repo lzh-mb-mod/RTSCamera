@@ -7,8 +7,8 @@
   <strings>
     <string id="RTSCamera_option_class" text="RTS Camera" />
 
-    <string id="RTSCamera_watch_battle" text="(RTS Camera)Watch the battle." />
-    <string id="RTSCamera_cannot_control_agent_in_watch_mode" text="Cannot control units in watch mode." />
+    <string id="RTSCamera_command_battle" text="(RTS Camera)Command the battle." />
+    <string id="RTSCamera_cannot_control_agent_in_command_only_mode" text="Cannot control units in command only mode." />
     <string id="RTSCamera_watch_mode_tool_tip" text="You are injured. You may be able to commmand your troops but you cannot directly participate in the battle." />
 
     <string id="RTSCamera_open_menu_hint" text="Press {KeyName} in battle to open menu of RTS Camera" />
@@ -114,7 +114,10 @@
     <string id="RTSCamera_displaymodmessage" text="Display Mod Message" />
     <string id="RTSCamera_toggleui" text="Toggle HUD" />
     <string id="RTSCamera_order_ui_clickable" text="Order UI Clickable" />
-    <string id="RTSCamera_fix_companion_formation" text="Fix Companion Formation" />
+    <string id="RTSCamera_switchcameraonordering" text="Switch Camera on Ordering" />
+    <string id="RTSCamera_switchcameraonorderinghint" text="Automatically switch to free camera when giving orders, and switch back when finished." />
+    <string id="RTSCamera_orderonswitchingcamera" text="Order on Switching Camera" />
+    <string id="RTSCamera_orderonswitchingcamerahint" text="Automatically open order UI when switching to free camera, and close order UI when switching back." />
 
     <string id="RTSCamera_hotkeycategory" text="RTS Camera Hot Key" />
     <string id="RTSCamera_pausekey" text="Pause" />

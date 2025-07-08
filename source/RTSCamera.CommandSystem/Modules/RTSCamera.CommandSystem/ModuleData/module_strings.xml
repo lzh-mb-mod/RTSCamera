@@ -15,8 +15,12 @@
   <string id="str_rts_camera_command_system_after_charge_behavior.hold" text="{=RTSCameraCommandSystem_after_charge_behavior_hold}Hold" />
   <string id="str_rts_camera_command_system_highlight_target_formation" text="{=RTSCameraCommandSystem_highlight_target_formation}Highlight target formation" />
   <string id="str_rts_camera_command_system_highlight_target_formation_hint" text="{=RTSCameraCommandSystem_highlight_target_formation_hint}Target formation will be highlighted with outline." />
-  <string id="str_rts_camera_command_system_highlight_on_rts_view_only" text="{=RTSCameraCommandSystem_highlightonrtsviewonly}Enable highlight on rts view only." />
+  <string id="str_rts_camera_command_system_highlight_on_rts_view_only" text="{=RTSCameraCommandSystem_highlightonrtsviewonly}Enable highlight on rts view only" />
   <string id="str_rts_camera_command_system_highlight_on_rts_view_only_hint" text="{=RTSCameraCommandSystem_highlightonrtsviewonlyhint}Only enable highlight on rts view. In normal mode formation will not be highlighted." />
+  <string id="str_rts_camera_command_system_more_visible_movement_target" text="{=RTSCameraCommandSystem_morevisiblemovementtarget}More visible Movement Target" />
+  <string id="str_rts_camera_command_system_more_visible_movement_target_hint" text="{=RTSCameraCommandSystem_highlightonrtsviewonlyhint}Make Movement Target more visible." />
+  <string id="str_rts_camera_command_system_movement_target_more_visible_on_rts_view_only" text="{=RTSCameraCommandSystem_movementtargetmorevisibleonrtsviewonly}More visible Movement Target on rts view only" />
+  <string id="str_rts_camera_command_system_movement_target_more_visible_on_rts_view_only_hint" text="{=RTSCameraCommandSystem_targetmorevisibleonrtsviewonlyhint}Make Movement Target more visible on rts view only. Keep the original appearance on normal mode." />
 
   <string id="str_key_category_name.RTSCameraCommandSystemHotKey" text="{=RTSCameraCommandSystem_hotkeycategory}CommandSystem Hot Key" />
   <string id="str_key_name.RTSCameraCommandSystemHotKey_Up" text="{=RTSCameraCommandSystem_select_formation}Select Formation" />

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using MissionLibrary.Event;
 using MissionSharedLibrary.QuerySystem;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.CampaignGame;
@@ -13,6 +14,7 @@ using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
+using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -40,6 +42,12 @@ namespace RTSCamera.CommandSystem.Patch
         private static OrderTroopPlacer _orderTroopPlacer;
         private static MissionFormationTargetSelectionHandler _targetSelectionHandler;
         private static MBReadOnlyList<Formation> _focusedFormationsCache;
+        private static bool _isFreeCamera;
+        private static bool _previousMoreVisibleTroopPlacer;
+        private static List<GameEntity> _originalOrderPositionEntities;
+        private static List<GameEntity> _moreVisibleOrderPositionEntities;
+        private static Material _originalMaterial;
+        private static Material _moreVisibleMaterial;
         public static bool Patch()
         {
             try
@@ -73,6 +81,11 @@ namespace RTSCamera.CommandSystem.Patch
                         BindingFlags.Instance | BindingFlags.Public),
                     new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_OnMissionScreenTick),
                         BindingFlags.Static | BindingFlags.Public)));
+                Harmony.Patch(
+                    typeof(OrderTroopPlacer).GetMethod("HideOrderPositionEntities",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Postfix_HideOrderPositionEntities),
+                    BindingFlags.Static | BindingFlags.Public)));
                 return true;
             }
             catch (Exception e)
@@ -100,11 +113,9 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 _targetSelectionHandler.OnFormationFocused += OnFormationFocused;
             }
-        }
-
-        private static void OnFormationFocused(MBReadOnlyList<Formation> focusedFormations)
-        {
-            _focusedFormationsCache = focusedFormations;
+            MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
+            _isFreeCamera = false;
+            _previousMoreVisibleTroopPlacer = false;
         }
 
         public static void OnRemoveBehavior()
@@ -118,6 +129,21 @@ namespace RTSCamera.CommandSystem.Patch
                 _targetSelectionHandler.OnFormationFocused -= OnFormationFocused;
             }
             _targetSelectionHandler = null;
+            MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
+            _isFreeCamera = false;
+            _previousMoreVisibleTroopPlacer = false;
+            _originalOrderPositionEntities = _moreVisibleOrderPositionEntities = null;
+            _originalMaterial = _moreVisibleMaterial = null;
+        }
+
+        private static void OnFormationFocused(MBReadOnlyList<Formation> focusedFormations)
+        {
+            _focusedFormationsCache = focusedFormations;
+        }
+
+        private static void OnToggleFreeCamera(bool isFreeCamera)
+        {
+            _isFreeCamera = isFreeCamera;
         }
 
         public static bool IsDraggingFormation(OrderTroopPlacer __instance, Vec2? ____formationDrawingStartingPointOfMouse, float? ____formationDrawingStartingTime)
@@ -358,40 +384,81 @@ namespace RTSCamera.CommandSystem.Patch
             ref Vec3 groundPosition, bool fadeOut, float alpha,
             List<GameEntity> ____orderPositionEntities, ref Material ____meshMaterial)
         {
-            while (____orderPositionEntities.Count <= entityIndex)
+            var config = CommandSystemConfig.Get();
+            bool moreVisibleTroopPlacer = config.MoreVisibleMovementTarget && (!config.MovementTargetMoreVisibleOnRtsViewOnly || _isFreeCamera);
+            if (_previousMoreVisibleTroopPlacer != moreVisibleTroopPlacer)
             {
-                GameEntity empty = GameEntity.CreateEmpty(__instance.Mission.Scene);
-                empty.EntityFlags |= EntityFlags.NotAffectedBySeason;
-                MetaMesh copy = MetaMesh.GetCopy("order_flag_small");
-                if (____meshMaterial == null)
+                if (moreVisibleTroopPlacer)
                 {
-                    ____meshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
-                    ____meshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
+                    if (_moreVisibleOrderPositionEntities == null)
+                    {
+                        _moreVisibleOrderPositionEntities = new List<GameEntity>();
+                        _moreVisibleMaterial = null;
+                    }
+                    ____orderPositionEntities = _moreVisibleOrderPositionEntities;
+                    ____meshMaterial = _moreVisibleMaterial;
+                    foreach (GameEntity orderPositionEntity in _originalOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
+                    {
+                        orderPositionEntity.HideIfNotFadingOut();
+                    }
                 }
-                copy.SetMaterial(____meshMaterial);
-                copy.SetContourColor(new Color(0, 0.6f, 1).ToUnsignedInteger());
-                copy.SetContourState(true);
-                empty.AddComponent(copy);
-                empty.SetVisibilityExcludeParents(false);
-                ____orderPositionEntities.Add(empty);
+                else
+                {
+                    if (_originalOrderPositionEntities == null)
+                    {
+                        _originalOrderPositionEntities = new List<GameEntity>();
+                        _originalMaterial = null;
+                    }
+                    ____orderPositionEntities = _originalOrderPositionEntities;
+                    ____meshMaterial = _originalMaterial;
+                    foreach (GameEntity orderPositionEntity in _moreVisibleOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
+                    {
+                        orderPositionEntity.HideIfNotFadingOut();
+                    }
+                }
             }
-            GameEntity orderPositionEntity = ____orderPositionEntities[entityIndex];
-            MatrixFrame frame = new MatrixFrame(Mat3.Identity, groundPosition);
-            __instance.MissionScreen.ScreenPointToWorldRay(Vec2.One * 0.5f, out var rayBegin, out Vec3 _);
-            float rotationZ = MatrixFrame.CreateLookAt(rayBegin, groundPosition, Vec3.Up).rotation.f.RotationZ;
-            frame.rotation.RotateAboutUp(rotationZ);
-            orderPositionEntity.SetFrame(ref frame);
-            if (alpha != -1.0)
+            if (moreVisibleTroopPlacer)
             {
-                orderPositionEntity.SetVisibilityExcludeParents(true);
-                orderPositionEntity.SetAlpha(alpha);
-            }
-            else if (fadeOut)
-                orderPositionEntity.FadeOut(0.3f, false);
-            else
-                orderPositionEntity.FadeIn();
+                while (____orderPositionEntities.Count <= entityIndex)
+                {
+                    GameEntity gameEntity = GameEntity.CreateEmpty(__instance.Mission.Scene);
+                    gameEntity.EntityFlags |= EntityFlags.NotAffectedBySeason;
+                    MetaMesh copy = MetaMesh.GetCopy("barrier_sphere");
+                    if (____meshMaterial == null)
+                    {
+                        ____meshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+                        ____meshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
+                    }
+                    copy.SetMaterial(____meshMaterial);
+                    gameEntity.AddComponent(copy);
+                    gameEntity.SetVisibilityExcludeParents(false);
+                    ____orderPositionEntities.Add(gameEntity);
+                }
+                GameEntity orderPositionEntity = ____orderPositionEntities[entityIndex];
+                MatrixFrame frame = new MatrixFrame(Mat3.Identity, groundPosition + (Vec3.Up * 1.0f));
+                orderPositionEntity.SetFrame(ref frame);
+                if (alpha != -1.0)
+                {
+                    orderPositionEntity.SetVisibilityExcludeParents(true);
+                    orderPositionEntity.SetAlpha(alpha);
+                }
+                else if (fadeOut)
+                    orderPositionEntity.FadeOut(0.3f, false);
+                else
+                    orderPositionEntity.FadeIn();
 
-            return false;
+                return false;
+            }
+
+            return true;
+        }
+
+        public static void Postfix_HideOrderPositionEntities()
+        {
+            foreach (GameEntity orderPositionEntity in _moreVisibleOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
+            {
+                orderPositionEntity.HideIfNotFadingOut();
+            }
         }
 
         private static void HandleSelectFormationKeyDown(OrderTroopPlacer __instance, ref Formation ____clickedFormation, ref Formation ____mouseOverFormation,

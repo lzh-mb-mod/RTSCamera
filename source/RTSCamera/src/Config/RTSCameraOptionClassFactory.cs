@@ -300,6 +300,16 @@ namespace RTSCamera.Config
                     GameTexts.FindText("str_rts_camera_order_ui_clickable_hint"),
                     () => RTSCameraConfig.Get().OrderUIClickable,
                     b => RTSCameraConfig.Get().OrderUIClickable = UIConfig.DoNotUseGeneratedPrefabs = b));
+                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_switch_camera_on_ordering"),
+                    GameTexts.FindText("str_rts_camera_switch_camera_on_ordering_hint"),
+                    () => RTSCameraConfig.Get().SwitchCameraOnOrdering,
+                    b => RTSCameraConfig.Get().SwitchCameraOnOrdering = b));
+                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_order_on_switching_camera"),
+                    GameTexts.FindText("str_rts_camera_order_on_switching_camera_hint"),
+                    () => RTSCameraConfig.Get().OrderOnSwitchingCamera,
+                    b => RTSCameraConfig.Get().OrderOnSwitchingCamera = b));
                 optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
 
                 if (NativeConfig.CheatMode)

@@ -71,6 +71,20 @@ namespace RTSCamera.CommandSystem.Config
                     {
                         CommandSystemConfig.Get().HighlightOnRtsViewOnly = b;
                     }));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_more_visible_movement_target"),
+                    GameTexts.FindText("str_rts_camera_command_system_more_visible_movement_target_hint"),
+                    () => CommandSystemConfig.Get().MoreVisibleMovementTarget, b =>
+                    {
+                        CommandSystemConfig.Get().MoreVisibleMovementTarget = b;
+                    }));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_movement_target_more_visible_on_rts_view_only"),
+                    GameTexts.FindText("str_rts_camera_command_system_movement_target_more_visible_on_rts_view_only_hint"),
+                    () => CommandSystemConfig.Get().MovementTargetMoreVisibleOnRtsViewOnly, b =>
+                    {
+                        CommandSystemConfig.Get().MovementTargetMoreVisibleOnRtsViewOnly = b;
+                    }));
                 optionClass.AddOptionCategory(0, commandOptionCategory);
 
                 return optionClass;

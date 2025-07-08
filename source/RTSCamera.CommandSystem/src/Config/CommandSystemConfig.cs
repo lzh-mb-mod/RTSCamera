@@ -29,6 +29,10 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool HighlightOnRtsViewOnly = true;
 
+        public bool MoreVisibleMovementTarget = true;
+
+        public bool MovementTargetMoreVisibleOnRtsViewOnly = true;
+
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;
@@ -38,6 +42,8 @@ namespace RTSCamera.CommandSystem.Config
             HighlightSelectedFormation = other.HighlightSelectedFormation;
             HighlightTargetFormation = other.HighlightTargetFormation;
             HighlightOnRtsViewOnly = other.HighlightOnRtsViewOnly;
+            MoreVisibleMovementTarget = other.MoreVisibleMovementTarget;
+            MovementTargetMoreVisibleOnRtsViewOnly = other.MovementTargetMoreVisibleOnRtsViewOnly;
         }
 
         public static void OnMenuClosed()

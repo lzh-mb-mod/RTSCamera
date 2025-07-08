@@ -70,7 +70,7 @@ namespace RTSCamera.CampaignGame.Behavior
             try
             {
                 var explainedNumber = new ExplainedNumber(0, includeDescription);
-                explainedNumber.Add(5f, GameTexts.FindText("str_rts_camera_base_distance"));
+                explainedNumber.Add(10f, GameTexts.FindText("str_rts_camera_base_distance"));
                 if (Campaign.Current == null)
                 {
                     explainedNumber.Add(1000f, GameTexts.FindText("str_rts_camera_out_of_campaign"));

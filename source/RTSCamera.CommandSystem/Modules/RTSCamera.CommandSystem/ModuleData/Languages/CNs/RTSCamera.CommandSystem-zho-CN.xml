@@ -20,8 +20,12 @@
     <string id="RTSCameraCommandSystem_after_charge_behavior_hold" text="原地等待" />
     <string id="RTSCameraCommandSystem_highlight_target_formation" text="高亮目标编队" />
     <string id="RTSCameraCommandSystem_highlight_target_formation_hint" text="目标编队会用轮廓高亮" />
-  <string id="RTSCameraCommandSystem_highlightonrtsviewonly" text="只在自由视角下高亮编队" />
-  <string id="RTSCameraCommandSystem_highlightonrtsviewonlyhint" text="仅会在自由视角下高亮编队" />
+    <string id="RTSCameraCommandSystem_highlightonrtsviewonly" text="仅自由视角下高亮编队" />
+    <string id="RTSCameraCommandSystem_highlightonrtsviewonlyhint" text="仅会在自由视角下高亮编队" />
+    <string id="RTSCameraCommandSystem_morevisiblemovementtarget" text="更易识别移动地点" />
+    <string id="RTSCameraCommandSystem_highlightonrtsviewonlyhint" text="让移动地点更易识别" />
+    <string id="RTSCameraCommandSystem_movementtargetmorevisibleonrtsviewonly" text="仅自由视角下更易识别移动地点" />
+    <string id="RTSCameraCommandSystem_targetmorevisibleonrtsviewonlyhint" text="仅会在自由视角下让移动地点更易识别，普通视角下维持原有外观。" />
 
     <string id="RTSCameraCommandSystem_hotkeycategory" text="指挥系统按键" />
     <string id="RTSCameraCommandSystem_select_formation" text="选择编队" />

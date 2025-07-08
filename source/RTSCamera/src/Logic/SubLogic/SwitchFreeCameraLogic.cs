@@ -3,12 +3,17 @@ using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCameraAgentComponent;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
+using TaleWorlds.MountAndBlade.View;
+using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera.Logic.SubLogic
 {
@@ -22,6 +27,7 @@ namespace RTSCamera.Logic.SubLogic
         private bool _isDeploymentFinishing = false;
         private FormationClass _formationClassInDeployment;
         private bool _switchToFreeCameraNextTick;
+        private bool _switchToAgentNextTick;
         private List<FormationClass> _playerFormations;
         private float _updatePlayerFormationTime;
 
@@ -53,6 +59,7 @@ namespace RTSCamera.Logic.SubLogic
             _controlTroopLogic = _logic.ControlTroopLogic;
 
             Mission.OnMainAgentChanged += OnMainAgentChanged;
+            Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggledOrderView);
         }
 
         public void AfterAddTeam(Team team)
@@ -64,6 +71,33 @@ namespace RTSCamera.Logic.SubLogic
         {
             Mission.OnMainAgentChanged -= OnMainAgentChanged;
             WatchBattleBehavior.WatchMode = false;
+            Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggledOrderView);
+        }
+
+        private void OnToggledOrderView(MissionPlayerToggledOrderViewEvent e)
+        {
+            if (_config.SwitchCameraOnOrdering && !WatchBattleBehavior.WatchMode)
+            {
+                if (e.IsOrderEnabled)
+                {
+                    // To keep order UI open in free camera,
+                    // code is patched in a way that, if in free camera,
+                    // UI will be opened instantly after closed
+                    // This means that an event that UI is closed will be triggered
+                    // and following an event that UI is opened.
+                    // so we will wait for a tick if UI is closed,
+                    // and if a UI open event is triggered during this tick,
+                    // we will not switch to agent camera, instead we will cancel the wait.
+                    if (IsSpectatorCamera && _switchToAgentNextTick)
+                        _switchToAgentNextTick = false;
+                    else
+                        SwitchToFreeCamera();
+                }
+                else
+                {
+                    _switchToAgentNextTick = true;
+                }
+            }
         }
 
         public void OnTeamDeployed(Team team)
@@ -108,6 +142,11 @@ namespace RTSCamera.Logic.SubLogic
                 _switchToFreeCameraNextTick = false;
                 SwitchToFreeCamera();
             }
+            else if (_switchToAgentNextTick)
+            {
+                _switchToAgentNextTick = false;
+                SwitchToAgent();
+            }
 
             _updatePlayerFormationTime += dt;
             if (_updatePlayerFormationTime > 0.1f && !Utility.IsPlayerDead() &&
@@ -120,6 +159,25 @@ namespace RTSCamera.Logic.SubLogic
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).IsKeyPressed(Mission.InputManager))
             {
                 SwitchCamera();
+                if (_config.OrderOnSwitchingCamera)
+                {
+                    var ui = Mission.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
+                    if (ui != null)
+                    {
+                        var dataSource = typeof(MissionGauntletSingleplayerOrderUIHandler).GetField("_dataSource", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(ui) as MissionOrderVM;
+                        if (dataSource != null)
+                        {
+                            if (IsSpectatorCamera)
+                            {
+                                dataSource.OpenToggleOrder(false);
+                            }
+                            else
+                            {
+                                dataSource.TryCloseToggleOrder(true);
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -280,7 +338,7 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (!IsSpectatorCamera)
                 return;
-            if (WatchBattleBehavior.WatchMode)
+            if (WatchBattleBehavior.WatchMode && !_config.SwitchCameraOnOrdering)
             {
                 Utility.DisplayLocalizedText("str_rts_camera_cannot_control_agent_in_watch_mode");
                 if (Mission.MainAgent == null)

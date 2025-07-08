@@ -7,8 +7,8 @@
 
   <string id="str_rts_camera_option_class" text="{=RTSCamera_option_class}RTS Camera" />
 
-  <string id="str_rts_camera_watch_battle" text="{=RTSCamera_watch_battle}(RTS Camera)Watch the battle." />
-  <string id="str_rts_camera_cannot_control_agent_in_watch_mode" text="{=RTSCamera_cannot_control_agent_in_watch_mode}Cannot control units in watch mode." />
+  <string id="str_rts_camera_watch_battle" text="{=RTSCamera_command_battle}(RTS Camera)Command the battle." />
+  <string id="str_rts_camera_cannot_control_agent_in_watch_mode" text="{=RTSCamera_cannot_control_agent_in_command_only_mode}Cannot control units in command only mode." />
   <string id="str_rts_camera_watch_mode_tool_tip" text="{=RTSCamera_watch_mode_tool_tip}You are injured. You may be able to commmand your troops but you cannot directly participate in the battle." />
 
   <string id="str_rts_camera_open_menu_hint" text="{=RTSCamera_open_menu_hint}Press {KeyName} in battle to open menu of RTS Camera" />
@@ -37,7 +37,7 @@
   <string id="str_rts_camera_display_message_hint" text="{=RTSCamera_display_message_hint}Whether to display message of this mod." />
   <string id="str_rts_camera_toggle_ui_hint" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
   <string id="str_rts_camera_order_ui_clickable_hint" text="{=RTSCamera_order_ui_clickable_hint}Make order UI clickable. Exit to main menu to take effect." />
-  <!-- <string id="str_rts_camera_fix_companion_formation_hint" text="{=RTSCamera_fix_companion_formation_hint}Fix the issue that companions are always assigned to infantry formation." /> -->
+
   <string id="str_rts_camera_all_invulnerable_hint" text="{=RTSCamera_disable_death_hint}All units will not die, for making video." />
   <string id="str_rts_camera_switch_team_hint" text="{=RTSCamera_switch_team_hint}Swap player's team, for making video." />
 
@@ -114,7 +114,10 @@
   <string id="str_rts_camera_display_mod_message" text="{=RTSCamera_displaymodmessage}Display Message" />
   <string id="str_rts_camera_toggle_ui" text="{=RTSCamera_toggleui}Toggle HUD" />
   <string id="str_rts_camera_order_ui_clickable" text="{=RTSCamera_order_ui_clickable}Order UI Clickable" />
-  <!-- <string id="str_rts_camera_fix_companion_formation" text="{=RTSCamera_fix_companion_formation}Fix Companion Formation" /> -->
+  <string id="str_rts_camera_switch_camera_on_ordering" text="{=RTSCamera_switchcameraonordering}Switch Camera on Ordering" />
+  <string id="str_rts_camera_switch_camera_on_ordering_hint" text="{=RTSCamera_switchcameraonorderinghint}Automatically switch to free camera when giving orders, and switch back when finished." />
+  <string id="str_rts_camera_order_on_switching_camera" text="{=RTSCamera_orderonswitchingcamera}Order on Switching Camera" />
+  <string id="str_rts_camera_order_on_switching_camera_hint" text="{=RTSCamera_orderonswitchingcamerahint}Automatically open order UI when switching to free camera, and close order UI when switching back." />
 
   <string id="str_key_category_name.RTSCameraHotKey" text="{=RTSCamera_hotkeycategory}RTSCamera Hot Key" />
   <string id="str_key_name.RTSCameraHotKey_Up" text="{=RTSCamera_pausekey}Pause" />

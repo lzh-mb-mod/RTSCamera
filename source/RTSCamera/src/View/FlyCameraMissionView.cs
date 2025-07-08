@@ -320,7 +320,13 @@ namespace RTSCamera.View
             }
             else if (!LockToAgent)
             {
-                BeginForcedMove(new Vec3(0, 0, _config.RaisedHeight));
+                var direction = MissionScreen.CombatCamera.Direction;
+                var z = direction.z;
+                if (z >= -0.5f)
+                {
+                    direction = (direction.AsVec2.Normalized() * MathF.Sqrt(0.75f)).ToVec3() - Vec3.Up * 0.5f;
+                }
+                BeginForcedMove(direction / direction.z * _config.RaisedHeight);
                 LeaveFromAgent();
             }
         }

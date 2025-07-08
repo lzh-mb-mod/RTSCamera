@@ -61,7 +61,7 @@ namespace RTSCamera.CampaignGame.Behavior
             try
             {
                 gameStarter.AddGameMenuOption("encounter", "rts_camera_watch_battle",
-                    game.GameTextManager.FindText("str_rts_camera_watch_battle").ToString(), args =>
+                    game.GameTextManager.FindText("str_rts_camera_command_battle").ToString(), args =>
                     {
                         try
                         {
@@ -90,7 +90,7 @@ namespace RTSCamera.CampaignGame.Behavior
                     });
 
                 gameStarter.AddGameMenuOption("menu_siege_strategies", "rts_camera_watch_battle",
-                    game.GameTextManager.FindText("str_rts_camera_watch_battle").ToString(), WatchSiegeCondition, WatchSiegeConsequence);
+                    game.GameTextManager.FindText("str_rts_camera_command_battle").ToString(), WatchSiegeCondition, WatchSiegeConsequence);
             }
             catch (Exception e)
             {

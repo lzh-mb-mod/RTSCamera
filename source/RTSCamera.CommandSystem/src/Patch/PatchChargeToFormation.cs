@@ -50,8 +50,6 @@ namespace RTSCamera.CommandSystem.Patch
                 //    typeof(FacingOrder).GetMethod("GetDirection", BindingFlags.Instance | BindingFlags.Public),
                 //    prefix: new HarmonyMethod(typeof(Patch_FacingOrder).GetMethod("GetDirection_Prefix",
                 //        BindingFlags.Static | BindingFlags.Public)));
-
-                Patch_Formation.Patch(Harmony);
             }
             catch (Exception e)
             {
