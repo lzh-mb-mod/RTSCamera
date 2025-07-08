@@ -20,13 +20,14 @@ namespace RTSCamera.CommandSystem.Logic
             base.OnBehaviorInitialize();
 
             FormationColorSubLogic.OnBehaviourInitialize();
+            Patch_OrderTroopPlacer.OnBehaviorInitialize();
         }
 
         public override void OnRemoveBehavior()
         {
             _querySystemSubLogic.OnRemoveBehaviour();
             FormationColorSubLogic.OnRemoveBehaviour();
-            Patch_OrderTroopPlacer.OnMissionEnded();
+            Patch_OrderTroopPlacer.OnRemoveBehavior();
         }
 
         public override void OnPreDisplayMissionTick(float dt)

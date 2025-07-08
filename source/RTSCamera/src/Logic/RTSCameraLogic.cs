@@ -41,6 +41,7 @@ namespace RTSCamera.Logic
 
             CommanderLogic.OnBehaviourInitialize();
             FixScoreBoardAfterPlayerDeadLogic.OnBehaviourInitialize();
+            MissionSpeedLogic.OnBehaviourInitialize();
             SwitchFreeCameraLogic.OnBehaviourInitialize();
             SwitchTeamLogic.OnBehaviourInitialize();
             ControlTroopLogic.OnBehaviourInitialize();
@@ -53,6 +54,7 @@ namespace RTSCamera.Logic
 
             CommanderLogic.OnRemoveBehaviour();
             FixScoreBoardAfterPlayerDeadLogic.OnRemoveBehaviour();
+            MissionSpeedLogic.OnRemoveBehaviour();
             SwitchFreeCameraLogic.OnRemoveBehaviour();
             
             Instance = null;

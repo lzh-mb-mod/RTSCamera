@@ -46,6 +46,7 @@ namespace RTSCamera
 
             try
             {
+                Utility.ShouldDisplayMessage = true;
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts();
                 Initialize();
 
@@ -74,7 +75,6 @@ namespace RTSCamera
 
                 //_successPatch &= Patch_OrderOfBattleVM.Patch();
                 //_successPatch &= Patch_DeploymentMissionController.Patch();
-                //_successPatch &= Patch_SandboxBattleSpawnModel.Patch();
                 // below checked
                 _successPatch &= Patch_LadderQueueManager.Patch(_harmony);
                 _successPatch &= Patch_MissionFormationTargetSelectionHandler.Patch(_harmony);
@@ -86,12 +86,13 @@ namespace RTSCamera
                 _successPatch &= Patch_MissionBoundaryCrossingHandler.Patch(_harmony);
                 _successPatch &= Patch_MissionFormationMarkerVM.Patch(_harmony);
                 _successPatch &= Patch_MissionOrderVM.Patch(_harmony);
-                _successPatch &= Patch_CrosshairVM.Patch();
-                _successPatch &= Patch_MissionGauntletSpectatorControl.Patch();
-                _successPatch &= Patch_ScoreboardScreenWidget.Patch();
-                _successPatch &= Patch_MissionGauntletMainAgentEquipDropView.Patch();
-                _successPatch &= Patch_MissionGauntletMainAgentEquipmentControllerView.Patch();
-                _successPatch &= Patch_AgentHumanAILogic.Patch();
+                _successPatch &= Patch_CrosshairVM.Patch(_harmony);
+                _successPatch &= Patch_MissionGauntletSpectatorControl.Patch(_harmony);
+                _successPatch &= Patch_ScoreboardScreenWidget.Patch(_harmony);
+                _successPatch &= Patch_MissionGauntletMainAgentEquipDropView.Patch(_harmony);
+                _successPatch &= Patch_MissionGauntletMainAgentEquipmentControllerView.Patch(_harmony);
+                _successPatch &= Patch_AgentHumanAILogic.Patch(_harmony);
+                _successPatch &= Patch_Mission.Patch(_harmony);
                 // Use Patch to add game menu
                 WatchBattleBehavior.Patch(_harmony);
 

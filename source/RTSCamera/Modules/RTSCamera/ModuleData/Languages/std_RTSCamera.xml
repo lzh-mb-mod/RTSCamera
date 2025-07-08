@@ -91,6 +91,8 @@
     <string id="RTSCamera_togglepause" text="Toggle Pause" />
     <string id="RTSCamera_slowmotionmode" text="Slow Motion Mode" />
     <string id="RTSCamera_slowmotionfactor" text="Slow Motion Factor" />
+    <string id="RTSCamera_slowmotiononrtsview" text="Slow Motion On RTS view" />
+    <string id="RTSCamera_slowmotiononrtsviewhint" text="Automatically turn on Slow Motion mode On RTS view" />
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="Cheat Options" />
     <string id="RTSCamera_disabledeath" text="All Invulnerable" />

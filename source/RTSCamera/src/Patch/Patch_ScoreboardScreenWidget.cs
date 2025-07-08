@@ -11,10 +11,8 @@ namespace RTSCamera.Patch
 {
     public class Patch_ScoreboardScreenWidget
     {
-        private static readonly Harmony Harmony = new Harmony(RTSCameraSubModule.ModuleId + "_" + nameof(Patch_ScoreboardScreenWidget));
-
         private static bool _patched;
-        public static bool Patch()
+        public static bool Patch(Harmony harmony)
         {
             try
             {
@@ -22,7 +20,7 @@ namespace RTSCamera.Patch
                     return false;
                 _patched = true;
 
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(ScoreboardScreenWidget).GetMethod("UpdateControlButtons",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     postfix: new HarmonyMethod(typeof(Patch_ScoreboardScreenWidget).GetMethod(

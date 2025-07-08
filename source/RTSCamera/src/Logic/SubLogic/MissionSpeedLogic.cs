@@ -1,4 +1,5 @@
-﻿using MissionSharedLibrary.Utilities;
+﻿using MissionLibrary.Event;
+using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using TaleWorlds.MountAndBlade;
@@ -23,6 +24,27 @@ namespace RTSCamera.Logic.SubLogic
             if (_config.SlowMotionMode && !_slowMotionRequestAdded)
             {
                 AddSlowMotionRequest();
+            }
+        }
+        public void OnBehaviourInitialize()
+        {
+            MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
+        }
+
+        public void OnRemoveBehaviour()
+        {
+            MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
+            if (_slowMotionRequestAdded)
+            {
+                RemoveSlowMotionRequest();
+            }
+        }
+
+        public  void OnToggleFreeCamera(bool freeCamera)
+        {
+            if (_config.SlowMotionOnRtsView)
+            {
+                SetSlowMotionMode(freeCamera);
             }
         }
 
@@ -78,7 +100,8 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (!_slowMotionRequestAdded)
             {
-                Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, RTSCameraSubModule.MissionTimeSpeedRequestId));
+                // Implemented through patch
+                //Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, RTSCameraSubModule.MissionTimeSpeedRequestId));
                 Utility.DisplayLocalizedText("str_rts_camera_slow_motion_enabled");
                 _slowMotionRequestAdded = true;
             }
@@ -86,15 +109,17 @@ namespace RTSCamera.Logic.SubLogic
 
         private void RemoveSlowMotionRequest()
         {
-            Mission.RemoveTimeSpeedRequest(RTSCameraSubModule.MissionTimeSpeedRequestId);
+            // Implemented through patch
+            //Mission.RemoveTimeSpeedRequest(RTSCameraSubModule.MissionTimeSpeedRequestId);
             Utility.DisplayLocalizedText("str_rts_camera_normal_mode_enabled");
             _slowMotionRequestAdded = false;
         }
 
         private void UpdateSlowMotionRequest()
         {
-            Mission.RemoveTimeSpeedRequest(RTSCameraSubModule.MissionTimeSpeedRequestId);
-            Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, RTSCameraSubModule.MissionTimeSpeedRequestId));
+            // Implemented through patch
+            //Mission.RemoveTimeSpeedRequest(RTSCameraSubModule.MissionTimeSpeedRequestId);
+            //Mission.AddTimeSpeedRequest(new Mission.TimeSpeedRequest(_config.SlowMotionFactor, RTSCameraSubModule.MissionTimeSpeedRequestId));
             _slowMotionRequestAdded = true;
         }
     }

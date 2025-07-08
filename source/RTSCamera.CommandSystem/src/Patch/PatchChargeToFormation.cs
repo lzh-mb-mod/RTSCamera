@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
-using RTSCamera.CommandSystem.src.Patch;
 using System;
 using System.Reflection;
 using TaleWorlds.MountAndBlade;

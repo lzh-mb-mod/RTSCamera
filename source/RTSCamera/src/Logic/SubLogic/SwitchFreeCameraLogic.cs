@@ -3,7 +3,6 @@ using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCameraAgentComponent;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using TaleWorlds.CampaignSystem;
@@ -78,7 +77,6 @@ namespace RTSCamera.Logic.SubLogic
                     // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
                     // DeploymentMissionController.FinishDeployment set controller of main agent to Player.
                     _controlTroopLogic.ForceControlAgent();
-                    // switch to free camera during deployment stage in watch mode
                     if (Mission.MainAgent != null)
                     {
                         Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
@@ -87,14 +85,19 @@ namespace RTSCamera.Logic.SubLogic
                         team.PlayerOrderController?.SelectAllFormations();
                     }
                 }
+                // switch to free camera during deployment stage in watch mode
+                if (_config.UseFreeCameraByDefault || WatchBattleBehavior.WatchMode)
+                {
+                    _switchToFreeCameraNextTick = true;
+                }
             }
         }
         public void OnDeploymentFinished()
         {
-            if (_config.UseFreeCameraByDefault || WatchBattleBehavior.WatchMode)
-            {
-                _switchToFreeCameraNextTick = true;
-            }
+            //if (_config.UseFreeCameraByDefault || WatchBattleBehavior.WatchMode)
+            //{
+            //    _switchToFreeCameraNextTick = true;
+            //}
         }
 
         public void OnMissionTick(float dt)

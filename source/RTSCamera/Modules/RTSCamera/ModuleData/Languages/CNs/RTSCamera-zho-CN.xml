@@ -91,6 +91,8 @@
     <string id="RTSCamera_togglepause" text="切换暂停" />
     <string id="RTSCamera_slowmotionmode" text="慢速模式" />
     <string id="RTSCamera_slowmotionfactor" text="慢速倍率" />
+    <string id="RTSCamera_slowmotiononrtsview" text="自动慢速模式" />
+    <string id="RTSCamera_slowmotiononrtsviewhint" text="自由视角中自动切换慢速模式" />
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="作弊选项" />
     <string id="RTSCamera_disabledeath" text="全员无敌" />

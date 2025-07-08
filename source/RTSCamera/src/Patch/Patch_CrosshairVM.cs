@@ -9,22 +9,21 @@ namespace RTSCamera.Patch
 {
     public class Patch_CrosshairVM
     {
-        private static readonly Harmony Harmony = new Harmony(RTSCameraSubModule.ModuleId + "_" + nameof(Patch_CrosshairVM));
-
         private static bool _patched;
-        public static bool Patch()
+        public static bool Patch(Harmony harmony)
         {
             try
             {
                 if (_patched)
                     return false;
                 _patched = true;
-                Harmony.Patch(
+
+                harmony.Patch(
                     typeof(CrosshairVM).GetMethod(nameof(CrosshairVM.ShowHitMarker),
                         BindingFlags.Instance | BindingFlags.Public),
                     new HarmonyMethod(typeof(Patch_CrosshairVM).GetMethod(
                         nameof(Prefix_ShowHitMarker), BindingFlags.Static | BindingFlags.Public)));
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(CrosshairVM).GetMethod("SetReloadProperties", BindingFlags.Instance | BindingFlags.Public),
                     postfix: new HarmonyMethod(typeof(Patch_CrosshairVM).GetMethod(nameof(Postfix_SetReloadProperties),
                         BindingFlags.Static | BindingFlags.Public)));

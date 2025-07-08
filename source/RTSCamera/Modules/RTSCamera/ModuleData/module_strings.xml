@@ -91,6 +91,8 @@
   <string id="str_rts_camera_toggle_pause" text="{=RTSCamera_togglepause}Toggle Pause" />
   <string id="str_rts_camera_slow_motion_mode" text="{=RTSCamera_slowmotionmode}Slow Motion Mode" />
   <string id="str_rts_camera_slow_motion_factor" text="{=RTSCamera_slowmotionfactor}Slow Motion Factor" />
+  <string id="str_rts_camera_slow_motion_on_rts_view" text="{=RTSCamera_slowmotiononrtsview}Slow Motion On RTS view" />
+  <string id="str_rts_camera_slow_motion_on_rts_view_hint" text="{=RTSCamera_slowmotiononrtsviewhint}Automatically turn on Slow Motion mode On RTS view" />
 
   <string id="str_rts_camera_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Cheat Options" />
   <string id="str_rts_camera_all_invulnerable" text="{=RTSCamera_disabledeath}All Invulnerable" />

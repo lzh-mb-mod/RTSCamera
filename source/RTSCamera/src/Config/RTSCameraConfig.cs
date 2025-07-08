@@ -95,6 +95,8 @@ namespace RTSCamera.Config
 
         public float SlowMotionFactor = 0.2f;
 
+        public bool SlowMotionOnRtsView;
+
         public bool DisplayMessage = true;
 
         public bool ControlAllyAfterDeath;
@@ -118,8 +120,6 @@ namespace RTSCamera.Config
 
         public bool OrderUIClickable = true;
 
-        //public bool FixCompanionFormation = true;
-
         public static void OnMenuClosed()
         {
             Get().Serialize();
@@ -140,6 +140,7 @@ namespace RTSCamera.Config
             IgnoreBoundaries = other.IgnoreBoundaries;
             SlowMotionMode = other.SlowMotionMode;
             SlowMotionFactor = other.SlowMotionFactor;
+            SlowMotionOnRtsView = other.SlowMotionOnRtsView;
             DisplayMessage = other.DisplayMessage;
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;
             IgnoreRetreatingTroops = other.IgnoreRetreatingTroops;
@@ -151,7 +152,6 @@ namespace RTSCamera.Config
             LimitCameraDistance = other.LimitCameraDistance;
             CameraDistanceLimitFactor = other.CameraDistanceLimitFactor;
             OrderUIClickable = other.OrderUIClickable;
-            //FixCompanionFormation = other.FixCompanionFormation;
         }
         [XmlIgnore]
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");

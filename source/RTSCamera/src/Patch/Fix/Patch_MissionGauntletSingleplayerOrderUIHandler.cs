@@ -238,7 +238,6 @@ namespace RTSCamera.Patch.Fix
             InitializeInADisgustingManner?.Invoke(Mission.Current.GetMissionBehavior<OrderTroopPlacer>(),
                 new object[] { });
             _isInSwitchTeamEvent = false;
-
         }
     }
 }

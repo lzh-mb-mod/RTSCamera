@@ -27,6 +27,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool HighlightTargetFormation = true;
 
+        public bool HighlightOnRtsViewOnly = true;
+
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;
@@ -35,6 +37,7 @@ namespace RTSCamera.CommandSystem.Config
             BehaviorAfterCharge = other.BehaviorAfterCharge;
             HighlightSelectedFormation = other.HighlightSelectedFormation;
             HighlightTargetFormation = other.HighlightTargetFormation;
+            HighlightOnRtsViewOnly = other.HighlightOnRtsViewOnly;
         }
 
         public static void OnMenuClosed()

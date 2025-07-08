@@ -1,4 +1,5 @@
-﻿using MissionSharedLibrary.Utilities;
+﻿using MissionLibrary.Event;
+using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using RTSCameraAgentComponent;
 using System;
@@ -50,9 +51,10 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private readonly CommandSystemConfig _config = CommandSystemConfig.Get();
 
         private bool _isOrderShown;
-        private bool HighlightEnabled => _isOrderShown && _config.ShouldHighlightWithOutline();
-        private bool HighlightEnabledForSelectedFormation => _isOrderShown && _config.HighlightSelectedFormation;
-        private bool HighlightEnabledForAsTargetFormation => _isOrderShown && _config.AttackSpecificFormation && _config.HighlightTargetFormation;
+        private bool _isFreeCamera;
+        private bool HighlightEnabled => (!_config.HighlightOnRtsViewOnly || _isFreeCamera) && _isOrderShown && _config.ShouldHighlightWithOutline();
+        private bool HighlightEnabledForSelectedFormation => (!_config.HighlightOnRtsViewOnly || _isFreeCamera) && _isOrderShown && _config.HighlightSelectedFormation;
+        private bool HighlightEnabledForAsTargetFormation => (!_config.HighlightOnRtsViewOnly || _isFreeCamera) && _isOrderShown && _config.AttackSpecificFormation && _config.HighlightTargetFormation;
 
         private readonly Queue<Action> _actionQueue = new Queue<Action>();
 
@@ -61,6 +63,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             Mission.Current.Teams.OnPlayerTeamChanged += Mission_OnPlayerTeamChanged;
             Game.Current.EventManager.RegisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
             _orderUiHandler = Mission.Current.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
+            MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
         }
 
         public  void OnRemoveBehaviour()
@@ -70,7 +73,24 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _allyAsTargetFormations.Clear();
             _allySelectedFormations.Clear();
             _temporarilyUpdatedFormations.Clear();
-            Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent); ;
+            Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
+            Mission.Current.Teams.OnPlayerTeamChanged -= Mission_OnPlayerTeamChanged;
+        }
+
+        private void OnToggleFreeCamera(bool freeCamera)
+        {
+            _isFreeCamera = freeCamera;
+            if (_isOrderShown)
+            {
+                if (_isFreeCamera)
+                {
+                    SetFocusContour();
+                }
+                else
+                {
+                    ClearContour();
+                }
+            }
         }
 
         public void OnPreDisplayMissionTick(float dt)

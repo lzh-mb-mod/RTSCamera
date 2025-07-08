@@ -12,10 +12,8 @@ namespace RTSCamera.Patch
 {
     public class Patch_MissionGauntletSpectatorControl
     {
-        private static readonly Harmony Harmony = new Harmony(RTSCameraSubModule.ModuleId + "_" + nameof(Patch_MissionGauntletSpectatorControl));
-
         private static bool _patched;
-        public static bool Patch()
+        public static bool Patch(Harmony harmony)
         {
             try
             {
@@ -23,7 +21,7 @@ namespace RTSCamera.Patch
                     return false;
                 _patched = true;
 
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(MissionGauntletSpectatorControl).GetMethod(nameof(MissionGauntletSpectatorControl.OnMissionTick),
                         BindingFlags.Instance | BindingFlags.Public),
                     postfix: new HarmonyMethod(typeof(Patch_MissionGauntletSpectatorControl).GetMethod(

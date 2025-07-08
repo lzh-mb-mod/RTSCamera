@@ -4,7 +4,7 @@ using System;
 using System.Reflection;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.CommandSystem.src.Patch
+namespace RTSCamera.CommandSystem.Patch
 {
     public class Patch_Formation
     {
@@ -20,10 +20,9 @@ namespace RTSCamera.CommandSystem.src.Patch
                 harmony.Patch(
                     typeof(Formation).GetMethod("SetMovementOrder",
                         BindingFlags.Instance | BindingFlags.Public),
-                    prefix: new HarmonyMethod(
+                    postfix: new HarmonyMethod(
                         typeof(Patch_Formation).GetMethod(nameof(Postfix_SetMovementOrder),
                             BindingFlags.Static | BindingFlags.Public)));
-
             }
             catch (Exception e)
             {

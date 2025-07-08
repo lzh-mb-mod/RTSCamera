@@ -20,6 +20,8 @@
     <string id="RTSCameraCommandSystem_after_charge_behavior_hold" text="Hold" />
     <string id="RTSCameraCommandSystem_highlight_target_formation" text="Highlight target formation" />
     <string id="RTSCameraCommandSystem_highlight_target_formation_hint" text="Target formation will be highlighted with outline." />
+  <string id="RTSCameraCommandSystem_highlightonrtsviewonly" text="Enable highlight on rts view only." />
+  <string id="RTSCameraCommandSystem_highlightonrtsviewonlyhint" text="Only enable highlight on rts view. In normal mode formation will not be highlighted." />
 
     <string id="RTSCameraCommandSystem_hotkeycategory" text="CommandSystem Hot Key" />
     <string id="RTSCameraCommandSystem_select_formation" text="Select Formation" />

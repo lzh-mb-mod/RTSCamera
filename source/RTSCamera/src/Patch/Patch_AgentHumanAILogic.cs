@@ -8,10 +8,8 @@ namespace RTSCamera.Patch
 {
     public class Patch_AgentHumanAILogic
     {
-        private static readonly Harmony Harmony = new Harmony(RTSCameraSubModule.ModuleId + "_" + nameof(Patch_AgentHumanAILogic));
-
         private static bool _patched;
-        public static bool Patch()
+        public static bool Patch(Harmony harmony)
         {
             try
             {
@@ -19,7 +17,7 @@ namespace RTSCamera.Patch
                     return false;
                 _patched = true;
 
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(AgentHumanAILogic).GetMethod("OnAgentControllerChanged",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_AgentHumanAILogic).GetMethod(

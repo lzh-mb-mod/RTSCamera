@@ -86,14 +86,23 @@ namespace RTSCamera.CommandSystem.Utilities
         public static MethodInfo BeforeSetOrder = typeof(OrderController).GetMethod("BeforeSetOrder", BindingFlags.NonPublic | BindingFlags.Instance);
         public static MethodInfo AfterSetOrder = typeof(OrderController).GetMethod("AfterSetOrder", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        public static void ChargeToFormation(OrderController playerController, Formation targetFormation)
+        public static void ChargeToFormation(OrderController playerController, Formation targetFormation, bool keepMovementOrder)
         {
             //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
-            foreach (Formation selectedFormation in playerController.SelectedFormations)
+            if (keepMovementOrder)
             {
-                selectedFormation.SetTargetFormation(targetFormation);
+                foreach (Formation selectedFormation in playerController.SelectedFormations)
+                {
+                    selectedFormation.SetTargetFormation(targetFormation);
+                }
+                // In current game version, set ChargeWithTarget has no effect except voice and gesture
+                // so movement order will not be changed here
+                playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
             }
-            playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
+            else
+            {
+                playerController.SetOrderWithFormation(OrderType.Charge, targetFormation);
+            }
 
             //AfterSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
 

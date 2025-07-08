@@ -17,6 +17,7 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
+using TaleWorlds.MountAndBlade.View.MissionViews;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 using CursorState = TaleWorlds.MountAndBlade.View.MissionViews.Order.OrderTroopPlacer.CursorState;
@@ -37,6 +38,8 @@ namespace RTSCamera.CommandSystem.Patch
         private static UiQueryData<CursorState> _cachedCursorState;
         private static FormationColorSubLogic _contourView;
         private static OrderTroopPlacer _orderTroopPlacer;
+        private static MissionFormationTargetSelectionHandler _targetSelectionHandler;
+        private static MBReadOnlyList<Formation> _focusedFormationsCache;
         public static bool Patch()
         {
             try
@@ -90,11 +93,31 @@ namespace RTSCamera.CommandSystem.Patch
                 .SetValue(null, __instance.Input);
         }
 
-        public static void OnMissionEnded()
+        public static void OnBehaviorInitialize()
+        {
+            _targetSelectionHandler = Mission.Current.GetMissionBehavior<MissionFormationTargetSelectionHandler>();
+            if (_targetSelectionHandler != null)
+            {
+                _targetSelectionHandler.OnFormationFocused += OnFormationFocused;
+            }
+        }
+
+        private static void OnFormationFocused(MBReadOnlyList<Formation> focusedFormations)
+        {
+            _focusedFormationsCache = focusedFormations;
+        }
+
+        public static void OnRemoveBehavior()
         {
             _orderTroopPlacer = null;
             _contourView = null;
             _cachedCursorState = null;
+            _focusedFormationsCache = null;
+            if (_targetSelectionHandler != null)
+            {
+                _targetSelectionHandler.OnFormationFocused -= OnFormationFocused;
+            }
+            _targetSelectionHandler = null;
         }
 
         public static bool IsDraggingFormation(OrderTroopPlacer __instance, Vec2? ____formationDrawingStartingPointOfMouse, float? ____formationDrawingStartingTime)
@@ -406,6 +429,10 @@ namespace RTSCamera.CommandSystem.Patch
         {
             if (!____formationDrawingMode)
             {
+                if (_focusedFormationsCache != null && _focusedFormationsCache.Count > 0)
+                {
+                    ____clickedFormation = _focusedFormationsCache.FirstOrDefault();
+                }
                 if (____clickedFormation != null)
                 {
                     if (____clickedFormation.CountOfUnits > 0)
@@ -423,17 +450,25 @@ namespace RTSCamera.CommandSystem.Patch
                         }
                         else if (CommandSystemConfig.Get().AttackSpecificFormation)
                         {
-                            if (Campaign.Current == null || CommandSystemSkillBehavior.CanIssueChargeToFormationOrder)
+                            bool isAltDown = __instance.Input.IsAltDown();
+                            if (isAltDown)
                             {
-                                Utilities.Utility.ChargeToFormation(___PlayerOrderController, ____clickedFormation);
+                                if (Campaign.Current == null || CommandSystemSkillBehavior.CanIssueChargeToFormationOrder)
+                                {
+                                    Utilities.Utility.ChargeToFormation(___PlayerOrderController, ____clickedFormation, true);
+                                }
+                                else
+                                {
+                                    Utility.DisplayMessage(GameTexts
+                                        .FindText("str_rts_camera_command_system_tactic_level_required")
+                                        .SetTextVariable("level",
+                                            CommandSystemSkillBehavior.RequiredTacticsLevelToIssueChargeToFormationOrder)
+                                        .ToString());
+                                }
                             }
                             else
                             {
-                                Utility.DisplayMessage(GameTexts
-                                    .FindText("str_rts_camera_command_system_tactic_level_required")
-                                    .SetTextVariable("level",
-                                        CommandSystemSkillBehavior.RequiredTacticsLevelToIssueChargeToFormationOrder)
-                                    .ToString());
+                                Utilities.Utility.ChargeToFormation(___PlayerOrderController, ____clickedFormation, false);
                             }
                         }
                     }

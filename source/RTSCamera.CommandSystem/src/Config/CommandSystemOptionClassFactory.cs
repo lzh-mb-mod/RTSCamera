@@ -64,6 +64,13 @@ namespace RTSCamera.CommandSystem.Config
                     {
                         CommandSystemConfig.Get().HighlightTargetFormation = b;
                     }));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_on_rts_view_only"),
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_on_rts_view_only_hint"),
+                    () => CommandSystemConfig.Get().HighlightOnRtsViewOnly, b =>
+                    {
+                        CommandSystemConfig.Get().HighlightOnRtsViewOnly = b;
+                    }));
                 optionClass.AddOptionCategory(0, commandOptionCategory);
 
                 return optionClass;
