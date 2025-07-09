@@ -87,24 +87,24 @@ jobs:
         # uses: NuGet/setup-nuget@04b0c2b8d1b97922f67eca497d7cf0bf17b8ffe1
         uses: NuGet/setup-nuget@v1.1.1
           
-      - name: Download DepotDownloader_2.4.7
+      - name: Download DepotDownloader_3.4.0
         uses: i3h/download-release-asset@v1.3.3
         with:
           owner: SteamRE
           repo: DepotDownloader
-          tag: DepotDownloader_2.4.7
-          file: depotdownloader-2.4.7.zip
-      - name: Extract DepotDownloader_2.4.7
+          tag: DepotDownloader_3.4.0
+          file: depotdownloader-3.4.0.zip
+      - name: Extract DepotDownloader_3.4.0
         uses: DuckSoft/extract-7z-action@v1.0
         with:
-          pathSource: depotdownloader-2.4.7.zip
+          pathSource: depotdownloader-3.4.0.zip
           pathTarget: depotdownloader
 
       - name: Download Bannerlord binaries 1
-        run: dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -beta ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
+        run: dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -branch ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
 
       - name: Download Bannerlord binaries 2
-        run: dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261552 -beta ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
+        run: dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261552 -branch ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
       
       - name: Build RTS Camera
         run: >-
