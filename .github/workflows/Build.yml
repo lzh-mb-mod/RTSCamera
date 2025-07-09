@@ -93,11 +93,11 @@ jobs:
           owner: SteamRE
           repo: DepotDownloader
           tag: DepotDownloader_3.4.0
-          file: depotdownloader-3.4.0.zip
+          file: DepotDownloader-windows-x64.zip
       - name: Extract DepotDownloader_3.4.0
         uses: DuckSoft/extract-7z-action@v1.0
         with:
-          pathSource: depotdownloader-3.4.0.zip
+          pathSource: DepotDownloader-windows-x64.zip
           pathTarget: depotdownloader
 
       - name: Download Bannerlord binaries 1
