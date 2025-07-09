@@ -8,7 +8,7 @@
     <string id="RTSCamera_option_class" text="自由视角" />
 
     <string id="RTSCamera_command_battle" text="(RTS Camera)指挥这场战斗。" />
-    <string id="RTSCamera_cannot_control_agent_in_command_only_mode" text="指挥模式下无法控制单位。" />
+    <string id="RTSCamera_cannot_control_agent_in_command_mode" text="指挥模式下无法控制单位。" />
     <string id="RTSCamera_watch_mode_tool_tip" text="你受伤了。你可能可以指挥你的部队，但你无法直接参与战斗。" />
 
     <string id="RTSCamera_open_menu_hint" text="战斗中按{KeyName}键来打开自由视角的菜单。" />

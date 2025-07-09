@@ -101,10 +101,10 @@ jobs:
           pathTarget: depotdownloader
 
       - name: Download Bannerlord binaries 1
-        run: dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261551 -branch ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
+        run: depotdownloader/DepotDownloader.exe -app 261550 -depot 261551 -branch ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
 
       - name: Download Bannerlord binaries 2
-        run: dotnet depotdownloader/DepotDownloader.dll -app 261550 -depot 261552 -branch ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
+        run: depotdownloader/DepotDownloader.exe -app 261550 -depot 261552 -branch ${{steps.dotenv.outputs.game_version}} -username ${{secrets.STEAM_LOGIN}} -password ${{secrets.STEAM_PASSWORD}} -filelist ./.github/resources/FileFilters.regexp -dir bannerlord;
       
       - name: Build RTS Camera
         run: >-
