@@ -28,6 +28,8 @@ namespace RTSCamera.Logic.SubLogic
         private FormationClass _formationClassInDeployment;
         private bool _switchToFreeCameraNextTick;
         private bool _switchToAgentNextTick;
+        private bool _skipSwitchingCameraOnOrderingFinished;
+        private bool _skipClosingUIOnSwitchingCamera;
         private List<FormationClass> _playerFormations;
         private float _updatePlayerFormationTime;
 
@@ -80,22 +82,41 @@ namespace RTSCamera.Logic.SubLogic
             {
                 if (e.IsOrderEnabled)
                 {
-                    // To keep order UI open in free camera,
-                    // code is patched in a way that, if in free camera,
-                    // UI will be opened instantly after closed
-                    // This means that an event that UI is closed will be triggered
-                    // and following an event that UI is opened.
-                    // so we will wait for a tick if UI is closed,
-                    // and if a UI open event is triggered during this tick,
-                    // we will not switch to agent camera, instead we will cancel the wait.
-                    if (IsSpectatorCamera && _switchToAgentNextTick)
-                        _switchToAgentNextTick = false;
+                    if (IsSpectatorCamera)
+                    {
+                        // To keep order UI open in free camera,
+                        // code is patched in a way that, if in free camera,
+                        // UI will be opened instantly after closed
+                        // This means that an event that UI is closed will be triggered
+                        // and following an event that UI is opened.
+                        // so we will wait for a tick if UI is closed,
+                        // and if a UI open event is triggered during this tick,
+                        // we will not switch to agent camera, instead we will cancel the wait.
+                        if (_switchToAgentNextTick)
+                            _switchToAgentNextTick = false;
+                        else
+                        {
+                            // skip switching camera to agent on ordering finished
+                            // because the camera is already in free camera mode when ordering begins
+                            _skipSwitchingCameraOnOrderingFinished = true;
+                        }
+                    }
                     else
+                    {
+                        _skipSwitchingCameraOnOrderingFinished = false;
                         SwitchToFreeCamera();
+                    }
                 }
                 else
                 {
-                    _switchToAgentNextTick = true;
+                    if (!_skipSwitchingCameraOnOrderingFinished)
+                    {
+                        _switchToAgentNextTick = true;
+                    }
+                    else
+                    {
+                        _skipSwitchingCameraOnOrderingFinished = false;
+                    }
                 }
             }
         }
@@ -169,11 +190,26 @@ namespace RTSCamera.Logic.SubLogic
                         {
                             if (IsSpectatorCamera)
                             {
-                                dataSource.OpenToggleOrder(false);
+                                // If order UI is already shown when switch to free camera,
+                                // we will not close it when switching to agent camera.
+                                if (dataSource.IsToggleOrderShown)
+                                    _skipClosingUIOnSwitchingCamera = true;
+                                else
+                                {
+                                    _skipClosingUIOnSwitchingCamera = false;
+                                    dataSource.OpenToggleOrder(false);
+                                }
                             }
                             else
                             {
-                                dataSource.TryCloseToggleOrder(true);
+                                if (!_skipClosingUIOnSwitchingCamera)
+                                {
+                                    dataSource.TryCloseToggleOrder(true);
+                                }
+                                else
+                                {
+                                    _skipClosingUIOnSwitchingCamera = false;
+                                }
                             }
                         }
                     }

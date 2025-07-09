@@ -44,16 +44,6 @@ namespace RTSCamera.Config
                     CameraHeightFollowsTerrain = false;
                     goto case "1.6";
                 case "1.6":
-                    if (AlwaysSetPlayerFormation)
-                    {
-                        AutoSetPlayerFormation = AutoSetPlayerFormation.DeploymentStage;
-                    }
-
-                    if (PreferToControlCompanions)
-                    {
-                        PreferUnitsInSameFormation = false;
-                    }
-                    break;
                 case "1.7":
                     break;
             }
@@ -78,9 +68,6 @@ namespace RTSCamera.Config
 
         public int PlayerFormation = (int)FormationClass.Unset;
 
-        // Use AutoSetPlayerFormation instead
-        public bool AlwaysSetPlayerFormation;
-
         public AutoSetPlayerFormation AutoSetPlayerFormation = AutoSetPlayerFormation.Never;
 
         public bool ConstantSpeed;
@@ -90,6 +77,7 @@ namespace RTSCamera.Config
         public bool IgnoreTerrain;
 
         public bool IgnoreBoundaries;
+        public bool FollowFacingDiretion = false;
 
         public bool SlowMotionMode;
 
@@ -100,9 +88,6 @@ namespace RTSCamera.Config
         public bool DisplayMessage = true;
 
         public bool ControlAllyAfterDeath;
-
-        // Use PreferToControlHeroesInSameFormation instead.
-        public bool PreferToControlCompanions;
 
         public bool PreferUnitsInSameFormation = true;
 
@@ -136,19 +121,18 @@ namespace RTSCamera.Config
             RaisedHeight = other.RaisedHeight;
             PlayerControllerInFreeCamera = other.PlayerControllerInFreeCamera;
             PlayerFormation = other.PlayerFormation;
-            AlwaysSetPlayerFormation = other.AlwaysSetPlayerFormation;
             AutoSetPlayerFormation = other.AutoSetPlayerFormation;
             ConstantSpeed = other.ConstantSpeed;
             CameraHeightFollowsTerrain = other.CameraHeightFollowsTerrain;
             IgnoreTerrain = other.IgnoreTerrain;
             IgnoreBoundaries = other.IgnoreBoundaries;
+            FollowFacingDiretion = other.FollowFacingDiretion;
             SlowMotionMode = other.SlowMotionMode;
             SlowMotionFactor = other.SlowMotionFactor;
             SlowMotionOnRtsView = other.SlowMotionOnRtsView;
             DisplayMessage = other.DisplayMessage;
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;
             IgnoreRetreatingTroops = other.IgnoreRetreatingTroops;
-            PreferToControlCompanions = other.PreferToControlCompanions;
             PreferUnitsInSameFormation = other.PreferUnitsInSameFormation;
             ControlTroopsInPlayerPartyOnly = other.ControlTroopsInPlayerPartyOnly;
             DisableDeathHotkeyEnabled = other.DisableDeathHotkeyEnabled;

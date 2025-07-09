@@ -7,13 +7,7 @@ namespace RTSCamera.CommandSystem.Logic
 {
     public class CommandSystemLogic : MissionLogic
     {
-        private readonly QuerySystemSubLogic _querySystemSubLogic = new QuerySystemSubLogic();
         public readonly FormationColorSubLogic FormationColorSubLogic = new FormationColorSubLogic();
-
-        public override void OnCreated()
-        {
-            _querySystemSubLogic.OnCreated();
-        }
 
         public override void OnBehaviorInitialize()
         {
@@ -25,7 +19,6 @@ namespace RTSCamera.CommandSystem.Logic
 
         public override void OnRemoveBehavior()
         {
-            _querySystemSubLogic.OnRemoveBehaviour();
             FormationColorSubLogic.OnRemoveBehaviour();
             Patch_OrderTroopPlacer.OnRemoveBehavior();
         }
@@ -39,13 +32,11 @@ namespace RTSCamera.CommandSystem.Logic
 
         public override void AfterAddTeam(Team team)
         {
-            _querySystemSubLogic.AfterAddTeam(team);
             FormationColorSubLogic.AfterAddTeam(team);
         }
 
         public override void OnAgentBuild(Agent agent, Banner banner)
         {
-            _querySystemSubLogic.OnAgentBuild(agent, banner);
             FormationColorSubLogic.OnAgentBuild(agent, banner);
         }
 

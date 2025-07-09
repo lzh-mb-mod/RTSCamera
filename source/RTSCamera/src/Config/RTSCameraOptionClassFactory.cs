@@ -106,6 +106,14 @@ namespace RTSCamera.Config
                         {
                             RTSCameraConfig.Get().IgnoreBoundaries = b;
                         }));
+                cameraOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_follow_facing_direction"),
+                        GameTexts.FindText("str_rts_camera_follow_facing_direction_hint"),
+                        () => RTSCameraConfig.Get().FollowFacingDiretion,
+                        b =>
+                        {
+                            RTSCameraConfig.Get().FollowFacingDiretion = b;
+                        }));
                 optionClass.AddOptionCategory(0, cameraOptionCategory);
 
                 var controlOptionCategory = new OptionCategory("Control",

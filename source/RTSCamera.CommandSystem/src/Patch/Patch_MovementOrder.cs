@@ -10,8 +10,8 @@ namespace RTSCamera.CommandSystem.Patch
         public static bool GetSubstituteOrder_Prefix(MovementOrder __instance, ref MovementOrder __result,
             Formation formation)
         {
-            if (__instance.OrderType == OrderType.Charge && formation.TargetFormation != null && CommandSystemConfig.Get().AttackSpecificFormation &&
-                CommandSystemSubModule.IsRealisticBattleModuleNotInstalled && !formation.IsAIControlled)
+            if (__instance.OrderType == OrderType.ChargeWithTarget && formation.TargetFormation != null && CommandSystemConfig.Get().AttackSpecificFormation &&
+                !CommandSystemSubModule.IsRealisticBattleModuleInstalled && !formation.IsAIControlled)
             {
                 if (CommandSystemConfig.Get().BehaviorAfterCharge == BehaviorAfterCharge.Hold)
                 {

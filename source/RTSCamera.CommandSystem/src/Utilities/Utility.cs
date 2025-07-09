@@ -58,7 +58,7 @@ namespace RTSCamera.CommandSystem.Utilities
 
         public static void DisplayFormationReadyMessage(Formation formation)
         {
-            var message = GameTexts.FindText("str_formation_ai_behavior_text", nameof(BehaviorStop));
+            var message = GameTexts.FindText("str_formation_ai_behavior_text", nameof(BehaviorAfterCharge));
             message.SetTextVariable("IS_PLURAL", 0);
             message.SetTextVariable("TROOP_NAMES_BEGIN", "");
             message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PhysicalClass).ToString()));
@@ -79,7 +79,7 @@ namespace RTSCamera.CommandSystem.Utilities
                    CommandSystemConfig.Get().AttackSpecificFormation &&
                        (QueryLibrary.IsCavalry(agent) ||
                         QueryLibrary.IsRangedCavalry(agent) && agent.Formation.FiringOrder.OrderType == OrderType.HoldFire ||
-                        CommandSystemSubModule.IsRealisticBattleModuleNotInstalled &&
+                        !CommandSystemSubModule.IsRealisticBattleModuleInstalled &&
                             (QueryLibrary.IsInfantry(agent) || QueryLibrary.IsRanged(agent) && agent.Formation.FiringOrder.OrderType == OrderType.HoldFire));
         }
 
@@ -91,17 +91,25 @@ namespace RTSCamera.CommandSystem.Utilities
             //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
             if (keepMovementOrder)
             {
+                // In current game version, set ChargeWithTarget has no effect except voice and gesture
+                // so movement order will not be changed here
+                playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
                 foreach (Formation selectedFormation in playerController.SelectedFormations)
                 {
                     selectedFormation.SetTargetFormation(targetFormation);
                 }
-                // In current game version, set ChargeWithTarget has no effect except voice and gesture
-                // so movement order will not be changed here
-                playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
             }
             else
             {
-                playerController.SetOrderWithFormation(OrderType.Charge, targetFormation);
+                // In current game version, set ChargeWithTarget has no effect except voice and gesture
+                // so movement order will not be changed here
+                playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
+                foreach (Formation selectedFormation in playerController.SelectedFormations)
+                {
+                    selectedFormation.SetMovementOrder(MovementOrder.MovementOrderChargeToTarget(targetFormation));
+                    selectedFormation.SetTargetFormation(targetFormation);
+                }
+
             }
 
             //AfterSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });

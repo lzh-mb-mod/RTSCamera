@@ -61,7 +61,7 @@ namespace RTSCamera.Logic.SubLogic
                 else
                 {
                     Utility.PlayerControlAgent(agent);
-                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFacingDiretion);
                 }
 
                 return true;
@@ -108,7 +108,7 @@ namespace RTSCamera.Logic.SubLogic
                         _flyCameraMissionView.DisableControlHint();
                     }
 
-                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFacingDiretion);
 
                     return true;
                 }
@@ -138,7 +138,7 @@ namespace RTSCamera.Logic.SubLogic
 
                     bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
                     Utility.PlayerControlAgent(Mission.MainAgent);
-                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen);
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFacingDiretion);
 
                     return true;
                 }

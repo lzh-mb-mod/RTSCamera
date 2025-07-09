@@ -68,6 +68,8 @@
   <string id="str_rts_camera_camera_height_follows_terrain" text="{=RTSCamera_camera_height_follows_terrain}Camera Height Follows Terrain" />
   <string id="str_rts_camera_ignore_terrain" text="{=RTSCamera_ignore_terrain}Ignore Terrain" />
   <string id="str_rts_camera_ignore_boundaries" text="{=RTSCamera_ignore_boundaries}Ignore Boundaries" />
+  <string id="str_rts_camera_follow_facing_direction" text="{=RTSCamera_follow_facing_direction}Follow Facing Direction" />
+  <string id="str_rts_camera_follow_facing_direction_hint" text="{=RTSCamera_follow_facing_direction_hint}Follow facing direction while switch camera back." />
 
   <string id="str_rts_camera_control_options" text="{=RTSCamera_control_options}Control Options" />
   <string id="str_rts_camera_player_controller_in_free_camera" text="{=RTSCamera_player_controller_in_free_camera}Player Controller in Free Camera" />
