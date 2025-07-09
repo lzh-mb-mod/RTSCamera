@@ -122,7 +122,7 @@ jobs:
         working-directory: .\source\RTSCamera\
 
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v4
         with:
           # Artifact name
           name: ${{env.RTSCAMERA_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}
@@ -131,7 +131,7 @@ jobs:
           # The desired behavior if no files are found using the provided path
 
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v4
         with:
           # Artifact name
           name: ${{env.COMMANDSYSTEM_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}
