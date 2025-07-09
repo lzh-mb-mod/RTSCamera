@@ -8,7 +8,7 @@
   <string id="str_rts_camera_command_system_highlight_selected_formation" text="{=RTSCameraCommandSystem_highlight_selected_formation}Highlight selected formation" />
   <string id="str_rts_camera_command_system_highlight_selected_formation_hint" text="{=RTSCameraCommandSystem_highlight_selected_formation_hint}Selected formation will be highlighted with outline." />
   <string id="str_rts_camera_command_system_attack_specific_formation" text="{=RTSCameraCommandSystem_attack_specific_formation}Enable Attack Specific Formation" />
-  <string id="str_rts_camera_command_system_attack_specific_formation_hint" text="{=RTSCameraCommandSystem_attack_specific_formation_hint}You can give order to attack a specific formation by pressing {KeyName} on enemy formation. Also applied to AI." />
+  <string id="str_rts_camera_command_system_attack_specific_formation_hint" text="{=RTSCameraCommandSystem_attack_specific_formation_hint}You can give order to attack a specific formation by pressing {KeyName} on enemy formation." />
   <string id="str_rts_camera_command_system_after_enemy_formation_eliminated" text="{=RTSCameraCommandSystem_after_enemy_eliminated}After enemy formation eliminated" />
   <string id="str_rts_camera_command_system_after_enemy_formation_eliminated_hint" text="{=RTSCameraCommandSystem_after_enemy_formation_eliminated_hint}Behavior when the attacked enemy formation is eliminated." />
   <string id="str_rts_camera_command_system_after_charge_behavior.charge" text="{=RTSCameraCommandSystem_after_charge_behavior_charge}Charge" />
@@ -21,6 +21,8 @@
   <string id="str_rts_camera_command_system_more_visible_movement_target_hint" text="{=RTSCameraCommandSystem_highlightonrtsviewonlyhint}Make Movement Target more visible." />
   <string id="str_rts_camera_command_system_movement_target_more_visible_on_rts_view_only" text="{=RTSCameraCommandSystem_movementtargetmorevisibleonrtsviewonly}More visible Movement Target on rts view only" />
   <string id="str_rts_camera_command_system_movement_target_more_visible_on_rts_view_only_hint" text="{=RTSCameraCommandSystem_targetmorevisibleonrtsviewonlyhint}Make Movement Target more visible on rts view only. Keep the original appearance on normal mode." />
+
+  <string id="str_rts_camera_command_system_defensive_attack" text="{=RTSCameraCommandSystem_defensive_attack}{TROOP_NAME} are focusing on enemy {TARGET_NAME}" />
 
   <string id="str_key_category_name.RTSCameraCommandSystemHotKey" text="{=RTSCameraCommandSystem_hotkeycategory}CommandSystem Hot Key" />
   <string id="str_key_name.RTSCameraCommandSystemHotKey_Up" text="{=RTSCameraCommandSystem_select_formation}Select Formation" />

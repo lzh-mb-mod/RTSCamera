@@ -7,7 +7,7 @@ namespace RTSCamera.Config.HotKey
     public class GameKeyConfig : GameKeyConfigBase<GameKeyConfig>
     {
         protected override string SaveName { get; } =
-            Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(GameKeyConfig) + ".xml");
+            Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, "RTSCameraGameKeyConfig.xml");
         protected static string OldSavePathStatic { get; } = Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.OldModuleId);
         protected override string OldSavePath => OldSavePathStatic;
 

@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
-using RTSCamera.Patch.Fix;
-using SandBox.Missions.MissionLogics.Arena;
 using System;
 using System.Reflection;
 using TaleWorlds.Engine;
@@ -10,7 +8,7 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
 using static TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker.MissionFormationMarkerTargetVM;
 
-namespace RTSCamera.src.Patch.Fix
+namespace RTSCamera.Patch.Fix
 {
     public class Patch_MissionFormationMarkerVM
     {

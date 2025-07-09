@@ -1,11 +1,10 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
-using RTSCamera.CommandSystem.Patch;
 using System;
 using System.Reflection;
 using TaleWorlds.MountAndBlade.GauntletUI.Widgets.Mission;
 
-namespace RTSCamera.CommandSystem.src.Patch
+namespace RTSCamera.CommandSystem.Patch
 {
     public class Patch_FormationMarkerParentWidget
     {

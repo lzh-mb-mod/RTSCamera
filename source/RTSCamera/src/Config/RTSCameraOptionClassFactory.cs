@@ -42,11 +42,23 @@ namespace RTSCamera.Config
                         rtsCameraLogic.SwitchFreeCameraLogic.SwitchCamera();
                         menuManager.RequestToCloseMenu();
                     }));
-                cameraOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_use_free_camera_by_default"),
-                    GameTexts.FindText("str_rts_camera_use_free_camera_by_default_hint"),
-                    () => RTSCameraConfig.Get().UseFreeCameraByDefault,
-                    b => RTSCameraConfig.Get().UseFreeCameraByDefault = b));
+                cameraOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_default_to_free_camera"),
+                    GameTexts.FindText("str_rts_camera_default_to_free_camera_hint"),
+                    new SelectionOptionData(i =>
+                        {
+                            if (i < 0 || i >= (int)DefaultToFreeCamera.Count)
+                                return;
+                            RTSCameraConfig.Get().DefaultToFreeCamera = (DefaultToFreeCamera)i;
+                        }, () =>
+                        {
+                            return (int)RTSCameraConfig.Get().DefaultToFreeCamera;
+                        }, (int)Agent.ControllerType.Count, new[]
+                        {
+                            new SelectionItem(true, "str_rts_camera_default_to_free_camera_option", "Never"),
+                            new SelectionItem(true, "str_rts_camera_default_to_free_camera_option", "DeploymentStage"),
+                            new SelectionItem(true, "str_rts_camera_default_to_free_camera_option", "Always")
+                        }), true));
                 cameraOptionCategory.AddOption(new NumericOptionViewModel(
                     GameTexts.FindText("str_rts_camera_raised_height_after_switching_to_free_camera"),
                     GameTexts.FindText("str_rts_camera_raised_height_hint"), () => RTSCameraConfig.Get().RaisedHeight,

@@ -13,7 +13,7 @@
     <string id="RTSCameraCommandSystem_highlight_selected_formation" text="Highlight selected formation" />
     <string id="RTSCameraCommandSystem_highlight_selected_formation_hint" text="Selected formation will be highlighted with outline." />
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="Enable Attack Specific Formation" />
-    <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="You can give order to attack a specific formation by pressing {KeyName} on enemy formation. Also applied to AI." />
+    <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="You can give order to attack a specific formation by pressing {KeyName} on enemy formation." />
     <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="After enemy formation eliminated" />
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="Behavior when the attacked enemy formation is eliminated." />
     <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="Charge" />
@@ -26,6 +26,8 @@
     <string id="RTSCameraCommandSystem_highlightonrtsviewonlyhint" text="Make Movement Target more visible." />
     <string id="RTSCameraCommandSystem_movementtargetmorevisibleonrtsviewonly" text="More visible Movement Target on rts view only" />
     <string id="RTSCameraCommandSystem_targetmorevisibleonrtsviewonlyhint" text="Make Movement Target more visible on rts view only. Keep the original appearance on normal mode." />
+
+    <string id="RTSCameraCommandSystem_defensive_attack" text="{TROOP_NAME} are focusing on enemy {TARGET_NAME}" />
 
     <string id="RTSCameraCommandSystem_hotkeycategory" text="CommandSystem Hot Key" />
     <string id="RTSCameraCommandSystem_select_formation" text="Select Formation" />

@@ -12,6 +12,7 @@ namespace RTSCamera.CommandSystem.Utilities
 {
     public static class Utility
     {
+        public static Color MessageColor = new Color(0.2f, 0.9f, 0.7f);
         public static void PrintOrderHint()
         {
             if (CommandSystemConfig.Get().ClickToSelectFormation)
@@ -58,19 +59,19 @@ namespace RTSCamera.CommandSystem.Utilities
 
         public static void DisplayFormationReadyMessage(Formation formation)
         {
-            var message = GameTexts.FindText("str_formation_ai_behavior_text", nameof(BehaviorAfterCharge));
+            var message = GameTexts.FindText("str_formation_ai_behavior_text", nameof(BehaviorStop));
             message.SetTextVariable("IS_PLURAL", 0);
             message.SetTextVariable("TROOP_NAMES_BEGIN", "");
             message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PhysicalClass).ToString()));
-            MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
+            MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString(), MessageColor);
         }
         public static void DisplayFormationChargeMessage(Formation formation)
         {
-            var message = GameTexts.FindText("str_formation_ai_behavior_text", nameof(BehaviorCharge));
+            var message = GameTexts.FindText("str_formation_ai_behavior_text", nameof(BehaviorTacticalCharge));
             message.SetTextVariable("IS_PLURAL", 0);
             message.SetTextVariable("TROOP_NAMES_BEGIN", "");
             message.SetTextVariable("TROOP_NAMES_END", GameTexts.FindText("str_troop_group_name", ((int)formation.PhysicalClass).ToString()));
-            MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
+            MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString(), MessageColor);
         }
 
         public static bool ShouldChargeToFormation(Agent agent)
@@ -86,29 +87,39 @@ namespace RTSCamera.CommandSystem.Utilities
         public static MethodInfo BeforeSetOrder = typeof(OrderController).GetMethod("BeforeSetOrder", BindingFlags.NonPublic | BindingFlags.Instance);
         public static MethodInfo AfterSetOrder = typeof(OrderController).GetMethod("AfterSetOrder", BindingFlags.NonPublic | BindingFlags.Instance);
 
+        public static void DisplayFocusAttackMessage(Formation formation, Formation target)
+        {
+            var message = GameTexts.FindText("str_rts_camera_command_system_defensive_attack");
+            message.SetTextVariable("TROOP_NAME", GameTexts.FindText("str_troop_group_name", ((int)formation.PhysicalClass).ToString()));
+            message.SetTextVariable("TARGET_NAME", GameTexts.FindText("str_troop_group_name", ((int)target.PhysicalClass).ToString()));
+            MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString(), MessageColor);
+        }
+
         public static void ChargeToFormation(OrderController playerController, Formation targetFormation, bool keepMovementOrder)
         {
             //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
             if (keepMovementOrder)
             {
-                // In current game version, set ChargeWithTarget has no effect except voice and gesture
-                // so movement order will not be changed here
-                playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
                 foreach (Formation selectedFormation in playerController.SelectedFormations)
                 {
                     selectedFormation.SetTargetFormation(targetFormation);
+                    DisplayFocusAttackMessage(selectedFormation, targetFormation);
                 }
-            }
-            else
-            {
                 // In current game version, set ChargeWithTarget has no effect except voice and gesture
                 // so movement order will not be changed here
                 playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
+            }
+            else
+            {
                 foreach (Formation selectedFormation in playerController.SelectedFormations)
                 {
                     selectedFormation.SetMovementOrder(MovementOrder.MovementOrderChargeToTarget(targetFormation));
                     selectedFormation.SetTargetFormation(targetFormation);
+                    DisplayFormationChargeMessage(selectedFormation);
                 }
+                // In current game version, set ChargeWithTarget has no effect except voice and gesture
+                // so movement order will not be changed here
+                playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
 
             }
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using TaleWorlds.MountAndBlade;
 
-namespace RTSCamera.src.Patch.Fix
+namespace RTSCamera.Patch.Fix
 {
     public class Patch_LadderQueueManager
     {

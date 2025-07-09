@@ -2,18 +2,14 @@
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
-using RTSCameraAgentComponent;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View;
-using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera.Logic.SubLogic
 {
@@ -141,23 +137,23 @@ namespace RTSCamera.Logic.SubLogic
                         team.PlayerOrderController?.SelectAllFormations();
                     }
                 }
-                // switch to free camera during deployment stage in watch mode
-                if (_config.UseFreeCameraByDefault || WatchBattleBehavior.WatchMode)
-                {
+                if (_config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
+                // switch to free camera during deployment stage
                     _switchToFreeCameraNextTick = true;
-                }
             }
         }
         public void OnDeploymentFinished()
         {
-            //if (_config.UseFreeCameraByDefault || WatchBattleBehavior.WatchMode)
-            //{
-            //    _switchToFreeCameraNextTick = true;
-            //}
+            if (_config.DefaultToFreeCamera != DefaultToFreeCamera.Always && !WatchBattleBehavior.WatchMode)
+            {
+                _switchToAgentNextTick = true;
+            }
         }
 
         public void OnMissionTick(float dt)
         {
+            if (Mission.IsInPhotoMode)
+                return;
             if (_switchToFreeCameraNextTick)
             {
                 _switchToFreeCameraNextTick = false;
@@ -182,34 +178,30 @@ namespace RTSCamera.Logic.SubLogic
                 SwitchCamera();
                 if (_config.OrderOnSwitchingCamera)
                 {
-                    var ui = Mission.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
-                    if (ui != null)
+                    var dataSource = Utility.GetMissionOrderVM(Mission);
+                    if (dataSource != null)
                     {
-                        var dataSource = typeof(MissionGauntletSingleplayerOrderUIHandler).GetField("_dataSource", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(ui) as MissionOrderVM;
-                        if (dataSource != null)
+                        if (IsSpectatorCamera)
                         {
-                            if (IsSpectatorCamera)
+                            // If order UI is already shown when switch to free camera,
+                            // we will not close it when switching to agent camera.
+                            if (dataSource.IsToggleOrderShown)
+                                _skipClosingUIOnSwitchingCamera = true;
+                            else
                             {
-                                // If order UI is already shown when switch to free camera,
-                                // we will not close it when switching to agent camera.
-                                if (dataSource.IsToggleOrderShown)
-                                    _skipClosingUIOnSwitchingCamera = true;
-                                else
-                                {
-                                    _skipClosingUIOnSwitchingCamera = false;
-                                    dataSource.OpenToggleOrder(false);
-                                }
+                                _skipClosingUIOnSwitchingCamera = false;
+                                dataSource.OpenToggleOrder(false);
+                            }
+                        }
+                        else
+                        {
+                            if (!_skipClosingUIOnSwitchingCamera)
+                            {
+                                dataSource.TryCloseToggleOrder(true);
                             }
                             else
                             {
-                                if (!_skipClosingUIOnSwitchingCamera)
-                                {
-                                    dataSource.TryCloseToggleOrder(true);
-                                }
-                                else
-                                {
-                                    _skipClosingUIOnSwitchingCamera = false;
-                                }
+                                _skipClosingUIOnSwitchingCamera = false;
                             }
                         }
                     }

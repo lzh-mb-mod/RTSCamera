@@ -8,7 +8,7 @@ using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews;
 
-namespace RTSCamera.src.Patch
+namespace RTSCamera.Patch
 {
     public class Patch_MissionFormationTargetSelectionHandler
     {

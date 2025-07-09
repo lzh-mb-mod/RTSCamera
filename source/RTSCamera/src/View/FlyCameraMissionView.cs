@@ -86,6 +86,11 @@ namespace RTSCamera.View
             }
         }
 
+        public Formation FocusedFormation { get; set; } = null;
+        private Vec3? _currentPositionLookingAt = null;
+        private float _lookingDistance = 10f;
+        private float _lookingDistanceToAdd = 0f;
+
         private bool _forceMove;
         private Vec3 _forceMoveVec;
         private float _forceMoveInvertedProgress;
@@ -191,12 +196,23 @@ namespace RTSCamera.View
 
         public void FocusOnAgent(Agent agent)
         {
+            FocusOnFormation(null);
             LockToAgent = true;
             typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true)
                 ?.Invoke(MissionScreen, new object[] { agent });
             if (!_freeCameraLogic.IsSpectatorCamera)
                 _freeCameraLogic.SwitchCamera();
             Utility.SmoothMoveToAgent(MissionScreen, true, false);
+        }
+
+        public void FocusOnFormation(Formation formation)
+        {
+            if (formation != null && LockToAgent)
+            {
+                LeaveFromAgent();
+            }
+            FocusedFormation = formation;
+            _currentPositionLookingAt = null;
         }
 
         private void LeaveFromAgent()
@@ -317,6 +333,7 @@ namespace RTSCamera.View
             if (!freeCamera)
             {
                 LockToAgent = false;
+                FocusOnFormation(null);
             }
             else if (!LockToAgent)
             {
@@ -341,6 +358,27 @@ namespace RTSCamera.View
             if (!MissionScreen.IsPhotoModeEnabled)
                 cameraFrame.rotation.RotateAboutSide((float?)CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);
             cameraFrame.origin = CameraPosition;
+
+
+            if (FocusedFormation != null)
+            {
+                if (FocusOnFormationMode.GetPositionToLookAt(FocusedFormation, out Vec3 positionToLookAt))
+                {
+                    var direction = cameraFrame.rotation.TransformToParent(-Vec3.Up).NormalizedCopy();
+                    if (_currentPositionLookingAt == null)
+                    {
+                        _currentPositionLookingAt = cameraFrame.origin + direction * _lookingDistance;
+                    }
+                    _currentPositionLookingAt += (positionToLookAt - _currentPositionLookingAt) * 4f * dt;
+                    var targetPosition = (Vec3)_currentPositionLookingAt - direction * _lookingDistance; // Adjust the distance as needed
+                    cameraFrame.origin = targetPosition;
+                }
+                else
+                {
+                    FocusOnFormation(null);
+                }
+            }
+
             float heightFactorForHorizontalMove;
             float heightFactorForVerticalMove;
             var groundHeight = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin);
@@ -351,13 +389,13 @@ namespace RTSCamera.View
                 float heightAtPosition = _config.IgnoreTerrain ? terrainHeight : groundHeight;
                 heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
                     1, 30);
-                heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
-                    1, 20);
+                heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 10),
+                    0.2f, 4f);
             }
             else
             {
                 heightFactorForHorizontalMove = 1;
-                heightFactorForVerticalMove = 1;
+                heightFactorForVerticalMove = 0.2f;
             }
 
             if (MissionScreen.InputManager.IsHotKeyPressed("MissionScreenHotkeyIncreaseCameraSpeed"))
@@ -425,6 +463,10 @@ namespace RTSCamera.View
                     mouseInput.Normalize();
 
                 hasVerticalInput = (keyInput.z + mouseInput.z) != 0 || Input.GetDeltaMouseScroll() != 0;
+                if (keyInput + mouseInput != Vec3.Zero)
+                {
+                    FocusOnFormation(null);
+                }
                 _cameraSpeed += (keyInput + mouseInput) * num1 * heightFactorForHorizontalMove;
             }
             float horizontalLimit = heightFactorForHorizontalMove * num1;
@@ -448,34 +490,53 @@ namespace RTSCamera.View
                 cameraFrame.origin += _cameraSpeed.x * cameraFrame.rotation.s.AsVec2.ToVec3().NormalizedCopy() * dt;
                 ref Vec3 local = ref cameraFrame.origin;
                 Vec3 vec3_2 = local;
-                double y = _cameraSpeed.y;
+                float y = _cameraSpeed.y;
                 Vec3 vec3_1 = cameraFrame.rotation.u.AsVec2.ToVec3();
                 Vec3 vec3_3 = vec3_1.NormalizedCopy();
-                Vec3 vec3_4 = (float)y * vec3_3 * dt;
+                Vec3 vec3_4 = y * vec3_3 * dt;
                 local = vec3_2 - vec3_4;
                 cameraFrame.origin.z += _cameraSpeed.z * dt;
-                if (!MissionScreen.SceneLayer.Input.IsControlDown())
-                    _cameraHeightToAdd -= (float)(Input.GetDeltaMouseScroll() / 200.0) * verticalLimit;
-                // hold middle button and move mouse vertically to adjust height
-                if (MissionScreen.SceneLayer.Input.IsHotKeyDown("DeploymentCameraIsActive"))
+                float mouseScroll = Input.GetDeltaMouseScroll();
+                if (FocusedFormation != null)
                 {
-                    if (_levelToEdge == false)
+                    _lookingDistanceToAdd -= (mouseScroll / 200.0f) * num1 * VerticalMovementSpeedFactor;
+                }
+                else
+                {
+                    if (!MissionScreen.SceneLayer.Input.IsControlDown())
+                        _cameraHeightToAdd -= (mouseScroll / 200.0f) * verticalLimit;
+                    // hold middle button and move mouse vertically to adjust height
+                    if (MissionScreen.SceneLayer.Input.IsHotKeyDown("DeploymentCameraIsActive"))
                     {
-                        _levelToEdge = true;
-                        ScreenManager.FirstHitLayer.InputRestrictions.SetMouseVisibility(true);
+                        if (_levelToEdge == false)
+                        {
+                            _levelToEdge = true;
+                            ScreenManager.FirstHitLayer.InputRestrictions.SetMouseVisibility(true);
+                        }
+                        _cameraHeightToAdd += 0.5f * TaleWorlds.InputSystem.Input.MouseMoveY;
                     }
-                    _cameraHeightToAdd += 0.5f * TaleWorlds.InputSystem.Input.MouseMoveY;
+                    else if (_levelToEdge)
+                    {
+                        _levelToEdge = false;
+                        ScreenManager.FirstHitLayer.InputRestrictions.SetMouseVisibility(false);
+                    }
+                    _cameraHeightToAdd = MathF.Clamp(_cameraHeightToAdd, -verticalLimit, verticalLimit);
                 }
-                else if (_levelToEdge)
+                if (MathF.Abs(_lookingDistanceToAdd) > 1.0 / 1000.0)
                 {
-                    _levelToEdge = false;
-                    ScreenManager.FirstHitLayer.InputRestrictions.SetMouseVisibility(false);
+                    _lookingDistance += _lookingDistanceToAdd * dt * 5f;
+                    _lookingDistanceToAdd *= 1f - dt * 5f;
                 }
-                _cameraHeightToAdd = MathF.Clamp(_cameraHeightToAdd, -verticalLimit, verticalLimit);
+                else
+                {
+                    _lookingDistance += _lookingDistanceToAdd * dt;
+                    _lookingDistanceToAdd = 0;
+                }
+                _lookingDistance = MathF.Clamp(_lookingDistance, 1f, 50f);
                 if (MathF.Abs(_cameraHeightToAdd) > 1.0 / 1000.0)
                 {
-                    cameraFrame.origin.z += (float)(_cameraHeightToAdd * (double)dt);
-                    _cameraHeightToAdd *= (float)(1.0 - dt * 5.0);
+                    cameraFrame.origin.z += _cameraHeightToAdd * dt * 5f;
+                    _cameraHeightToAdd *= 1f - dt * 5f;
                 }
                 else
                 {
@@ -523,7 +584,7 @@ namespace RTSCamera.View
                 }
                 float heightAtPosition = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin + new Vec3(0.0f, 0.0f, 100f));
                 if (!MissionScreen.IsCheatGhostMode && !_config.IgnoreTerrain && heightAtPosition < 9999.0)
-                    cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition + 0.1f);
+                    cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition + 0.5f);
                 if (cameraFrame.origin.z > heightAtPosition + 80.0)
                     cameraFrame.origin.z = heightAtPosition + 80f;
                 if (cameraFrame.origin.z < -100.0)

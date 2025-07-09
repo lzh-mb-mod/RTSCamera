@@ -8,7 +8,6 @@ using RTSCamera.CommandSystem.CampaignGame;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Patch;
-using RTSCamera.CommandSystem.src.Patch;
 using System;
 using System.Linq;
 using TaleWorlds.CampaignSystem;

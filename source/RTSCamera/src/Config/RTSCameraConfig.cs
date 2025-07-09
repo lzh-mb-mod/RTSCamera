@@ -9,6 +9,14 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Config
 {
+    public enum DefaultToFreeCamera
+    {
+        Never,
+        DeploymentStage,
+        Always,
+        Count
+    }
+
     public enum AutoSetPlayerFormation
     {
         Never,
@@ -53,7 +61,7 @@ namespace RTSCamera.Config
 
         public string ConfigVersion { get; set; } = BinaryVersion.ToString();
 
-        public bool UseFreeCameraByDefault;
+        public DefaultToFreeCamera DefaultToFreeCamera = DefaultToFreeCamera.DeploymentStage;
 
         public float RaisedHeight = 10;
 
@@ -117,7 +125,7 @@ namespace RTSCamera.Config
         protected override void CopyFrom(RTSCameraConfig other)
         {
             ConfigVersion = other.ConfigVersion;
-            UseFreeCameraByDefault = other.UseFreeCameraByDefault;
+            DefaultToFreeCamera = other.DefaultToFreeCamera;
             RaisedHeight = other.RaisedHeight;
             PlayerControllerInFreeCamera = other.PlayerControllerInFreeCamera;
             PlayerFormation = other.PlayerFormation;

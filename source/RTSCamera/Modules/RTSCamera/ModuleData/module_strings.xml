@@ -15,7 +15,7 @@
   <string id="str_rts_camera_switch_camera_hint" text="{=RTSCamera_switch_camera_hint}Press {KeyName} in battle to switch to free Camera" />
 
   <string id="str_rts_camera_switch_free_camera_hint" text="{=RTSCamera_switch_free_camera_hint}Switch between free camera and player camera." />
-  <string id="str_rts_camera_use_free_camera_by_default_hint" text="{=RTSCamera_use_free_camera_by_default_hint}Switch to free camera when entering battle." />
+  <string id="str_rts_camera_auto_mode_hint" text="{=RTSCamera_use_free_camera_by_default_hint}Switch to free camera when entering battle." />
   <string id="str_rts_camera_raised_height_hint" text="{=RTSCamera_raised_height_hint}Camera raised height after switching to free camera." />
   <string id="str_rts_camera_limit_camera_distance_hint" text="{=RTSCamera_limit_camera_distance_hint}Limit Camera Distance by tactics and scouting skill." />
   <string id="str_rts_camera_toggle_pause_hint" text="{=RTSCamera_toggle_pause_hint}Pause or unpause the game." />
@@ -36,7 +36,7 @@
   <string id="str_rts_camera_ignore_boundaries_hint" text="{=RTSCamera_ignore_boundaries_hint}Camera will not be restricted by boundaries when enabled." />
   <string id="str_rts_camera_display_message_hint" text="{=RTSCamera_display_message_hint}Whether to display message of this mod." />
   <string id="str_rts_camera_toggle_ui_hint" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
-  <string id="str_rts_camera_order_ui_clickable_hint" text="{=RTSCamera_order_ui_clickable_hint}Make order UI clickable. Exit to main menu to take effect." />
+  <string id="str_rts_camera_order_ui_clickable_hint" text="{=RTSCamera_order_ui_clickable_hint}Make order UI clickable. Restart game to take effect." />
 
   <string id="str_rts_camera_all_invulnerable_hint" text="{=RTSCamera_disable_death_hint}All units will not die, for making video." />
   <string id="str_rts_camera_switch_team_hint" text="{=RTSCamera_switch_team_hint}Swap player's team, for making video." />
@@ -59,7 +59,11 @@
   <string id="str_rts_camera_load_config_failed" text="{=RTSCamera_loadconfigfailed}Loading config failed." />
 
   <string id="str_rts_camera_camera_options" text="{=RTSCamera_camera_options}Camera Options" />
-  <string id="str_rts_camera_use_free_camera_by_default" text="{=RTSCamera_usefreecamerabydefault}Use Free Camera By Default" />
+  <string id="str_rts_camera_default_to_free_camera" text="{=RTSCamera_default_to_free_camera}Default to Free Camera" />
+  <string id="str_rts_camera_default_to_free_camera_hint" text="{=RTSCamera_default_to_free_camera_hint}When to use free camera by default." />
+  <string id="str_rts_camera_default_to_free_camera_option.Never" text="{=RTSCamera_default_to_free_camera_option_never}Never" />
+  <string id="str_rts_camera_default_to_free_camera_option.DeploymentStage" text="{=RTSCamera_default_to_free_camera_option_deployment_stage}Deployment Stage" />
+  <string id="str_rts_camera_default_to_free_camera_option.Always" text="{=RTSCamera_controller_default_to_free_camera_option_always}Always" />
   <string id="str_rts_camera_switch_free_camera" text="{=RTSCamera_switchfreecamera}Switch Free Camera" />
   <string id="str_rts_camera_raised_height_after_switching_to_free_camera" text="{=RTSCamera_raisedheightafterswitchingtofreecamera}Camera Raised Height" />
   <string id="str_rts_camera_limit_camera_distance" text="{=RTSCamera_limit_camera_distance}Limit Camera Distance" />
@@ -145,7 +149,7 @@
   <!-- same as str_rts_camera_toggle_pause_hint -->
   <string id="str_key_description.RTSCameraHotKey_Up" text="{=RTSCamera_toggle_pause_hint}Pause or unpause the game." />
   <string id="str_key_description.RTSCameraHotKey_Down" text="{=RTSCamera_slowmotionkey_description}Enable slow motion mode. Press again to recover." />
-  <!-- same as str_rts_camera_use_free_camera_by_default_hint -->
+  <!-- same as str_rts_camera_auto_mode_hint -->
   <string id="str_key_description.RTSCameraHotKey_Left" text="{=RTSCamera_switch_free_camera_hint}Switch between free camera and player camera." />
   <string id="str_key_description.RTSCameraHotKey_Right" text="{=RTSCamera_disable_death_desciption}All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
   <string id="str_key_description.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey_description}Control one of your teammates when you are killed, or switch to player camera when in free camera mode." />

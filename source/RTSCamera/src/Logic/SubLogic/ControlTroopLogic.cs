@@ -4,6 +4,7 @@ using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.View;
 using System;
+using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -253,10 +254,23 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnMissionTick(float dt)
         {
-            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).IsKeyPressed(Mission.InputManager))
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).IsKeyPressed(Mission.InputManager) && !Mission.IsInPhotoMode)
             {
                 if (Mission.Current.Mode == MissionMode.Deployment)
                     return;
+                var missionOrderVM = Utility.GetMissionOrderVM(Mission);
+                if (missionOrderVM != null)
+                {
+                    if (missionOrderVM.IsToggleOrderShown && _switchFreeCameraLogic.IsSpectatorCamera && !_flyCameraMissionView.LockToAgent)
+                    {
+                        if (Mission.PlayerTeam?.PlayerOrderController?.SelectedFormations.Count > 0)
+                        {
+                            var formationToFocusOn = Mission.PlayerTeam.PlayerOrderController.SelectedFormations.FirstOrDefault();
+                            _flyCameraMissionView.FocusOnFormation(formationToFocusOn);
+                            return;
+                        }
+                    }
+                }
                 if (_selectCharacterView.LockOnAgent(GetAgentToControl()))
                     return;
                 if (!_switchFreeCameraLogic.IsSpectatorCamera && Mission.MainAgent?.Controller == Agent.ControllerType.Player)

@@ -13,8 +13,6 @@ using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
-using RTSCamera.src.Patch;
-using RTSCamera.src.Patch.Fix;
 using SandBox.CampaignBehaviors;
 using SandBox.Objects;
 using System;
