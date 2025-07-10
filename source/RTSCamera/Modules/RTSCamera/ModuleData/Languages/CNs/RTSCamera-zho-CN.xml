@@ -37,7 +37,6 @@
     <string id="RTSCamera_display_message_hint" text="是否显示本mod的消息。" />
     <string id="RTSCamera_toggle_ui_hint" text="开关游戏的HUD，用于制作视频。" />
     <string id="RTSCamera_order_ui_clickable_hint" text="让命令界面可点击。重启游戏来生效。" />
-    <string id="RTSCamera_fix_companion_formation_hint" text="修复同伴总是分配到步兵编队的问题。" />
     <string id="RTSCamera_disable_death_hint" text="所有单位无敌不会阵亡，用于制作视频。" />
     <string id="RTSCamera_switch_team_hint" text="交换玩家所在的队伍，用于制作视频。" />
 

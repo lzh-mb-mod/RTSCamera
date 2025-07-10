@@ -58,8 +58,8 @@ namespace RTSCamera.Patch.Fix
                     typeof(MissionGauntletSingleplayerOrderUIHandler).GetMethod(
                         nameof(MissionGauntletSingleplayerOrderUIHandler.OnMissionScreenTick),
                         BindingFlags.Instance | BindingFlags.Public),
-                    prefix: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
-                        nameof(Prefix_OnMissionScreenTick), BindingFlags.Static | BindingFlags.Public)));
+                    postfix: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
+                        nameof(Postfix_OnMissionScreenTick), BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {
@@ -198,11 +198,11 @@ namespace RTSCamera.Patch.Fix
             }
         }
 
-        public static bool Prefix_OnMissionScreenTick(MissionGauntletSingleplayerOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
+        public static void Postfix_OnMissionScreenTick(MissionGauntletSingleplayerOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
         {
             UpdateDragData(__instance, ____dataSource);
             UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer);
-            return true;
+            //return true;
         }
 
         private static void RegisterReload(MissionGauntletSingleplayerOrderUIHandler uiHandler)

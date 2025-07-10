@@ -92,6 +92,8 @@
   <string id="str_rts_camera_prefer_unit_in_same_formation" text="{=RTSCamera_prefer_unit_in_same_formation}Prefer Units In Same Formation" />
   <string id="str_rts_camera_control_troops_in_player_party_only" text="{=RTSCamera_controltroopsinplayerpartyonly}Control Troops In Player Party Only" />
   <string id="str_rts_camera_ignore_retreating_troops" text="{=RTSCamera_ignoreretreatingtroops}Ignore Retreating Troops" />
+  <string id="str_rts_camera_slow_motion_on_rts_view" text="{=RTSCamera_slowmotiononrtsview}Slow Motion On RTS view" />
+  <string id="str_rts_camera_slow_motion_on_rts_view_hint" text="{=RTSCamera_slowmotiononrtsviewhint}Automatically turn on Slow Motion mode On RTS view" />
 
   <string id="str_rts_camera_miscellaneous_options" text="{=RTSCamera_miscellaneous_options}Miscellaneous Options" />
   <string id="str_rts_camera_toggle_pause" text="{=RTSCamera_togglepause}Toggle Pause" />

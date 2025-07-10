@@ -37,7 +37,6 @@
     <string id="RTSCamera_display_message_hint" text="Whether to display message of this mod." />
     <string id="RTSCamera_toggle_ui_hint" text="Toggle HUD of the game, for making video." />
     <string id="RTSCamera_order_ui_clickable_hint" text="Make order UI clickable. Restart game to take effect." />
-    <string id="RTSCamera_fix_companion_formation_hint" text="Fix the issue that companions are always assigned to infantry formation." />
     <string id="RTSCamera_disable_death_hint" text="All units will be invulnerable, for making video." />
     <string id="RTSCamera_switch_team_hint" text="Swap player's team, for making video." />
 
