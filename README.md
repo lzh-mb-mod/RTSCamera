@@ -12,7 +12,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - Smoothly toggle free camera mode at any time in a battle.
 
-  - **New:** Inspect your troops by focusing camera on them.
+  - **New:** Stick camera to seleted formation.
 
   - Control one of your soldiers and continue fighting/commanding after player character is injured in battle.
 
@@ -20,9 +20,9 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 - Command System
 
-  - Another way to issue focus charge command.
+  - Issue focus charge command by clicking middle button on enemy units.
 
-  - **New:** Focus attack on enemy units without interupting movement orders. For example, let your archers focus shooting while holding position.
+  - **New:** Focus attack on enemy units without interupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
   - Select your troops by clicking middle button on units.
 
@@ -33,23 +33,25 @@ This mod does not read or write stuffs to your game save. Installing or removing
 - RTS Camera
   - You can press `F10` to toggle free camera.
 
-  - **New:** In free camera mode, while command UI is open, you can press `E` to inspect selected formation.
+  - **New:** In free camera mode, while command UI is open, you can press `E` to stick camera to selected formation.
   
   - After your character is killed in battle, you can press `E` to follow one of your soldiers and press `E` again to control it and continue fighting.
 
-    - You can ress `L` to open menu and check `Control Ally After Death` option to do this automatically.
+    - You can press `L` to open menu and check `Control Ally After Death` option to do this automatically.
   
   - You can select your formations by clicking on troop cards.
 
-    - Press `Alt` to show the mouse so that you can click on troop cards. You can drag right button to rotate the camera when mouse is shown.
+    - Press `Alt` to show the mouse so that you can click on troop cards.
 
 - Command System
 
   - You can make your formation charge to the enemy formation by clicking middle mouse button on enemy units.
 
-    - **New:** Press `Alt` while clicking to target the enemy without charging. **Useful for archers while holding positions**.
+    - **New:** Press `Alt` while clicking to target the enemy interupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
   - You can select your formations by clicking middle mouse button on soldiers.
+
+- For more features, you can read `Details` below or press `L` to open mod menu.
 
 ## How to Install
 1. Remove any old installation of this mod. You can go to `Modules` folder of bannerlord installation folder (For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord\Moudles\`) and remove folders like `RTSCamera` or `EnhancedMission`.
@@ -66,14 +68,14 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 ### RTS Camera
 
-- Press `F10` to switch to RTS style free camera and press again to switch back.
+- Press `F10` to toggle free camera.
   Player character will be controlled by AI when switched to free camera.
 
   - Order UI will be opened automatically.
 
   - You can enable `Switch Camera on Ordering` option, to always give orders in free camera.
 
-  - **New:** When command UI is open in free camera mode, you can press `E` to inspect selected formation.
+  - **New:** When command UI is open in free camera mode, you can press `E` to stick camera to selected formation.
 
   - You can enable `Slow Motion On RTS view", to turn on slow motion in free camera. 
 
@@ -97,7 +99,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 - After your character is killed in battle, you can press `E` to follow one of your soldiers and press `E` again to control it and continue fighting.
 
-  - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your charater dies. Press `L` and check `Control Ally After Death` option to enable this feature. It's always enabled in free camera mode to ensure a smooth gaming experience.
+  - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your charater dies, by enabling `Control Ally After Death` option. It's always enabled in free camera mode to ensure a smooth gaming experience.
 
   - Soldiers in the same formation as player character will be considered first when deciding which soldier to control.
 
@@ -112,16 +114,25 @@ This mod does not read or write stuffs to your game save. Installing or removing
   - Press left/right mouse button to change the character that the camera is following.
 
 - If your character is injured in campaign map and you encounter an enemy party, you can still choose `Command the battle` option to begin the battle. In this battle you can command your troops in free camera but cannot directly control a character and fighting.
+
+- Camera distance to player character can be limited by enabling `Limit Camera Distance` option.
+
+  - Distance limit is determined by scouting and tactics level.
+
+  - After `Limit Camera Distance` is enabled, using free camera and ordering in free camera can improve scouting and tactics skill level.
+
 ### Command System
 - You can make your formation charge to the enemy formation by clicking middle mouse button on enemy units.
 
   - After the enemy formation is eliminated, your troops will stay at where they are. To change this behavior, you can press `L` to open menu, and set the option `After enemy formation eliminated` to `Charge`.
 
-  - The target enemy formation that your selected troops are charging to will be highlighted with red outline when you open command panel.
+  - The target enemy formation that your selected troops are charging to will be highlighted with red outline when you open command panel in free camera mode.
 
-- **New:** Press `Alt` while clicking to target the enemy without charging.
+- **New:** Press `Alt` while clicking to target the enemy without interupting previous movement orders.
+
   - For archers they can shoot target enemy while holding positions.
-  - Note that for melee units, they will still follow previous movement orders.
+
+  - Note that for melee units, they will still follow previous movement orders, which may limit their ability to reach the target.
 
 - Movement target marker is more visible in free camera. The original marker is hard to see if camera is too high.
 
@@ -129,7 +140,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - Selected troops will be highlighted with green outline.
 
-- Your formation targeted by the enemy formation will be highlighted with dark blue outline when you open command panel.
+- Your formation targeted by the enemy formation will be highlighted with dark blue outline when you open command panel in free camera mode.
 
 - Movement orders will be shown under troop cards.
 
@@ -158,7 +169,7 @@ Here is a list of default hotkeys:
 
 
 ## Configuration
-- The configuration is saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\RTSCamera\`.
+- The configuration files are saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\RTSCamera\` and `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\MissionLibrary\`.
 
   The main config is saved in files `RTSCameraConfig.xml` and `CommandSystemConfig.xml`.
 

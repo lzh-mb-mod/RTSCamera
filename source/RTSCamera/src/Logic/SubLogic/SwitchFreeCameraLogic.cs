@@ -22,12 +22,22 @@ namespace RTSCamera.Logic.SubLogic
 
         private bool _isDeploymentFinishing = false;
         private FormationClass _formationClassInDeployment;
+        // To keep order UI open in free camera,
+        // code is patched in a way that, if in free camera,
+        // UI will be opened instantly after closed
+        // This means that after an order is issued,
+        // an event that UI is closed will be triggered
+        // and following an event that UI is opened.
+        // the following open event is a false positive,
+        // so we need to ignore it
+        private bool _shouldIgnoreNextOrderViewOpenEvent = false;
         private bool _switchToFreeCameraNextTick;
         private bool _switchToAgentNextTick;
         private bool _skipSwitchingCameraOnOrderingFinished;
         private bool _skipClosingUIOnSwitchingCamera;
         private List<FormationClass> _playerFormations;
         private float _updatePlayerFormationTime;
+        private bool _hasShownFocusOnFormationHint = false;
 
         public Mission Mission => _logic.Mission;
 
@@ -74,39 +84,55 @@ namespace RTSCamera.Logic.SubLogic
 
         private void OnToggledOrderView(MissionPlayerToggledOrderViewEvent e)
         {
-            if (_config.SwitchCameraOnOrdering && !WatchBattleBehavior.WatchMode)
+            bool showFocusOnFormationHint = false;
+            if (e.IsOrderEnabled)
             {
-                if (e.IsOrderEnabled)
+                if (IsSpectatorCamera)
                 {
-                    if (IsSpectatorCamera)
+                    if (_shouldIgnoreNextOrderViewOpenEvent)
                     {
                         // To keep order UI open in free camera,
                         // code is patched in a way that, if in free camera,
                         // UI will be opened instantly after closed
                         // This means that an event that UI is closed will be triggered
                         // and following an event that UI is opened.
-                        // so we will wait for a tick if UI is closed,
-                        // and if a UI open event is triggered during this tick,
+                        // So we will wait for a tick if UI is closed,
+                        // and if a false positive UI open event is triggered during this tick,
                         // we will not switch to agent camera, instead we will cancel the wait.
-                        if (_switchToAgentNextTick)
-                            _switchToAgentNextTick = false;
-                        else
+                        if (_config.SwitchCameraOnOrdering && !WatchBattleBehavior.WatchMode)
                         {
-                            // skip switching camera to agent on ordering finished
-                            // because the camera is already in free camera mode when ordering begins
-                            _skipSwitchingCameraOnOrderingFinished = true;
+                            _switchToAgentNextTick = false;
                         }
+                        _shouldIgnoreNextOrderViewOpenEvent = false;
                     }
                     else
                     {
-                        _skipSwitchingCameraOnOrderingFinished = false;
-                        SwitchToFreeCamera();
+                        showFocusOnFormationHint = true;
+                        if (_config.SwitchCameraOnOrdering && !WatchBattleBehavior.WatchMode)
+                        {
+                            // The camera is already in free camera mode when ordering begins,
+                            // so we skip switching camera to agent on ordering finished.
+                            _skipSwitchingCameraOnOrderingFinished = true;
+                        }
                     }
                 }
                 else
                 {
+                    if (_config.SwitchCameraOnOrdering && !WatchBattleBehavior.WatchMode)
+                    {
+                        _skipSwitchingCameraOnOrderingFinished = false;
+                        SwitchToFreeCamera();
+                        showFocusOnFormationHint = true;
+                    }
+                }
+            }
+            else
+            {
+                if (_config.SwitchCameraOnOrdering && !WatchBattleBehavior.WatchMode)
+                {
                     if (!_skipSwitchingCameraOnOrderingFinished)
                     {
+                        _shouldIgnoreNextOrderViewOpenEvent = true;
                         _switchToAgentNextTick = true;
                     }
                     else
@@ -114,6 +140,14 @@ namespace RTSCamera.Logic.SubLogic
                         _skipSwitchingCameraOnOrderingFinished = false;
                     }
                 }
+            }
+
+            if (!_hasShownFocusOnFormationHint && showFocusOnFormationHint)
+            {
+                _hasShownFocusOnFormationHint = true;
+                var hint = GameTexts.FindText("str_rts_camera_focus_on_formation_hint");
+                hint.SetTextVariable("KeyName", RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).ToSequenceString());
+                Utility.DisplayMessage(hint.ToString());
             }
         }
 
@@ -154,6 +188,10 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (Mission.IsInPhotoMode)
                 return;
+            if (_shouldIgnoreNextOrderViewOpenEvent)
+            {
+                _shouldIgnoreNextOrderViewOpenEvent = false;
+            }
             if (_switchToFreeCameraNextTick)
             {
                 _switchToFreeCameraNextTick = false;

@@ -129,7 +129,7 @@
     <string id="RTSCamera_slowmotionkey" text="变速模式" />
     <string id="RTSCamera_freecamerakey" text="自由视角" />
     <string id="RTSCamera_disabledeathkey" text="全员无敌" />
-    <string id="RTSCamera_controltroopkey" text="控制下属部队" />
+    <string id="RTSCamera_controltroopkey" text="相机跟随/控制单位" />
     <string id="RTSCamera_camera_move_forward" text="相机向前移动" />
     <string id="RTSCamera_camera_move_backward" text="相机向后移动" />
     <string id="RTSCamera_camera_move_left" text="相机向左移动" />
@@ -141,7 +141,7 @@
 
     <string id="RTSCamera_slowmotionkey_description" text="启用慢速模式。再按一次恢复。" />
     <string id="RTSCamera_disable_death_desciption" text="所有单位都不会阵亡，可用于录制视频。作弊模式需要启用且需要在菜单中启用该快捷键。" />
-    <string id="RTSCamera_controltroopkey_description" text="当你阵亡后可按下该按键来控制你的一个队友，或当处于自由视角模式时切换到玩家角色的视角。" />
+    <string id="RTSCamera_controltroopkey_description" text="让相机跟随单位或编队。控制相机正在跟随的单位。" />
     <string id="RTSCamera_switchteam_description" text="切换玩家的队伍，用于制作视频。作弊模式需要启用且需要在菜单中启用该快捷键。" />
     <string id="RTSCamera_camera_move_forward_description" text="相机向前移动" />
     <string id="RTSCamera_camera_move_backward_description" text="相机向后移动" />
@@ -158,6 +158,7 @@
     <string id="RTSCamera_select_character_view_hint" text="请左键点击以选择一个角色，然后按{KeyName}键锁定到它，再按一次来控制它。" />
     <string id="RTSCamera_control_troop_hint" text="按{KeyName}键来控制你的一个队友。" />
     <string id="RTSCamera_control_current_agent_hint" text="按{KeyName}来控制该角色" />
+    <string id="RTSCamera_focus_on_formation_hint" text="按{KeyName}让相机跟随选中的编队" />
 
     <string id="RTSCamera_tactics_skill_effect_description" text="RTS相机距离限制 战术: +{a0}m" />
     <string id="RTSCamera_scouting_skill_effect_description" text=" RTS相机距离限制 侦察: +{a0}%" />

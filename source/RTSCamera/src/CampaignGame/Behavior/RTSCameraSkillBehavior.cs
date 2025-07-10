@@ -16,8 +16,8 @@ namespace RTSCamera.CampaignGame.Behavior
         public static float CameraDistanceMaxLimit { get; private set; } = -1;
 
         public static float CameraDistanceLimit { get; set; } = -1;
-        public static float ScoutingSkillGainInterval { get; set; } = 10;
-        public static float TacticsSkillGainInterval { get; set; } = 10;
+        public static float ScoutingSkillGainMaxDuration { get; set; } = 10;
+        public static float TacticsSkillGainMaxDuration { get; set; } = 10;
 
         public static float ScoutingSkillGainFactor { get; set; } = 3f;
 
@@ -25,7 +25,7 @@ namespace RTSCamera.CampaignGame.Behavior
 
         public static bool ShouldLimitCameraDistance(Mission mission)
         {
-            return  Campaign.Current != null && mission.Mode != MissionMode.Deployment &&
+            return  mission.Mode != MissionMode.Deployment &&
                 RTSCameraConfig.Get().LimitCameraDistance && mission.MainAgent != null &&
                 CameraDistanceLimit >= 0;
         }
@@ -74,28 +74,30 @@ namespace RTSCamera.CampaignGame.Behavior
                 if (Campaign.Current == null)
                 {
                     explainedNumber.Add(1000f, GameTexts.FindText("str_rts_camera_out_of_campaign"));
-                    return explainedNumber;
                 }
-                if (Campaign.Current.MainParty == null)
+                else if (Campaign.Current.MainParty == null)
                 {
                     if (!(Game.Current?.PlayerTroop is CharacterObject) || Hero.MainHero?.CharacterObject == null)
                     {
                         explainedNumber.Add(1000f, GameTexts.FindText("str_rts_camera_no_main_hero"));
-                        return explainedNumber;
                     }
-
-                    AddSkillBonusForCharacter(DefaultSkills.Tactics, RTSCameraSkillEffects.TacticRTSCameraMaxDistance,
-                        Hero.MainHero.CharacterObject, ref explainedNumber);
-                    AddSkillBonusForCharacter(DefaultSkills.Scouting,
-                        RTSCameraSkillEffects.ScoutingRTSCameraMaxDistance,
-                        Hero.MainHero.CharacterObject, ref explainedNumber);
-                    return explainedNumber;
+                    else
+                    {
+                        AddSkillBonusForCharacter(DefaultSkills.Tactics, RTSCameraSkillEffects.TacticRTSCameraMaxDistance,
+                            Hero.MainHero.CharacterObject, ref explainedNumber);
+                        AddSkillBonusForCharacter(DefaultSkills.Scouting,
+                            RTSCameraSkillEffects.ScoutingRTSCameraMaxDistance,
+                            Hero.MainHero.CharacterObject, ref explainedNumber);
+                    }
+                }
+                else
+                {
+                    AddSkillBonusForParty(DefaultSkills.Tactics, RTSCameraSkillEffects.TacticRTSCameraMaxDistance,
+                        Campaign.Current.MainParty, ref explainedNumber);
+                    AddSkillBonusForParty(DefaultSkills.Scouting, RTSCameraSkillEffects.ScoutingRTSCameraMaxDistance,
+                        Campaign.Current.MainParty, ref explainedNumber);
                 }
 
-                AddSkillBonusForParty(DefaultSkills.Tactics, RTSCameraSkillEffects.TacticRTSCameraMaxDistance,
-                    Campaign.Current.MainParty, ref explainedNumber);
-                AddSkillBonusForParty(DefaultSkills.Scouting, RTSCameraSkillEffects.ScoutingRTSCameraMaxDistance,
-                    Campaign.Current.MainParty, ref explainedNumber);
                 SetCameraMaxDistance(explainedNumber.ResultNumber);
                 return explainedNumber;
             }

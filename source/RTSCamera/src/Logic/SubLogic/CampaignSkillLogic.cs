@@ -16,8 +16,6 @@ namespace RTSCamera.Logic.SubLogic
         private bool _battleResultComesOut = false;
         private float _freeCameraBeginTime;
         private float _orderIssueBeginTime;
-        private float _accumulatedScoutingDuration;
-        private float _accumulatedTacticsDuration;
 
         public CampaignSkillLogic(RTSCameraLogic logic)
         {
@@ -27,6 +25,7 @@ namespace RTSCamera.Logic.SubLogic
         public void OnBehaviourInitialize()
         {
             MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
+            RTSCameraSkillBehavior.UpdateCameraMaxDistance();
         }
 
         public void OnMissionModeChange(MissionMode oldMissionMode, bool atStart)
@@ -90,26 +89,16 @@ namespace RTSCamera.Logic.SubLogic
 
         private void UpdateScoutingSkillXp()
         {
-            var scoutingDuration = _logic.Mission.CurrentTime - _freeCameraBeginTime;
+            var scoutingDuration = MathF.Min(_logic.Mission.CurrentTime - _freeCameraBeginTime, RTSCameraSkillBehavior.ScoutingSkillGainMaxDuration);
             _freeCameraBeginTime = _logic.Mission.CurrentTime;
-            _accumulatedScoutingDuration += scoutingDuration;
-            if (_accumulatedScoutingDuration >= RTSCameraSkillBehavior.ScoutingSkillGainInterval)
-            {
-                GiveXpForScouting(_accumulatedScoutingDuration);
-                _accumulatedScoutingDuration = 0f;
-            }
+            GiveXpForScouting(scoutingDuration);
         }
 
         private void UpdateTacticsSkillXp()
         {
-            var tacticsDuration = MathF.Min(_logic.Mission.CurrentTime - _orderIssueBeginTime, 5f);
+            var tacticsDuration = MathF.Min(_logic.Mission.CurrentTime - _orderIssueBeginTime, RTSCameraSkillBehavior.TacticsSkillGainMaxDuration);
             _orderIssueBeginTime = _logic.Mission.CurrentTime;
-            _accumulatedTacticsDuration += tacticsDuration;
-            if (_accumulatedTacticsDuration >= RTSCameraSkillBehavior.TacticsSkillGainInterval)
-            {
-                GiveXpForTactics(_accumulatedTacticsDuration);
-                _accumulatedTacticsDuration = 0f;
-            }
+            GiveXpForTactics(tacticsDuration);
         }
 
         private void GiveXpForScouting(float duration)

@@ -66,29 +66,26 @@ namespace RTSCamera.Config
                     {
                         RTSCameraConfig.Get().RaisedHeight = f;
                     }, 0, 50, true, true));
-                if (Campaign.Current != null)
-                {
-                    cameraOptionCategory.AddOption(new BoolOptionViewModel(
-                        GameTexts.FindText("str_rts_camera_limit_camera_distance"),
-                        GameTexts.FindText("str_rts_camera_limit_camera_distance_hint"),
-                        () => RTSCameraConfig.Get().LimitCameraDistance,
-                        b =>
+                cameraOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_limit_camera_distance"),
+                    GameTexts.FindText("str_rts_camera_limit_camera_distance_hint"),
+                    () => RTSCameraConfig.Get().LimitCameraDistance,
+                    b =>
+                    {
+                        if (b)
                         {
-                            if (b)
-                            {
-                                RTSCameraConfig.Get().LimitCameraDistance = true;
-                            }
-                            else
-                            {
-                                RTSCameraConfig.Get().LimitCameraDistance = false;
-                            }
-                        }));
-                    cameraOptionCategory.AddOption(new NumericOptionViewModel(
-                        GameTexts.FindText("str_rts_camera_camera_distance_limit"),
-                        new TextObject(RTSCameraSkillBehavior.UpdateCameraMaxDistance(true).GetExplanations()),
-                        () => RTSCameraSkillBehavior.CameraDistanceLimit,
-                        RTSCameraSkillBehavior.UpdateCameraDistanceLimit, 0, RTSCameraSkillBehavior.CameraDistanceMaxLimit, false, true));
-                }
+                            RTSCameraConfig.Get().LimitCameraDistance = true;
+                        }
+                        else
+                        {
+                            RTSCameraConfig.Get().LimitCameraDistance = false;
+                        }
+                    }));
+                cameraOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_camera_distance_limit"),
+                    new TextObject(RTSCameraSkillBehavior.UpdateCameraMaxDistance(true).GetExplanations()),
+                    () => RTSCameraSkillBehavior.CameraDistanceLimit,
+                    RTSCameraSkillBehavior.UpdateCameraDistanceLimit, 0, RTSCameraSkillBehavior.CameraDistanceMaxLimit, false, true));
                 cameraOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_camera_height_follows_terrain"),
                     GameTexts.FindText("str_rts_camera_camera_height_follows_terrain_hint"), () => RTSCameraConfig.Get().CameraHeightFollowsTerrain,

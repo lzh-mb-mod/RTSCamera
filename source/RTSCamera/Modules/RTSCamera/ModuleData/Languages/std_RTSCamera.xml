@@ -129,7 +129,7 @@
     <string id="RTSCamera_slowmotionkey" text="Slow Motion" />
     <string id="RTSCamera_freecamerakey" text="Free Camera" />
     <string id="RTSCamera_disabledeathkey" text="All Invulnerable" />
-    <string id="RTSCamera_controltroopkey" text="Control Troop" />
+    <string id="RTSCamera_controltroopkey" text="Focus Camera/Control Troop" />
     <string id="RTSCamera_camera_move_forward" text="Camera Move Forward" />
     <string id="RTSCamera_camera_move_backward" text="Camera Move Backward" />
     <string id="RTSCamera_camera_move_left" text="Camera Move Left" />
@@ -141,7 +141,7 @@
 
     <string id="RTSCamera_slowmotionkey_description" text="Enable slow motion mode. Press again to recover." />
     <string id="RTSCamera_disable_death_desciption" text="All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
-    <string id="RTSCamera_controltroopkey_description" text="Control one of your teammates when you are killed, or switch to player camera when in free camera mode." />
+    <string id="RTSCamera_controltroopkey_description" text="Focus camera to character or selected formation. Control focused character." />
     <string id="RTSCamera_switchteam_description" text="Swap player's team, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
     <string id="RTSCamera_camera_move_forward_description" text="Move the camera forward" />
     <string id="RTSCamera_camera_move_backward_description" text="Move the camera backward" />
@@ -158,6 +158,7 @@
     <string id="RTSCamera_select_character_view_hint" text="Please Select a character by left click. Then press {KeyName} to lock to it and press again to control it." />
     <string id="RTSCamera_control_troop_hint" text="You can press {KeyName} to control one of your teammates." />
     <string id="RTSCamera_control_current_agent_hint" text="Press {KeyName} to control the character" />
+    <string id="RTSCamera_focus_on_formation_hint" text="Press {KeyName} to focus camera on selected formation." />
 
     <string id="RTSCamera_tactics_skill_effect_description" text="RTS Camera Limit by Tactics: +{a0}m" />
     <string id="RTSCamera_scouting_skill_effect_description" text=" RTS Camera Limit by Scouting: +{a0}%" />

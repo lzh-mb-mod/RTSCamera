@@ -63,6 +63,8 @@ namespace RTSCamera.View
         private GauntletLayer _showControlHintLayer;
         private ShowControlHintVM _showControlHintVM;
 
+        private float _cameraDistanceLimitVerticalScale = 1.5f;
+
         public bool LockToAgent
         {
             get => _lockToAgent;
@@ -213,6 +215,7 @@ namespace RTSCamera.View
             }
             FocusedFormation = formation;
             _currentPositionLookingAt = null;
+            
         }
 
         private void LeaveFromAgent()
@@ -339,13 +342,26 @@ namespace RTSCamera.View
             {
                 if (Mission.Mode != MissionMode.Deployment)
                 {
+                    // Move camera backward and up when switching to free camera
                     var direction = MissionScreen.CombatCamera.Direction;
                     var z = direction.z;
                     if (z >= -0.5f)
                     {
                         direction = (direction.AsVec2.Normalized() * MathF.Sqrt(0.75f)).ToVec3() - Vec3.Up * 0.5f;
                     }
-                    BeginForcedMove(direction / direction.z * _config.RaisedHeight);
+                    var diff = direction / direction.z * _config.RaisedHeight;
+                    if (RTSCameraSkillBehavior.ShouldLimitCameraDistance(Mission))
+                    {
+                        var limit = MathF.Max(RTSCameraSkillBehavior.CameraDistanceLimit - 3f, 1f);
+                        var scale = MathF.Min(1f, limit / MathF.Max(diff.AsVec2.Length ,1f), limit * _cameraDistanceLimitVerticalScale / MathF.Max(diff.z, 1f));
+                        diff *= scale;
+                    }
+                    if (MissionScreen.LastFollowedAgent != null)
+                    {
+                        var moveOrigin = Utility.GetCameraFrameWhenLockedToAgent(MissionScreen, MissionScreen.LastFollowedAgent, SpectatorCameraTypes.LockToMainPlayer);
+                        diff = moveOrigin.origin - MissionScreen.CombatCamera.Frame.origin + diff;
+                    }
+                    BeginForcedMove(diff);
                 }
                 LeaveFromAgent();
             }
@@ -371,6 +387,7 @@ namespace RTSCamera.View
                     if (_currentPositionLookingAt == null)
                     {
                         _currentPositionLookingAt = cameraFrame.origin + direction * _lookingDistance;
+                        _lookingDistanceToAdd = 0f;
                     }
                     _currentPositionLookingAt += (positionToLookAt - _currentPositionLookingAt) * 2f * dt;
                     var targetPosition = (Vec3)_currentPositionLookingAt - direction * _lookingDistance; // Adjust the distance as needed
@@ -500,9 +517,29 @@ namespace RTSCamera.View
                 local = vec3_2 - vec3_4;
                 cameraFrame.origin.z += _cameraSpeed.z * dt;
                 float mouseScroll = Input.GetDeltaMouseScroll();
+                var diffRatio = MathF.Min(1f, dt * 5f);
                 if (FocusedFormation != null)
                 {
                     _lookingDistanceToAdd -= (mouseScroll / 200.0f) * num1 * VerticalMovementSpeedFactor;
+                    if (MathF.Abs(_lookingDistanceToAdd) > 1.0 / 1000.0)
+                    {
+                        _lookingDistance += _lookingDistanceToAdd * diffRatio;
+                        _lookingDistanceToAdd *= 1f - diffRatio;
+                    }
+                    else
+                    {
+                        _lookingDistance += _lookingDistanceToAdd * MathF.Min(1f, dt);
+                        _lookingDistanceToAdd = 0;
+                    }
+                    if (RTSCameraSkillBehavior.ShouldLimitCameraDistance(Mission))
+                    {
+                        var maxDistance = MathF.Min(RTSCameraSkillBehavior.CameraDistanceLimit, 50f);
+                        if (_lookingDistance > maxDistance)
+                        {
+                            _lookingDistance -= (_lookingDistance - maxDistance) * diffRatio;
+                        }
+                    }
+                    _lookingDistance = MathF.Max(_lookingDistance, 1f);
                 }
                 else
                 {
@@ -525,25 +562,14 @@ namespace RTSCamera.View
                     }
                     _cameraHeightToAdd = MathF.Clamp(_cameraHeightToAdd, -verticalLimit, verticalLimit);
                 }
-                if (MathF.Abs(_lookingDistanceToAdd) > 1.0 / 1000.0)
-                {
-                    _lookingDistance += _lookingDistanceToAdd * dt * 5f;
-                    _lookingDistanceToAdd *= 1f - dt * 5f;
-                }
-                else
-                {
-                    _lookingDistance += _lookingDistanceToAdd * dt;
-                    _lookingDistanceToAdd = 0;
-                }
-                _lookingDistance = MathF.Clamp(_lookingDistance, 1f, 50f);
                 if (MathF.Abs(_cameraHeightToAdd) > 1.0 / 1000.0)
                 {
-                    cameraFrame.origin.z += _cameraHeightToAdd * dt * 5f;
-                    _cameraHeightToAdd *= 1f - dt * 5f;
+                    cameraFrame.origin.z += _cameraHeightToAdd * diffRatio;
+                    _cameraHeightToAdd *= 1f - diffRatio;
                 }
                 else
                 {
-                    cameraFrame.origin.z += _cameraHeightToAdd * dt;
+                    cameraFrame.origin.z += _cameraHeightToAdd * MathF.Min(1f, dt);
                     _cameraHeightToAdd = 0.0f;
                 }
                 if (_cameraHeightLimit > 0.0 && cameraFrame.origin.z > (double)_cameraHeightLimit)
@@ -556,7 +582,7 @@ namespace RTSCamera.View
                 cameraFrame.origin += _cameraSpeed.z * cameraFrame.rotation.f * dt;
             }
 
-            if (RTSCameraSkillBehavior.ShouldLimitCameraDistance(Mission))
+            if (FocusedFormation == null && RTSCameraSkillBehavior.ShouldLimitCameraDistance(Mission))
             {
                 LimitCameraDistance(ref cameraFrame, dt, num1);
             }
@@ -597,6 +623,13 @@ namespace RTSCamera.View
             UpdateCameraFrameAndDof(cameraFrame);
         }
 
+        private Vec3 GetCameraLimitCalculationEndpoint()
+        {
+            if (Mission.MainAgent == null)
+                return Vec3.Invalid;
+            return Utility.GetCameraTargetPositionWhenLockedToAgent(MissionScreen, Mission.MainAgent) + Vec3.Up;
+        }
+
         private void LimitCameraDistance(ref MatrixFrame cameraFrame, float dt, float speed)
         {
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.IncreaseCameraDistanceLimit).IsKeyDownInOrder(Input))
@@ -607,15 +640,15 @@ namespace RTSCamera.View
             {
                 RTSCameraSkillBehavior.UpdateCameraDistanceLimit(RTSCameraSkillBehavior.CameraDistanceLimit - dt * speed);
             }
-            var mainAgentPosition = Utility.GetCameraTargetPositionWhenLockedToAgent(MissionScreen, Mission.MainAgent) + Vec3.Up;
+            var mainAgentPosition = GetCameraLimitCalculationEndpoint();
+            if (!mainAgentPosition.IsValid)
+                return;
             var distanceLimit = RTSCameraSkillBehavior.CameraDistanceLimit;
             var heightDiff = cameraFrame.origin.z - mainAgentPosition.z;
-            var verticalScale = 2;
             Vec3 targetPosition = cameraFrame.origin;
-            if (heightDiff >= distanceLimit * verticalScale)
+            if (heightDiff >= distanceLimit * _cameraDistanceLimitVerticalScale)
             {
-                targetPosition = mainAgentPosition;
-                targetPosition.z += distanceLimit * verticalScale;
+                targetPosition.z = distanceLimit * _cameraDistanceLimitVerticalScale + mainAgentPosition.z;
             }
             else if (heightDiff <= 0)
             {
@@ -623,11 +656,10 @@ namespace RTSCamera.View
             }
             var centerPosition = mainAgentPosition.AsVec2.ToVec3(targetPosition.z);
             var distance = targetPosition.Distance(centerPosition);
-            var maxDistance = MathF.Sqrt(distanceLimit * distanceLimit - (heightDiff / verticalScale) * (heightDiff / verticalScale));
-            if (distance > maxDistance)
+            if (distance > distanceLimit)
             {
                 targetPosition = Vec3.Lerp(centerPosition, targetPosition,
-                    maxDistance / MathF.Max(distance, 1f));
+                    distanceLimit / MathF.Max(distance, 1f));
             }
 
             cameraFrame.origin = Vec3.Lerp(targetPosition, cameraFrame.origin, MathF.Pow(0.02f, dt));

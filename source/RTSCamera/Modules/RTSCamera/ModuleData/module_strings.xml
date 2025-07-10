@@ -132,7 +132,7 @@
   <string id="str_key_name.RTSCameraHotKey_Down" text="{=RTSCamera_slowmotionkey}Slow Motion" />
   <string id="str_key_name.RTSCameraHotKey_Left" text="{=RTSCamera_freecamerakey}Free Camera" />
   <string id="str_key_name.RTSCameraHotKey_Right" text="{=RTSCamera_disabledeathkey}All Invulnerable" />
-  <string id="str_key_name.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey}Control Troop" />
+  <string id="str_key_name.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey}Focus Camera/Control Troop" />
   <!-- same as str_rts_camera_toggle_ui -->
   <string id="str_key_name.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_toggleui}Toggle HUD" />
   <!-- same as str_rts_camera_switch_team -->
@@ -154,7 +154,7 @@
   <!-- same as str_rts_camera_auto_mode_hint -->
   <string id="str_key_description.RTSCameraHotKey_Left" text="{=RTSCamera_switch_free_camera_hint}Switch between free camera and player camera." />
   <string id="str_key_description.RTSCameraHotKey_Right" text="{=RTSCamera_disable_death_desciption}All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
-  <string id="str_key_description.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey_description}Control one of your teammates when you are killed, or switch to player camera when in free camera mode." />
+  <string id="str_key_description.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey_description}Focus camera to character or selected formation. Control one of your teammates when you are killed." />
   <!-- same as str_rts_camera_toggle_ui_hint -->
   <string id="str_key_description.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
   <string id="str_key_description.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_switchteam_description}Swap player's team, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
@@ -175,6 +175,7 @@
   <string id="str_rts_camera_select_character_view_hint" text="{=RTSCamera_select_character_view_hint}Please Select a character by left click. Then press {KeyName} to lock to it and press again to control it." />
   <string id="str_rts_camera_control_troop_hint" text="{=RTSCamera_control_troop_hint}Press {KeyName} to control one of your teammates." />
   <string id="str_rts_camera_control_current_agent_hint" text="{=RTSCamera_control_current_agent_hint}Press {KeyName} to control the character" />
+  <string id="str_rts_camera_focus_on_formation_hint" text="{=RTSCamera_focus_on_formation_hint}Press {KeyName} to focus camera on selected formation." />
 
   <string id="str_rts_camera_tactics_skill_effect_description" text="{=RTSCamera_tactics_skill_effect_description}RTS Camera Limit by Tactics: +{a0}m" />
   <string id="str_rts_camera_scouting_skill_effect_description" text="{=RTSCamera_scouting_skill_effect_description}RTS Camera Limit by Scouting: +{a0}%" />
