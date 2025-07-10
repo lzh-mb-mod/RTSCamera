@@ -74,7 +74,7 @@ namespace RTSCamera.Config
             return (Agent.ControllerType) PlayerControllerInFreeCamera;
         }
 
-        public int PlayerFormation = (int)FormationClass.Unset;
+        public FormationClass PlayerFormation = FormationClass.Unset;
 
         public AutoSetPlayerFormation AutoSetPlayerFormation = AutoSetPlayerFormation.Never;
 
@@ -107,7 +107,7 @@ namespace RTSCamera.Config
 
         public bool SwitchTeamHotkeyEnabled;
 
-        public bool LimitCameraDistance = true;
+        public bool LimitCameraDistance = false;
 
         public float CameraDistanceLimitFactor = 1;
 

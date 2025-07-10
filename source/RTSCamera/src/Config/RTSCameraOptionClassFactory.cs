@@ -177,7 +177,7 @@ namespace RTSCamera.Config
                         i =>
                         {
                             var config = RTSCameraConfig.Get();
-                            config.PlayerFormation = i;
+                            config.PlayerFormation = (FormationClass)i;
                             if (i >= 0 && i < (int)FormationClass.NumberOfAllFormations)
                             {
                                 rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)i;
@@ -189,7 +189,7 @@ namespace RTSCamera.Config
                         {
                             if (Utility.IsPlayerDead())
                             {
-                                return RTSCameraConfig.Get().PlayerFormation;
+                                return (int)RTSCameraConfig.Get().PlayerFormation;
                             }
 
                             if (Mission.Current.MainAgent.Formation == null)
@@ -231,7 +231,7 @@ namespace RTSCamera.Config
                         {
                             var formationClass = (Utility.IsPlayerDead() || Mission.Current.MainAgent.Formation == null)
                                 ? config.PlayerFormation
-                                : Mission.Current.MainAgent.Formation.Index;
+                                : Mission.Current.MainAgent.Formation.FormationIndex;
                             config.PlayerFormation = formationClass;
                             rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)formationClass;
                             if (WatchBattleBehavior.WatchMode)

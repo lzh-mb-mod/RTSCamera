@@ -337,13 +337,16 @@ namespace RTSCamera.View
             }
             else if (!LockToAgent)
             {
-                var direction = MissionScreen.CombatCamera.Direction;
-                var z = direction.z;
-                if (z >= -0.5f)
+                if (Mission.Mode != MissionMode.Deployment)
                 {
-                    direction = (direction.AsVec2.Normalized() * MathF.Sqrt(0.75f)).ToVec3() - Vec3.Up * 0.5f;
+                    var direction = MissionScreen.CombatCamera.Direction;
+                    var z = direction.z;
+                    if (z >= -0.5f)
+                    {
+                        direction = (direction.AsVec2.Normalized() * MathF.Sqrt(0.75f)).ToVec3() - Vec3.Up * 0.5f;
+                    }
+                    BeginForcedMove(direction / direction.z * _config.RaisedHeight);
                 }
-                BeginForcedMove(direction / direction.z * _config.RaisedHeight);
                 LeaveFromAgent();
             }
         }
@@ -369,7 +372,7 @@ namespace RTSCamera.View
                     {
                         _currentPositionLookingAt = cameraFrame.origin + direction * _lookingDistance;
                     }
-                    _currentPositionLookingAt += (positionToLookAt - _currentPositionLookingAt) * 4f * dt;
+                    _currentPositionLookingAt += (positionToLookAt - _currentPositionLookingAt) * 2f * dt;
                     var targetPosition = (Vec3)_currentPositionLookingAt - direction * _lookingDistance; // Adjust the distance as needed
                     cameraFrame.origin = targetPosition;
                 }

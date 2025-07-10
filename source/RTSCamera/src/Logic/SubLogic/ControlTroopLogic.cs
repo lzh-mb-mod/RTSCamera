@@ -129,6 +129,8 @@ namespace RTSCamera.Logic.SubLogic
         {
             try
             {
+                if (Mission.Mode == MissionMode.Deployment)
+                    return false;
                 if (Mission.MainAgent != null)
                 {
                     if (displayMessage)
@@ -187,7 +189,7 @@ namespace RTSCamera.Logic.SubLogic
                     return firstPreference.agent;
                 }
 
-                if ((int)_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
+                if (_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
                 {
                     var secondPreference = AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation,
                         cameraPosition, ignoreRetreatingAgents);
@@ -208,7 +210,7 @@ namespace RTSCamera.Logic.SubLogic
                 if (firstPreference.hero != null)
                     return firstPreference.hero;
 
-                if ((int)_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
+                if (_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
                 {
                     var secondPreference =
                         AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation, cameraPosition,
@@ -256,8 +258,6 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).IsKeyPressed(Mission.InputManager) && !Mission.IsInPhotoMode)
             {
-                if (Mission.Current.Mode == MissionMode.Deployment)
-                    return;
                 var missionOrderVM = Utility.GetMissionOrderVM(Mission);
                 if (missionOrderVM != null)
                 {
@@ -271,6 +271,8 @@ namespace RTSCamera.Logic.SubLogic
                         }
                     }
                 }
+                if (Mission.Current.Mode == MissionMode.Deployment)
+                    return;
                 if (_selectCharacterView.LockOnAgent(GetAgentToControl()))
                     return;
                 if (!_switchFreeCameraLogic.IsSpectatorCamera && Mission.MainAgent?.Controller == Agent.ControllerType.Player)

@@ -72,8 +72,8 @@ namespace RTSCamera
                         BindingFlags.Static | BindingFlags.Public)));
 
                 //_successPatch &= Patch_OrderOfBattleVM.Patch();
-                //_successPatch &= Patch_DeploymentMissionController.Patch();
                 // below checked
+                _successPatch &= Patch_DeploymentMissionController.Patch();
                 _successPatch &= Patch_LadderQueueManager.Patch(_harmony);
                 _successPatch &= Patch_MissionFormationTargetSelectionHandler.Patch(_harmony);
                 _successPatch &= Patch_OrderTroopPlacer.Patch(_harmony);
