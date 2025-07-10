@@ -54,6 +54,8 @@ namespace RTSCamera.CommandSystem
 
             if (!SecondInitialize())
                 return;
+
+            Utilities.Utility.PrintOrderHint();
         }
 
         private bool SecondInitialize()

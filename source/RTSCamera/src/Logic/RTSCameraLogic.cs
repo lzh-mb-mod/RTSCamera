@@ -46,6 +46,9 @@ namespace RTSCamera.Logic
             SwitchTeamLogic.OnBehaviourInitialize();
             ControlTroopLogic.OnBehaviourInitialize();
             CampaignSkillLogic.OnBehaviourInitialize();
+
+
+            Utilities.Utility.PrintUsageHint();
         }
 
         public override void OnRemoveBehavior()

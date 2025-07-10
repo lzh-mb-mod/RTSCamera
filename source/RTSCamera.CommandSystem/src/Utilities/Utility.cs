@@ -21,6 +21,9 @@ namespace RTSCamera.CommandSystem.Utilities
                     .FindText("str_rts_camera_command_system_click_to_select_formation_hint").SetTextVariable("KeyName",
                         CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString())
                     .ToString());
+                MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(GameTexts
+                    .FindText("str_rts_camera_command_system_attack_specific_formation_alt_hint")
+                    .ToString());
             }
 
             if (CommandSystemConfig.Get().AttackSpecificFormation)

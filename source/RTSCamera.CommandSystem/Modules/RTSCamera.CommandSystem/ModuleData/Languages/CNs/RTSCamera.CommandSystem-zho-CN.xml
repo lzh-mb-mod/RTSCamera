@@ -13,7 +13,8 @@
     <string id="RTSCameraCommandSystem_highlight_selected_formation" text="高亮选中的编队" />
     <string id="RTSCameraCommandSystem_highlight_selected_formation_hint" text="选中的编队会用轮廓高亮" />
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="启用攻击特定编队" />
-    <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="你可以在敌方编队上按下{KeyName}来发出攻击指定的敌方编队的命令。" />
+    <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="你可以在敌方编队上按下{KeyName}来发出集中攻击的命令。" />
+    <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="你可以按下Alt在集中攻击的同时不打断移动指令。" />
     <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="消灭敌方编队后" />
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="消灭指定的敌方编队后下一步的行为" />
     <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="冲锋" />

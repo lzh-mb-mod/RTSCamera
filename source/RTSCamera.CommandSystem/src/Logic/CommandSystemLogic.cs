@@ -15,6 +15,8 @@ namespace RTSCamera.CommandSystem.Logic
 
             FormationColorSubLogic.OnBehaviourInitialize();
             Patch_OrderTroopPlacer.OnBehaviorInitialize();
+
+            Utilities.Utility.PrintOrderHint();
         }
 
         public override void OnRemoveBehavior()
