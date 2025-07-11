@@ -140,14 +140,7 @@ jobs:
           # The desired behavior if no files are found using the provided path
 
       - name: Zip RTS Camera
-        run: Compress-Archive -Path .\source\package\RTSCamera -DestinationPath "${{env.RTSCAMERA_ARTIFACT_NAME}}.zip";
-        if: >-
-          contains(github.ref, 'refs/tags/release-v') ||
-          contains(github.ref, 'refs/tags/release-b') ||
-          contains(github.ref, 'refs/tags/release-e')
-
-      - name: Zip RTS Camera CommandSystem
-        run: Compress-Archive -Path .\source\package\RTSCamera.CommandSystem -DestinationPath "${{env.COMMANDSYSTEM_ARTIFACT_NAME}}.zip";
+        run: Compress-Archive -Path .\source\package\RTSCamera,.\source\package\RTSCamera.CommandSystem -DestinationPath "${{env.RTSCAMERA_ARTIFACT_NAME}}.zip";
         if: >-
           contains(github.ref, 'refs/tags/release-v') ||
           contains(github.ref, 'refs/tags/release-b') ||
