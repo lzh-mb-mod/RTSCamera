@@ -143,7 +143,7 @@ namespace RTSCamera
             missionStartingManager.AddHandler(new MissionStartingHandler.MissionStartingHandler());
             var menuClassCollection = AMenuManager.Get().MenuClassCollection;
             AMenuManager.Get().OnMenuClosedEvent += RTSCameraConfig.OnMenuClosed;
-            menuClassCollection.AddOptionClass(RTSCameraOptionClassFactory.CreateOptionClassProvider(menuClassCollection));
+            menuClassCollection.RegisterItem(RTSCameraOptionClassFactory.CreateOptionClassProvider(menuClassCollection));
             return true;
         }
 

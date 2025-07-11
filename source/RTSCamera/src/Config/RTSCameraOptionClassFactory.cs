@@ -8,6 +8,7 @@ using MissionSharedLibrary.View.ViewModelCollection.Options.Selection;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Logic;
 using RTSCamera.View;
+using System;
 using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -20,9 +21,9 @@ namespace RTSCamera.Config
 {
     public class RTSCameraOptionClassFactory
     {
-        public static IIdProvider<AOptionClass> CreateOptionClassProvider(IMenuClassCollection menuClassCollection)
+        public static IProvider<AOptionClass> CreateOptionClassProvider(AMenuClassCollection menuClassCollection)
         {
-            return IdProviderCreator.Create(() =>
+            return ProviderCreator.Create(() =>
             {
                 var optionClass = new OptionClass(RTSCameraSubModule.ModuleId,
                     GameTexts.FindText("str_rts_camera_option_class"), menuClassCollection);
@@ -358,7 +359,7 @@ namespace RTSCamera.Config
                 }
 
                 return optionClass;
-            }, RTSCameraSubModule.ModuleId);
+            }, RTSCameraSubModule.ModuleId, new Version(1,0, 0));
         }
     }
 }

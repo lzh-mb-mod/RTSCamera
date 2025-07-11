@@ -66,7 +66,7 @@ namespace RTSCamera.CommandSystem
             CommandSystemGameKeyCategory.RegisterGameKeyCategory();
             AMenuManager.Get().OnMenuClosedEvent += CommandSystemConfig.OnMenuClosed;
             var menuClassCollection = AMenuManager.Get().MenuClassCollection;
-            menuClassCollection.AddOptionClass(CommandSystemOptionClassFactory.CreateOptionClassProvider(menuClassCollection));
+            menuClassCollection.RegisterItem(CommandSystemOptionClassFactory.CreateOptionClassProvider(menuClassCollection));
             var missionStartingManager = AMissionStartingManager.Get();
             missionStartingManager.AddHandler(new CommandSystemMissionStartingHandler());
             missionStartingManager.AddSingletonHandler("RTSCameraAgentComponent.MissionStartingHandler",

@@ -31,11 +31,11 @@ namespace RTSCamera.Config.HotKey
     {
         public const string CategoryId = "RTSCameraHotKey";
 
-        public static AGameKeyCategory Category => AGameKeyCategoryManager.Get().GetCategory(CategoryId);
+        public static AGameKeyCategory Category => AGameKeyCategoryManager.Get().GetItem(CategoryId);
 
         public static void RegisterGameKeyCategory()
         {
-            AGameKeyCategoryManager.Get()?.RegisterCategory(CreateCategory, new Version(1, 0));
+            AGameKeyCategoryManager.Get()?.RegisterCategory(CreateCategory, CategoryId, new Version(1, 0));
         }
 
         public static GameKeyCategory CreateCategory()

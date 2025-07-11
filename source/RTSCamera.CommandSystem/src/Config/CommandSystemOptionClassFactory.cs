@@ -7,6 +7,7 @@ using MissionSharedLibrary.View.ViewModelCollection.Options.Selection;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
+using System;
 using System.Collections.Generic;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
@@ -15,9 +16,9 @@ namespace RTSCamera.CommandSystem.Config
 {
     public class CommandSystemOptionClassFactory
     {
-        public static IIdProvider<AOptionClass> CreateOptionClassProvider(IMenuClassCollection menuClassCollection)
+        public static IProvider<AOptionClass> CreateOptionClassProvider(AMenuClassCollection menuClassCollection)
         {
-            return IdProviderCreator.Create(() =>
+            return ProviderCreator.Create(() =>
             {
                 var contourView = Mission.Current.GetMissionBehavior<CommandSystemLogic>().FormationColorSubLogic;
 
@@ -88,7 +89,7 @@ namespace RTSCamera.CommandSystem.Config
                 optionClass.AddOptionCategory(0, commandOptionCategory);
 
                 return optionClass;
-            }, CommandSystemSubModule.ModuleId);
+            }, CommandSystemSubModule.ModuleId, new Version(1, 0, 0));
         }
     }
 }
