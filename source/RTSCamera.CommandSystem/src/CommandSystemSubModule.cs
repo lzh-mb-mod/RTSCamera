@@ -67,10 +67,10 @@ namespace RTSCamera.CommandSystem
             AMenuManager.Get().OnMenuClosedEvent += CommandSystemConfig.OnMenuClosed;
             var menuClassCollection = AMenuManager.Get().MenuClassCollection;
             menuClassCollection.AddOptionClass(CommandSystemOptionClassFactory.CreateOptionClassProvider(menuClassCollection));
-            Global.GetProvider<AMissionStartingManager>().AddHandler(new CommandSystemMissionStartingHandler());
-            Global.RegisterProvider(
-                VersionProviderCreator.Create(() => new RTSCameraAgentComponent.MissionStartingHandler(),
-                    new Version(1, 0, 0)), "RTSCameraAgentComponent.MissionStartingHandler");
+            var missionStartingManager = AMissionStartingManager.Get();
+            missionStartingManager.AddHandler(new CommandSystemMissionStartingHandler());
+            missionStartingManager.AddSingletonHandler("RTSCameraAgentComponent.MissionStartingHandler",
+                new RTSCameraAgentComponent.MissionStartingHandler(), new Version(1, 0, 0));
 
             bool successPatch = true;
             successPatch &=  Patch_OrderTroopPlacer.Patch();

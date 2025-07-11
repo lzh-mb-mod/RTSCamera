@@ -16,6 +16,13 @@ namespace RTSCamera.Utilities
             MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(hint);
         }
 
+        public static void PrintOrderHint()
+        {
+            var hint = GameTexts.FindText("str_rts_camera_focus_on_formation_hint");
+            hint.SetTextVariable("KeyName", RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).ToSequenceString());
+            MissionSharedLibrary.Utilities.Utility.DisplayMessage(hint.ToString());
+        }
+
 
         public static void UpdateMainAgentControllerInFreeCamera(Agent agent, Agent.ControllerType controller)
         {

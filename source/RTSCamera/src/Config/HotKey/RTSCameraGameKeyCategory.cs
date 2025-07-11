@@ -1,7 +1,7 @@
-﻿using System;
-using MissionLibrary.HotKey;
+﻿using MissionLibrary.HotKey;
 using MissionSharedLibrary.Config.HotKey;
-using MissionSharedLibrary.HotKey.Category;
+using MissionSharedLibrary.HotKey;
+using System;
 using System.Collections.Generic;
 using TaleWorlds.InputSystem;
 
@@ -35,7 +35,7 @@ namespace RTSCamera.Config.HotKey
 
         public static void RegisterGameKeyCategory()
         {
-            AGameKeyCategoryManager.Get()?.AddCategory(CreateCategory, new Version(1, 0));
+            AGameKeyCategoryManager.Get()?.RegisterCategory(CreateCategory, new Version(1, 0));
         }
 
         public static GameKeyCategory CreateCategory()

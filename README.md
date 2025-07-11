@@ -12,7 +12,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - Smoothly toggle free camera mode at any time in a battle.
 
-  - **New:** Stick camera to seleted formation.
+  - **New:** Stick camera to selected formation.
 
   - Control one of your soldiers and continue fighting/commanding after player character is injured in battle.
 
@@ -22,7 +22,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - Issue focus charge command by clicking middle button on enemy units.
 
-  - **New:** Focus attack on enemy units without interupting previous movement orders. For example, **let your archers focus shooting while holding position**.
+  - **New:** Set attack target without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
   - Select your troops by clicking middle button on units.
 
@@ -47,16 +47,14 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - You can make your formation charge to the enemy formation by clicking middle mouse button on enemy units.
 
-    - **New:** Press `Alt` while clicking to target the enemy interupting previous movement orders. For example, **let your archers focus shooting while holding position**.
+    - **New:** Press `Alt` while clicking to target the enemy without interupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
   - You can select your formations by clicking middle mouse button on soldiers.
 
 - For more features, you can read `Details` below or press `L` to open mod menu.
 
 ## How to Install
-1. Remove any old installation of this mod. You can go to `Modules` folder of bannerlord installation folder (For example `C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord\Moudles\`) and remove folders like `RTSCamera` or `EnhancedMission`.
-
-2. Copy `RTSCamera` and `RTSCamera.CommandSystem` folder you downloaded into Bannerlord `Modules` folder. Or use Vortex to install it automatically.
+ Copy `RTSCamera` and `RTSCamera.CommandSystem` folder you downloaded into Bannerlord `Modules` folder. Or use Vortex to install it automatically.
 
 ## Details
 
@@ -99,13 +97,13 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 - After your character is killed in battle, you can press `E` to follow one of your soldiers and press `E` again to control it and continue fighting.
 
-  - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your charater dies, by enabling `Control Ally After Death` option. It's always enabled in free camera mode to ensure a smooth gaming experience.
+  - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your character dies, by enabling `Control Ally After Death` option. It's always enabled in free camera mode to ensure a smooth gaming experience.
 
   - Soldiers in the same formation as player character will be considered first when deciding which soldier to control.
 
 - When the camera is following a character, you can press `E` to control the character. You can make the camera follow a character in the following ways:
 
-  - In free camera mode press E` to follow the player character.
+  - In free camera mode press `E` to follow the player character.
 
   - Press `L` to open the menu and selecting a hero in `Watch Another Hero` drop-down list.
 
@@ -128,7 +126,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - The target enemy formation that your selected troops are charging to will be highlighted with red outline when you open command panel in free camera mode.
 
-- **New:** Press `Alt` while clicking to target the enemy without interupting previous movement orders.
+- **New:** Press `Alt` while clicking to target the enemy without interrupting previous movement orders.
 
   - For archers they can shoot target enemy while holding positions.
 
@@ -174,6 +172,8 @@ Here is a list of default hotkeys:
   The main config is saved in files `RTSCameraConfig.xml` and `CommandSystemConfig.xml`.
 
   The hot key config is saved in file `RTSCameraGameKeyConfig.xml` and `CommandSystemGameKeyConfig.xml`.
+
+  The hot key that opens the menu is saved in file `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\MissionLibrary\GeneralGameKeyConfig.xml`.
 
   You can modify them manually, but if you edit them incorrectly or remove them, the configuration will be reset to default.
 

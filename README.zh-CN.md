@@ -172,12 +172,14 @@
 
 - `Right Shift` + `=`, `Right Shift` + `-`: 提高/降低相机距离限制。
 
-
-- 本mod的配置保存在文件夹`(user directory)\Documents\Mount and Blade II Bannerlord\Configs\RTSCamera\`和`(user directory)\Documents\Mount and Blade II Bannerlord\Configs\MissionLibrary\`中。
+## 配置文件
+本mod的配置保存在文件夹`(user directory)\Documents\Mount and Blade II Bannerlord\Configs\RTSCamera\`和`(user directory)\Documents\Mount and Blade II Bannerlord\Configs\MissionLibrary\`中。
 
   主要配置保存在文件`RTSCameraConfig.xml`和`CommandSystemConfig.xml`中。
 
   按键配置保存在文件`RTSCameraGameKeyConfig.xml`和`CommandSystemGameKeyConfig.xml`中。
+
+  打开mod菜单的按键配置保存在文件`(user directory)\Documents\Mount and Blade II Bannerlord\Configs\MissionLibrary\GeneralGameKeyConfig.xml`中。
 
   你可以修改配置，但如果你编辑有误或配置文件被移除，配置会被初始化为默认内容。
 

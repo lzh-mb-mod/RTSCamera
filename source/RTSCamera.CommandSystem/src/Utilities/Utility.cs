@@ -1,5 +1,4 @@
-﻿using NetworkMessages.FromClient;
-using RTSCamera.CommandSystem.Config;
+﻿using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using System.Collections.Generic;
 using System.Reflection;
@@ -15,22 +14,22 @@ namespace RTSCamera.CommandSystem.Utilities
         public static Color MessageColor = new Color(0.2f, 0.9f, 0.7f);
         public static void PrintOrderHint()
         {
-            if (CommandSystemConfig.Get().ClickToSelectFormation)
-            {
-                MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(GameTexts
-                    .FindText("str_rts_camera_command_system_click_to_select_formation_hint").SetTextVariable("KeyName",
-                        CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString())
-                    .ToString());
-                MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(GameTexts
-                    .FindText("str_rts_camera_command_system_attack_specific_formation_alt_hint")
-                    .ToString());
-            }
+            //if (CommandSystemConfig.Get().ClickToSelectFormation)
+            //{
+            //    MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(TaleWorlds.MountAndBlade.Module.CurrentModule.GlobalTextManager
+            //        .FindText("str_rts_camera_command_system_click_to_select_formation_hint").SetTextVariable("KeyName",
+            //            CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString())
+            //        .ToString());
+            //}
 
             if (CommandSystemConfig.Get().AttackSpecificFormation)
             {
-                MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(GameTexts
+                MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(TaleWorlds.MountAndBlade.Module.CurrentModule.GlobalTextManager
                     .FindText("str_rts_camera_command_system_attack_specific_formation_hint").SetTextVariable("KeyName",
                         CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString())
+                    .ToString());
+                MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(TaleWorlds.MountAndBlade.Module.CurrentModule.GlobalTextManager
+                    .FindText("str_rts_camera_command_system_attack_specific_formation_alt_hint")
                     .ToString());
             }
         }

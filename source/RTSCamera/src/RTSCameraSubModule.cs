@@ -137,10 +137,10 @@ namespace RTSCamera
                 return false;
 
             RTSCameraGameKeyCategory.RegisterGameKeyCategory();
-            Global.RegisterProvider(
-                VersionProviderCreator.Create(() => new RTSCameraAgentComponent.MissionStartingHandler(),
-                    new Version(1, 0, 0)), "RTSCameraAgentComponent.MissionStartingHandler");
-            Global.GetProvider<AMissionStartingManager>().AddHandler(new MissionStartingHandler.MissionStartingHandler());
+            var missionStartingManager = Global.GetInstance<AMissionStartingManager>();
+            missionStartingManager.AddSingletonHandler("RTSCameraAgentComponent.MissionStartingHandler",
+                new RTSCameraAgentComponent.MissionStartingHandler(), new Version(1, 0, 0));
+            missionStartingManager.AddHandler(new MissionStartingHandler.MissionStartingHandler());
             var menuClassCollection = AMenuManager.Get().MenuClassCollection;
             AMenuManager.Get().OnMenuClosedEvent += RTSCameraConfig.OnMenuClosed;
             menuClassCollection.AddOptionClass(RTSCameraOptionClassFactory.CreateOptionClassProvider(menuClassCollection));

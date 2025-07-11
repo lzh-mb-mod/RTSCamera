@@ -14,7 +14,7 @@
     <string id="RTSCameraCommandSystem_highlight_selected_formation_hint" text="选中的编队会用轮廓高亮" />
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="启用攻击特定编队" />
     <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="你可以在敌方编队上按下{KeyName}来发出集中攻击的命令。" />
-    <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="你可以按下Alt在集中攻击的同时不打断移动指令。" />
+    <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="若同时按下Alt不会打断移动指令。" />
     <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="消灭敌方编队后" />
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="消灭指定的敌方编队后下一步的行为" />
     <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="冲锋" />
@@ -28,7 +28,7 @@
     <string id="RTSCameraCommandSystem_movementtargetmorevisibleonrtsviewonly" text="仅自由视角下更易识别移动地点" />
     <string id="RTSCameraCommandSystem_targetmorevisibleonrtsviewonlyhint" text="仅会在自由视角下让移动地点更易识别，普通视角下维持原有外观。" />
 
-    <string id="RTSCameraCommandSystem_defensive_attack" text="{TROOP_NAME}正在聚焦于敌军的{TARGET_NAME}" />
+    <string id="RTSCameraCommandSystem_defensive_attack" text="{TROOP_NAME}优先攻击敌军的{TARGET_NAME}" />
 
     <string id="RTSCameraCommandSystem_hotkeycategory" text="指挥系统按键" />
     <string id="RTSCameraCommandSystem_select_formation" text="选择编队" />

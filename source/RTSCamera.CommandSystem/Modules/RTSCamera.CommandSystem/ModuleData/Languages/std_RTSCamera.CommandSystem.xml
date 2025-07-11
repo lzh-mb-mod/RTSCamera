@@ -14,7 +14,7 @@
     <string id="RTSCameraCommandSystem_highlight_selected_formation_hint" text="Selected formation will be highlighted with outline." />
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="Enable Attack Specific Formation" />
     <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="You can give focus attack order by pressing {KeyName} on enemy formation." />
-    <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="You can give focus attack order without changing movement orders by pressing Alt." />
+    <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="Press alt at the same time to keep previous movement order." />
     <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="After enemy formation eliminated" />
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="Behavior when the attacked enemy formation is eliminated." />
     <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="Charge" />

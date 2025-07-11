@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using MissionLibrary.Provider;
+﻿using MissionLibrary.Provider;
 using MissionLibrary.View;
 using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.Utilities;
@@ -9,7 +8,7 @@ using MissionSharedLibrary.View.ViewModelCollection.Options.Selection;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Logic;
 using RTSCamera.View;
-using TaleWorlds.CampaignSystem;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;

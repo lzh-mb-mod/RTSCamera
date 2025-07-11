@@ -37,7 +37,7 @@ namespace RTSCamera.Logic.SubLogic
         private bool _skipClosingUIOnSwitchingCamera;
         private List<FormationClass> _playerFormations;
         private float _updatePlayerFormationTime;
-        private bool _hasShownFocusOnFormationHint = false;
+        private bool _hasShownOrderHint = false;
 
         public Mission Mission => _logic.Mission;
 
@@ -84,7 +84,7 @@ namespace RTSCamera.Logic.SubLogic
 
         private void OnToggledOrderView(MissionPlayerToggledOrderViewEvent e)
         {
-            bool showFocusOnFormationHint = false;
+            bool showOrderHint = false;
             if (e.IsOrderEnabled)
             {
                 if (IsSpectatorCamera)
@@ -107,7 +107,7 @@ namespace RTSCamera.Logic.SubLogic
                     }
                     else
                     {
-                        showFocusOnFormationHint = true;
+                        showOrderHint = true;
                         if (_config.SwitchCameraOnOrdering && !WatchBattleBehavior.WatchMode)
                         {
                             // The camera is already in free camera mode when ordering begins,
@@ -122,7 +122,7 @@ namespace RTSCamera.Logic.SubLogic
                     {
                         _skipSwitchingCameraOnOrderingFinished = false;
                         SwitchToFreeCamera();
-                        showFocusOnFormationHint = true;
+                        showOrderHint = true;
                     }
                 }
             }
@@ -142,12 +142,10 @@ namespace RTSCamera.Logic.SubLogic
                 }
             }
 
-            if (!_hasShownFocusOnFormationHint && showFocusOnFormationHint)
+            if (!_hasShownOrderHint && showOrderHint)
             {
-                _hasShownFocusOnFormationHint = true;
-                var hint = GameTexts.FindText("str_rts_camera_focus_on_formation_hint");
-                hint.SetTextVariable("KeyName", RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).ToSequenceString());
-                Utility.DisplayMessage(hint.ToString());
+                _hasShownOrderHint = true;
+                Utilities.Utility.PrintOrderHint();
             }
         }
 
@@ -214,11 +212,25 @@ namespace RTSCamera.Logic.SubLogic
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).IsKeyPressed(Mission.InputManager))
             {
                 SwitchCamera();
-                if (_config.OrderOnSwitchingCamera)
+                var dataSource = Utility.GetMissionOrderVM(Mission);
+                if (dataSource != null)
                 {
-                    var dataSource = Utility.GetMissionOrderVM(Mission);
-                    if (dataSource != null)
+                    if (IsSpectatorCamera)
                     {
+                        if (dataSource.IsToggleOrderShown)
+                        {
+                            Utilities.Utility.PrintOrderHint();
+                            _hasShownOrderHint = true;
+                        }
+                    }
+                    else
+                    {
+                        _hasShownOrderHint = false;
+                    }
+
+                    if (_config.OrderOnSwitchingCamera)
+                    {
+
                         if (IsSpectatorCamera)
                         {
                             // If order UI is already shown when switch to free camera,
