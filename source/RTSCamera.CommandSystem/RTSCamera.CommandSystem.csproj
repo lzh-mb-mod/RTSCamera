@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="KdTree" Version="1.4.1" />
-    <PackageReference Include="Lib.Harmony" Version="2.0.4" />
+    <PackageReference Include="Lib.Harmony" Version="2.3.6" />
   </ItemGroup>
 
 
@@ -148,7 +147,6 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
     <Exec Command="xcopy &quot;$(TargetDir)MissionLibrary.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
-    <Exec Command="xcopy &quot;$(TargetDir)KdTreeLib.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
     <Exec Command="xcopy &quot;$(TargetDir)RTSCameraAgentComponent.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
     <Exec Command="xcopy &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
     <Exec Command="xcopy &quot;$(ProjectDir)Modules\.&quot; &quot;$(PackagePath)&quot; /E /C /I /Y /F&#xD;&#xA;" />
