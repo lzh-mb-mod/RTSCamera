@@ -4,7 +4,6 @@ using MissionLibrary.Controller;
 using MissionLibrary.Extension;
 using MissionLibrary.View;
 using MissionSharedLibrary;
-using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.CampaignGame.Skills;
@@ -13,6 +12,7 @@ using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
+using RTSCamera.Usage;
 using SandBox.CampaignBehaviors;
 using SandBox.Objects;
 using System;
@@ -137,6 +137,7 @@ namespace RTSCamera
                 return false;
 
             RTSCameraGameKeyCategory.RegisterGameKeyCategory();
+            RTSCameraUsageCategory.RegisterUsageCategory();
             var missionStartingManager = Global.GetInstance<AMissionStartingManager>();
             missionStartingManager.AddSingletonHandler("RTSCameraAgentComponent.MissionStartingHandler",
                 new RTSCameraAgentComponent.MissionStartingHandler(), new Version(1, 0, 0));

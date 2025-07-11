@@ -11,8 +11,8 @@
     <string id="RTSCamera_cannot_control_agent_in_command_mode" text="指挥模式下无法控制单位。" />
     <string id="RTSCamera_watch_mode_tool_tip" text="你受伤了。你可能可以指挥你的部队，但你无法直接参与战斗。" />
 
-    <string id="RTSCamera_open_menu_hint" text="战斗中按{KeyName}键来打开自由视角的菜单。" />
-    <string id="RTSCamera_switch_camera_hint" text="战斗中按{KeyName}键来切换到自由视角" />
+    <string id="RTSCamera_open_menu_hint" text="战斗中按{KeyName}来打开自由视角的菜单。" />
+    <string id="RTSCamera_switch_camera_hint" text="战斗中按{KeyName}来切换到自由视角" />
 
     <string id="RTSCamera_switch_free_camera_hint" text="在自由视角和玩家视角间切换。" />
     <string id="RTSCamera_use_free_camera_by_default_hint" text="进入战斗时自动切换到自由视角。" />
@@ -36,7 +36,7 @@
     <string id="RTSCamera_ignore_boundaries_hint" text="启用后镜头不再受到地图边界的限制。" />
     <string id="RTSCamera_display_message_hint" text="是否显示本mod的消息。" />
     <string id="RTSCamera_toggle_ui_hint" text="开关游戏的HUD，用于制作视频。" />
-    <string id="RTSCamera_order_ui_clickable_hint" text="让命令界面可点击。重启游戏来生效。" />
+    <string id="RTSCamera_order_ui_clickable_hint" text="让兵牌可点击。重启游戏来生效。" />
     <string id="RTSCamera_disable_death_hint" text="所有单位无敌不会阵亡，用于制作视频。" />
     <string id="RTSCamera_switch_team_hint" text="交换玩家所在的队伍，用于制作视频。" />
 
@@ -168,5 +168,9 @@
     <string id="RTSCamera_no_main_hero" text="玩家英雄不存在" />
 
     <string id="RTSCamera_cheat_mode_required" text="启用作弊模式后才可关闭该选项" />
+  
+    <string id="RTSCamera_focus_on_formation_usage" text="（新功能）自由视角下打开指挥界面后，按{KeyName}可让相机跟随选定的编队" />
+    <string id="RTSCamera_control_troop_usage" text="玩家阵亡后后按{KeyName}可以让相机跟随一个士兵，然后再按一次{KeyName}控制该士兵继续战斗" />
+    <string id="RTSCamera_click_troop_card_usage" text="可通过点击兵牌来选择部队。" />
   </strings>
 </base>

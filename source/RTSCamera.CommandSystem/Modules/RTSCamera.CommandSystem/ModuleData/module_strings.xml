@@ -9,7 +9,7 @@
   <string id="str_rts_camera_command_system_highlight_selected_formation_hint" text="{=RTSCameraCommandSystem_highlight_selected_formation_hint}Selected formation will be highlighted with outline." />
   <string id="str_rts_camera_command_system_attack_specific_formation" text="{=RTSCameraCommandSystem_attack_specific_formation}Enable Attack Specific Formation" />
   <string id="str_rts_camera_command_system_attack_specific_formation_hint" text="{=RTSCameraCommandSystem_attack_specific_formation_hint}You can give focus attack order by pressing {KeyName} on enemy formation." />
-  <string id="str_rts_camera_command_system_attack_specific_formation_alt_hint" text="{=RTSCameraCommandSystem_attack_specific_formation_alt_hint}Press alt at the same time to keep previous movement order." />
+  <string id="str_rts_camera_command_system_attack_specific_formation_alt_hint" text="{=RTSCameraCommandSystem_attack_specific_formation_alt_hint}(New Feature) Press alt at the same time to keep previous movement order." />
   <string id="str_rts_camera_command_system_after_enemy_formation_eliminated" text="{=RTSCameraCommandSystem_after_enemy_eliminated}After enemy formation eliminated" />
   <string id="str_rts_camera_command_system_after_enemy_formation_eliminated_hint" text="{=RTSCameraCommandSystem_after_enemy_formation_eliminated_hint}Behavior when the attacked enemy formation is eliminated." />
   <string id="str_rts_camera_command_system_after_charge_behavior.charge" text="{=RTSCameraCommandSystem_after_charge_behavior_charge}Charge" />
@@ -30,4 +30,6 @@
   <string id="str_key_description.RTSCameraCommandSystemHotKey_Up" text="{=RTSCameraCommandSystem_select_formation_hint}Select your formation or order your selected formations to attack an enemy formation." />
 
   <string id="str_rts_camera_command_system_tactic_level_required" text="{=RTSCameraCommandSystem_tactic_level_required}You tactic level should be at least {level}" />
+
+  <string id="str_rts_camera_command_system_target_only_usage" text="{=RTSCameraCommandSystem_target_only_usage}For example, let your archers focus shooting while holding position." />
 </strings>

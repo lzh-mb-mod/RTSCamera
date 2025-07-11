@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <strings>
-
-
-
-
-
   <string id="str_rts_camera_option_class" text="{=RTSCamera_option_class}RTS Camera" />
 
   <string id="str_rts_camera_command_battle" text="{=RTSCamera_command_battle}(RTS Camera)Command the battle." />
@@ -12,7 +7,7 @@
   <string id="str_rts_camera_watch_mode_tool_tip" text="{=RTSCamera_watch_mode_tool_tip}You are injured. You may be able to commmand your troops but you cannot directly participate in the battle." />
 
   <string id="str_rts_camera_open_menu_hint" text="{=RTSCamera_open_menu_hint}Press {KeyName} in battle to open menu of RTS Camera" />
-  <string id="str_rts_camera_switch_camera_hint" text="{=RTSCamera_switch_camera_hint}Press {KeyName} in battle to switch to free Camera" />
+  <string id="str_rts_camera_switch_camera_hint" text="{=RTSCamera_switch_camera_hint}Press {KeyName} in battle to toggle free Camera" />
 
   <string id="str_rts_camera_switch_free_camera_hint" text="{=RTSCamera_switch_free_camera_hint}Switch between free camera and player camera." />
   <string id="str_rts_camera_auto_mode_hint" text="{=RTSCamera_use_free_camera_by_default_hint}Switch to free camera when entering battle." />
@@ -36,7 +31,7 @@
   <string id="str_rts_camera_ignore_boundaries_hint" text="{=RTSCamera_ignore_boundaries_hint}Camera will not be restricted by boundaries when enabled." />
   <string id="str_rts_camera_display_message_hint" text="{=RTSCamera_display_message_hint}Whether to display message of this mod." />
   <string id="str_rts_camera_toggle_ui_hint" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
-  <string id="str_rts_camera_order_ui_clickable_hint" text="{=RTSCamera_order_ui_clickable_hint}Make order UI clickable. Restart game to take effect." />
+  <string id="str_rts_camera_order_ui_clickable_hint" text="{=RTSCamera_order_ui_clickable_hint}Make troop card clickable. Restart game to take effect." />
 
   <string id="str_rts_camera_all_invulnerable_hint" text="{=RTSCamera_disable_death_hint}All units will not die, for making video." />
   <string id="str_rts_camera_switch_team_hint" text="{=RTSCamera_switch_team_hint}Swap player's team, for making video." />
@@ -185,4 +180,9 @@
   <string id="str_rts_camera_no_main_hero" text="{=RTSCamera_no_main_hero}Main hero doesn't exist" />
 
   <string id="str_rts_camera_cheat_mode_required" text="{=RTSCamera_cheat_mode_required}Enable cheat mode to close this option." />
+
+  <string id="str_rts_camera_forcus_on_formation_usage" text="{=RTSCamera_focus_on_formation_usage}(New Feature) When command UI is open in free camera mode, you can press {KeyName} to stick camera to selected formation." />
+  <string id="str_rts_camera_control_troop_usage" text="{=RTSCamera_control_troop_usage}After your character is killed in battle, you can press {KeyName} to follow one of your soldiers and press {KeyName} again to control it and continue fighting." />
+  <string id="str_rts_camera_click_troop_card_usage" text="{=RTSCamera_click_troop_card_usage}You can select your formations by clicking on troop cards." />
+
 </strings> 

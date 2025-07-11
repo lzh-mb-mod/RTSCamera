@@ -14,7 +14,7 @@
     <string id="RTSCameraCommandSystem_highlight_selected_formation_hint" text="选中的编队会用轮廓高亮" />
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="启用攻击特定编队" />
     <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="你可以在敌方编队上按下{KeyName}来发出集中攻击的命令。" />
-    <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="若同时按下Alt不会打断移动指令。" />
+    <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="(新功能) 若同时按下Alt则不会打断移动指令。" />
     <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="消灭敌方编队后" />
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="消灭指定的敌方编队后下一步的行为" />
     <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="冲锋" />
@@ -35,5 +35,7 @@
     <string id="RTSCameraCommandSystem_select_formation_hint" text="选择你的编队或发出让你的编队攻击指定的敌方编队的指令。" />
 
     <string id="RTSCameraCommandSystem_tactic_level_required" text="你的战术等级至少需要{level}级" />
+
+    <string id="RTSCameraCommandSystem_target_only_usage" text="例如，可让你的弓箭手待在原地同时攻击指定的目标。" />
   </strings>
 </base>

@@ -8,6 +8,7 @@ using RTSCamera.CommandSystem.CampaignGame;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Patch;
+using RTSCamera.CommandSystem.Usage;
 using System;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
@@ -64,6 +65,7 @@ namespace RTSCamera.CommandSystem
                 return false;
 
             CommandSystemGameKeyCategory.RegisterGameKeyCategory();
+            CommandSystemUsageCategory.RegisterUsageCategory();
             AMenuManager.Get().OnMenuClosedEvent += CommandSystemConfig.OnMenuClosed;
             var menuClassCollection = AMenuManager.Get().MenuClassCollection;
             menuClassCollection.RegisterItem(CommandSystemOptionClassFactory.CreateOptionClassProvider(menuClassCollection));
