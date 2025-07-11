@@ -1,4 +1,6 @@
-﻿using MissionSharedLibrary.Utilities;
+﻿using MissionLibrary.View;
+using MissionSharedLibrary.Utilities;
+using MissionSharedLibrary.View;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
@@ -169,11 +171,11 @@ namespace RTSCamera.Logic.SubLogic
                         team.PlayerOrderController?.SelectAllFormations();
                     }
                 }
-                if (_config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
-                // switch to free camera during deployment stage
+                if (WatchBattleBehavior.WatchMode || _config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
+                    // switch to free camera during deployment stage
                     _switchToFreeCameraNextTick = true;
             }
-        }
+        }   
         public void OnDeploymentFinished()
         {
             if (_config.DefaultToFreeCamera != DefaultToFreeCamera.Always && !WatchBattleBehavior.WatchMode)
@@ -382,6 +384,7 @@ namespace RTSCamera.Logic.SubLogic
                         {
                             // will there be 2 agent with player controller in the same formation
                             // if we set new main agent here?
+                            // yes so we need to resolve it in Patch_Formation.
                             _controlTroopLogic.SetMainAgent();
                         }
                         // Set smooth move again if controls another agent instantly.

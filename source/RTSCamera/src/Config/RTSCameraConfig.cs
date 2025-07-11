@@ -85,7 +85,7 @@ namespace RTSCamera.Config
         public bool IgnoreTerrain;
 
         public bool IgnoreBoundaries;
-        public bool FollowFacingDiretion = false;
+        public bool FollowFacingDiretion = true;
 
         public bool SlowMotionMode;
 
