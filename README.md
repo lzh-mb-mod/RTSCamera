@@ -47,7 +47,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - You can make your formation charge to the enemy formation by clicking middle mouse button on enemy units.
 
-    - **New:** Press `Alt` while clicking to target the enemy without interupting previous movement orders. For example, **let your archers focus shooting while holding position**.
+    - **New:** Press `Alt` while clicking to target the enemy without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
   - You can select your formations by clicking middle mouse button on soldiers.
 
@@ -165,6 +165,7 @@ Here is a list of default hotkeys:
 
 - `Right Shift` + `=`, `Right Shift` + `-`: Increase/Decrease camera distance limit.
 
+There're more hotkeys configurable but are disabled by default. You can configure them by pressing L and click Config Key on the top.
 
 ## Configuration
 - The configuration files are saved in directory `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\RTSCamera\` and `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\MissionLibrary\`.

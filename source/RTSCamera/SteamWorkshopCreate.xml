@@ -1,7 +1,7 @@
 <Tasks>
   <CreateItem/>
   <UpdateItem>
-    <ModuleFolder Value="C:\game\develop\RTSCamera\source\package\RTSCamera\"/>
+    <ModuleFolder Value="D:\develop\src\RTSCamera\source\package\RTSCamera\"/>
     <!--  A direct path of your module  -->
     <ItemDescription Value="English below.
 自由视角模式可让你在空中指挥，如同玩全面战争一样，步战指挥再也不怕被队友骑兵淹没了。
@@ -74,7 +74,7 @@ mountandblade.com.cn: https://bbs.mountblade.com.cn/thread-2061243-1-1.html"/>
       <!-- <Tag Value="Multiplayer"/> -->
       <Tag Value="v1.0.0"/>
     </Tags>
-    <Image Value="C:\game\develop\RTSCamera\source\RTSCamera\RTSCamera.jpeg"/>
+    <Image Value="D:\develop\src\RTSCamera\source\RTSCamera\RTSCamera.jpeg"/>
     <!--  Determines the featured image displayed on Steam Workshop, a direct path to it must be inserted here (the image should be smaller than 1 MB)  -->
     <Visibility Value="FriendsOnly"/>
     <!--  Determines visibility on Steam Workshop. Can be: Public, FriendsOnly, Private  -->

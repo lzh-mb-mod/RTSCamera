@@ -172,6 +172,9 @@
 
 - `Right Shift` + `=`, `Right Shift` + `-`: 提高/降低相机距离限制。
 
+还有更多快捷键可设置，但为了防误触我把它们禁用了。要想设置，请按`L`打开菜单，然后点击`按键绑定`。
+
+
 ## 配置文件
 本mod的配置保存在文件夹`(user directory)\Documents\Mount and Blade II Bannerlord\Configs\RTSCamera\`和`(user directory)\Documents\Mount and Blade II Bannerlord\Configs\MissionLibrary\`中。
 
