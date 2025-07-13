@@ -46,7 +46,7 @@ namespace RTSCamera.Logic.SubLogic
                     // Let AI control previous main agent.
                     Utility.AIControlMainAgent(false);
                 }
-                else
+                else if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
                 {
                     // avoid 2 agent with player controller appears in the same formation, which will cause stack overflow in formation logic.
                     Mission.MainAgent.Controller = Agent.ControllerType.None;
