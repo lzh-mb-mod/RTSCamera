@@ -109,20 +109,29 @@ namespace RTSCamera.Config
                     }));
                 cameraOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_ignore_boundaries"),
-                        GameTexts.FindText("str_rts_camera_ignore_boundaries_hint"),
-                        () => RTSCameraConfig.Get().IgnoreBoundaries,
-                        b =>
-                        {
-                            RTSCameraConfig.Get().IgnoreBoundaries = b;
-                        }));
-                cameraOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_ignore_boundaries_hint"),
+                    () => RTSCameraConfig.Get().IgnoreBoundaries,
+                    b =>
+                    {
+                        RTSCameraConfig.Get().IgnoreBoundaries = b;
+                    }));
+                cameraOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_follow_facing_direction"),
-                        GameTexts.FindText("str_rts_camera_follow_facing_direction_hint"),
-                        () => RTSCameraConfig.Get().FollowFacingDiretion,
-                        b =>
+                    GameTexts.FindText("str_rts_camera_follow_facing_direction_hint"),
+                    new SelectionOptionData(i =>
+                    {
+                        if (i < 0 || i >= (int)FollowFaceDirection.Count)
+                            return;
+                        RTSCameraConfig.Get().FollowFaceDirection = (FollowFaceDirection)i;
+                    }, () =>
+                    {
+                        return (int)RTSCameraConfig.Get().FollowFaceDirection;
+                    }, (int)Agent.ControllerType.Count, new[]
                         {
-                            RTSCameraConfig.Get().FollowFacingDiretion = b;
-                        }));
+                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Never"),
+                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "ControlNewUnitOnly"),
+                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Always")
+                        }), true));
                 optionClass.AddOptionCategory(0, cameraOptionCategory);
 
                 var controlOptionCategory = new OptionCategory("Control",

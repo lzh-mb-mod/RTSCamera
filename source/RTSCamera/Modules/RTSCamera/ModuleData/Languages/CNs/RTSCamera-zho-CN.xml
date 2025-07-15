@@ -72,7 +72,10 @@
     <string id="RTSCamera_ignore_terrain" text="镜头忽略地形" />
     <string id="RTSCamera_ignore_boundaries" text="镜头忽略边界限制" />
     <string id="RTSCamera_follow_facing_direction" text="跟随面朝方向" />
-    <string id="RTSCamera_follow_facing_direction_hint" text="镜头切换回来时跟随玩家角色的面朝方向。" />
+    <string id="RTSCamera_follow_facing_direction_hint" text="切换到角色时，是否旋转相机以跟随角色的面朝方向。" />
+    <string id="RTSCamera_follow_facing_direction_option_never" text="从不" />
+    <string id="RTSCamera_follow_facing_direction_option_control_new_unit_only" text="仅当控制新单位时" />
+    <string id="RTSCamera_follow_facing_direction_option_always" text="总是" />
 
     <string id="RTSCamera_control_options" text="控制选项" />
     <string id="RTSCamera_player_controller_in_free_camera" text="玩家角色的控制模式" />

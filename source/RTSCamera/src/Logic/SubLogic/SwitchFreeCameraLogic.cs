@@ -22,8 +22,6 @@ namespace RTSCamera.Logic.SubLogic
 
         private ControlTroopLogic _controlTroopLogic;
 
-        private bool _isDeploymentFinishing = false;
-        private FormationClass _formationClassInDeployment;
         // To keep order UI open in free camera,
         // code is patched in a way that, if in free camera,
         // UI will be opened instantly after closed
@@ -174,6 +172,11 @@ namespace RTSCamera.Logic.SubLogic
                 if (WatchBattleBehavior.WatchMode || _config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
                     // switch to free camera during deployment stage
                     _switchToFreeCameraNextTick = true;
+                if (!WatchBattleBehavior.WatchMode && _config.AutoSetPlayerFormation >= AutoSetPlayerFormation.DeploymentStage)
+                {
+                    // Set player formation when team is deployed.
+                    TrySetPlayerFormation();
+                }
             }
         }   
         public void OnDeploymentFinished()
@@ -181,6 +184,8 @@ namespace RTSCamera.Logic.SubLogic
             if (_config.DefaultToFreeCamera != DefaultToFreeCamera.Always && !WatchBattleBehavior.WatchMode)
             {
                 _switchToAgentNextTick = true;
+                // If not deployment is required, we need to set _switchToFreeCameraNextTick to false to prevent camera set to free mode.
+                _switchToFreeCameraNextTick = false;
             }
         }
 
@@ -214,50 +219,7 @@ namespace RTSCamera.Logic.SubLogic
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).IsKeyPressed(Mission.InputManager))
             {
                 SwitchCamera();
-                var dataSource = Utility.GetMissionOrderVM(Mission);
-                if (dataSource != null)
-                {
-                    if (IsSpectatorCamera)
-                    {
-                        if (dataSource.IsToggleOrderShown)
-                        {
-                            Utilities.Utility.PrintOrderHint();
-                            _hasShownOrderHint = true;
-                        }
-                    }
-                    else
-                    {
-                        _hasShownOrderHint = false;
-                    }
-
-                    if (_config.OrderOnSwitchingCamera)
-                    {
-
-                        if (IsSpectatorCamera)
-                        {
-                            // If order UI is already shown when switch to free camera,
-                            // we will not close it when switching to agent camera.
-                            if (dataSource.IsToggleOrderShown)
-                                _skipClosingUIOnSwitchingCamera = true;
-                            else
-                            {
-                                _skipClosingUIOnSwitchingCamera = false;
-                                dataSource.OpenToggleOrder(false);
-                            }
-                        }
-                        else
-                        {
-                            if (!_skipClosingUIOnSwitchingCamera)
-                            {
-                                dataSource.TryCloseToggleOrder(true);
-                            }
-                            else
-                            {
-                                _skipClosingUIOnSwitchingCamera = false;
-                            }
-                        }
-                    }
-                }
+                ToggleOrderUIOnSwitchingCamera();
             }
         }
 
@@ -273,6 +235,56 @@ namespace RTSCamera.Logic.SubLogic
             }
         }
 
+        private void ToggleOrderUIOnSwitchingCamera()
+        {
+            if (Mission.Mode == MissionMode.Deployment)
+                return;
+            var dataSource = Utility.GetMissionOrderVM(Mission);
+            if (dataSource != null)
+            {
+                if (IsSpectatorCamera)
+                {
+                    if (dataSource.IsToggleOrderShown)
+                    {
+                        Utilities.Utility.PrintOrderHint();
+                        _hasShownOrderHint = true;
+                    }
+                }
+                else
+                {
+                    _hasShownOrderHint = false;
+                }
+
+                if (_config.OrderOnSwitchingCamera)
+                {
+
+                    if (IsSpectatorCamera)
+                    {
+                        // If order UI is already shown when switch to free camera,
+                        // we will not close it when switching to agent camera.
+                        if (dataSource.IsToggleOrderShown)
+                            _skipClosingUIOnSwitchingCamera = true;
+                        else
+                        {
+                            _skipClosingUIOnSwitchingCamera = false;
+                            dataSource.OpenToggleOrder(false);
+                        }
+                    }
+                    else
+                    {
+                        if (!_skipClosingUIOnSwitchingCamera)
+                        {
+                            dataSource.TryCloseToggleOrder(true);
+                        }
+                        else
+                        {
+                            _skipClosingUIOnSwitchingCamera = false;
+                        }
+                    }
+                }
+            }
+        }
+
         public void OnAgentControllerChanged(Agent agent)
         {
             if (agent.Controller == Agent.ControllerType.Player || agent.Controller == Agent.ControllerType.None)
@@ -282,8 +294,6 @@ namespace RTSCamera.Logic.SubLogic
                 //agent.StopRetreating();
                 TrySetPlayerFormation();
 
-                // If MainAgent.Controller = Controller.Player is called from DeploymentMissionController, then we will try set the player formation i then reset _isDeploymentFinishing.
-                _isDeploymentFinishing = false;
                 if (agent.Formation == null)
                     return;
                 CurrentPlayerFormation = agent.Formation.FormationIndex;
@@ -301,32 +311,37 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnMissionModeChange(MissionMode oldMissionMode, bool atStart)
         {
+            // Current call chain during battle start up is:
+            // OnMissionModeChange(StartUp) with Mission.Mode == Battle
+            // OnMissionModeChange(Battle) with Mission.Mode == Deployment
+            // OnMainAgentChanged triggered by `MainAgent.Controller = Controller.Player` in DeploymentMissionController
+            // followed by OnAgentControllerChanged
+            // OnAgentControllerChanged triggered by `MainAgent.Controller = Controller.AI` in DeploymentMissionController
+            // OnTeamDeployed
+            // Player deploy troops and click ready ...
+            // Player may be set to general formation by GeneralsAndCaptainsAssignmentLogic.OnDeploymentFinished
+            // OnDeploymentFinished
+            // OnMainAgentChanged triggered by `MainAgent.Controller = Controller.Player` in DeploymentMissionController
+            // followed by OnAgentControllerChanged
+            // OnMissionModeChange(Deployment) with Mission.Mode == Deployment
             if (oldMissionMode == MissionMode.Deployment && Mission.Mode == MissionMode.Battle)
             {
-                // CurrentPlayerFormation will be changed when player agent is set to Player controller because OnMainAgentChanged will be called.
-                // So we need to cache it here.
-                _formationClassInDeployment = CurrentPlayerFormation;
                 TrySetPlayerFormation(true);
-                // OnMissionModeChange is called before the player is promoted to general formation in DeploymentMissionController.
-                // So we need to still set player formation when player controller is set to Player in DeploymentMissionController later.
-                _isDeploymentFinishing = true;
             }
         }
 
         private void TrySetPlayerFormation(bool isDeploymentFinishing = false)
         {
-            // In watch mode, after deployment stage the player formation needs to be reset from General formation.
-            if (WatchBattleBehavior.WatchMode)
-            {
-                if (_isDeploymentFinishing || isDeploymentFinishing)
-                {
-                    Utility.SetPlayerFormationClass(_formationClassInDeployment);
-                }
-            }
-            else if (_config.AutoSetPlayerFormation == AutoSetPlayerFormation.Always ||
-                     _config.AutoSetPlayerFormation == AutoSetPlayerFormation.DeploymentStage &&
-                     (isDeploymentFinishing || _isDeploymentFinishing || Mission.Mode == MissionMode.Deployment))
-                Utility.SetPlayerFormationClass((FormationClass)_config.PlayerFormation);
+            if (_config.AutoSetPlayerFormation == AutoSetPlayerFormation.Never)
+                return;
+
+            var formationToSet = CurrentPlayerFormation;
+            // When deployment finishes, the player formation needs to be reset from General formation.
+            if (isDeploymentFinishing || Mission.Mode == MissionMode.Deployment)
+                formationToSet = _config.PlayerFormation;
+            if (_config.AutoSetPlayerFormation == AutoSetPlayerFormation.Always ||
+                (isDeploymentFinishing || Mission.Mode == MissionMode.Deployment))
+                Utility.SetPlayerFormationClass(formationToSet);
         }
 
         private void OnMainAgentChanged(object sender, PropertyChangedEventArgs e)
@@ -390,7 +405,7 @@ namespace RTSCamera.Logic.SubLogic
                         // Set smooth move again if controls another agent instantly.
                         // Otherwise MissionScreen will reset camera elevate and bearing.
                         if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
-                            Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen);
+                            Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen, _config.FollowFaceDirection >= FollowFaceDirection.ControlNewTroopOnly);
                         // Restore the variables to initial state
                         else if (shouldSmoothToAgent)
                         {

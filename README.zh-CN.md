@@ -197,7 +197,7 @@
 
 - 若mod启用后游戏崩溃：
 
-  - 若你从将本mod自低于e3.2.0的版本更新过来，请移除旧的EnhancedMission文件夹。
+  - 若提示: `Cannot load: ..\..\Modules\RTSCamera\bin\Win64_Shipping_Client\RTSCamera.dll`，请将`Modules\RTSCamera`和`Modules\RTSCamera.CommandSystem`下的所有dll文件解除锁定。
 
   - 若你能将dump文件发送给我来帮助我解决你的崩溃问题，我会十分感谢。步骤如下：
 

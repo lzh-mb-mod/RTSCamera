@@ -189,7 +189,7 @@ There're more hotkeys configurable but are disabled by default. You can configur
 
 - If the game crashed after starting:
 
-  - If you upgraded this mod from version lower than e3.2.0, pleas remove the old mod folder "EnhancedMission" to prevent crash.
+  - If it shows: `Cannot load: ..\..\Modules\RTSCamera\bin\Win64_Shipping_Client\RTSCamera.dll`，please unblock all the dll files under `Modules\RTSCamera` and `Modules\RTSCamera.CommandSystem`.
   
   - I would appreciate it if you send dump file to me to help me to solve the crash by followinig steps below:
 

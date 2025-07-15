@@ -24,6 +24,15 @@ namespace RTSCamera.Config
         Always,
         Count
     }
+
+    public enum  FollowFaceDirection
+    {
+        Never,
+        ControlNewTroopOnly,
+        Always,
+        Count
+    }
+
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
         protected static Version BinaryVersion => new Version(1, 7);
@@ -85,7 +94,8 @@ namespace RTSCamera.Config
         public bool IgnoreTerrain;
 
         public bool IgnoreBoundaries;
-        public bool FollowFacingDiretion = true;
+
+        public FollowFaceDirection FollowFaceDirection = FollowFaceDirection.ControlNewTroopOnly;
 
         public bool SlowMotionMode;
 
@@ -134,7 +144,7 @@ namespace RTSCamera.Config
             CameraHeightFollowsTerrain = other.CameraHeightFollowsTerrain;
             IgnoreTerrain = other.IgnoreTerrain;
             IgnoreBoundaries = other.IgnoreBoundaries;
-            FollowFacingDiretion = other.FollowFacingDiretion;
+            FollowFaceDirection = other.FollowFaceDirection;
             SlowMotionMode = other.SlowMotionMode;
             SlowMotionFactor = other.SlowMotionFactor;
             SlowMotionOnRtsView = other.SlowMotionOnRtsView;

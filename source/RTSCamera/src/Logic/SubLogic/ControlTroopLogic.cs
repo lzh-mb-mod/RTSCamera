@@ -62,7 +62,7 @@ namespace RTSCamera.Logic.SubLogic
                 else
                 {
                     Utility.PlayerControlAgent(agent);
-                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFacingDiretion);
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFaceDirection >= FollowFaceDirection.ControlNewTroopOnly);
                 }
 
                 return true;
@@ -109,7 +109,10 @@ namespace RTSCamera.Logic.SubLogic
                         _flyCameraMissionView.DisableControlHint();
                     }
 
-                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFacingDiretion);
+                    if (!isInDeployment)
+                    {
+                        Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFaceDirection >= FollowFaceDirection.Always);
+                    }
 
                     return true;
                 }
@@ -141,7 +144,7 @@ namespace RTSCamera.Logic.SubLogic
 
                     bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
                     Utility.PlayerControlAgent(Mission.MainAgent);
-                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFacingDiretion);
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFaceDirection >= FollowFaceDirection.Always);
 
                     return true;
                 }
@@ -258,16 +261,19 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).IsKeyPressed(Mission.InputManager) && !Mission.IsInPhotoMode)
             {
-                var missionOrderVM = Utility.GetMissionOrderVM(Mission);
-                if (missionOrderVM != null)
+                if (!_selectCharacterView.IsSelectingCharacter)
                 {
-                    if (missionOrderVM.IsToggleOrderShown && _switchFreeCameraLogic.IsSpectatorCamera && !_flyCameraMissionView.LockToAgent)
+                    var missionOrderVM = Utility.GetMissionOrderVM(Mission);
+                    if (missionOrderVM != null)
                     {
-                        if (Mission.PlayerTeam?.PlayerOrderController?.SelectedFormations.Count > 0)
+                        if (missionOrderVM.IsToggleOrderShown && _switchFreeCameraLogic.IsSpectatorCamera && !_flyCameraMissionView.LockToAgent)
                         {
-                            var formationToFocusOn = Mission.PlayerTeam.PlayerOrderController.SelectedFormations.FirstOrDefault();
-                            _flyCameraMissionView.FocusOnFormation(formationToFocusOn);
-                            return;
+                            if (Mission.PlayerTeam?.PlayerOrderController?.SelectedFormations.Count > 0)
+                            {
+                                var formationToFocusOn = Mission.PlayerTeam.PlayerOrderController.SelectedFormations.FirstOrDefault();
+                                _flyCameraMissionView.FocusOnFormation(formationToFocusOn);
+                                return;
+                            }
                         }
                     }
                 }
