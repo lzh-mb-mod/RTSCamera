@@ -136,7 +136,7 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
 - You can select your formations by clicking middle mouse button on soldiers.
 
-  - Selected troops will be highlighted with green outline.
+  - Selected troops will be highlighted with green outline when you open command panel in free camera mode.
 
 - Your formation targeted by the enemy formation will be highlighted with dark blue outline when you open command panel in free camera mode.
 

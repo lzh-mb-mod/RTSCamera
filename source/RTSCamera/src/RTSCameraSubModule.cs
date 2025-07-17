@@ -91,7 +91,8 @@ namespace RTSCamera
                 _successPatch &= Patch_MissionGauntletMainAgentEquipmentControllerView.Patch(_harmony);
                 _successPatch &= Patch_AgentHumanAILogic.Patch(_harmony);
                 _successPatch &= Patch_Mission.Patch(_harmony);
-                _successPatch &= Patch_Formation.Patch(_harmony);
+                _successPatch &= Patch_LineFormation.Patch(_harmony);
+                _successPatch &= Patch_ColumnFormation.Patch(_harmony);
                 // Use Patch to add game menu
                 WatchBattleBehavior.Patch(_harmony);
 

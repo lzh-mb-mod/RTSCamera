@@ -72,7 +72,7 @@
     <string id="RTSCamera_ignore_terrain" text="Ignore Terrain" />
     <string id="RTSCamera_ignore_boundaries" text="Ignore Boundaries" />
     <string id="RTSCamera_follow_facing_direction" text="Follow Facing Direction" />
-    <string id="RTSCamera_follow_facing_direction_hint" text="When camera switch back, whether rotate camera to follow character's facing direction." />
+    <string id="RTSCamera_follow_facing_direction_hint" text="When camera switch back, whether to rotate camera to follow character's facing direction." />
     <string id="RTSCamera_follow_facing_direction_option_never" text="Never" />
     <string id="RTSCamera_follow_facing_direction_option_control_new_unit_only" text="Control New Unit only" />
     <string id="RTSCamera_follow_facing_direction_option_always" text="Always" />

@@ -1,4 +1,5 @@
-﻿using MissionLibrary;
+﻿using HarmonyLib;
+using MissionLibrary;
 using MissionLibrary.Controller;
 using MissionLibrary.View;
 using MissionSharedLibrary;
@@ -23,6 +24,9 @@ namespace RTSCamera.CommandSystem
     {
         public static readonly string ModuleId = "RTSCamera.CommandSystem";
         public static bool IsRealisticBattleModuleInstalled = true;
+
+        private readonly Harmony _harmony = new Harmony("RTSCameraPatch");
+        private bool _successPatch;
 
         protected override void OnSubModuleLoad()
         {
@@ -74,12 +78,15 @@ namespace RTSCamera.CommandSystem
             missionStartingManager.AddSingletonHandler("RTSCameraAgentComponent.MissionStartingHandler",
                 new RTSCameraAgentComponent.MissionStartingHandler(), new Version(1, 0, 0));
 
-            bool successPatch = true;
-            successPatch &=  Patch_OrderTroopPlacer.Patch();
-            successPatch &= Patch_OrderTroopItemVM.Patch();
-            successPatch &= Patch_FormationMarkerParentWidget.Patch();
+            _successPatch = true;
+            _successPatch &=  Patch_OrderTroopPlacer.Patch(_harmony);
+            _successPatch &= Patch_OrderTroopItemVM.Patch(_harmony);
+            _successPatch &= Patch_FormationMarkerParentWidget.Patch(_harmony);
+            // Patch issue that order troop placer is inconsistent with actual order issued during dragging
+            _successPatch &= Patch_OrderController.Patch(_harmony);
+            _successPatch &= Patch_Formation.Patch(_harmony);
 
-            if (!successPatch)
+            if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera Command System: patch failed"));
             }

@@ -14,6 +14,8 @@ namespace RTSCamera.View
             var agents = (Mission.Current.PlayerTeam?.ActiveAgents ?? Mission.Current.Agents).Where(agent => agent.Character != null && agent.IsHero).ToList();
             SelectionOptionData = new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionOptionData(i =>
             {
+                if (Mission.Current?.Mode == TaleWorlds.Core.MissionMode.Deployment)
+                    return;
                 if (i >= 0 && i < agents.Count)
                 {
                     WatchAgent(agents[i]);

@@ -15,6 +15,7 @@ namespace RTSCamera.CommandSystem.Logic
 
             FormationColorSubLogic.OnBehaviourInitialize();
             Patch_OrderTroopPlacer.OnBehaviorInitialize();
+            Patch_OrderController.OnBehaviorInitialize();
 
             Utilities.Utility.PrintOrderHint();
         }
@@ -23,6 +24,7 @@ namespace RTSCamera.CommandSystem.Logic
         {
             FormationColorSubLogic.OnRemoveBehaviour();
             Patch_OrderTroopPlacer.OnRemoveBehavior();
+            Patch_OrderController.OnRemoveBehavior();
         }
 
         public override void OnPreDisplayMissionTick(float dt)

@@ -28,9 +28,7 @@ namespace RTSCamera.CommandSystem.Patch
 {
     public class Patch_OrderTroopPlacer
     {
-        private static readonly Harmony Harmony = new Harmony(CommandSystemSubModule.ModuleId + "_" + nameof(Patch_OrderTroopPlacer));
         private static bool _patched;
-
 
         private static readonly FieldInfo _dataSource =
             typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_dataSource),
@@ -48,7 +46,9 @@ namespace RTSCamera.CommandSystem.Patch
         private static List<GameEntity> _moreVisibleOrderPositionEntities;
         private static Material _originalMaterial;
         private static Material _moreVisibleMaterial;
-        public static bool Patch()
+        private static bool _skipDrawingForDestinationForOneTick;
+
+        public static bool Patch(Harmony harmony)
         {
             try
             {
@@ -56,35 +56,35 @@ namespace RTSCamera.CommandSystem.Patch
                     return false;
                 _patched = true;
 
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(OrderTroopPlacer).GetMethod("InitializeInADisgustingManner",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     postfix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(
                         nameof(Postfix_InitializeInADisgustingManner), BindingFlags.Static | BindingFlags.Public)));
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(OrderTroopPlacer).GetMethod("HandleMouseDown",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_HandleMouseDown),
                         BindingFlags.Static | BindingFlags.Public)));
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(OrderTroopPlacer).GetMethod("GetCursorState",
                         BindingFlags.Instance | BindingFlags.NonPublic),
-                    new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_GetCursorState),
+                    prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_GetCursorState),
                         BindingFlags.Static | BindingFlags.Public)));
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(OrderTroopPlacer).GetMethod("AddOrderPositionEntity",
                         BindingFlags.Instance | BindingFlags.NonPublic),
-                    new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_AddOrderPositionEntity),
+                    prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_AddOrderPositionEntity),
                         BindingFlags.Static | BindingFlags.Public)));
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(OrderTroopPlacer).GetMethod(nameof(OrderTroopPlacer.OnMissionScreenTick),
                         BindingFlags.Instance | BindingFlags.Public),
-                    new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_OnMissionScreenTick),
+                    prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_OnMissionScreenTick),
                         BindingFlags.Static | BindingFlags.Public)));
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(OrderTroopPlacer).GetMethod("HideOrderPositionEntities",
                         BindingFlags.Instance | BindingFlags.NonPublic),
-                    new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Postfix_HideOrderPositionEntities),
+                   prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Postfix_HideOrderPositionEntities),
                     BindingFlags.Static | BindingFlags.Public)));
                 return true;
             }
@@ -187,7 +187,7 @@ namespace RTSCamera.CommandSystem.Patch
             __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance, ref ____deltaMousePosition), out rayBegin, out rayEnd);
             float collisionDistance;
             if (__instance.Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out collisionDistance,
-                    0.3f))
+                    0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora))
             {
                 Vec3 vec3 = rayEnd - rayBegin;
                 double num = vec3.Normalize();
@@ -273,7 +273,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance, ref ____deltaMousePosition), out var rayBegin, out var rayEnd);
                 if (!__instance.Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out var collisionDistance,
-                    out GameEntity collidedEntity, 0.3f))
+                    out GameEntity collidedEntity, 0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora))
                     collisionDistance = 1000f;
                 if (cursorState == CursorState.Invisible && collisionDistance < 1000.0)
                 {
@@ -601,6 +601,9 @@ namespace RTSCamera.CommandSystem.Patch
             if ((__instance.Input.IsKeyReleased(InputKey.LeftMouseButton) || __instance.Input.IsKeyReleased(InputKey.ControllerRTrigger)) && ____isMouseDown || isSelectFormationKeyReleased)
             {
                 ____isMouseDown = false;
+                // Formation.GetOrderPositionOfUnit is wrong in the next tick after movement order is issued.
+                // we skip updating from the wrong position for 1 tick.
+                _skipDrawingForDestinationForOneTick = true;
                 typeof(OrderTroopPlacer).GetMethod("HandleMouseUp", BindingFlags.Instance | BindingFlags.NonPublic)
                     ?.Invoke(__instance, new object[] { });
             }
@@ -672,6 +675,10 @@ namespace RTSCamera.CommandSystem.Patch
                     ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
                     ref ____mouseOverFormation, ref ____clickedFormation);
             }
+            else if (_skipDrawingForDestinationForOneTick)
+            {
+                _skipDrawingForDestinationForOneTick = false;
+            }
             else
             {
                 typeof(OrderTroopPlacer)
@@ -691,6 +698,7 @@ namespace RTSCamera.CommandSystem.Patch
 
             return false;
         }
+
         private static void UpdateInputForContour(Formation ____mouseOverFormation)
         {
             _contourView?.MouseOver(____mouseOverFormation);
@@ -738,5 +746,6 @@ namespace RTSCamera.CommandSystem.Patch
                 ___PlayerOrderController.SelectFormation(____clickedFormation);
             }
         }
+
     }
 }

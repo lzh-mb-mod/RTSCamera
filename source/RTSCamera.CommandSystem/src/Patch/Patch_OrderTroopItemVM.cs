@@ -10,10 +10,9 @@ namespace RTSCamera.CommandSystem.Patch
 {
     public class Patch_OrderTroopItemVM
     {
-        private static readonly Harmony Harmony = new Harmony(CommandSystemSubModule.ModuleId + "_" + nameof(Patch_OrderTroopItemVM));
-
         private static bool _patched;
-        public static bool Patch()
+
+        public static bool Patch(Harmony harmony)
         {
             try
             {
@@ -21,7 +20,7 @@ namespace RTSCamera.CommandSystem.Patch
                     return false;
                 _patched = true;
 
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(OrderTroopItemVM).GetMethod("RefreshTargetedOrderVisual",
                         BindingFlags.Instance | BindingFlags.Public),
                     postfix: new HarmonyMethod(
