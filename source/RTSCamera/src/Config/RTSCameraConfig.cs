@@ -127,6 +127,8 @@ namespace RTSCamera.Config
 
         public bool OrderOnSwitchingCamera = true;
 
+        public bool ShowHotKeyHint = true;
+
         public static void OnMenuClosed()
         {
             Get().Serialize();
@@ -160,6 +162,7 @@ namespace RTSCamera.Config
             OrderUIClickable = other.OrderUIClickable;
             SwitchCameraOnOrdering = other.SwitchCameraOnOrdering;
             OrderOnSwitchingCamera = other.OrderOnSwitchingCamera;
+            ShowHotKeyHint = other.ShowHotKeyHint;
         }
         [XmlIgnore]
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");

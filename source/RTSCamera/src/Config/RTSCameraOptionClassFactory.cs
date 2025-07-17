@@ -337,6 +337,12 @@ namespace RTSCamera.Config
                     () => RTSCameraConfig.Get().OrderOnSwitchingCamera,
                     b => RTSCameraConfig.Get().OrderOnSwitchingCamera = b));
                 optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
+                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_show_hotkey_hint"),
+                    GameTexts.FindText("str_rts_camera_show_hotkey_hint_hint"),
+                    () => RTSCameraConfig.Get().ShowHotKeyHint,
+                    b => RTSCameraConfig.Get().ShowHotKeyHint = b));
+                optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
 
                 if (NativeConfig.CheatMode)
                 {

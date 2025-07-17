@@ -126,6 +126,8 @@
     <string id="RTSCamera_switchcameraonorderinghint" text="Automatically switch to free camera when giving orders, and switch back when finished." />
     <string id="RTSCamera_orderonswitchingcamera" text="Order on Switching Camera" />
     <string id="RTSCamera_orderonswitchingcamerahint" text="Automatically open order UI when switching to free camera, and close order UI when switching back." />
+    <string id="RTSCamera_show_hotkey_hint" text="Show Hotkey Hint" />
+    <string id="RTSCamera_show_hotkey_hint_hint" text="Show hotkey hint in free camera mode." />
 
     <string id="RTSCamera_hotkeycategory" text="RTS Camera Hot Key" />
     <string id="RTSCamera_pausekey" text="Pause" />
@@ -175,5 +177,11 @@
     <string id="RTSCamera_focus_on_formation_usage" text="(New Feature) When command UI is open in free camera mode, you can press {KeyName} to stick camera to selected formation." />
     <string id="RTSCamera_control_troop_usage" text="After your character is killed in battle, you can press {KeyName} to follow one of your soldiers and press {KeyName} again to control it and continue fighting." />
     <string id="RTSCamera_click_troop_card_usage" text="You can select your formations by clicking on troop cards." />
+
+    <string id="RTSCamera_open_menu_hotkey_hint" text="open menu" />
+    <string id="RTSCamera_switch_camera_hotkey_hint" text="toggle free Camera" />
+    <string id="RTSCamera_control_troop_hotkey_hint" text="lock to agent/formation; control agent" />
+    <string id="RTSCamera_select_character_hotkey_hint" text="select character mode" />
+    <string id="RTSCamera_move_camera_hotkey_hint" text="Move Camera" />
   </strings>
 </base>

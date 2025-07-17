@@ -32,7 +32,7 @@ namespace RTSCamera.Usage
                         GeneralGameKeyCategory.GetKey(GeneralGameKey.OpenMenu).ToSequenceString()),
                     GameTexts.FindText("str_rts_camera_switch_camera_hint").SetTextVariable("KeyName",
                         RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).ToSequenceString()),
-                    GameTexts.FindText("str_rts_camera_forcus_on_formation_usage").SetTextVariable("KeyName",
+                    GameTexts.FindText("str_rts_camera_focus_on_formation_usage").SetTextVariable("KeyName",
                         RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop ).ToSequenceString()),
                     GameTexts.FindText("str_rts_camera_control_troop_usage").SetTextVariable("KeyName",
                         RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop ).ToSequenceString()),

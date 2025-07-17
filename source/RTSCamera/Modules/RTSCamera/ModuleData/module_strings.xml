@@ -124,6 +124,8 @@
   <string id="str_rts_camera_switch_camera_on_ordering_hint" text="{=RTSCamera_switchcameraonorderinghint}Automatically switch to free camera when giving orders, and switch back when finished." />
   <string id="str_rts_camera_order_on_switching_camera" text="{=RTSCamera_orderonswitchingcamera}Order on Switching Camera" />
   <string id="str_rts_camera_order_on_switching_camera_hint" text="{=RTSCamera_orderonswitchingcamerahint}Automatically open order UI when switching to free camera, and close order UI when switching back." />
+  <string id="str_rts_camera_show_hotkey_hint" text="{=RTSCamera_show_hotkey_hint}Show Hotkey Hint" />
+  <string id="str_rts_camera_show_hotkey_hint_hint" text="{=RTSCamera_show_hotkey_hint_hint}Show hotkey hint in free camera mode." />
 
   <string id="str_key_category_name.RTSCameraHotKey" text="{=RTSCamera_hotkeycategory}RTSCamera Hot Key" />
   <string id="str_key_name.RTSCameraHotKey_Up" text="{=RTSCamera_pausekey}Pause" />
@@ -184,8 +186,13 @@
 
   <string id="str_rts_camera_cheat_mode_required" text="{=RTSCamera_cheat_mode_required}Enable cheat mode to close this option." />
 
-  <string id="str_rts_camera_forcus_on_formation_usage" text="{=RTSCamera_focus_on_formation_usage}(New Feature) When command UI is open in free camera mode, you can press {KeyName} to stick camera to selected formation." />
+  <string id="str_rts_camera_focus_on_formation_usage" text="{=RTSCamera_focus_on_formation_usage}(New Feature) When command UI is open in free camera mode, you can press {KeyName} to stick camera to selected formation." />
   <string id="str_rts_camera_control_troop_usage" text="{=RTSCamera_control_troop_usage}After your character is killed in battle, you can press {KeyName} to follow one of your soldiers and press {KeyName} again to control it and continue fighting." />
   <string id="str_rts_camera_click_troop_card_usage" text="{=RTSCamera_click_troop_card_usage}You can select your formations by clicking on troop cards." />
 
+  <string id="str_rts_camera_open_menu_hotkey_hint" text="{=RTSCamera_open_menu_hotkey_hint}open menu" />
+  <string id="str_rts_camera_switch_camera_hotkey_hint" text="{=RTSCamera_switch_camera_hotkey_hint}toggle free Camera" />
+  <string id="str_rts_camera_control_troop_hotkey_hint" text="{=RTSCamera_control_troop_hotkey_hint}lock to agent/formation; control agent" />
+  <string id="str_rts_camera_select_character_hotkey_hint" text="{=RTSCamera_select_character_hotkey_hint}select character mode" />
+  <string id="str_rts_camera_move_camera_hotkey_hint" text="{=RTSCamera_move_camera_hotkey_hint}Move Camera" />
 </strings> 

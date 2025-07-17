@@ -126,6 +126,8 @@
     <string id="RTSCamera_switchcameraonorderinghint" text="开始指挥时自动切换到自由视角，结束指挥时切换回来。" />
     <string id="RTSCamera_orderonswitchingcamera" text="切换相机时指挥" />
     <string id="RTSCamera_orderonswitchingcamerahint" text="切换到自由视角时自动开启指挥UI，切换回来时关闭。" />
+    <string id="RTSCamera_show_hotkey_hint" text="显示快捷键" />
+    <string id="RTSCamera_show_hotkey_hint_hint" text="自由视角下显示快捷键。" />
 
     <string id="RTSCamera_hotkeycategory" text="自由视角按键" />
     <string id="RTSCamera_pausekey" text="暂停" />
@@ -175,5 +177,11 @@
     <string id="RTSCamera_focus_on_formation_usage" text="（新功能）自由视角下打开指挥界面后，按{KeyName}可让相机跟随选定的编队" />
     <string id="RTSCamera_control_troop_usage" text="玩家阵亡后后按{KeyName}可以让相机跟随一个士兵，然后再按一次{KeyName}控制该士兵继续战斗" />
     <string id="RTSCamera_click_troop_card_usage" text="可通过点击兵牌来选择部队。" />
+
+    <string id="RTSCamera_open_menu_hotkey_hint" text="打开菜单" />
+    <string id="RTSCamera_switch_camera_hotkey_hint" text="切换自由视角" />
+    <string id="RTSCamera_control_troop_hotkey_hint" text="锁定单位/编队；控制士兵" />
+    <string id="RTSCamera_select_character_hotkey_hint" text="选择单位模式" />
+    <string id="RTSCamera_move_camera_hotkey_hint" text="移动相机" />
   </strings>
 </base>

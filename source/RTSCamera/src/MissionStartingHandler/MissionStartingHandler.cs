@@ -21,7 +21,8 @@ namespace RTSCamera.MissionStartingHandler
                 new RTSCameraLogic(),
 
                 new HideHUDView(),
-                new FlyCameraMissionView()
+                new FlyCameraMissionView(),
+                new HotKeyHintView(23),
             };
 
 
