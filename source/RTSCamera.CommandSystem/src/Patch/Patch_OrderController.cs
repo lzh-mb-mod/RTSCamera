@@ -105,7 +105,8 @@ namespace RTSCamera.CommandSystem.Patch
                             {
                                 // moves actualUnitSpacings to our own storage.
                                 // to prevent formations' unit spacing set to actualUnitSpacings[formation] in OrderController.MoveToLineSegment.
-                                _actualUnitSpacings.Add(formation, actualUnitSpacings[formation]);
+                                // so that unit spacing is kept if click on ground
+                                _actualUnitSpacings[formation] = actualUnitSpacings[formation];
                                 actualUnitSpacings.Remove(formation);
                             }
                         }
