@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="src\Patch\Patch_OrderTroopItemVM - 复制.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Lib.Harmony" Version="2.3.6" />
   </ItemGroup>
 

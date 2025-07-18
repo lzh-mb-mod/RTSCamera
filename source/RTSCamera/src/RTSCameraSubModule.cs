@@ -98,7 +98,7 @@ namespace RTSCamera
 
                 if (!UIConfig.DoNotUseGeneratedPrefabs && RTSCameraConfig.Get().OrderUIClickable)
                 {
-                    UIConfig.DoNotUseGeneratedPrefabs = true;
+                   UIConfig.DoNotUseGeneratedPrefabs = true;
                 }
             }
             catch (Exception e)

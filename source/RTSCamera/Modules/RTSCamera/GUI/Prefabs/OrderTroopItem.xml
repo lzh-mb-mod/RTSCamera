@@ -12,6 +12,8 @@
 		<Constant Name="ShieldBrush"                Value="OrderOfBattle.Filter.Shield" />
 		<Constant Name="ThrownBrush"                Value="OrderOfBattle.Filter.Thrown" />
 		<Constant Name="HeavyBrush"                 Value="OrderOfBattle.Filter.Heavy" />
+		<Constant Name="HighTierBrush"              Value="OrderOfBattle.Filter.HighTier" />
+		<Constant Name="LowTierBrush"               Value="OrderOfBattle.Filter.LowTier" />
 	</Constants>
 	<Window>
 		<ButtonWidget Command.Click="ExecuteAction" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Troop.Background.Width" SuggestedHeight="!Troop.Background.Height">

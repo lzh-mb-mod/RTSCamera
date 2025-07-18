@@ -22,7 +22,9 @@
 
   - 可下达集中冲锋指令。
 
-  - **新功能：** 可在下达集中攻击指令的同时维持原本的移动指令。例如，**让你的弓箭手待在原地同时攻击指定的目标**。
+    - **新功能：** 可在下达集中攻击指令的同时维持原本的移动指令。例如，**让你的弓箭手待在原地同时攻击指定的目标**。
+
+  - **新功能：** 修复游戏内的指令位置标记的若干问题。
 
   - 鼠标中键点击你的士兵来选择你的编队。
 
@@ -55,9 +57,8 @@
 - 更多功能，你可看下面的`详细信息`，或者按`L`键打开mod菜单。
 
 ## 如何安装
-1. 移除本mod的旧版文件。到砍二游戏安装路径中的`Modules`文件夹（例如`C:\Program Files\Steam\steamapps\common\Mount & Blade II Bannerlord\Moudles\`）中移除`RTSCamera`或`EnhancedMission`文件夹。
 
-2. 复制`RTSCamera`和`RTSCamera.CommandSystem`文件夹到砍二的`Modules`文件夹中。或者你可以使用Vortex来自动安装。
+1. 解压缩下载下来的压缩包，复制`RTSCamera`和`RTSCamera.CommandSystem`文件夹到砍二的`Modules`文件夹中。或者你可以使用Vortex来自动安装。
 
 ## 详细信息
 

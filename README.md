@@ -49,12 +49,14 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
     - **New:** Press `Alt` while clicking to target the enemy without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
+  - **New:** Fix several issues of order position marker in base game.
+
   - You can select your formations by clicking middle mouse button on soldiers.
 
 - For more features, you can read `Details` below or press `L` to open mod menu.
 
 ## How to Install
- Copy `RTSCamera` and `RTSCamera.CommandSystem` folder you downloaded into Bannerlord `Modules` folder. Or use Vortex to install it automatically.
+Unzip the downloaded zip file. Copy `RTSCamera` and `RTSCamera.CommandSystem` folder you downloaded into Bannerlord `Modules` folder. Or use Vortex to install it automatically.
 
 ## Details
 
