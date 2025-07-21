@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29911.84
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RTSCamera", "RTSCamera\RTSCamera.csproj", "{7C249CDA-7BD3-4E67-AC00-3E59E0FFD07F}"
 EndProject
@@ -16,16 +16,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RTSCameraAgentComponent", "RTSCameraAgentComponent\RTSCameraAgentComponent.csproj", "{D77CB06E-D551-4865-A467-396B4D074990}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{035a7c54-5161-4057-bb0d-20d39a607b50}*SharedItemsImports = 13
-		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{49b9a59e-5fe6-4a67-860d-a1eb9587d34f}*SharedItemsImports = 5
-		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{49b9a59e-5fe6-4a67-860d-a1eb9587d34f}*SharedItemsImports = 5
-		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{7c249cda-7bd3-4e67-ac00-3e59e0ffd07f}*SharedItemsImports = 5
-		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{7c249cda-7bd3-4e67-ac00-3e59e0ffd07f}*SharedItemsImports = 5
-		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{bb80a10d-e971-4c13-8ea6-f31ef29ba86d}*SharedItemsImports = 13
-		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{d77cb06e-d551-4865-a467-396b4d074990}*SharedItemsImports = 5
-		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{f4dfefdf-55f2-4ef3-ba32-877f961bc403}*SharedItemsImports = 5
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -53,5 +43,15 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6E6599A9-4977-480C-88A4-83444892402E}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{035a7c54-5161-4057-bb0d-20d39a607b50}*SharedItemsImports = 13
+		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{49b9a59e-5fe6-4a67-860d-a1eb9587d34f}*SharedItemsImports = 5
+		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{49b9a59e-5fe6-4a67-860d-a1eb9587d34f}*SharedItemsImports = 5
+		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{7c249cda-7bd3-4e67-ac00-3e59e0ffd07f}*SharedItemsImports = 5
+		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{7c249cda-7bd3-4e67-ac00-3e59e0ffd07f}*SharedItemsImports = 5
+		library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems*{bb80a10d-e971-4c13-8ea6-f31ef29ba86d}*SharedItemsImports = 13
+		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{d77cb06e-d551-4865-a467-396b4d074990}*SharedItemsImports = 5
+		library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems*{f4dfefdf-55f2-4ef3-ba32-877f961bc403}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

@@ -26,7 +26,6 @@
     <string id="RTSCamera_auto_set_player_formation_hint" text="何时自动将玩家分配到指定编队。" />
     <string id="RTSCamera_watch_another_hero_hint" text="观察一个你选择的英雄。" />
     <string id="RTSCamera_select_character_hint" text="用鼠标选择一个角色，然后你可以将相机对准它或者控制它。" />
-    <string id="RTSCamera_control_ally_after_death_hint" text="阵亡后自动控制你的一个队友来继续战斗。" />
     <string id="RTSCamera_prefer_unit_in_same_formation_hint" text="当寻找可控制的单位时倾向于和玩家在同一编队中的单位。" />
     <string id="RTSCamera_control_troops_in_player_party_only_hint" text="当寻找可控制的单位时只考虑玩家部队内的单位。" />
     <string id="RTSCamera_ignore_retreating_troops_hint" text="当寻找可控制的单位时忽略正在撤退的单位" />
@@ -90,7 +89,11 @@
     <string id="RTSCamera_auto_set_player_formation_always" text="总是" />
     <string id="RTSCamera_watchanotherhero" text="观察另一个英雄单位" />
     <string id="RTSCamera_select_character" text="选择角色" />
-    <string id="RTSCamera_controlallyafterdeath" text="阵亡后控制队友" />
+    <string id="RTSCamera_control_ally_after_death_timing" text="阵亡后控制队友" />
+    <string id="RTSCamera_control_ally_after_death_timing_hint" text="什么条件下，阵亡后自动控制你的一个队友来继续战斗。" />
+    <string id="RTSCamera_control_ally_after_death_timing_option_never" text="从不" />
+    <string id="RTSCamera_control_ally_after_death_timing_option_free_camera" text="自由视角下" />
+    <string id="RTSCamera_control_ally_after_death_timing_option_always" text="总是" />
     <string id="RTSCamera_prefer_unit_in_same_formation" text="优先控制同编队内的单位" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
     <string id="RTSCamera_ignoreretreatingtroops" text="忽略正在撤退的单位" />

@@ -50,19 +50,19 @@ namespace RTSCamera
 
                 _successPatch = true;
 
-                _harmony.Patch(
-                    typeof(CommonVillagersCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingTheMainAgent",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(typeof(CheckIfConversationAgentIsEscortingTheMainAgent).GetMethod(
-                        nameof(CheckIfConversationAgentIsEscortingTheMainAgent.Prefix_CheckIfConversationAgentIsEscortingTheMainAgent),
-                        BindingFlags.Static | BindingFlags.Public)));
-                _harmony.Patch(
-                    typeof(GuardsCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingTheMainAgent",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(typeof(CheckIfConversationAgentIsEscortingTheMainAgent).GetMethod(
-                        nameof(CheckIfConversationAgentIsEscortingTheMainAgent
-                            .Prefix_CheckIfConversationAgentIsEscortingTheMainAgent),
-                        BindingFlags.Static | BindingFlags.Public)));
+                //_harmony.Patch(
+                //    typeof(CommonVillagersCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingTheMainAgent",
+                //        BindingFlags.Instance | BindingFlags.NonPublic),
+                //    prefix: new HarmonyMethod(typeof(CheckIfConversationAgentIsEscortingTheMainAgent).GetMethod(
+                //        nameof(CheckIfConversationAgentIsEscortingTheMainAgent.Prefix_CheckIfConversationAgentIsEscortingTheMainAgent),
+                //        BindingFlags.Static | BindingFlags.Public)));
+                //_harmony.Patch(
+                //    typeof(GuardsCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingTheMainAgent",
+                //        BindingFlags.Instance | BindingFlags.NonPublic),
+                //    prefix: new HarmonyMethod(typeof(CheckIfConversationAgentIsEscortingTheMainAgent).GetMethod(
+                //        nameof(CheckIfConversationAgentIsEscortingTheMainAgent
+                //            .Prefix_CheckIfConversationAgentIsEscortingTheMainAgent),
+                //        BindingFlags.Static | BindingFlags.Public)));
 
                 _harmony.Patch(
                     typeof(PassageUsePoint).GetMethod(nameof(PassageUsePoint.IsDisabledForAgent),
@@ -93,6 +93,8 @@ namespace RTSCamera
                 _successPatch &= Patch_Mission.Patch(_harmony);
                 _successPatch &= Patch_LineFormation.Patch(_harmony);
                 _successPatch &= Patch_ColumnFormation.Patch(_harmony);
+                _successPatch &= Patch_MissionGauntletSingleplayerOrderUIHandler.Patch(_harmony);
+                _successPatch &= Patch_MissionGauntletCrosshair.Patch(_harmony);
                 // Use Patch to add game menu
                 WatchBattleBehavior.Patch(_harmony);
 
@@ -126,8 +128,6 @@ namespace RTSCamera
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera: patch failed"));
             }
 
-            Patch_MissionGauntletSingleplayerOrderUIHandler.Patch();
-            Patch_MissionGauntletCrosshair.Patch(_harmony);
             Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;
             Utility.PrintUsageHint();
         }
@@ -148,6 +148,15 @@ namespace RTSCamera
             menuClassCollection.RegisterItem(RTSCameraOptionClassFactory.CreateOptionClassProvider(menuClassCollection));
             return true;
         }
+
+        protected override void OnApplicationTick(float dt)
+        {
+            base.OnApplicationTick(dt);
+
+            Initializer.OnApplicationTick(dt);
+        }
+
+
 
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {

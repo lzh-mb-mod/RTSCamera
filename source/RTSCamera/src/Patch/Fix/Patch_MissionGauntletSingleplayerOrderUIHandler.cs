@@ -17,7 +17,6 @@ namespace RTSCamera.Patch.Fix
     // reload VM when switch player's team to avoid crash
     public class Patch_MissionGauntletSingleplayerOrderUIHandler
     {
-        private static readonly Harmony Harmony = new Harmony(RTSCameraSubModule.ModuleId + "_" + nameof(Patch_MissionGauntletSingleplayerOrderUIHandler));
         private static bool _patched;
         private static MissionGauntletSingleplayerOrderUIHandler _uiHandler;
 
@@ -36,49 +35,36 @@ namespace RTSCamera.Patch.Fix
         private static readonly float _beginDraggingOffsetThreshold = 10;
         private static bool _rightButtonDraggingMode;
 
-        public static void Patch()
+        public static bool Patch(Harmony harmony)
         {
             try
             {
                 if (_patched)
-                    return;
+                    return false;
                 _patched = true;
 
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(MissionGauntletSingleplayerOrderUIHandler).GetMethod("OnMissionScreenInitialize",
                         BindingFlags.Public | BindingFlags.Instance),
                     new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
                         nameof(Prefix_OnMissionScreenInitialize), BindingFlags.Static | BindingFlags.Public)));
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(MissionGauntletSingleplayerOrderUIHandler).GetMethod("OnMissionScreenFinalize",
                         BindingFlags.Public | BindingFlags.Instance),
                     postfix: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
                         nameof(Postfix_OnMissionScreenFinalize), BindingFlags.Static | BindingFlags.Public)));
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(MissionGauntletSingleplayerOrderUIHandler).GetMethod(
                         nameof(MissionGauntletSingleplayerOrderUIHandler.OnMissionScreenTick),
                         BindingFlags.Instance | BindingFlags.Public),
                     postfix: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
                         nameof(Postfix_OnMissionScreenTick), BindingFlags.Static | BindingFlags.Public)));
+                return true;
             }
             catch (Exception e)
             {
                 Utility.DisplayMessage(e.ToString());
-            }
-        }
-
-        public static void UnPatch()
-        {
-            try
-            {
-                if (!_patched)
-                    return;
-                _patched = false;
-                Harmony.UnpatchAll(Harmony.Id);
-            }
-            catch (Exception e)
-            {
-                Utility.DisplayMessage(e.ToString());
+                return false;
             }
         }
 

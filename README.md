@@ -69,8 +69,11 @@ Unzip the downloaded zip file. Copy `RTSCamera` and `RTSCamera.CommandSystem` fo
 ### RTS Camera
 
 - Press `F10` to toggle free camera.
+  
   Player character will be controlled by AI when switched to free camera.
 
+  - If it shows “can’t give orders in this moment”, it's because your character is down and you are not controlling any unit. Press E twice to control a unit, then you can continue to issue orders.
+  
   - Order UI will be opened automatically.
 
   - You can enable `Switch Camera on Ordering` option, to always give orders in free camera.

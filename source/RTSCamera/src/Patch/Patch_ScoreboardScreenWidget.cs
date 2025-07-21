@@ -38,7 +38,7 @@ namespace RTSCamera.Patch
         public static void Postfix_UpdateControlButtons(ScoreboardScreenWidget __instance, Widget ____fastForwardWidget)
         {
             // show fast forward button when ControlAllyAfterDeath is enabled
-            if (RTSCameraConfig.Instance?.ControlAllyAfterDeath == true)
+            if (RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? false)
             {
                 ____fastForwardWidget.IsVisible = __instance.ShowScoreboard;
             }

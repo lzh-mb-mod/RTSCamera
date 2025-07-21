@@ -1,6 +1,4 @@
-﻿using MissionLibrary.View;
-using MissionSharedLibrary.Utilities;
-using MissionSharedLibrary.View;
+﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
@@ -10,7 +8,6 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View;
 
 namespace RTSCamera.Logic.SubLogic
@@ -363,7 +360,7 @@ namespace RTSCamera.Logic.SubLogic
                     }
                 }
             }
-            else if (IsSpectatorCamera || (_config.ControlAllyAfterDeath && !Mission.IsFastForward))
+            else if (IsSpectatorCamera && _config.TimingOfControlAllyAfterDeath >= ControlAllyAfterDeathTiming.FreeCamera || (_config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.Always && !Mission.IsFastForward))
             {
                 _controlTroopLogic.SetMainAgent();
             }
@@ -384,7 +381,7 @@ namespace RTSCamera.Logic.SubLogic
             }
             if (Mission.MainAgent == affectedAgent)
             {
-                if (_config.ControlAllyAfterDeath || IsSpectatorCamera)
+                if (IsSpectatorCamera && _config.TimingOfControlAllyAfterDeath >= ControlAllyAfterDeathTiming.FreeCamera || _config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.Always)
                 {
                     if (Utilities.Utility.IsBattleCombat(Mission) &&
                         Mission.MainAgent.Character == CharacterObject.PlayerCharacter)
@@ -395,7 +392,7 @@ namespace RTSCamera.Logic.SubLogic
                         affectedAgent.OnMainAgentWieldedItemChange = null;
                         // TODO: optimize this logic
                         bool shouldSmoothToAgent = Utility.BeforeSetMainAgent();
-                        if (IsSpectatorCamera || (_config.ControlAllyAfterDeath && !Mission.IsFastForward))
+                        if (IsSpectatorCamera && _config.TimingOfControlAllyAfterDeath >= ControlAllyAfterDeathTiming.FreeCamera || (_config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.Always && !Mission.IsFastForward))
                         {
                             // will there be 2 agent with player controller in the same formation
                             // if we set new main agent here?
@@ -450,11 +447,11 @@ namespace RTSCamera.Logic.SubLogic
                 Utility.DisplayLocalizedText("str_rts_camera_switch_to_player");
                 _controlTroopLogic.ControlMainAgent();
             }
-            else
-            {
-                Utility.DisplayLocalizedText("str_rts_camera_player_dead");
-                _controlTroopLogic.SetMainAgent();
-            }
+            //else
+            //{
+            //    Utility.DisplayLocalizedText("str_rts_camera_player_dead");
+            //    _controlTroopLogic.SetMainAgent();
+            //}
 
             if (Mission.MainAgent != null)
             {
@@ -473,6 +470,10 @@ namespace RTSCamera.Logic.SubLogic
             if (!Utility.IsPlayerDead())
             {
                 UpdateMainAgentControllerInFreeCamera();
+            }
+            else if (_config.TimingOfControlAllyAfterDeath >= ControlAllyAfterDeathTiming.FreeCamera)
+            {
+                _controlTroopLogic.SetMainAgent();
             }
 
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(true);

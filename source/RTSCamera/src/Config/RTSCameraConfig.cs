@@ -33,16 +33,24 @@ namespace RTSCamera.Config
         Count
     }
 
+    public enum ControlAllyAfterDeathTiming
+    {
+        Never,
+        FreeCamera,
+        Always,
+        Count
+    }
+
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 7);
+        protected static Version BinaryVersion => new Version(1, 8);
 
         protected override void UpgradeToCurrentVersion()
         {
             switch (ConfigVersion)
             {
                 default:
-                    Utility.DisplayLocalizedText("str_rts_camera_config_incompatible");
+                    Utility.DisplayMessage(Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_config_incompatible").ToString());
                     ResetToDefault();
                     Serialize();
                     goto case "1.0";
@@ -62,6 +70,9 @@ namespace RTSCamera.Config
                     goto case "1.6";
                 case "1.6":
                 case "1.7":
+                    TimingOfControlAllyAfterDeath = ControlAllyAfterDeath ? ControlAllyAfterDeathTiming.Always : ControlAllyAfterDeathTiming.FreeCamera;
+                    break;
+                case "1.8":
                     break;
             }
 
@@ -105,7 +116,11 @@ namespace RTSCamera.Config
 
         public bool DisplayMessage = true;
 
+        // use TimingOfControlAllyAfterDeath instead.
+
         public bool ControlAllyAfterDeath;
+
+        public ControlAllyAfterDeathTiming TimingOfControlAllyAfterDeath = ControlAllyAfterDeathTiming.FreeCamera;
 
         public bool PreferUnitsInSameFormation = true;
 
@@ -152,6 +167,7 @@ namespace RTSCamera.Config
             SlowMotionOnRtsView = other.SlowMotionOnRtsView;
             DisplayMessage = other.DisplayMessage;
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;
+            TimingOfControlAllyAfterDeath = other.TimingOfControlAllyAfterDeath;
             IgnoreRetreatingTroops = other.IgnoreRetreatingTroops;
             PreferUnitsInSameFormation = other.PreferUnitsInSameFormation;
             ControlTroopsInPlayerPartyOnly = other.ControlTroopsInPlayerPartyOnly;

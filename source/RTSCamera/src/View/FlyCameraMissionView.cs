@@ -225,7 +225,8 @@ namespace RTSCamera.View
             CameraBearing = MissionScreen.CameraBearing +
                 (float?)CameraSpecialCurrentAddedBearing?.GetValue(MissionScreen) ?? 0;
             CameraElevation = MissionScreen.CameraElevation +
-                (float?)CameraSpecialCurrentAddedElevation?.GetValue(MissionScreen) ?? 0;
+                (float)(CameraSpecialCurrentAddedElevation?.GetValue(MissionScreen) ?? 0) +
+                (float)(CameraAddedElevation?.GetValue(MissionScreen) ?? 0);
             CameraBearingDelta?.SetValue(MissionScreen, 0);
             CameraElevationDelta?.SetValue(MissionScreen, 0);
             SetLastFollowedAgent?.Invoke(MissionScreen, new object[] { null });
@@ -374,8 +375,8 @@ namespace RTSCamera.View
             cameraFrame.rotation.RotateAboutSide(1.57079637f);
             cameraFrame.rotation.RotateAboutForward(CameraBearing);
             cameraFrame.rotation.RotateAboutSide(CameraElevation);
-            if (!MissionScreen.IsPhotoModeEnabled)
-                cameraFrame.rotation.RotateAboutSide((float?)CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);
+            //if (!MissionScreen.IsPhotoModeEnabled)
+            //    cameraFrame.rotation.RotateAboutSide((float?)CameraAddedElevation?.GetValue(MissionScreen) ?? 0f);
             cameraFrame.origin = CameraPosition;
 
 

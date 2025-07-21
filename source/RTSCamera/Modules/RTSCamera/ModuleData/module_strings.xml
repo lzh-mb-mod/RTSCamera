@@ -21,7 +21,6 @@
   <string id="str_rts_camera_auto_set_player_formation_hint" text="{=RTSCamera_auto_set_player_formation_hint}When to automatically set player to the specified formation." />
   <string id="str_rts_camera_watch_another_hero_hint" text="{=RTSCamera_watch_another_hero_hint}Watch the hero you selected." />
   <string id="str_rts_camera_select_character_hint" text="{=RTSCamera_select_character_hint}Select a character using mouse, then you can focus the camera to it or control it." />
-  <string id="str_rts_camera_control_ally_after_death_hint" text="{=RTSCamera_control_ally_after_death_hint}Automatically control one of your ally after you die." />
   <string id="str_rts_camera_prefer_unit_in_same_formation_hint" text="{=RTSCamera_prefer_unit_in_same_formation_hint}Prefer to control units in the same formation as player." />
   <string id="str_rts_camera_control_troops_in_player_party_only_hint" text="{=RTSCamera_control_troops_in_player_party_only_hint}Only consider troops in player party when looking for target to control." />
   <string id="str_rts_camera_ignore_retreating_troops_hint" text="{=RTSCamera_ignore_retreating_troops_hint}Won't consider retreating troops when looking for target to contorl." />
@@ -86,7 +85,11 @@
   <string id="str_rts_camera_auto_set_player_formation.Always" text="{=RTSCamera_auto_set_player_formation_always}Always" />
   <string id="str_rts_camera_watch_another_hero" text="{=RTSCamera_watchanotherhero}Watch Another Hero" />
   <string id="str_rts_camera_select_character" text="{=RTSCamera_select_character}Select Character" />
-  <string id="str_rts_camera_control_ally_after_death" text="{=RTSCamera_controlallyafterdeath}Control Ally After Death" />
+  <string id="str_rts_camera_control_ally_after_death_timing" text="{=RTSCamera_control_ally_after_death_timing}When To Control Ally After Death" />
+  <string id="str_rts_camera_control_ally_after_death_timing_hint" text="{=RTSCamera_control_ally_after_death_timing_hint}When to automatically control one of your ally after you die." />
+  <string id="str_rts_camera_control_ally_after_death_timing_option.Never" text="{=RTSCamera_control_ally_after_death_timing_option_never}Never" />
+  <string id="str_rts_camera_control_ally_after_death_timing_option.FreeCamera" text="{=RTSCamera_control_ally_after_death_timing_option_free_camera}Free Camera" />
+  <string id="str_rts_camera_control_ally_after_death_timing_option.Always" text="{=RTSCamera_control_ally_after_death_timing_option_always}Always" />
   <string id="str_rts_camera_prefer_unit_in_same_formation" text="{=RTSCamera_prefer_unit_in_same_formation}Prefer Units In Same Formation" />
   <string id="str_rts_camera_control_troops_in_player_party_only" text="{=RTSCamera_controltroopsinplayerpartyonly}Control Troops In Player Party Only" />
   <string id="str_rts_camera_ignore_retreating_troops" text="{=RTSCamera_ignoreretreatingtroops}Ignore Retreating Troops" />
@@ -195,4 +198,4 @@
   <string id="str_rts_camera_control_troop_hotkey_hint" text="{=RTSCamera_control_troop_hotkey_hint}lock to agent/formation; control agent" />
   <string id="str_rts_camera_select_character_hotkey_hint" text="{=RTSCamera_select_character_hotkey_hint}select character mode" />
   <string id="str_rts_camera_move_camera_hotkey_hint" text="{=RTSCamera_move_camera_hotkey_hint}Move Camera" />
-</strings> 
+</strings>
