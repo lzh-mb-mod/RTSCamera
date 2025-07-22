@@ -63,6 +63,13 @@ namespace RTSCamera.CommandSystem
             Utilities.Utility.PrintOrderHint();
         }
 
+        protected override void OnApplicationTick(float dt)
+        {
+            base.OnApplicationTick(dt);
+
+            Initializer.OnApplicationTick(dt);
+        }
+
         private bool SecondInitialize()
         {
             if (!Initializer.SecondInitialize())
