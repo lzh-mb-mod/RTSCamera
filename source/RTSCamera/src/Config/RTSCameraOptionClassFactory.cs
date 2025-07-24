@@ -136,6 +136,23 @@ namespace RTSCamera.Config
 
                 var controlOptionCategory = new OptionCategory("Control",
                     GameTexts.FindText("str_rts_camera_control_options"));
+                controlOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_control_ally_after_death_timing"),
+                    GameTexts.FindText("str_rts_camera_control_ally_after_death_timing_hint"),
+                    new SelectionOptionData(i =>
+                    {
+                        if (i < 0 || i >= (int)ControlAllyAfterDeathTiming.Count)
+                            return;
+                        RTSCameraConfig.Get().TimingOfControlAllyAfterDeath = (ControlAllyAfterDeathTiming)i;
+                    }, () =>
+                    {
+                        return (int)RTSCameraConfig.Get().TimingOfControlAllyAfterDeath;
+                    }, (int)ControlAllyAfterDeathTiming.Count, new[]
+                        {
+                            new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "Never"),
+                            new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "FreeCamera"),
+                            new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "Always")
+                        }), true));
                 if (!WatchBattleBehavior.WatchMode)
                 {
                     controlOptionCategory.AddOption(new SelectionOptionViewModel(
@@ -269,23 +286,6 @@ namespace RTSCamera.Config
                 //    GameTexts.FindText("str_rts_camera_control_ally_after_death_hint"),
                 //    () => RTSCameraConfig.Get().ControlAllyAfterDeath,
                 //    b => RTSCameraConfig.Get().ControlAllyAfterDeath = b));
-                cameraOptionCategory.AddOption(new SelectionOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_control_ally_after_death_timing"),
-                    GameTexts.FindText("str_rts_camera_control_ally_after_death_timing_hint"),
-                    new SelectionOptionData(i =>
-                    {
-                        if (i < 0 || i >= (int)ControlAllyAfterDeathTiming.Count)
-                            return;
-                        RTSCameraConfig.Get().TimingOfControlAllyAfterDeath = (ControlAllyAfterDeathTiming)i;
-                    }, () =>
-                    {
-                        return (int)RTSCameraConfig.Get().TimingOfControlAllyAfterDeath;
-                    }, (int)ControlAllyAfterDeathTiming.Count, new[]
-                        {
-                            new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "Never"),
-                            new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "FreeCamera"),
-                            new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "Always")
-                        }), true));
                 controlOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_prefer_unit_in_same_formation"),
                     GameTexts.FindText("str_rts_camera_prefer_unit_in_same_formation_hint"),

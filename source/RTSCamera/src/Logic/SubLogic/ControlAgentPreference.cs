@@ -40,7 +40,7 @@ namespace RTSCamera.Logic.SubLogic
                 return;
             if (!_config.ControlTroopsInPlayerPartyOnly || Utility.IsInPlayerParty(agent) || WatchBattleBehavior.WatchMode)
             {
-                if (BestAgent == null || !BestAgent.IsHero && agent.IsHero ||
+                if (BestAgent == null || !BestAgent.IsHero && agent.IsHero || (!Utility.IsInPlayerParty(BestAgent) && Utility.IsInPlayerParty(agent)) ||
                     BestAgent.IsHero && agent.IsHero && (Utility.IsHigherInMemberRoster(agent, BestAgent) ??
                                                          BestAgent.Position.DistanceSquared(position) >
                                                          agent.Position.DistanceSquared(position)) ||

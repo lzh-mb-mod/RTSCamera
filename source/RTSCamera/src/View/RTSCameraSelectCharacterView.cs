@@ -118,6 +118,7 @@ namespace RTSCamera.View
             _dataSource = new SelectCharacterVM();
             _gauntletLayer.LoadMovie(nameof(RTSCameraSelectCharacterView), _dataSource);
             _gauntletLayer.InputRestrictions.SetInputRestrictions();
+            _gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
             MissionScreen.AddLayer(_gauntletLayer);
         }
 
@@ -138,7 +139,9 @@ namespace RTSCamera.View
             base.OnMissionScreenTick(dt);
 
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SelectCharacter).IsKeyPressed(Input) ||
-                IsSelectingCharacter && _gauntletLayer.Input.IsKeyPressed(InputKey.RightMouseButton))
+                IsSelectingCharacter &&
+                    (_gauntletLayer.Input.IsKeyPressed(InputKey.RightMouseButton) ||
+                     _gauntletLayer.Input.IsHotKeyReleased("Exit") || _gauntletLayer.Input.IsHotKeyReleased("ToggleEscapeMenu")))
             {
                 IsSelectingCharacter = !IsSelectingCharacter;
             }
@@ -153,7 +156,7 @@ namespace RTSCamera.View
 
             if (_gauntletLayer != null)
             {
-                if (_gauntletLayer.Input.IsKeyPressed(InputKey.LeftMouseButton))
+                if (_gauntletLayer.Input.IsKeyPressed(InputKey.LeftMouseButton) || MissionScreen.SceneLayer.Input.IsKeyPressed(InputKey.ControllerRTrigger))
                 {
                     SelectedAgent = MouseOverAgent;
                 }

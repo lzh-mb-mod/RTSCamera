@@ -24,7 +24,7 @@
     <string id="RTSCameraCommandSystem_highlightonrtsviewonly" text="仅自由视角下高亮编队" />
     <string id="RTSCameraCommandSystem_highlightonrtsviewonlyhint" text="仅会在自由视角下高亮编队" />
     <string id="RTSCameraCommandSystem_morevisiblemovementtarget" text="更易识别移动地点" />
-    <string id="RTSCameraCommandSystem_highlightonrtsviewonlyhint" text="让移动地点更易识别" />
+    <string id="RTSCameraCommandSystem_morevisiblemovementtargethint" text="让移动地点更易识别" />
     <string id="RTSCameraCommandSystem_movementtargetmorevisibleonrtsviewonly" text="仅自由视角下更易识别移动地点" />
     <string id="RTSCameraCommandSystem_targetmorevisibleonrtsviewonlyhint" text="仅会在自由视角下让移动地点更易识别，普通视角下维持原有外观。" />
 

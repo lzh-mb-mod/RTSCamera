@@ -9,12 +9,12 @@
   <Window>
     <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsDisabled="true">
       <Children>
-        <ListPanel DataSource="{HotKeyHintList}" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" VerticalAlignment="Bottom" SuggestedWidth="350" HorizontalAlignment="Right" MarginBottom="350" MarginRight="75" >
+        <ListPanel DataSource="{HotKeyHintList}" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" VerticalAlignment="Bottom" SuggestedWidth="360" HorizontalAlignment="Right" MarginBottom="350" MarginRight="50" >
           <ItemTemplate>
 
             <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="350" HorizontalAlignment="Left" MarginTop="10">
               <Children>
-                <Widget DataSource="{Key}" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="140" HorizontalAlignment="Right" MarginRight="10">
+                <Widget DataSource="{Key}" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="150" HorizontalAlignment="Right" MarginRight="10">
                   <Children>
 
                     <RichTextWidget Text="@Text" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" SuggestedWidth="140" Brush="MissionLibrary.Text.Usage" />

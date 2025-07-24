@@ -1,7 +1,9 @@
 ﻿using MissionSharedLibrary.Config;
+using MissionSharedLibrary.Utilities;
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Config
 {
@@ -55,6 +57,7 @@ namespace RTSCamera.CommandSystem.Config
             switch (ConfigVersion)
             {
                 default:
+                    Utility.DisplayMessage(Module.CurrentModule.GlobalTextManager.FindText("str_mission_library_config_incompatible").ToString(), new TaleWorlds.Library.Color(1, 0, 0));
                     ResetToDefault();
                     Serialize();
                     goto case "1.0";

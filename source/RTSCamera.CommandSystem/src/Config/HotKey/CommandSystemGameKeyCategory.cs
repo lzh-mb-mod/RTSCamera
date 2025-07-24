@@ -21,7 +21,7 @@ namespace RTSCamera.CommandSystem.Config.HotKey
 
         public static void RegisterGameKeyCategory()
         {
-            AGameKeyCategoryManager.Get()?.RegisterItem(CreateCategory, CategoryId, new Version(1, 0));
+            AGameKeyCategoryManager.Get()?.RegisterGameKeyCategory(CreateCategory, CategoryId, new Version(1, 0));
         }
         public static GameKeyCategory CreateCategory()
         {
@@ -29,9 +29,14 @@ namespace RTSCamera.CommandSystem.Config.HotKey
                 (int)GameKeyEnum.NumberOfGameKeyEnums, CommandSystemGameKeyConfig.Get());
             result.AddGameKeySequence(new GameKeySequence((int) GameKeyEnum.SelectFormation,
                 nameof(GameKeyEnum.SelectFormation),
-                CategoryId, new List<InputKey>
+                CategoryId, new List<GameKeySequenceAlternative>()
                 {
-                    InputKey.MiddleMouseButton
+                    new GameKeySequenceAlternative
+                    (
+                        new List<InputKey> () {
+                            InputKey.MiddleMouseButton
+                        }
+                    )
                 }));
             return result;
         }

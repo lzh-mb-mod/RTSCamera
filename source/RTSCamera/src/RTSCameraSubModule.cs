@@ -132,6 +132,13 @@ namespace RTSCamera
             Utility.PrintUsageHint();
         }
 
+        protected override void OnApplicationTick(float dt)
+        {
+            base.OnApplicationTick(dt);
+
+            Initializer.OnApplicationTick(dt);
+        }
+
         private bool SecondInitialize()
         {
             if (!Initializer.SecondInitialize())
@@ -147,13 +154,6 @@ namespace RTSCamera
             AMenuManager.Get().OnMenuClosedEvent += RTSCameraConfig.OnMenuClosed;
             menuClassCollection.RegisterItem(RTSCameraOptionClassFactory.CreateOptionClassProvider(menuClassCollection));
             return true;
-        }
-
-        protected override void OnApplicationTick(float dt)
-        {
-            base.OnApplicationTick(dt);
-
-            Initializer.OnApplicationTick(dt);
         }
 
 

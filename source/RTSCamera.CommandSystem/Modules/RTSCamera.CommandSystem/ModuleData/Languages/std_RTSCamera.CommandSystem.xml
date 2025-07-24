@@ -24,7 +24,7 @@
     <string id="RTSCameraCommandSystem_highlightonrtsviewonly" text="Enable highlight in Free Camera Only" />
     <string id="RTSCameraCommandSystem_highlightonrtsviewonlyhint" text="Only enable highlight in Free Camera. In normal mode formation will not be highlighted." />
     <string id="RTSCameraCommandSystem_morevisiblemovementtarget" text="More Visible Movement Target" />
-    <string id="RTSCameraCommandSystem_highlightonrtsviewonlyhint" text="Make Movement Target more visible." />
+    <string id="RTSCameraCommandSystem_morevisiblemovementtargethint" text="Make Movement Target more visible." />
     <string id="RTSCameraCommandSystem_movementtargetmorevisibleonrtsviewonly" text="More visible Movement Target in Free Camera Only" />
     <string id="RTSCameraCommandSystem_targetmorevisibleonrtsviewonlyhint" text="Make Movement Target more visible in free camera only. Keep the original appearance on normal mode." />
 

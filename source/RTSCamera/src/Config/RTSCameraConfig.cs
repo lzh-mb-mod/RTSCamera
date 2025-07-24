@@ -50,7 +50,7 @@ namespace RTSCamera.Config
             switch (ConfigVersion)
             {
                 default:
-                    Utility.DisplayMessage(Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_config_incompatible").ToString());
+                    Utility.DisplayMessage(Module.CurrentModule.GlobalTextManager.FindText("str_mission_library_config_incompatible").ToString(), new TaleWorlds.Library.Color(1, 0, 0));
                     ResetToDefault();
                     Serialize();
                     goto case "1.0";
@@ -120,11 +120,11 @@ namespace RTSCamera.Config
 
         public bool ControlAllyAfterDeath;
 
-        public ControlAllyAfterDeathTiming TimingOfControlAllyAfterDeath = ControlAllyAfterDeathTiming.FreeCamera;
+        public ControlAllyAfterDeathTiming TimingOfControlAllyAfterDeath = ControlAllyAfterDeathTiming.Always;
 
         public bool PreferUnitsInSameFormation = true;
 
-        public bool ControlTroopsInPlayerPartyOnly = true;
+        public bool ControlTroopsInPlayerPartyOnly = false;
 
         public bool IgnoreRetreatingTroops = true;
 

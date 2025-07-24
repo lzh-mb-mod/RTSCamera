@@ -45,7 +45,6 @@
   <string id="str_rts_camera_death_disabled" text="{=RTSCamera_deathdisabled}All Invulnerable enabled." />
   <string id="str_rts_camera_death_enabled" text="{=RTSCamera_deathenabled}All Invulnerable disabled." />
 
-  <string id="str_rts_camera_config_incompatible" text="{=RTSCamera_configincompatible}Config version not compatible.\nReset config." />
   <string id="str_rts_camera_saved_config" text="{=RTSCamera_savedconfig}Saving config succeeded." />
   <string id="str_rts_camera_save_config_failed" text="{=RTSCamera_saveconfigfailed}Saving config failed." />
   <string id="str_rts_camera_exception_caught" text="{=RTSCamera_exceptioncaught}Exception caught:" />
@@ -69,13 +68,13 @@
   <string id="str_rts_camera_follow_facing_direction" text="{=RTSCamera_follow_facing_direction}Follow Facing Direction" />
   <string id="str_rts_camera_follow_facing_direction_hint" text="{=RTSCamera_follow_facing_direction_hint}When camera switch back, whether to rotate camera to follow character's facing direction." />
   <string id="str_rts_camera_follow_facing_direction_option.Never" text="{=RTSCamera_follow_facing_direction_option_never}Never" />
-  <string id="str_rts_camera_follow_facing_direction_option.ControlNewUnitOnly" text="{=RTSCamera_follow_facing_direction_option_control_new_unit_only}Control New Unit only" />
+  <string id="str_rts_camera_follow_facing_direction_option.ControlNewUnitOnly" text="{=RTSCamera_follow_facing_direction_option_control_new_unit_only}Control New Unit only (Recommended)" />
   <string id="str_rts_camera_follow_facing_direction_option.Always" text="{=RTSCamera_follow_facing_direction_option_always}Always" />
 
   <string id="str_rts_camera_control_options" text="{=RTSCamera_control_options}Control Options" />
   <string id="str_rts_camera_player_controller_in_free_camera" text="{=RTSCamera_player_controller_in_free_camera}Player Controller in Free Camera" />
   <string id="str_rts_camera_controller_type.none" text="{=RTSCamera_controller_type_none}None" />
-  <string id="str_rts_camera_controller_type.AI" text="{=RTSCamera_controller_type_AI}AI" />
+  <string id="str_rts_camera_controller_type.AI" text="{=RTSCamera_controller_type_AI}AI (Recommended)" />
   <string id="str_rts_camera_controller_type.Player" text="{=RTSCamera_controller_type_player}Player" />
   <string id="str_rts_camera_player_formation" text="{=RTSCamera_playerformation}Player Formation" />
   <string id="str_rts_camera_player_formation_unset" text="{=RTSCamera_player_formation_unset}Unset" />
@@ -89,7 +88,7 @@
   <string id="str_rts_camera_control_ally_after_death_timing_hint" text="{=RTSCamera_control_ally_after_death_timing_hint}When to automatically control one of your ally after you die." />
   <string id="str_rts_camera_control_ally_after_death_timing_option.Never" text="{=RTSCamera_control_ally_after_death_timing_option_never}Never" />
   <string id="str_rts_camera_control_ally_after_death_timing_option.FreeCamera" text="{=RTSCamera_control_ally_after_death_timing_option_free_camera}Free Camera" />
-  <string id="str_rts_camera_control_ally_after_death_timing_option.Always" text="{=RTSCamera_control_ally_after_death_timing_option_always}Always" />
+  <string id="str_rts_camera_control_ally_after_death_timing_option.Always" text="{=RTSCamera_control_ally_after_death_timing_option_always}Always (Recommended)" />
   <string id="str_rts_camera_prefer_unit_in_same_formation" text="{=RTSCamera_prefer_unit_in_same_formation}Prefer Units In Same Formation" />
   <string id="str_rts_camera_control_troops_in_player_party_only" text="{=RTSCamera_controltroopsinplayerpartyonly}Control Troops In Player Party Only" />
   <string id="str_rts_camera_ignore_retreating_troops" text="{=RTSCamera_ignoreretreatingtroops}Ignore Retreating Troops" />

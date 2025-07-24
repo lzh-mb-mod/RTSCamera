@@ -83,8 +83,22 @@ namespace RTSCamera.Patch.Fix
         private static bool ShouldBeginEarlyDragging(MissionGauntletSingleplayerOrderUIHandler __instance)
         {
             return !_earlyDraggingMode &&
-                   (__instance.MissionScreen.InputManager.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null) &&
-                   __instance.MissionScreen.SceneLayer.Input.IsKeyPressed(InputKey.RightMouseButton);
+                   (__instance.MissionScreen.InputManager.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null) && IsDragKeyPressed(__instance);
+        }
+
+        private static bool IsDragKeyPressed(MissionGauntletSingleplayerOrderUIHandler __instance)
+        {
+            return __instance.MissionScreen.SceneLayer.Input.IsKeyPressed(InputKey.RightMouseButton) || __instance.MissionScreen.SceneLayer.Input.IsKeyPressed(InputKey.ControllerLTrigger);
+        }
+
+        private static bool IsDragKeyDown(MissionGauntletSingleplayerOrderUIHandler __instance)
+        {
+            return __instance.MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton) || __instance.MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.ControllerLTrigger);
+        }
+
+        private static bool IsDragKeyReleased(MissionGauntletSingleplayerOrderUIHandler __instance)
+        {
+            return __instance.MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton) || __instance.MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.ControllerLTrigger);
         }
 
         private static void BeginEarlyDragging()
@@ -157,7 +171,7 @@ namespace RTSCamera.Patch.Fix
                 _willEndDraggingMode = false;
                 EndDrag();
             }
-            else if (!____dataSource.IsToggleOrderShown && !IsAnyDeployment(__instance) || __instance.MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton))
+            else if (!____dataSource.IsToggleOrderShown && !IsAnyDeployment(__instance) || IsDragKeyReleased(__instance))
             {
                 if (_earlyDraggingMode || _rightButtonDraggingMode)
                     _willEndDraggingMode = true;
@@ -168,7 +182,7 @@ namespace RTSCamera.Patch.Fix
                 {
                     BeginEarlyDragging();
                 }
-                else if (__instance.MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
+                else if (IsDragKeyDown(__instance))
                 {
                     if (ShouldBeginDragging())
                     {

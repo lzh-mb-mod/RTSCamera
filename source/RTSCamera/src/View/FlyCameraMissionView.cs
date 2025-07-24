@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using MissionLibrary.Controller.Camera;
+﻿using MissionLibrary.Controller.Camera;
 using MissionLibrary.Event;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
@@ -9,9 +6,14 @@ using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Logic;
 using RTSCamera.Logic.SubLogic;
+using System;
+using System.Linq;
+using System.Reflection;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
+using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -461,6 +463,7 @@ namespace RTSCamera.View
                     ++keyInput.z;
                 if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveDown).IsKeyDown(Input))
                     --keyInput.z;
+
                 if (MissionScreen.MouseVisible && !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
                 {
                     if (Mission.Mode != MissionMode.Conversation)
@@ -482,6 +485,18 @@ namespace RTSCamera.View
                     keyInput.Normalize();
                 if (mouseInput.LengthSquared > 0.0)
                     mouseInput.Normalize();
+
+                if (!MissionScreen.MouseVisible)
+                {
+                    var x = MissionScreen.SceneLayer.Input.GetGameKeyAxis("MovementAxisX");
+                    var y = MissionScreen.SceneLayer.Input.GetGameKeyAxis("MovementAxisY");
+                    if (MathF.Abs(x) < 0.2f)
+                        x = 0.0f;
+                    if (MathF.Abs(y) < 0.2f)
+                        y = 0.0f;
+                    keyInput.x += x;
+                    keyInput.y += y;
+                }
 
                 hasVerticalInput = (keyInput.z + mouseInput.z) != 0 || Input.GetDeltaMouseScroll() != 0;
                 if (keyInput + mouseInput != Vec3.Zero)
@@ -518,10 +533,17 @@ namespace RTSCamera.View
                 local = vec3_2 - vec3_4;
                 cameraFrame.origin.z += _cameraSpeed.z * dt;
                 float mouseScroll = Input.GetDeltaMouseScroll();
+                float controllerHeightInput = 0;
+                if (MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.ControllerLTrigger))
+                {
+                    controllerHeightInput = MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisY");
+                    if (MathF.Abs(controllerHeightInput) < 0.2f)
+                        controllerHeightInput = 0.0f;
+                }
                 var diffRatio = MathF.Min(1f, dt * 5f);
                 if (FocusedFormation != null)
                 {
-                    _lookingDistanceToAdd -= (mouseScroll / 200.0f) * num1 * VerticalMovementSpeedFactor;
+                    _lookingDistanceToAdd -= (mouseScroll / 200.0f + controllerHeightInput) * num1 * VerticalMovementSpeedFactor;
                     if (MathF.Abs(_lookingDistanceToAdd) > 1.0 / 1000.0)
                     {
                         _lookingDistance += _lookingDistanceToAdd * diffRatio;
@@ -545,7 +567,7 @@ namespace RTSCamera.View
                 else
                 {
                     if (!MissionScreen.SceneLayer.Input.IsControlDown())
-                        _cameraHeightToAdd -= (mouseScroll / 200.0f) * verticalLimit;
+                        _cameraHeightToAdd -= (mouseScroll / 200.0f + controllerHeightInput) * verticalLimit;
                     // hold middle button and move mouse vertically to adjust height
                     if (MissionScreen.SceneLayer.Input.IsHotKeyDown("DeploymentCameraIsActive"))
                     {
@@ -753,21 +775,19 @@ namespace RTSCamera.View
                     else if (x >= 0.99 && y >= 0.01 && y <= 0.25)
                         inputXRaw = 1000f * dt;
                 }
-                else
+                if (!MissionScreen.SceneLayer.Input.GetIsMouseActive())
                 {
-                    if (!MissionScreen.SceneLayer.Input.GetIsMouseActive())
+                    double num3 = dt / 0.000600000028498471;
+                    inputXRaw += (float)num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisX");
+                    if (!MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.ControllerLTrigger))
                     {
-                        double num3 = dt / 0.000600000028498471;
-                        inputXRaw = (float)num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisX") +
-                                    MissionScreen.SceneLayer.Input.GetMouseMoveX();
-                        inputYRaw = (float)-num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisY") +
-                                    MissionScreen.SceneLayer.Input.GetMouseMoveY();
+                        inputYRaw += (float)-num3 * MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisY");
                     }
-                    else
-                    {
-                        inputXRaw = MissionScreen.SceneLayer.Input.GetMouseMoveX();
-                        inputYRaw = MissionScreen.SceneLayer.Input.GetMouseMoveY();
-                    }
+                }
+                else if (!MissionScreen.MouseVisible)
+                {
+                    inputXRaw = MissionScreen.SceneLayer.Input.GetMouseMoveX();
+                    inputYRaw = MissionScreen.SceneLayer.Input.GetMouseMoveY();
                 }
             }
             float num4 = 5.4E-05f;
