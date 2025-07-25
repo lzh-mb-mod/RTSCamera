@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Screens;
 
@@ -284,7 +285,25 @@ namespace RTSCamera.Logic.SubLogic
                 if (!_switchFreeCameraLogic.IsSpectatorCamera && Mission.MainAgent?.Controller == Agent.ControllerType.Player)
                     return;
 
-                ForceControlAgent();
+                if (Mission.MainAgent == null && !_config.IsControlAllyAfterDeathPrompted && _config.TimingOfControlAllyAfterDeath <= ControlAllyAfterDeathTiming.FreeCamera)
+                {
+                    _config.IsControlAllyAfterDeathPrompted = true;
+                    InquiryData data = new InquiryData("RTS Camera", GameTexts.FindText("str_rts_camera_control_ally_after_death_timing_prompt").ToString(), true, true, new TextObject("{=aeouhelq}Yes").ToString(), new TextObject("{=8OkPHu4f}No").ToString(),
+                        () =>
+                        {
+                            _config.TimingOfControlAllyAfterDeath = ControlAllyAfterDeathTiming.Always;
+                            _config.Serialize();
+                            ForceControlAgent();
+                        }, () =>
+                        {
+                            _config.Serialize();
+                        });
+                    InformationManager.ShowInquiry(data, false);
+                }
+                else
+                {
+                    ForceControlAgent();
+                }
             }
         }
     }

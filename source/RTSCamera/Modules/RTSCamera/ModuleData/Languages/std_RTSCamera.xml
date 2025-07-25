@@ -93,6 +93,7 @@
     <string id="RTSCamera_control_ally_after_death_timing_option_never" text="Never" />
     <string id="RTSCamera_control_ally_after_death_timing_option_free_camera" text="Free Camera" />
     <string id="RTSCamera_control_ally_after_death_timing_option_always" text="Always (Recommended)" />
+    <string id="RTSCamera_control_ally_after_death_timing_prompt" text="Do you want to enable 'Control Troop After Death'?" />
     <string id="RTSCamera_prefer_unit_in_same_formation" text="Prefer Units In Same Formation" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
     <string id="RTSCamera_ignoreretreatingtroops" text="Ignore Retreating Troops" />
@@ -130,6 +131,12 @@
     <string id="RTSCamera_orderonswitchingcamerahint" text="Automatically open order UI when switching to free camera, and close order UI when switching back." />
     <string id="RTSCamera_show_hotkey_hint" text="Show Hotkey Hint" />
     <string id="RTSCamera_show_hotkey_hint_hint" text="Show hotkey hint in free camera mode." />
+    <string id="RTSCamera_fast_forward_hideout" text="Fast Forward Hideout" />
+    <string id="RTSCamera_fast_forward_hideout_hint" text="Automatically fast forward in hideout and let AI control player." />
+    <string id="RTSCamera_fast_forward_hideout_option_never" text="Never" />
+    <string id="RTSCamera_fast_forward_hideout_option_until_boss_fight" text="Until Boss Fight" />
+    <string id="RTSCamera_fast_forward_hideout_option_always" text="Always" />
+    <string id="RTSCamera_fast_forward_hideout_prompt" text="Do you want to enable fast forward in hideout?" />
 
     <string id="RTSCamera_hotkeycategory" text="RTS Camera Hot Key" />
     <string id="RTSCamera_pausekey" text="Pause" />

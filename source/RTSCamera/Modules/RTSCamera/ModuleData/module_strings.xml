@@ -89,6 +89,7 @@
   <string id="str_rts_camera_control_ally_after_death_timing_option.Never" text="{=RTSCamera_control_ally_after_death_timing_option_never}Never" />
   <string id="str_rts_camera_control_ally_after_death_timing_option.FreeCamera" text="{=RTSCamera_control_ally_after_death_timing_option_free_camera}Free Camera" />
   <string id="str_rts_camera_control_ally_after_death_timing_option.Always" text="{=RTSCamera_control_ally_after_death_timing_option_always}Always (Recommended)" />
+  <string id="str_rts_camera_control_ally_after_death_timing_prompt" text="{=RTSCamera_control_ally_after_death_timing_prompt}Do you want to enable 'Control Troop After Death'?" />
   <string id="str_rts_camera_prefer_unit_in_same_formation" text="{=RTSCamera_prefer_unit_in_same_formation}Prefer Units In Same Formation" />
   <string id="str_rts_camera_control_troops_in_player_party_only" text="{=RTSCamera_controltroopsinplayerpartyonly}Control Troops In Player Party Only" />
   <string id="str_rts_camera_ignore_retreating_troops" text="{=RTSCamera_ignoreretreatingtroops}Ignore Retreating Troops" />
@@ -128,6 +129,13 @@
   <string id="str_rts_camera_order_on_switching_camera_hint" text="{=RTSCamera_orderonswitchingcamerahint}Automatically open order UI when switching to free camera, and close order UI when switching back." />
   <string id="str_rts_camera_show_hotkey_hint" text="{=RTSCamera_show_hotkey_hint}Show Hotkey Hint" />
   <string id="str_rts_camera_show_hotkey_hint_hint" text="{=RTSCamera_show_hotkey_hint_hint}Show hotkey hint in free camera mode." />
+  <string id="str_rts_camera_fast_forward_hideout" text="{=RTSCamera_fast_forward_hideout}Fast Forward Hideout" />
+  <string id="str_rts_camera_fast_forward_hideout_hint" text="{=RTSCamera_fast_forward_hideout_hint}Automatically fast forward in hideout and let AI control player." />
+  <string id="str_rts_camera_fast_forward_hideout_option.Never" text="{=RTSCamera_fast_forward_hideout_option_never}Never" />
+  <string id="str_rts_camera_fast_forward_hideout_option.UntilBossFight" text="{=RTSCamera_fast_forward_hideout_option_until_boss_fight}Until Boss Fight" />
+  <string id="str_rts_camera_fast_forward_hideout_option.Always" text="{=RTSCamera_fast_forward_hideout_option_always}Always" />
+  <string id="str_rts_camera_fast_forward_hideout_prompt" text="{=RTSCamera_fast_forward_hideout_prompt}Do you want to enable fast forward in hideout?" />
+
 
   <string id="str_key_category_name.RTSCameraHotKey" text="{=RTSCamera_hotkeycategory}RTSCamera Hot Key" />
   <string id="str_key_name.RTSCameraHotKey_Up" text="{=RTSCamera_pausekey}Pause" />

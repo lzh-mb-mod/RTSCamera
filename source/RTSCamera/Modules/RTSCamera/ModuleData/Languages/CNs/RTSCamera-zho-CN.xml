@@ -93,6 +93,7 @@
     <string id="RTSCamera_control_ally_after_death_timing_option_never" text="从不" />
     <string id="RTSCamera_control_ally_after_death_timing_option_free_camera" text="自由视角下" />
     <string id="RTSCamera_control_ally_after_death_timing_option_always" text="总是（推荐）" />
+    <string id="RTSCamera_control_ally_after_death_timing_prompt" text="你想启用“死后控制队友”吗？" />
     <string id="RTSCamera_prefer_unit_in_same_formation" text="优先控制同编队内的单位" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
     <string id="RTSCamera_ignoreretreatingtroops" text="忽略正在撤退的单位" />
@@ -130,6 +131,12 @@
     <string id="RTSCamera_orderonswitchingcamerahint" text="切换到自由视角时自动开启指挥UI，切换回来时关闭。" />
     <string id="RTSCamera_show_hotkey_hint" text="显示快捷键" />
     <string id="RTSCamera_show_hotkey_hint_hint" text="自由视角下显示快捷键。" />
+    <string id="RTSCamera_fast_forward_hideout" text="藏身处快进" />
+    <string id="RTSCamera_fast_forward_hideout_hint" text="自动在藏身处快进并且让AI控制玩家。" />
+    <string id="RTSCamera_fast_forward_hideout_option_never" text="从不" />
+    <string id="RTSCamera_fast_forward_hideout_option_until_boss_fight" text="直到Boss战" />
+    <string id="RTSCamera_fast_forward_hideout_option_always" text="总是" />
+    <string id="RTSCamera_fast_forward_hideout_prompt" text="你想给藏身处的战斗快进吗？" />
 
     <string id="RTSCamera_hotkeycategory" text="自由视角按键" />
     <string id="RTSCamera_pausekey" text="暂停" />

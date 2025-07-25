@@ -41,6 +41,14 @@ namespace RTSCamera.Config
         Count
     }
 
+    public enum FastForwardHideout
+    {
+        Never,
+        UntilBossFight,
+        Always,
+        Count
+    }
+
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
         protected static Version BinaryVersion => new Version(1, 8);
@@ -120,7 +128,9 @@ namespace RTSCamera.Config
 
         public bool ControlAllyAfterDeath;
 
-        public ControlAllyAfterDeathTiming TimingOfControlAllyAfterDeath = ControlAllyAfterDeathTiming.Always;
+        public bool IsControlAllyAfterDeathPrompted = false;
+
+        public ControlAllyAfterDeathTiming TimingOfControlAllyAfterDeath = ControlAllyAfterDeathTiming.FreeCamera;
 
         public bool PreferUnitsInSameFormation = true;
 
@@ -143,6 +153,10 @@ namespace RTSCamera.Config
         public bool OrderOnSwitchingCamera = true;
 
         public bool ShowHotKeyHint = true;
+
+        public bool FastForwardHideoutPrompted = false;
+
+        public FastForwardHideout FastForwardHideout = FastForwardHideout.Never;
 
         public static void OnMenuClosed()
         {
@@ -167,6 +181,7 @@ namespace RTSCamera.Config
             SlowMotionOnRtsView = other.SlowMotionOnRtsView;
             DisplayMessage = other.DisplayMessage;
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;
+            IsControlAllyAfterDeathPrompted = other.IsControlAllyAfterDeathPrompted;
             TimingOfControlAllyAfterDeath = other.TimingOfControlAllyAfterDeath;
             IgnoreRetreatingTroops = other.IgnoreRetreatingTroops;
             PreferUnitsInSameFormation = other.PreferUnitsInSameFormation;
@@ -179,6 +194,8 @@ namespace RTSCamera.Config
             SwitchCameraOnOrdering = other.SwitchCameraOnOrdering;
             OrderOnSwitchingCamera = other.OrderOnSwitchingCamera;
             ShowHotKeyHint = other.ShowHotKeyHint;
+            FastForwardHideoutPrompted = other.FastForwardHideoutPrompted;
+            FastForwardHideout = other.FastForwardHideout;
         }
         [XmlIgnore]
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");

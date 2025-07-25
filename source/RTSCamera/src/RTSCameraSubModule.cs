@@ -95,6 +95,7 @@ namespace RTSCamera
                 _successPatch &= Patch_ColumnFormation.Patch(_harmony);
                 _successPatch &= Patch_MissionGauntletSingleplayerOrderUIHandler.Patch(_harmony);
                 _successPatch &= Patch_MissionGauntletCrosshair.Patch(_harmony);
+                _successPatch &= Patch_HideoutMissionController.Patch(_harmony);
                 // Use Patch to add game menu
                 WatchBattleBehavior.Patch(_harmony);
 

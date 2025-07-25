@@ -2,11 +2,14 @@
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
+using RTSCamera.View;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View;
 
@@ -36,6 +39,8 @@ namespace RTSCamera.Logic.SubLogic
         private float _updatePlayerFormationTime;
         private bool _hasShownOrderHint = false;
         private bool _isSwitchCameraKeyPressedLastTick = false;
+        private bool _shouldShowFastForwardInHideoutPromptInThisMission = false;
+        public bool FastForwardHideoutNextTick = false;
 
         public Mission Mission => _logic.Mission;
 
@@ -145,6 +150,22 @@ namespace RTSCamera.Logic.SubLogic
                 _hasShownOrderHint = true;
                 Utilities.Utility.PrintOrderHint();
             }
+
+            if (_shouldShowFastForwardInHideoutPromptInThisMission)
+            {
+                _shouldShowFastForwardInHideoutPromptInThisMission = false;
+                InquiryData data = new InquiryData("RTS Camera", GameTexts.FindText("str_rts_camera_fast_forward_hideout_prompt").ToString(), true, true, new TextObject("{=aeouhelq}Yes").ToString(), new TextObject("{=8OkPHu4f}No").ToString(),
+                    () =>
+                    {
+                        _config.FastForwardHideout = FastForwardHideout.Always;
+                        FastForwardHideoutNextTick = true;
+                        _config.Serialize();
+                    }, () =>
+                    {
+                        _config.Serialize();
+                    });
+                InformationManager.ShowInquiry(data, false);
+            }
         }
 
         public void OnTeamDeployed(Team team)
@@ -204,6 +225,14 @@ namespace RTSCamera.Logic.SubLogic
             {
                 _switchToAgentNextTick = false;
                 SwitchToAgent();
+            }
+
+            if (FastForwardHideoutNextTick)
+            {
+                FastForwardHideoutNextTick = false;
+
+                SwitchToFreeCamera();
+                Utilities.Utility.FastForwardInHideout(Mission);
             }
 
             _updatePlayerFormationTime += dt;
@@ -332,6 +361,31 @@ namespace RTSCamera.Logic.SubLogic
             {
                 TrySetPlayerFormation(true);
             }
+            if (MissionState.Current?.MissionName == "HideoutBattle")
+            {
+                if (oldMissionMode == MissionMode.Battle && Mission.Mode == MissionMode.Stealth)
+                {
+                    if (!_config.FastForwardHideoutPrompted)
+                    {
+                        _config.FastForwardHideoutPrompted = true;
+                        if (_config.FastForwardHideout == FastForwardHideout.Never)
+                        {
+                            _shouldShowFastForwardInHideoutPromptInThisMission = true;
+                        }
+                    }
+                    if (_config.FastForwardHideout >= FastForwardHideout.UntilBossFight)
+                        FastForwardHideoutNextTick = true;
+                }
+                if (oldMissionMode == MissionMode.Stealth && Mission.Mode == MissionMode.Conversation)
+                {
+                    // do not fast forward in conversation.
+                    Mission.SetFastForwardingFromUI(false);
+                    if (IsSpectatorCamera)
+                    {
+                        SwitchToAgent();
+                    }
+                }
+            }
         }
 
         private void TrySetPlayerFormation(bool isDeploymentFinishing = false)
@@ -352,7 +406,7 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (Mission.MainAgent != null)
             {
-                if (Mission.Mode == MissionMode.Battle || Mission.Mode == MissionMode.Deployment)
+                if (Mission.Mode == MissionMode.Battle || Mission.Mode == MissionMode.Deployment || Mission.Mode == MissionMode.Stealth || Mission.Mode == MissionMode.Tournament)
                 {
                     if (Mission.MainAgent.Formation != null)
                         CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;

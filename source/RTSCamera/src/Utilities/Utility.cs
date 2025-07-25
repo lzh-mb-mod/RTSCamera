@@ -1,5 +1,8 @@
 ﻿using RTSCamera.Config.HotKey;
+using RTSCamera.Logic.SubLogic;
+using RTSCamera.View;
 using SandBox.Missions.MissionLogics.Arena;
+using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -36,7 +39,7 @@ namespace RTSCamera.Utilities
                     MissionSharedLibrary.Utilities.Utility.AIControlMainAgent(
                         Mission.Current.Mode != MissionMode.StartUp &&
                         Mission.Current.Mode != MissionMode.Conversation &&
-                        Mission.Current.Mode != MissionMode.Stealth &&
+                        //Mission.Current.Mode != MissionMode.Stealth &&
                         Mission.Current.Mode != MissionMode.Barter &&
                         Mission.Current.Mode != MissionMode.Deployment &&
                         Mission.Current.Mode != MissionMode.Replay, true);
@@ -83,6 +86,25 @@ namespace RTSCamera.Utilities
         {
             return mission.Mode == MissionMode.Battle && mission.CombatType == Mission.MissionCombatType.Combat &&
                    !IsArenaCombat(mission);
+        }
+
+        public static void FastForwardInHideout(Mission mission)
+        {
+            mission.SetFastForwardingFromUI(true);
+            MissionSharedLibrary.Utilities.Utility.DisplayLocalizedText("str_rts_camera_fast_forward_hideout_hint");
+            var formationToFollow = mission.MainAgent?.Formation ?? mission.PlayerTeam.FormationsIncludingSpecialAndEmpty?.FirstOrDefault(f => f.CountOfUnits > 0);
+            if (formationToFollow != null)
+            {
+                mission.GetMissionBehavior<FlyCameraMissionView>()?.FocusOnFormation(formationToFollow);
+            }
+            foreach (var formation in mission.PlayerTeam.FormationsIncludingSpecialAndEmpty)
+            {
+                if (formation.CountOfUnits > 0)
+                {
+                    formation.SetMovementOrder(MovementOrder.MovementOrderCharge);
+                    formation.FiringOrder = FiringOrder.FiringOrderFireAtWill;
+                }
+            }
         }
     }
 }
