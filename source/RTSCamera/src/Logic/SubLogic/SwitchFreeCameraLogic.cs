@@ -35,6 +35,7 @@ namespace RTSCamera.Logic.SubLogic
         private List<FormationClass> _playerFormations;
         private float _updatePlayerFormationTime;
         private bool _hasShownOrderHint = false;
+        private bool _isSwitchCameraKeyPressedLastTick = false;
 
         public Mission Mission => _logic.Mission;
 
@@ -213,8 +214,14 @@ namespace RTSCamera.Logic.SubLogic
                 CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
             }
 
-            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).IsKeyPressed(Mission.InputManager))
+            // In fastforward mode, the key may be triggered in 2 ticks
+            if (_isSwitchCameraKeyPressedLastTick)
             {
+                _isSwitchCameraKeyPressedLastTick = false;
+            }
+            else if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).IsKeyPressed(Mission.InputManager))
+            {
+                _isSwitchCameraKeyPressedLastTick = true;
                 SwitchCamera();
                 ToggleOrderUIOnSwitchingCamera();
             }
@@ -453,7 +460,7 @@ namespace RTSCamera.Logic.SubLogic
             //    _controlTroopLogic.SetMainAgent();
             //}
 
-            if (Mission.MainAgent != null)
+            if (Mission.MainAgent != null && Mission.Mode != MissionMode.Deployment)
             {
                 Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
                     _config.GetPlayerControllerInFreeCamera(Mission.Current));
@@ -467,7 +474,7 @@ namespace RTSCamera.Logic.SubLogic
             if (IsSpectatorCamera)
                 return;
             IsSpectatorCamera = true;
-            if (!Utility.IsPlayerDead())
+            if (!Utility.IsPlayerDead() && Mission.Mode != MissionMode.Deployment)
             {
                 UpdateMainAgentControllerInFreeCamera();
             }

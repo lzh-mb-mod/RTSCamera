@@ -26,9 +26,6 @@ namespace RTSCamera.Utilities
 
         public static void UpdateMainAgentControllerInFreeCamera(Agent agent, Agent.ControllerType controller)
         {
-            // Do not set controller state in deployment stage.
-            if (Mission.Current.Mode == MissionMode.Deployment)
-                return;
             switch (controller)
             {
                 case Agent.ControllerType.None:
@@ -52,9 +49,6 @@ namespace RTSCamera.Utilities
 
         public static void UpdateMainAgentControllerState(Agent agent, bool isSpectatorCamera, Agent.ControllerType playerControllerInFreeCamera)
         {
-            // Do not set controller state in deployment stage.
-            if (Mission.Current.Mode == MissionMode.Deployment)
-                return;
             var controller = Mission.Current.GetMissionBehavior<MissionMainAgentController>();
             if (controller != null)
             {

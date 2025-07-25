@@ -53,7 +53,7 @@ namespace RTSCamera.Config
                         }, () =>
                         {
                             return (int)RTSCameraConfig.Get().DefaultToFreeCamera;
-                        }, (int)Agent.ControllerType.Count, new[]
+                        }, (int)DefaultToFreeCamera.Count, new[]
                         {
                             new SelectionItem(true, "str_rts_camera_default_to_free_camera_option", "Never"),
                             new SelectionItem(true, "str_rts_camera_default_to_free_camera_option", "DeploymentStage"),
@@ -126,7 +126,7 @@ namespace RTSCamera.Config
                     }, () =>
                     {
                         return (int)RTSCameraConfig.Get().FollowFaceDirection;
-                    }, (int)Agent.ControllerType.Count, new[]
+                    }, (int)FollowFaceDirection.Count, new[]
                         {
                             new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Never"),
                             new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "ControlNewUnitOnly"),
@@ -163,7 +163,7 @@ namespace RTSCamera.Config
                             if (i < 0 || i >= (int)Agent.ControllerType.Count)
                                 return;
                             RTSCameraConfig.Get().PlayerControllerInFreeCamera = i;
-                            if (rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera && !Utility.IsPlayerDead())
+                            if (rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera && !Utility.IsPlayerDead() && rtsCameraLogic.Mission.Mode != MissionMode.Deployment)
                             {
                                 Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.Current.MainAgent,
                                     (Agent.ControllerType)i);
@@ -308,8 +308,8 @@ namespace RTSCamera.Config
                 miscellaneousOptionCategory.AddOption(new ActionOptionViewModel(GameTexts.FindText("str_rts_camera_toggle_pause"), GameTexts.FindText("str_rts_camera_toggle_pause_hint"),
                     () =>
                     {
-                        rtsCameraLogic.MissionSpeedLogic?.TogglePause();
                         menuManager.RequestToCloseMenu();
+                        rtsCameraLogic.MissionSpeedLogic?.TogglePause();
                     }));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_mode"),
