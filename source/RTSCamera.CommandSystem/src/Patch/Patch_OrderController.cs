@@ -1,11 +1,14 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
+using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -21,8 +24,11 @@ namespace RTSCamera.CommandSystem.Patch
             BindingFlags.Instance | BindingFlags.NonPublic);
         private static FieldInfo _overridenHasAnyMountedUnit = typeof(Formation).GetField("_overridenHasAnyMountedUnit",
             BindingFlags.Instance | BindingFlags.NonPublic);
-        private static Dictionary<Formation, float> _actualWidths = new Dictionary<Formation, float>();
-        private static Dictionary<Formation, int> _actualUnitSpacings = new Dictionary<Formation, int>();
+        //private static Dictionary<Formation, float> _actualWidths = new Dictionary<Formation, float>();
+        private static Dictionary<Formation, int> _naturalUnitSpacings = new Dictionary<Formation, int>();
+        private static Dictionary<Formation, int> _customUnitSpacings = new Dictionary<Formation, int>();
+        private static Dictionary<Formation, float> _widthsBackup = new Dictionary<Formation, float>();
+        private static Dictionary<Formation, Vec2> _virtualOrderPositions = new Dictionary<Formation, Vec2>();
 
         public static bool Patch(Harmony harmony)
         {
@@ -32,6 +38,13 @@ namespace RTSCamera.CommandSystem.Patch
                     return false;
                 _patched = true;
 
+                // To resolve the issue that, when isLineShort = true, formation direction will still use the direction of formation with most members instead of the direction return from SimulateNewOrderWithPositionAndDirection.
+                harmony.Patch(
+                    typeof(OrderController).GetMethod("MoveToLineSegment",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    transpiler: new HarmonyMethod(typeof(Patch_OrderController).GetMethod(nameof(Transpiler_MoveToLineSegment),
+                        BindingFlags.Static | BindingFlags.Public)));
+
                 // To resolve 3 issues:
                 // 1. The order troop placer is inconsistent with actual order issued during dragging if formation width is changed.
                 // 2. The order troop placer is inconsistent with actual order issued during dragging if there're small number of mounted units in infantry formation.
@@ -40,6 +53,7 @@ namespace RTSCamera.CommandSystem.Patch
                 // use GetActualOrCurrentWidth(formation) instead of formation.Width,
                 // sort formations by their FormationClass in horizontal layout,
                 // and use formation.CalculateHasSignificantNumberOfMounted instead of formation.HasAnyMountedUnit.
+                // additional: resolve issue that formtion width/unit spacing cannot be recovered after setting position besides wall and settting back.
                 harmony.Patch(
                     typeof(OrderController).GetMethod("SimulateNewOrderWithPositionAndDirectionAux",
                         BindingFlags.Static | BindingFlags.NonPublic),
@@ -58,15 +72,255 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static void OnBehaviorInitialize()
         {
-            _actualWidths = new Dictionary<Formation, float>();
-            _actualUnitSpacings = new Dictionary<Formation, int>();
+            _naturalUnitSpacings = new Dictionary<Formation, int>();
+            _customUnitSpacings = new Dictionary<Formation, int>();
+            _widthsBackup = new Dictionary<Formation, float>();
+            _virtualOrderPositions = new Dictionary<Formation, Vec2>();
         }
 
         public static void OnRemoveBehavior()
         {
-            _actualUnitSpacings = null;
-            _actualWidths = null;
+            _naturalUnitSpacings = null;
+            _customUnitSpacings = null;
+            _widthsBackup = null;
+            _virtualOrderPositions = null;
         }
+
+        public static void OnAddTeam(Team team)
+        {
+            foreach (Formation formation in team.FormationsIncludingEmpty)
+            {
+                formation.OnAfterArrangementOrderApplied += Formation_OnAfterArrangementOrderApplied;
+            }
+        }
+
+        private static void Formation_OnAfterArrangementOrderApplied(Formation formation, ArrangementOrder.ArrangementOrderEnum arrangementOrder)
+        {
+            _naturalUnitSpacings.Remove(formation);
+            _customUnitSpacings.Remove(formation);
+            _widthsBackup.Remove(formation);
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler_MoveToLineSegment(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = new List<CodeInstruction>(instructions);
+            //FixFormationUnitspacing(codes);
+            FixFormationDirection(codes);
+            return codes.AsEnumerable();
+        }
+
+        private static void FixFormationActualWidths(List<CodeInstruction> codes)
+        {
+            bool foundSimulateNewOrderWithPositionAndDirection = false;
+            bool foundSetPositioning = false;
+            int startIndex = -1;
+            for (int i = 0; i < codes.Count; ++i)
+            {
+                if (!foundSimulateNewOrderWithPositionAndDirection)
+                {
+                    if (codes[i].opcode == OpCodes.Call)
+                    {
+                        if ((codes[i].operand as MethodInfo).Name == nameof(OrderController.SimulateNewOrderWithPositionAndDirection))
+                        {
+                            // IL_008b
+                            foundSimulateNewOrderWithPositionAndDirection = true;
+                        }
+                    }
+                }
+                else if (!foundSetPositioning)
+                {
+                    if (codes[i].opcode == OpCodes.Callvirt)
+                    {
+                        if ((codes[i].operand as MethodInfo).Name == nameof(Formation.SetPositioning))
+                        {
+                            // IL_011a
+                            foundSetPositioning = true;
+                            startIndex = i;
+                            break;
+                        }
+                    }    
+                }
+            }
+            if (foundSetPositioning)
+            {
+                // isLineShort
+                codes[startIndex + 1].opcode = OpCodes.Ldloc_1;
+                codes[startIndex + 1].operand = null;
+                // remove callvirt get_UnitSpacing and ldloc.s unitSpacing
+                codes.RemoveRange(startIndex + 2, 2);
+                // run this.actualUnitSpacings[key] = unitSpacing; only when isLineShort is true
+                codes[startIndex + 2].opcode = OpCodes.Brfalse_S;
+            }
+        }
+
+        private static void FixFormationDirection(List<CodeInstruction> codes)
+        {
+            bool foundGetActiveFacingOrderOf = false;
+            bool foundLookAtDirection = false;
+            bool foundSetMovementOrder = false;
+            bool foundset_FacingOrder = false;
+            int startIndex = -1;
+            int endIndex = -1;
+            for (int i = 0; i < codes.Count; ++i)
+            {
+                if (!foundGetActiveFacingOrderOf)
+                {
+                    if (codes[i].opcode == OpCodes.Call)
+                    {
+                        var methodOperand = codes[i].operand as MethodInfo;
+                        if (methodOperand != null && methodOperand.Name == nameof(OrderController.GetActiveFacingOrderOf))
+                        {
+                            // IL_024a
+                            foundGetActiveFacingOrderOf = true;
+                        }
+                    }
+                }
+                else if (!foundLookAtDirection)
+                {
+                    if (codes[i].opcode == OpCodes.Ldc_I4_S)
+                    {
+                        var operand = (sbyte)codes[i].operand;
+                        if (operand == (sbyte)OrderType.LookAtDirection)
+                        {
+                            // IL_02ba
+                            foundLookAtDirection = true;
+                        }
+
+                    }
+                }
+                else if (!foundSetMovementOrder)
+                {
+                    if (codes[i].opcode == OpCodes.Callvirt)
+                    {
+                        var operand = codes[i].operand as MethodInfo;
+                        if (operand.Name == nameof(Formation.SetMovementOrder))
+                        {
+                            // IL_02c7
+                            foundSetMovementOrder = true;
+                            startIndex = i;
+                        }
+
+                    }
+                }
+                else if (!foundset_FacingOrder)
+                {
+                    if (codes[i].opcode == OpCodes.Callvirt)
+                    {
+                        var operand = codes[i].operand as MethodInfo;
+                        if (operand.Name == "set_FacingOrder")
+                        {
+                            // IL_02da
+                            foundset_FacingOrder = true;
+                            endIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (foundSetMovementOrder && foundset_FacingOrder)
+            {
+                // use direction returned from SimulateNewOrderWithPositionAndDirection
+                codes[startIndex + 2].opcode = OpCodes.Ldloc_S;
+                codes[startIndex + 2].operand = (sbyte)13;
+                codes[startIndex + 3].opcode = OpCodes.Nop;
+            }
+        }
+
+        //public static bool Prefix_MoveToLineSegment(OrderController __instance,
+        //    IEnumerable<Formation> formations,
+        //    WorldPosition TargetLineSegmentBegin,
+        //    WorldPosition TargetLineSegmentEnd,
+        //    bool isFormationLayoutVertical,
+        //    Dictionary<Formation, int> ___actualUnitSpacings,
+        //    Dictionary<Formation, float> ___actualWidths
+        //    )
+        //{
+        //    foreach (Formation formation in formations)
+        //    {
+        //        int num;
+        //        if (___actualUnitSpacings.TryGetValue(formation, out num))
+        //            formation.SetPositioning(unitSpacing: new int?(num));
+        //        float customWidth;
+        //        if (___actualWidths.TryGetValue(formation, out customWidth))
+        //            formation.FormOrder = FormOrder.FormOrderCustom(customWidth);
+        //    }
+        //    formations = GetSortedFormations(formations, isFormationLayoutVertical);
+        //    List<(Formation, int, float, WorldPosition, Vec2)> formationChanges;
+        //    bool isLineShort;
+        //    OrderController.SimulateNewOrderWithPositionAndDirection(formations, __instance.simulationFormations, TargetLineSegmentBegin, TargetLineSegmentEnd, out formationChanges, out isLineShort, isFormationLayoutVertical);
+        //    if (!formations.Any<Formation>())
+        //        return false;
+        //    foreach ((Formation key, int num1, float customWidth, WorldPosition position, Vec2 direction) in formationChanges)
+        //    {
+        //        int unitSpacing = key.UnitSpacing;
+        //        float width = key.Width;
+        //        if (num1 > 0)
+        //        {
+        //            int num2 = MathF.Max(key.UnitSpacing - num1, 0);
+        //            key.SetPositioning(unitSpacing: new int?(num2));
+        //            if (key.UnitSpacing != unitSpacing)
+        //                ___actualUnitSpacings[key] = unitSpacing;
+        //        }
+        //        if ((double)key.Width != (double)customWidth && key.ArrangementOrder.OrderEnum != ArrangementOrder.ArrangementOrderEnum.Column)
+        //        {
+        //            key.FormOrder = FormOrder.FormOrderCustom(customWidth);
+        //            if (isLineShort)
+        //                ___actualWidths[key] = width;
+        //        }
+        //        if (!isLineShort)
+        //        {
+        //            key.SetMovementOrder(MovementOrder.MovementOrderMove(position));
+        //            key.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
+        //            key.FormOrder = FormOrder.FormOrderCustom(customWidth);
+        //            if (this.OnOrderIssued != null)
+        //            {
+        //                MBList<Formation> mbList = new MBList<Formation>();
+        //                mbList.Add(key);
+        //                MBList<Formation> appliedFormations = mbList;
+        //                this.OnOrderIssued(OrderType.Move, (MBReadOnlyList<Formation>)appliedFormations, this, (object)position);
+        //                this.OnOrderIssued(OrderType.LookAtDirection, (MBReadOnlyList<Formation>)appliedFormations, this, (object)direction);
+        //                this.OnOrderIssued(OrderType.FormCustom, (MBReadOnlyList<Formation>)appliedFormations, this, (object)customWidth);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            Formation formation = formations.MaxBy<Formation, int>((Func<Formation, int>)(f => f.CountOfUnitsWithoutDetachedOnes));
+        //            switch (OrderController.GetActiveFacingOrderOf(formation))
+        //            {
+        //                case OrderType.LookAtEnemy:
+        //                    key.SetMovementOrder(MovementOrder.MovementOrderMove(position));
+        //                    if (this.OnOrderIssued != null)
+        //                    {
+        //                        MBList<Formation> mbList = new MBList<Formation>();
+        //                        mbList.Add(key);
+        //                        MBList<Formation> appliedFormations = mbList;
+        //                        this.OnOrderIssued(OrderType.Move, (MBReadOnlyList<Formation>)appliedFormations, this, (object)position);
+        //                        this.OnOrderIssued(OrderType.LookAtEnemy, (MBReadOnlyList<Formation>)appliedFormations, this);
+        //                        continue;
+        //                    }
+        //                    continue;
+        //                case OrderType.LookAtDirection:
+        //                    key.SetMovementOrder(MovementOrder.MovementOrderMove(position));
+        //                    key.FacingOrder = FacingOrder.FacingOrderLookAtDirection(formation.Direction);
+        //                    if (this.OnOrderIssued != null)
+        //                    {
+        //                        MBList<Formation> mbList = new MBList<Formation>();
+        //                        mbList.Add(key);
+        //                        MBList<Formation> appliedFormations = mbList;
+        //                        this.OnOrderIssued(OrderType.Move, (MBReadOnlyList<Formation>)appliedFormations, this, (object)position);
+        //                        this.OnOrderIssued(OrderType.LookAtDirection, (MBReadOnlyList<Formation>)appliedFormations, this, (object)formation.Direction);
+        //                        continue;
+        //                    }
+        //                    continue;
+        //                default:
+        //                    TaleWorlds.Library.Debug.FailedAssert("false", "C:\\Develop\\MB3\\Source\\Bannerlord\\TaleWorlds.MountAndBlade\\AI\\OrderController.cs", nameof(MoveToLineSegment), 2361);
+        //                    continue;
+        //            }
+        //        }
+        //    }
+
+        //    return false;
+        //}
 
         public static bool Prefix_SimulateNewOrderWithPositionAndDirectionAux(
             IEnumerable<Formation> formations,
@@ -82,6 +336,8 @@ namespace RTSCamera.CommandSystem.Patch
         {
             try
             {
+                simulationAgentFrames = ((!isSimulatingAgentFrames) ? null : new List<WorldPosition>());
+                simulationFormationChanges = ((!isSimulatingFormationChanges) ? null : new List<(Formation, int, float, WorldPosition, Vec2)>());
                 float length = (formationLineEnd.AsVec2 - formationLineBegin.AsVec2).Length;
                 isLineShort = false;
                 if ((double)length < (double)ManagedParameters.Instance.GetManagedParameter(ManagedParametersEnum.BipedalRadius))
@@ -94,6 +350,7 @@ namespace RTSCamera.CommandSystem.Patch
                     if ((double)length < (double)num)
                         isLineShort = true;
                 }
+                var remainingFormations = Enumerable.Empty<Formation>();
                 if (isLineShort)
                 {
                     var actualUnitSpacings = GetActualUnitSpacings();
@@ -106,36 +363,78 @@ namespace RTSCamera.CommandSystem.Patch
                                 // moves actualUnitSpacings to our own storage.
                                 // to prevent formations' unit spacing set to actualUnitSpacings[formation] in OrderController.MoveToLineSegment.
                                 // so that unit spacing is kept if click on ground
-                                _actualUnitSpacings[formation] = actualUnitSpacings[formation];
-                                actualUnitSpacings.Remove(formation);
+                                if (!_naturalUnitSpacings.ContainsKey(formation))
+                                {
+                                    _naturalUnitSpacings[formation] = actualUnitSpacings[formation];
+                                }
+                                if (_customUnitSpacings.ContainsKey(formation))
+                                {
+                                    actualUnitSpacings[formation] = _customUnitSpacings[formation];
+                                }
+                            }
+                            else
+                            {
+                                _customUnitSpacings.Remove(formation);
+                                //_widthsBackup.Remove(formation);
                             }
                         }
                     }
-                    float num1 = !isFormationLayoutVertical ? formations.Max<Formation>((Func<Formation, float>)(f => GetActualOrCurrentWidth(f))) : formations.Sum<Formation>((Func<Formation, float>)(f => GetActualOrCurrentWidth(f))) + (float)(formations.Count<Formation>() - 1) * 1.5f;
-                    Vec2 direction = formations.MaxBy<Formation, int>((Func<Formation, int>)(f => f.CountOfUnitsWithoutDetachedOnes)).Direction;
-                    direction.RotateCCW(-1.57079637f);
-                    double num2 = (double)direction.Normalize();
-                    formationLineEnd = Mission.Current.GetStraightPathToTarget(formationLineBegin.AsVec2 + num1 / 2f * direction, formationLineBegin);
-                    formationLineBegin = Mission.Current.GetStraightPathToTarget(formationLineBegin.AsVec2 - num1 / 2f * direction, formationLineBegin);
+                    var actualWidths = GetActualWidths();
+                    if (actualWidths != null)
+                    {
+                        foreach (var formation in formations)
+                        {
+                            if (_widthsBackup.ContainsKey(formation))
+                            {
+                                actualWidths[formation] = _widthsBackup[formation];
+                            }
+                            else
+                            {
+                                _widthsBackup[formation] = formation.Width;
+                            }
+                        }
+                    }
+                    if (CommandSystemConfig.Get()?.LockFormationPosition ?? false)
+                    {
+                        SimulateNewOrderWithKeepingRelativePositions(formations, simulationFormations, formationLineBegin, isSimulatingAgentFrames, simulationAgentFrames, isSimulatingFormationChanges, simulationFormationChanges, out remainingFormations);
+                        formations = remainingFormations;
+                    }
+                    if (formations.Any())
+                    {
+                        float num1 = !isFormationLayoutVertical ? formations.Max<Formation>((Func<Formation, float>)(f => GetActualOrCurrentWidth(f))) : formations.Sum<Formation>((Func<Formation, float>)(f => GetActualOrCurrentWidth(f))) + (float)(formations.Count<Formation>() - 1) * 1.5f;
+                        Vec2 direction = formations.MaxBy<Formation, int>((Func<Formation, int>)(f => f.CountOfUnitsWithoutDetachedOnes)).Direction;
+                        direction.RotateCCW(-1.57079637f);
+                        double num2 = (double)direction.Normalize();
+                        formationLineEnd = Mission.Current.GetStraightPathToTarget(formationLineBegin.AsVec2 + num1 / 2f * direction, formationLineBegin);
+                        formationLineBegin = Mission.Current.GetStraightPathToTarget(formationLineBegin.AsVec2 - num1 / 2f * direction, formationLineBegin);
+                    }
                 }
                 else
                 {
                     foreach (var formation in formations)
                     {
-                        if (_actualUnitSpacings.ContainsKey(formation))
+                        if (_naturalUnitSpacings.ContainsKey(formation))
                         {
                             // move actualUnitSpacings back to OrderController
                             // to allow unit spacings recovery
-                            SetActualUnitSpacing(formation, _actualUnitSpacings[formation]);
-                            _actualUnitSpacings.Remove(formation);
+                            SetActualUnitSpacing(formation, _naturalUnitSpacings[formation]);
                         }
                     }
                     formationLineEnd = Mission.Current.GetStraightPathToTarget(formationLineEnd.AsVec2, formationLineBegin);
                 }
-                if (isFormationLayoutVertical)
-                    SimulateNewOrderWithVerticalLayout(formations, simulationFormations, formationLineBegin, formationLineEnd, isSimulatingAgentFrames, out simulationAgentFrames, isSimulatingFormationChanges, out simulationFormationChanges);
-                else
-                   SimulateNewOrderWithHorizontalLayout(formations, simulationFormations, formationLineBegin, formationLineEnd, isSimulatingAgentFrames, out simulationAgentFrames, isSimulatingFormationChanges, out simulationFormationChanges);
+                if (formations.Any())
+                {
+                    if (isFormationLayoutVertical)
+                        SimulateNewOrderWithVerticalLayout(formations, simulationFormations, formationLineBegin, formationLineEnd, isSimulatingAgentFrames, simulationAgentFrames, isSimulatingFormationChanges, simulationFormationChanges);
+                    else
+                        SimulateNewOrderWithHorizontalLayout(formations, simulationFormations, formationLineBegin, formationLineEnd, isSimulatingAgentFrames, simulationAgentFrames, isSimulatingFormationChanges, simulationFormationChanges);
+                }
+
+                // Added.
+                if (isSimulatingFormationChanges && !isLineShort)
+                {
+                    FixUnitSpacingAndWidth(simulationFormationChanges);
+                }
                 return false;
             }
             catch (Exception e)
@@ -146,17 +445,112 @@ namespace RTSCamera.CommandSystem.Patch
             return true;
         }
 
+        private static void FixUnitSpacingAndWidth(
+            List<(Formation, int, float, WorldPosition, Vec2)> simulationFormationChanges)
+        {
+            foreach ((Formation formation, int unitSpacingReduction, float customWidth, WorldPosition position, Vec2 direction) in simulationFormationChanges)
+            {
+                if (unitSpacingReduction > 0)
+                {
+                    _customUnitSpacings[formation] = MathF.Max(formation.UnitSpacing - unitSpacingReduction, 0);
+                }
+                else if (_customUnitSpacings.ContainsKey(formation))
+                {
+                    _customUnitSpacings.Remove(formation);
+                }
+                if (formation.Width != customWidth && formation.ArrangementOrder.OrderEnum != ArrangementOrder.ArrangementOrderEnum.Column)
+                {
+                    _widthsBackup[formation] = customWidth;
+                    //SetActualWidth(formation, customWidth);
+                }
+            }
+        }
+
+        private static void SimulateNewOrderWithKeepingRelativePositions(
+            IEnumerable<Formation> formations,
+            Dictionary<Formation, Formation> simulationFormations,
+            WorldPosition clickedPosition,
+            bool isSimulatingAgentFrames,
+            List<WorldPosition> simulationAgentFrames,
+            bool isSimulatingFormationChanges,
+            List<(Formation, int, float, WorldPosition, Vec2)> simulationFormationChanges,
+            out IEnumerable<Formation> remainingFormations
+            )
+        {
+            simulationAgentFrames = !isSimulatingAgentFrames ? (List<WorldPosition>)null : simulationAgentFrames;
+            simulationFormationChanges = !isSimulatingFormationChanges ? (List<(Formation, int, float, WorldPosition, Vec2)>)null : simulationFormationChanges;
+            var formationOrderPositionDictionary = new Dictionary<Formation, Vec2>();
+            var remainingFormationList = new List<Formation>();
+            remainingFormations = remainingFormationList;
+            var formationCount = 0;
+            Vec2 averageOrderPosition = Vec2.Zero;
+            foreach (var formation in formations)
+            {
+                bool hasVirtualOrderPosition = _virtualOrderPositions.ContainsKey(formation);
+                if (hasVirtualOrderPosition || formation.OrderPositionIsValid)
+                {
+                    formationCount++;
+                    var orderPosition = hasVirtualOrderPosition ? _virtualOrderPositions[formation] : formation.OrderPosition;
+                    averageOrderPosition += orderPosition;
+                    formationOrderPositionDictionary.Add(formation, orderPosition);
+                }
+                else
+                {
+                    remainingFormationList.Add(formation);
+                }
+            }
+            if (formationCount > 0)
+            {
+                averageOrderPosition = averageOrderPosition * 1f / (float)formationCount;
+            }
+            foreach (var pair in formationOrderPositionDictionary)
+            {
+                var formation = pair.Key;
+                var orderPosition = pair.Value;
+                bool hasVirtualOrderPosition = _virtualOrderPositions.ContainsKey(formation);
+                var formationPosition = clickedPosition;
+                var formationPositionVec2 = orderPosition - averageOrderPosition + clickedPosition.AsVec2;
+                formationPosition.SetVec2(formationPositionVec2);
+                _virtualOrderPositions[formation] = formationPositionVec2;
+                var formationDirection = formation.Direction;
+                int unitSpacingReduction = 0;
+                var actualUnitSpacing = GetActualOrCurrentUnitSpacing(formation);
+                var actualOrCurrentWidth = GetActualOrCurrentWidth(formation);
+
+                GetFormationLineBeginEnd(formation, formationPosition, out var begin, out var end);
+                Vec2 vec = end.AsVec2 - begin.AsVec2;
+                float length = vec.Length;
+                vec.Normalize();
+                bool flag = length.ApproximatelyEqualsTo(actualOrCurrentWidth, 0.1f);
+                float formationWidth = MathF.Min(flag ? actualOrCurrentWidth : length, formation.MaximumWidth);
+
+                DecreaseUnitSpacingAndWidthIfNotAllUnitsFit(formation, GetSimulationFormation(formation, simulationFormations), in formationPosition, in formationDirection, ref formationWidth, ref unitSpacingReduction, actualUnitSpacing);
+                SimulateNewOrderWithFrameAndWidth(formation, GetSimulationFormation(formation, simulationFormations), simulationAgentFrames, simulationFormationChanges, in formationPosition, in formationDirection, formationWidth, unitSpacingReduction, simulateFormationDepth: true, out var simulatedFormationDepth, actualUnitSpacing);
+            }
+        }
+
+        private static void GetFormationLineBeginEnd(Formation formation, WorldPosition formationLineBegin, out WorldPosition begin, out WorldPosition end)
+        {
+            float actualorCurrentWidth = GetActualOrCurrentWidth(formation);
+            Vec2 direction = formation.Direction;
+            direction.RotateCCW(-1.57079637f);
+            double num2 = (double)direction.Normalize();
+            begin = Mission.Current.GetStraightPathToTarget(formationLineBegin.AsVec2 + actualorCurrentWidth / 2f * direction, formationLineBegin);
+            end = Mission.Current.GetStraightPathToTarget(formationLineBegin.AsVec2 - actualorCurrentWidth / 2f * direction, formationLineBegin);
+        }
+
         private static void SimulateNewOrderWithHorizontalLayout(IEnumerable<Formation> formations,
             Dictionary<Formation, Formation> simulationFormations,
             WorldPosition formationLineBegin,
             WorldPosition formationLineEnd,
             bool isSimulatingAgentFrames,
-            out List<WorldPosition> simulationAgentFrames,
+            List<WorldPosition> simulationAgentFrames,
             bool isSimulatingFormationChanges,
-            out List<(Formation, int, float, WorldPosition, Vec2)> simulationFormationChanges)
+            List<(Formation, int, float, WorldPosition, Vec2)> simulationFormationChanges)
         {
-            simulationAgentFrames = ((!isSimulatingAgentFrames) ? null : new List<WorldPosition>());
-            simulationFormationChanges = ((!isSimulatingFormationChanges) ? null : new List<(Formation, int, float, WorldPosition, Vec2)>());
+            // use input list, which may have elements added in SimulateNewOrderWithKeepingRelativePositions
+            simulationAgentFrames = ((!isSimulatingAgentFrames) ? null : simulationAgentFrames);
+            simulationFormationChanges = ((!isSimulatingFormationChanges) ? null : simulationFormationChanges);
             Vec2 vec = formationLineEnd.AsVec2 - formationLineBegin.AsVec2;
             float num = vec.Normalize();
             float num2 = formations.Max((Formation f) => f.MinimumWidth);
@@ -173,7 +567,9 @@ namespace RTSCamera.CommandSystem.Patch
                 float a = num;
                 a = MathF.Min(a, formation.MaximumWidth);
                 WorldPosition formationPosition = formationLineBegin;
-                formationPosition.SetVec2((formationLineEnd.AsVec2 + formationLineBegin.AsVec2) * 0.5f - formationDirection * num3);
+                var formationPositionVec2 = (formationLineEnd.AsVec2 + formationLineBegin.AsVec2) * 0.5f - formationDirection * num3;
+                formationPosition.SetVec2(formationPositionVec2);
+                _virtualOrderPositions[formation] = formationPositionVec2;
                 int unitSpacingReduction = 0;
                 // override official code from using formation.UnitSpacing to using GetActualUnitSpacing(formation)
                 var actualUnitSpacing = GetActualOrCurrentUnitSpacing(formation);
@@ -189,15 +585,16 @@ namespace RTSCamera.CommandSystem.Patch
             WorldPosition formationLineBegin,
             WorldPosition formationLineEnd,
             bool isSimulatingAgentFrames,
-            out List<WorldPosition> simulationAgentFrames,
+            List<WorldPosition> simulationAgentFrames,
             bool isSimulatingFormationChanges,
-            out List<(Formation, int, float, WorldPosition, Vec2)> simulationFormationChanges)
+            List<(Formation, int, float, WorldPosition, Vec2)> simulationFormationChanges)
         {
-            simulationAgentFrames = !isSimulatingAgentFrames ? (List<WorldPosition>)null : new List<WorldPosition>();
-            simulationFormationChanges = !isSimulatingFormationChanges ? (List<(Formation, int, float, WorldPosition, Vec2)>)null : new List<(Formation, int, float, WorldPosition, Vec2)>();
+            // use input list, which may have elements added in SimulateNewOrderWithKeepingRelativePositions
+            simulationAgentFrames = !isSimulatingAgentFrames ? (List<WorldPosition>)null : simulationAgentFrames;
+            simulationFormationChanges = !isSimulatingFormationChanges ? (List<(Formation, int, float, WorldPosition, Vec2)>)null : simulationFormationChanges;
             Vec2 vec2 = formationLineEnd.AsVec2 - formationLineBegin.AsVec2;
             float length = vec2.Length;
-            double num1 = (double)vec2.Normalize();
+            vec2.Normalize();
             float f1 = MathF.Max(0.0f, length - (float)(formations.Count<Formation>() - 1) * 1.5f);
             float comparedValue = formations.Sum<Formation>((Func<Formation, float>)(f => GetActualOrCurrentWidth(f)));
             bool flag = f1.ApproximatelyEqualsTo(comparedValue, 0.1f);
@@ -211,7 +608,9 @@ namespace RTSCamera.CommandSystem.Patch
                 var actualWidth = GetActualOrCurrentWidth(formation);
                 float formationWidth = MathF.Min(flag ? actualWidth : MathF.Min((double)f1 < (double)comparedValue ? actualWidth : float.MaxValue, f1 * (minimumWidth / num2)), formation.MaximumWidth);
                 WorldPosition formationPosition = formationLineBegin;
-                formationPosition.SetVec2(formationPosition.AsVec2 + vec2 * (formationWidth * 0.5f + num3));
+                var formationPositionVec2 = formationPosition.AsVec2 + vec2 * (formationWidth * 0.5f + num3);
+                formationPosition.SetVec2(formationPositionVec2);
+                _virtualOrderPositions[formation] = formationPositionVec2;
                 int unitSpacingReduction = 0;
                 // override official code from using formation.UnitSpacing to using GetActualUnitSpacing(formation)
                 var actualUnitSpacing = GetActualOrCurrentUnitSpacing(formation);
@@ -237,14 +636,14 @@ namespace RTSCamera.CommandSystem.Patch
         {
             return Array.IndexOf(new FormationClass[8]
             {
-            FormationClass.HeavyInfantry,
-            FormationClass.Infantry,
-            FormationClass.HeavyCavalry,
-            FormationClass.Cavalry,
-            FormationClass.LightCavalry,
-            FormationClass.NumberOfDefaultFormations,
-            FormationClass.Ranged,
-            FormationClass.HorseArcher
+                FormationClass.HeavyInfantry,
+                FormationClass.Infantry,
+                FormationClass.HeavyCavalry,
+                FormationClass.Cavalry,
+                FormationClass.LightCavalry,
+                FormationClass.Skirmisher,
+                FormationClass.Ranged,
+                FormationClass.HorseArcher
             }, formationClass);
         }
 
@@ -338,7 +737,7 @@ namespace RTSCamera.CommandSystem.Patch
                 return;
             if (actualWidths.ContainsKey(formation))
             {
-            actualWidths.Remove(formation);
+                actualWidths.Remove(formation);
             }
         }
 

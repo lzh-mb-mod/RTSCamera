@@ -27,6 +27,13 @@ namespace RTSCamera.CommandSystem.Logic
             Patch_OrderController.OnRemoveBehavior();
         }
 
+        public override void OnAddTeam(Team team)
+        {
+            base.OnAddTeam(team);
+
+            Patch_OrderController.OnAddTeam(team);
+        }
+
         public override void OnPreDisplayMissionTick(float dt)
         {
             base.OnPreDisplayMissionTick(dt);

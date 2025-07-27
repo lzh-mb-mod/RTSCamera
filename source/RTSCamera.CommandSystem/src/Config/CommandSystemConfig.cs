@@ -35,6 +35,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool MovementTargetMoreVisibleOnRtsViewOnly = true;
 
+        public bool LockFormationPosition = true;
+
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;
@@ -46,6 +48,7 @@ namespace RTSCamera.CommandSystem.Config
             HighlightOnRtsViewOnly = other.HighlightOnRtsViewOnly;
             MoreVisibleMovementTarget = other.MoreVisibleMovementTarget;
             MovementTargetMoreVisibleOnRtsViewOnly = other.MovementTargetMoreVisibleOnRtsViewOnly;
+            LockFormationPosition = other.LockFormationPosition;
         }
 
         public static void OnMenuClosed()

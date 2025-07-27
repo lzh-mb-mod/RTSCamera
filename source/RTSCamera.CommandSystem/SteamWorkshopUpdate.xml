@@ -7,12 +7,7 @@
     <ModuleFolder Value="D:\develop\src\RTSCamera\source\package\RTSCamera.CommandSystem\"/>
     
     <!-- A direct path of your module -->
-    <ItemDescription Value="RTS Camera Command System
-
-English below.
-
-让你可以用鼠标中键点击敌方单位来攻击指定的敌方编队。
-让你可以用鼠标选择己方编队。
+    <ItemDescription Value="RTS Camera Command System from original creator
 
 Allows your formation attack one of the enemy formation by middle clicking on enemy units.
 Allows you to select your formation using mouse.
@@ -20,27 +15,6 @@ Allows you to select your formation using mouse.
 
 For latest RTS Camera: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991660
 For compatible Battle Mini Map: https://steamcommunity.com/sharedfiles/filedetails/?id=2876503777
-
-存档兼容性：
-这个mod不会向存档读写任何东西，放心随时启用随时卸载。
-
-
-使用指南：
-指挥时对着敌方士兵按下鼠标中键可让你的编队攻击该士兵所在的编队。仅对近战武器生效。
-对着己方士兵按下鼠标中键可选择该编队。
-被攻击的敌方编队会用红色轮廓标出。
-己方选中的编队会以绿色轮廓标出。
-己方被攻击的编队会以深蓝色轮廓标出。
-
-
-在场景中按L键可打开配置菜单以关闭轮廓高亮功能。
-
-快捷键列表：
-鼠标中键       - 选择/攻击编队
-Alt + 鼠标中键 - 攻击敌人同时维持原有移动指令
-L             - 打开配置菜单
-所有快捷键均可在配置菜单中设置。
-
 
 Save compatibility:
 This mod won&apos;t read/write anything from/into your save, so you can feel free to enable or uninstall this mod at any time.
@@ -61,10 +35,16 @@ Alt + Click mouse middle button - Attack enemy formation without interrupting pr
 L                          -    Open the config menu.
 All the hotkeys can be changed in config menu.
 
+Troubleshooting
+If there're a lot of &quot;text with id xxxxx doesn't exist&quot;:
+    If you enabled Realm of Thrones, please move RTS Camera and Command System above it. As version 6.2 of Realm of Thrones, there's a bug in its file that causes all the mods below it cannot load text correctly.
 
-links：
+Feedback or suggestion
+Feel free to comment below or send email to lizhenhuan1019@outlook.com
+
+links:
 Nexusmods: https://www.nexusmods.com/mountandblade2bannerlord/mods/355
-mountandblade.com.cn: https://bbs.mountblade.com.cn/thread-2061243-1-1.html"/>
+source code: https://github.com/lzh-mb-mod/RTSCamera"/>
     <ChangeNotes Value="" />
     <!-- Insert patch notes -->
     <Tags>

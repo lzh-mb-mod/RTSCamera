@@ -18,6 +18,8 @@ This mod does not read or write stuffs to your game save. Installing or removing
 
   - Select your troops by directly clicking on troop cards.
 
+  - **New:** Allows automatic fast forward in hideout.
+
 - Command System
 
   - Issue focus charge command by clicking middle button on enemy units.

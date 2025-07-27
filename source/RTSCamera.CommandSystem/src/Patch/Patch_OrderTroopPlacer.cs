@@ -517,8 +517,8 @@ namespace RTSCamera.CommandSystem.Patch
                         }
                         else if (CommandSystemConfig.Get().AttackSpecificFormation)
                         {
-                            bool isAltDown = __instance.Input.IsAltDown();
-                            if (isAltDown)
+                            bool keepMovementOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.KeepMovementOrder).IsKeyDownInOrder(__instance.Input);
+                            if (keepMovementOrder)
                             {
                                 if (Campaign.Current == null || CommandSystemSkillBehavior.CanIssueChargeToFormationOrder)
                                 {

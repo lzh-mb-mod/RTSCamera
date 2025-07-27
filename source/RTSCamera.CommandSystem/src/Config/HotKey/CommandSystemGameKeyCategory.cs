@@ -11,6 +11,8 @@ namespace RTSCamera.CommandSystem.Config.HotKey
     public enum GameKeyEnum
     {
         SelectFormation,
+        KeepMovementOrder,
+        CommandQueue,
         NumberOfGameKeyEnums
     }
     public class CommandSystemGameKeyCategory
@@ -37,6 +39,26 @@ namespace RTSCamera.CommandSystem.Config.HotKey
                             InputKey.MiddleMouseButton
                         }
                     )
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.KeepMovementOrder,
+                nameof(GameKeyEnum.KeepMovementOrder),
+                CategoryId, new List<GameKeySequenceAlternative>()
+                {
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.LeftAlt
+                        })
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.CommandQueue,
+                nameof(GameKeyEnum.CommandQueue),
+                CategoryId, new List<GameKeySequenceAlternative>()
+                {
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.LeftShift
+                        })
                 }));
             return result;
         }

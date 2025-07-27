@@ -86,6 +86,13 @@ namespace RTSCamera.CommandSystem.Config
                     {
                         CommandSystemConfig.Get().MovementTargetMoreVisibleOnRtsViewOnly = b;
                     }));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_lock_formation_position"),
+                    GameTexts.FindText("str_rts_camera_command_system_lock_formation_position_hint"),
+                    () => CommandSystemConfig.Get().LockFormationPosition, b =>
+                    {
+                        CommandSystemConfig.Get().LockFormationPosition = b;
+                    }));
                 optionClass.AddOptionCategory(0, commandOptionCategory);
 
                 return optionClass;
