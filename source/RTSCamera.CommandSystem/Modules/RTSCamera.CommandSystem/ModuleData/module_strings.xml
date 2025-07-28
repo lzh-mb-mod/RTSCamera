@@ -22,19 +22,26 @@
   <string id="str_rts_camera_command_system_more_visible_movement_target_hint" text="{=RTSCameraCommandSystem_morevisiblemovementtargethint}Make Movement Target more visible." />
   <string id="str_rts_camera_command_system_movement_target_more_visible_on_rts_view_only" text="{=RTSCameraCommandSystem_movementtargetmorevisibleonrtsviewonly}More visible Movement Target in Free Camera Only" />
   <string id="str_rts_camera_command_system_movement_target_more_visible_on_rts_view_only_hint" text="{=RTSCameraCommandSystem_targetmorevisibleonrtsviewonlyhint}Make Movement Target more visible on in free camera. Keep the original appearance on normal mode." />
-  <string id="str_rts_camera_command_system_lock_formation_position" text="{=RTSCameraCommandSystem_lock_formation_position}Lock Formation Relative Position" />
-  <string id="str_rts_camera_command_system_lock_formation_position_hint" text="{=RTSCameraCommandSystem_lock_formation_position_hint}Formations' relative positions remain unchanged in movement order." />
+  <string id="str_rts_camera_command_system_formation_lock_condition" text="{=RTSCameraCommandSystem_formation_lock_condition}When to Lock Multiple Formations" />
+  <string id="str_rts_camera_command_system_formation_lock_condition_hint" text="{=RTSCameraCommandSystem_formation_lock_condition_hint}Formations' relative positions and directions will remain unchanged." />
+  <string id="str_rts_camera_command_system_formation_lock_condition_option.Never" text="{=RTSCameraCommandSystem_formation_lock_condition_option_never}Never" />
+  <string id="str_rts_camera_command_system_formation_lock_condition_option.WhenPressed" text="{=RTSCameraCommandSystem_formation_lock_condition_option_when_pressed}When key is pressed" />
+  <string id="str_rts_camera_command_system_formation_lock_condition_option.WhenNotPressed" text="{=RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed}When key is not pressed" />
 
 
   <string id="str_rts_camera_command_system_defensive_attack" text="{=RTSCameraCommandSystem_defensive_attack}{TROOP_NAME} are focusing on enemy {TARGET_NAME}" />
 
   <string id="str_key_category_name.RTSCameraCommandSystemHotKey" text="{=RTSCameraCommandSystem_hotkeycategory}CommandSystem Hot Key" />
-  <string id="str_key_name.RTSCameraCommandSystemHotKey_Up" text="{=RTSCameraCommandSystem_select_formation}Select Formation" />
-  <string id="str_key_description.RTSCameraCommandSystemHotKey_Up" text="{=RTSCameraCommandSystem_select_formation_hint}Select your formation or order your selected formations to attack an enemy formation." />
-  <string id="str_key_name.RTSCameraCommandSystemHotKey_Down" text="{=RTSCamera_keep_movement_order}Keep Movement Order " />
-  <string id="str_key_description.RTSCameraCommandSystemHotKey_Down" text="{=RTSCameraCommandSystem_keep_movement_order_hint}Press to attack the enemy formation while keeping the previous movement order." />
-  <string id="str_key_name.RTSCameraCommandSystemHotKey_Left" text="{=RTSCamera_command_queue}Command Queue" />
-  <string id="str_key_description.RTSCameraCommandSystemHotKey_Left" text="{=RTSCameraCommandSystem_command_queue_hint}Add command to queue. Troops will execute commands in queue one by one." />
+  <string id="str_key_name.RTSCameraCommandSystemHotKey_SelectFormation" text="{=RTSCameraCommandSystem_select_formation}Select Formation" />
+  <string id="str_key_description.RTSCameraCommandSystemHotKey_SelectFormation" text="{=RTSCameraCommandSystem_select_formation_hint}Select your formation or order your selected formations to attack an enemy formation." />
+  <string id="str_key_name.RTSCameraCommandSystemHotKey_KeepMovementOrder" text="{=RTSCameraCommandSystem_keep_movement_order}Keep Movement Order While Attack" />
+  <string id="str_key_description.RTSCameraCommandSystemHotKey_KeepMovementOrder" text="{=RTSCameraCommandSystem_keep_movement_order_hint}Press to attack the enemy formation while keeping the previous movement order." />
+  <string id="str_key_name.RTSCameraCommandSystemHotKey_FormationLockMovement" text="{=RTSCameraCommandSystem_formation_lock_movement}Toggle Formation Lock Movement" />
+  <string id="str_key_description.RTSCameraCommandSystemHotKey_FormationLockMovement" text="{=RTSCameraCommandSystem_formation_lock_movement_hint}Hold to toggle Formation Lock Movement behavior." />
+  <string id="str_key_name.RTSCameraCommandSystemHotKey_CommandQueue" text="{=RTSCameraCommandSystem_command_queue}Command Queue" />
+  <string id="str_key_description.RTSCameraCommandSystemHotKey_CommandQueue" text="{=RTSCameraCommandSystem_command_queue_hint}Add command to queue. Troops will execute commands in queue one by one." />
+  <string id="str_key_name.RTSCameraCommandSystemHotKey_KeepFormationWidth" text="{=RTSCameraCommandSystem_command_keep_formation_width}Keep formation width" />
+  <string id="str_key_description.RTSCameraCommandSystemHotKey_KeepFormationWidth" text="{=RTSCameraCommandSystem_keep_formation_width_hint}Keep formation width while dragging formation." />
 
   <string id="str_rts_camera_command_system_tactic_level_required" text="{=RTSCameraCommandSystem_tactic_level_required}You tactic level should be at least {level}" />
 

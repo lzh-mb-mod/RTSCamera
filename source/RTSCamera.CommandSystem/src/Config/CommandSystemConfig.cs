@@ -9,7 +9,15 @@ namespace RTSCamera.CommandSystem.Config
 {
     public enum BehaviorAfterCharge
     {
-        Charge, Hold
+        Charge, Hold, Count
+    }
+
+    public enum FormationLockCondition
+    {
+        Never,
+        WhenPressed,
+        WhenNotPressed,
+        Count
     }
 
     public class CommandSystemConfig : MissionConfigBase<CommandSystemConfig>
@@ -35,7 +43,7 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool MovementTargetMoreVisibleOnRtsViewOnly = true;
 
-        public bool LockFormationPosition = true;
+        public FormationLockCondition FormationLockCondition = FormationLockCondition.WhenNotPressed;
 
         protected override void CopyFrom(CommandSystemConfig other)
         {
@@ -48,7 +56,7 @@ namespace RTSCamera.CommandSystem.Config
             HighlightOnRtsViewOnly = other.HighlightOnRtsViewOnly;
             MoreVisibleMovementTarget = other.MoreVisibleMovementTarget;
             MovementTargetMoreVisibleOnRtsViewOnly = other.MovementTargetMoreVisibleOnRtsViewOnly;
-            LockFormationPosition = other.LockFormationPosition;
+            FormationLockCondition = other.FormationLockCondition;
         }
 
         public static void OnMenuClosed()

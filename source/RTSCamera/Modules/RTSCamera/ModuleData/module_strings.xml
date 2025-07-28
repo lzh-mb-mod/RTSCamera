@@ -138,46 +138,53 @@
 
 
   <string id="str_key_category_name.RTSCameraHotKey" text="{=RTSCamera_hotkeycategory}RTSCamera Hot Key" />
-  <string id="str_key_name.RTSCameraHotKey_Up" text="{=RTSCamera_pausekey}Pause" />
-  <string id="str_key_name.RTSCameraHotKey_Down" text="{=RTSCamera_slowmotionkey}Slow Motion" />
-  <string id="str_key_name.RTSCameraHotKey_Left" text="{=RTSCamera_freecamerakey}Free Camera" />
-  <string id="str_key_name.RTSCameraHotKey_Right" text="{=RTSCamera_disabledeathkey}All Invulnerable" />
-  <string id="str_key_name.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey}Focus Camera/Control Troop" />
+  <string id="str_key_name.RTSCameraHotKey_Pause" text="{=RTSCamera_pausekey}Pause" />
+  <string id="str_key_name.RTSCameraHotKey_SlowMotion" text="{=RTSCamera_slowmotionkey}Slow Motion" />
+  <string id="str_key_name.RTSCameraHotKey_FreeCamera" text="{=RTSCamera_freecamerakey}Free Camera" />
+  <string id="str_key_name.RTSCameraHotKey_DisableDeath" text="{=RTSCamera_disabledeathkey}All Invulnerable" />
+  <string id="str_key_name.RTSCameraHotKey_ControlTroop" text="{=RTSCamera_controltroopkey}Focus Camera/Control Troop" />
   <!-- same as str_rts_camera_toggle_ui -->
-  <string id="str_key_name.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_toggleui}Toggle HUD" />
+  <string id="str_key_name.RTSCameraHotKey_ToggleHUD" text="{=RTSCamera_toggleui}Toggle HUD" />
   <!-- same as str_rts_camera_switch_team -->
-  <string id="str_key_name.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_switchteam}Switch Team" />
+  <string id="str_key_name.RTSCameraHotKey_SwitchTeam" text="{=RTSCamera_switchteam}Switch Team" />
   <!-- same as str_rts_camera_select_character -->
-  <string id="str_key_name.RTSCameraHotKey_InitiateTeamChat" text="{=RTSCamera_select_character}Select Character" />
-  <string id="str_key_name.RTSCameraHotKey_FinalizeChat" text="{=RTSCamera_camera_move_forward}Camera Move Forward" />
-  <string id="str_key_name.RTSCameraHotKey_Attack" text="{=RTSCamera_camera_move_backward}Camera Move Backward" />
-  <string id="str_key_name.RTSCameraHotKey_Defend" text="{=RTSCamera_camera_move_left}Camera Move Left" />
-  <string id="str_key_name.RTSCameraHotKey_EquipPrimaryWeapon" text="{=RTSCamera_camera_move_right}Camera Move Right" />
-  <string id="str_key_name.RTSCameraHotKey_EquipSecondaryWeapon" text="{=RTSCamera_camera_move_up}Camera Move Up" />
-  <string id="str_key_name.RTSCameraHotKey_Action" text="{=RTSCamera_camera_move_down}Camera Move Down" />
-  <string id="str_key_name.RTSCameraHotKey_Jump" text="{=RTSCamera_camera_increase_camera_limit}Increase Camera Distance Limit" />
-  <string id="str_key_name.RTSCameraHotKey_Crouch" text="{=RTSCamera_camera_decrease_camera_limit}Decrease Camera Distance Limit" />
+  <string id="str_key_name.RTSCameraHotKey_SelectCharacter" text="{=RTSCamera_select_character}Select Character" />
+  <string id="str_key_name.RTSCameraHotKey_CameraMoveForward" text="{=RTSCamera_camera_move_forward}Camera Move Forward" />
+  <string id="str_key_name.RTSCameraHotKey_CameraMoveBackward" text="{=RTSCamera_camera_move_backward}Camera Move Backward" />
+  <string id="str_key_name.RTSCameraHotKey_CameraMoveLeft" text="{=RTSCamera_camera_move_left}Camera Move Left" />
+  <string id="str_key_name.RTSCameraHotKey_CameraMoveRight" text="{=RTSCamera_camera_move_right}Camera Move Right" />
+  <string id="str_key_name.RTSCameraHotKey_CameraMoveUp" text="{=RTSCamera_camera_move_up}Camera Move Up" />
+  <string id="str_key_name.RTSCameraHotKey_CameraMoveDown" text="{=RTSCamera_camera_move_down}Camera Move Down" />
+  <string id="str_key_name.RTSCameraHotKey_IncreaseCameraDistanceLimit" text="{=RTSCamera_camera_increase_camera_limit}Increase Camera Distance Limit" />
+  <string id="str_key_name.RTSCameraHotKey_DecreaseCameraDistanceLimit" text="{=RTSCamera_camera_decrease_camera_limit}Decrease Camera Distance Limit" />
+  <string id="str_key_name.RTSCameraHotKey_IncreaseCameraSpeed" text="{=RTSCamera_camera_increase_camera_speed}Increase Camera speed" />
+  <string id="str_key_name.RTSCameraHotKey_DecreaseCameraSpeed" text="{=RTSCamera_camera_decrease_camera_speed}Decrease Camera speed" />
+  <string id="str_key_name.RTSCameraHotKey_ResetCameraSpeed" text="{=RTSCamera_camera_reset_camera_speed}Reset Camera speed" />
+
 
   <!-- same as str_rts_camera_toggle_pause_hint -->
-  <string id="str_key_description.RTSCameraHotKey_Up" text="{=RTSCamera_toggle_pause_hint}Pause or unpause the game." />
-  <string id="str_key_description.RTSCameraHotKey_Down" text="{=RTSCamera_slowmotionkey_description}Enable slow motion mode. Press again to recover." />
+  <string id="str_key_description.RTSCameraHotKey_Pause" text="{=RTSCamera_toggle_pause_hint}Pause or unpause the game." />
+  <string id="str_key_description.RTSCameraHotKey_SlowMotion" text="{=RTSCamera_slowmotionkey_description}Enable slow motion mode. Press again to recover." />
   <!-- same as str_rts_camera_auto_mode_hint -->
-  <string id="str_key_description.RTSCameraHotKey_Left" text="{=RTSCamera_switch_free_camera_hint}Switch between free camera and player camera." />
-  <string id="str_key_description.RTSCameraHotKey_Right" text="{=RTSCamera_disable_death_desciption}All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
-  <string id="str_key_description.RTSCameraHotKey_Leave" text="{=RTSCamera_controltroopkey_description}Focus camera to character or selected formation. Control one of your teammates when you are killed." />
+  <string id="str_key_description.RTSCameraHotKey_FreeCamera" text="{=RTSCamera_switch_free_camera_hint}Switch between free camera and player camera." />
+  <string id="str_key_description.RTSCameraHotKey_DisableDeath" text="{=RTSCamera_disable_death_desciption}All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
+  <string id="str_key_description.RTSCameraHotKey_ControlTroop" text="{=RTSCamera_controltroopkey_description}Focus camera to character or selected formation. Control one of your teammates when you are killed." />
   <!-- same as str_rts_camera_toggle_ui_hint -->
-  <string id="str_key_description.RTSCameraHotKey_ShowIndicators" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
-  <string id="str_key_description.RTSCameraHotKey_InitiateAllChat" text="{=RTSCamera_switchteam_description}Swap player's team, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
+  <string id="str_key_description.RTSCameraHotKey_ToggleHUD" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
+  <string id="str_key_description.RTSCameraHotKey_SwitchTeam" text="{=RTSCamera_switchteam_description}Swap player's team, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
   <!-- same as str_rts_camera_select_character_hint -->
-  <string id="str_key_description.RTSCameraHotKey_InitiateTeamChat" text="{=RTSCamera_select_character_hint}Select a character using mouse, then you can focus the camera to it or control it." />
-  <string id="str_key_description.RTSCameraHotKey_FinalizeChat" text="{=RTSCamera_camera_move_forward_description}Move the camera forward" />
-  <string id="str_key_description.RTSCameraHotKey_Attack" text="{=RTSCamera_camera_move_backward_description}Move the camera backward" />
-  <string id="str_key_description.RTSCameraHotKey_Defend" text="{=RTSCamera_camera_move_left_description}Move the camera to the left" />
-  <string id="str_key_description.RTSCameraHotKey_EquipPrimaryWeapon" text="{=RTSCamera_camera_move_right_description}Move the camera to the right" />
-  <string id="str_key_description.RTSCameraHotKey_EquipSecondaryWeapon" text="{=RTSCamera_camera_move_up_description}Move the camera up" />
-  <string id="str_key_description.RTSCameraHotKey_Action" text="{=RTSCamera_camera_move_down_description}Move the camera down" />
-  <string id="str_key_description.RTSCameraHotKey_Jump" text="{=RTSCamera_camera_increase_camera_limit_description}Increase Camera Distance Limit" />
-  <string id="str_key_description.RTSCameraHotKey_Crouch" text="{=RTSCamera_camera_decrease_camera_limit_description}Decrease Camera Distance Limit" />
+  <string id="str_key_description.RTSCameraHotKey_SelectCharacter" text="{=RTSCamera_select_character_hint}Select a character using mouse, then you can focus the camera to it or control it." />
+  <string id="str_key_description.RTSCameraHotKey_CameraMoveForward" text="{=RTSCamera_camera_move_forward_description}Move the camera forward" />
+  <string id="str_key_description.RTSCameraHotKey_CameraMoveBackward" text="{=RTSCamera_camera_move_backward_description}Move the camera backward" />
+  <string id="str_key_description.RTSCameraHotKey_CameraMoveLeft" text="{=RTSCamera_camera_move_left_description}Move the camera to the left" />
+  <string id="str_key_description.RTSCameraHotKey_CameraMoveRight" text="{=RTSCamera_camera_move_right_description}Move the camera to the right" />
+  <string id="str_key_description.RTSCameraHotKey_CameraMoveUp" text="{=RTSCamera_camera_move_up_description}Move the camera up" />
+  <string id="str_key_description.RTSCameraHotKey_CameraMoveDown" text="{=RTSCamera_camera_move_down_description}Move the camera down" />
+  <string id="str_key_description.RTSCameraHotKey_IncreaseCameraDistanceLimit" text="{=RTSCamera_camera_increase_camera_limit_description}Increase Camera Distance Limit" />
+  <string id="str_key_description.RTSCameraHotKey_DecreaseCameraDistanceLimit" text="{=RTSCamera_camera_decrease_camera_limit_description}Decrease Camera Distance Limit" />
+  <string id="str_key_description.RTSCameraHotKey_IncreaseCameraSpeed" text="{=RTSCamera_camera_increase_camera_speed_description}Increase Camera speed" />
+  <string id="str_key_description.RTSCameraHotKey_DecreaseCameraSpeed" text="{=RTSCamera_camera_decrease_camera_speed_description}Decrease Camera speed" />
+  <string id="str_key_description.RTSCameraHotKey_ResetCameraSpeed" text="{=RTSCamera_camera_reset_camera_speed_description}Reset Camera speed" />
 
   <string id="str_rts_camera_enemy_wiped_out" text="{=RTSCamera_enemywipedout}Enemy has been wiped out." />
   <string id="str_rts_camera_switch_to_enemy_team" text="{=RTSCamera_switchtoenemyteam}Switched to the enemy team." />

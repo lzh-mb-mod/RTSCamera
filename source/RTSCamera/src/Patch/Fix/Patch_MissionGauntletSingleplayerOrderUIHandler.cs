@@ -101,8 +101,12 @@ namespace RTSCamera.Patch.Fix
             return __instance.MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton) || __instance.MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.ControllerLTrigger);
         }
 
-        private static void BeginEarlyDragging()
+        private static void BeginEarlyDragging(OrderTroopPlacer ____orderTroopPlacer)
         {
+            if ((bool?)typeof(OrderTroopPlacer).GetField("_isMouseDown", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(____orderTroopPlacer) ?? false)
+            {
+                Patch_MissionOrderVM.AllowEscape = false;
+            }
             _earlyDraggingMode = true;
             _beginDraggingOffset = 0;
         }
@@ -125,8 +129,12 @@ namespace RTSCamera.Patch.Fix
             Patch_MissionOrderVM.AllowEscape = false;
         }
 
-        private static void EndDrag()
+        private static void EndDrag(OrderTroopPlacer ____orderTroopPlacer)
         {
+            if (_earlyDraggingMode && ((bool?)typeof(OrderTroopPlacer).GetField("_isMouseDown", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(____orderTroopPlacer) ?? false))
+            {
+                typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(____orderTroopPlacer, new object[] { });
+            }
             EndEarlyDragging();
             _rightButtonDraggingMode = false;
             Patch_MissionOrderVM.AllowEscape = true;
@@ -164,12 +172,12 @@ namespace RTSCamera.Patch.Fix
             }
         }
 
-        private static void UpdateDragData(MissionGauntletSingleplayerOrderUIHandler __instance, MissionOrderVM ____dataSource)
+        private static void UpdateDragData(MissionGauntletSingleplayerOrderUIHandler __instance, MissionOrderVM ____dataSource, OrderTroopPlacer ____orderTroopPlacer)
         {
             if (_willEndDraggingMode)
             {
                 _willEndDraggingMode = false;
-                EndDrag();
+                EndDrag(____orderTroopPlacer);
             }
             else if (!____dataSource.IsToggleOrderShown && !IsAnyDeployment(__instance) || IsDragKeyReleased(__instance))
             {
@@ -180,7 +188,7 @@ namespace RTSCamera.Patch.Fix
             {
                 if (ShouldBeginEarlyDragging(__instance))
                 {
-                    BeginEarlyDragging();
+                    BeginEarlyDragging(____orderTroopPlacer);
                 }
                 else if (IsDragKeyDown(__instance))
                 {
@@ -198,9 +206,9 @@ namespace RTSCamera.Patch.Fix
             }
         }
 
-        public static void Postfix_OnMissionScreenTick(MissionGauntletSingleplayerOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
+        public static void Postfix_OnMissionScreenTick(MissionGauntletSingleplayerOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
         {
-            UpdateDragData(__instance, ____dataSource);
+            UpdateDragData(__instance, ____dataSource, ____orderTroopPlacer);
             UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer);
             //return true;
         }

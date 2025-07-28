@@ -152,6 +152,9 @@
     <string id="RTSCamera_camera_move_down" text="Camera Move Down" />
     <string id="RTSCamera_camera_increase_camera_limit" text="Increase Camera Distance Limit" />
     <string id="RTSCamera_camera_decrease_camera_limit" text="Decrease Camera Distance Limit" />
+    <string id="RTSCamera_camera_increase_camera_speed" text="Increase Camera speed" />
+    <string id="RTSCamera_camera_decrease_camera_speed" text="Decrease Camera speed" />
+    <string id="RTSCamera_camera_reset_camera_speed" text="Reset Camera speed" />
 
     <string id="RTSCamera_slowmotionkey_description" text="Enable slow motion mode. Press again to recover." />
     <string id="RTSCamera_disable_death_desciption" text="All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
@@ -165,6 +168,9 @@
     <string id="RTSCamera_camera_move_down_description" text="Move the camera down" />
     <string id="RTSCamera_camera_increase_camera_limit_description" text="Increase Camera Distance Limit" />
     <string id="RTSCamera_camera_decrease_camera_limit_description" text="Decrease Camera Distance Limit" />
+    <string id="RTSCamera_camera_increase_camera_speed_description" text="Increase Camera speed" />
+    <string id="RTSCamera_camera_decrease_camera_speed_description" text="Decrease Camera speed" />
+    <string id="RTSCamera_camera_reset_camera_speed_description" text="Reset Camera speed" />
 
     <string id="RTSCamera_enemywipedout" text="Enemy has been wiped out." />
     <string id="RTSCamera_switchtoenemyteam" text="Switched to the enemy team." />

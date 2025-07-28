@@ -152,6 +152,9 @@
     <string id="RTSCamera_camera_move_down" text="相机向下移动" />
     <string id="RTSCamera_camera_increase_camera_limit" text="提高相机距离限制" />
     <string id="RTSCamera_camera_decrease_camera_limit" text="降低相机距离限制" />
+    <string id="RTSCamera_camera_increase_camera_speed" text="提高相机速度" />
+    <string id="RTSCamera_camera_decrease_camera_speed" text="降低相机速度" />
+    <string id="RTSCamera_camera_reset_camera_speed" text="重置相机速度" />
 
     <string id="RTSCamera_slowmotionkey_description" text="启用慢速模式。再按一次恢复。" />
     <string id="RTSCamera_disable_death_desciption" text="所有单位都不会阵亡，可用于录制视频。作弊模式需要启用且需要在菜单中启用该快捷键。" />
@@ -165,6 +168,9 @@
     <string id="RTSCamera_camera_move_down_description" text="相机向下移动" />
     <string id="RTSCamera_camera_increase_camera_limit_description" text="提高相机距离限制" />
     <string id="RTSCamera_camera_decrease_camera_limit_description" text="降低相机距离限制" />
+    <string id="RTSCamera_camera_increase_camera_speed_description" text="提高相机速度" />
+    <string id="RTSCamera_camera_decrease_camera_speed_description" text="降低相机速度" />
+    <string id="RTSCamera_camera_reset_camera_speed_description" text="重置相机速度" />
 
     <string id="RTSCamera_enemywipedout" text="敌人已被消灭。" />
     <string id="RTSCamera_switchtoenemyteam" text="已切换至敌军队伍。" />

@@ -27,18 +27,25 @@
     <string id="RTSCameraCommandSystem_morevisiblemovementtargethint" text="让移动地点更易识别" />
     <string id="RTSCameraCommandSystem_movementtargetmorevisibleonrtsviewonly" text="仅自由视角下更易识别移动地点" />
     <string id="RTSCameraCommandSystem_targetmorevisibleonrtsviewonlyhint" text="仅会在自由视角下让移动地点更易识别，普通视角下维持原有外观。" />
-    <string id="RTSCameraCommandSystem_lock_formation_position" text="锁定编队相对位置" />
-    <string id="RTSCameraCommandSystem_lock_formation_position_hint" text="移动指令中编队相对位置保持不变。" />
+    <string id="RTSCameraCommandSystem_formation_lock_condition" text="何时启用整体行军" />
+    <string id="RTSCameraCommandSystem_formation_lock_condition_hint" text="移动和转向指令中编队相对位置将保持不变。" />
+    <string id="RTSCameraCommandSystem_formation_lock_condition_option_never" text="从不启用" />
+    <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_pressed" text="当按键按下时" />
+    <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed" text="当按键未按下时" />
 
     <string id="RTSCameraCommandSystem_defensive_attack" text="{TROOP_NAME}优先攻击敌军的{TARGET_NAME}" />
 
     <string id="RTSCameraCommandSystem_hotkeycategory" text="指挥系统按键" />
     <string id="RTSCameraCommandSystem_select_formation" text="选择编队" />
     <string id="RTSCameraCommandSystem_select_formation_hint" text="选择你的编队或发出让你的编队攻击指定的敌方编队的指令。" />
-    <string id="RTSCamera_keep_movement_order" text="保持移动指令 " />
+    <string id="RTSCameraCommandSystem_keep_movement_order" text="保持移动指令 " />
     <string id="RTSCameraCommandSystem_keep_movement_order_hint" text="按下以在攻击敌方编队的同时维持之前的移动指令不变。" />
-    <string id="RTSCamera_command_queue" text="命令队列" />
+    <string id="RTSCameraCommandSystem_formation_lock_movement" text="切换整体行军" />
+    <string id="RTSCameraCommandSystem_formation_lock_movement_hint" text="按住以启用/关闭整体行军" />
+    <string id="RTSCameraCommandSystem_command_queue" text="命令队列" />
     <string id="RTSCameraCommandSystem_command_queue_hint" text="将命令添加到队列。士兵会一个个顺序执行队列中的命令。" />
+    <string id="RTSCameraCommandSystem_command_keep_formation_width" text="保持编队宽度" />
+    <string id="RTSCameraCommandSystem_keep_formation_width_hint" text="按住以在拖动编队时保持编队宽度" />
 
     <string id="RTSCameraCommandSystem_tactic_level_required" text="你的战术等级至少需要{level}级" />
 

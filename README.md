@@ -94,11 +94,11 @@ Unzip the downloaded zip file. Copy `RTSCamera` and `RTSCamera.CommandSystem` fo
 
     - Left click on the ground and drag to change the position, direction and width of the formation you selected.
 
-      - Hold `ctrl` when dragging to arrange multiple formations vertically.
+      - Hold `ctrl` when dragging to keep formation width unchanged.
 
-    - Hold `ctrl` and scroll mouse to adjust camera movement speed.
+    - Hold `right ctrl` and `up` or `down` to adjust camera movement speed.
 
-    - Hold `ctrl` and click middle mouse button to reset camera movement speed.
+    - Hold `right ctrl` and click middle mouse button to reset camera movement speed.
 
     - Hold `ctrl` and drag middle mouse button vertically to adjust camera height.
 

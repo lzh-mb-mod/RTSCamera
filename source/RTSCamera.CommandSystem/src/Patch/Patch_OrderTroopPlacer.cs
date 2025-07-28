@@ -732,7 +732,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static void SelectFormationFromController(OrderTroopPlacer __instance, OrderController ___PlayerOrderController, Formation ____clickedFormation)
         {
-            if (!__instance.Input.IsControlDown())
+            if (!CommandSystemGameKeyCategory.GetKey(GameKeyEnum.FormationLockMovement).IsKeyDownInOrder(__instance.Input))
             {
                 ___PlayerOrderController.ClearSelectedFormations();
                 ___PlayerOrderController.SelectFormation(____clickedFormation);

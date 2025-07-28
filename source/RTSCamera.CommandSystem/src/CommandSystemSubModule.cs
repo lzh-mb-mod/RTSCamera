@@ -89,6 +89,7 @@ namespace RTSCamera.CommandSystem
             _successPatch &=  Patch_OrderTroopPlacer.Patch(_harmony);
             _successPatch &= Patch_OrderTroopItemVM.Patch(_harmony);
             _successPatch &= Patch_FormationMarkerParentWidget.Patch(_harmony);
+            _successPatch &= Patch_MissionOrderTroopControllerVM.Patch(_harmony);
             // Patch issue that order troop placer is inconsistent with actual order issued during dragging
             _successPatch &= Patch_OrderController.Patch(_harmony);
             _successPatch &= Patch_Formation.Patch(_harmony);

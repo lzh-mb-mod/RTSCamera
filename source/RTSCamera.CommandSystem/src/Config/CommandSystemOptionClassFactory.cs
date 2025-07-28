@@ -86,13 +86,16 @@ namespace RTSCamera.CommandSystem.Config
                     {
                         CommandSystemConfig.Get().MovementTargetMoreVisibleOnRtsViewOnly = b;
                     }));
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_lock_formation_position"),
-                    GameTexts.FindText("str_rts_camera_command_system_lock_formation_position_hint"),
-                    () => CommandSystemConfig.Get().LockFormationPosition, b =>
-                    {
-                        CommandSystemConfig.Get().LockFormationPosition = b;
-                    }));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_formation_lock_condition"),
+                    GameTexts.FindText("str_rts_camera_command_system_formation_lock_condition_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().FormationLockCondition = (FormationLockCondition)i,
+                        () => (int)CommandSystemConfig.Get().FormationLockCondition, (int)FormationLockCondition.Count, new List<SelectionItem>
+                        {
+                            new SelectionItem(true, "str_rts_camera_command_system_formation_lock_condition_option", "Never"),
+                            new SelectionItem(true, "str_rts_camera_command_system_formation_lock_condition_option", "WhenPressed"),
+                            new SelectionItem(true, "str_rts_camera_command_system_formation_lock_condition_option", "WhenNotPressed")
+                        }), false));
                 optionClass.AddOptionCategory(0, commandOptionCategory);
 
                 return optionClass;

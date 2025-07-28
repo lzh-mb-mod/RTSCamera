@@ -130,5 +130,33 @@ namespace RTSCamera.CommandSystem.Utilities
             //DisplayChargeToFormationMessage(playerController.SelectedFormations,
             //    targetFormation);
         }
+
+        public static bool ShouldLockFormation()
+        {
+            var config = CommandSystemConfig.Get();
+            var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
+            if (config == null || missionScreen == null)
+            {
+                return false;
+            }
+            switch (config.FormationLockCondition)
+            {
+                case FormationLockCondition.Never:
+                    return false;
+                case FormationLockCondition.WhenPressed:
+                    return CommandSystemGameKeyCategory.GetKey(GameKeyEnum.FormationLockMovement).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
+                case FormationLockCondition.WhenNotPressed:
+                    return !CommandSystemGameKeyCategory.GetKey(GameKeyEnum.FormationLockMovement).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
+            }
+            return false;
+        }
+
+        public static bool ShouldKeepFormationWidth()
+        {
+            var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
+            if (missionScreen == null)
+                return false;
+            return CommandSystemGameKeyCategory.GetKey(GameKeyEnum.KeepFormationWidth).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
+        }
     }
 }

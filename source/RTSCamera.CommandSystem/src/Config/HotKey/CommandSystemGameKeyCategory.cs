@@ -12,7 +12,9 @@ namespace RTSCamera.CommandSystem.Config.HotKey
     {
         SelectFormation,
         KeepMovementOrder,
+        FormationLockMovement,
         CommandQueue,
+        KeepFormationWidth,
         NumberOfGameKeyEnums
     }
     public class CommandSystemGameKeyCategory
@@ -48,6 +50,26 @@ namespace RTSCamera.CommandSystem.Config.HotKey
                         new List<InputKey>()
                         {
                             InputKey.LeftAlt
+                        }),
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.RightAlt
+                        })
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.FormationLockMovement,
+                nameof(GameKeyEnum.FormationLockMovement),
+                CategoryId, new List<GameKeySequenceAlternative>()
+                {
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.LeftAlt
+                        }),
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.RightAlt
                         })
                 }));
             result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.CommandQueue,
@@ -58,6 +80,26 @@ namespace RTSCamera.CommandSystem.Config.HotKey
                         new List<InputKey>()
                         {
                             InputKey.LeftShift
+                        }),
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.RightShift
+                        })
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.KeepFormationWidth,
+                nameof(GameKeyEnum.KeepFormationWidth),
+                CategoryId, new List<GameKeySequenceAlternative>()
+                {
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.LeftControl
+                        }),
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.RightControl
                         })
                 }));
             return result;

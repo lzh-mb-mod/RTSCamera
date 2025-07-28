@@ -26,6 +26,9 @@ namespace RTSCamera.Config.HotKey
         CameraMoveDown,
         IncreaseCameraDistanceLimit,
         DecreaseCameraDistanceLimit,
+        IncreaseCameraSpeed,
+        DecreaseCameraSpeed,
+        ResetCameraSpeed,
         NumberOfGameKeyEnums
     }
     public class RTSCameraGameKeyCategory
@@ -160,6 +163,33 @@ namespace RTSCamera.Config.HotKey
                     new GameKeySequenceAlternative(
                         new List<InputKey> () {
                             InputKey.RightShift, InputKey.Minus
+                        }
+                    )
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.IncreaseCameraSpeed,
+                nameof(GameKeyEnum.IncreaseCameraSpeed), CategoryId, new List<GameKeySequenceAlternative>()
+                {
+                    new GameKeySequenceAlternative(
+                        new List<InputKey> () {
+                            InputKey.RightControl, InputKey.Up
+                        }
+                    )
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.DecreaseCameraSpeed,
+                nameof(GameKeyEnum.DecreaseCameraSpeed), CategoryId, new List<GameKeySequenceAlternative>()
+                {
+                    new GameKeySequenceAlternative(
+                        new List<InputKey> () {
+                            InputKey.RightControl, InputKey.Down
+                        }
+                    )
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.ResetCameraSpeed,
+                nameof(GameKeyEnum.ResetCameraSpeed), CategoryId, new List<GameKeySequenceAlternative>()
+                {
+                    new GameKeySequenceAlternative(
+                        new List<InputKey> () {
+                            InputKey.RightControl, InputKey.MiddleMouseButton
                         }
                     )
                 }));
