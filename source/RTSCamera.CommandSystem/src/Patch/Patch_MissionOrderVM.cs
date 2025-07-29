@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Config.HotKey;
 using System;
 using System.Reflection;
 using TaleWorlds.MountAndBlade;
@@ -42,6 +43,10 @@ namespace RTSCamera.CommandSystem.Patch
                 return true;
 
             var input = missionScreen.SceneLayer.Input;
+            if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(input))
+            {
+                return false;
+            }
 
             return true;
         }

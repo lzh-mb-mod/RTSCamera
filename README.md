@@ -126,6 +126,8 @@ Unzip the downloaded zip file. Copy `RTSCamera` and `RTSCamera.CommandSystem` fo
 
   - After `Limit Camera Distance` is enabled, using free camera and ordering in free camera can improve scouting and tactics skill level.
 
+- Click on castle gate won't attack the enemy formation behind the gate, which is an issue in the base game. 
+
 ### Command System
 - You can make your formation charge to the enemy formation by clicking middle mouse button on enemy units.
 

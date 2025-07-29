@@ -39,6 +39,12 @@ namespace RTSCamera.Patch
         // Use mouse position instead of screen center to target formation.
         public static bool Prefix_GetFormationDistanceToCenter(MissionFormationTargetSelectionHandler __instance, Formation formation, Vec3 cameraPosition, ref float __result)
         {
+            if (__instance.MissionScreen.OrderFlag.FocusedOrderableObject != null)
+            {
+                __result = int.MaxValue;
+                return false;
+            }
+
             if (!__instance.MissionScreen.MouseVisible)
             {
                 return true;
