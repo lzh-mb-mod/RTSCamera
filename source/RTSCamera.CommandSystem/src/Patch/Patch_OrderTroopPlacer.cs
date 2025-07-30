@@ -761,14 +761,21 @@ namespace RTSCamera.CommandSystem.Patch
             WorldPosition formationRealEndingPosition,
             bool isFormationLayoutVertical, ref bool ___isDrawnThisFrame, OrderController ___PlayerOrderController)
         {
+            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(__instance.MissionScreen.SceneLayer.Input);
+            if (!queueCommand)
+            {
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
+            }
+            else
+            {
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(Patch_OrderController.LatestOrderInQueueChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
+            }
             if (giveOrder)
             {
-                if (!CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(__instance.MissionScreen.SceneLayer.Input))
+                if (!queueCommand)
                 {
                     CommandQueueLogic.ClearOrderInQueue(___PlayerOrderController.SelectedFormations);
                     CommandQueueLogic.SkipCurrentOrderForFormations(___PlayerOrderController.SelectedFormations);
-                    Patch_OrderController.SetVirtualPositions(CommandQueueLogic.CollectVirtualPositions(___PlayerOrderController.SelectedFormations));
-                    Patch_OrderController.SetVirtualDirections(CommandQueueLogic.CollectVirtualDirections(___PlayerOrderController.SelectedFormations));
                 }
                 ___isDrawnThisFrame = true;
                 OrderController.SimulateNewOrderWithPositionAndDirection(___PlayerOrderController.SelectedFormations, ___PlayerOrderController.simulationFormations, formationRealStartingPosition, formationRealEndingPosition, out var formationChanges, out var isLineShort, isFormationLayoutVertical);
@@ -778,12 +785,11 @@ namespace RTSCamera.CommandSystem.Patch
                         SelectedFormations = ___PlayerOrderController.SelectedFormations,
                         CustomOrderType = isFormationLayoutVertical ? CustomOrderType.MoveToLineSegment : CustomOrderType.MoveToLineSegmentWithHorizontalLayout,
                         IsLineShort = isLineShort,
-                        FormationChanges = formationChanges,
+                        ActualFormationChanges = formationChanges,
                         OrderType = isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout,
                         PositionBegin = formationRealStartingPosition,
                         PositionEnd = formationRealEndingPosition,
-                        VirtualPositions = Patch_OrderController.CollectVirtualPositions(___PlayerOrderController.SelectedFormations),
-                        VirtualDirections = Patch_OrderController.CollectVirtualDirections(___PlayerOrderController.SelectedFormations)
+                        VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations)
                     });
                 return false;
             }

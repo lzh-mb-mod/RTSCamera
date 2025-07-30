@@ -160,16 +160,16 @@ namespace RTSCamera.Patch.Fix
                     mouseVisibility ? InputUsageMask.All : InputUsageMask.Invalid);
             }
 
-            if (__instance.MissionScreen.OrderFlag != null)
-            {
-                bool orderFlagVisibility = (____dataSource.IsToggleOrderShown || IsAnyDeployment(__instance)) &&
-                                           !____dataSource.TroopController.IsTransferActive &&
-                                           !_rightButtonDraggingMode && !_earlyDraggingMode;
-                if (orderFlagVisibility != __instance.MissionScreen.OrderFlag.IsVisible)
-                {
-                    __instance.MissionScreen.SetOrderFlagVisibility(orderFlagVisibility);
-                }
-            }
+            //if (__instance.MissionScreen.OrderFlag != null)
+            //{
+            //    bool orderFlagVisibility = (____dataSource.IsToggleOrderShown || IsAnyDeployment(__instance)) &&
+            //                               !____dataSource.TroopController.IsTransferActive &&
+            //                               !_rightButtonDraggingMode && !_earlyDraggingMode;
+            //    if (orderFlagVisibility != __instance.MissionScreen.OrderFlag.IsVisible)
+            //    {
+            //        __instance.MissionScreen.SetOrderFlagVisibility(orderFlagVisibility);
+            //    }
+            //}
         }
 
         private static void UpdateDragData(MissionGauntletSingleplayerOrderUIHandler __instance, MissionOrderVM ____dataSource, OrderTroopPlacer ____orderTroopPlacer)

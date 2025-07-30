@@ -1,13 +1,12 @@
 ﻿using MissionSharedLibrary.Utilities;
-using NetworkMessages.FromClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using static TaleWorlds.MountAndBlade.Source.Objects.Siege.AgentPathNavMeshChecker;
 
 namespace RTSCamera.CommandSystem.Logic
 {
@@ -52,11 +51,9 @@ namespace RTSCamera.CommandSystem.Logic
 
         public bool ShouldLockFormationInFacingOrder { get; set; }
 
-        public List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)> FormationChanges { get; set; }
+        public List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)> ActualFormationChanges { get; set; }
 
-        public Dictionary<Formation, Vec2> VirtualPositions { get; set; } = new Dictionary<Formation, Vec2>();
-
-        public Dictionary<Formation, Vec2> VirtualDirections { get; set; } = new Dictionary<Formation, Vec2>();
+        public Dictionary<Formation, FormationChange> VirtualFormationChanges { get; set; } = new Dictionary<Formation, FormationChange>();
     }
 
     public static class CommandQueueLogic
@@ -68,16 +65,14 @@ namespace RTSCamera.CommandSystem.Logic
         public static Dictionary<Formation, bool> ShouldSkipCurrentOrders = new Dictionary<Formation, bool>();
 
         // virtual positions of last executed order.
-        public static Dictionary<Formation, Vec2> VirtualPositions = new Dictionary<Formation, Vec2>();
-        public static Dictionary<Formation, Vec2> VirtualDirections = new Dictionary<Formation, Vec2>();
+        public static FormationChanges CurrentFormationChanges = new FormationChanges();
 
         public static void OnBehaviorInitialize()
         {
             OrderQueue = new List<OrderInQueue>();
             PendingOrders = new Dictionary<Formation, OrderInQueue>();
             ShouldSkipCurrentOrders = new Dictionary<Formation, bool>();
-            VirtualPositions = new Dictionary<Formation, Vec2>();
-            VirtualDirections = new Dictionary<Formation, Vec2>();
+            CurrentFormationChanges = new FormationChanges();
         }
 
         public static void OnRemoveBehavior()
@@ -85,8 +80,7 @@ namespace RTSCamera.CommandSystem.Logic
             OrderQueue = null;
             PendingOrders = null;
             ShouldSkipCurrentOrders = null;
-            VirtualPositions = null;
-            VirtualDirections = null;
+            CurrentFormationChanges = null;
         }
 
         public static void AddOrderToQueue(OrderInQueue order)
@@ -116,31 +110,6 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 ShouldSkipCurrentOrders[formation] = true;
             }
-        }
-        public static void SetVirtualPositions(IEnumerable<KeyValuePair<Formation, Vec2>> virtualPositions)
-        {
-            foreach (var pair in virtualPositions)
-            {
-                VirtualPositions[pair.Key] = pair.Value;
-            }
-        }
-
-        private static void SetVirtualDirections(IEnumerable<KeyValuePair<Formation, Vec2>> virtualDirections)
-        {
-            foreach (var pair in virtualDirections)
-            {
-                VirtualDirections[pair.Key] = pair.Value;
-            }
-        }
-
-        public static IEnumerable<KeyValuePair<Formation, Vec2>> CollectVirtualPositions(IEnumerable<Formation> formations)
-        {
-            return VirtualPositions.Where(pair => formations.Contains(pair.Key));
-        }
-
-        public static IEnumerable<KeyValuePair<Formation, Vec2>> CollectVirtualDirections(IEnumerable<Formation> formations)
-        {
-            return VirtualDirections.Where(pair => formations.Contains(pair.Key));
         }
 
         public static void UpdateFormation(Formation formation)
@@ -244,8 +213,7 @@ namespace RTSCamera.CommandSystem.Logic
                             case OrderType.LookAtDirection:
                                 FacingOrderLookAtDirection(order, formation);
                                 FormationPendingOrder(formation, order);
-                                SetVirtualPositions(order.VirtualPositions.Where(pair => pair.Key == formation));
-                                SetVirtualDirections(order.VirtualDirections.Where(pair => pair.Key == formation));
+                                CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
                             case OrderType.LookAtEnemy:
                                 TryCancelStopOrder(formation);
@@ -313,7 +281,7 @@ namespace RTSCamera.CommandSystem.Logic
                 case CustomOrderType.MoveToLineSegment:
                 case CustomOrderType.MoveToLineSegmentWithHorizontalLayout:
                     {
-                        var formationChanges = order.FormationChanges;
+                        var formationChanges = order.ActualFormationChanges;
                         (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.First(c => c.formation == formation);
                         if (order.IsLineShort)
                         {
@@ -335,8 +303,7 @@ namespace RTSCamera.CommandSystem.Logic
                             formation.FormOrder = FormOrder.FormOrderCustom(customWidth);
                         }
                         FormationPendingOrder(formation, order);
-                        SetVirtualPositions(order.VirtualPositions.Where(pair => pair.Key == formation));
-                        SetVirtualDirections(order.VirtualDirections.Where(pair => pair.Key == formation));
+                        CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                         break;
                     }
                 case CustomOrderType.ToggleFacing:
@@ -350,8 +317,7 @@ namespace RTSCamera.CommandSystem.Logic
                         FacingOrderLookAtDirection(order, formation);
                     }
                     FormationPendingOrder(formation, order);
-                    SetVirtualPositions(order.VirtualPositions.Where(pair => pair.Key == formation));
-                    SetVirtualDirections(order.VirtualDirections.Where(pair => pair.Key == formation));
+                    CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                     break;
                 case CustomOrderType.ToggleFire:
                     if (order.SelectedFormations.Any(f => f.FiringOrder.OrderType == OrderType.FireAtWill))
@@ -410,7 +376,7 @@ namespace RTSCamera.CommandSystem.Logic
         {
             if (order.ShouldLockFormationInFacingOrder)
             {
-                var formationChanges = order.FormationChanges;
+                var formationChanges = order.ActualFormationChanges;
                 (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.First(c => c.formation == formation);
                 formation.SetMovementOrder(MovementOrder.MovementOrderMove(position));
                 formation.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);

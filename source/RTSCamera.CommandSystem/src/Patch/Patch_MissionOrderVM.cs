@@ -118,12 +118,16 @@ namespace RTSCamera.CommandSystem.Patch
         private static OrderInQueue GetOrderToAdd(MissionOrderVM __instance)
         {
             var missionScreen = Utility.GetMissionScreen();
-            if (!CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input))
+            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
+            if (!queueCommand)
             {
                 CommandQueueLogic.ClearOrderInQueue(__instance.OrderController.SelectedFormations);
                 CommandQueueLogic.SkipCurrentOrderForFormations(__instance.OrderController.SelectedFormations);
-                Patch_OrderController.SetVirtualPositions(CommandQueueLogic.CollectVirtualPositions(__instance.OrderController.SelectedFormations));
-                Patch_OrderController.SetVirtualDirections(CommandQueueLogic.CollectVirtualDirections(__instance.OrderController.SelectedFormations));
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations));
+            }
+            else
+            {
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(Patch_OrderController.LatestOrderInQueueChanges.CollectChanges(__instance.OrderController.SelectedFormations));
             }
             var orderToAdd = new OrderInQueue
             {
@@ -142,11 +146,10 @@ namespace RTSCamera.CommandSystem.Patch
                         OrderController.SimulateNewOrderWithPositionAndDirection(__instance.OrderController.SelectedFormations, __instance.OrderController.simulationFormations, unitPosition, unitPosition, out var formationChanges, out var isLineShort, true);
                         orderToAdd.CustomOrderType = CustomOrderType.MoveToLineSegment;
                         orderToAdd.IsLineShort = isLineShort;
-                        orderToAdd.FormationChanges = formationChanges;
+                        orderToAdd.ActualFormationChanges = formationChanges;
                         orderToAdd.PositionBegin = unitPosition;
                         orderToAdd.PositionEnd = unitPosition;
-                        orderToAdd.VirtualPositions = Patch_OrderController.CollectVirtualPositions(__instance.OrderController.SelectedFormations);
-                        orderToAdd.VirtualDirections = Patch_OrderController.CollectVirtualDirections(__instance.OrderController.SelectedFormations);
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                         break;
                     }
                     return null;
@@ -216,9 +219,8 @@ namespace RTSCamera.CommandSystem.Patch
                             out _,
                             true,
                             out var simulationFormationChanges);
-                        orderToAdd.FormationChanges = simulationFormationChanges;
-                        orderToAdd.VirtualPositions = Patch_OrderController.CollectVirtualPositions(__instance.OrderController.SelectedFormations);
-                        orderToAdd.VirtualDirections = Patch_OrderController.CollectVirtualDirections(__instance.OrderController.SelectedFormations);
+                        orderToAdd.ActualFormationChanges = simulationFormationChanges;
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     }
                     else
                     {
@@ -250,9 +252,8 @@ namespace RTSCamera.CommandSystem.Patch
                             out _,
                             true,
                             out var simulationFormationChanges);
-                        orderToAdd.FormationChanges = simulationFormationChanges;
-                        orderToAdd.VirtualPositions = Patch_OrderController.CollectVirtualPositions(__instance.OrderController.SelectedFormations);
-                        orderToAdd.VirtualDirections = Patch_OrderController.CollectVirtualDirections(__instance.OrderController.SelectedFormations);
+                        orderToAdd.ActualFormationChanges = simulationFormationChanges;
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     }
                     else
                     {

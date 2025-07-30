@@ -107,8 +107,11 @@ namespace RTSCamera.CommandSystem.Utilities
             {
                 CommandQueueLogic.ClearOrderInQueue(playerController.SelectedFormations);
                 CommandQueueLogic.SkipCurrentOrderForFormations(playerController.SelectedFormations);
-                Patch_OrderController.SetVirtualPositions(CommandQueueLogic.CollectVirtualPositions(playerController.SelectedFormations));
-                Patch_OrderController.SetVirtualDirections(CommandQueueLogic.CollectVirtualDirections(playerController.SelectedFormations));
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(playerController.SelectedFormations));
+            }
+            else
+            {
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(Patch_OrderController.LatestOrderInQueueChanges.CollectChanges(playerController.SelectedFormations));
             }
             if (keepMovementOrder)
             {

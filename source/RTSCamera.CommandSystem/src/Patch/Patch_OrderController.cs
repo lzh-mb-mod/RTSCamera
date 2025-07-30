@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
-using RTSCamera.CommandSystem.Config.HotKey;
+using RTSCamera.CommandSystem.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +10,6 @@ using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Screens;
-using TaleWorlds.ScreenSystem;
 
 namespace RTSCamera.CommandSystem.Patch
 {
@@ -29,9 +27,8 @@ namespace RTSCamera.CommandSystem.Patch
         private static Dictionary<Formation, int> _naturalUnitSpacings = new Dictionary<Formation, int>();
         private static Dictionary<Formation, int> _customUnitSpacings = new Dictionary<Formation, int>();
         private static Dictionary<Formation, float> _widthsBackup = new Dictionary<Formation, float>();
-        private static Dictionary<Formation, Vec2> _virtualOrderPositions = new Dictionary<Formation, Vec2>();
-        private static Dictionary<Formation, Vec2> _virtualDirections = new Dictionary<Formation, Vec2>();
-
+        public static FormationChanges LivePreviewFormationChanges = new FormationChanges();
+        public static FormationChanges LatestOrderInQueueChanges = new FormationChanges();
 
         public static bool Patch(Harmony harmony)
         {
@@ -102,8 +99,8 @@ namespace RTSCamera.CommandSystem.Patch
             _naturalUnitSpacings = new Dictionary<Formation, int>();
             _customUnitSpacings = new Dictionary<Formation, int>();
             _widthsBackup = new Dictionary<Formation, float>();
-            _virtualOrderPositions = new Dictionary<Formation, Vec2>();
-            _virtualDirections = new Dictionary<Formation, Vec2>();
+            LivePreviewFormationChanges = new FormationChanges();
+            LatestOrderInQueueChanges = new FormationChanges();
         }
 
         public static void OnRemoveBehavior()
@@ -111,35 +108,8 @@ namespace RTSCamera.CommandSystem.Patch
             _naturalUnitSpacings = null;
             _customUnitSpacings = null;
             _widthsBackup = null;
-            _virtualOrderPositions = null;
-            _virtualDirections = null;
-        }
-
-
-        public static void SetVirtualPositions(IEnumerable<KeyValuePair<Formation, Vec2>> virtualPositions)
-        {
-            foreach (var pair in virtualPositions)
-            {
-                _virtualOrderPositions[pair.Key] = pair.Value;
-            }
-        }
-
-        public static void SetVirtualDirections(IEnumerable<KeyValuePair<Formation, Vec2>> virtualDirections)
-        {
-            foreach (var pair in virtualDirections)
-            {
-                _virtualDirections[pair.Key] = pair.Value;
-            }
-        }
-
-        public static Dictionary<Formation, Vec2> CollectVirtualPositions(IEnumerable<Formation> formations)
-        {
-            return _virtualOrderPositions.Where(pair => formations.Contains(pair.Key)).ToDictionary(pair => pair.Key, pair => pair.Value);
-        }
-
-        public static Dictionary<Formation, Vec2> CollectVirtualDirections(IEnumerable<Formation> formations)
-        {
-            return _virtualDirections.Where(pair => formations.Contains(pair.Key)).ToDictionary(pair => pair.Key, pair => pair.Value);
+            LivePreviewFormationChanges = null;
+            LatestOrderInQueueChanges = null;
         }
 
         public static void OnAddTeam(Team team)
@@ -613,8 +583,8 @@ namespace RTSCamera.CommandSystem.Patch
                 }
                 if (isSimulatingFormationChanges)
                 {
-                    _virtualOrderPositions[formation] = formationPositionVec2;
-                    _virtualDirections[formation] = formationDirection;
+                    LivePreviewFormationChanges.UpdateFormationChange(formation, formationPositionVec2, formationDirection, null, null);
+                    LatestOrderInQueueChanges.UpdateFormationChange(formation, formationPositionVec2, formationDirection, null, null);
                 }
 
                 DecreaseUnitSpacingAndWidthIfNotAllUnitsFit(formation, GetSimulationFormation(formation, simulationFormations), in formationPosition, in formationDirection, ref formationWidth, ref unitSpacingReduction, actualUnitSpacing);
@@ -667,8 +637,8 @@ namespace RTSCamera.CommandSystem.Patch
 
                 if (isSimulatingFormationChanges)
                 {
-                    _virtualOrderPositions[formation] = formationPositionVec2;
-                    _virtualDirections[formation] = formationDirection;
+                    LivePreviewFormationChanges.UpdateFormationChange(formation, formationPositionVec2, formationDirection, null, null);
+                    LatestOrderInQueueChanges.UpdateFormationChange(formation, formationPositionVec2, formationDirection, null, null);
                 }
                 int unitSpacingReduction = 0;
                 // override official code from using formation.UnitSpacing to using GetActualUnitSpacing(formation)
@@ -713,8 +683,8 @@ namespace RTSCamera.CommandSystem.Patch
 
                 if (isSimulatingFormationChanges)
                 {
-                    _virtualOrderPositions[formation] = formationPositionVec2;
-                    _virtualDirections[formation] = formationDirection;
+                    LivePreviewFormationChanges.UpdateFormationChange(formation, formationPositionVec2, formationDirection, null, null);
+                    LatestOrderInQueueChanges.UpdateFormationChange(formation, formationPositionVec2, formationDirection, null, null);
                 }
                 int unitSpacingReduction = 0;
                 // override official code from using formation.UnitSpacing to using GetActualUnitSpacing(formation)
@@ -1027,7 +997,8 @@ namespace RTSCamera.CommandSystem.Patch
                     foreach (var formation in __instance.SelectedFormations)
                     {
                         formation.FacingOrder = facingOrder;
-                        _virtualDirections[formation] = direction;
+                        LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
+                        LatestOrderInQueueChanges.UpdateFormationChange(formation, null, direction, null, null);
                     }
                 }
             }
@@ -1202,8 +1173,8 @@ namespace RTSCamera.CommandSystem.Patch
 
                 if (isSimulatingFormationChanges)
                 {
-                    _virtualOrderPositions[formation] = newPositionVec2;
-                    _virtualDirections[formation] = newDirection;
+                    LivePreviewFormationChanges.UpdateFormationChange(formation, newPositionVec2, newDirection, null, null);
+                    LatestOrderInQueueChanges.UpdateFormationChange(formation, newPositionVec2, newDirection, null, null);
                 }
                 int unitSpacingReduction = 0;
                 var actualUnitSpacing = GetActualOrCurrentUnitSpacing(formation);
@@ -1223,14 +1194,14 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static Vec2 GetFormationVirtualPosition(Formation formation)
         {
-            bool hasVirtualOrderPosition = _virtualOrderPositions.ContainsKey(formation);
-            return hasVirtualOrderPosition ? _virtualOrderPositions[formation] : formation.OrderPosition.IsValid ? formation.OrderPosition : formation.CurrentPosition;
+            bool hasVirtualOrderPosition = LivePreviewFormationChanges.VirtualChanges.ContainsKey(formation);
+            return hasVirtualOrderPosition && LivePreviewFormationChanges.VirtualChanges[formation].Position != null ? LivePreviewFormationChanges.VirtualChanges[formation].Position.Value : formation.OrderPosition.IsValid ? formation.OrderPosition : formation.CurrentPosition;
         }
 
         private static Vec2 GetFormationVirtualDirection(Formation formation)
         {
-            bool hasVirtualDirection = _virtualDirections.ContainsKey(formation);
-            return hasVirtualDirection ? _virtualDirections[formation] : formation.Direction;
+            bool hasVirtualDirection = LivePreviewFormationChanges.VirtualChanges.ContainsKey(formation);
+            return hasVirtualDirection && LivePreviewFormationChanges.VirtualChanges[formation].Direciton != null ? LivePreviewFormationChanges.VirtualChanges[formation].Direciton.Value : formation.Direction;
         }
     }
 }
