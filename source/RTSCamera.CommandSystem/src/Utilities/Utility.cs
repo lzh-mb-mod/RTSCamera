@@ -1,5 +1,7 @@
 ﻿using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
+using RTSCamera.CommandSystem.Logic;
+using RTSCamera.CommandSystem.Patch;
 using System.Collections.Generic;
 using System.Reflection;
 using TaleWorlds.Core;
@@ -99,13 +101,38 @@ namespace RTSCamera.CommandSystem.Utilities
 
         public static void ChargeToFormation(OrderController playerController, Formation targetFormation, bool keepMovementOrder)
         {
+            var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
             //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
+            if (!CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input))
+            {
+                CommandQueueLogic.ClearOrderInQueue(playerController.SelectedFormations);
+                CommandQueueLogic.SkipCurrentOrderForFormations(playerController.SelectedFormations);
+                Patch_OrderController.SetVirtualPositions(CommandQueueLogic.CollectVirtualPositions(playerController.SelectedFormations));
+                Patch_OrderController.SetVirtualDirections(CommandQueueLogic.CollectVirtualDirections(playerController.SelectedFormations));
+            }
+            if (keepMovementOrder)
+            {
+                CommandQueueLogic.AddOrderToQueue(new OrderInQueue
+                {
+                    CustomOrderType = CustomOrderType.SetTargetFormation,
+                    SelectedFormations = playerController.SelectedFormations,
+                    TargetFormation = targetFormation
+                });
+            }
+            else
+            {
+                CommandQueueLogic.AddOrderToQueue(new OrderInQueue
+                {
+                    OrderType = OrderType.ChargeWithTarget,
+                    SelectedFormations = playerController.SelectedFormations,
+                    TargetFormation = targetFormation
+                });
+            }
             if (keepMovementOrder)
             {
                 foreach (Formation selectedFormation in playerController.SelectedFormations)
                 {
                     selectedFormation.SetTargetFormation(targetFormation);
-                    DisplayFocusAttackMessage(selectedFormation, targetFormation);
                 }
                 // In current game version, set ChargeWithTarget has no effect except voice and gesture
                 // so movement order will not be changed here
@@ -117,7 +144,6 @@ namespace RTSCamera.CommandSystem.Utilities
                 {
                     selectedFormation.SetMovementOrder(MovementOrder.MovementOrderChargeToTarget(targetFormation));
                     selectedFormation.SetTargetFormation(targetFormation);
-                    DisplayFormationChargeMessage(selectedFormation);
                 }
                 // In current game version, set ChargeWithTarget has no effect except voice and gesture
                 // so movement order will not be changed here

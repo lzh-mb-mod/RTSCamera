@@ -16,6 +16,7 @@ namespace RTSCamera.CommandSystem.Logic
             FormationColorSubLogic.OnBehaviourInitialize();
             Patch_OrderTroopPlacer.OnBehaviorInitialize();
             Patch_OrderController.OnBehaviorInitialize();
+            CommandQueueLogic.OnBehaviorInitialize();
 
             Utilities.Utility.PrintOrderHint();
         }
@@ -25,6 +26,7 @@ namespace RTSCamera.CommandSystem.Logic
             FormationColorSubLogic.OnRemoveBehaviour();
             Patch_OrderTroopPlacer.OnRemoveBehavior();
             Patch_OrderController.OnRemoveBehavior();
+            CommandQueueLogic.OnRemoveBehavior();
         }
 
         public override void OnAddTeam(Team team)

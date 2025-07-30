@@ -94,6 +94,9 @@ namespace RTSCamera.CommandSystem
             _successPatch &= Patch_OrderController.Patch(_harmony);
             _successPatch &= Patch_Formation.Patch(_harmony);
 
+            // command queue
+            _successPatch &= Patch_MissionOrderVM.Patch(_harmony);
+
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera Command System: patch failed"));

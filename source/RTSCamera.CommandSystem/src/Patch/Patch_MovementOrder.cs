@@ -24,29 +24,7 @@ namespace RTSCamera.CommandSystem.Patch
                     __result = MovementOrder.MovementOrderMove(position);
                     return false;
                 }
-                else
-                {
-
-                    //if (formation.Team == Mission.Current.PlayerTeam && formation.PlayerOwner == Agent.Main)
-                    //{
-                    //    Utility.DisplayFormationReadyMessage(formation);
-                    //    Utility.DisplayFormationChargeMessage(formation);
-                    //}
-                    return true;
-                }
             }
-
-            return true;
-        }
-
-        public static bool SetChargeBehaviorValues_Prefix(Agent unit)
-        {
-            // TODO: Need update
-            //if (Utility.ShouldChargeToFormation(unit))
-            //{
-            //    UnitAIBehaviorValues.SetUnitAIBehaviorWhenChargeToFormation(unit);
-            //    return false;
-            //}
 
             return true;
         }

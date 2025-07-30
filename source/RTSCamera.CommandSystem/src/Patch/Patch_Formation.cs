@@ -1,7 +1,10 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Logic;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Patch
@@ -37,7 +40,7 @@ namespace RTSCamera.CommandSystem.Patch
 
                 harmony.Patch(
                     typeof(Formation).GetMethod("ReapplyFormOrder",
-                    BindingFlags.Instance | BindingFlags.NonPublic),
+                        BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
                         nameof(Prefix_ReapplyFormOrder), BindingFlags.Static | BindingFlags.Public)));
 
@@ -46,6 +49,13 @@ namespace RTSCamera.CommandSystem.Patch
                     BindingFlags.Static | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
                         nameof(Prefix_TransformCustomWidthBetweenArrangementOrientations), BindingFlags.Static | BindingFlags.Public)));
+
+                // Command Queue
+                harmony.Patch(
+                    typeof(Formation).GetMethod(nameof(Formation.Tick),
+                        BindingFlags.Instance | BindingFlags.Public),
+                    prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
+                        nameof(Prefix_Tick), BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {
@@ -115,5 +125,10 @@ namespace RTSCamera.CommandSystem.Patch
             return true;
         }
 
+        public static bool Prefix_Tick(Formation __instance, float dt)
+        {
+            CommandQueueLogic.UpdateFormation(__instance);
+            return true;
+        }
     }
 }

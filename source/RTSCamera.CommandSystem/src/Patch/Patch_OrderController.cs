@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Config.HotKey;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View.Screens;
+using TaleWorlds.ScreenSystem;
 
 namespace RTSCamera.CommandSystem.Patch
 {
@@ -27,6 +30,8 @@ namespace RTSCamera.CommandSystem.Patch
         private static Dictionary<Formation, int> _customUnitSpacings = new Dictionary<Formation, int>();
         private static Dictionary<Formation, float> _widthsBackup = new Dictionary<Formation, float>();
         private static Dictionary<Formation, Vec2> _virtualOrderPositions = new Dictionary<Formation, Vec2>();
+        private static Dictionary<Formation, Vec2> _virtualDirections = new Dictionary<Formation, Vec2>();
+
 
         public static bool Patch(Harmony harmony)
         {
@@ -74,6 +79,7 @@ namespace RTSCamera.CommandSystem.Patch
                         BindingFlags.Instance | BindingFlags.Public),
                     transpiler: new HarmonyMethod(typeof(Patch_OrderController).GetMethod(
                         nameof(Transpile_SetOrderWithPosition), BindingFlags.Static | BindingFlags.Public)));
+                // For facing order
                 harmony.Patch(
                     typeof(OrderController).GetMethod(nameof(OrderController.SetOrderWithPosition),
                         BindingFlags.Instance | BindingFlags.Public),
@@ -97,6 +103,7 @@ namespace RTSCamera.CommandSystem.Patch
             _customUnitSpacings = new Dictionary<Formation, int>();
             _widthsBackup = new Dictionary<Formation, float>();
             _virtualOrderPositions = new Dictionary<Formation, Vec2>();
+            _virtualDirections = new Dictionary<Formation, Vec2>();
         }
 
         public static void OnRemoveBehavior()
@@ -105,6 +112,34 @@ namespace RTSCamera.CommandSystem.Patch
             _customUnitSpacings = null;
             _widthsBackup = null;
             _virtualOrderPositions = null;
+            _virtualDirections = null;
+        }
+
+
+        public static void SetVirtualPositions(IEnumerable<KeyValuePair<Formation, Vec2>> virtualPositions)
+        {
+            foreach (var pair in virtualPositions)
+            {
+                _virtualOrderPositions[pair.Key] = pair.Value;
+            }
+        }
+
+        public static void SetVirtualDirections(IEnumerable<KeyValuePair<Formation, Vec2>> virtualDirections)
+        {
+            foreach (var pair in virtualDirections)
+            {
+                _virtualDirections[pair.Key] = pair.Value;
+            }
+        }
+
+        public static Dictionary<Formation, Vec2> CollectVirtualPositions(IEnumerable<Formation> formations)
+        {
+            return _virtualOrderPositions.Where(pair => formations.Contains(pair.Key)).ToDictionary(pair => pair.Key, pair => pair.Value);
+        }
+
+        public static Dictionary<Formation, Vec2> CollectVirtualDirections(IEnumerable<Formation> formations)
+        {
+            return _virtualDirections.Where(pair => formations.Contains(pair.Key)).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
         public static void OnAddTeam(Team team)
@@ -427,8 +462,8 @@ namespace RTSCamera.CommandSystem.Patch
                     }
                     if (formations.Any())
                     {
-                        float num1 = !isFormationLayoutVertical ? formations.Max<Formation>((Func<Formation, float>)(f => GetActualOrCurrentWidth(f))) : formations.Sum<Formation>((Func<Formation, float>)(f => GetActualOrCurrentWidth(f))) + (float)(formations.Count<Formation>() - 1) * 1.5f;
-                        Vec2 direction = formations.MaxBy<Formation, int>((Func<Formation, int>)(f => f.CountOfUnitsWithoutDetachedOnes)).Direction;
+                        float num1 = !isFormationLayoutVertical ? formations.Max(f => GetActualOrCurrentWidth(f)) : formations.Sum<Formation>((Func<Formation, float>)(f => GetActualOrCurrentWidth(f))) + (float)(formations.Count<Formation>() - 1) * 1.5f;
+                        Vec2 direction = GetFormationVirtualDirection(formations.MaxBy(f => f.CountOfUnitsWithoutDetachedOnes));
                         direction.RotateCCW(-1.57079637f);
                         double num2 = (double)direction.Normalize();
                         formationLineEnd = Mission.Current.GetStraightPathToTarget(formationLineBegin.AsVec2 + num1 / 2f * direction, formationLineBegin);
@@ -554,7 +589,7 @@ namespace RTSCamera.CommandSystem.Patch
                 var actualOrCurrentWidth = GetActualOrCurrentWidth(formation);
 
 
-                Vec2 formationDirection = formation.Direction;
+                Vec2 formationDirection = GetFormationVirtualDirection(formation);
                 float formationWidth;
                 if (isLineShort)
                 {
@@ -579,6 +614,7 @@ namespace RTSCamera.CommandSystem.Patch
                 if (isSimulatingFormationChanges)
                 {
                     _virtualOrderPositions[formation] = formationPositionVec2;
+                    _virtualDirections[formation] = formationDirection;
                 }
 
                 DecreaseUnitSpacingAndWidthIfNotAllUnitsFit(formation, GetSimulationFormation(formation, simulationFormations), in formationPosition, in formationDirection, ref formationWidth, ref unitSpacingReduction, actualUnitSpacing);
@@ -590,7 +626,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static void GetFormationLineBeginEnd(Formation formation, WorldPosition formationLineBegin, out WorldPosition begin, out WorldPosition end)
         {
             float actualorCurrentWidth = GetActualOrCurrentWidth(formation);
-            Vec2 direction = formation.Direction;
+            Vec2 direction = GetFormationVirtualDirection(formation);
             direction.RotateCCW(-1.57079637f);
             double num2 = (double)direction.Normalize();
             end = Mission.Current.GetStraightPathToTarget(formationLineBegin.AsVec2 - actualorCurrentWidth / 2f * direction, formationLineBegin);
@@ -632,6 +668,7 @@ namespace RTSCamera.CommandSystem.Patch
                 if (isSimulatingFormationChanges)
                 {
                     _virtualOrderPositions[formation] = formationPositionVec2;
+                    _virtualDirections[formation] = formationDirection;
                 }
                 int unitSpacingReduction = 0;
                 // override official code from using formation.UnitSpacing to using GetActualUnitSpacing(formation)
@@ -677,6 +714,7 @@ namespace RTSCamera.CommandSystem.Patch
                 if (isSimulatingFormationChanges)
                 {
                     _virtualOrderPositions[formation] = formationPositionVec2;
+                    _virtualDirections[formation] = formationDirection;
                 }
                 int unitSpacingReduction = 0;
                 // override official code from using formation.UnitSpacing to using GetActualUnitSpacing(formation)
@@ -917,12 +955,11 @@ namespace RTSCamera.CommandSystem.Patch
                 Vec2 averageOrderPosition = Vec2.Zero;
                 foreach (var formation in formations)
                 {
-                    bool hasVirtualOrderPosition = _virtualOrderPositions.ContainsKey(formation);
-                    if (hasVirtualOrderPosition || formation.OrderPositionIsValid)
+                    var orderPosition = GetFormationVirtualPosition(formation);
+                    if (orderPosition.IsValid)
                     {
-                        formationCount++;
-                        var orderPosition = hasVirtualOrderPosition ? _virtualOrderPositions[formation] : formation.OrderPosition;
                         averageOrderPosition += orderPosition;
+                        formationCount++;
                     }
                 }
                 if (formationCount > 0)
@@ -985,10 +1022,12 @@ namespace RTSCamera.CommandSystem.Patch
                 }
                 else
                 {
-                    FacingOrder facingOrder = FacingOrder.FacingOrderLookAtDirection(OrderController.GetOrderLookAtDirection(__instance.SelectedFormations, orderPosition.AsVec2));
+                    var direction = OrderController.GetOrderLookAtDirection(__instance.SelectedFormations, orderPosition.AsVec2);
+                    FacingOrder facingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
                     foreach (var formation in __instance.SelectedFormations)
                     {
                         formation.FacingOrder = facingOrder;
+                        _virtualDirections[formation] = direction;
                     }
                 }
             }
@@ -1100,12 +1139,11 @@ namespace RTSCamera.CommandSystem.Patch
             weightedAverageDirection = Vec2.Zero;
             foreach (var formation in formations)
             {
-                bool hasVirtualOrderPosition = _virtualOrderPositions.ContainsKey(formation);
-                formationCount++;
-                var orderPosition = hasVirtualOrderPosition ? _virtualOrderPositions[formation] : formation.OrderPosition.IsValid ? formation.OrderPosition : formation.CurrentPosition;
+                var orderPosition = GetFormationVirtualPosition(formation);
                 if (orderPosition.IsValid)
                 {
                     averageOrderPosition += orderPosition;
+                    formationCount++;
                 }
                 formationOrderPositionDictionary.Add(formation, orderPosition);
             }
@@ -1121,7 +1159,7 @@ namespace RTSCamera.CommandSystem.Patch
                     var orderPositionVec2 = pair.Value;
                     if (orderPositionVec2.IsValid)
                     {
-                        weightedAverageDirection += formation.Direction * (1 / MathF.Max(5f, orderPositionVec2.DistanceSquared(averageOrderPosition)));
+                        weightedAverageDirection += GetFormationVirtualDirection(formation) * (1 / MathF.Max(5f, orderPositionVec2.DistanceSquared(averageOrderPosition)));
                     }
                 }
                 weightedAverageDirection.Normalize();
@@ -1129,7 +1167,7 @@ namespace RTSCamera.CommandSystem.Patch
             return formationOrderPositionDictionary;
         }
 
-        private static void SimulateNewFacingOrder(
+        public static void SimulateNewFacingOrder(
             IEnumerable<Formation> formations,
             Dictionary<Formation, Formation> simulationFormations,
             Vec2 direction,
@@ -1148,16 +1186,16 @@ namespace RTSCamera.CommandSystem.Patch
                 var orderPositionVec2 = pair.Value;
                 Vec2 newPositionVec2;
                 Vec2 newDirection;
-                if (formation.FacingOrder.OrderEnum == FacingOrder.FacingOrderEnum.LookAtEnemy)
-                {
-                    newPositionVec2 = orderPositionVec2;
-                    newDirection = direction;
-                }
-                else
-                {
-                    newPositionVec2 = rotateVector(orderPositionVec2 - averageOrderPosition, weightedAverageDirection, direction) + averageOrderPosition;
-                    newDirection = rotateVector(formation.Direction, weightedAverageDirection, direction);
-                }
+                //if (formation.FacingOrder.OrderEnum == FacingOrder.FacingOrderEnum.LookAtEnemy)
+                //{
+                //    newPositionVec2 = orderPositionVec2;
+                //    newDirection = direction;
+                //}
+                //else
+                //{
+                newPositionVec2 = rotateVector(orderPositionVec2 - averageOrderPosition, weightedAverageDirection, direction) + averageOrderPosition;
+                newDirection = rotateVector(GetFormationVirtualDirection(formation), weightedAverageDirection, direction);
+                //}
                 float width = formation.Width;
                 WorldPosition formationPosition = formation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.None);
                 formationPosition.SetVec2(newPositionVec2);
@@ -1165,6 +1203,7 @@ namespace RTSCamera.CommandSystem.Patch
                 if (isSimulatingFormationChanges)
                 {
                     _virtualOrderPositions[formation] = newPositionVec2;
+                    _virtualDirections[formation] = newDirection;
                 }
                 int unitSpacingReduction = 0;
                 var actualUnitSpacing = GetActualOrCurrentUnitSpacing(formation);
@@ -1180,6 +1219,18 @@ namespace RTSCamera.CommandSystem.Patch
             return new Vec2(
                 input.x * cos - input.y * sin,
                 input.x * sin + input.y * cos);
+        }
+
+        private static Vec2 GetFormationVirtualPosition(Formation formation)
+        {
+            bool hasVirtualOrderPosition = _virtualOrderPositions.ContainsKey(formation);
+            return hasVirtualOrderPosition ? _virtualOrderPositions[formation] : formation.OrderPosition.IsValid ? formation.OrderPosition : formation.CurrentPosition;
+        }
+
+        private static Vec2 GetFormationVirtualDirection(Formation formation)
+        {
+            bool hasVirtualDirection = _virtualDirections.ContainsKey(formation);
+            return hasVirtualDirection ? _virtualDirections[formation] : formation.Direction;
         }
     }
 }
