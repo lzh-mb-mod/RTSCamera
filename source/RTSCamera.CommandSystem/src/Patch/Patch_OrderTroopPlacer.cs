@@ -776,22 +776,31 @@ namespace RTSCamera.CommandSystem.Patch
                 {
                     CommandQueueLogic.ClearOrderInQueue(___PlayerOrderController.SelectedFormations);
                     CommandQueueLogic.SkipCurrentOrderForFormations(___PlayerOrderController.SelectedFormations);
+                    CommandQueueLogic.TryPendingOrder(___PlayerOrderController.SelectedFormations, new OrderInQueue
+                    {
+                        SelectedFormations = ___PlayerOrderController.SelectedFormations,
+                        CustomOrderType = isFormationLayoutVertical ? CustomOrderType.MoveToLineSegment : CustomOrderType.MoveToLineSegmentWithHorizontalLayout,
+                        PositionBegin = formationRealStartingPosition,
+                        PositionEnd = formationRealEndingPosition,
+                    });
+                    return true;
                 }
-                ___isDrawnThisFrame = true;
-                OrderController.SimulateNewOrderWithPositionAndDirection(___PlayerOrderController.SelectedFormations, ___PlayerOrderController.simulationFormations, formationRealStartingPosition, formationRealEndingPosition, out var formationChanges, out var isLineShort, isFormationLayoutVertical);
-                CommandQueueLogic.AddOrderToQueue(
-                    new OrderInQueue
+                else
+                {
+                    ___isDrawnThisFrame = true;
+                    OrderController.SimulateNewOrderWithPositionAndDirection(___PlayerOrderController.SelectedFormations, ___PlayerOrderController.simulationFormations, formationRealStartingPosition, formationRealEndingPosition, out var formationChanges, out var isLineShort, isFormationLayoutVertical);
+                    CommandQueueLogic.AddOrderToQueue(new OrderInQueue
                     {
                         SelectedFormations = ___PlayerOrderController.SelectedFormations,
                         CustomOrderType = isFormationLayoutVertical ? CustomOrderType.MoveToLineSegment : CustomOrderType.MoveToLineSegmentWithHorizontalLayout,
                         IsLineShort = isLineShort,
                         ActualFormationChanges = formationChanges,
-                        OrderType = isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout,
                         PositionBegin = formationRealStartingPosition,
                         PositionEnd = formationRealEndingPosition,
                         VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations)
                     });
-                return false;
+                    return false;
+                }
             }
 
             return true;

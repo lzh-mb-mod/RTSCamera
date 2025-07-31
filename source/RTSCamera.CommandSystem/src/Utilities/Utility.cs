@@ -103,7 +103,8 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
             //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
-            if (!CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input))
+            var queueOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
+            if (!queueOrder)
             {
                 CommandQueueLogic.ClearOrderInQueue(playerController.SelectedFormations);
                 CommandQueueLogic.SkipCurrentOrderForFormations(playerController.SelectedFormations);
@@ -113,45 +114,54 @@ namespace RTSCamera.CommandSystem.Utilities
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(Patch_OrderController.LatestOrderInQueueChanges.CollectChanges(playerController.SelectedFormations));
             }
+            OrderInQueue order;
             if (keepMovementOrder)
             {
-                CommandQueueLogic.AddOrderToQueue(new OrderInQueue
+                order = new OrderInQueue
                 {
                     CustomOrderType = CustomOrderType.SetTargetFormation,
                     SelectedFormations = playerController.SelectedFormations,
                     TargetFormation = targetFormation
-                });
+                };
             }
             else
             {
-                CommandQueueLogic.AddOrderToQueue(new OrderInQueue
+                order = new OrderInQueue
                 {
                     OrderType = OrderType.ChargeWithTarget,
                     SelectedFormations = playerController.SelectedFormations,
                     TargetFormation = targetFormation
-                });
+                };
             }
-            if (keepMovementOrder)
+            if (queueOrder)
             {
-                foreach (Formation selectedFormation in playerController.SelectedFormations)
-                {
-                    selectedFormation.SetTargetFormation(targetFormation);
-                }
-                // In current game version, set ChargeWithTarget has no effect except voice and gesture
-                // so movement order will not be changed here
-                playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
+                CommandQueueLogic.AddOrderToQueue(order);
             }
             else
             {
-                foreach (Formation selectedFormation in playerController.SelectedFormations)
+                if (keepMovementOrder)
                 {
-                    selectedFormation.SetMovementOrder(MovementOrder.MovementOrderChargeToTarget(targetFormation));
-                    selectedFormation.SetTargetFormation(targetFormation);
+                    foreach (Formation selectedFormation in playerController.SelectedFormations)
+                    {
+                        selectedFormation.SetTargetFormation(targetFormation);
+                    }
+                    // In current game version, set ChargeWithTarget has no effect except voice and gesture
+                    // so movement order will not be changed here
+                    playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
                 }
-                // In current game version, set ChargeWithTarget has no effect except voice and gesture
-                // so movement order will not be changed here
-                playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
+                else
+                {
+                    foreach (Formation selectedFormation in playerController.SelectedFormations)
+                    {
+                        selectedFormation.SetMovementOrder(MovementOrder.MovementOrderChargeToTarget(targetFormation));
+                        selectedFormation.SetTargetFormation(targetFormation);
+                    }
+                    CommandQueueLogic.TryPendingOrder(playerController.SelectedFormations, order);
+                    // In current game version, set ChargeWithTarget has no effect except voice and gesture
+                    // so movement order will not be changed here
+                    playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
 
+                }
             }
 
             //AfterSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });

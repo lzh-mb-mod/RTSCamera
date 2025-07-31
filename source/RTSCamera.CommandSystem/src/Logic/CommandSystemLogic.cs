@@ -29,6 +29,13 @@ namespace RTSCamera.CommandSystem.Logic
             CommandQueueLogic.OnRemoveBehavior();
         }
 
+        public override void AfterStart()
+        {
+            base.AfterStart();
+
+            CommandQueueLogic.AfterStart();
+        }
+
         public override void OnAddTeam(Team team)
         {
             base.OnAddTeam(team);

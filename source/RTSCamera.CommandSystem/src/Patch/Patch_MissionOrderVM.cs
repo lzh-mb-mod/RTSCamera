@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using NetworkMessages.FromClient;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using System;
@@ -212,15 +213,18 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         orderToAdd.CustomOrderType = CustomOrderType.ToggleFacing;
                         orderToAdd.ShouldLockFormationInFacingOrder = true;
-                        Patch_OrderController.SimulateNewFacingOrder(__instance.OrderController.SelectedFormations,
-                            __instance.OrderController.simulationFormations,
-                            OrderController.GetOrderLookAtDirection(__instance.OrderController.SelectedFormations, missionScreen.GetOrderFlagPosition().AsVec2),
-                            false,
-                            out _,
-                            true,
-                            out var simulationFormationChanges);
-                        orderToAdd.ActualFormationChanges = simulationFormationChanges;
-                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                        if (queueCommand)
+                        {
+                            Patch_OrderController.SimulateNewFacingOrder(__instance.OrderController.SelectedFormations,
+                                __instance.OrderController.simulationFormations,
+                                OrderController.GetOrderLookAtDirection(__instance.OrderController.SelectedFormations, missionScreen.GetOrderFlagPosition().AsVec2),
+                                false,
+                                out _,
+                                true,
+                                out var simulationFormationChanges);
+                            orderToAdd.ActualFormationChanges = simulationFormationChanges;
+                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                        }
                     }
                     else
                     {
@@ -245,15 +249,18 @@ namespace RTSCamera.CommandSystem.Patch
                     if (Utilities.Utility.ShouldLockFormation())
                     {
                         orderToAdd.ShouldLockFormationInFacingOrder = true;
-                        Patch_OrderController.SimulateNewFacingOrder(__instance.OrderController.SelectedFormations,
-                            __instance.OrderController.simulationFormations,
-                            OrderController.GetOrderLookAtDirection(__instance.OrderController.SelectedFormations, missionScreen.GetOrderFlagPosition().AsVec2),
-                            false,
-                            out _,
-                            true,
-                            out var simulationFormationChanges);
-                        orderToAdd.ActualFormationChanges = simulationFormationChanges;
-                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                        if (queueCommand)
+                        {
+                            Patch_OrderController.SimulateNewFacingOrder(__instance.OrderController.SelectedFormations,
+                                __instance.OrderController.simulationFormations,
+                                OrderController.GetOrderLookAtDirection(__instance.OrderController.SelectedFormations, missionScreen.GetOrderFlagPosition().AsVec2),
+                                false,
+                                out _,
+                                true,
+                                out var simulationFormationChanges);
+                            orderToAdd.ActualFormationChanges = simulationFormationChanges;
+                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                        }
                     }
                     else
                     {
@@ -266,6 +273,11 @@ namespace RTSCamera.CommandSystem.Patch
                     break;
                 case OrderSubType.Return:
                     return null;
+            }
+            if (!queueCommand)
+            {
+                CommandQueueLogic.TryPendingOrder(__instance.OrderController.SelectedFormations, orderToAdd);
+                return null;
             }
             return orderToAdd;
         }
