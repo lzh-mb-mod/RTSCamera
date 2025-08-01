@@ -1,5 +1,6 @@
 ﻿using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.Patch;
+using RTSCamera.CommandSystem.QuerySystem;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
@@ -17,6 +18,7 @@ namespace RTSCamera.CommandSystem.Logic
             Patch_OrderTroopPlacer.OnBehaviorInitialize();
             Patch_OrderController.OnBehaviorInitialize();
             CommandQueueLogic.OnBehaviorInitialize();
+            CommandQuerySystem.OnBehaviorInitialize();
 
             Utilities.Utility.PrintOrderHint();
         }
@@ -27,6 +29,7 @@ namespace RTSCamera.CommandSystem.Logic
             Patch_OrderTroopPlacer.OnRemoveBehavior();
             Patch_OrderController.OnRemoveBehavior();
             CommandQueueLogic.OnRemoveBehavior();
+            CommandQuerySystem.OnRemoveBehavior();
         }
 
         public override void AfterStart()

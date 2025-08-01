@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -8,7 +9,8 @@ namespace RTSCamera.CommandSystem.Logic
 {
     public struct FormationChange
     {
-        public Vec2? Position;
+        public WorldPosition? WorldPosition;
+        public readonly Vec2? Position => WorldPosition?.AsVec2;
         public Vec2? Direciton;
         public int? UnitSpacing;
         public float? Width;
@@ -27,7 +29,7 @@ namespace RTSCamera.CommandSystem.Logic
 
                 if (pair.Value.Position != null)
                 {
-                    change.Position = pair.Value.Position.Value;
+                    change.WorldPosition = pair.Value.WorldPosition.Value;
                 }
                 if (pair.Value.Direciton != null)
                 {
@@ -49,7 +51,7 @@ namespace RTSCamera.CommandSystem.Logic
         {
             return VirtualChanges.Where(pair => formations.Contains(pair.Key)).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
-        public void UpdateFormationChange(Formation formation, Vec2? position, Vec2? direction, int? unitSpacing, float? width)
+        public void UpdateFormationChange(Formation formation, WorldPosition? position, Vec2? direction, int? unitSpacing, float? width)
         {
             if (!VirtualChanges.TryGetValue(formation, out var change))
             {
@@ -57,7 +59,7 @@ namespace RTSCamera.CommandSystem.Logic
             }
             if (position != null)
             {
-                change.Position = position.Value;
+                change.WorldPosition = position.Value;
             }
             if (direction != null)
             {

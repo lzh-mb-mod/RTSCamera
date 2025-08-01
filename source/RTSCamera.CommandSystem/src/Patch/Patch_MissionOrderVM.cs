@@ -122,8 +122,7 @@ namespace RTSCamera.CommandSystem.Patch
             bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
             if (!queueCommand)
             {
-                CommandQueueLogic.ClearOrderInQueue(__instance.OrderController.SelectedFormations);
-                CommandQueueLogic.SkipCurrentOrderForFormations(__instance.OrderController.SelectedFormations);
+                CommandQueueLogic.CancelPendingOrder(__instance.OrderController.SelectedFormations);
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations));
             }
             else
@@ -169,6 +168,7 @@ namespace RTSCamera.CommandSystem.Patch
                     break;
                 case OrderSubType.Advance:
                     orderToAdd.OrderType = OrderType.Advance;
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     focusedFormations = (MBReadOnlyList<Formation>)_focusedFormationsCache.GetValue(__instance);
                     if (focusedFormations != null && focusedFormations.Count > 0)
                     {
@@ -266,10 +266,12 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         orderToAdd.ShouldLockFormationInFacingOrder = false;
                         orderToAdd.PositionBegin = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false);
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     }
                     break;
                 case OrderSubType.FaceEnemy:
                     orderToAdd.OrderType = OrderType.LookAtEnemy;
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     break;
                 case OrderSubType.Return:
                     return null;

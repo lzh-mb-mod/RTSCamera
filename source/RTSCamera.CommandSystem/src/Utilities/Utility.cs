@@ -106,8 +106,7 @@ namespace RTSCamera.CommandSystem.Utilities
             var queueOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
             if (!queueOrder)
             {
-                CommandQueueLogic.ClearOrderInQueue(playerController.SelectedFormations);
-                CommandQueueLogic.SkipCurrentOrderForFormations(playerController.SelectedFormations);
+                CommandQueueLogic.CancelPendingOrder(playerController.SelectedFormations);
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(playerController.SelectedFormations));
             }
             else

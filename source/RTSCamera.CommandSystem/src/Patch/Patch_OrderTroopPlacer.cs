@@ -430,13 +430,18 @@ namespace RTSCamera.CommandSystem.Patch
                     GameEntity gameEntity = GameEntity.CreateEmpty(__instance.Mission.Scene);
                     gameEntity.EntityFlags |= EntityFlags.NotAffectedBySeason;
                     MetaMesh copy = MetaMesh.GetCopy("barrier_sphere");
+                    //MetaMesh copy = MetaMesh.GetCopy("pyhsics_test_box");
+                    //MetaMesh copy = MetaMesh.GetCopy("unit_arrow");
                     if (____meshMaterial == null)
                     {
                         ____meshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+                        //____meshMaterial = Material.GetFromResource("unit_arrow").CreateCopy();
                         ____meshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
                     }
                     copy.SetMaterial(____meshMaterial);
+                    //copy.SetFactor1(new Color(80, 255, 80, alpha).ToUnsignedInteger());
                     gameEntity.AddComponent(copy);
+                    gameEntity.SetContourColor(new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger(), true);
                     gameEntity.SetVisibilityExcludeParents(false);
                     ____orderPositionEntities.Add(gameEntity);
                 }
@@ -764,6 +769,7 @@ namespace RTSCamera.CommandSystem.Patch
             bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(__instance.MissionScreen.SceneLayer.Input);
             if (!queueCommand)
             {
+                CommandQueueLogic.CancelPendingOrder(___PlayerOrderController.SelectedFormations);
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
             }
             else
@@ -774,8 +780,6 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 if (!queueCommand)
                 {
-                    CommandQueueLogic.ClearOrderInQueue(___PlayerOrderController.SelectedFormations);
-                    CommandQueueLogic.SkipCurrentOrderForFormations(___PlayerOrderController.SelectedFormations);
                     CommandQueueLogic.TryPendingOrder(___PlayerOrderController.SelectedFormations, new OrderInQueue
                     {
                         SelectedFormations = ___PlayerOrderController.SelectedFormations,

@@ -1,12 +1,17 @@
 ﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Patch;
+using RTSCamera.CommandSystem.QuerySystem;
+using RTSCamera.CommandSystem.View;
+using SandBox.BoardGames;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using static TaleWorlds.MountAndBlade.Agent;
 using static TaleWorlds.MountAndBlade.Source.Objects.Siege.AgentPathNavMeshChecker;
 
 namespace RTSCamera.CommandSystem.Logic
@@ -67,6 +72,7 @@ namespace RTSCamera.CommandSystem.Logic
 
         // virtual positions of last executed order.
         public static FormationChanges CurrentFormationChanges = new FormationChanges();
+        private static int TicksToSkip = 0;
 
         public static void OnBehaviorInitialize()
         {
@@ -102,12 +108,62 @@ namespace RTSCamera.CommandSystem.Logic
         private static void OnOrderIssued(OrderType orderType, MBReadOnlyList<Formation> appliedFormations, OrderController orderController, params object[] delegateParams)
         {
             CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(appliedFormations));
+            switch (orderType)
+            {
+                case OrderType.None:
+                case OrderType.Move:
+                case OrderType.MoveToLineSegment:
+                case OrderType.MoveToLineSegmentWithHorizontalLayout:
+                case OrderType.Charge:
+                case OrderType.ChargeWithTarget:
+                case OrderType.StandYourGround:
+                case OrderType.FollowMe:
+                case OrderType.FollowEntity:
+                case OrderType.GuardMe:
+                case OrderType.Retreat:
+                case OrderType.AdvanceTenPaces:
+                case OrderType.FallBackTenPaces:
+                case OrderType.Advance:
+                case OrderType.FallBack:
+                case OrderType.LookAtEnemy:
+                case OrderType.LookAtDirection:
+                case OrderType.AIControlOn:
+                case OrderType.Use:
+                case OrderType.AttackEntity:
+                case OrderType.PointDefence:
+                    ClearOrderInQueue(appliedFormations);
+                    break;
+                case OrderType.ArrangementLine:
+                case OrderType.ArrangementCloseOrder:
+                case OrderType.ArrangementLoose:
+                case OrderType.ArrangementCircular:
+                case OrderType.ArrangementSchiltron:
+                case OrderType.ArrangementVee:
+                case OrderType.ArrangementColumn:
+                case OrderType.ArrangementScatter:
+                case OrderType.FormCustom:
+                case OrderType.FormDeep:
+                case OrderType.FormWide:
+                case OrderType.FormWider:
+                case OrderType.CohesionHigh:
+                case OrderType.CohesionMedium:
+                case OrderType.CohesionLow:
+                case OrderType.HoldFire:
+                case OrderType.FireAtWill:
+                case OrderType.RideFree:
+                case OrderType.Mount:
+                case OrderType.Dismount:
+                case OrderType.AIControlOff:
+                case OrderType.Transfer:
+                    break;
+            }
         }
 
         public static void AddOrderToQueue(OrderInQueue order)
         {
             OrderQueue.Add(order);
             Utility.DisplayMessage($"Added command to queue: {order.CustomOrderType}, {order.OrderType}");
+            CommandQueuePreview.IsPreviewOutdated = true;
         }
 
         public static void ClearOrderInQueue(IEnumerable<Formation> formations)
@@ -119,21 +175,19 @@ namespace RTSCamera.CommandSystem.Logic
                 if (order.SelectedFormations.Count == 0)
                     OrderQueue.Remove(order);
             }
-            CancelPendingOrder(formations);
-        }
-
-        public static void SkipCurrentOrderForFormations(IEnumerable<Formation> formations)
-        {
-            //foreach (var formation in formations)
-            //{
-            //    ShouldSkipCurrentOrders[formation] = true;
-            //}
+            CommandQueuePreview.IsPreviewOutdated = true;
         }
 
         public static void UpdateFormation(Formation formation)
         {
-            while (!formation.GetReadonlyMovementOrderReference().IsApplicable(formation) ||
-                IsPendingOrderCompleted(formation))
+            if (TicksToSkip > 0)
+            {
+                TicksToSkip--;
+                return;
+            }
+            while (TicksToSkip <= 0 &&
+                (!formation.GetReadonlyMovementOrderReference().IsApplicable(formation) ||
+                    IsPendingOrderCompleted(formation)))
             {
                 var order = GetOrderForFormation(formation);
                 if (order == null)
@@ -146,12 +200,14 @@ namespace RTSCamera.CommandSystem.Logic
 
         public static bool IsMovementOrderCompleted(Formation formation)
         {
-            return formation.OrderPositionIsValid ? formation.CurrentPosition.Distance(formation.OrderPosition) < 2 : false;
+            return formation.OrderPositionIsValid ? CommandQuerySystem.GetQueryForFormation(formation).RatioOfAgentsNearOrderPosition > 0.5f : false;
+            //return formation.OrderPositionIsValid ? (formation.CurrentPosition + formation.QuerySystem.CurrentVelocity).Distance(formation.OrderPosition) <
+            //(2 + MathF.Log10(MathF.Max(formation.CountOfUnitsWithoutDetachedOnes, 10)) * 3 - formation.QuerySystem.FormationIntegrityData.DeviationOfPositionsExcludeFarAgents) : false;
         }
 
         public static bool IsFacingOrderCompleted(Formation formation)
         {
-            return formation.CurrentDirection.DotProduct(formation.Direction) > 0.99;
+            return formation.QuerySystem.EstimatedDirection.DotProduct(formation.Direction) > 0.99;
         }
 
         public static bool IsPendingOrderCompleted(Formation formation)
@@ -172,7 +228,7 @@ namespace RTSCamera.CommandSystem.Logic
                             }
                             else
                             {
-                                if (!IsMovementOrderCompleted(otherFormation) || !IsFacingOrderCompleted(otherFormation))
+                                if (!IsMovementOrderCompleted(otherFormation) /*|| !IsFacingOrderCompleted(otherFormation)*/)
                                 {
                                     return false;
                                 }
@@ -181,7 +237,7 @@ namespace RTSCamera.CommandSystem.Logic
                     }
                     if (otherFormation == formation)
                     {
-                        if (!IsMovementOrderCompleted(formation) || !IsFacingOrderCompleted(formation))
+                        if (!IsMovementOrderCompleted(formation)/* || !IsFacingOrderCompleted(formation)*/)
                         {
                             return false;
                         }
@@ -202,7 +258,7 @@ namespace RTSCamera.CommandSystem.Logic
                 ShouldSkipCurrentOrders[formation] = false;
                 return true;
             }
-            return IsMovementOrderCompleted(formation) && IsFacingOrderCompleted(formation);
+            return IsMovementOrderCompleted(formation)/* && IsFacingOrderCompleted(formation)*/;
         }
 
         public static void ExecuteOrderForFormation(OrderInQueue order, Formation formation)
@@ -423,6 +479,7 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 OrderQueue.Remove(order);
             }
+            CommandQueuePreview.IsPreviewOutdated = true;
         }
 
         public static void TryPendingOrder(IEnumerable<Formation> formations, OrderInQueue order)
@@ -475,6 +532,8 @@ namespace RTSCamera.CommandSystem.Logic
         private static void FormationPendingOrder(Formation formation, OrderInQueue order)
         {
             PendingOrders[formation] = order;
+            CommandQuerySystem.GetQueryForFormation(formation).ExpireAllQueries();
+            TicksToSkip = 1;
         }
     }
 }
