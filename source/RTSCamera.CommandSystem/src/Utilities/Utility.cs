@@ -3,11 +3,15 @@ using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View.Screens;
+using static TaleWorlds.Engine.WorldPosition;
 
 namespace RTSCamera.CommandSystem.Utilities
 {
@@ -106,12 +110,11 @@ namespace RTSCamera.CommandSystem.Utilities
             var queueOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
             if (!queueOrder)
             {
-                CommandQueueLogic.CancelPendingOrder(playerController.SelectedFormations);
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(playerController.SelectedFormations));
             }
             else
             {
-                Patch_OrderController.LivePreviewFormationChanges.SetChanges(Patch_OrderController.LatestOrderInQueueChanges.CollectChanges(playerController.SelectedFormations));
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(playerController.SelectedFormations));
             }
             OrderInQueue order;
             if (keepMovementOrder)
@@ -122,6 +125,7 @@ namespace RTSCamera.CommandSystem.Utilities
                     SelectedFormations = playerController.SelectedFormations,
                     TargetFormation = targetFormation
                 };
+                order.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(playerController.SelectedFormations);
             }
             else
             {
@@ -131,6 +135,8 @@ namespace RTSCamera.CommandSystem.Utilities
                     SelectedFormations = playerController.SelectedFormations,
                     TargetFormation = targetFormation
                 };
+                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.ChargeWithTarget, playerController.SelectedFormations, targetFormation, null, null);
+                order.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(playerController.SelectedFormations);
             }
             if (queueOrder)
             {
@@ -187,6 +193,107 @@ namespace RTSCamera.CommandSystem.Utilities
                     return !CommandSystemGameKeyCategory.GetKey(GameKeyEnum.FormationLockMovement).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
             }
             return false;
+        }
+
+        public static bool IsFormationOrderPositionMoving(Formation formation)
+        {
+            if (Patch_OrderController.LivePreviewFormationChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
+            {
+                switch (formationChange.MovementOrderType)
+                {
+                    case OrderType.Charge:
+                    case OrderType.ChargeWithTarget:
+                    case OrderType.Advance:
+                    case OrderType.FollowEntity:
+                    case OrderType.AttackEntity:
+                    case OrderType.FollowMe:
+                    case OrderType.FallBack:
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public static WorldPosition? GetFormationMovingOrderPosition(Formation formation)
+        {
+            if (Patch_OrderController.LivePreviewFormationChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
+            {
+                switch (formationChange.MovementOrderType)
+                {
+                    case OrderType.Charge:
+                    case OrderType.ChargeWithTarget:
+                        {
+                            var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
+                            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
+                            return Patch_OrderController.GetFormationVirtualTargetFormation(formation)?.QuerySystem.MedianPosition ??
+                                (queueCommand ? Patch_OrderController.GetFormationVirtualPosition(formation) : formation.QuerySystem.MedianPosition);
+                        }
+                    case OrderType.Advance:
+                        {
+                            return Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPositionEnforcedCache.None, formationChange.TargetFormation);
+                        }
+                    case OrderType.FollowEntity:
+                        {
+                            var waitEntity = (formationChange.TargetEntity as UsableMachine).WaitEntity;
+                            return Patch_OrderController.GetFollowEntityOrderPosition(formation, waitEntity);
+                        }
+                    case OrderType.AttackEntity:
+                        {
+                            var missionObject = formationChange.TargetEntity as MissionObject;
+                            var gameEntity = missionObject.GameEntity;
+                            return Patch_OrderController.GetAttackEntityWaitPosition(formation, gameEntity);
+                        }
+                    case OrderType.FollowMe:
+                        {
+                            return Patch_OrderController.GetFollowOrderPosition(formation, formationChange.TargetAgent);
+                        }
+                    case OrderType.FallBack:
+                        {
+                            return Patch_OrderController.GetFallbackOrderPosition(formation, WorldPositionEnforcedCache.None, formationChange.TargetFormation);
+                        }
+                }
+            }
+            return null;
+        }
+
+        public static Vec2 GetFormationMovingDirection(Formation formation)
+        {
+            if (Patch_OrderController.LivePreviewFormationChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
+            {
+                switch (formationChange.MovementOrderType)
+                {
+                    case OrderType.Advance:
+                    case OrderType.FallBack:
+                        {
+                            return Patch_OrderController.GetAdvanceOrFallbackOrderDirection(formation, formationChange.TargetFormation);
+                        }
+                    case OrderType.FollowEntity:
+                        {
+                            var waitEntity = (formationChange.TargetEntity as UsableMachine).WaitEntity;
+                            return Patch_OrderController.GetFollowEntityDirection(formation, waitEntity);
+                        }
+                    case OrderType.AttackEntity:
+                    case OrderType.FollowMe:
+                        {
+                            return Vec2.Invalid;
+                        }
+                }
+            }
+            return Vec2.Invalid;
+        }
+
+        public static bool IsAnyFormationHavingMovingOrderPostion(IEnumerable<Formation> formations)
+        {
+            if (Patch_OrderController.LivePreviewFormationChanges.CollectChanges(formations).Any(pair => IsFormationOrderPositionMoving(pair.Key)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool ShouldLockFormationDuringLookAtDirection(IEnumerable<Formation> formations)
+        {
+            return !IsAnyFormationHavingMovingOrderPostion(formations) && ShouldLockFormation();
         }
 
         public static bool ShouldKeepFormationWidth()

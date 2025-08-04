@@ -51,41 +51,56 @@ namespace RTSCamera.CommandSystem.Config
                             new SelectionItem(true, "str_rts_camera_command_system_after_charge_behavior", "charge"),
                             new SelectionItem(true, "str_rts_camera_command_system_after_charge_behavior", "hold")
                         }), false));
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_highlight_selected_formation"),
-                    GameTexts.FindText("str_rts_camera_command_system_highlight_selected_formation_hint"),
-                    () => CommandSystemConfig.Get().HighlightSelectedFormation, b =>
-                    {
-                        CommandSystemConfig.Get().HighlightSelectedFormation = b;
-                    }));
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_highlight_target_formation"),
-                    GameTexts.FindText("str_rts_camera_command_system_highlight_target_formation_hint"),
-                    () => CommandSystemConfig.Get().HighlightTargetFormation, b =>
-                    {
-                        CommandSystemConfig.Get().HighlightTargetFormation = b;
-                    }));
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_highlight_on_rts_view_only"),
-                    GameTexts.FindText("str_rts_camera_command_system_highlight_on_rts_view_only_hint"),
-                    () => CommandSystemConfig.Get().HighlightOnRtsViewOnly, b =>
-                    {
-                        CommandSystemConfig.Get().HighlightOnRtsViewOnly = b;
-                    }));
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_more_visible_movement_target"),
-                    GameTexts.FindText("str_rts_camera_command_system_more_visible_movement_target_hint"),
-                    () => CommandSystemConfig.Get().MoreVisibleMovementTarget, b =>
-                    {
-                        CommandSystemConfig.Get().MoreVisibleMovementTarget = b;
-                    }));
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_movement_target_more_visible_on_rts_view_only"),
-                    GameTexts.FindText("str_rts_camera_command_system_movement_target_more_visible_on_rts_view_only_hint"),
-                    () => CommandSystemConfig.Get().MovementTargetMoreVisibleOnRtsViewOnly, b =>
-                    {
-                        CommandSystemConfig.Get().MovementTargetMoreVisibleOnRtsViewOnly = b;
-                    }));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_selected_formation_highlight_mode"),
+                    GameTexts.FindText("str_rts_camera_command_system_selected_formation_highlight_mode_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().SelectedFormationHighlightMode = (HighlightMode)i,
+                        () => (int)CommandSystemConfig.Get().SelectedFormationHighlightMode, (int)HighlightMode.Count, new List<SelectionItem>
+                        {
+                            new SelectionItem(true, "str_rts_camera_command_system_selected_formation_highlight_mode_option", nameof(HighlightMode.Never)),
+                            new SelectionItem(true, "str_rts_camera_command_system_selected_formation_highlight_mode_option", nameof(HighlightMode.FreeCameraOnly)),
+                            new SelectionItem(true, "str_rts_camera_command_system_selected_formation_highlight_mode_option", nameof(HighlightMode.Always))
+                        }), false));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_target_formation_highlight_mode"),
+                    GameTexts.FindText("str_rts_camera_command_system_target_formation_highlight_mode_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().TargetFormationHighlightMode = (HighlightMode)i,
+                        () => (int)CommandSystemConfig.Get().TargetFormationHighlightMode, (int)HighlightMode.Count, new List<SelectionItem>
+                        {
+                            new SelectionItem(true, "str_rts_camera_command_system_target_formation_highlight_mode_option", nameof(HighlightMode.Never)),
+                            new SelectionItem(true, "str_rts_camera_command_system_target_formation_highlight_mode_option", nameof(HighlightMode.FreeCameraOnly)),
+                            new SelectionItem(true, "str_rts_camera_command_system_target_formation_highlight_mode_option", nameof(HighlightMode.Always))
+                        }), false));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_mode"),
+                    GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_mode_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().MovementTargetHighlightMode = (HighlightMode)i,
+                        () => (int)CommandSystemConfig.Get().MovementTargetHighlightMode, (int)HighlightMode.Count, new List<SelectionItem>
+                        {
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(HighlightMode.Never)),
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(HighlightMode.FreeCameraOnly)),
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(HighlightMode.Always))
+                        }), false));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_command_queue_flag_show_mode"),
+                    GameTexts.FindText("str_rts_camera_command_system_command_queue_flag_show_mode_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().CommandQueueFlagShowMode = (HighlightMode)i,
+                        () => (int)CommandSystemConfig.Get().CommandQueueFlagShowMode, (int)HighlightMode.Count, new List<SelectionItem>
+                        {
+                            new SelectionItem(true, "str_rts_camera_command_system_command_queue_flag_show_mode_option", nameof(HighlightMode.Never)),
+                            new SelectionItem(true, "str_rts_camera_command_system_command_queue_flag_show_mode_option", nameof(HighlightMode.FreeCameraOnly)),
+                            new SelectionItem(true, "str_rts_camera_command_system_command_queue_flag_show_mode_option", nameof(HighlightMode.Always))
+                        }), false));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_command_queue_arrow_show_mode"),
+                    GameTexts.FindText("str_rts_camera_command_system_command_queue_arrow_show_mode_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().CommandQueueArrowShowMode = (HighlightMode)i,
+                        () => (int)CommandSystemConfig.Get().CommandQueueArrowShowMode, (int)HighlightMode.Count, new List<SelectionItem>
+                        {
+                            new SelectionItem(true, "str_rts_camera_command_system_command_queue_arrow_show_mode_option", nameof(HighlightMode.Never)),
+                            new SelectionItem(true, "str_rts_camera_command_system_command_queue_arrow_show_mode_option", nameof(HighlightMode.FreeCameraOnly)),
+                            new SelectionItem(true, "str_rts_camera_command_system_command_queue_arrow_show_mode_option", nameof(HighlightMode.Always))
+                        }), false));
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_formation_lock_condition"),
                     GameTexts.FindText("str_rts_camera_command_system_formation_lock_condition_hint"),

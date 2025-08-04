@@ -1,14 +1,20 @@
-﻿using MissionSharedLibrary.Utilities;
+﻿using MissionLibrary.Event;
+using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TaleWorlds.DotNet;
 using TaleWorlds.Engine;
+using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
+using static TaleWorlds.MountAndBlade.Source.Objects.Siege.AgentPathNavMeshChecker;
 
 namespace RTSCamera.CommandSystem.View
 {
@@ -17,9 +23,10 @@ namespace RTSCamera.CommandSystem.View
         public WorldPosition OrderPosition;
         public Vec2 Direction;
         public List<WorldPosition> AgentPositions = new List<WorldPosition>();
+
     }
 
-    public class CommandQueuePreviewData
+    public class CommandQueueFormationPreviewData
     {
         public Formation Formation;
         public List<OrderPreviewData> OrderList = new List<OrderPreviewData>();
@@ -28,14 +35,19 @@ namespace RTSCamera.CommandSystem.View
 
     public class CommandQueuePreview: MissionView
     {
+        private CommandSystemConfig _config = CommandSystemConfig.Get();
         private OrderTroopPlacer _orderTroopPlacer;
         private List<GameEntity> _agentPositionEntities;
         private static Material _agentPositionMeshMaterial;
         private List<GameEntity> _orderPositionFlagEntities;
         private static Material _orderFlagMeshMaterial;
+        private List<GameEntity> _arrowEntities;
+        private static Material _arrowMaterial;
         private bool _isPreviewShown = false;
+        private bool _isFreeCamera;
         public static bool IsPreviewOutdated = false;
         private bool _showAgentFrames = false;
+        private Dictionary<Formation, CommandQueueFormationPreviewData> _commandQueuePreviewData;
 
         public override void OnMissionScreenInitialize()
         {
@@ -44,7 +56,10 @@ namespace RTSCamera.CommandSystem.View
             _orderTroopPlacer = Mission.GetMissionBehavior<OrderTroopPlacer>();
             _agentPositionEntities = new List<GameEntity>();
             _orderPositionFlagEntities = new List<GameEntity>();
+            _arrowEntities = new List<GameEntity>();
             IsPreviewOutdated = true;
+            _commandQueuePreviewData = new Dictionary<Formation, CommandQueueFormationPreviewData>();
+            MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
         }
 
         public override void AfterStart()
@@ -68,10 +83,18 @@ namespace RTSCamera.CommandSystem.View
 
             _orderTroopPlacer = null;
             _agentPositionEntities = null;
+            _arrowEntities = null;
+            _commandQueuePreviewData = null;
+            MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             if (Mission.PlayerTeam?.PlayerOrderController == null)
                 return;
 
             Mission.PlayerTeam.PlayerOrderController.OnSelectedFormationsChanged -= OnSelectedFormationsChanged;
+        }
+
+        private void OnToggleFreeCamera(bool freeCamera)
+        {
+            _isFreeCamera = freeCamera;
         }
 
         public override void OnMissionScreenTick(float dt)
@@ -83,10 +106,14 @@ namespace RTSCamera.CommandSystem.View
                 return;
             }
 
-            if (_orderTroopPlacer.SuspendTroopPlacer)
+            if (_orderTroopPlacer.SuspendTroopPlacer ||
+                _config.CommandQueueFlagShowMode == HighlightMode.Never && _config.CommandQueueArrowShowMode == HighlightMode.Never)
             {
-                HidePreview();
-                _isPreviewShown = false;
+                if (_isPreviewShown)
+                {
+                    HidePreview();
+                    _isPreviewShown = false;
+                }
             }
             else
             {
@@ -95,41 +122,74 @@ namespace RTSCamera.CommandSystem.View
                     _isPreviewShown = true;
                     IsPreviewOutdated = true;
                 }
-                UpdatePreview();
+                UpdatePreview(dt);
             }
         }
 
-        private void UpdatePreview()
+        private void UpdatePreview(float dt)
         {
             if (Mission.PlayerTeam?.PlayerOrderController == null)
                 return;
-            if (!IsPreviewOutdated)
-                return;
-            IsPreviewOutdated = false;
+
             HidePreview();
-            var selectedFormations = Mission.PlayerTeam.PlayerOrderController.SelectedFormations;
+
+            if (IsPreviewOutdated)
+            {
+                _commandQueuePreviewData.Clear();
+                //IsPreviewOutdated = false;
+                var selectedFormations = Mission.PlayerTeam.PlayerOrderController.SelectedFormations;
+                foreach (var formation in selectedFormations)
+                {
+                    var commandQueuePreviewData = CollectCommandQueuePreviewData(formation);
+                    _commandQueuePreviewData[formation] = commandQueuePreviewData;
+                }
+            }
+
+            TickPreview(dt);
+        }
+
+        private void TickPreview(float dt)
+        {
             int agentIndex = 0;
             int orderFlagIndex = 0;
-            foreach (var formation in selectedFormations)
+            int arrowIndex = 0;
+            foreach (var pair in _commandQueuePreviewData)
             {
-                var commandQueuePreviewData = CollectCommandQueuePreviewData(formation);
-                foreach (var order in commandQueuePreviewData.OrderList)
+                var formation = pair.Key;
+                var previewData = pair.Value;
+                Vec3 arrowStart = formation.OrderGroundPosition;
+                foreach (var order in previewData.OrderList)
                 {
                     foreach (var agentPosition in order.AgentPositions)
                     {
                         AddAgentFrameEntity(agentIndex, agentPosition.GetGroundVec3(), 0.7f);
                         ++agentIndex;
                     }
-                    AddOrderPositionFlag(orderFlagIndex, order.OrderPosition.GetGroundVec3(), order.Direction, 0.7f);
-                    ++orderFlagIndex;
+                    var arrowEnd = order.OrderPosition.GetGroundVec3();
+                    if (_config.CommandQueueFlagShowMode == HighlightMode.Always || _isFreeCamera && _config.CommandQueueFlagShowMode == HighlightMode.FreeCameraOnly)
+                    {
+                        AddOrderPositionFlag(orderFlagIndex, arrowEnd, order.Direction, 0.7f);
+                        ++orderFlagIndex;
+                    }
+                    if (_config.CommandQueueArrowShowMode == HighlightMode.Always || _isFreeCamera && _config.CommandQueueArrowShowMode == HighlightMode.FreeCameraOnly)
+                    {
+                        var vec = arrowEnd - arrowStart;
+                        var length = vec.Normalize();
+                        if (length > 20)
+                        {
+                            var gap = MathF.Max(length * 0.1f, 5f);
+                            AddArrow(arrowIndex, arrowStart + vec * gap, arrowEnd - vec * gap, 0.2f);
+                            ++arrowIndex;
+                        }
+                    }
+                    arrowStart = arrowEnd;
                 }
             }
         }
 
-
-        private CommandQueuePreviewData CollectCommandQueuePreviewData(Formation formation)
+        private CommandQueueFormationPreviewData CollectCommandQueuePreviewData(Formation formation)
         {
-            var result = new CommandQueuePreviewData();
+            var result = new CommandQueueFormationPreviewData();
             result.Formation = formation;
             foreach (var order in CommandQueueLogic.OrderQueue)
             {
@@ -154,8 +214,21 @@ namespace RTSCamera.CommandSystem.View
                     {
                         switch (order.OrderType)
                         {
+                            case OrderType.Move:
+                                {
+                                    var position = order.PositionBegin;
+                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
+                                    return CollectOrderPreviewData(formation);
+                                }
                             case OrderType.Charge:
                             case OrderType.ChargeWithTarget:
+                                {
+                                    if (order.TargetFormation != null)
+                                    {
+                                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, order.TargetFormation.QuerySystem.MedianPosition, null, null, null);
+                                        return CollectOrderPreviewData(formation);
+                                    }
+                                }
                                 return null;
                             case OrderType.LookAtEnemy:
                                 {
@@ -164,7 +237,35 @@ namespace RTSCamera.CommandSystem.View
                                     return CollectOrderPreviewData(formation);
                                 }
                             case OrderType.FollowMe:
-                                return null;
+                                {
+                                    var targetPosition = Patch_OrderController.GetFollowOrderPosition(formation, order.TargetAgent);
+                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
+                                    return CollectOrderPreviewData(formation);
+                                }
+                            case OrderType.FollowEntity:
+                                {
+                                    var waitEntity = (order.TargetEntity as UsableMachine).WaitEntity;
+                                    Vec2 direction = Patch_OrderController.GetFollowEntityDirection(formation, waitEntity);
+                                    var targetPosition = Patch_OrderController.GetFollowEntityOrderPosition(formation, waitEntity);
+                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, direction, null, null);
+                                    return CollectOrderPreviewData(formation);
+                                }
+                            case OrderType.AttackEntity:
+                                {
+                                    var missionObject = order.TargetEntity as MissionObject;
+                                    var gameEntity = missionObject.GameEntity;
+                                    WorldPosition position = Patch_OrderController.GetAttackEntityWaitPosition(formation, gameEntity);
+                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
+                                    return CollectOrderPreviewData(formation);
+                                }
+                            case OrderType.PointDefence:
+                                {
+                                    var pointDefendable = order.TargetEntity as IPointDefendable;
+                                    var position = pointDefendable.MiddleFrame.Origin;
+                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
+                                    return CollectOrderPreviewData(formation);
+                                }
+
                             case OrderType.LookAtDirection:
                                 {
                                     return CollectOrderPreviewData(formation);
@@ -313,10 +414,48 @@ namespace RTSCamera.CommandSystem.View
                 orderPositionEntity.FadeIn();
         }
 
+        private void AddArrow(int index, Vec3 arrowStart, Vec3 arrowEnd, float alpha)
+        {
+            while (_arrowEntities.Count <= index)
+            {
+                GameEntity empty = GameEntity.CreateEmpty(Mission.Scene);
+                empty.EntityFlags |= EntityFlags.NotAffectedBySeason;
+                MetaMesh copy = MetaMesh.GetCopy("order_arrow_a");
+                //MetaMesh copy = MetaMesh.GetCopy("unit_arrow");
+                if (_arrowMaterial == (NativeObject)null)
+                {
+                    _arrowMaterial = Material.GetFromResource("unit_arrow").CreateCopy();
+                    //_arrowMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+                    //_arrowMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
+                }
+                copy.SetMaterial(_arrowMaterial);
+                empty.AddComponent(copy);
+                copy.SetFactor1(new Color(0.3f, 0.8f, 0.3f, alpha).ToUnsignedInteger());
+                empty.SetVisibilityExcludeParents(false);
+                _arrowEntities.Add(empty);
+            }
+            GameEntity orderPositionEntity = _arrowEntities[index];
+            var direction = arrowEnd - arrowStart;
+            var length = direction.Normalize();
+            var scale = length / 2;
+            MatrixFrame frame = new MatrixFrame(Mat3.CreateMat3WithForward(direction), arrowStart + Vec3.Up * 5f);
+            frame.Scale(new Vec3(scale, scale, scale));
+            orderPositionEntity.SetFrame(ref frame);
+            if ((double)alpha != -1.0)
+            {
+                orderPositionEntity.SetVisibilityExcludeParents(true);
+                orderPositionEntity.SetAlpha(alpha);
+            }
+            else
+                orderPositionEntity.FadeIn();
+        }
+
         private void HidePreview()
         {
             HideAgentFrameEntities();
             HideOrderPositionFlagEntities();
+            HideArrowEntities();
+
         }
 
         private void HideAgentFrameEntities()
@@ -331,6 +470,14 @@ namespace RTSCamera.CommandSystem.View
                 orderPositionFlagEntity.HideIfNotFadingOut();
         }
 
+        private void HideArrowEntities()
+        {
+            foreach(var arrowEntity in _arrowEntities)
+            {
+                arrowEntity.HideIfNotFadingOut();
+            }
+        }
+
         private OrderPreviewData CollectOrderPreviewData(Formation formation)
         {
             if (_showAgentFrames)
@@ -338,7 +485,12 @@ namespace RTSCamera.CommandSystem.View
                 Patch_OrderController.SimulateAgentFrames(new List<Formation> { formation },
                     Mission.PlayerTeam.PlayerOrderController.simulationFormations,
                     out var simulationFormationChanges);
-                return new OrderPreviewData { AgentPositions = simulationFormationChanges, OrderPosition = Patch_OrderController.GetFormationVirtualPosition(formation) };
+                return new OrderPreviewData
+                {
+                    AgentPositions = simulationFormationChanges,
+                    OrderPosition = Patch_OrderController.GetFormationVirtualPosition(formation),
+                    Direction = Patch_OrderController.GetFormationVirtualDirection(formation)
+                };
             }
             else
             {

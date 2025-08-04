@@ -122,12 +122,11 @@ namespace RTSCamera.CommandSystem.Patch
             bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
             if (!queueCommand)
             {
-                CommandQueueLogic.CancelPendingOrder(__instance.OrderController.SelectedFormations);
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations));
             }
             else
             {
-                Patch_OrderController.LivePreviewFormationChanges.SetChanges(Patch_OrderController.LatestOrderInQueueChanges.CollectChanges(__instance.OrderController.SelectedFormations));
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(__instance.OrderController.SelectedFormations));
             }
             var orderToAdd = new OrderInQueue
             {
@@ -141,8 +140,9 @@ namespace RTSCamera.CommandSystem.Patch
                 case OrderSubType.MoveToPosition:
                     Vec3 orderFlagPosition = missionScreen.GetOrderFlagPosition();
                     WorldPosition unitPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, orderFlagPosition, false);
-                    if (Mission.Current.IsFormationUnitPositionAvailable(ref unitPosition, Mission.Current.PlayerTeam))
+                    if (Mission.Current.IsFormationUnitPositionAvailable(ref unitPosition, Mission.Current.PlayerTeam) && queueCommand)
                     {
+                        Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.MoveToLineSegment, __instance.OrderController.SelectedFormations, null, null, null);
                         OrderController.SimulateNewOrderWithPositionAndDirection(__instance.OrderController.SelectedFormations, __instance.OrderController.simulationFormations, unitPosition, unitPosition, out var formationChanges, out var isLineShort, true);
                         orderToAdd.CustomOrderType = CustomOrderType.MoveToLineSegment;
                         orderToAdd.IsLineShort = isLineShort;
@@ -160,29 +160,40 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         orderToAdd.TargetFormation = focusedFormations[0];
                     }
+                    Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Charge, __instance.OrderController.SelectedFormations, orderToAdd.TargetFormation, null, null);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     break;
                 case OrderSubType.FollowMe:
                     // is it ok to save main agent here, and access it later, even if the main agent may become inactive?
                     orderToAdd.OrderType = OrderType.FollowMe;
                     orderToAdd.TargetAgent = Agent.Main;
+                    Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FollowMe, __instance.OrderController.SelectedFormations, null, Agent.Main, null);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     break;
                 case OrderSubType.Advance:
                     orderToAdd.OrderType = OrderType.Advance;
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     focusedFormations = (MBReadOnlyList<Formation>)_focusedFormationsCache.GetValue(__instance);
                     if (focusedFormations != null && focusedFormations.Count > 0)
                     {
                         orderToAdd.TargetFormation = focusedFormations[0];
                     }
+                    Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Advance, __instance.OrderController.SelectedFormations, orderToAdd.TargetFormation, null, null);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     break;
                 case OrderSubType.Fallback:
                     orderToAdd.OrderType = OrderType.FallBack;
+                    Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FallBack, __instance.OrderController.SelectedFormations, null, null, null);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     break;
                 case OrderSubType.Stop:
                     orderToAdd.OrderType = OrderType.StandYourGround;
+                    Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.StandYourGround, __instance.OrderController.SelectedFormations, null, null, null);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     break;
                 case OrderSubType.Retreat:
                     orderToAdd.OrderType = OrderType.Retreat;
+                    Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Retreat, __instance.OrderController.SelectedFormations, null, null, null);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     break;
                 case OrderSubType.FormLine:
                     orderToAdd.OrderType = OrderType.ArrangementLine;
@@ -209,29 +220,13 @@ namespace RTSCamera.CommandSystem.Patch
                     orderToAdd.OrderType = OrderType.ArrangementScatter;
                     break;
                 case OrderSubType.ToggleFacing:
-                    if (Utilities.Utility.ShouldLockFormation())
+                    orderToAdd.CustomOrderType = CustomOrderType.ToggleFacing;
+                    if (queueCommand)
                     {
-                        orderToAdd.CustomOrderType = CustomOrderType.ToggleFacing;
-                        orderToAdd.ShouldLockFormationInFacingOrder = true;
-                        if (queueCommand)
-                        {
-                            Patch_OrderController.SimulateNewFacingOrder(__instance.OrderController.SelectedFormations,
-                                __instance.OrderController.simulationFormations,
-                                OrderController.GetOrderLookAtDirection(__instance.OrderController.SelectedFormations, missionScreen.GetOrderFlagPosition().AsVec2),
-                                false,
-                                out _,
-                                true,
-                                out var simulationFormationChanges);
-                            orderToAdd.ActualFormationChanges = simulationFormationChanges;
-                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
-                        }
+                        Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, missionScreen);
                     }
-                    else
-                    {
-                        orderToAdd.CustomOrderType = CustomOrderType.ToggleFacing;
-                        orderToAdd.ShouldLockFormationInFacingOrder = false;
-                        orderToAdd.PositionBegin = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false);
-                    }
+                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(__instance.OrderController.SelectedFormations.Any(f => Patch_OrderController.GetFormationVirtualFacingOrder(f) == OrderType.LookAtDirection) ? OrderType.LookAtEnemy : OrderType.LookAtDirection, __instance.OrderController.SelectedFormations);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     break;
                 case OrderSubType.ToggleFire:
                     orderToAdd.CustomOrderType = CustomOrderType.ToggleFire;
@@ -246,31 +241,16 @@ namespace RTSCamera.CommandSystem.Patch
                     return null;
                 case OrderSubType.ActivationFaceDirection:
                     orderToAdd.OrderType = OrderType.LookAtDirection;
-                    if (Utilities.Utility.ShouldLockFormation())
+                    if (queueCommand)
                     {
-                        orderToAdd.ShouldLockFormationInFacingOrder = true;
-                        if (queueCommand)
-                        {
-                            Patch_OrderController.SimulateNewFacingOrder(__instance.OrderController.SelectedFormations,
-                                __instance.OrderController.simulationFormations,
-                                OrderController.GetOrderLookAtDirection(__instance.OrderController.SelectedFormations, missionScreen.GetOrderFlagPosition().AsVec2),
-                                false,
-                                out _,
-                                true,
-                                out var simulationFormationChanges);
-                            orderToAdd.ActualFormationChanges = simulationFormationChanges;
-                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
-                        }
+                        Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, missionScreen);
                     }
-                    else
-                    {
-                        orderToAdd.ShouldLockFormationInFacingOrder = false;
-                        orderToAdd.PositionBegin = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false);
-                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
-                    }
+                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtDirection, __instance.OrderController.SelectedFormations);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     break;
                 case OrderSubType.FaceEnemy:
                     orderToAdd.OrderType = OrderType.LookAtEnemy;
+                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, __instance.OrderController.SelectedFormations);
                     orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
                     break;
                 case OrderSubType.Return:

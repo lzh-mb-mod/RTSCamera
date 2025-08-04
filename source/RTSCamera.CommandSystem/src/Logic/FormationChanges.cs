@@ -14,6 +14,11 @@ namespace RTSCamera.CommandSystem.Logic
         public Vec2? Direciton;
         public int? UnitSpacing;
         public float? Width;
+        public OrderType? MovementOrderType;
+        public Formation TargetFormation;
+        public Agent TargetAgent;
+        public IOrderable TargetEntity;
+        public OrderType? FacingOrderType;
     }
     public class FormationChanges
     {
@@ -43,6 +48,11 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     change.Width = pair.Value.Width.Value;
                 }
+                change.MovementOrderType = pair.Value.MovementOrderType;
+                change.TargetFormation = pair.Value.TargetFormation;
+                change.TargetAgent = pair.Value.TargetAgent;
+                change.TargetEntity = pair.Value.TargetEntity;
+                change.FacingOrderType = pair.Value.FacingOrderType;
                 VirtualChanges[pair.Key] = change;
             }
         }
@@ -74,6 +84,37 @@ namespace RTSCamera.CommandSystem.Logic
                 change.Width = width.Value;
             }
             VirtualChanges[formation] = change;
+        }
+
+        public void SetMovementOrder(OrderType orderType, IEnumerable<Formation> formations, Formation targetFormation, Agent targetAgent, IOrderable targetEntity)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    change = new FormationChange();
+                }
+
+                change.MovementOrderType = orderType;
+                change.TargetFormation = targetFormation;
+                change.TargetAgent = targetAgent;
+                change.TargetEntity = targetEntity;
+                VirtualChanges[formation] = change;
+            }
+        }
+        
+        public void SetFacingOrder(OrderType orderType, IEnumerable<Formation> formations)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    change = new FormationChange();
+                }
+
+                change.FacingOrderType = orderType;
+                VirtualChanges[formation] = change;
+            }
         }
     }
 }

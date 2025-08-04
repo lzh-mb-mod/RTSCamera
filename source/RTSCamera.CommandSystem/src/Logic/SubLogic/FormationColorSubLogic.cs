@@ -52,9 +52,9 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         private bool _isOrderShown;
         private bool _isFreeCamera;
-        private bool HighlightEnabled => (!_config.HighlightOnRtsViewOnly || _isFreeCamera) && _isOrderShown && _config.ShouldHighlightWithOutline();
-        private bool HighlightEnabledForSelectedFormation => (!_config.HighlightOnRtsViewOnly || _isFreeCamera) && _isOrderShown && _config.HighlightSelectedFormation;
-        private bool HighlightEnabledForAsTargetFormation => (!_config.HighlightOnRtsViewOnly || _isFreeCamera) && _isOrderShown && _config.AttackSpecificFormation && _config.HighlightTargetFormation;
+        private bool HighlightEnabled => (_config.SelectedFormationHighlightMode >= HighlightMode.FreeCameraOnly || _config.TargetFormationHighlightMode >= HighlightMode.FreeCameraOnly) && _isOrderShown && _config.ShouldHighlightWithOutline();
+        private bool HighlightEnabledForSelectedFormation => _isOrderShown && (_config.SelectedFormationHighlightMode == HighlightMode.Always || (_isFreeCamera && _config.SelectedFormationHighlightMode == HighlightMode.FreeCameraOnly));
+        private bool HighlightEnabledForTargetFormation => _isOrderShown && (_config.TargetFormationHighlightMode == HighlightMode.Always || (_isFreeCamera && _config.TargetFormationHighlightMode == HighlightMode.FreeCameraOnly));
 
         private readonly Queue<Action> _actionQueue = new Queue<Action>();
 
@@ -75,6 +75,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _temporarilyUpdatedFormations.Clear();
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
             Mission.Current.Teams.OnPlayerTeamChanged -= Mission_OnPlayerTeamChanged;
+            MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
         }
 
         private void OnToggleFreeCamera(bool freeCamera)
@@ -88,7 +89,15 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                 }
                 else
                 {
-                    ClearContour();
+                    if (_config.SelectedFormationHighlightMode != HighlightMode.Always)
+                    {
+                        ClearAllySelectedContour();
+                    }
+                    else if (_config.TargetFormationHighlightMode != HighlightMode.Always)
+                    {
+                        ClearEnemyFocusContour();
+                        ClearAllyAsTargetContour();
+                    }
                 }
             }
         }
@@ -178,7 +187,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             if (formation != null)
             {
                 bool isEnemy = Utility.IsEnemy(formation);
-                if (isEnemy ? HighlightEnabledForAsTargetFormation : HighlightEnabledForSelectedFormation)
+                if (isEnemy ? HighlightEnabledForTargetFormation : HighlightEnabledForSelectedFormation)
                     SetFormationMouseOverContour(formation, Utility.IsEnemy(formation));
             }
         }
@@ -209,9 +218,23 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             }
         }
 
+        public void OnChargeWithTarget(Formation formation)
+        {
+            if (!HighlightEnabledForTargetFormation)
+            {
+                return;
+            }
+
+            if (_allySelectedFormations.Contains(formation))
+            {
+                ClearEnemyFocusContour();
+                SetFocusContour();
+            }
+        }
+
         private void OnOrderIssued(OrderType orderType, MBReadOnlyList<Formation> appliedFormations, OrderController orderController, params object[] delegateParams)
         {
-            if (!HighlightEnabledForAsTargetFormation || movementOrderTypes.FindIndex(o => o == orderType) == -1)
+            if (!HighlightEnabledForTargetFormation || movementOrderTypes.FindIndex(o => o == orderType) == -1)
                 return;
             if (!_allySelectedFormations.Intersect(appliedFormations).IsEmpty())
             {
@@ -276,7 +299,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         {
             foreach (var formation in PlayerOrderController?.SelectedFormations ?? Enumerable.Empty<Formation>())
             {
-                if (!_allySelectedFormations.Contains(formation))
+                if (HighlightEnabledForSelectedFormation && !_allySelectedFormations.Contains(formation))
                 {
                     SetFormationSelectedContour(formation, false);
                 }
@@ -290,7 +313,10 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             }
 
             _allySelectedFormations.Clear();
-            _allySelectedFormations.AddRange(PlayerOrderController?.SelectedFormations ?? Enumerable.Empty<Formation>());
+            if (HighlightEnabledForSelectedFormation)
+            {
+                _allySelectedFormations.AddRange(PlayerOrderController?.SelectedFormations ?? Enumerable.Empty<Formation>());
+            }
 
 
             var enemyAsTargetFormations = PlayerOrderController?.SelectedFormations
@@ -298,12 +324,12 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
             foreach (var formation in enemyAsTargetFormations)
             {
-                if (HighlightEnabledForAsTargetFormation && !_enemyAsTargetFormations.Contains(formation))
+                if (HighlightEnabledForTargetFormation && !_enemyAsTargetFormations.Contains(formation))
                     SetFormationAsTargetContour(formation, true);
             }
             foreach (var formation in _enemyAsTargetFormations)
             {
-                if (!HighlightEnabledForAsTargetFormation || !enemyAsTargetFormations.Contains(formation))
+                if (!HighlightEnabledForTargetFormation || !enemyAsTargetFormations.Contains(formation))
                 {
                     ClearFormationFocusContour(formation);
                 }
@@ -320,12 +346,12 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
                 foreach (var formation in allyAsTargetFormations)
                 {
-                    if (HighlightEnabledForAsTargetFormation && !_allyAsTargetFormations.Contains(formation))
+                    if (HighlightEnabledForTargetFormation && !_allyAsTargetFormations.Contains(formation))
                         SetFormationAsTargetContour(formation, false);
                 }
                 foreach (var formation in _allyAsTargetFormations)
                 {
-                    if (!HighlightEnabledForAsTargetFormation || !allyAsTargetFormations.Contains(formation))
+                    if (!HighlightEnabledForTargetFormation || !allyAsTargetFormations.Contains(formation))
                     {
                         ClearFormationFocusContour(formation);
                     }
@@ -431,7 +457,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _enemyAsTargetFormations.Clear();
         }
 
-        private void ClearAllyFocusContour()
+        private void ClearAllySelectedContour()
         {
             foreach (var formation in _allySelectedFormations)
             {
@@ -439,7 +465,10 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             }
 
             _allySelectedFormations.Clear();
+        }
 
+        private void ClearAllyAsTargetContour()
+        {
             foreach (var formation in _allyAsTargetFormations)
             {
                 ClearFormationFocusContour(formation);
@@ -473,12 +502,13 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private void SetFormationSelectedContour(Formation formation, bool isEnemy)
         {
             if (!isEnemy)
+            {
                 _allySelectedFormations.Add(formation);
-            if (HighlightEnabledForSelectedFormation)
                 _actionQueue.Enqueue(() =>
                 {
                     formation.ApplyActionOnEachUnit(agent => SetAgentSelectedContour(agent, isEnemy));
                 });
+            }
         }
 
         private void SetAgentMouseOverContour(Agent agent, bool enemy)

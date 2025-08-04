@@ -92,6 +92,11 @@ namespace RTSCamera.CommandSystem.Patch
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_UpdateFormationDrawingForMovementOrder),
                     BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawingForFacingOrder",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_UpdateFormationDrawingForFacingOrder),
+                    BindingFlags.Static | BindingFlags.Public)));
                 return true;
             }
             catch (Exception e)
@@ -391,7 +396,7 @@ namespace RTSCamera.CommandSystem.Patch
             List<GameEntity> ____orderPositionEntities, ref Material ____meshMaterial)
         {
             var config = CommandSystemConfig.Get();
-            bool moreVisibleTroopPlacer = config.MoreVisibleMovementTarget && (!config.MovementTargetMoreVisibleOnRtsViewOnly || _isFreeCamera);
+            bool moreVisibleTroopPlacer = config.MovementTargetHighlightMode == HighlightMode.Always || _isFreeCamera && config.MovementTargetHighlightMode == HighlightMode.FreeCameraOnly;
             if (_previousMoreVisibleTroopPlacer != moreVisibleTroopPlacer)
             {
                 if (moreVisibleTroopPlacer)
@@ -758,8 +763,6 @@ namespace RTSCamera.CommandSystem.Patch
             }
         }
 
-
-
         public static bool Prefix_UpdateFormationDrawingForMovementOrder(OrderTroopPlacer __instance,
             bool giveOrder,
             WorldPosition formationRealStartingPosition,
@@ -769,15 +772,15 @@ namespace RTSCamera.CommandSystem.Patch
             bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(__instance.MissionScreen.SceneLayer.Input);
             if (!queueCommand)
             {
-                CommandQueueLogic.CancelPendingOrder(___PlayerOrderController.SelectedFormations);
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
             }
             else
             {
-                Patch_OrderController.LivePreviewFormationChanges.SetChanges(Patch_OrderController.LatestOrderInQueueChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
             }
             if (giveOrder)
             {
+                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout, ___PlayerOrderController.SelectedFormations, null, null, null);
                 if (!queueCommand)
                 {
                     CommandQueueLogic.TryPendingOrder(___PlayerOrderController.SelectedFormations, new OrderInQueue
@@ -807,6 +810,21 @@ namespace RTSCamera.CommandSystem.Patch
                 }
             }
 
+            return true;
+        }
+
+        public static bool Prefix_UpdateFormationDrawingForFacingOrder(OrderTroopPlacer __instance,
+            bool giveOrder, ref bool ___isDrawnThisFrame, OrderController ___PlayerOrderController)
+        {
+            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(__instance.MissionScreen.SceneLayer.Input);
+            if (!queueCommand)
+            {
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
+            }
+            else
+            {
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
+            }
             return true;
         }
     }

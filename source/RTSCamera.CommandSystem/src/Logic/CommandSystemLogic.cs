@@ -1,4 +1,5 @@
-﻿using RTSCamera.CommandSystem.Logic.SubLogic;
+﻿using RTSCamera.CommandSystem.AgentComponents;
+using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
 using TaleWorlds.Core;
@@ -56,6 +57,13 @@ namespace RTSCamera.CommandSystem.Logic
         public override void AfterAddTeam(Team team)
         {
             FormationColorSubLogic.AfterAddTeam(team);
+        }
+
+        public override void OnAgentCreated(Agent agent)
+        {
+            base.OnAgentCreated(agent);
+
+            agent.AddComponent(new CommandSystemAgentComponent(agent));
         }
 
         public override void OnAgentBuild(Agent agent, Banner banner)

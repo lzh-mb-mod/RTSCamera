@@ -41,7 +41,13 @@ namespace RTSCamera.CommandSystem.Patch
             OrderController orderController,
             MissionOrderVM ____missionOrder)
         {
-            var orderSets = typeof(MissionOrderVM).GetField("OrderSetsWithOrdersByType", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(____missionOrder) as Dictionary<OrderSetType, OrderSetVM>;
+            CloseFacingOrderSet(____missionOrder);
+            return true;
+        }
+
+        public static void CloseFacingOrderSet(MissionOrderVM missionOrderVM)
+        {
+            var orderSets = typeof(MissionOrderVM).GetField("OrderSetsWithOrdersByType", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(missionOrderVM) as Dictionary<OrderSetType, OrderSetVM>;
             if (orderSets != null)
             {
                 // hide facing orders
@@ -49,11 +55,9 @@ namespace RTSCamera.CommandSystem.Patch
                     orderSets[OrderSetType.Facing].ShowOrders = false;
                 // fix the issue that in legacy order layour type,
                 // after giving facing orders by clicking on ground and then press escape, the order UI cannot be closed.
-                if (____missionOrder.LastSelectedOrderSetType == OrderSetType.Facing)
-                    ____missionOrder.LastSelectedOrderSetType = OrderSetType.None;
+                if (missionOrderVM.LastSelectedOrderSetType == OrderSetType.Facing)
+                    missionOrderVM.LastSelectedOrderSetType = OrderSetType.None;
             }
-
-            return true;
         }
     }
 }

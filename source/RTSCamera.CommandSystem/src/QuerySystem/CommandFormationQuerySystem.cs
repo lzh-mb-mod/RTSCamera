@@ -1,9 +1,7 @@
-﻿using RTSCamera.CommandSystem.Patch;
-using System;
+﻿using RTSCamera.CommandSystem.AgentComponents;
+using RTSCamera.CommandSystem.Patch;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -15,8 +13,8 @@ namespace RTSCamera.CommandSystem.QuerySystem
         public readonly QueryData<Formation> _closestEnemyFormation;
         private readonly QueryData<Agent> _closestEnemyAgent;
         private readonly QueryData<Vec2> _weightedAverageEnemyPosition;
-        private readonly QueryData<float> _averageDistanceSquareWithVelocityToOrderPositionExcludingFarAgents;
-        private readonly QueryData<float> _ratioOfAgentsNearOrderPosition;
+        private readonly QueryData<bool> _areAgentsNearTargetPositions;
+        private readonly QueryData<bool> _coolDownToEvaluateAgentsDistanceToTarget;
 
         public Formation ClosestEnemyFormation
         {
@@ -34,9 +32,29 @@ namespace RTSCamera.CommandSystem.QuerySystem
 
         public Vec2 WeightedAverageEnemyPosition => this._weightedAverageEnemyPosition.Value;
 
-        public float AverageDistanceSquareWithVelocityToOrderPositionExcludingFarAgents => _averageDistanceSquareWithVelocityToOrderPositionExcludingFarAgents.Value;
 
-        public float RatioOfAgentsNearOrderPosition => _ratioOfAgentsNearOrderPosition.Value;
+        public bool AreAgentsNearTargetPositions => _areAgentsNearTargetPositions.Value;
+
+        public bool CoolDownToEvaluateAgentsDistanceToTarget => _coolDownToEvaluateAgentsDistanceToTarget.Value;
+
+        public bool HasCurrentMovementOrderCompleted
+        {
+            get
+            {
+                if (!NeedToUpdateTargetPositionDistance)
+                    return true;
+                if (CoolDownToEvaluateAgentsDistanceToTarget)
+                    return false;
+                if (AreAgentsNearTargetPositions)
+                {
+                    NeedToUpdateTargetPositionDistance = false;
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public bool NeedToUpdateTargetPositionDistance;
 
         public CommandFormationQuerySystem(Formation formation)
         {
@@ -90,84 +108,36 @@ namespace RTSCamera.CommandSystem.QuerySystem
                 return closestAgent;
             }, 1.5f);
             _weightedAverageEnemyPosition = new QueryData<Vec2>(() => Formation.Team.GetWeightedAverageOfEnemies(Patch_OrderController.GetFormationVirtualPositionVec2(formation)), 0.5f);
-            _averageDistanceSquareWithVelocityToOrderPositionExcludingFarAgents = new QueryData<float>(() =>
+            _areAgentsNearTargetPositions = new QueryData<bool>(() =>
             {
                 if (formation.CountOfUnitsWithoutDetachedOnes > 0)
                 {
-                    int count = 0;
-                    float distanceSquaredAmount = 0;
-                    formation.ApplyActionOnEachUnit((agent) =>
+                    float scoreSum = 0f;
+                    float threshold = (float)formation.CountOfUnitsWithoutDetachedOnes / 2;
+                    formation.ApplyActionOnEachAttachedUnit((agent) =>
                     {
-                        var worldPosition = agent.Formation.GetOrderPositionOfUnit(agent);
-                        if (worldPosition.IsValid)
-                        {
-                            var distanceSquared = worldPosition.GetGroundVec3().DistanceSquared(agent.Position + agent.Velocity * 2f);
-                            distanceSquaredAmount += distanceSquared;
-                            ++count;
-                        }
+                        var distanceSquared = agent.GetComponent<CommandSystemAgentComponent>()?.DistanceSquaredToTargetPosition ?? 0;
+                        var score = MathF.Pow(MathF.E, -distanceSquared/7f);
+                        scoreSum += score;
                     });
-                    if (count > 0)
+                    if (scoreSum > threshold)
                     {
-                        float threshold = distanceSquaredAmount / count * 1.1f;
-                        float distanceSquaredAmount2 = 0;
-                        int count2 = 0;
-                        formation.ApplyActionOnEachUnit((agent) =>
-                        {
-                            var worldPosition = agent.Formation.GetOrderPositionOfUnit(agent);
-                            if (worldPosition.IsValid)
-                            {
-                                var distanceSquared = worldPosition.GetGroundVec3().DistanceSquared(agent.Position + agent.Velocity * 2f);
-                                if (distanceSquared < threshold)
-                                {
-                                    distanceSquaredAmount2 += distanceSquared;
-                                    ++count2;
-                                }
-                            }
-                        });
-                        if (count2 > 0)
-                        {
-                            return distanceSquaredAmount2 / count2;
-                        }
+                        return true;
                     }
+                    return false;
                 }
-                return 0f;
+                return true;
             }, 0.5f);
-            _ratioOfAgentsNearOrderPosition = new QueryData<float>(() =>
-            {
-                if (formation.CountOfUnitsWithoutDetachedOnes > 0)
-                {
-                    int count = 0;
-                    int amount = 0;
-                    formation.ApplyActionOnEachUnit((agent) =>
-                    {
-                        var worldPosition = agent.Formation.GetOrderPositionOfUnit(agent);
-                        if (worldPosition.IsValid)
-                        {
-                            var distanceSquared1 = worldPosition.GetGroundVec3().DistanceSquared(agent.Position + agent.Velocity * 2f);
-                            var distanceSquared2 = worldPosition.GetGroundVec3().DistanceSquared(agent.Position);
-                            var distanceSquared = MathF.Min(distanceSquared1, distanceSquared2);
-                            if (distanceSquared < 25)
-                            {
-                                ++count;
-                            }
-                            ++amount;
-                        }
-                    });
-                    if (amount > 0)
-                    {
-                        return (float)count / amount;
-                    }
-                }
-                return 1f;
-            }, 0.5f);
+            _coolDownToEvaluateAgentsDistanceToTarget = new QueryData<bool>(() => false, 0.31f + MBRandom.RandomFloat * 0.1f);
         }
         public void ExpireAllQueries()
         {
             _closestEnemyFormation?.Expire();
             _closestEnemyAgent?.Expire();
             _weightedAverageEnemyPosition?.Expire();
-            _averageDistanceSquareWithVelocityToOrderPositionExcludingFarAgents?.Expire();
-            _ratioOfAgentsNearOrderPosition.Expire();
+            _areAgentsNearTargetPositions.Expire();
+            _coolDownToEvaluateAgentsDistanceToTarget.SetValue(true, Mission.Current.CurrentTime);
+            NeedToUpdateTargetPositionDistance = true;
         }
     }
 }

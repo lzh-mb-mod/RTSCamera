@@ -96,6 +96,7 @@ namespace RTSCamera.CommandSystem
 
             // command queue
             _successPatch &= Patch_MissionOrderVM.Patch(_harmony);
+            _successPatch &= Patch_MissionGauntletSingleplayerOrderUIHandler.Patch(_harmony);
 
             if (!_successPatch)
             {

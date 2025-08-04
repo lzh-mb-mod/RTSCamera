@@ -1,18 +1,15 @@
 ﻿using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.CommandSystem.View;
-using SandBox.BoardGames;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using static TaleWorlds.MountAndBlade.Agent;
-using static TaleWorlds.MountAndBlade.Source.Objects.Siege.AgentPathNavMeshChecker;
 
 namespace RTSCamera.CommandSystem.Logic
 {
@@ -53,11 +50,13 @@ namespace RTSCamera.CommandSystem.Logic
         public Formation TargetFormation { get; set; }
         public Agent TargetAgent { get; set; }
 
+        public IOrderable TargetEntity { get; set; }
+
         public bool IsLineShort { get; set; }
 
         public bool ShouldLockFormationInFacingOrder { get; set; }
 
-        public List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)> ActualFormationChanges { get; set; }
+        public List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)> ActualFormationChanges { get; set; } 
 
         public Dictionary<Formation, FormationChange> VirtualFormationChanges { get; set; } = new Dictionary<Formation, FormationChange>();
     }
@@ -72,6 +71,7 @@ namespace RTSCamera.CommandSystem.Logic
 
         // virtual positions of last executed order.
         public static FormationChanges CurrentFormationChanges = new FormationChanges();
+        public static FormationChanges LatestOrderInQueueChanges = new FormationChanges();
         private static int TicksToSkip = 0;
 
         public static void OnBehaviorInitialize()
@@ -80,6 +80,7 @@ namespace RTSCamera.CommandSystem.Logic
             PendingOrders = new Dictionary<Formation, OrderInQueue>();
             ShouldSkipCurrentOrders = new Dictionary<Formation, bool>();
             CurrentFormationChanges = new FormationChanges();
+            LatestOrderInQueueChanges = new FormationChanges();
         }
 
         public static void OnRemoveBehavior()
@@ -88,6 +89,7 @@ namespace RTSCamera.CommandSystem.Logic
             PendingOrders = null;
             ShouldSkipCurrentOrders = null;
             CurrentFormationChanges = null;
+            LatestOrderInQueueChanges = null;
 
             var orderController = Mission.Current?.PlayerTeam?.PlayerOrderController;
             if (orderController != null)
@@ -110,7 +112,6 @@ namespace RTSCamera.CommandSystem.Logic
             CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(appliedFormations));
             switch (orderType)
             {
-                case OrderType.None:
                 case OrderType.Move:
                 case OrderType.MoveToLineSegment:
                 case OrderType.MoveToLineSegmentWithHorizontalLayout:
@@ -133,6 +134,7 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.PointDefence:
                     ClearOrderInQueue(appliedFormations);
                     break;
+                case OrderType.None:
                 case OrderType.ArrangementLine:
                 case OrderType.ArrangementCloseOrder:
                 case OrderType.ArrangementLoose:
@@ -161,6 +163,9 @@ namespace RTSCamera.CommandSystem.Logic
 
         public static void AddOrderToQueue(OrderInQueue order)
         {
+            if (order.CustomOrderType == CustomOrderType.Original && order.OrderType == OrderType.None)
+                return;
+            LatestOrderInQueueChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(order.SelectedFormations));
             OrderQueue.Add(order);
             Utility.DisplayMessage($"Added command to queue: {order.CustomOrderType}, {order.OrderType}");
             CommandQueuePreview.IsPreviewOutdated = true;
@@ -175,6 +180,7 @@ namespace RTSCamera.CommandSystem.Logic
                 if (order.SelectedFormations.Count == 0)
                     OrderQueue.Remove(order);
             }
+            LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(formations));
             CommandQueuePreview.IsPreviewOutdated = true;
         }
 
@@ -185,22 +191,25 @@ namespace RTSCamera.CommandSystem.Logic
                 TicksToSkip--;
                 return;
             }
-            while (TicksToSkip <= 0 &&
+            var order = GetOrderForFormation(formation);
+            while (TicksToSkip <= 0 && order != null &&
                 (!formation.GetReadonlyMovementOrderReference().IsApplicable(formation) ||
                     IsPendingOrderCompleted(formation)))
             {
-                var order = GetOrderForFormation(formation);
-                if (order == null)
-                    return;
-
                 ExecuteOrderForFormation(order, formation);
                 OnOrderExecutedForFormation(order, formation);
+                order = GetOrderForFormation(formation);
             }
         }
 
         public static bool IsMovementOrderCompleted(Formation formation)
         {
-            return formation.OrderPositionIsValid ? CommandQuerySystem.GetQueryForFormation(formation).RatioOfAgentsNearOrderPosition > 0.5f : false;
+            if (formation.GetReadonlyMovementOrderReference().OrderType == OrderType.AttackEntity)
+            {
+                // complete when target entity is destroyed
+                return !formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
+            }
+            return formation.OrderPositionIsValid ? CommandQuerySystem.GetQueryForFormation(formation).HasCurrentMovementOrderCompleted : false;
             //return formation.OrderPositionIsValid ? (formation.CurrentPosition + formation.QuerySystem.CurrentVelocity).Distance(formation.OrderPosition) <
             //(2 + MathF.Log10(MathF.Max(formation.CountOfUnitsWithoutDetachedOnes, 10)) * 3 - formation.QuerySystem.FormationIntegrityData.DeviationOfPositionsExcludeFarAgents) : false;
         }
@@ -269,6 +278,10 @@ namespace RTSCamera.CommandSystem.Logic
                     {
                         switch (order.OrderType)
                         {
+                            case OrderType.Move:
+                                formation.SetMovementOrder(MovementOrder.MovementOrderMove(order.PositionBegin));
+                                CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+                                break;
                             case OrderType.Charge:
                                 formation.SetMovementOrder(MovementOrder.MovementOrderCharge);
                                 if (order.TargetFormation != null)
@@ -282,6 +295,7 @@ namespace RTSCamera.CommandSystem.Logic
                                 {
                                     Utilities.Utility.DisplayFormationChargeMessage(formation);
                                     formation.SetTargetFormation(order.TargetFormation);
+                                    Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.FormationColorSubLogic?.OnChargeWithTarget(formation);
                                 }
                                 break;
                             case OrderType.LookAtDirection:
@@ -293,9 +307,25 @@ namespace RTSCamera.CommandSystem.Logic
                                 TryCancelStopOrder(formation);
                                 formation.FacingOrder = FacingOrder.FacingOrderLookAtEnemy;
                                 TryPendingOrder(new List<Formation> { formation }, order);
+                                CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
                             case OrderType.FollowMe:
                                 formation.SetMovementOrder(MovementOrder.MovementOrderFollow(order.TargetAgent));
+                                break;
+                            case OrderType.FollowEntity:
+                                GameEntity waitEntity = (order.TargetEntity as UsableMachine).WaitEntity;
+                                Vec2 direction = waitEntity.GetGlobalFrame().rotation.f.AsVec2.Normalized();
+                                formation.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
+                                formation.SetMovementOrder(MovementOrder.MovementOrderFollowEntity(waitEntity));
+                                break;
+                            case OrderType.AttackEntity:
+                                var missionObject = order.TargetEntity as MissionObject;
+                                var gameEntity = missionObject.GameEntity;
+                                formation.SetMovementOrder(MovementOrder.MovementOrderAttackEntity(gameEntity, !(missionObject is CastleGate)));
+                                break;
+                            case OrderType.PointDefence:
+                                var pointDefendable = order.TargetEntity as IPointDefendable;
+                                formation.SetMovementOrder(MovementOrder.MovementOrderMove(pointDefendable.MiddleFrame.Origin));
                                 break;
                             case OrderType.Advance:
                                 formation.SetMovementOrder(MovementOrder.MovementOrderAdvance);
@@ -364,6 +394,10 @@ namespace RTSCamera.CommandSystem.Logic
                         }
                         if (order.IsLineShort)
                         {
+                            if (virtualFormationChange.Width != null && formation.Width != virtualFormationChange.Width)
+                            {
+                                formation.FormOrder = FormOrder.FormOrderCustom(virtualFormationChange.Width.Value);
+                            }
                             switch (OrderController.GetActiveFacingOrderOf(formation))
                             {
                                 case OrderType.LookAtEnemy:
@@ -462,7 +496,9 @@ namespace RTSCamera.CommandSystem.Logic
             }
             else
             {
-                FacingOrder facingOrder = FacingOrder.FacingOrderLookAtDirection(OrderController.GetOrderLookAtDirection(order.SelectedFormations, order.PositionBegin.AsVec2));
+                var formationChanges = order.ActualFormationChanges;
+                (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.First(c => c.formation == formation);
+                formation.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
             }
         }
 
@@ -482,37 +518,45 @@ namespace RTSCamera.CommandSystem.Logic
             CommandQueuePreview.IsPreviewOutdated = true;
         }
 
+        public static bool CanBePended(OrderInQueue order)
+        {
+            switch (order.CustomOrderType)
+            {
+                case CustomOrderType.Original:
+                    {
+                        switch (order.OrderType)
+                        {
+                            case OrderType.Move:
+                            case OrderType.FollowEntity:
+                            case OrderType.AttackEntity:
+                            case OrderType.PointDefence:
+                            case OrderType.LookAtDirection:
+                            case OrderType.LookAtEnemy:
+                            case OrderType.Advance:
+                                {
+                                    return true;
+                                }
+                        }
+                        break;
+                    }
+                case CustomOrderType.MoveToLineSegment:
+                case CustomOrderType.MoveToLineSegmentWithHorizontalLayout:
+                case CustomOrderType.ToggleFacing:
+                    {
+                        return true;
+                    }
+            }
+            return false;
+        }
+
         public static void TryPendingOrder(IEnumerable<Formation> formations, OrderInQueue order)
         {
-            foreach (var formation in formations)
+            if (CanBePended(order))
             {
-                switch (order.CustomOrderType)
+                CancelPendingOrder(formations);
+                foreach (var formation in formations)
                 {
-                    case CustomOrderType.Original:
-                        {
-                            switch (order.OrderType)
-                            {
-                                case OrderType.LookAtDirection:
-                                    FormationPendingOrder(formation, order);
-                                    break;
-                                case OrderType.LookAtEnemy:
-                                    FormationPendingOrder(formation, order);
-                                    break;
-                                case OrderType.Advance:
-                                    FormationPendingOrder(formation, order);
-                                    break;
-                            }
-                            break;
-                        }
-                    case CustomOrderType.MoveToLineSegment:
-                    case CustomOrderType.MoveToLineSegmentWithHorizontalLayout:
-                        {
-                            FormationPendingOrder(formation, order);
-                            break;
-                        }
-                    case CustomOrderType.ToggleFacing:
-                        FormationPendingOrder(formation, order);
-                        break;
+                    FormationPendingOrder(formation, order);
                 }
             }
         }
