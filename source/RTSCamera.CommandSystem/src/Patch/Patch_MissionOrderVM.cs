@@ -100,25 +100,27 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Call, typeof(Patch_MissionOrderVM).GetMethod(nameof(TryAddSelectedOrderToQueue), BindingFlags.Static | BindingFlags.NonPublic)),
+                // skip native execution if TryAddSelectedOrderToQueue return true.
                 new CodeInstruction(OpCodes.Brtrue, codes[index__getOrderFlagPosition - 2].operand)
             });
         }
 
         private static bool TryAddSelectedOrderToQueue(MissionOrderVM __instance)
         {
-            var order = GetOrderToAdd(__instance);
+            var order = GetOrderToAdd(__instance, out var skipNativeOrder);
             if (order != null)
             {
                 CommandQueueLogic.AddOrderToQueue(order);
                 return true;
             }
-            return false;
+            return skipNativeOrder;
         }
 
         // all the supported command will be added to queue.
-        private static OrderInQueue GetOrderToAdd(MissionOrderVM __instance)
+        private static OrderInQueue GetOrderToAdd(MissionOrderVM __instance, out bool skipNativeOrder)
         {
             var missionScreen = Utility.GetMissionScreen();
+            skipNativeOrder = false;
             bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
             if (!queueCommand)
             {
@@ -144,7 +146,7 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.MoveToLineSegment, __instance.OrderController.SelectedFormations, null, null, null);
                         OrderController.SimulateNewOrderWithPositionAndDirection(__instance.OrderController.SelectedFormations, __instance.OrderController.simulationFormations, unitPosition, unitPosition, out var formationChanges, out var isLineShort, true);
-                        orderToAdd.CustomOrderType = CustomOrderType.MoveToLineSegment;
+                        orderToAdd.OrderType = OrderType.MoveToLineSegment;
                         orderToAdd.IsLineShort = isLineShort;
                         orderToAdd.ActualFormationChanges = formationChanges;
                         orderToAdd.PositionBegin = unitPosition;
@@ -197,45 +199,173 @@ namespace RTSCamera.CommandSystem.Patch
                     break;
                 case OrderSubType.FormLine:
                     orderToAdd.OrderType = OrderType.ArrangementLine;
+                    Patch_OrderController.SimulateNewArrangementOrder(__instance.OrderController.SelectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Line, false, out _, true, out _);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        ExecuteArrangementOrder(__instance, orderToAdd);
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     break;
                 case OrderSubType.FormClose:
                     orderToAdd.OrderType = OrderType.ArrangementCloseOrder;
+                    Patch_OrderController.SimulateNewArrangementOrder(__instance.OrderController.SelectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.ShieldWall, false, out _, true, out _);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        ExecuteArrangementOrder(__instance, orderToAdd);
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     break;
                 case OrderSubType.FormLoose:
                     orderToAdd.OrderType = OrderType.ArrangementLoose;
+                    Patch_OrderController.SimulateNewArrangementOrder(__instance.OrderController.SelectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Loose, false, out _, true, out _);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        ExecuteArrangementOrder(__instance, orderToAdd);
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     break;
                 case OrderSubType.FormCircular:
                     orderToAdd.OrderType = OrderType.ArrangementCircular;
+                    Patch_OrderController.SimulateNewArrangementOrder(__instance.OrderController.SelectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Circle, false, out _, true, out _);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        ExecuteArrangementOrder(__instance, orderToAdd);
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     break;
                 case OrderSubType.FormSchiltron:
                     orderToAdd.OrderType = OrderType.ArrangementSchiltron;
+                    Patch_OrderController.SimulateNewArrangementOrder(__instance.OrderController.SelectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Square, false, out _, true, out _);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        ExecuteArrangementOrder(__instance, orderToAdd);
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     break;
                 case OrderSubType.FormV:
                     orderToAdd.OrderType = OrderType.ArrangementVee;
+                    Patch_OrderController.SimulateNewArrangementOrder(__instance.OrderController.SelectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Skein, false, out _, true, out _);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        ExecuteArrangementOrder(__instance, orderToAdd);
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     break;
                 case OrderSubType.FormColumn:
                     orderToAdd.OrderType = OrderType.ArrangementColumn;
+                    Patch_OrderController.SimulateNewArrangementOrder(__instance.OrderController.SelectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Column, false, out _, true, out _);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        return null;
+                    }
                     break;
                 case OrderSubType.FormScatter:
                     orderToAdd.OrderType = OrderType.ArrangementScatter;
+                    Patch_OrderController.SimulateNewArrangementOrder(__instance.OrderController.SelectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Scatter, false, out _, true, out _);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        ExecuteArrangementOrder(__instance, orderToAdd);
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     break;
                 case OrderSubType.ToggleFacing:
-                    orderToAdd.CustomOrderType = CustomOrderType.ToggleFacing;
-                    if (queueCommand)
+                    if (__instance.LastSelectedOrderItem.SelectionState == 3)
+                    {
+                        orderToAdd.OrderType = OrderType.LookAtDirection;
+                    }
+                    else
+                    {
+                        orderToAdd.OrderType = OrderType.LookAtEnemy;
+                    }
+                    if (queueCommand && orderToAdd.OrderType == OrderType.LookAtDirection)
                     {
                         Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, missionScreen);
                     }
-                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(__instance.OrderController.SelectedFormations.Any(f => Patch_OrderController.GetFormationVirtualFacingOrder(f) == OrderType.LookAtDirection) ? OrderType.LookAtEnemy : OrderType.LookAtDirection, __instance.OrderController.SelectedFormations);
+                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(orderToAdd.OrderType, __instance.OrderController.SelectedFormations);
                     orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        if (orderToAdd.OrderType == OrderType.LookAtDirection)
+                        {
+                            __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false));
+                        }
+                        else
+                        {
+                            __instance.OrderController.SetOrder(OrderType.LookAtEnemy);
+                        }
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     break;
                 case OrderSubType.ToggleFire:
-                    orderToAdd.CustomOrderType = CustomOrderType.ToggleFire;
+                    // selectionState 2 means there's at least 1 formation holding fire, 3 means all formations are holding fire.
+                    if (__instance.LastSelectedOrderItem.SelectionState >= 2)
+                    {
+                        orderToAdd.OrderType = OrderType.FireAtWill;
+                    }
+                    else
+                    {
+                        orderToAdd.OrderType = OrderType.HoldFire;
+                    }
+                    Patch_OrderController.LivePreviewFormationChanges.SetFiringOrder(orderToAdd.OrderType, __instance.OrderController.SelectedFormations);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        __instance.OrderController.SetOrder(orderToAdd.OrderType);
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     break;
                 case OrderSubType.ToggleMount:
-                    orderToAdd.CustomOrderType = CustomOrderType.ToggleMount;
+                    if (__instance.LastSelectedOrderItem.SelectionState >= 2)
+                    {
+                        orderToAdd.OrderType = OrderType.Mount;
+                    }
+                    else
+                    {
+                        orderToAdd.OrderType = OrderType.Dismount;
+                    }
+                    Patch_OrderController.LivePreviewFormationChanges.SetRidingOrder(orderToAdd.OrderType, __instance.OrderController.SelectedFormations);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        __instance.OrderController.SetOrder(orderToAdd.OrderType);
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     break;
                 case OrderSubType.ToggleAI:
-                    orderToAdd.CustomOrderType = CustomOrderType.ToggleAI;
+                    if (__instance.LastSelectedOrderItem.SelectionState >= 2)
+                    {
+                        orderToAdd.OrderType = OrderType.AIControlOff;
+                    }
+                    else
+                    {
+                        orderToAdd.OrderType = OrderType.AIControlOn;
+                    }
+                    Patch_OrderController.LivePreviewFormationChanges.SetAIControlOrder(orderToAdd.OrderType, __instance.OrderController.SelectedFormations);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.OrderController.SelectedFormations);
+                    if (!queueCommand)
+                    {
+                        __instance.OrderController.SetOrder(orderToAdd.OrderType);
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     break;
                 case OrderSubType.ToggleTransfer:
                     return null;
@@ -262,6 +392,22 @@ namespace RTSCamera.CommandSystem.Patch
                 return null;
             }
             return orderToAdd;
+        }
+
+        private static void ExecuteArrangementOrder(MissionOrderVM __instance, OrderInQueue order)
+        {
+            __instance.OrderController.SetOrder(order.OrderType);
+            foreach (var pair in order.VirtualFormationChanges)
+            {
+                var formation = pair.Key;
+                var change = pair.Value;
+                formation.SetPositioning(unitSpacing: change.UnitSpacing);
+                if (change.Width != null)
+                {
+                    formation.FormOrder = FormOrder.FormOrderCustom(change.Width.Value);
+                }
+                CommandQueueLogic.CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(order.SelectedFormations));
+            }
         }
     }
 }

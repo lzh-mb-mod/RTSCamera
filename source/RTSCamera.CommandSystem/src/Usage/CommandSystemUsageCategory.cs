@@ -26,10 +26,17 @@ namespace RTSCamera.CommandSystem.Usage
                 GameTexts.FindText("str_rts_camera_command_system_option_class"),
                 new List<TaleWorlds.Localization.TextObject>
                 {
+                    GameTexts.FindText("str_rts_camera_command_system_order_queue_usage").SetTextVariable("KeyName",
+                        CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).ToSequenceString()),
+                    GameTexts.FindText("str_rts_camera_command_system_lock_formation_usage"),
+                    GameTexts.FindText("str_rts_camera_command_system_lock_formation_width_usage").SetTextVariable("KeyName",
+                        CommandSystemGameKeyCategory.GetKey(GameKeyEnum.KeepFormationWidth).ToSequenceString()),
+                    GameTexts.FindText("str_rts_camera_command_system_toggle_locking_usage").SetTextVariable("KeyName",
+                        CommandSystemGameKeyCategory.GetKey(GameKeyEnum.FormationLockMovement).ToSequenceString()),
                     GameTexts.FindText("str_rts_camera_command_system_attack_specific_formation_hint").SetTextVariable("KeyName",
                         CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString()),
                     GameTexts.FindText("str_rts_camera_command_system_attack_specific_formation_alt_hint"),
-                    GameTexts.FindText("str_rts_camera_command_system_target_only_usage")
+                    GameTexts.FindText("str_rts_camera_command_system_target_only_usage"),
                 });
 
             return new UsageCategory(CategoryId, usageCategoryData);

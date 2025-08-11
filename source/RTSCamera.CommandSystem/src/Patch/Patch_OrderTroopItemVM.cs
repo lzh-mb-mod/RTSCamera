@@ -12,7 +12,7 @@ namespace RTSCamera.CommandSystem.Patch
     {
         private static bool _patched;
 
-        public static bool Patch(Harmony harmony)
+        public static bool  Patch(Harmony harmony)
         {
             try
             {

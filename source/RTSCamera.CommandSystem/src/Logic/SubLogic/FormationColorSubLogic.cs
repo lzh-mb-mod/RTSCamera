@@ -32,7 +32,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             OrderType.AdvanceTenPaces,
             OrderType.FallBackTenPaces,
             OrderType.Advance,
-            OrderType.FallBack
+            OrderType.FallBack,
+            OrderType.AttackEntity
         };
 
         private readonly uint _allySelectedColor = new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger();
@@ -52,9 +53,9 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         private bool _isOrderShown;
         private bool _isFreeCamera;
-        private bool HighlightEnabled => (_config.SelectedFormationHighlightMode >= HighlightMode.FreeCameraOnly || _config.TargetFormationHighlightMode >= HighlightMode.FreeCameraOnly) && _isOrderShown && _config.ShouldHighlightWithOutline();
-        private bool HighlightEnabledForSelectedFormation => _isOrderShown && (_config.SelectedFormationHighlightMode == HighlightMode.Always || (_isFreeCamera && _config.SelectedFormationHighlightMode == HighlightMode.FreeCameraOnly));
-        private bool HighlightEnabledForTargetFormation => _isOrderShown && (_config.TargetFormationHighlightMode == HighlightMode.Always || (_isFreeCamera && _config.TargetFormationHighlightMode == HighlightMode.FreeCameraOnly));
+        private bool HighlightEnabled => (_config.SelectedFormationHighlightMode >= ShowMode.FreeCameraOnly || _config.TargetFormationHighlightMode >= ShowMode.FreeCameraOnly) && _isOrderShown && _config.ShouldHighlightWithOutline();
+        private bool HighlightEnabledForSelectedFormation => _isOrderShown && (_config.SelectedFormationHighlightMode == ShowMode.Always || (_isFreeCamera && _config.SelectedFormationHighlightMode == ShowMode.FreeCameraOnly));
+        private bool HighlightEnabledForTargetFormation => _isOrderShown && (_config.TargetFormationHighlightMode == ShowMode.Always || (_isFreeCamera && _config.TargetFormationHighlightMode == ShowMode.FreeCameraOnly));
 
         private readonly Queue<Action> _actionQueue = new Queue<Action>();
 
@@ -89,11 +90,11 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                 }
                 else
                 {
-                    if (_config.SelectedFormationHighlightMode != HighlightMode.Always)
+                    if (_config.SelectedFormationHighlightMode != ShowMode.Always)
                     {
                         ClearAllySelectedContour();
                     }
-                    else if (_config.TargetFormationHighlightMode != HighlightMode.Always)
+                    else if (_config.TargetFormationHighlightMode != ShowMode.Always)
                     {
                         ClearEnemyFocusContour();
                         ClearAllyAsTargetContour();
@@ -218,7 +219,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             }
         }
 
-        public void OnChargeWithTarget(Formation formation)
+        public void OnMovementOrderChanged(Formation formation)
         {
             if (!HighlightEnabledForTargetFormation)
             {

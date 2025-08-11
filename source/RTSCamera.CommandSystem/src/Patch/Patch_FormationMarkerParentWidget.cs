@@ -35,6 +35,8 @@ namespace RTSCamera.CommandSystem.Patch
 
             return true;
         }
+
+        // show formation marker below troop card
         public static void Postfix_OnLateUpdate(FormationMarkerParentWidget __instance)
         {
             if (string.IsNullOrEmpty(__instance.MarkerType))

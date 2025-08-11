@@ -42,7 +42,7 @@
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_pressed" text="When key is pressed" />
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed" text="When key is not pressed" />
 
-    <string id="RTSCameraCommandSystem_defensive_attack" text="{TROOP_NAME} are focusing on enemy {TARGET_NAME}" />
+    <string id="RTSCameraCommandSystem_defensive_attack" text="focusing on enemy {TARGET_NAME}" />
 
     <string id="RTSCameraCommandSystem_hotkeycategory" text="CommandSystem Hot Key" />
     <string id="RTSCameraCommandSystem_select_formation" text="Select Formation" />
@@ -58,6 +58,17 @@
 
     <string id="RTSCameraCommandSystem_tactic_level_required" text="You tactic level should be at least {level}" />
 
+    <string id="RTSCameraCommandSystem_order_queue_usage" text="Hold {KeyName} and give orders to add orders to queue. Your troops will execute them one by one." />
+    <string id="RTSCameraCommandSystem_lock_formation_usage" text="If you move/turn multiple formations at the same time, their relative positions/directions will be locked." />
+    <string id="RTSCameraCommandSystem_lock_formation_width_usage" text="Hold {KeyName} while dragging on the ground, formations relative positions and widths will be locked." />
+    <string id="RTSCameraCommandSystem_toggle_locking_usage" text="Hold {KeyName} to toggle the locking behavior." />
     <string id="RTSCameraCommandSystem_target_only_usage" text="For example, let your archers focus shooting while holding position." />
+
+    <string id="RTSCameraCommandSystem_add_order_to_queue" text="Order is queued." />
+    <string id="RTSCameraCommandSystem_execute_order_in_queue" text="Order in queue is being executed." />
+
+    <string id="RTSCameraCommandSystem_follow_entity" text="Follow Entity" />
+    <string id="RTSCameraCommandSystem_attack_entity" text="Attack Entity" />
+  <string id="RTSCameraCommandSystem_point_defense" text="Defense Target" />
   </strings>
 </base>

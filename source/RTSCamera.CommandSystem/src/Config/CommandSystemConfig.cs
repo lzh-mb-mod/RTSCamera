@@ -20,7 +20,7 @@ namespace RTSCamera.CommandSystem.Config
         Count
     }
 
-    public enum HighlightMode
+    public enum ShowMode
     {
         Never,
         FreeCameraOnly,
@@ -41,12 +41,12 @@ namespace RTSCamera.CommandSystem.Config
 
         public BehaviorAfterCharge BehaviorAfterCharge = !CommandSystemSubModule.IsRealisticBattleModuleInstalled ? BehaviorAfterCharge.Hold : BehaviorAfterCharge.Charge;
 
-        public HighlightMode SelectedFormationHighlightMode = HighlightMode.FreeCameraOnly;
+        public ShowMode SelectedFormationHighlightMode = ShowMode.FreeCameraOnly;
 
         // deprecated. use SelectedFormationHighlightMode instead.
         public bool HighlightSelectedFormation = true;
 
-        public HighlightMode TargetFormationHighlightMode = HighlightMode.FreeCameraOnly;
+        public ShowMode TargetFormationHighlightMode = ShowMode.FreeCameraOnly;
 
         // deprecated. use TargetFormationHighlightMode instead.
         public bool HighlightTargetFormation = true;
@@ -54,7 +54,7 @@ namespace RTSCamera.CommandSystem.Config
         // deprecated. use SelectedFormationHighlightMode and TargetFormationHighlightMode instead.
         public bool HighlightOnRtsViewOnly = true;
 
-        public HighlightMode MovementTargetHighlightMode = HighlightMode.FreeCameraOnly;
+        public ShowMode MovementTargetHighlightMode = ShowMode.FreeCameraOnly;
 
         // deprecated. use MovementTargetHighlightMode instead.
         public bool MoreVisibleMovementTarget = true;
@@ -62,9 +62,9 @@ namespace RTSCamera.CommandSystem.Config
         // deprecated. use MovementTargetHighlightMode instead.
         public bool MovementTargetMoreVisibleOnRtsViewOnly = true;
 
-        public HighlightMode CommandQueueFlagShowMode = HighlightMode.Always;
+        public ShowMode CommandQueueFlagShowMode = ShowMode.Always;
 
-        public HighlightMode CommandQueueArrowShowMode = HighlightMode.FreeCameraOnly;
+        public ShowMode CommandQueueArrowShowMode = ShowMode.FreeCameraOnly;
 
         public FormationLockCondition FormationLockCondition = FormationLockCondition.WhenNotPressed;
 
@@ -74,11 +74,16 @@ namespace RTSCamera.CommandSystem.Config
             ClickToSelectFormation = other.ClickToSelectFormation;
             AttackSpecificFormation = other.AttackSpecificFormation;
             BehaviorAfterCharge = other.BehaviorAfterCharge;
+            SelectedFormationHighlightMode = other.SelectedFormationHighlightMode;
             HighlightSelectedFormation = other.HighlightSelectedFormation;
+            TargetFormationHighlightMode = other.TargetFormationHighlightMode;
             HighlightTargetFormation = other.HighlightTargetFormation;
             HighlightOnRtsViewOnly = other.HighlightOnRtsViewOnly;
+            MovementTargetHighlightMode = other.MovementTargetHighlightMode;
             MoreVisibleMovementTarget = other.MoreVisibleMovementTarget;
             MovementTargetMoreVisibleOnRtsViewOnly = other.MovementTargetMoreVisibleOnRtsViewOnly;
+            CommandQueueFlagShowMode = other.CommandQueueFlagShowMode;
+            CommandQueueArrowShowMode = other.CommandQueueArrowShowMode;
             FormationLockCondition = other.FormationLockCondition;
         }
 
@@ -100,48 +105,49 @@ namespace RTSCamera.CommandSystem.Config
                     {
                         if (HighlightOnRtsViewOnly)
                         {
-                            SelectedFormationHighlightMode = HighlightMode.FreeCameraOnly;
+                            SelectedFormationHighlightMode = ShowMode.FreeCameraOnly;
                         }
                         else
                         {
-                            SelectedFormationHighlightMode = HighlightMode.Always;
+                            SelectedFormationHighlightMode = ShowMode.Always;
                         }
                     }
                     else
                     {
-                        SelectedFormationHighlightMode = HighlightMode.Never;
+                        SelectedFormationHighlightMode = ShowMode.Never;
                     }
                     if (HighlightTargetFormation)
                     {
                         if (HighlightOnRtsViewOnly)
                         {
-                            TargetFormationHighlightMode = HighlightMode.FreeCameraOnly;
+                            TargetFormationHighlightMode = ShowMode.FreeCameraOnly;
                         }
                         else
                         {
-                            TargetFormationHighlightMode = HighlightMode.Always;
+                            TargetFormationHighlightMode = ShowMode.Always;
                         }
                     }
                     else
                     {
-                        TargetFormationHighlightMode = HighlightMode.Never;
+                        TargetFormationHighlightMode = ShowMode.Never;
                     }
                     if (MoreVisibleMovementTarget)
                     {
                         if (MovementTargetMoreVisibleOnRtsViewOnly)
                         {
-                            MovementTargetHighlightMode = HighlightMode.FreeCameraOnly;
+                            MovementTargetHighlightMode = ShowMode.FreeCameraOnly;
                         }
                         else
                         {
-                            MovementTargetHighlightMode = HighlightMode.Always;
+                            MovementTargetHighlightMode = ShowMode.Always;
                         }
                     }
                     else
                     {
-                        MovementTargetHighlightMode = HighlightMode.Never;
+                        MovementTargetHighlightMode = ShowMode.Never;
                     }
-                    break;
+                    ConfigVersion = "1.1";
+                    goto case "1.1";
                 case "1.1": break;
             }
         }

@@ -44,7 +44,7 @@
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_pressed" text="当按键按下时" />
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed" text="当按键未按下时" />
 
-    <string id="RTSCameraCommandSystem_defensive_attack" text="{TROOP_NAME}优先攻击敌军的{TARGET_NAME}" />
+    <string id="RTSCameraCommandSystem_defensive_attack" text="优先攻击敌军的{TARGET_NAME}" />
 
     <string id="RTSCameraCommandSystem_hotkeycategory" text="指挥系统按键" />
     <string id="RTSCameraCommandSystem_select_formation" text="选择编队" />
@@ -60,6 +60,17 @@
 
     <string id="RTSCameraCommandSystem_tactic_level_required" text="你的战术等级至少需要{level}级" />
 
+    <string id="RTSCameraCommandSystem_order_queue_usage" text="命令队列：按住{KeyName}并下达命令以将命令添加到队列。你的部队将会一个个执行这些命令。" />
+    <string id="RTSCameraCommandSystem_lock_formation_usage" text="整体行军：如果你同时移动/转动多个编队，它们的相对位置/方向将会被锁定。" />
+    <string id="RTSCameraCommandSystem_lock_formation_width_usage" text="按住{KeyName}在地面拖动时，编队的相对位置和宽度将会被锁定。" />
+    <string id="RTSCameraCommandSystem_toggle_locking_usage" text="按住{KeyName}以开启/关闭整体行军。" />
     <string id="RTSCameraCommandSystem_target_only_usage" text="例如，可让你的弓箭手待在原地同时攻击指定的目标。" />
+
+    <string id="RTSCameraCommandSystem_add_order_to_queue" text="指令已添加到队列。" />
+    <string id="RTSCameraCommandSystem_execute_order_in_queue" text="正在执行队列中的指令。" />
+
+    <string id="RTSCameraCommandSystem_follow_entity" text="跟随目标" />
+    <string id="RTSCameraCommandSystem_attack_entity" text="攻击目标" />
+    <string id="RTSCameraCommandSystem_point_defense" text="防守目标" />
   </strings>
 </base>

@@ -396,7 +396,7 @@ namespace RTSCamera.CommandSystem.Patch
             List<GameEntity> ____orderPositionEntities, ref Material ____meshMaterial)
         {
             var config = CommandSystemConfig.Get();
-            bool moreVisibleTroopPlacer = config.MovementTargetHighlightMode == HighlightMode.Always || _isFreeCamera && config.MovementTargetHighlightMode == HighlightMode.FreeCameraOnly;
+            bool moreVisibleTroopPlacer = config.MovementTargetHighlightMode == ShowMode.Always || _isFreeCamera && config.MovementTargetHighlightMode == ShowMode.FreeCameraOnly;
             if (_previousMoreVisibleTroopPlacer != moreVisibleTroopPlacer)
             {
                 if (moreVisibleTroopPlacer)
@@ -439,29 +439,37 @@ namespace RTSCamera.CommandSystem.Patch
                     //MetaMesh copy = MetaMesh.GetCopy("unit_arrow");
                     if (____meshMaterial == null)
                     {
-                        ____meshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+
+                        //____meshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+                        ____meshMaterial = Material.GetFromResource("vertex_color_blend_no_depth_mat").CreateCopy();
                         //____meshMaterial = Material.GetFromResource("unit_arrow").CreateCopy();
-                        ____meshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
+                        //____meshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
                     }
                     copy.SetMaterial(____meshMaterial);
-                    //copy.SetFactor1(new Color(80, 255, 80, alpha).ToUnsignedInteger());
+                    copy.SetFactor1(new Color(0.1f, 0.5f, 0.1f).ToUnsignedInteger());
                     gameEntity.AddComponent(copy);
-                    gameEntity.SetContourColor(new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger(), true);
+                    //gameEntity.SetContourColor(new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger(), true);
                     gameEntity.SetVisibilityExcludeParents(false);
                     ____orderPositionEntities.Add(gameEntity);
                 }
                 GameEntity orderPositionEntity = ____orderPositionEntities[entityIndex];
                 MatrixFrame frame = new MatrixFrame(Mat3.Identity, groundPosition + (Vec3.Up * 1.0f));
                 orderPositionEntity.SetFrame(ref frame);
-                if (alpha != -1.0)
+                if (fadeOut)
+                    orderPositionEntity.FadeOut(0.3f, false);
+                else if (alpha != -1.0)
                 {
+                    alpha = 0.5f;
                     orderPositionEntity.SetVisibilityExcludeParents(true);
                     orderPositionEntity.SetAlpha(alpha);
                 }
-                else if (fadeOut)
-                    orderPositionEntity.FadeOut(0.3f, false);
                 else
+                {
+                    alpha = 0.9f;
+                    orderPositionEntity.SetVisibilityExcludeParents(true);
+                    orderPositionEntity.SetAlpha(alpha);
                     orderPositionEntity.FadeIn();
+                }
 
                 return false;
             }
@@ -619,7 +627,7 @@ namespace RTSCamera.CommandSystem.Patch
                 ____isMouseDown = false;
                 // Formation.GetOrderPositionOfUnit is wrong in the next tick after movement order is issued.
                 // we skip updating from the wrong position for 1 tick.
-                _skipDrawingForDestinationForOneTick = true;
+                //_skipDrawingForDestinationForOneTick = true;
                 typeof(OrderTroopPlacer).GetMethod("HandleMouseUp", BindingFlags.Instance | BindingFlags.NonPublic)
                     ?.Invoke(__instance, new object[] { });
             }
@@ -786,7 +794,7 @@ namespace RTSCamera.CommandSystem.Patch
                     CommandQueueLogic.TryPendingOrder(___PlayerOrderController.SelectedFormations, new OrderInQueue
                     {
                         SelectedFormations = ___PlayerOrderController.SelectedFormations,
-                        CustomOrderType = isFormationLayoutVertical ? CustomOrderType.MoveToLineSegment : CustomOrderType.MoveToLineSegmentWithHorizontalLayout,
+                        OrderType = isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout,
                         PositionBegin = formationRealStartingPosition,
                         PositionEnd = formationRealEndingPosition,
                     });
@@ -799,7 +807,7 @@ namespace RTSCamera.CommandSystem.Patch
                     CommandQueueLogic.AddOrderToQueue(new OrderInQueue
                     {
                         SelectedFormations = ___PlayerOrderController.SelectedFormations,
-                        CustomOrderType = isFormationLayoutVertical ? CustomOrderType.MoveToLineSegment : CustomOrderType.MoveToLineSegmentWithHorizontalLayout,
+                        OrderType = isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout,
                         IsLineShort = isLineShort,
                         ActualFormationChanges = formationChanges,
                         PositionBegin = formationRealStartingPosition,

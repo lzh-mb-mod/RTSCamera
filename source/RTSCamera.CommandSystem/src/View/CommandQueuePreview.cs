@@ -1,20 +1,21 @@
 ﻿using MissionLibrary.Event;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
+using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using TaleWorlds.DotNet;
 using TaleWorlds.Engine;
-using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View.MissionViews;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
-using static TaleWorlds.MountAndBlade.Source.Objects.Siege.AgentPathNavMeshChecker;
+using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera.CommandSystem.View
 {
@@ -29,12 +30,28 @@ namespace RTSCamera.CommandSystem.View
     public class CommandQueueFormationPreviewData
     {
         public Formation Formation;
+        public OrderPreviewData PendingOrder;
         public List<OrderPreviewData> OrderList = new List<OrderPreviewData>();
     }
 
 
     public class CommandQueuePreview: MissionView
     {
+        public static float r = 0f;
+        public static float g = 0.4f;
+        public static float b = 0f;
+        public static float a = 0.5f;
+        public static float minA = 0.25f;
+        public static void ClearArrows()
+        {
+            var preview = Mission.Current.GetMissionBehavior<CommandQueuePreview>();
+            preview.HideArrowEntities();
+            foreach (var entity in preview._arrowEntities)
+            {
+                entity.Remove(0);
+            }
+            preview._arrowEntities.Clear();
+        }
         private CommandSystemConfig _config = CommandSystemConfig.Get();
         private OrderTroopPlacer _orderTroopPlacer;
         private List<GameEntity> _agentPositionEntities;
@@ -101,13 +118,20 @@ namespace RTSCamera.CommandSystem.View
         {
             base.OnMissionScreenTick(dt);
 
+            var commandQueueKey = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue);
+            if ((commandQueueKey.IsKeyPressedInOrder(Utility.GetMissionScreen().SceneLayer.Input) ||
+                commandQueueKey.IsKeyReleasedInOrder(Utility.GetMissionScreen().SceneLayer.Input)))
+            {
+                Utilities.Utility.UpdateActiveOrders();
+            }
+
             if (_orderTroopPlacer == null)
             {
                 return;
             }
 
             if (_orderTroopPlacer.SuspendTroopPlacer ||
-                _config.CommandQueueFlagShowMode == HighlightMode.Never && _config.CommandQueueArrowShowMode == HighlightMode.Never)
+                _config.CommandQueueFlagShowMode == ShowMode.Never && _config.CommandQueueArrowShowMode == ShowMode.Never)
             {
                 if (_isPreviewShown)
                 {
@@ -157,7 +181,8 @@ namespace RTSCamera.CommandSystem.View
             {
                 var formation = pair.Key;
                 var previewData = pair.Value;
-                Vec3 arrowStart = formation.OrderGroundPosition;
+                Vec3 arrowStart = previewData.PendingOrder == null ? formation.OrderGroundPosition : previewData.PendingOrder.OrderPosition.GetGroundVec3();
+                int orderRank = 0;
                 foreach (var order in previewData.OrderList)
                 {
                     foreach (var agentPosition in order.AgentPositions)
@@ -166,23 +191,24 @@ namespace RTSCamera.CommandSystem.View
                         ++agentIndex;
                     }
                     var arrowEnd = order.OrderPosition.GetGroundVec3();
-                    if (_config.CommandQueueFlagShowMode == HighlightMode.Always || _isFreeCamera && _config.CommandQueueFlagShowMode == HighlightMode.FreeCameraOnly)
+                    if (_config.CommandQueueFlagShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueFlagShowMode == ShowMode.FreeCameraOnly)
                     {
                         AddOrderPositionFlag(orderFlagIndex, arrowEnd, order.Direction, 0.7f);
                         ++orderFlagIndex;
                     }
-                    if (_config.CommandQueueArrowShowMode == HighlightMode.Always || _isFreeCamera && _config.CommandQueueArrowShowMode == HighlightMode.FreeCameraOnly)
+                    if (arrowStart.IsValid && arrowEnd.IsValid && (_config.CommandQueueArrowShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueArrowShowMode == ShowMode.FreeCameraOnly))
                     {
                         var vec = arrowEnd - arrowStart;
                         var length = vec.Normalize();
-                        if (length > 20)
+                        if (length > 3)
                         {
-                            var gap = MathF.Max(length * 0.1f, 5f);
-                            AddArrow(arrowIndex, arrowStart + vec * gap, arrowEnd - vec * gap, 0.2f);
+                            var gap = MathF.Max(length * 0.1f, 1f);
+                            AddArrow(arrowIndex, arrowStart + vec * gap, arrowEnd - vec * gap, MathF.Max(a - orderRank * 0.05f, minA));
                             ++arrowIndex;
                         }
                     }
                     arrowStart = arrowEnd;
+                    ++orderRank;
                 }
             }
         }
@@ -191,10 +217,16 @@ namespace RTSCamera.CommandSystem.View
         {
             var result = new CommandQueueFormationPreviewData();
             result.Formation = formation;
+            if (CommandQueueLogic.PendingOrders.TryGetValue(formation, out var pendingOrder))
+            {
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(new List<Formation> { formation }));
+                result.PendingOrder = CollectOrderPreviewData(pendingOrder, formation);
+            }
             foreach (var order in CommandQueueLogic.OrderQueue)
             {
                 if (order.RemainingFormations.Contains(formation))
                 {
+                    Patch_OrderController.LivePreviewFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                     var orderPreviewData = CollectOrderPreviewData(order, formation);
                     if (orderPreviewData != null)
                     {
@@ -207,13 +239,34 @@ namespace RTSCamera.CommandSystem.View
 
         private OrderPreviewData CollectOrderPreviewData(OrderInQueue order, Formation formation)
         {
-            Patch_OrderController.LivePreviewFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
             switch (order.CustomOrderType)
             {
                 case CustomOrderType.Original:
                     {
                         switch (order.OrderType)
                         {
+                            case OrderType.MoveToLineSegment:
+                            case OrderType.MoveToLineSegmentWithHorizontalLayout:
+                                {
+                                    if (order.IsLineShort)
+                                    {
+                                        switch (Patch_OrderController.GetFormationVirtualFacingOrder(formation))
+                                        {
+                                            case OrderType.LookAtEnemy:
+                                                var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
+                                                Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
+                                                break;
+                                            case OrderType.LookAtDirection:
+                                                // do nothing as the positon and direciton is already in order.VirtualFormationChanges
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // do nothing as the positon and direciton is already in order.VirtualFormationChanges
+                                    }
+                                    return CollectOrderPreviewData(formation);
+                                }
                             case OrderType.Move:
                                 {
                                     var position = order.PositionBegin;
@@ -285,24 +338,21 @@ namespace RTSCamera.CommandSystem.View
                                     return CollectOrderPreviewData(formation);
                                 }
                             case OrderType.StandYourGround:
-                                return null;
                             case OrderType.Retreat:
-                                return null;
                             case OrderType.ArrangementLine:
-                                return null;
                             case OrderType.ArrangementCloseOrder:
-                                return null;
                             case OrderType.ArrangementLoose:
-                                return null;
                             case OrderType.ArrangementCircular:
-                                return null;
                             case OrderType.ArrangementSchiltron:
-                                return null;
                             case OrderType.ArrangementVee:
-                                return null;
                             case OrderType.ArrangementColumn:
-                                return null;
                             case OrderType.ArrangementScatter:
+                            case OrderType.FireAtWill:
+                            case OrderType.HoldFire:
+                            case OrderType.Mount:
+                            case OrderType.Dismount:
+                            case OrderType.AIControlOn:
+                            case OrderType.AIControlOff:
                                 return null;
                             default:
                                 Utility.DisplayMessage("Error: unexpected order type");
@@ -310,35 +360,6 @@ namespace RTSCamera.CommandSystem.View
                         }
                         break;
                     }
-                case CustomOrderType.MoveToLineSegment:
-                case CustomOrderType.MoveToLineSegmentWithHorizontalLayout:
-                    {
-                        if (order.IsLineShort)
-                        {
-                            // TODO: What if facing order is changed in command queue?
-                            switch (OrderController.GetActiveFacingOrderOf(formation))
-                            {
-                                case OrderType.LookAtEnemy:
-                                    var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
-                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
-                                    break;
-                                case OrderType.LookAtDirection:
-                                    // do nothing as the positon and direciton is already in order.VirtualFormationChanges
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            // do nothing as the positon and direciton is already in order.VirtualFormationChanges
-                        }
-                        return CollectOrderPreviewData(formation);
-                    }
-                case CustomOrderType.ToggleFacing:
-                    // TODO: Need to know the previous facing order in command queue.
-                case CustomOrderType.ToggleFire:
-                case CustomOrderType.ToggleMount:
-                case CustomOrderType.ToggleAI:
-                    return null;
                 case CustomOrderType.FollowMainAgent:
                     return null;
                 case CustomOrderType.SetTargetFormation:
@@ -424,30 +445,32 @@ namespace RTSCamera.CommandSystem.View
                 //MetaMesh copy = MetaMesh.GetCopy("unit_arrow");
                 if (_arrowMaterial == (NativeObject)null)
                 {
-                    _arrowMaterial = Material.GetFromResource("unit_arrow").CreateCopy();
+                    //_arrowMaterial = Material.GetFromResource("unit_arrow").CreateCopy();
+                    _arrowMaterial = Material.GetFromResource("vertex_color_blend_no_depth_mat").CreateCopy();
                     //_arrowMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
                     //_arrowMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
                 }
                 copy.SetMaterial(_arrowMaterial);
                 empty.AddComponent(copy);
-                copy.SetFactor1(new Color(0.3f, 0.8f, 0.3f, alpha).ToUnsignedInteger());
+                copy.SetFactor1(new Color(r, g, b).ToUnsignedInteger());
                 empty.SetVisibilityExcludeParents(false);
                 _arrowEntities.Add(empty);
             }
-            GameEntity orderPositionEntity = _arrowEntities[index];
+            GameEntity arrowEntity = _arrowEntities[index];
             var direction = arrowEnd - arrowStart;
             var length = direction.Normalize();
             var scale = length / 2;
             MatrixFrame frame = new MatrixFrame(Mat3.CreateMat3WithForward(direction), arrowStart + Vec3.Up * 5f);
             frame.Scale(new Vec3(scale, scale, scale));
-            orderPositionEntity.SetFrame(ref frame);
+            //arrowEntity.GetMetaMesh(0).SetFactor1(new Color(r, g, b).ToUnsignedInteger());
+            arrowEntity.SetFrame(ref frame);
             if ((double)alpha != -1.0)
             {
-                orderPositionEntity.SetVisibilityExcludeParents(true);
-                orderPositionEntity.SetAlpha(alpha);
+                arrowEntity.SetVisibilityExcludeParents(true);
+                arrowEntity.SetAlpha(alpha);
             }
             else
-                orderPositionEntity.FadeIn();
+                arrowEntity.FadeIn();
         }
 
         private void HidePreview()

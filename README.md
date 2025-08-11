@@ -1,12 +1,14 @@
 # RTS Camera
 (Old name: EnhancedMission, Enhanced Mission RTS Camera)
 
-A mod for Mount&Blade II Bannerlord that provides free camera and more features in battle.
+A mod for Mount&Blade II Bannerlord that provides free camera and better commanding in battle.
 
 ## Save Compability
 This mod does not read or write stuffs to your game save. Installing or removing this mod has no impact on your game save.
 
 ## Main features
+
+This mod is composed of 2 parts, RTS Camera and Command System.
 
 - RTS Camera
 
@@ -21,6 +23,18 @@ This mod does not read or write stuffs to your game save. Installing or removing
   - **New:** Allows automatic fast forward in hideout.
 
 - Command System
+
+  - Reworked the command system in the base game.
+
+  - **New:** Allows to add order to queue to let troops execute orders one by one. For example, move along a given path and then shooting/charging.
+
+  - **New:** When giving orders to multiple formations:
+
+    - Relative positions/directions of selected formations are locked in moving order and turning order.
+
+    - Layout between selected formations are improved when player drags on the ground.
+
+  - **New:** Fix issues related with formation width and unit spacing in the base game.
 
   - Issue focus charge command by clicking middle button on enemy units.
 
@@ -43,15 +57,23 @@ This mod does not read or write stuffs to your game save. Installing or removing
   
   - You can select your formations by clicking on troop cards.
 
-    - Press `Alt` to show the mouse so that you can click on troop cards.
+    - Hold `Alt` to show the mouse so that you can click on troop cards.
 
 - Command System
 
+  - **New:** Hold `Shift` and give orders to add orders to queue. Your troops will execute them one by one.
+
+  - **New:** If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
+
+    - If you give move order by dragging on the ground, formations will be placed better than they are in the base game.
+
+    - Hold `Ctrl` while dragging on the ground, formations' widths and relative positions will be locked.
+
+    - Hold `Alt` to disable the locking behavior described above.
+
   - You can make your formation charge to the enemy formation by clicking middle mouse button on enemy units.
 
-    - **New:** Press `Alt` while clicking to target the enemy without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
-
-  - **New:** Fix several issues of order position marker in base game.
+    - **New:** Hold `Alt` while clicking to target the enemy without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
   - You can select your formations by clicking middle mouse button on soldiers.
 
@@ -129,13 +151,41 @@ Unzip the downloaded zip file. Copy `RTSCamera` and `RTSCamera.CommandSystem` fo
 - Click on castle gate won't attack the enemy formation behind the gate, which is an issue in the base game. 
 
 ### Command System
+- **New** Hold `Shift` when giving orders to add the order to queue. Your troops will execute orders in queue one by one.
+
+  - Order queue will be cleared if you give new orders without holding `Shift`.
+
+  - Movement targets in queue will be marked as flags.
+
+  - In free camera mode, movement paths will be marked using arrows.
+
+- **New:** If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
+
+  - If you give move order by dragging on the ground, formations will be placed better than they are in the base game.
+
+  - Hold `Ctrl` while dragging on the ground, formations relative positions and widths will be locked.
+
+  - If you don't want the locking behavior described above, hold `Alt` and the behavior will be reverted to original.
+
+- **New:** Fixed the following issues in the base game:
+
+  - Issue: If you switch to circle formation and back to line formation, formation width becomes much longer as it should be.
+
+  - Issue: If you drag on the ground to lower the formation width and unit spacing, and in the next order move the formation, the unit spacing in preview is inconsistent with the actual order given.
+
+  - Issue: If you place the formation to a narrow place by clicking on the ground, and in the next order move it back, the formation width is not recovered. In this mod the formation width is changed only when you drag on the ground.
+
+  - Issue: (Especially to circle/square formation) If you drag on the ground to set the formation width to minimum, press `F1` and place the order flag next to a wall without actually giving orders, the frame rate will drop dramatically.
+
+  - Issue: If you try to give order to attack the gate in siege, it may results in a order attacking the enemy formation behind the gate.
+
 - You can make your formation charge to the enemy formation by clicking middle mouse button on enemy units.
 
   - After the enemy formation is eliminated, your troops will stay at where they are. To change this behavior, you can press `L` to open menu, and set the option `After enemy formation eliminated` to `Charge`.
 
   - The target enemy formation that your selected troops are charging to will be highlighted with red outline when you open command panel in free camera mode.
 
-- **New:** Press `Alt` while clicking to target the enemy without interrupting previous movement orders.
+- **New:** Hold `Alt` while clicking to target the enemy without interrupting previous movement orders.
 
   - For archers they can shoot target enemy while holding positions.
 
@@ -158,9 +208,8 @@ You can click `+` or `-` to edit key sequence.
 
 Here is a list of default hotkeys:
 
+RTS Camera:
 - `L`: open mod menu.
-
-- `Middle Mouse Button`: In Command System, select formation.
 
 - `F10`: Toggle free camera.
 
@@ -173,6 +222,15 @@ Here is a list of default hotkeys:
 - `Space`, `Z`: Camera up/down.
 
 - `Right Shift` + `=`, `Right Shift` + `-`: Increase/Decrease camera distance limit.
+
+Command System:
+- `Middle Mouse Button`: In Command System, select formation.
+
+- `Left Alt` or `Right Alt`: Keep movement order when attacking the enemy formation; Toggle formation lock behavior.
+
+- `Left Shift` or `Right Shift`: Add command to queue.
+
+- `Left Ctrl` or `Right Ctrl`: Keep formation width when dragging.
 
 There're more hotkeys configurable but are disabled by default. You can configure them by pressing L and click Config Key on the top.
 

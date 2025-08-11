@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using static TaleWorlds.MountAndBlade.ArrangementOrder;
 
 namespace RTSCamera.CommandSystem.Logic
 {
@@ -19,9 +21,14 @@ namespace RTSCamera.CommandSystem.Logic
         public Agent TargetAgent;
         public IOrderable TargetEntity;
         public OrderType? FacingOrderType;
+        public OrderType? FiringOrderType;
+        public OrderType? RidingOrderType;
+        public OrderType? AIControlOrderType;
+        public ArrangementOrderEnum? ArrangementOrder;
     }
     public class FormationChanges
     {
+
         public Dictionary<Formation, FormationChange> VirtualChanges { get; set; } = new Dictionary<Formation, FormationChange>();
         public void SetChanges(IEnumerable<KeyValuePair<Formation, FormationChange>> virtualPositions)
         {
@@ -32,27 +39,30 @@ namespace RTSCamera.CommandSystem.Logic
                     change = new FormationChange();
                 }
 
-                if (pair.Value.Position != null)
+                //if (pair.Value.Position != null)
                 {
-                    change.WorldPosition = pair.Value.WorldPosition.Value;
+                    change.WorldPosition = pair.Value.WorldPosition;
                 }
-                if (pair.Value.Direciton != null)
+                //if (pair.Value.Direciton != null)
                 {
-                    change.Direciton = pair.Value.Direciton.Value;
+                    change.Direciton = pair.Value.Direciton;
                 }
-                if (pair.Value.UnitSpacing != null)
+                //if (pair.Value.UnitSpacing != null)
                 {
-                    change.UnitSpacing = pair.Value.UnitSpacing.Value;
+                    change.UnitSpacing = pair.Value.UnitSpacing;
                 }
-                if (pair.Value.Width != null)
+                //if (pair.Value.Width != null)
                 {
-                    change.Width = pair.Value.Width.Value;
+                    change.Width = pair.Value.Width;
                 }
                 change.MovementOrderType = pair.Value.MovementOrderType;
                 change.TargetFormation = pair.Value.TargetFormation;
                 change.TargetAgent = pair.Value.TargetAgent;
                 change.TargetEntity = pair.Value.TargetEntity;
                 change.FacingOrderType = pair.Value.FacingOrderType;
+                change.FiringOrderType = pair.Value.FiringOrderType;
+                change.RidingOrderType = pair.Value.RidingOrderType;
+                change.ArrangementOrder = pair.Value.ArrangementOrder;
                 VirtualChanges[pair.Key] = change;
             }
         }
@@ -116,5 +126,104 @@ namespace RTSCamera.CommandSystem.Logic
                 VirtualChanges[formation] = change;
             }
         }
+
+        public void SetFiringOrder(OrderType orderType, IEnumerable<Formation> formations)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    change = new FormationChange();
+                }
+
+                change.FiringOrderType = orderType;
+                VirtualChanges[formation] = change;
+            }
+        }
+
+        public void ClearFiringOrder(IEnumerable<Formation> formations)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    return;
+                }
+
+                change.FiringOrderType = null;
+                VirtualChanges[formation] = change;
+            }
+        }
+
+        public void SetRidingOrder(OrderType orderType, IEnumerable<Formation> formations)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    change = new FormationChange();
+                }
+                change.RidingOrderType = orderType;
+                VirtualChanges[formation] = change;
+            }
+        }
+
+        public void ClearRidingOrder(IEnumerable<Formation> formations)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    return;
+                }
+                change.RidingOrderType = null;
+                VirtualChanges[formation] = change;
+            }
+        }
+
+        public void SetArrangementOrder(ArrangementOrder.ArrangementOrderEnum newArrangementOrder, IEnumerable<Formation> formations)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    change = new FormationChange();
+                }
+
+                change.ArrangementOrder = newArrangementOrder;
+                VirtualChanges[formation] = change;
+            }
+        }
+
+        public void SetAIControlOrder(OrderType orderType, IEnumerable<Formation> formations)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    change = new FormationChange();
+                }
+                change.AIControlOrderType = orderType;
+                VirtualChanges[formation] = change;
+            }
+        }
+
+        private static float TransformCustomWidthBetweenArrangementOrientations(
+            ArrangementOrder.ArrangementOrderEnum orderTypeOld,
+            ArrangementOrder.ArrangementOrderEnum orderTypeNew,
+            float currentCustomWidth)
+        {
+            if (orderTypeOld == ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Column)
+            {
+                return (float)(currentCustomWidth / Math.PI);
+            }
+            if (orderTypeOld != ArrangementOrder.ArrangementOrderEnum.Column && orderTypeNew == ArrangementOrder.ArrangementOrderEnum.Column)
+                return currentCustomWidth * 0.1f;
+            return orderTypeOld == ArrangementOrder.ArrangementOrderEnum.Column && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Column ? currentCustomWidth / 0.1f : currentCustomWidth;
+        }
+
+
+
+
     }
 }

@@ -2,9 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Logic;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Patch
@@ -38,11 +36,6 @@ namespace RTSCamera.CommandSystem.Patch
                     prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
                         nameof(Prefix_MinimumInterval), BindingFlags.Static | BindingFlags.Public)));
 
-                harmony.Patch(
-                    typeof(Formation).GetMethod("ReapplyFormOrder",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
-                        nameof(Prefix_ReapplyFormOrder), BindingFlags.Static | BindingFlags.Public)));
 
                 harmony.Patch(
                     typeof(Formation).GetMethod("TransformCustomWidthBetweenArrangementOrientations",
@@ -63,7 +56,6 @@ namespace RTSCamera.CommandSystem.Patch
                 Utility.DisplayMessage(e.ToString());
                 return false;
             }
-
             return true;
         }
 
@@ -98,26 +90,17 @@ namespace RTSCamera.CommandSystem.Patch
             return true;
         }
 
-        // Fix the problem that when switching from custom arrangement line arrangement, the width becomes too large.
-        // This is cause by that the converted filecount is too large and rank count is too small after switching from circle arrangement.
-        // Don't set the custom flank width to the arrangement flank width, because it's too large right now. We need to reapply form order to set it to normal value.
-        public static bool Prefix_ReapplyFormOrder(Formation __instance)
-        {
-            FormOrder formOrder = __instance.FormOrder;
-            if (__instance.FormOrder.OrderEnum == FormOrder.FormOrderEnum.Custom && __instance.ArrangementOrder.OrderEnum != 0)
-            {
-                //formOrder.CustomFlankWidth = __instance.Arrangement.FlankWidth;
-            }
-            __instance.FormOrder = formOrder;
-            return false;
-        }
-
         // Fix the problem that switch from circle arrangement to line arrangement, the width becomes PI times larger than it should be.
         // Because for circle arrangement, the flank width is the circumference, and width is the diameter.
         // flank width is passed in, and we should convert it to diameter and set it as the width of line formation.
         public static bool Prefix_TransformCustomWidthBetweenArrangementOrientations(ArrangementOrder.ArrangementOrderEnum orderTypeOld, ArrangementOrder.ArrangementOrderEnum orderTypeNew, float currentCustomWidth, ref float __result)
         {
             if (orderTypeOld == ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Column)
+            {
+                __result = (float)(currentCustomWidth / Math.PI);
+                return false;
+            }
+            else if (orderTypeOld != ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew == ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeOld != ArrangementOrder.ArrangementOrderEnum.Column)
             {
                 __result = (float)(currentCustomWidth / Math.PI);
                 return false;

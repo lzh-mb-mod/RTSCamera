@@ -79,7 +79,7 @@ namespace RTSCamera.Config
                 case "1.6":
                 case "1.7":
                     TimingOfControlAllyAfterDeath = ControlAllyAfterDeath ? ControlAllyAfterDeathTiming.Always : ControlAllyAfterDeathTiming.FreeCamera;
-                    break;
+                    goto case "1.8";
                 case "1.8":
                     break;
             }

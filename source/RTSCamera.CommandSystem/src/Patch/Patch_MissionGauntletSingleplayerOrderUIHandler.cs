@@ -229,7 +229,7 @@ namespace RTSCamera.CommandSystem.Patch
                                             IEnumerable<Formation> formations = dataSource.OrderController.SelectedFormations.Where((f => f.CountOfUnitsWithoutDetachedOnes > 0));
                                             if (formations.Any() && queueCommand)
                                             {
-                                                orderToAdd.CustomOrderType = orderType == OrderType.MoveToLineSegment ? CustomOrderType.MoveToLineSegment : CustomOrderType.MoveToLineSegmentWithHorizontalLayout;
+                                                orderToAdd.OrderType = orderType == OrderType.MoveToLineSegment ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout;
                                                 orderToAdd.SelectedFormations = formations.ToList();
                                                 WorldPosition targetLineSegmentBegin = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, globalPosition1, false);
                                                 WorldPosition targetLineSegmentEnd = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, globalPosition2, false);
