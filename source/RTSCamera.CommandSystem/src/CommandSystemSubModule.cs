@@ -1,9 +1,7 @@
 ﻿using HarmonyLib;
-using MissionLibrary;
 using MissionLibrary.Controller;
 using MissionLibrary.View;
 using MissionSharedLibrary;
-using MissionSharedLibrary.Provider;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.CampaignGame;
 using RTSCamera.CommandSystem.Config;

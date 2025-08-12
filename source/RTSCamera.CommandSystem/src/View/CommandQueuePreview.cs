@@ -16,6 +16,7 @@ using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View.MissionViews;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.CommandSystem.View
 {
@@ -57,7 +58,7 @@ namespace RTSCamera.CommandSystem.View
         private List<GameEntity> _agentPositionEntities;
         private static Material _agentPositionMeshMaterial;
         private List<GameEntity> _orderPositionFlagEntities;
-        private static Material _orderFlagMeshMaterial;
+        //private static Material _orderFlagMeshMaterial;
         private List<GameEntity> _arrowEntities;
         private static Material _arrowMaterial;
         private bool _isPreviewShown = false;
@@ -409,14 +410,14 @@ namespace RTSCamera.CommandSystem.View
                 empty.EntityFlags |= EntityFlags.NotAffectedBySeason;
                 MetaMesh copy = MetaMesh.GetCopy("order_flag_a");
                 //MetaMesh copy = MetaMesh.GetCopy("unit_arrow");
-                if (_orderFlagMeshMaterial== (NativeObject)null)
-                {
-                    _orderFlagMeshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
-                    //_orderFlagMeshMaterial = Material.GetFromResource("vertex_color_blend_mat
-                    //_orderFlagMeshMaterial = Material.GetFromResource("unit_arrow").CreateCopy();
-                    _orderFlagMeshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
-                }
-                copy.SetMaterial(_orderFlagMeshMaterial);
+                //if (_orderFlagMeshMaterial== (NativeObject)null)
+                //{
+                //    _orderFlagMeshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+                //    //_orderFlagMeshMaterial = Material.GetFromResource("vertex_color_blend_mat
+                //    //_orderFlagMeshMaterial = Material.GetFromResource("unit_arrow").CreateCopy();
+                //    _orderFlagMeshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
+                //}
+                //copy.SetMaterial(_orderFlagMeshMaterial);
                 //copy.SetFactor1(new Color(80, 255, 80, alpha).ToUnsignedInteger());
                 empty.AddComponent((GameEntityComponent)copy);
                 empty.SetVisibilityExcludeParents(false);

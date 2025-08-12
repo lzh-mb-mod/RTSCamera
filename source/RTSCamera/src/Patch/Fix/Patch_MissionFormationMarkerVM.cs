@@ -7,6 +7,7 @@ using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
 using static TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker.MissionFormationMarkerTargetVM;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.Patch.Fix
 {

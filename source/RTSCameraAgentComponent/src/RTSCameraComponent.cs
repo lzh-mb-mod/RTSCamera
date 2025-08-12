@@ -84,7 +84,6 @@ namespace RTSCameraAgentComponent
             _shouldUpdateColor = true;
         }
 
-        [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         public void ClearContourColor()
         {
@@ -122,7 +121,6 @@ namespace RTSCameraAgentComponent
                 UpdateColor();
         }
 
-        [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         public override void OnMount(Agent mount)
         {
@@ -138,7 +136,6 @@ namespace RTSCameraAgentComponent
             }
         }
 
-        [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         public override void OnDismount(Agent mount)
         {
@@ -177,7 +174,6 @@ namespace RTSCameraAgentComponent
             return -1;
         }
 
-        [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         private void SetColor()
         {

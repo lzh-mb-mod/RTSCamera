@@ -21,6 +21,7 @@ using TaleWorlds.MountAndBlade.Missions.Handlers;
 using TaleWorlds.MountAndBlade.View.MissionViews;
 using TaleWorlds.MountAndBlade.View.Screens;
 using TaleWorlds.ScreenSystem;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.View
 {

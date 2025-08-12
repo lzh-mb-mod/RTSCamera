@@ -1,7 +1,6 @@
 ﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Skills;
 using RTSCamera.Config;
-using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.Core;
@@ -101,7 +100,7 @@ namespace RTSCamera.CampaignGame.Behavior
                 SetCameraMaxDistance(explainedNumber.ResultNumber);
                 return explainedNumber;
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 Utility.DisplayMessage(e.ToString());
                 return new ExplainedNumber();

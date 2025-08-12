@@ -28,7 +28,7 @@ namespace RTSCamera.Usage
                 GameTexts.FindText("str_rts_camera_option_class"),
                 new List<TaleWorlds.Localization.TextObject>
                 {
-                    GameTexts.FindText("str_rts_camera_open_menu_hint").SetTextVariable("KeyName",
+                    GameTexts.FindText("str_mission_library_open_menu_hint").SetTextVariable("KeyName",
                         GeneralGameKeyCategory.GetKey(GeneralGameKey.OpenMenu).ToSequenceString()),
                     GameTexts.FindText("str_rts_camera_switch_camera_hint").SetTextVariable("KeyName",
                         RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).ToSequenceString()),

@@ -7,16 +7,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using TaleWorlds.Core;
-using TaleWorlds.Diamond;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
-using TaleWorlds.MountAndBlade.View.Screens;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 using static TaleWorlds.Engine.WorldPosition;
 using static TaleWorlds.MountAndBlade.ArrangementOrder;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.CommandSystem.Utilities
 {
@@ -34,16 +33,21 @@ namespace RTSCamera.CommandSystem.Utilities
             //        .ToString());
             //}
 
-            if (CommandSystemConfig.Get().AttackSpecificFormation)
-            {
-                MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(TaleWorlds.MountAndBlade.Module.CurrentModule.GlobalTextManager
-                    .FindText("str_rts_camera_command_system_attack_specific_formation_hint").SetTextVariable("KeyName",
-                        CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString())
-                    .ToString());
-                MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(TaleWorlds.MountAndBlade.Module.CurrentModule.GlobalTextManager
-                    .FindText("str_rts_camera_command_system_attack_specific_formation_alt_hint")
-                    .ToString());
-            }
+            //if (CommandSystemConfig.Get().AttackSpecificFormation)
+            //{
+            //    MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(TaleWorlds.MountAndBlade.Module.CurrentModule.GlobalTextManager
+            //        .FindText("str_rts_camera_command_system_attack_specific_formation_hint").SetTextVariable("KeyName",
+            //            CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString())
+            //        .ToString());
+            //    MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(TaleWorlds.MountAndBlade.Module.CurrentModule.GlobalTextManager
+            //        .FindText("str_rts_camera_command_system_attack_specific_formation_alt_hint")
+            //        .ToString());
+            //}
+
+            MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(TaleWorlds.MountAndBlade.Module.CurrentModule.GlobalTextManager
+                .FindText("str_rts_camera_command_system_order_queue_usage").SetTextVariable("KeyName",
+                    CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).ToSequenceString())
+                .ToString());
         }
 
         public static void DisplayChargeToFormationMessage(MBReadOnlyList<Formation> selectedFormations,
@@ -140,7 +144,6 @@ namespace RTSCamera.CommandSystem.Utilities
 
         private static TextObject GetOrderString(OrderInQueue order)
         {
-            var orderSubType = OrderSubType.Return;
             var stringIdOn = "str_order_name_on";
             var stringIdOff = "str_order_name_off";
             var stringId = "str_order_name";

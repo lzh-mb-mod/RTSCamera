@@ -45,6 +45,7 @@ namespace RTSCamera.Patch
                 {
                     // Do not consider main agent dead when lock to agent.
                     ____dataSource.SetMainAgentStatus(false);
+                    ____dataSource.IsEnabled = false;
                 }
                 else
                 {

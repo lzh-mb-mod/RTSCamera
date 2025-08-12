@@ -8,13 +8,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Security.Cryptography;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.Screens;
-using static TaleWorlds.MountAndBlade.Source.Objects.Siege.AgentPathNavMeshChecker;
+using MathF = TaleWorlds.Library.MathF;
+
 
 namespace RTSCamera.CommandSystem.Patch
 {
@@ -466,7 +466,7 @@ namespace RTSCamera.CommandSystem.Patch
                     if (formations.Any())
                     {
                         float num1 = !isFormationLayoutVertical ? formations.Max(f => GetActualOrCurrentWidth(f)) : formations.Sum<Formation>((Func<Formation, float>)(f => GetActualOrCurrentWidth(f))) + (float)(formations.Count<Formation>() - 1) * 1.5f;
-                        Vec2 direction = GetFormationVirtualDirection(formations.MaxBy(f => f.CountOfUnitsWithoutDetachedOnes));
+                        Vec2 direction = GetFormationVirtualDirection(TaleWorlds.Core.Extensions.MaxBy(formations, f => f.CountOfUnitsWithoutDetachedOnes));
                         direction.RotateCCW(-1.57079637f);
                         double num2 = (double)direction.Normalize();
                         formationLineEnd = Mission.Current.GetStraightPathToTarget(formationLineBegin.AsVec2 + num1 / 2f * direction, formationLineBegin);
@@ -1143,7 +1143,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 simulationFormation = new Formation(null, -1);
             }
-            bool hasAnyMountUnit = formation.CalculateHasSignificantNumberOfMounted && GetFormationVirtualRidingOrder(formation) == OrderType.Mount;
+            bool hasAnyMountUnit = formation.CalculateHasSignificantNumberOfMounted && GetFormationVirtualRidingOrder(formation) != OrderType.Dismount;
             _overridenHasAnyMountedUnit.SetValue(formation, hasAnyMountUnit);
             _overridenHasAnyMountedUnit.SetValue(simulationFormation, hasAnyMountUnit);
             int unitIndex = formation.CountOfUnitsWithoutDetachedOnes - 1;
@@ -1172,7 +1172,7 @@ namespace RTSCamera.CommandSystem.Patch
             float num2 = (simulateFormationDepth ? 0f : float.NaN);
             bool flag = Mission.Current.Mode != MissionMode.Deployment || Mission.Current.IsOrderPositionAvailable(in formationPosition, formation.Team);
             // override HasAnyMountUnit to be consistent with actual command execution.
-            bool hasAnyMountUnit = formation.CalculateHasSignificantNumberOfMounted && GetFormationVirtualRidingOrder(formation) == OrderType.Mount;
+            bool hasAnyMountUnit = formation.CalculateHasSignificantNumberOfMounted && GetFormationVirtualRidingOrder(formation) != OrderType.Dismount;
             _overridenHasAnyMountedUnit.SetValue(formation, hasAnyMountUnit);
             _overridenHasAnyMountedUnit.SetValue(simulationFormation, hasAnyMountUnit);
             foreach (Agent item2 in from u in formation.GetUnitsWithoutDetachedOnes()
@@ -2047,7 +2047,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 simulationFormation = new Formation(null, -1);
             }
-            bool hasAnyMountUnit = formation.CalculateHasSignificantNumberOfMounted && GetFormationVirtualRidingOrder(formation) == OrderType.Mount;
+            bool hasAnyMountUnit = formation.CalculateHasSignificantNumberOfMounted && GetFormationVirtualRidingOrder(formation) != OrderType.Dismount;
             _overridenHasAnyMountedUnit.SetValue(formation, hasAnyMountUnit);
             _overridenHasAnyMountedUnit.SetValue(simulationFormation, hasAnyMountUnit);
             int unitIndex = formation.CountOfUnitsWithoutDetachedOnes - 1;
@@ -2090,7 +2090,7 @@ namespace RTSCamera.CommandSystem.Patch
             float num2 = (simulateFormationDepth ? 0f : float.NaN);
             bool flag = Mission.Current.Mode != MissionMode.Deployment || Mission.Current.IsOrderPositionAvailable(in formationPosition, formation.Team);
             // override HasAnyMountUnit to be consistent with actual command execution.
-            bool hasAnyMountUnit = formation.CalculateHasSignificantNumberOfMounted && GetFormationVirtualRidingOrder(formation) == OrderType.Mount;
+            bool hasAnyMountUnit = formation.CalculateHasSignificantNumberOfMounted && GetFormationVirtualRidingOrder(formation) != OrderType.Dismount;
             _overridenHasAnyMountedUnit.SetValue(formation, hasAnyMountUnit);
             _overridenHasAnyMountedUnit.SetValue(simulationFormation, hasAnyMountUnit);
             foreach (Agent item2 in from u in formation.GetUnitsWithoutDetachedOnes()

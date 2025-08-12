@@ -1,6 +1,11 @@
 <Project>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net472'">
+    <PackagePath>$(SolutionDir)package\net472\</PackagePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <PackagePath>$(SolutionDir)package\net6.0\</PackagePath>
+  </PropertyGroup>
   <PropertyGroup>
-    <PackagePath>$(SolutionDir)package\</PackagePath>
     <ModuleAlias>RTSCamera.CommandSystem</ModuleAlias>
     <ModulePackagePath>$(PackagePath)$(ModuleAlias)\</ModulePackagePath>
   </PropertyGroup>

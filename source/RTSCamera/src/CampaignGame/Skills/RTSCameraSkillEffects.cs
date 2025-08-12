@@ -1,6 +1,5 @@
 ﻿using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
-using TaleWorlds.Localization;
 
 namespace RTSCamera.CampaignGame.Skills
 {
