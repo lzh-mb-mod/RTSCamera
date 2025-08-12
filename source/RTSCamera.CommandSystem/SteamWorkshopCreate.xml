@@ -1,7 +1,7 @@
 <Tasks>
   <CreateItem/>
   <UpdateItem>
-    <ModuleFolder Value="D:\develop\src\RTSCamera\source\package\RTSCamera.CommandSystem\"/>
+    <ModuleFolder Value="D:\develop\src\RTSCamera\source\package\net472\RTSCamera.CommandSystem\"/>
     <!--  A direct path of your module  -->
     <ItemDescription Value="RTS Camera Command System
 

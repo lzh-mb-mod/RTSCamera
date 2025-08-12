@@ -4,13 +4,15 @@
     <!-- Can be found in the URL of your workshop item -->
   </GetItem>
   <UpdateItem>
-    <ModuleFolder Value="D:\develop\src\RTSCamera\source\package\RTSCamera.CommandSystem\"/>
+    <ModuleFolder Value="D:\develop\src\RTSCamera\source\package\net472\RTSCamera.CommandSystem\"/>
     
     <!-- A direct path of your module -->
     <ItemDescription Value="RTS Camera Command System from original creator
-
+Reworked the command system in the base game.
+Order Queue: Allows to add order to queue to let troops execute orders one by one. For example, move along a given path and then shooting/charging.
 Allows your formation attack one of the enemy formation by middle clicking on enemy units.
 Allows you to select your formation using mouse.
+Fixed issues of formation width and unit spacing in the base game.
 
 
 For latest RTS Camera: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991660
@@ -21,6 +23,8 @@ This mod won&apos;t read/write anything from/into your save, so you can feel fre
 
 
 Usage:
+Hold Shift and give orders to add orders to queue. Your troops will execute them one by one.
+If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
 Click middle mouse button on the enemy formation to make your formation attack it. Only effective with melee weapons.
 Click middle mouse button on your formation to select it.
 The attacked enemy formation will be highlighted with red outline when you open command panel.
@@ -30,8 +34,11 @@ Your selected formation will be highlighted with green outline when you open com
 Press L to open config menu during battles.
 
 Hotkeys:
+Shift                      -  Hold to add order to queue when giving orders.
+Ctrl                       -  Hold to lock formation widths while dragging on the ground.
+Alt                        -  Hold to cancel formation locking during movement or turning.
 Click mouse middle button  -  Select/Attack formation.
-Alt + Click mouse middle button - Attack enemy formation without interrupting previous movement orders
+Hold Alt + Click mouse middle button - Attack enemy formation without interrupting previous movement orders
 L                          -    Open the config menu.
 All the hotkeys can be changed in config menu.
 

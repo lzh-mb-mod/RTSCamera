@@ -4,7 +4,7 @@
     <!-- Can be found in the URL of your workshop item -->
   </GetItem>
   <UpdateItem>
-    <ModuleFolder Value="D:\develop\src\RTSCamera\source\package\RTSCamera\"/>
+    <ModuleFolder Value="D:\develop\src\RTSCamera\source\package\net472\RTSCamera\"/>
     <!-- A direct path of your module -->
     <ItemDescription Value="
 RTS Camera from original creator

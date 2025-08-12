@@ -113,12 +113,18 @@ jobs:
       
       - name: Generate html files
         run: >-
-          dotnet md2html -i ..\..\README.md -o ..\package\RTSCamera\README.html;
-          dotnet md2html -i ..\..\README.zh-CN.md -o ..\package\RTSCamera\README.zh-CN.html;
-          dotnet md2html -i ..\..\CHANGELOG.md -o ..\package\RTSCamera\CHANGELOG.html;
-          dotnet md2html -i ..\..\README.md -o ..\package\RTSCamera.CommandSystem\README.html;
-          dotnet md2html -i ..\..\README.zh-CN.md -o ..\package\RTSCamera.CommandSystem\README.zh-CN.html;
-          dotnet md2html -i ..\..\CHANGELOG.md -o ..\package\RTSCamera.CommandSystem\CHANGELOG.html;
+          dotnet md2html -i ..\..\README.md -o ..\package
+et472\RTSCamera\README.html;
+          dotnet md2html -i ..\..\README.zh-CN.md -o ..\package
+et472\RTSCamera\README.zh-CN.html;
+          dotnet md2html -i ..\..\CHANGELOG.md -o ..\package
+et472\RTSCamera\CHANGELOG.html;
+          dotnet md2html -i ..\..\README.md -o ..\package
+et472\RTSCamera.CommandSystem\README.html;
+          dotnet md2html -i ..\..\README.zh-CN.md -o ..\package
+et472\RTSCamera.CommandSystem\README.zh-CN.html;
+          dotnet md2html -i ..\..\CHANGELOG.md -o ..\package
+et472\RTSCamera.CommandSystem\CHANGELOG.html;
         working-directory: .\source\RTSCamera\
 
       - name: Upload a Build Artifact
@@ -127,11 +133,14 @@ jobs:
           # Artifact name
           name: ${{env.RTSCAMERA_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}
           # A file, directory or wildcard pattern that describes what to upload
-          path: .\source\package\*RTSCamera*
+          path: .\source\package
+et472\*RTSCamera*
           # The desired behavior if no files are found using the provided path
 
       - name: Zip RTS Camera
-        run: Compress-Archive -Path .\source\package\RTSCamera,.\source\package\RTSCamera.CommandSystem -DestinationPath "${{env.RTSCAMERA_ARTIFACT_NAME}}.zip";
+        run: Compress-Archive -Path .\source\package
+et472\RTSCamera,.\source\package
+et472\RTSCamera.CommandSystem -DestinationPath "${{env.RTSCAMERA_ARTIFACT_NAME}}.zip";
         if: >-
           contains(github.ref, 'refs/tags/release-v') ||
           contains(github.ref, 'refs/tags/release-b') ||
