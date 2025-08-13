@@ -75,12 +75,13 @@ namespace RTSCamera.CommandSystem.Config
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_mode_hint"),
-                    new SelectionOptionData(i => CommandSystemConfig.Get().MovementTargetHighlightMode = (ShowMode)i,
-                        () => (int)CommandSystemConfig.Get().MovementTargetHighlightMode, (int)ShowMode.Count, new List<SelectionItem>
+                    new SelectionOptionData(i => CommandSystemConfig.Get().MovementTargetHighlightMode = (MovementTargetHighlightMode)i,
+                        () => (int)CommandSystemConfig.Get().MovementTargetHighlightMode, (int)MovementTargetHighlightMode.Count, new List<SelectionItem>
                         {
-                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(ShowMode.Never)),
-                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(ShowMode.FreeCameraOnly)),
-                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(ShowMode.Always))
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(MovementTargetHighlightMode.Never)),
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(MovementTargetHighlightMode.FreeCameraOnly)),
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(MovementTargetHighlightMode.NightOrFreeCamera)),
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(MovementTargetHighlightMode.Always))
                         }), false));
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_command_queue_flag_show_mode"),

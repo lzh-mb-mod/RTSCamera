@@ -124,6 +124,8 @@ namespace RTSCamera.Config
 
         public bool DisplayMessage = true;
 
+        public bool HasHintDisplayed = false;
+
         // use TimingOfControlAllyAfterDeath instead.
 
         public bool ControlAllyAfterDeath;
@@ -180,6 +182,7 @@ namespace RTSCamera.Config
             SlowMotionFactor = other.SlowMotionFactor;
             SlowMotionOnRtsView = other.SlowMotionOnRtsView;
             DisplayMessage = other.DisplayMessage;
+            HasHintDisplayed = other.HasHintDisplayed;
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;
             IsControlAllyAfterDeathPrompted = other.IsControlAllyAfterDeathPrompted;
             TimingOfControlAllyAfterDeath = other.TimingOfControlAllyAfterDeath;

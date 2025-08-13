@@ -1,4 +1,5 @@
-﻿using RTSCamera.Logic.SubLogic;
+﻿using RTSCamera.Config;
+using RTSCamera.Logic.SubLogic;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
@@ -47,8 +48,13 @@ namespace RTSCamera.Logic
             ControlTroopLogic.OnBehaviourInitialize();
             CampaignSkillLogic.OnBehaviourInitialize();
 
-
-            Utilities.Utility.PrintUsageHint();
+            var config = RTSCameraConfig.Get();
+            if (!config.HasHintDisplayed)
+            {
+                config.HasHintDisplayed = true;
+                config.Serialize();
+                Utilities.Utility.PrintUsageHint();
+            }
         }
 
         public override void OnRemoveBehavior()

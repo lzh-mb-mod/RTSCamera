@@ -15,7 +15,7 @@ namespace RTSCamera.Utilities
         {
             var keyName = RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).ToSequenceString();
             var hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_switch_camera_hint").SetTextVariable("KeyName", keyName).ToString();
-            MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(hint);
+            MissionSharedLibrary.Utilities.Utility.DisplayMessage(hint);
         }
 
         public static void PrintOrderHint()

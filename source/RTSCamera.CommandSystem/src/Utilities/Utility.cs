@@ -44,7 +44,7 @@ namespace RTSCamera.CommandSystem.Utilities
             //        .ToString());
             //}
 
-            MissionSharedLibrary.Utilities.Utility.DisplayMessageForced(TaleWorlds.MountAndBlade.Module.CurrentModule.GlobalTextManager
+            MissionSharedLibrary.Utilities.Utility.DisplayMessage(TaleWorlds.MountAndBlade.Module.CurrentModule.GlobalTextManager
                 .FindText("str_rts_camera_command_system_order_queue_usage").SetTextVariable("KeyName",
                     CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).ToSequenceString())
                 .ToString());

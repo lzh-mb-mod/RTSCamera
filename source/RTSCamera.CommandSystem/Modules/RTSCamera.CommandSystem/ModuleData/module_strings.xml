@@ -29,6 +29,7 @@
   <string id="str_rts_camera_command_system_movement_target_highlight_mode_hint" text="{=RTSCameraCommandSystem_movement_target_highlight_mode_hint}Make Movement Target more visible." />
   <string id="str_rts_camera_command_system_movement_target_highlight_mode_option.Never" text="{=RTSCameraCommandSystem_highlight_mode_never}Never" />
   <string id="str_rts_camera_command_system_movement_target_highlight_mode_option.FreeCameraOnly" text="{=RTSCameraCommandSystem_highlight_mode_free_camera_only}Free Camera Only" />
+  <string id="str_rts_camera_command_system_movement_target_highlight_mode_option.NightOrFreeCamera" text="{=RTSCameraCommandSystem_highlight_mode_night_or_free_camera}At Night Or Free Camera" />
   <string id="str_rts_camera_command_system_movement_target_highlight_mode_option.Always" text="{=RTSCameraCommandSystem_highlight_mode_always}Always" />
 
   <string id="str_rts_camera_command_system_command_queue_flag_show_mode" text="{=RTSCameraCommandSystem_command_queue_flag_show_mode}When to Show Command Queue Flag" />

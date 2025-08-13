@@ -28,6 +28,7 @@ namespace RTSCamera.CommandSystem.Patch
 {
     public class Patch_OrderTroopPlacer
     {
+        private static float _cachedTimeOfDay = 0;
         private static bool _patched;
 
         private static readonly FieldInfo _dataSource =
@@ -115,6 +116,8 @@ namespace RTSCamera.CommandSystem.Patch
 
             typeof(Input).GetProperty(nameof(Input.DebugInput), BindingFlags.Static | BindingFlags.Public)
                 .SetValue(null, __instance.Input);
+
+            _cachedTimeOfDay = __instance.Mission.Scene.TimeOfDay;
         }
 
         public static void OnBehaviorInitialize()
@@ -131,6 +134,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static void OnRemoveBehavior()
         {
+            _cachedTimeOfDay = 0;
             _orderTroopPlacer = null;
             _contourView = null;
             _cachedCursorState = null;
@@ -396,7 +400,10 @@ namespace RTSCamera.CommandSystem.Patch
             List<GameEntity> ____orderPositionEntities, ref Material ____meshMaterial)
         {
             var config = CommandSystemConfig.Get();
-            bool moreVisibleTroopPlacer = config.MovementTargetHighlightMode == ShowMode.Always || _isFreeCamera && config.MovementTargetHighlightMode == ShowMode.FreeCameraOnly;
+            var timeOfDay =__instance.Mission.Scene.TimeOfDay;
+            bool moreVisibleTroopPlacer = config.MovementTargetHighlightMode == MovementTargetHighlightMode.Always ||
+                _isFreeCamera && config.MovementTargetHighlightMode >= MovementTargetHighlightMode.FreeCameraOnly ||
+                (timeOfDay >= 17.5f || timeOfDay <= 5.5f) && config.MovementTargetHighlightMode == MovementTargetHighlightMode.NightOrFreeCamera;
             if (_previousMoreVisibleTroopPlacer != moreVisibleTroopPlacer)
             {
                 if (moreVisibleTroopPlacer)

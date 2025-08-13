@@ -22,6 +22,7 @@
     <string id="RTSCameraCommandSystem_selected_formation_highlight_mode_hint" text="Selected formation will be highlighted with outline." />
     <string id="RTSCameraCommandSystem_highlight_mode_never" text="Never" />
     <string id="RTSCameraCommandSystem_highlight_mode_free_camera_only" text="Free Camera Only" />
+    <string id="RTSCameraCommandSystem_highlight_mode_night_or_free_camera" text="At Night Or Free Camera" />
     <string id="RTSCameraCommandSystem_highlight_mode_always" text="Always" />
 
     <string id="RTSCameraCommandSystem_target_formation_highlight_mode" text="When to Highlight Target Formation" />

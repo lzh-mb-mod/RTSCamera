@@ -224,7 +224,7 @@ RTS Camera:
 - `Right Shift` + `=`, `Right Shift` + `-`: Increase/Decrease camera distance limit.
 
 Command System:
-- `Middle Mouse Button`: In Command System, select formation.
+- `Middle Mouse Button`: Select formation.
 
 - `Left Alt` or `Right Alt`: Keep movement order when attacking the enemy formation; Toggle formation lock behavior.
 

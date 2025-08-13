@@ -20,6 +20,15 @@ namespace RTSCamera.CommandSystem.Config
         Count
     }
 
+    public enum MovementTargetHighlightMode
+    {
+        Never,
+        FreeCameraOnly,
+        NightOrFreeCamera,
+        Always,
+        Count
+    }
+
     public enum ShowMode
     {
         Never,
@@ -32,7 +41,7 @@ namespace RTSCamera.CommandSystem.Config
     {
         protected override XmlSerializer Serializer => new XmlSerializer(typeof(CommandSystemConfig));
 
-        protected static Version BinaryVersion => new Version(1, 1);
+        protected static Version BinaryVersion => new Version(1, 2);
         public string ConfigVersion { get; set; } = BinaryVersion.ToString();
 
         public bool ClickToSelectFormation = true;
@@ -54,7 +63,7 @@ namespace RTSCamera.CommandSystem.Config
         // deprecated. use SelectedFormationHighlightMode and TargetFormationHighlightMode instead.
         public bool HighlightOnRtsViewOnly = true;
 
-        public ShowMode MovementTargetHighlightMode = ShowMode.FreeCameraOnly;
+        public MovementTargetHighlightMode MovementTargetHighlightMode = MovementTargetHighlightMode.NightOrFreeCamera;
 
         // deprecated. use MovementTargetHighlightMode instead.
         public bool MoreVisibleMovementTarget = true;
@@ -67,6 +76,8 @@ namespace RTSCamera.CommandSystem.Config
         public ShowMode CommandQueueArrowShowMode = ShowMode.FreeCameraOnly;
 
         public FormationLockCondition FormationLockCondition = FormationLockCondition.WhenNotPressed;
+
+        public bool HasHintDisplayed = false;
 
         protected override void CopyFrom(CommandSystemConfig other)
         {
@@ -85,6 +96,7 @@ namespace RTSCamera.CommandSystem.Config
             CommandQueueFlagShowMode = other.CommandQueueFlagShowMode;
             CommandQueueArrowShowMode = other.CommandQueueArrowShowMode;
             FormationLockCondition = other.FormationLockCondition;
+            HasHintDisplayed = other.HasHintDisplayed;
         }
 
         public static void OnMenuClosed()
@@ -135,20 +147,27 @@ namespace RTSCamera.CommandSystem.Config
                     {
                         if (MovementTargetMoreVisibleOnRtsViewOnly)
                         {
-                            MovementTargetHighlightMode = ShowMode.FreeCameraOnly;
+                            MovementTargetHighlightMode = MovementTargetHighlightMode.FreeCameraOnly;
                         }
                         else
                         {
-                            MovementTargetHighlightMode = ShowMode.Always;
+                            MovementTargetHighlightMode = MovementTargetHighlightMode.Always;
                         }
                     }
                     else
                     {
-                        MovementTargetHighlightMode = ShowMode.Never;
+                        MovementTargetHighlightMode = MovementTargetHighlightMode.Never;
                     }
-                    ConfigVersion = "1.1";
                     goto case "1.1";
-                case "1.1": break;
+                case "1.1":
+                    if (MovementTargetHighlightMode == MovementTargetHighlightMode.FreeCameraOnly)
+                    {
+                        MovementTargetHighlightMode = MovementTargetHighlightMode.NightOrFreeCamera;
+                    }
+                    goto case "1.2";
+                case "1.2":
+                    ConfigVersion = "1.2";
+                    break;
             }
         }
 

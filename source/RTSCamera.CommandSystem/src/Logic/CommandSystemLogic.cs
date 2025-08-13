@@ -1,4 +1,5 @@
 ﻿using RTSCamera.CommandSystem.AgentComponents;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
@@ -21,7 +22,13 @@ namespace RTSCamera.CommandSystem.Logic
             CommandQueueLogic.OnBehaviorInitialize();
             CommandQuerySystem.OnBehaviorInitialize();
 
-            Utilities.Utility.PrintOrderHint();
+            var config = CommandSystemConfig.Get();
+            if (!config.HasHintDisplayed)
+            {
+                config.HasHintDisplayed = true;
+                config.Serialize();
+                Utilities.Utility.PrintOrderHint();
+            }
         }
 
         public override void OnRemoveBehavior()

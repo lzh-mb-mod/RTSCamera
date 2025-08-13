@@ -415,12 +415,12 @@ namespace RTSCamera.View
                 heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
                     1, 30);
                 heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 10),
-                    0.2f, 4f);
+                     1f, 15f);
             }
             else
             {
                 heightFactorForHorizontalMove = 1;
-                heightFactorForVerticalMove = 0.2f;
+                heightFactorForVerticalMove = 1;
             }
 
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.IncreaseCameraSpeed).IsKeyPressedInOrder(MissionScreen.InputManager))
