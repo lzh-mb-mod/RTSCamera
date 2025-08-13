@@ -1,9 +1,7 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
@@ -32,7 +30,7 @@ namespace RTSCamera.Patch.Fix
         private static bool _willEndDraggingMode;
         private static bool _earlyDraggingMode;
         private static float _beginDraggingOffset;
-        private static readonly float _beginDraggingOffsetThreshold = 10;
+        private static readonly float _beginDraggingOffsetThreshold = 20;
         private static bool _rightButtonDraggingMode;
 
         public static bool Patch(Harmony harmony)

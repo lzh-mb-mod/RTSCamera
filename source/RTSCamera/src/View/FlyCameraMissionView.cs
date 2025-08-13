@@ -414,13 +414,13 @@ namespace RTSCamera.View
                 float heightAtPosition = _config.IgnoreTerrain ? terrainHeight : groundHeight;
                 heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
                     1, 30);
-                heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 10),
-                     1f, 15f);
+                heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
+                    1f, 20f);
             }
             else
             {
-                heightFactorForHorizontalMove = 1;
-                heightFactorForVerticalMove = 1;
+                heightFactorForHorizontalMove = 5;
+                heightFactorForVerticalMove = 5;
             }
 
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.IncreaseCameraSpeed).IsKeyPressedInOrder(MissionScreen.InputManager))
@@ -438,9 +438,9 @@ namespace RTSCamera.View
             //    else if (num < -0.00999999977648258)
             //        _cameraSpeedMultiplier *= 0.8f;
             //}
-            float num1 = 3f * _cameraSpeedMultiplier * MovementSpeedFactor;
+            float cameraBasicSpeed = 3f * _cameraSpeedMultiplier * MovementSpeedFactor;
             if (MissionScreen.SceneLayer.Input.IsGameKeyDown(CombatHotKeyCategory.Zoom))
-                num1 *= _shiftSpeedMultiplier;
+                cameraBasicSpeed *= _shiftSpeedMultiplier;
             if (!_cameraSmoothMode)
             {
                 _cameraSpeed.x = 0.0f;
@@ -451,8 +451,9 @@ namespace RTSCamera.View
             bool hasVerticalInput = false;
             //if (!MissionScreen.InputManager.IsControlDown() || !MissionScreen.InputManager.IsAltDown())
             //{
-                Vec3 keyInput = Vec3.Zero;
-                Vec3 mouseInput = Vec3.Zero;
+                float keyInputVertical = 0;
+                Vec2 keyInput = Vec2.Zero;
+                Vec2 mouseInput = Vec2.Zero;
                 if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveForward).IsKeyDown(Input))
                     ++keyInput.y;
                 if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveBackward).IsKeyDown(Input))
@@ -462,9 +463,9 @@ namespace RTSCamera.View
                 if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveRight).IsKeyDown(Input))
                     ++keyInput.x;
                 if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveUp).IsKeyDown(Input))
-                    ++keyInput.z;
+                    ++keyInputVertical;
                 if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveDown).IsKeyDown(Input))
-                    --keyInput.z;
+                    --keyInputVertical;
 
                 if (MissionScreen.MouseVisible && !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
                 {
@@ -500,15 +501,15 @@ namespace RTSCamera.View
                     keyInput.y += y;
                 }
 
-                hasVerticalInput = (keyInput.z + mouseInput.z) != 0 || Input.GetDeltaMouseScroll() != 0;
-                if (keyInput + mouseInput != Vec3.Zero)
+                hasVerticalInput = keyInputVertical != 0 || Input.GetDeltaMouseScroll() != 0;
+                if (keyInput + mouseInput != Vec2.Zero || keyInputVertical != 0)
                 {
                     FocusOnFormation(null);
                 }
-                _cameraSpeed += (keyInput + mouseInput) * num1 * heightFactorForHorizontalMove;
+                _cameraSpeed += ((keyInput + mouseInput) * cameraBasicSpeed * heightFactorForHorizontalMove).ToVec3(keyInputVertical * cameraBasicSpeed * heightFactorForVerticalMove);
             //}
-            float horizontalLimit = heightFactorForHorizontalMove * num1;
-            float verticalLimit = heightFactorForVerticalMove * num1 * VerticalMovementSpeedFactor;
+            float horizontalLimit = heightFactorForHorizontalMove * cameraBasicSpeed;
+            float verticalLimit = heightFactorForVerticalMove * cameraBasicSpeed * VerticalMovementSpeedFactor;
             _cameraSpeed.x = MBMath.ClampFloat(_cameraSpeed.x, -horizontalLimit, horizontalLimit);
             _cameraSpeed.y = MBMath.ClampFloat(_cameraSpeed.y, -horizontalLimit, horizontalLimit);
             _cameraSpeed.z = MBMath.ClampFloat(_cameraSpeed.z, -verticalLimit, verticalLimit);
@@ -545,7 +546,7 @@ namespace RTSCamera.View
                 var diffRatio = MathF.Min(1f, dt * 5f);
                 if (FocusedFormation != null)
                 {
-                    _lookingDistanceToAdd -= (mouseScroll / 200.0f + controllerHeightInput) * num1 * VerticalMovementSpeedFactor;
+                    _lookingDistanceToAdd -= (mouseScroll / 200.0f + controllerHeightInput) * cameraBasicSpeed * VerticalMovementSpeedFactor;
                     if (MathF.Abs(_lookingDistanceToAdd) > 1.0 / 1000.0)
                     {
                         _lookingDistance += _lookingDistanceToAdd * diffRatio;
@@ -569,7 +570,7 @@ namespace RTSCamera.View
                 else
                 {
                     //if (!MissionScreen.SceneLayer.Input.IsControlDown())
-                        _cameraHeightToAdd -= (mouseScroll / 200.0f + controllerHeightInput) * verticalLimit;
+                        _cameraHeightToAdd -= (mouseScroll / 2000.0f + controllerHeightInput / 100f) * verticalLimit;
                     // hold middle button and move mouse vertically to adjust height
                     if (MissionScreen.SceneLayer.Input.IsHotKeyDown("DeploymentCameraIsActive"))
                     {
@@ -591,7 +592,7 @@ namespace RTSCamera.View
                 {
                     cameraFrame.origin.z += _cameraHeightToAdd * diffRatio;
                     _cameraHeightToAdd *= 1f - diffRatio;
-                }
+                }            
                 else
                 {
                     cameraFrame.origin.z += _cameraHeightToAdd * MathF.Min(1f, dt);
@@ -609,7 +610,7 @@ namespace RTSCamera.View
 
             if (FocusedFormation == null && RTSCameraSkillBehavior.ShouldLimitCameraDistance(Mission))
             {
-                LimitCameraDistance(ref cameraFrame, dt, num1);
+                LimitCameraDistance(ref cameraFrame, dt, cameraBasicSpeed);
             }
 
             if (_config.CameraHeightFollowsTerrain)

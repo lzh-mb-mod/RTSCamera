@@ -154,6 +154,8 @@ namespace RTSCamera.Config
 
         public bool OrderOnSwitchingCamera = true;
 
+        public bool KeepOrderUIOpenInFreeCamera = true;
+
         public bool ShowHotKeyHint = true;
 
         public bool FastForwardHideoutPrompted = false;
@@ -196,6 +198,7 @@ namespace RTSCamera.Config
             OrderUIClickable = other.OrderUIClickable;
             SwitchCameraOnOrdering = other.SwitchCameraOnOrdering;
             OrderOnSwitchingCamera = other.OrderOnSwitchingCamera;
+            KeepOrderUIOpenInFreeCamera = other.KeepOrderUIOpenInFreeCamera;
             ShowHotKeyHint = other.ShowHotKeyHint;
             FastForwardHideoutPrompted = other.FastForwardHideoutPrompted;
             FastForwardHideout = other.FastForwardHideout;

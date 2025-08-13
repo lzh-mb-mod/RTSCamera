@@ -353,6 +353,11 @@ namespace RTSCamera.Config
                     GameTexts.FindText("str_rts_camera_order_on_switching_camera_hint"),
                     () => RTSCameraConfig.Get().OrderOnSwitchingCamera,
                     b => RTSCameraConfig.Get().OrderOnSwitchingCamera = b));
+                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_free_camera"),
+                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_free_camera_hint"),
+                    () => RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera,
+                    b => RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera = b));
                 optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_show_hotkey_hint"),

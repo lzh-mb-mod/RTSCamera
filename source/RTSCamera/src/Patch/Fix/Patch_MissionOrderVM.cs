@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.Config;
 using RTSCamera.Logic;
 using System;
 using System.Reflection;
@@ -87,7 +88,7 @@ namespace RTSCamera.Patch.Fix
         public static void Postfix_OnOrder(MissionOrderVM __instance)
         {
             // Keep orders UI open after issuing an order in free camera mode.
-            if (!__instance.IsToggleOrderShown && !__instance.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true)
+            if (!__instance.IsToggleOrderShown && !__instance.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
             {
                 __instance.OpenToggleOrder(false);
             }
@@ -96,7 +97,7 @@ namespace RTSCamera.Patch.Fix
         public static void Postfix_OnTransferFinished(MissionOrderVM __instance)
         {
             // Keep orders UI open after transfer finished in free camera mode.
-            if (!__instance.IsToggleOrderShown && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true)
+            if (!__instance.IsToggleOrderShown && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
             {
                 __instance.OpenToggleOrder(false);
             }

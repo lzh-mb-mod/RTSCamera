@@ -128,6 +128,8 @@
     <string id="RTSCamera_switchcameraonorderinghint" text="Automatically switch to free camera when giving orders, and switch back when finished." />
     <string id="RTSCamera_orderonswitchingcamera" text="Order on Switching Camera" />
     <string id="RTSCamera_orderonswitchingcamerahint" text="Automatically open order UI when switching to free camera, and close order UI when switching back." />
+    <string id="RTSCamera_keep_order_ui_open_in_free_camera" text="Keep Order UI Open in Free Camera" />
+    <string id="RTSCamera_keep_order_ui_open_in_free_camera_hint" text="Keep Order UI Open in Free Camera" />
     <string id="RTSCamera_show_hotkey_hint" text="Show Hotkey Hint" />
     <string id="RTSCamera_show_hotkey_hint_hint" text="Show hotkey hint in free camera mode." />
     <string id="RTSCamera_fast_forward_hideout" text="Fast Forward Hideout" />
