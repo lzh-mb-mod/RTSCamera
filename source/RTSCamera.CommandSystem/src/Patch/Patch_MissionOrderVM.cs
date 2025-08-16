@@ -364,6 +364,7 @@ namespace RTSCamera.CommandSystem.Patch
                     if (!queueCommand)
                     {
                         __instance.OrderController.SetOrder(orderToAdd.OrderType);
+                        CommandQueueLogic.CancelPendingOrder(selectedFormations);
                         skipNativeOrder = true;
                         return null;
                     }

@@ -42,7 +42,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Select your troops by clicking middle button on units.
 
-  - Movement target becomes more visible on RTS view.
+  - Movement target becomes more visible.
 
 ## Main usage
 
@@ -186,7 +186,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - After the enemy formation is eliminated, your troops will stay at where they are. To change this behavior, you can press `L` to open menu, and set the option `After enemy formation eliminated` to `Charge`.
 
-  - The target enemy formation that your selected troops are charging to will be highlighted with red outline when you open command panel in free camera mode.
+  - The target enemy formation that your selected troops are charging to will be highlighted with red color when you open command panel.
 
 - **New:** Hold `Alt` while clicking to target the enemy without interrupting previous movement orders.
 
@@ -194,13 +194,13 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Note that for melee units, they will still follow previous movement orders, which may limit their ability to reach the target.
 
-- Movement target marker is more visible in free camera. The original marker is hard to see if camera is too high.
+- Movement target marker is more visible. The original marker is hard to see if camera is too high.
 
 - You can select your formations by clicking middle mouse button on soldiers.
 
-  - Selected troops will be highlighted with green outline when you open command panel in free camera mode.
+  - Selected troops will be highlighted with green color when you open command panel.
 
-- Your formation targeted by the enemy formation will be highlighted with dark blue outline when you open command panel in free camera mode.
+- Your formation targeted by the enemy formation will be highlighted with dark blue color when you open command panel.
 
 - Movement orders will be shown under troop cards.
 

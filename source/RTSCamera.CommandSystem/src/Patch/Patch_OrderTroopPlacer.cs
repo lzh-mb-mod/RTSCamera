@@ -478,7 +478,7 @@ namespace RTSCamera.CommandSystem.Patch
                 }
                 else
                 {
-                    alpha = OrderPositionEntityPreviewAlpha;
+                    //alpha = OrderPositionEntityPreviewAlpha;
                     //orderPositionEntity.SetVisibilityExcludeParents(true);
                     //orderPositionEntity.SetAlpha(alpha);
                     orderPositionEntity.FadeIn();
