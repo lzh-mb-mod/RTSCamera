@@ -181,14 +181,5 @@ namespace RTSCamera
                 campaignGameStarter.AddBehavior(new RTSCameraSkillBehavior());
             }
         }
-
-
-        protected override void OnSubModuleUnloaded()
-        {
-            base.OnSubModuleUnloaded();
-            MissionExtensionCollection.Clear();
-            _harmony.UnpatchAll(_harmony.Id);
-            Initializer.Clear();
-        }
     }
 }

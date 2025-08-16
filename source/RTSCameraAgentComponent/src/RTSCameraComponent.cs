@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.ExceptionServices;
 using System.Security;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;

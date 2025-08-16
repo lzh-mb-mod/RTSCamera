@@ -14,7 +14,6 @@ using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
-using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -28,6 +27,9 @@ namespace RTSCamera.CommandSystem.Patch
 {
     public class Patch_OrderTroopPlacer
     {
+        public static uint OrderPositionEntityColor = new Color(0.1f, 0.5f, 0.1f).ToUnsignedInteger();
+        public static float OrderPositionEntityPreviewAlpha = 1f;
+        public static float OrderPositionEntityDestinationAlpha = 0.5f;
         private static float _cachedTimeOfDay = 0;
         private static bool _patched;
 
@@ -37,7 +39,8 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static CursorState _currentCursorState = CursorState.Invisible;
         private static UiQueryData<CursorState> _cachedCursorState;
-        private static FormationColorSubLogic _contourView;
+        private static FormationColorSubLogicV2 _outlineView;
+        private static FormationColorSubLogicV2 _groundMarkerView;
         private static OrderTroopPlacer _orderTroopPlacer;
         private static MissionFormationTargetSelectionHandler _targetSelectionHandler;
         private static MBReadOnlyList<Formation> _focusedFormationsCache;
@@ -112,7 +115,8 @@ namespace RTSCamera.CommandSystem.Patch
         {
             _orderTroopPlacer = __instance;
             _cachedCursorState = new UiQueryData<CursorState>(GetCursorState, 0.05f);
-            _contourView = Mission.Current.GetMissionBehavior<CommandSystemLogic>().FormationColorSubLogic;
+            _outlineView = Mission.Current.GetMissionBehavior<CommandSystemLogic>().OutlineColorSubLogic;
+            _groundMarkerView = Mission.Current.GetMissionBehavior<CommandSystemLogic>().GroundMarkerColorSubLogic;
 
             typeof(Input).GetProperty(nameof(Input.DebugInput), BindingFlags.Static | BindingFlags.Public)
                 .SetValue(null, __instance.Input);
@@ -136,7 +140,8 @@ namespace RTSCamera.CommandSystem.Patch
         {
             _cachedTimeOfDay = 0;
             _orderTroopPlacer = null;
-            _contourView = null;
+            _outlineView = null;
+            _groundMarkerView = null;
             _cachedCursorState = null;
             _focusedFormationsCache = null;
             if (_targetSelectionHandler != null)
@@ -313,7 +318,7 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         if (__instance.MissionScreen.OrderFlag.FocusedOrderableObject != null)
                             cursorState = CursorState.OrderableEntity;
-                        else if (CommandSystemConfig.Get().ShouldHighlightWithOutline())
+                        else if (CommandSystemConfig.Get().IsMouseOverEnabled())
                         {
                             var formation = GetMouseOverFormation(__instance, collisionDistance,
                                 ___PlayerOrderController, ref ____deltaMousePosition,
@@ -339,7 +344,7 @@ namespace RTSCamera.CommandSystem.Patch
                         }
                     }
                     if (cursorState == CursorState.Invisible &&
-                        !(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(__instance.Input) && CommandSystemConfig.Get().ShouldHighlightWithOutline()) || // press middle mouse button to avoid accidentally click on ground.
+                        !(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(__instance.Input) && CommandSystemConfig.Get().IsMouseOverEnabled()) || // press middle mouse button to avoid accidentally click on ground.
                         ____formationDrawingMode)
                     {
                         cursorState = IsCursorStateGroundOrNormal(____formationDrawingMode);
@@ -385,7 +390,7 @@ namespace RTSCamera.CommandSystem.Patch
                 agent = agent.RiderAgent;
             if (agent == null)
                 return null;
-            if (CommandSystemConfig.Get().ShouldHighlightWithOutline() && !__instance.IsDrawingForced && !____formationDrawingMode && agent?.Formation != null &&
+            if (CommandSystemConfig.Get().IsMouseOverEnabled() && !__instance.IsDrawingForced && !____formationDrawingMode && agent?.Formation != null &&
                 !(___PlayerOrderController.SelectedFormations.Count == 1 &&
                   ___PlayerOrderController.SelectedFormations.Contains(agent.Formation)))
             {
@@ -446,16 +451,17 @@ namespace RTSCamera.CommandSystem.Patch
                     //MetaMesh copy = MetaMesh.GetCopy("unit_arrow");
                     if (____meshMaterial == null)
                     {
-
                         //____meshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
                         ____meshMaterial = Material.GetFromResource("vertex_color_blend_no_depth_mat").CreateCopy();
                         //____meshMaterial = Material.GetFromResource("unit_arrow").CreateCopy();
                         //____meshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
                     }
                     copy.SetMaterial(____meshMaterial);
-                    copy.SetFactor1(new Color(0.1f, 0.5f, 0.1f).ToUnsignedInteger());
+                    copy.SetFactor1(OrderPositionEntityColor);
+                    //copy.SetContourColor(OrderPositionEntityColor);
+                    //copy.SetContourState(true);
                     gameEntity.AddComponent(copy);
-                    //gameEntity.SetContourColor(new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger(), true);
+                    //gameEntity.SetContourColor(OrderPositionEntityColor, true);
                     gameEntity.SetVisibilityExcludeParents(false);
                     ____orderPositionEntities.Add(gameEntity);
                 }
@@ -466,13 +472,13 @@ namespace RTSCamera.CommandSystem.Patch
                     orderPositionEntity.FadeOut(0.3f, false);
                 else if (alpha != -1.0)
                 {
-                    alpha = 0.5f;
+                    alpha = OrderPositionEntityDestinationAlpha;
                     orderPositionEntity.SetVisibilityExcludeParents(true);
                     orderPositionEntity.SetAlpha(alpha);
                 }
                 else
                 {
-                    alpha = 0.9f;
+                    alpha = OrderPositionEntityPreviewAlpha;
                     orderPositionEntity.SetVisibilityExcludeParents(true);
                     orderPositionEntity.SetAlpha(alpha);
                     orderPositionEntity.FadeIn();
@@ -597,13 +603,13 @@ namespace RTSCamera.CommandSystem.Patch
             if (__instance.SuspendTroopPlacer)
                 return false;
             
-            bool isSelectFormationKeyPressed = CommandSystemConfig.Get().ShouldHighlightWithOutline() &&
+            bool isSelectFormationKeyPressed = CommandSystemConfig.Get().IsMouseOverEnabled() &&
                                             CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
                                                 .IsKeyPressed(__instance.Input);
-            bool isSelectFormationKeyReleased = CommandSystemConfig.Get().ShouldHighlightWithOutline() &&
+            bool isSelectFormationKeyReleased = CommandSystemConfig.Get().IsMouseOverEnabled() &&
                                                 CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
                                                     .IsKeyReleased(__instance.Input);
-            bool isSelectFormationKeyDown = CommandSystemConfig.Get().ShouldHighlightWithOutline() &&
+            bool isSelectFormationKeyDown = CommandSystemConfig.Get().IsMouseOverEnabled() &&
                                             CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
                                                 .IsKeyDown(__instance.Input);
             _currentCursorState = _cachedCursorState.Value;
@@ -634,7 +640,7 @@ namespace RTSCamera.CommandSystem.Patch
                 ____isMouseDown = false;
                 // Formation.GetOrderPositionOfUnit is wrong in the next tick after movement order is issued.
                 // we skip updating from the wrong position for 1 tick.
-                //_skipDrawingForDestinationForOneTick = true;
+                _skipDrawingForDestinationForOneTick = true;
                 typeof(OrderTroopPlacer).GetMethod("HandleMouseUp", BindingFlags.Instance | BindingFlags.NonPublic)
                     ?.Invoke(__instance, new object[] { });
             }
@@ -732,7 +738,8 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static void UpdateInputForContour(Formation ____mouseOverFormation)
         {
-            _contourView?.MouseOver(____mouseOverFormation);
+            _outlineView?.MouseOver(____mouseOverFormation);
+            _groundMarkerView?.MouseOver(____mouseOverFormation);
         }
         private static void Reset(ref bool ____isMouseDown, ref bool ____formationDrawingMode, ref WorldPosition? ____formationDrawingStartingPosition,
             ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime,
@@ -763,7 +770,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static void SelectFormationFromController(OrderTroopPlacer __instance, OrderController ___PlayerOrderController, Formation ____clickedFormation)
         {
-            if (!CommandSystemGameKeyCategory.GetKey(GameKeyEnum.FormationLockMovement).IsKeyDownInOrder(__instance.Input))
+            if (!CommandSystemGameKeyCategory.GetKey(GameKeyEnum.KeepFormationWidth).IsKeyDownInOrder(__instance.Input))
             {
                 ___PlayerOrderController.ClearSelectedFormations();
                 ___PlayerOrderController.SelectFormation(____clickedFormation);

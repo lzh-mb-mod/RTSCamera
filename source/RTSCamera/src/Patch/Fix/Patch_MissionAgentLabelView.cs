@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
-using SandBox.Missions.MissionLogics.Arena;
 using System;
 using System.Reflection;
 using TaleWorlds.MountAndBlade;

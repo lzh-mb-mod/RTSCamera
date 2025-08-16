@@ -12,18 +12,15 @@
   <string id="str_rts_camera_command_system_after_enemy_formation_eliminated_hint" text="{=RTSCameraCommandSystem_after_enemy_formation_eliminated_hint}Behavior when the attacked enemy formation is eliminated." />
   <string id="str_rts_camera_command_system_after_charge_behavior.charge" text="{=RTSCameraCommandSystem_after_charge_behavior_charge}Charge" />
   <string id="str_rts_camera_command_system_after_charge_behavior.hold" text="{=RTSCameraCommandSystem_after_charge_behavior_hold}Hold" />
-  
-  <string id="str_rts_camera_command_system_selected_formation_highlight_mode" text="{=RTSCameraCommandSystem_selected_formation_highlight_mode}When to Highlight Selected Formation" />
-  <string id="str_rts_camera_command_system_selected_formation_highlight_mode_hint" text="{=RTSCameraCommandSystem_selected_formation_highlight_mode_hint}Selected formation will be highlighted with outline." />
-  <string id="str_rts_camera_command_system_selected_formation_highlight_mode_option.Never" text="{=RTSCameraCommandSystem_highlight_mode_never}Never" />
-  <string id="str_rts_camera_command_system_selected_formation_highlight_mode_option.FreeCameraOnly" text="{=RTSCameraCommandSystem_highlight_mode_free_camera_only}Free Camera Only" />
-  <string id="str_rts_camera_command_system_selected_formation_highlight_mode_option.Always" text="{=RTSCameraCommandSystem_highlight_mode_always}Always" />
 
-  <string id="str_rts_camera_command_system_target_formation_highlight_mode" text="{=RTSCameraCommandSystem_target_formation_highlight_mode}When to Highlight Target Formation" />
-  <string id="str_rts_camera_command_system_target_formation_highlight_mode_hint" text="{=RTSCameraCommandSystem_target_formation_highlight_mode_hint}Target formation will be highlighted with outline." />
-  <string id="str_rts_camera_command_system_target_formation_highlight_mode_option.Never" text="{=RTSCameraCommandSystem_highlight_mode_never}Never" />
-  <string id="str_rts_camera_command_system_target_formation_highlight_mode_option.FreeCameraOnly" text="{=RTSCameraCommandSystem_highlight_mode_free_camera_only}Free Camera Only" />
-  <string id="str_rts_camera_command_system_target_formation_highlight_mode_option.Always" text="{=RTSCameraCommandSystem_highlight_mode_always}Always" />
+  <string id="str_rts_camera_command_system_troop_highlight_character_mode" text="{=RTSCameraCommandSystem_troop_highlight_character_mode}Troop Highlight (Character Mode)" />
+  <string id="str_rts_camera_command_system_troop_highlight_character_mode_hint" text="{=RTSCameraCommandSystem_troop_highlight_character_mode_hint}Troop highlight style in character mode" />
+  <string id="str_rts_camera_command_system_troop_highlight_option.No" text="{=RTSCameraCommandSystem_troop_highlight_option_no}No" />
+  <string id="str_rts_camera_command_system_troop_highlight_option.Outline" text="{=RTSCameraCommandSystem_troop_highlight_option_outline}Outline" />
+  <string id="str_rts_camera_command_system_troop_highlight_option.GroundMarker" text="{=RTSCameraCommandSystem_troop_highlight_option_ground_marker}Ground Marker" />
+
+  <string id="str_rts_camera_command_system_troop_highlight_rts_mode" text="{=RTSCameraCommandSystem_troop_highlight_rts_mode}Troop Highlight (RTS Mode)" />
+  <string id="str_rts_camera_command_system_troop_highlight_rts_mode_hint" text="{=RTSCameraCommandSystem_troop_highlight_rts_mode_hint}Troop highlight style in RTS mode" />
 
   <string id="str_rts_camera_command_system_movement_target_highlight_mode" text="{=RTSCameraCommandSystem_movement_target_highlight_mode}When to Highlight Movement Target" />
   <string id="str_rts_camera_command_system_movement_target_highlight_mode_hint" text="{=RTSCameraCommandSystem_movement_target_highlight_mode_hint}Make Movement Target more visible." />
@@ -32,23 +29,35 @@
   <string id="str_rts_camera_command_system_movement_target_highlight_mode_option.NightOrFreeCamera" text="{=RTSCameraCommandSystem_highlight_mode_night_or_free_camera}At Night Or Free Camera" />
   <string id="str_rts_camera_command_system_movement_target_highlight_mode_option.Always" text="{=RTSCameraCommandSystem_highlight_mode_always}Always" />
 
-  <string id="str_rts_camera_command_system_command_queue_flag_show_mode" text="{=RTSCameraCommandSystem_command_queue_flag_show_mode}When to Show Command Queue Flag" />
+  <string id="str_rts_camera_command_system_command_queue_flag_show_mode" text="{=RTSCameraCommandSystem_command_queue_flag_show_mode}When to Show Order Flag" />
   <string id="str_rts_camera_command_system_command_queue_flag_show_mode_hint" text="{=RTSCameraCommandSystem_command_queue_flag_show_mode_hint}Command targets in Command Queue will be marked using flags." />
   <string id="str_rts_camera_command_system_command_queue_flag_show_mode_option.Never" text="{=RTSCameraCommandSystem_highlight_mode_never}Never" />
   <string id="str_rts_camera_command_system_command_queue_flag_show_mode_option.FreeCameraOnly" text="{=RTSCameraCommandSystem_highlight_mode_free_camera_only}Free Camera Only" />
   <string id="str_rts_camera_command_system_command_queue_flag_show_mode_option.Always" text="{=RTSCameraCommandSystem_highlight_mode_always}Always" />
 
-  <string id="str_rts_camera_command_system_command_queue_arrow_show_mode" text="{=RTSCameraCommandSystem_command_queue_arrow_show_mode}When to Show Command Queue Arrow" />
+  <string id="str_rts_camera_command_system_command_queue_arrow_show_mode" text="{=RTSCameraCommandSystem_command_queue_arrow_show_mode}When to Show Order Arrow" />
   <string id="str_rts_camera_command_system_command_queue_arrow_show_mode_hint" text="{=RTSCameraCommandSystem_command_queue_arrow_show_mode_hint}Command targets in Command Queue will be connected using arrows." />
   <string id="str_rts_camera_command_system_command_queue_arrow_show_mode_option.Never" text="{=RTSCameraCommandSystem_highlight_mode_never}Never" />
   <string id="str_rts_camera_command_system_command_queue_arrow_show_mode_option.FreeCameraOnly" text="{=RTSCameraCommandSystem_highlight_mode_free_camera_only}Free Camera Only" />
   <string id="str_rts_camera_command_system_command_queue_arrow_show_mode_option.Always" text="{=RTSCameraCommandSystem_highlight_mode_always}Always" />
+
+  <string id="str_rts_camera_command_system_command_queue_formation_shape_show_mode" text="{=RTSCameraCommandSystem_command_queue_formation_shape_show_mode}When to Show Formation Shape" />
+  <string id="str_rts_camera_command_system_command_queue_formation_shape_show_mode_hint" text="{=RTSCameraCommandSystem_command_queue_formation_shape_show_mode_hint}Formation shape will be shown at movement target." />
+  <string id="str_rts_camera_command_system_command_queue_formation_shape_show_mode_option.Never" text="{=RTSCameraCommandSystem_highlight_mode_never}Never" />
+  <string id="str_rts_camera_command_system_command_queue_formation_shape_show_mode_option.FreeCameraOnly" text="{=RTSCameraCommandSystem_highlight_mode_free_camera_only}Free Camera Only" />
+  <string id="str_rts_camera_command_system_command_queue_formation_shape_show_mode_option.Always" text="{=RTSCameraCommandSystem_highlight_mode_always}Always" />
 
   <string id="str_rts_camera_command_system_formation_lock_condition" text="{=RTSCameraCommandSystem_formation_lock_condition}When to Lock Multiple Formations" />
   <string id="str_rts_camera_command_system_formation_lock_condition_hint" text="{=RTSCameraCommandSystem_formation_lock_condition_hint}Formations' relative positions and directions will remain unchanged." />
   <string id="str_rts_camera_command_system_formation_lock_condition_option.Never" text="{=RTSCameraCommandSystem_formation_lock_condition_option_never}Never" />
   <string id="str_rts_camera_command_system_formation_lock_condition_option.WhenPressed" text="{=RTSCameraCommandSystem_formation_lock_condition_option_when_pressed}When key is pressed" />
   <string id="str_rts_camera_command_system_formation_lock_condition_option.WhenNotPressed" text="{=RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed}When key is not pressed" />
+
+  <string id="str_rts_camera_command_system_hollow_square_formation" text="{=RTSCameraCommandSystem_hollow_square_formation}Enable Hollow Square Formation" />
+  <string id="str_rts_camera_command_system_hollow_square_formation_hint" text="{=RTSCameraCommandSystem_hollow_square_formation_hint}Whether to enable hollow square formation for player." />
+
+  <string id="str_rts_camera_command_system_sqaure_formation_corner_fix" text="{=RTSCameraCommandSystem_square_formation_corner_Fix}Square Formation Corner Fix" />
+  <string id="str_rts_camera_command_system_square_formation_corner_fix_hint" text="{=RTSCameraCommandSystem_square_formation_corner_Fix_hint}When enabled, soldiers positioned at the corners of a square formation will face toward the diagonal direction of the formation, ensuring better defensive coverage and a more natural appearance." />
 
   <string id="str_rts_camera_command_system_defensive_attack" text="{=RTSCameraCommandSystem_defensive_attack}focusing on enemy {TARGET_NAME}" />
 
@@ -62,7 +71,7 @@
   <string id="str_key_name.RTSCameraCommandSystemHotKey_CommandQueue" text="{=RTSCameraCommandSystem_command_queue}Command Queue" />
   <string id="str_key_description.RTSCameraCommandSystemHotKey_CommandQueue" text="{=RTSCameraCommandSystem_command_queue_hint}Add command to queue. Troops will execute commands in queue one by one." />
   <string id="str_key_name.RTSCameraCommandSystemHotKey_KeepFormationWidth" text="{=RTSCameraCommandSystem_command_keep_formation_width}Keep formation width" />
-  <string id="str_key_description.RTSCameraCommandSystemHotKey_KeepFormationWidth" text="{=RTSCameraCommandSystem_keep_formation_width_hint}Keep formation width while dragging formation." />
+  <string id="str_key_description.RTSCameraCommandSystemHotKey_KeepFormationWidth" text="{=RTSCameraCommandSystem_keep_formation_width_hint}Hold to keep formation width while dragging formation; Select more formations." />
 
   <string id="str_rts_camera_command_system_tactic_level_required" text="{=RTSCameraCommandSystem_tactic_level_required}You tactic level should be at least {level}" />
 

@@ -25,6 +25,8 @@ namespace RTSCamera.CommandSystem.Logic
         public OrderType? RidingOrderType;
         public OrderType? AIControlOrderType;
         public ArrangementOrderEnum? ArrangementOrder;
+        public float? PreviewWidth;
+        public float? PreviewDepth;
     }
     public class FormationChanges
     {
@@ -38,23 +40,10 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     change = new FormationChange();
                 }
-
-                //if (pair.Value.Position != null)
-                {
-                    change.WorldPosition = pair.Value.WorldPosition;
-                }
-                //if (pair.Value.Direciton != null)
-                {
-                    change.Direciton = pair.Value.Direciton;
-                }
-                //if (pair.Value.UnitSpacing != null)
-                {
-                    change.UnitSpacing = pair.Value.UnitSpacing;
-                }
-                //if (pair.Value.Width != null)
-                {
-                    change.Width = pair.Value.Width;
-                }
+                change.WorldPosition = pair.Value.WorldPosition;
+                change.Direciton = pair.Value.Direciton;
+                change.UnitSpacing = pair.Value.UnitSpacing;
+                change.Width = pair.Value.Width;
                 change.MovementOrderType = pair.Value.MovementOrderType;
                 change.TargetFormation = pair.Value.TargetFormation;
                 change.TargetAgent = pair.Value.TargetAgent;
@@ -63,6 +52,8 @@ namespace RTSCamera.CommandSystem.Logic
                 change.FiringOrderType = pair.Value.FiringOrderType;
                 change.RidingOrderType = pair.Value.RidingOrderType;
                 change.ArrangementOrder = pair.Value.ArrangementOrder;
+                change.PreviewWidth = pair.Value.PreviewWidth;
+                change.PreviewDepth = pair.Value.PreviewDepth;
                 VirtualChanges[pair.Key] = change;
             }
         }
@@ -206,6 +197,17 @@ namespace RTSCamera.CommandSystem.Logic
                 change.AIControlOrderType = orderType;
                 VirtualChanges[formation] = change;
             }
+        }
+
+        public void SetPreviewShape(Formation formation, float width, float depth)
+        {
+            if (!VirtualChanges.TryGetValue(formation, out var change))
+            {
+                change = new FormationChange();
+            }
+            change.PreviewWidth = width;
+            change.PreviewDepth = depth;
+            VirtualChanges[formation] = change;
         }
 
         private static float TransformCustomWidthBetweenArrangementOrientations(

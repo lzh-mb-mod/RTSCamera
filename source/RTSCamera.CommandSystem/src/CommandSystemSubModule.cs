@@ -20,6 +20,7 @@ namespace RTSCamera.CommandSystem
 {
     public class CommandSystemSubModule : MBSubModuleBase
     {
+        public static readonly string ShortModuleId = "RTSCommand";
         public static readonly string ModuleId = "RTSCamera.CommandSystem";
         public static bool IsRealisticBattleModuleInstalled = true;
 
@@ -46,7 +47,7 @@ namespace RTSCamera.CommandSystem
 
         private void Initialize()
         {
-            if (!Initializer.Initialize(ModuleId))
+            if (!Initializer.Initialize(ShortModuleId))
                 return;
         }
 
@@ -96,6 +97,11 @@ namespace RTSCamera.CommandSystem
             _successPatch &= Patch_MissionOrderVM.Patch(_harmony);
             _successPatch &= Patch_MissionGauntletSingleplayerOrderUIHandler.Patch(_harmony);
 
+            // resizable square formation
+            _successPatch &= Patch_ArrangementOrder.Patch(_harmony);
+
+            // fix unit direction of square formation in the corner
+            _successPatch &= Patch_SquareFormation.Patch(_harmony);
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera Command System: patch failed"));

@@ -83,8 +83,10 @@
 - 更多功能，你可看下面的`详细信息`，或者按`L`键打开mod菜单。
 
 ## 如何安装
-
-1. 解压缩下载下来的压缩包，复制`RTSCamera`和`RTSCamera.CommandSystem`文件夹到砍二的`Modules`文件夹中。或者你可以使用Vortex来自动安装。
+* 解压下载的压缩包。将你下载的 `RTSCamera` 和 `RTSCamera.CommandSystem` 文件夹复制到 Bannerlord 的 `Modules` 文件夹下。
+* 解除 (GamePath)\Modules\RTSCamera\bin\Win64_Shipping_Client 和 (GamePath)\Modules\RTSCamera.CommandSystem\bin\Win64_Shipping_Client 下所有 dll 文件的锁定：
+  * 右键每个 dll 文件，点击“属性”，勾选“解除锁定”。
+  * 或者：进入 (GamePath)\Modules，点击右键，打开 Powershell，然后运行：gci -Recurse RTSCamera* | Unblock-File
 
 ## 详细信息
 

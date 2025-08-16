@@ -504,7 +504,8 @@ namespace RTSCamera.CommandSystem.Logic
                 LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(new List<Formation> { formation }));
             }
             CommandQueuePreview.IsPreviewOutdated = true;
-            Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.FormationColorSubLogic?.OnMovementOrderChanged(formation);
+            Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.OutlineColorSubLogic?.OnMovementOrderChanged(formation);
+            Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.GroundMarkerColorSubLogic?.OnMovementOrderChanged(formation);
 
             Utilities.Utility.UpdateActiveOrders();
         }

@@ -18,30 +18,42 @@
     <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="Charge" />
     <string id="RTSCameraCommandSystem_after_charge_behavior_hold" text="Hold" />
  
-    <string id="RTSCameraCommandSystem_selected_formation_highlight_mode" text="When to Highlight Selected Formation" />
-    <string id="RTSCameraCommandSystem_selected_formation_highlight_mode_hint" text="Selected formation will be highlighted with outline." />
+    <string id="RTSCameraCommandSystem_troop_highlight_character_mode" text="Troop Highlight (Character Mode)" />
+    <string id="RTSCameraCommandSystem_troop_highlight_character_mode_hint" text="Troop highlight style in character mode" />
+    <string id="RTSCameraCommandSystem_troop_highlight_option_no" text="No" />
+    <string id="RTSCameraCommandSystem_troop_highlight_option_outline" text="Outline" />
+    <string id="RTSCameraCommandSystem_troop_highlight_option_ground_marker" text="Ground Marker" />
+
+    <string id="RTSCameraCommandSystem_troop_highlight_rts_mode" text="Troop Highlight (RTS Mode)" />
+    <string id="RTSCameraCommandSystem_troop_highlight_rts_mode_hint" text="Troop highlight style in RTS mode" />
+
+    <string id="RTSCameraCommandSystem_movement_target_highlight_mode" text="When to Highlight Movement Target" />
+    <string id="RTSCameraCommandSystem_movement_target_highlight_mode_hint" text="Make Movement Target more visible." />
     <string id="RTSCameraCommandSystem_highlight_mode_never" text="Never" />
     <string id="RTSCameraCommandSystem_highlight_mode_free_camera_only" text="Free Camera Only" />
     <string id="RTSCameraCommandSystem_highlight_mode_night_or_free_camera" text="At Night Or Free Camera" />
     <string id="RTSCameraCommandSystem_highlight_mode_always" text="Always" />
 
-    <string id="RTSCameraCommandSystem_target_formation_highlight_mode" text="When to Highlight Target Formation" />
-    <string id="RTSCameraCommandSystem_target_formation_highlight_mode_hint" text="Target formation will be highlighted with outline." />
-
-    <string id="RTSCameraCommandSystem_movement_target_highlight_mode" text="When to Highlight Movement Target" />
-    <string id="RTSCameraCommandSystem_movement_target_highlight_mode_hint" text="Make Movement Target more visible." />
-
-    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode" text="When to Show Command Queue Flag" />
+    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode" text="When to Show Order Flag" />
     <string id="RTSCameraCommandSystem_command_queue_flag_show_mode_hint" text="Command targets in Command Queue will be marked using flags." />
 
-    <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode" text="When to Show Command Queue Arrow" />
+    <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode" text="When to Show Order Arrow" />
     <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode_hint" text="Command targets in Command Queue will be connected using arrows." />
+
+    <string id="RTSCameraCommandSystem_command_queue_formation_shape_show_mode" text="When to Show Formation Frame" />
+    <string id="RTSCameraCommandSystem_command_queue_formation_shape_show_mode_hint" text="Formation frame will be shown at movement target." />
 
     <string id="RTSCameraCommandSystem_formation_lock_condition" text="When to Lock Multiple Formations" />
     <string id="RTSCameraCommandSystem_formation_lock_condition_hint" text="Formations' relative positions and directions will remain unchanged." />
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_never" text="Never" />
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_pressed" text="When key is pressed" />
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed" text="When key is not pressed" />
+
+    <string id="RTSCameraCommandSystem_hollow_square_formation" text="Enable Hollow Square Formation" />
+    <string id="RTSCameraCommandSystem_hollow_square_formation_hint" text="Whether to enable hollow square formation for player." />
+
+    <string id="RTSCameraCommandSystem_square_formation_corner_Fix" text="Square Formation Corner Fix" />
+    <string id="RTSCameraCommandSystem_square_formation_corner_Fix_hint" text="When enabled, soldiers positioned at the corners of a square formation will face toward the diagonal direction of the formation, ensuring better defensive coverage and a more natural appearance." />
 
     <string id="RTSCameraCommandSystem_defensive_attack" text="focusing on enemy {TARGET_NAME}" />
 
@@ -55,7 +67,7 @@
     <string id="RTSCameraCommandSystem_command_queue" text="Command Queue" />
     <string id="RTSCameraCommandSystem_command_queue_hint" text="Add command to queue. Troops will execute commands in queue one by one." />
     <string id="RTSCameraCommandSystem_command_keep_formation_width" text="Keep formation width" />
-    <string id="RTSCameraCommandSystem_keep_formation_width_hint" text="Hold to keep formation width while dragging formation." />
+    <string id="RTSCameraCommandSystem_keep_formation_width_hint" text="Hold to keep formation width while dragging formation; Select more formations." />
 
     <string id="RTSCameraCommandSystem_tactic_level_required" text="You tactic level should be at least {level}" />
 

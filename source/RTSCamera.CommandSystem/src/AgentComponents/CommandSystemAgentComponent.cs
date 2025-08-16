@@ -1,23 +1,235 @@
 ﻿using RTSCamera.CommandSystem.QuerySystem;
+using RTSCameraAgentComponent;
+using System;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.AgentComponents
 {
+    public struct Highlight
+    {
+        public Highlight(uint? color, bool alwaysVisible)
+        {
+            Color = color;
+            AlwaysVisible = alwaysVisible;
+        }
+        public uint? Color;
+        public bool AlwaysVisible;
+    }
     public class CommandSystemAgentComponent : AgentComponent
     {
+        private readonly uint InvisibleColor = 0x00000000; // Transparent color for invisible contour
+        private readonly Highlight[] _colors = new Highlight[(int)ColorLevel.NumberOfLevel];
+        private int _currentLevel = -1;
+
+        private uint? CurrentColor => _currentLevel < 0 ? null : _colors[_currentLevel].Color;
+        private bool CurrentAlwaysVisible => _currentLevel < 0 || _colors[_currentLevel].AlwaysVisible;
+
+        private bool _shouldUpdateColor = false;
+
         public float DistanceSquaredToTargetPosition = 0;
         private Timer _cachedDistanceUpdateTimer;
+        private MetaMesh _mesh;
         public CommandSystemAgentComponent(Agent agent) : base(agent)
         {
+            for (int i = 0; i < _colors.Length; ++i)
+            {
+                _colors[i] = new Highlight(null, false);
+            }
             _cachedDistanceUpdateTimer = new Timer(agent.Mission.CurrentTime, 0.2f + MBRandom.RandomFloat * 0.1f);
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            if (Agent.IsMount)
+            {
+                return;
+            }
+
+            _mesh = MetaMesh.GetCopy("banpian");
+            ClearColor();
+            UpdateMeshFrame(Agent.HasMount);
+            Agent.AgentVisuals.GetEntity().AddMultiMesh(_mesh);
+        }
+
+        public void SetColor(int level, uint? color, bool alwaysVisible, bool updateInstantly)
+        {
+            if (SetColorWithoutUpdate(level, color, alwaysVisible))
+            {
+                _currentLevel = color.HasValue ? level : EffectiveLevel(level - 1);
+                if (updateInstantly)
+                {
+                    _shouldUpdateColor = false;
+                    SetColor();
+                }
+                else
+                {
+                    _shouldUpdateColor = true;
+                }
+            }
+        }
+
+        private bool SetColorWithoutUpdate(int level, uint? color, bool alwaysVisible)
+        {
+            if (level < 0 || level >= _colors.Length)
+                return false;
+            if (_colors[level].Color == color)
+                return false;
+            _colors[level].Color = color;
+            _colors[level].AlwaysVisible = alwaysVisible;
+            return _currentLevel <= level; // needs update.
+        }
+
+        private void UpdateColor()
+        {
+            _currentLevel = EffectiveLevel();
+            _shouldUpdateColor = true;
+        }
+
+        public void ClearColor()
+        {
+            try
+            {
+                for (int i = 0; i < _colors.Length; ++i)
+                {
+                    _colors[i].Color = null;
+                }
+
+                _mesh.SetFactor1(InvisibleColor);
+                _mesh.SetContourColor(InvisibleColor);
+                _mesh.SetContourState(false);
+            }
+            catch (Exception e)
+            {
+                InformationManager.DisplayMessage(new InformationMessage(e.ToString()));
+            }
+        }
+
+        public void ClearTargetOrSelectedFormationColor()
+        {
+            bool needUpdate = SetColorWithoutUpdate((int)ColorLevel.TargetFormation, null, true);
+            needUpdate |= SetColorWithoutUpdate((int)ColorLevel.SelectedFormation, null, true);
+            if (needUpdate)
+                UpdateColor();
+        }
+
+        public void ClearFormationColor()
+        {
+            bool needUpdate = SetColorWithoutUpdate((int)ColorLevel.TargetFormation, null, true);
+            needUpdate |= SetColorWithoutUpdate((int)ColorLevel.SelectedFormation, null, true);
+            needUpdate |= SetColorWithoutUpdate((int)ColorLevel.MouseOverFormation, null, true);
+            if (needUpdate)
+                UpdateColor();
+        }
+
+        public override void OnMount(Agent mount)
+        {
+            base.OnMount(mount);
+
+            try
+            {
+                UpdateMeshFrame(true);
+            }
+            catch (Exception e)
+            {
+                InformationManager.DisplayMessage(new InformationMessage(e.ToString()));
+            }
+        }
+
+        public override void OnDismount(Agent mount)
+        {
+            base.OnDismount(mount);
+
+            try
+            {
+                UpdateMeshFrame(false);
+            }
+            catch (Exception e)
+            {
+                InformationManager.DisplayMessage(new InformationMessage(e.ToString()));
+            }
+        }
+
+        public void TryUpdateColor()
+        {
+            if (_shouldUpdateColor)
+            {
+                _shouldUpdateColor = false;
+                SetColor();
+            }
+        }
+
+        private int EffectiveLevel(int maxLevel = (int)ColorLevel.NumberOfLevel - 1)
+        {
+            for (int i = maxLevel; i > -1; --i)
+            {
+                if (_colors[i].Color.HasValue)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        private void SetColor()
+        {
+            try
+            {
+                var color = CurrentColor.HasValue ? CurrentColor.Value : InvisibleColor;
+                _mesh.SetFactor1(color);
+                _mesh.SetContourColor(color);
+                _mesh.SetContourState(CurrentAlwaysVisible);
+            }
+            catch (Exception e)
+            {
+                InformationManager.DisplayMessage(new InformationMessage(e.ToString()));
+            }
+        }
+
+        public override void OnAgentRemoved()
+        {
+            base.OnAgentRemoved();
+
+            if (_mesh == null)
+            {
+                return;
+            }
+            ClearColor();
+        }
+
+        public void SetContourState(bool alwaysVisible)
+        {
+            if (alwaysVisible)
+            {
+                _mesh.SetContourState(true);
+            }
+            else
+            {
+                _mesh.SetContourState(false);
+            }
+        }
+
+        private void UpdateMeshFrame(bool hasMount)
+        {
+            var frame = MatrixFrame.Identity;
+            frame.origin = new Vec3(0f, 0.3f, 0.2f);
+            frame.rotation = Mat3.CreateMat3WithForward(-Vec3.Forward);
+            if (hasMount)
+            {
+                frame.Scale(new Vec3(1.8f, 1.8f, 1f));
+            }
+            else
+            {
+                frame.Scale(new Vec3(1f, 1f, 1f));
+            }
+            _mesh.Frame = frame;
         }
 
         public override void OnTickAsAI(float dt)
         {
             base.OnTickAsAI(dt);
-
             if (Agent.Formation == null)
             {
                 return;

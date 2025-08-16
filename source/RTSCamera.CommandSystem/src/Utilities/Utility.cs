@@ -420,16 +420,13 @@ namespace RTSCamera.CommandSystem.Utilities
             {
                 switch (formationChange.MovementOrderType)
                 {
-                    case OrderType.Advance:
-                    case OrderType.FallBack:
-                        {
-                            return Patch_OrderController.GetAdvanceOrFallbackOrderDirection(formation, formationChange.TargetFormation);
-                        }
                     case OrderType.FollowEntity:
                         {
                             var waitEntity = (formationChange.TargetEntity as UsableMachine).WaitEntity;
                             return Patch_OrderController.GetFollowEntityDirection(formation, waitEntity);
                         }
+                    case OrderType.Advance:
+                    case OrderType.FallBack:
                     case OrderType.AttackEntity:
                     case OrderType.FollowMe:
                         {
@@ -646,6 +643,10 @@ namespace RTSCamera.CommandSystem.Utilities
         }
         public static float GetMaximumWidthOfSquareFormation(Formation formation)
         {
+            if (CommandSystemConfig.Get().HollowSquare && ShouldEnablePlayerOrderControllerPatchForFormation(formation))
+            {
+                return GetSideWidthFromUnitCountOfSquareFormation(GetUnitsPerSideFromRankCountOfSquareFormation(formation, 1), GetFormationInterval(formation, GetUnitSpacingOf(ArrangementOrderEnum.Square)), formation.UnitDiameter);
+            }
             return GetSideWidthFromUnitCountOfSquareFormation(GetUnitsPerSideFromRankCountOfSquareFormation(formation, GetMaximumRankCountOfSquareFormation(GetUnitCountWithOverride(formation), out int _)), formation.MaximumInterval, formation.UnitDiameter);
         }
 
@@ -656,7 +657,7 @@ namespace RTSCamera.CommandSystem.Utilities
             double f = (double)countWithOverride / (4.0 * (double)rankCount) + (double)rankCount;
             int sideFromRankCount = MathF.Ceiling((float)f);
             int num = MathF.Round((float)f);
-            if (num < sideFromRankCount && num * num == countWithOverride)
+            if (num < sideFromRankCount && (num * num == countWithOverride || rankCount == 1))
                 sideFromRankCount = num;
             if (sideFromRankCount == 0)
                 sideFromRankCount = 1;
@@ -679,6 +680,38 @@ namespace RTSCamera.CommandSystem.Utilities
             float unitDiameter)
         {
             return sideUnitCount > 0 ? (float)(sideUnitCount - 1) * (interval + unitDiameter) + unitDiameter : 0.0f;
+        }
+
+        public static float ConvertFromWidthToFlankWidthOfSquareFormation(
+            Formation formation,
+            int unitSpacing,
+            float width)
+        {
+            // given that:
+            // flankwidth = (filecount - 1) * (interval + unitdiameter) + unitdiameter
+            // width = (ceiling(filecount / 4)) * (interval + unitdiameter) + unitdiameter
+            // we have:
+            // ceiling(filecount / 4) = (width - unitdiameter) / (interval + unitdiameter)
+            // filecount = 4 * (width - unitdiameter) / (interval + unitdiameter)
+            // flankwidth = (4 * (width - unitdiameter) / (interval + unitdiameter) - 1) * (interval + unitdiameter) + unitdiameter
+            // flankwidth = 4 * (width - unitdiameter) - interval
+            return (width - formation.UnitDiameter) * 4f + GetFormationInterval(formation, unitSpacing);
+        }
+
+        public static float ConvertFromFlankWidthToWidthOfSquareFormation(
+            Formation formation,
+            int unitSpacing,
+            float flankWidth)
+        {
+            // given that:
+            // flankwidth = (filecount - 1) * (interval + unitdiameter) + unitdiameter
+            // width = (ceiling(filecount / 4)) * (interval + unitdiameter) + unitdiameter
+            // we have:
+            // ceiling(filecount / 4) = (width - unitdiameter) / (interval + unitdiameter)
+            // filecount = 4 * (width - unitdiameter) / (interval + unitdiameter)
+            // flankwidth = (4 * (width - unitdiameter) / (interval + unitdiameter) - 1) * (interval + unitdiameter) + unitdiameter
+            // flankwidth = 4 * (width - unitdiameter) - interval
+            return (flankWidth + GetFormationInterval(formation, unitSpacing)) / 4f + formation.UnitDiameter;
         }
 
         public static int GetFileCountFromWidth(Formation formation, float flankWidth, int unitSpacing)
@@ -706,6 +739,19 @@ namespace RTSCamera.CommandSystem.Utilities
                 setTroopActiveOrders.Invoke(missionOrderVM.TroopController, new object[] { orderTroopItemVm });
             var setActiveOrders = typeof(MissionOrderVM).GetMethod("SetActiveOrders", BindingFlags.Instance | BindingFlags.NonPublic);
             setActiveOrders.Invoke(missionOrderVM, new object[] { });
+        }
+
+        public static bool ShouldEnablePlayerOrderControllerPatchForFormation(IEnumerable<Formation> selectedFormations)
+        {
+            var team = selectedFormations.FirstOrDefault()?.Team;
+            return selectedFormations.All(f => !f.IsAIControlled) && team != null && team == Mission.Current.PlayerTeam && (team.IsPlayerGeneral || team.IsPlayerSergeant && selectedFormations.All(f => f.PlayerOwner == Agent.Main));
+        }
+
+
+        public static bool ShouldEnablePlayerOrderControllerPatchForFormation(Formation formation)
+        {
+            var team = formation?.Team;
+            return !formation.IsAIControlled && team != null && team == Mission.Current.PlayerTeam && (team.IsPlayerGeneral || team.IsPlayerSergeant && formation.PlayerOwner == Agent.Main);
         }
 
     }

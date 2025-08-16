@@ -49,6 +49,13 @@ namespace RTSCamera.CommandSystem.Patch
                         BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
                         nameof(Prefix_Tick), BindingFlags.Static | BindingFlags.Public)));
+
+                // resizable square formation
+                harmony.Patch(
+                    typeof(Formation).GetMethod("ReapplyFormOrder",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
+                        nameof(Prefix_ReapplyFormOrder), BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {
@@ -115,6 +122,19 @@ namespace RTSCamera.CommandSystem.Patch
                 return true;
             }
             CommandQueueLogic.UpdateFormation(__instance);
+            return true;
+        }
+
+        public static bool Prefix_ReapplyFormOrder(Formation __instance)
+        {
+            FormOrder formOrder = __instance.FormOrder;
+            if (__instance.FormOrder.OrderEnum == FormOrder.FormOrderEnum.Custom &&
+                __instance.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Circle ||
+                __instance.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Square)
+            {
+                __instance.FormOrder = formOrder;
+                return false;
+            }
             return true;
         }
     }

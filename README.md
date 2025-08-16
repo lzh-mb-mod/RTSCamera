@@ -80,7 +80,10 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 - For more features, you can read `Details` below or press `L` to open mod menu.
 
 ## How to Install
-Unzip the downloaded zip file. Copy `RTSCamera` and `RTSCamera.CommandSystem` folder you downloaded into Bannerlord `Modules` folder. Or use Vortex to install it automatically.
+* Unzip the downloaded zip file. Copy `RTSCamera` and `RTSCamera.CommandSystem` folder you downloaded into Bannerlord `Modules` folder.
+* Unblock all the dlls at (GamePath)\Modules\RTSCamera\bin\Win64_Shipping_Client and (GamePath)\Modules\RTSCamera.CommandSystem\bin\Win64_Shipping_Client:
+  * Right click on each dll, click Properties and check "Unblock".
+  * Or: go to (GamePath)\Modules, right click, open Powershell, and then run:  gci -Recurse RTSCamera* | Unblock-File
 
 ## Details
 
@@ -200,6 +203,10 @@ Unzip the downloaded zip file. Copy `RTSCamera` and `RTSCamera.CommandSystem` fo
 - Your formation targeted by the enemy formation will be highlighted with dark blue outline when you open command panel in free camera mode.
 
 - Movement orders will be shown under troop cards.
+
+- Player can use hollow square formation. Not enabled for AI.
+
+- Fix direction of units on the corner of square formation.
 
 ## Hotkeys
 You can config hotkeys by pressing `L` to open menu, and click `Config Key`.

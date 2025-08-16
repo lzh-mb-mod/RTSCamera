@@ -9,11 +9,9 @@ using RTSCamera.Logic.SubLogic;
 using System;
 using System.Linq;
 using System.Reflection;
-using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
-using TaleWorlds.Engine.Screens;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -569,7 +567,10 @@ namespace RTSCamera.View
                 }
                 else
                 {
-                    //if (!MissionScreen.SceneLayer.Input.IsControlDown())
+                    bool isSpeedKeyDown = RTSCameraGameKeyCategory.GetKey(GameKeyEnum.IncreaseCameraSpeed).IsKeyDownInOrder(MissionScreen.InputManager) ||
+                        RTSCameraGameKeyCategory.GetKey(GameKeyEnum.DecreaseCameraSpeed).IsKeyDownInOrder(MissionScreen.InputManager) ||
+                        RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ResetCameraSpeed).IsKeyDownInOrder(MissionScreen.InputManager);
+                    if (!isSpeedKeyDown)
                         _cameraHeightToAdd -= (mouseScroll / 2000.0f + controllerHeightInput / 100f) * verticalLimit;
                     // hold middle button and move mouse vertically to adjust height
                     if (MissionScreen.SceneLayer.Input.IsHotKeyDown("DeploymentCameraIsActive"))

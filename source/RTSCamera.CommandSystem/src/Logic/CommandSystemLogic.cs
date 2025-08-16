@@ -3,6 +3,7 @@ using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
+using RTSCameraAgentComponent;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
@@ -10,13 +11,88 @@ namespace RTSCamera.CommandSystem.Logic
 {
     public class CommandSystemLogic : MissionLogic
     {
-        public readonly FormationColorSubLogic FormationColorSubLogic = new FormationColorSubLogic();
+        private CommandSystemConfig _config = CommandSystemConfig.Get();
+        public readonly FormationColorSubLogicV2 OutlineColorSubLogic;
+        public readonly FormationColorSubLogicV2 GroundMarkerColorSubLogic;
+
+        public CommandSystemLogic()
+        {
+            OutlineColorSubLogic = new FormationColorSubLogicV2(
+                highlightEnabledInCharacterMode: () =>
+                {
+                    return _config.TroopHighlightStyleInCharacterMode == TroopHighlightStyle.Outline;
+                },
+                highlightEnabledInRtsMode: () =>
+                {
+                    return _config.TroopHighlightStyleInRTSMode == TroopHighlightStyle.Outline;
+                },
+                mouseOverEnabled: () =>
+                {
+                    return _config.IsMouseOverEnabled();
+                },
+                setAgentColor: (Agent agent,int level, uint? color, bool alwaysVisible, bool updateInstantly) =>
+                {
+                    agent.GetComponent<RTSCameraComponent>()?.SetContourColor((int)level, color, alwaysVisible, updateInstantly);
+                },
+                clearAgentHighlight: (Agent agent) =>
+                {
+                    agent.GetComponent<RTSCameraComponent>()?.ClearFormationColor();
+                },
+                updateAgentColor: (Agent agent) =>
+                {
+                    agent.GetComponent<RTSCameraComponent>()?.UpdateContour();
+                },
+                clearTargetOrSelectedFormationColor: (Formation formation) =>
+                {
+                    formation.ApplyActionOnEachUnit(agent =>
+                        agent.GetComponent<RTSCameraComponent>()?.ClearTargetOrSelectedFormationColor());
+                },
+                updateFormationColor: (Formation formation) =>
+                {
+                    formation.ApplyActionOnEachUnit(a => a.GetComponent<RTSCameraComponent>()?.UpdateContour());
+                });
+            GroundMarkerColorSubLogic = new FormationColorSubLogicV2(
+                highlightEnabledInCharacterMode: () =>
+                {
+                    return _config.TroopHighlightStyleInCharacterMode == TroopHighlightStyle.GroundMarker;
+                },
+                highlightEnabledInRtsMode: () =>
+                {
+                    return _config.TroopHighlightStyleInRTSMode == TroopHighlightStyle.GroundMarker;
+                },
+                mouseOverEnabled: () =>
+                {
+                    return _config.IsMouseOverEnabled();
+                },
+                setAgentColor: (Agent agent, int level, uint? color, bool alwaysVisible, bool updateInstantly) =>
+                {
+                    agent.GetComponent<CommandSystemAgentComponent>()?.SetColor((int)level, color, alwaysVisible, updateInstantly);
+                },
+                clearAgentHighlight: (Agent agent) =>
+                {
+                    agent.GetComponent<CommandSystemAgentComponent>()?.ClearFormationColor();
+                },
+                updateAgentColor: (Agent agent) =>
+                {
+                    agent.GetComponent<CommandSystemAgentComponent>()?.TryUpdateColor();
+                },
+                clearTargetOrSelectedFormationColor: (Formation formation) =>
+                {
+                    formation.ApplyActionOnEachUnit(agent =>
+                        agent.GetComponent<CommandSystemAgentComponent>()?.ClearTargetOrSelectedFormationColor());
+                },
+                updateFormationColor: (Formation formation) =>
+                {
+                    formation.ApplyActionOnEachUnit(a => a.GetComponent<CommandSystemAgentComponent>()?.TryUpdateColor());
+                });
+        }
 
         public override void OnBehaviorInitialize()
         {
             base.OnBehaviorInitialize();
 
-            FormationColorSubLogic.OnBehaviourInitialize();
+            OutlineColorSubLogic.OnBehaviourInitialize();
+            GroundMarkerColorSubLogic.OnBehaviourInitialize();
             Patch_OrderTroopPlacer.OnBehaviorInitialize();
             Patch_OrderController.OnBehaviorInitialize();
             CommandQueueLogic.OnBehaviorInitialize();
@@ -33,7 +109,8 @@ namespace RTSCamera.CommandSystem.Logic
 
         public override void OnRemoveBehavior()
         {
-            FormationColorSubLogic.OnRemoveBehaviour();
+            OutlineColorSubLogic.OnRemoveBehaviour();
+            GroundMarkerColorSubLogic.OnRemoveBehaviour();
             Patch_OrderTroopPlacer.OnRemoveBehavior();
             Patch_OrderController.OnRemoveBehavior();
             CommandQueueLogic.OnRemoveBehavior();
@@ -58,12 +135,14 @@ namespace RTSCamera.CommandSystem.Logic
         {
             base.OnPreDisplayMissionTick(dt);
 
-            FormationColorSubLogic.OnPreDisplayMissionTick(dt);
+            OutlineColorSubLogic.OnPreDisplayMissionTick(dt);
+            GroundMarkerColorSubLogic.OnPreDisplayMissionTick(dt);
         }
 
         public override void AfterAddTeam(Team team)
         {
-            FormationColorSubLogic.AfterAddTeam(team);
+            OutlineColorSubLogic.AfterAddTeam(team);
+            GroundMarkerColorSubLogic.AfterAddTeam(team);
         }
 
         public override void OnAgentCreated(Agent agent)
@@ -75,14 +154,16 @@ namespace RTSCamera.CommandSystem.Logic
 
         public override void OnAgentBuild(Agent agent, Banner banner)
         {
-            FormationColorSubLogic.OnAgentBuild(agent, banner);
+            OutlineColorSubLogic.OnAgentBuild(agent, banner);
+            GroundMarkerColorSubLogic.OnAgentBuild(agent, banner);
         }
 
         public override void OnAgentFleeing(Agent affectedAgent)
         {
             base.OnAgentFleeing(affectedAgent);
 
-            FormationColorSubLogic.OnAgentFleeing(affectedAgent);
+            OutlineColorSubLogic.OnAgentFleeing(affectedAgent);
+            GroundMarkerColorSubLogic.OnAgentFleeing(affectedAgent);
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public static class CommandSystemConfigExtension
     {
-        public static bool ShouldHighlightWithOutline(this CommandSystemConfig config)
+        public static bool IsMouseOverEnabled(this CommandSystemConfig config)
         {
             return config.ClickToSelectFormation || config.AttackSpecificFormation;
         }

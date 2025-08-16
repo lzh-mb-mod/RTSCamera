@@ -37,6 +37,14 @@ namespace RTSCamera.CommandSystem.Config
         Count
     }
 
+    public enum TroopHighlightStyle
+    {
+        No,
+        Outline,
+        GroundMarker,
+        Count
+    }
+
     public class CommandSystemConfig : MissionConfigBase<CommandSystemConfig>
     {
         protected override XmlSerializer Serializer => new XmlSerializer(typeof(CommandSystemConfig));
@@ -50,20 +58,11 @@ namespace RTSCamera.CommandSystem.Config
 
         public BehaviorAfterCharge BehaviorAfterCharge = !CommandSystemSubModule.IsRealisticBattleModuleInstalled ? BehaviorAfterCharge.Hold : BehaviorAfterCharge.Charge;
 
-        public ShowMode SelectedFormationHighlightMode = ShowMode.FreeCameraOnly;
+        public TroopHighlightStyle TroopHighlightStyleInCharacterMode = TroopHighlightStyle.GroundMarker;
 
-        // deprecated. use SelectedFormationHighlightMode instead.
-        public bool HighlightSelectedFormation = true;
+        public TroopHighlightStyle TroopHighlightStyleInRTSMode = TroopHighlightStyle.GroundMarker;
 
-        public ShowMode TargetFormationHighlightMode = ShowMode.FreeCameraOnly;
-
-        // deprecated. use TargetFormationHighlightMode instead.
-        public bool HighlightTargetFormation = true;
-
-        // deprecated. use SelectedFormationHighlightMode and TargetFormationHighlightMode instead.
-        public bool HighlightOnRtsViewOnly = true;
-
-        public MovementTargetHighlightMode MovementTargetHighlightMode = MovementTargetHighlightMode.NightOrFreeCamera;
+        public MovementTargetHighlightMode MovementTargetHighlightMode = MovementTargetHighlightMode.Always;
 
         // deprecated. use MovementTargetHighlightMode instead.
         public bool MoreVisibleMovementTarget = true;
@@ -71,13 +70,19 @@ namespace RTSCamera.CommandSystem.Config
         // deprecated. use MovementTargetHighlightMode instead.
         public bool MovementTargetMoreVisibleOnRtsViewOnly = true;
 
-        public ShowMode CommandQueueFlagShowMode = ShowMode.Always;
+        public ShowMode CommandQueueFlagShowMode = ShowMode.FreeCameraOnly;
 
         public ShowMode CommandQueueArrowShowMode = ShowMode.FreeCameraOnly;
+
+        public ShowMode CommandQueueFormationShapeShowMode = ShowMode.Always;
 
         public FormationLockCondition FormationLockCondition = FormationLockCondition.WhenNotPressed;
 
         public bool HasHintDisplayed = false;
+
+        public bool HollowSquare = true;
+
+        public bool SquareFormationCornerFix = true;
 
         protected override void CopyFrom(CommandSystemConfig other)
         {
@@ -85,18 +90,18 @@ namespace RTSCamera.CommandSystem.Config
             ClickToSelectFormation = other.ClickToSelectFormation;
             AttackSpecificFormation = other.AttackSpecificFormation;
             BehaviorAfterCharge = other.BehaviorAfterCharge;
-            SelectedFormationHighlightMode = other.SelectedFormationHighlightMode;
-            HighlightSelectedFormation = other.HighlightSelectedFormation;
-            TargetFormationHighlightMode = other.TargetFormationHighlightMode;
-            HighlightTargetFormation = other.HighlightTargetFormation;
-            HighlightOnRtsViewOnly = other.HighlightOnRtsViewOnly;
+            TroopHighlightStyleInCharacterMode = other.TroopHighlightStyleInCharacterMode;
+            TroopHighlightStyleInRTSMode = other.TroopHighlightStyleInRTSMode;
             MovementTargetHighlightMode = other.MovementTargetHighlightMode;
             MoreVisibleMovementTarget = other.MoreVisibleMovementTarget;
             MovementTargetMoreVisibleOnRtsViewOnly = other.MovementTargetMoreVisibleOnRtsViewOnly;
             CommandQueueFlagShowMode = other.CommandQueueFlagShowMode;
             CommandQueueArrowShowMode = other.CommandQueueArrowShowMode;
+            CommandQueueFormationShapeShowMode = other.CommandQueueFormationShapeShowMode;
             FormationLockCondition = other.FormationLockCondition;
             HasHintDisplayed = other.HasHintDisplayed;
+            HollowSquare = other.HollowSquare;
+            SquareFormationCornerFix = other.SquareFormationCornerFix;
         }
 
         public static void OnMenuClosed()
@@ -113,36 +118,6 @@ namespace RTSCamera.CommandSystem.Config
                     Serialize();
                     goto case "1.1";
                 case "1.0":
-                    if (HighlightSelectedFormation)
-                    {
-                        if (HighlightOnRtsViewOnly)
-                        {
-                            SelectedFormationHighlightMode = ShowMode.FreeCameraOnly;
-                        }
-                        else
-                        {
-                            SelectedFormationHighlightMode = ShowMode.Always;
-                        }
-                    }
-                    else
-                    {
-                        SelectedFormationHighlightMode = ShowMode.Never;
-                    }
-                    if (HighlightTargetFormation)
-                    {
-                        if (HighlightOnRtsViewOnly)
-                        {
-                            TargetFormationHighlightMode = ShowMode.FreeCameraOnly;
-                        }
-                        else
-                        {
-                            TargetFormationHighlightMode = ShowMode.Always;
-                        }
-                    }
-                    else
-                    {
-                        TargetFormationHighlightMode = ShowMode.Never;
-                    }
                     if (MoreVisibleMovementTarget)
                     {
                         if (MovementTargetMoreVisibleOnRtsViewOnly)
