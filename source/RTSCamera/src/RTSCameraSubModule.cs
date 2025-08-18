@@ -177,7 +177,7 @@ namespace RTSCamera
         {
             if (gameStarter is CampaignGameStarter campaignGameStarter)
             {
-                //campaignGameStarter.AddBehavior(new WatchBattleBehavior());
+                campaignGameStarter.AddBehavior(new WatchBattleBehavior());
                 campaignGameStarter.AddBehavior(new RTSCameraSkillBehavior());
             }
         }

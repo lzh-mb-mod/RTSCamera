@@ -1,24 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <!-- <TargetFrameworks>net6.0;net472</TargetFrameworks> -->
-    <TargetFramework>net472</TargetFramework>
+     <TargetFrameworks>net6.0;net472</TargetFrameworks> 
+    <!--<TargetFramework>net472</TargetFramework>-->
     <ProcessorArchitecture>amd64</ProcessorArchitecture>
     <LangVersion>8</LangVersion>
-    <BuildForWindows>false</BuildForWindows>
-    <BuildForWindowsStore>false</BuildForWindowsStore>
+    <!--<BuildForWindows>false</BuildForWindows>
+    <BuildForWindowsStore>false</BuildForWindowsStore>-->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   
-  <PropertyGroup Condition="$(TargetFramework) == 'net472'">
+  <!--<PropertyGroup Condition="$(TargetFramework) == 'net472'">
     <BuildForWindows>true</BuildForWindows>
-  </PropertyGroup>
+  </PropertyGroup>-->
   <PropertyGroup Condition="$(TargetFramework) == 'net6.0'">
-    <BuildForWindowsStore>true</BuildForWindowsStore>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <!--<BuildForWindowsStore>true</BuildForWindowsStore>
+	<EnableWindowsTargeting>true</EnableWindowsTargeting>-->
+	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <Import Project="$(MSBuildProjectDirectory)\*.props" />
@@ -148,7 +148,7 @@
     <Exec Command="rmdir &quot;$(ModulePackagePath)&quot; /s /q" />
   </Target>
   
-  <!-- <Target Name="CopyHarmonyCompileAssemblies" AfterTargets="ResolveAssemblyReferences"
+   <Target Name="CopyHarmonyCompileAssemblies" AfterTargets="ResolveAssemblyReferences"
           Condition="'$(TargetFramework)' == 'net6.0'">
     <ItemGroup>
       <_HarmonyAssemblies Include="@(ReferencePath)" Condition="'%(FileName)' == '0Harmony'" />
@@ -159,7 +159,7 @@
     <Copy SourceFiles="@(_HarmonyAssemblies)"
           DestinationFolder="$(TargetDir)"
           SkipUnchangedFiles="true" />
-  </Target> -->
+  </Target> 
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
@@ -171,7 +171,9 @@
     <Exec Command="xcopy &quot;$(TargetDir)System.Text.Json.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" Condition="'$(TargetFramework)' == 'net6.0'"/>
     <Exec Command="xcopy &quot;$(TargetDir)System.Numerics.Vectors.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" Condition="'$(TargetFramework)' == 'net472'"/> -->
     <Exec Command="xcopy &quot;$(ProjectDir)Modules\.&quot; &quot;$(PackagePath)&quot; /E /C /I /Y /F" />
-    <Exec Command="xcopy &quot;$(ModulePackagePath).&quot; &quot;$(GamePath)Modules\$(ModuleAlias) &quot; /E /C /I /Y /F" />
   </Target>
 
+  <Target Name="DeployModFiles" AfterTargets="PostBuild" Condition="'$(TargetFramework)' == 'net472'">
+    <Exec Command="xcopy &quot;$(ModulePackagePath).&quot; &quot;$(GamePath)Modules\$(ModuleAlias)&quot; /E /C /I /Y /F" />
+  </Target>
 </Project>

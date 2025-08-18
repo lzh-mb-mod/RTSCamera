@@ -93,7 +93,7 @@ namespace RTSCamera.CommandSystem.View
             var rightMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (rightVec2 * (width / 2 + rightBorder) + direciton * (-depth + frontBorder - backBorder) / 2).ToVec3(), direciton, depth + frontBorder + backBorder);
             RightLine.SetFrame(ref rightMatrix);
             RightLine.SetVisibilityExcludeParents(true);
-            float shortLength = MathF.Min(MathF.Clamp(width * 0.1f, 1f, 10f), depth);
+            float shortLength = MathF.Min(MathF.Clamp(width * 0.1f, 1f, 10f), depth * 0.8f);
             var leftBackmatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (direciton * (-depth - backBorder) + rightVec2 * ((shortLength - width) / 2 - leftBorder)).ToVec3(), rightVec2, shortLength);
             LeftBackLine.SetFrame(ref leftBackmatrix);
             LeftBackLine.SetVisibilityExcludeParents(true);

@@ -738,7 +738,7 @@ namespace RTSCamera.CommandSystem.Patch
                 {
                     shouldFormationBeStackedWithPreviousFormation[currentFormation] = true;
                     currentStack.MinimumWidth = MathF.Max(currentStack.MinimumWidth, GetFormationVirtualMinimumWidth(currentFormation));
-                    currentStack.MaximumWidth = MathF.Min(currentStack.MaximumWidth, GetFormationVirtualMaximumWidth(currentFormation));
+                    currentStack.MaximumWidth = MathF.Max(currentStack.MaximumWidth, GetFormationVirtualMaximumWidth(currentFormation));
                     currentStack.LeftMost = MathF.Min(currentStack.LeftMost, GetLeftFlankPosition(currentFormation, currentFormationOrderPosition).DotProduct(oldDragVec));
                     currentStack.RightMost = MathF.Max(currentStack.RightMost, GetRightFlankPosition(currentFormation, currentFormationOrderPosition).DotProduct(oldDragVec));
                     currentStack.Formations.Add(currentFormation);
@@ -798,7 +798,7 @@ namespace RTSCamera.CommandSystem.Patch
             foreach (var stack in stacksRecord)
             {
                 var formationsInStack = stack.Formations;
-                var newStackWidth = MathF.Min(isWidthApproximatelySame ? stack.Width : stack.Width * availableWidthFromDragging / oldOverallWidth, stack.MaximumWidth);
+                var newStackWidth = MathF.Min(isWidthApproximatelySame ? stack.Width : (stack.Width * availableWidthFromDragging / oldOverallWidth), stack.MaximumWidth);
                 // sort from front to rear
                 formationsInStack.Sort((f1, f2) =>
                 {
@@ -842,7 +842,7 @@ namespace RTSCamera.CommandSystem.Patch
                     if (isSimulatingFormationChanges)
                     {
                         LivePreviewFormationChanges.UpdateFormationChange(formation, null, null, newUnitSpacing, null);
-                            LivePreviewFormationChanges.SetPreviewShape(formation, newFormationWidth, simulatedFormationDepth);
+                        LivePreviewFormationChanges.SetPreviewShape(formation, newFormationWidth, simulatedFormationDepth);
                     }
                     startPoint += simulatedFormationDepth + GetGapBetweenLinesOfFormation(formation, newUnitSpacing);
                 }

@@ -1,5 +1,6 @@
 ﻿using MissionLibrary.Event;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using TaleWorlds.MountAndBlade;
@@ -11,6 +12,7 @@ namespace RTSCamera.Logic.SubLogic
         private readonly RTSCameraLogic _logic;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private bool _slowMotionRequestAdded = false;
+        private bool _slowMotionByRTSView = false;
 
         public Mission Mission => _logic.Mission;
 
@@ -38,13 +40,19 @@ namespace RTSCamera.Logic.SubLogic
             {
                 RemoveSlowMotionRequest();
             }
+            if (_slowMotionByRTSView)
+            {
+                SetSlowMotionMode(false);
+                _slowMotionByRTSView = false;
+            }
         }
 
         public  void OnToggleFreeCamera(bool freeCamera)
         {
-            if (_config.SlowMotionOnRtsView)
+            if (_config.SlowMotionOnRtsView && !WatchBattleBehavior.WatchMode)
             {
                 SetSlowMotionMode(freeCamera);
+                _slowMotionByRTSView = freeCamera;
             }
         }
 

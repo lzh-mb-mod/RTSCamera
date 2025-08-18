@@ -87,7 +87,7 @@ namespace RTSCamera.Config
             ConfigVersion = BinaryVersion.ToString(2);
         }
 
-        public string ConfigVersion { get; set; } = BinaryVersion.ToString();
+        public string ConfigVersion = BinaryVersion.ToString();
 
         public DefaultToFreeCamera DefaultToFreeCamera = DefaultToFreeCamera.DeploymentStage;
 

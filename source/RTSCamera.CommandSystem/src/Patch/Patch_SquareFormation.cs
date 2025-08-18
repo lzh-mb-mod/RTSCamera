@@ -5,6 +5,7 @@ using System;
 using System.Reflection;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.CommandSystem.Patch
 {

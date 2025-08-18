@@ -2,9 +2,7 @@
 using Helpers;
 using MissionSharedLibrary.Utilities;
 using System;
-using System.Reflection;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.CampaignBehaviors;
 using TaleWorlds.CampaignSystem.Encounters;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.MapEvents;
@@ -13,6 +11,7 @@ using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.Siege;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
+using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace RTSCamera.CampaignGame.Behavior
 {
@@ -26,10 +25,10 @@ namespace RTSCamera.CampaignGame.Behavior
 
         public override void RegisterEvents()
         {
-            //CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, starter =>
-            //    {
-            //        AddMenuOption(Game.Current, starter);
-            //    });
+            CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, starter =>
+                {
+                    AddMenuOption(starter);
+                });
         }
 
         // Use harmony to add menu option to "encounter" menu because the original way (through OnSessionLauncherEvent doesn't work any more)
@@ -37,11 +36,11 @@ namespace RTSCamera.CampaignGame.Behavior
         {
             try
             {
-                harmony.Patch(
-                    typeof(EncounterGameMenuBehavior).GetMethod("AddGameMenus",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                    postfix: new HarmonyMethod(typeof(WatchBattleBehavior).GetMethod(nameof(Postfix),
-                        BindingFlags.Static | BindingFlags.Public)));
+                //harmony.Patch(
+                //    typeof(EncounterGameMenuBehavior).GetMethod("AddGameMenus",
+                //        BindingFlags.Instance | BindingFlags.NonPublic),
+                //    postfix: new HarmonyMethod(typeof(WatchBattleBehavior).GetMethod(nameof(Postfix),
+                //        BindingFlags.Static | BindingFlags.Public)));
 
             }
             catch (Exception e)
@@ -52,16 +51,17 @@ namespace RTSCamera.CampaignGame.Behavior
 
         public static void Postfix(CampaignGameStarter gameSystemInitializer)
         {
-            AddMenuOption(Game.Current, gameSystemInitializer);
+            AddMenuOption(gameSystemInitializer);
         }
 
 
-        private static void AddMenuOption(Game game, CampaignGameStarter gameStarter)
+        private static void AddMenuOption(CampaignGameStarter gameStarter)
         {
             try
             {
+                var commandBattleString = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_command_battle")?.ToString() ?? new TextObject("{=RTSCamera_command_battle}(RTS Camera)Command the battle.").ToString();
                 gameStarter.AddGameMenuOption("encounter", "rts_camera_watch_battle",
-                    game.GameTextManager.FindText("str_rts_camera_command_battle").ToString(), args =>
+                    commandBattleString, args =>
                     {
                         try
                         {
@@ -90,7 +90,7 @@ namespace RTSCamera.CampaignGame.Behavior
                     });
 
                 gameStarter.AddGameMenuOption("menu_siege_strategies", "rts_camera_watch_battle",
-                    game.GameTextManager.FindText("str_rts_camera_command_battle").ToString(), WatchSiegeCondition, WatchSiegeConsequence);
+                    commandBattleString, WatchSiegeCondition, WatchSiegeConsequence);
             }
             catch (Exception e)
             {
@@ -121,7 +121,7 @@ namespace RTSCamera.CampaignGame.Behavior
                     }
 
                     args.IsEnabled = true;
-                    args.Tooltip = GameTexts.FindText("str_rts_camera_watch_mode_tool_tip");
+                    args.Tooltip = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_watch_mode_tool_tip") ?? new TextObject("{=RTSCamera_watch_mode_tool_tip}You are injured. You may be able to command your troops but you cannot directly participate in the battle.");
                     return true;
                 }
             }
