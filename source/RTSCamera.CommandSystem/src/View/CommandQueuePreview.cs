@@ -40,7 +40,8 @@ namespace RTSCamera.CommandSystem.View
         public GameEntity LeftBackLine;
         public GameEntity RightBackLine;
 
-        private Material _decalMaterial;
+        private static Material _decalMaterial;
+        private static MetaMesh _lineMesh;
 
         public static uint FormationShapeColor = new Color(0.7f, 1, 0.7f).ToUnsignedInteger();
 
@@ -59,17 +60,21 @@ namespace RTSCamera.CommandSystem.View
             //decal.SetFactor1(FormationShapeColor);
             //result.AddComponent(decal);
             //var lineMesh = MetaMesh.GetCopy("fangkuang");
-            var lineMesh = MetaMesh.GetCopy("decal_mesh");
-            //lineMesh.SetContourColor(FormationShapeColor);
-            //lineMesh.SetContourState(true);
-            lineMesh.SetFactor1(FormationShapeColor);
-            if (_decalMaterial == null)
+
+            if (_lineMesh == null)
             {
-                _decalMaterial = Material.GetFromResource("decal_white").CreateCopy();
-                _decalMaterial.Flags |= MaterialFlags.CullFrontFaces | MaterialFlags.NoModifyDepthBuffer;
+                _lineMesh = MetaMesh.GetCopy("decal_mesh");
+                _lineMesh.SetFactor1(FormationShapeColor);
+                //_lineMesh.SetContourColor(FormationShapeColor);
+                //_lineMesh.SetContourState(true);
+                if (_decalMaterial == null)
+                {
+                    _decalMaterial = Material.GetFromResource("decal_white").CreateCopy();
+                    _decalMaterial.Flags |= MaterialFlags.CullFrontFaces | MaterialFlags.NoModifyDepthBuffer;
+                }
+                _lineMesh.SetMaterial(_decalMaterial);
             }
-            lineMesh.SetMaterial(_decalMaterial);
-            result.AddComponent(lineMesh);
+            result.AddComponent(_lineMesh.CreateCopy());
             result.SetVisibilityExcludeParents(false);
             result.EntityFlags |= EntityFlags.NotAffectedBySeason;
             result.EntityVisibilityFlags = EntityVisibilityFlags.NoShadow;

@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
@@ -248,7 +249,8 @@ namespace RTSCamera.Logic.SubLogic
             {
                 _isSwitchCameraKeyPressedLastTick = false;
             }
-            else if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).IsKeyPressed(Mission.InputManager))
+            // some keys are not supported in Mission.InputManager. Pass null to use InputSystem.Input directly.
+            else if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).IsKeyPressed())
             {
                 _isSwitchCameraKeyPressedLastTick = true;
                 SwitchCamera();

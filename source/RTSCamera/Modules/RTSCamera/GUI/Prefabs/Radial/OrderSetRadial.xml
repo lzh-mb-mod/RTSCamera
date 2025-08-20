@@ -1,0 +1,25 @@
+<Prefab>
+  <Constants>
+    <Constant Name="Item.Background.Width" BrushName="Order.Item.Background" BrushLayer="Default" BrushValueType="Width" MultiplyResult="6"/>
+    <Constant Name="Item.Background.Height" BrushName="Order.Item.Background" BrushLayer="Default" BrushValueType="Height" MultiplyResult="6"/>
+  </Constants>
+  <Window>
+    <Widget DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Item.Background.Width" SuggestedHeight="!Item.Background.Height" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <Children>
+        <OrderItemRadial Command.AlternateClick="..\..\..\OnEscape" Parameter.ItemDataSource="{TitleOrder}" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+        <!--<Widget IsVisible="@ShowOrders" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="30" SuggestedHeight="41" MarginLeft="80" VerticalAlignment="Center" Sprite="StdAssets\arrow_little"/>-->
+        <ButtonWidget Command.AlternateClick="..\..\..\OnEscape" IsVisible="@ShowOrders" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginBottom="115">
+          <Children>
+            <CircleActionSelectorWidget DoNotAcceptEvents="true" DataSource="{Orders}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="430" SuggestedHeight="400" HorizontalAlignment="Center" VerticalAlignment="Bottom" DistanceFromCenterModifier="130" DirectionWidget="..\..\DirectionWidget" Sprite="General\RadialMenu\radial_menu_bg" Color="#00000099" ActivateOnlyWithController="true">
+              <ItemTemplate>
+                <OrderItemRadial Command.AlternateClick="..\..\..\..\OnEscape" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </ItemTemplate>
+            </CircleActionSelectorWidget>
+          </Children>
+        </ButtonWidget>
+        <TextWidget DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="@SelectedOrderText" MarginBottom="280" MarginRight="15" Brush="Order.SelectedOrder.Text" IsVisible="@ShowOrders"/>
+        <Widget DoNotAcceptEvents="true" Id="DirectionWidget" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="13" SuggestedHeight="13" HorizontalAlignment="Center" VerticalAlignment="Center" MarginBottom="460" Sprite="BlankWhiteCircle" AlphaFactor="0.5"/>
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

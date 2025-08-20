@@ -98,10 +98,8 @@ namespace RTSCamera.CommandSystem.Logic
                 orderController.OnOrderIssued += OnOrderIssued;
             }
         }
-
-        private static void OnOrderIssued(OrderType orderType, MBReadOnlyList<Formation> appliedFormations, OrderController orderController, params object[] delegateParams)
+        public static bool ShouldClearQueueAndPendingOrder(OrderType orderType)
         {
-            CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(appliedFormations));
             switch (orderType)
             {
                 case OrderType.Move:
@@ -145,13 +143,35 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.RideFree:
                 case OrderType.Mount:
                 case OrderType.Dismount:
-                    ClearOrderInQueue(appliedFormations);
-                    break;
+                    return true;
                 case OrderType.AIControlOff:
                 case OrderType.Transfer:
-                    break;
+                default:
+                    return false;
             }
+        }
 
+        public static bool ShouldClearQueueAndPendingOrder(OrderInQueue order)
+        {
+            switch (order.CustomOrderType)
+            {
+                case CustomOrderType.Original:
+                    return ShouldClearQueueAndPendingOrder(order.OrderType);
+                case CustomOrderType.FollowMainAgent:
+                    return true;
+                case CustomOrderType.SetTargetFormation:
+                default:
+                    return false;
+            }
+        }
+
+        private static void OnOrderIssued(OrderType orderType, MBReadOnlyList<Formation> appliedFormations, OrderController orderController, params object[] delegateParams)
+        {
+            CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(appliedFormations));
+            if (ShouldClearQueueAndPendingOrder(orderType))
+            {
+                ClearOrderInQueue(appliedFormations);
+            }
 
             foreach (var formation in appliedFormations)
             {
@@ -526,6 +546,7 @@ namespace RTSCamera.CommandSystem.Logic
                             case OrderType.MoveToLineSegment:
                             case OrderType.MoveToLineSegmentWithHorizontalLayout:
                             case OrderType.Move:
+                            case OrderType.FollowMe:
                             case OrderType.FollowEntity:
                             case OrderType.AttackEntity:
                             case OrderType.PointDefence:
@@ -550,6 +571,13 @@ namespace RTSCamera.CommandSystem.Logic
                 foreach (var formation in formations)
                 {
                     FormationPendingOrder(formation, order);
+                }
+            }
+            else
+            {
+                if (ShouldClearQueueAndPendingOrder(order.OrderType))
+                {
+                    CancelPendingOrder(formations);
                 }
             }
         }

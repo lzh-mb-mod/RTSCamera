@@ -643,7 +643,7 @@ namespace RTSCamera.CommandSystem.Utilities
         }
         public static float GetMaximumWidthOfSquareFormation(Formation formation)
         {
-            if (CommandSystemConfig.Get().HollowSquare && ShouldEnablePlayerOrderControllerPatchForFormation(formation))
+            if (CommandSystemConfig.Get().HollowSquare && ShouldEnableHollowSquareFormationFor(formation))
             {
                 return GetSideWidthFromUnitCountOfSquareFormation(GetUnitsPerSideFromRankCountOfSquareFormation(formation, 1), GetFormationInterval(formation, GetUnitSpacingOf(ArrangementOrderEnum.Square)), formation.UnitDiameter);
             }
@@ -748,7 +748,7 @@ namespace RTSCamera.CommandSystem.Utilities
         }
 
 
-        public static bool ShouldEnablePlayerOrderControllerPatchForFormation(Formation formation)
+        public static bool ShouldEnableHollowSquareFormationFor(Formation formation)
         {
             var team = formation?.Team;
             return !formation.IsAIControlled && team != null && team == Mission.Current.PlayerTeam && (team.IsPlayerGeneral || team.IsPlayerSergeant && formation.PlayerOwner == Agent.Main);

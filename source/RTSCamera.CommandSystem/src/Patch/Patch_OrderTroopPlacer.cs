@@ -46,10 +46,13 @@ namespace RTSCamera.CommandSystem.Patch
         private static MBReadOnlyList<Formation> _focusedFormationsCache;
         private static bool _isFreeCamera;
         private static bool _previousMoreVisibleTroopPlacer;
+        private static MovementTargetHighlightStyle _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
         private static List<GameEntity> _originalOrderPositionEntities;
-        private static List<GameEntity> _moreVisibleOrderPositionEntities;
+        private static List<GameEntity> _newModelOrderPositionEntities;
+        private static List<GameEntity> _alwaysVisibleOrderPositionEntities;
         private static Material _originalMaterial;
-        private static Material _moreVisibleMaterial;
+        private static Material _newModelMaterial;
+        private static Material _alwaysVisibleMaterial;
         private static bool _skipDrawingForDestinationForOneTick;
 
         public static bool Patch(Harmony harmony)
@@ -134,6 +137,7 @@ namespace RTSCamera.CommandSystem.Patch
             MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
             _isFreeCamera = false;
             _previousMoreVisibleTroopPlacer = false;
+            _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
         }
 
         public static void OnRemoveBehavior()
@@ -152,8 +156,9 @@ namespace RTSCamera.CommandSystem.Patch
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             _isFreeCamera = false;
             _previousMoreVisibleTroopPlacer = false;
-            _originalOrderPositionEntities = _moreVisibleOrderPositionEntities = null;
-            _originalMaterial = _moreVisibleMaterial = null;
+            _originalOrderPositionEntities = _newModelOrderPositionEntities = _alwaysVisibleOrderPositionEntities = null;
+            _originalMaterial = _newModelMaterial = _alwaysVisibleMaterial = null;
+            _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
         }
 
         private static void OnFormationFocused(MBReadOnlyList<Formation> focusedFormations)
@@ -402,45 +407,79 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_AddOrderPositionEntity(OrderTroopPlacer __instance, int entityIndex,
             ref Vec3 groundPosition, bool fadeOut, float alpha,
-            List<GameEntity> ____orderPositionEntities, ref Material ____meshMaterial)
+            ref List<GameEntity> ____orderPositionEntities, ref Material ____meshMaterial)
         {
             var config = CommandSystemConfig.Get();
             var timeOfDay =__instance.Mission.Scene.TimeOfDay;
-            bool moreVisibleTroopPlacer = config.MovementTargetHighlightMode == MovementTargetHighlightMode.Always ||
-                _isFreeCamera && config.MovementTargetHighlightMode >= MovementTargetHighlightMode.FreeCameraOnly ||
-                (timeOfDay >= 17.5f || timeOfDay <= 5.5f) && config.MovementTargetHighlightMode == MovementTargetHighlightMode.NightOrFreeCamera;
-            if (_previousMoreVisibleTroopPlacer != moreVisibleTroopPlacer)
+            var currentMovementTargetHighlightStyle = _isFreeCamera ? config.MovementTargetHighlightStyleInRTSMode : config.MovementTargetHighlightStyleInCharacterMode;
+
+            switch (currentMovementTargetHighlightStyle)
             {
-                if (moreVisibleTroopPlacer)
-                {
-                    if (_moreVisibleOrderPositionEntities == null)
-                    {
-                        _moreVisibleOrderPositionEntities = new List<GameEntity>();
-                        _moreVisibleMaterial = null;
-                    }
-                    ____orderPositionEntities = _moreVisibleOrderPositionEntities;
-                    ____meshMaterial = _moreVisibleMaterial;
-                    foreach (GameEntity orderPositionEntity in _originalOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
-                    {
-                        orderPositionEntity.HideIfNotFadingOut();
-                    }
-                }
-                else
-                {
+                case MovementTargetHighlightStyle.Original:
                     if (_originalOrderPositionEntities == null)
                     {
                         _originalOrderPositionEntities = new List<GameEntity>();
                         _originalMaterial = null;
                     }
-                    ____orderPositionEntities = _originalOrderPositionEntities;
-                    ____meshMaterial = _originalMaterial;
-                    foreach (GameEntity orderPositionEntity in _moreVisibleOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
+                    break;
+                case MovementTargetHighlightStyle.NewModelOnly:
+                    if (_newModelOrderPositionEntities == null)
                     {
-                        orderPositionEntity.HideIfNotFadingOut();
+                        _newModelOrderPositionEntities = new List<GameEntity>();
+                        _newModelMaterial = Material.GetFromResource("vertex_color_blend_mat").CreateCopy(); ;
                     }
+                    break;
+                case MovementTargetHighlightStyle.AlwaysVisible:
+                    if (_alwaysVisibleOrderPositionEntities == null)
+                    {
+                        _alwaysVisibleOrderPositionEntities = new List<GameEntity>();
+                        _alwaysVisibleMaterial = Material.GetFromResource("vertex_color_blend_no_depth_mat").CreateCopy(); ;
+                    }
+                    break;
+            }
+            if (_previousMovementTargetHightlightStyle != currentMovementTargetHighlightStyle)
+            {
+                switch (_previousMovementTargetHightlightStyle)
+                {
+                    case MovementTargetHighlightStyle.Original:
+                        _originalMaterial = ____meshMaterial;
+                        foreach (GameEntity orderPositionEntity in _originalOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
+                        {
+                            orderPositionEntity.HideIfNotFadingOut();
+                        }
+                        break;
+                    case MovementTargetHighlightStyle.NewModelOnly:
+                        foreach (GameEntity orderPositionEntity in _newModelOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
+                        {
+                            orderPositionEntity.HideIfNotFadingOut();
+                        }
+                        break;
+                    case MovementTargetHighlightStyle.AlwaysVisible:
+                        foreach (GameEntity orderPositionEntity in _alwaysVisibleOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
+                        {
+                            orderPositionEntity.HideIfNotFadingOut();
+                        }
+                        break;
+                }
+                _previousMovementTargetHightlightStyle = currentMovementTargetHighlightStyle;
+
+                switch (currentMovementTargetHighlightStyle)
+                {
+                    case MovementTargetHighlightStyle.Original:
+                        ____orderPositionEntities = _originalOrderPositionEntities;
+                        ____meshMaterial = _originalMaterial;
+                        break;
+                    case MovementTargetHighlightStyle.NewModelOnly:
+                        ____orderPositionEntities = _newModelOrderPositionEntities;
+                        ____meshMaterial = _newModelMaterial;
+                        break;
+                    case MovementTargetHighlightStyle.AlwaysVisible:
+                        ____orderPositionEntities = _alwaysVisibleOrderPositionEntities;
+                        ____meshMaterial = _alwaysVisibleMaterial;
+                        break;
                 }
             }
-            if (moreVisibleTroopPlacer)
+            if (currentMovementTargetHighlightStyle != MovementTargetHighlightStyle.Original)
             {
                 while (____orderPositionEntities.Count <= entityIndex)
                 {
@@ -492,7 +531,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static void Postfix_HideOrderPositionEntities()
         {
-            foreach (GameEntity orderPositionEntity in _moreVisibleOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
+            foreach (GameEntity orderPositionEntity in _newModelOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
             {
                 orderPositionEntity.HideIfNotFadingOut();
             }
@@ -800,24 +839,37 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
             }
+            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout, ___PlayerOrderController.SelectedFormations, null, null, null);
+            ___isDrawnThisFrame = true;
+            List<WorldPosition> simulationAgentFrames = null;
+            bool isLineShort = false;
+            IEnumerable<Formation> formations = ___PlayerOrderController.SelectedFormations.Where((f => f.CountOfUnitsWithoutDetachedOnes > 0));
+            if (!formations.Any())
+                return true;
+            Patch_OrderController.SimulateNewOrderWithPositionAndDirection(formations, ___PlayerOrderController.simulationFormations, formationRealStartingPosition, formationRealEndingPosition, true, out simulationAgentFrames, giveOrder && queueCommand, out var formationChanges, out isLineShort, isFormationLayoutVertical, true);
+            if (simulationAgentFrames == null)
+            {
+                return true;
+            }
             if (giveOrder)
             {
-                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout, ___PlayerOrderController.SelectedFormations, null, null, null);
                 if (!queueCommand)
                 {
-                    CommandQueueLogic.TryPendingOrder(___PlayerOrderController.SelectedFormations, new OrderInQueue
+                    if (!isFormationLayoutVertical)
+                        ___PlayerOrderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegmentWithHorizontalLayout, formationRealStartingPosition, formationRealEndingPosition);
+                    else
+                        ___PlayerOrderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegment, formationRealStartingPosition, formationRealEndingPosition);
+                    CommandQueueLogic.TryPendingOrder(formations, new OrderInQueue
                     {
                         SelectedFormations = ___PlayerOrderController.SelectedFormations,
                         OrderType = isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout,
+                        IsLineShort = isLineShort,
                         PositionBegin = formationRealStartingPosition,
                         PositionEnd = formationRealEndingPosition,
                     });
-                    return true;
                 }
                 else
                 {
-                    ___isDrawnThisFrame = true;
-                    OrderController.SimulateNewOrderWithPositionAndDirection(___PlayerOrderController.SelectedFormations, ___PlayerOrderController.simulationFormations, formationRealStartingPosition, formationRealEndingPosition, out var formationChanges, out var isLineShort, isFormationLayoutVertical);
                     CommandQueueLogic.AddOrderToQueue(new OrderInQueue
                     {
                         SelectedFormations = ___PlayerOrderController.SelectedFormations,
@@ -828,11 +880,19 @@ namespace RTSCamera.CommandSystem.Patch
                         PositionEnd = formationRealEndingPosition,
                         VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations)
                     });
-                    return false;
                 }
             }
-
-            return true;
+            int entityIndex = 0;
+            foreach (WorldPosition worldPosition in simulationAgentFrames)
+            {
+                typeof(OrderTroopPlacer).GetMethod("AddOrderPositionEntity", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(__instance,
+                    new object[]
+                    {
+                        entityIndex, worldPosition.GetGroundVec3(), giveOrder, -1f
+                    });
+                ++entityIndex;
+            }
+            return false;
         }
 
         public static bool Prefix_UpdateFormationDrawingForFacingOrder(OrderTroopPlacer __instance,

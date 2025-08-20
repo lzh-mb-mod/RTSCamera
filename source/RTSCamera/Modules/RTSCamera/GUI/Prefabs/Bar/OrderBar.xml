@@ -1,0 +1,43 @@
+<Prefab>
+  <Constants>
+    <Constant Name="Troop.Background.Width" BrushName="Order.Troop.Background" BrushLayer="Default" BrushValueType="Width" MultiplyResult="0.75"/>
+    <Constant Name="Troop.Background.Height" BrushName="Order.Troop.Background" BrushLayer="Default" BrushValueType="Height" MultiplyResult="0.75"/>
+
+    <Constant Name="Troop.Icon.Width" BrushName="Order.Troop.Icon" BrushLayer="Default" BrushValueType="Width" MultiplyResult="0.75"/>
+    <Constant Name="Troop.Icon.Height" BrushName="Order.Troop.Icon" BrushLayer="Default" BrushValueType="Height" MultiplyResult="0.75"/>
+
+  </Constants>
+  <Window>
+    <Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+      <Children>
+        <Siege />
+        <Widget IsVisible="@IsToggleOrderShown" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+          <Children>
+            <Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="25" IsVisible="@IsTroopListShown">
+              <Children>
+
+                <ListPanel DataSource="{TroopController\TroopList}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" >
+                  <ItemTemplate>
+                    <OrderTroopItem />
+                  </ItemTemplate>
+                </ListPanel>
+
+              </Children>
+            </Widget>
+            <ListPanel DoNotAcceptEvents="true" DataSource="{OrderSets}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginLeft="20" MarginTop="120" StackLayout.LayoutMethod="VerticalBottomToTop">
+              <ItemTemplate>
+                <OrderSetBar MarginBottom="8"/>
+              </ItemTemplate>
+            </ListPanel>
+            <Widget DoNotAcceptEvents="true" DataSource="{OrderSets}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginLeft="135" MarginTop="120" >
+              <ItemTemplate>
+                <OrderSetItemBar MarginBottom="8"/>
+              </ItemTemplate>
+            </Widget>
+          </Children>
+        </Widget>
+        <OrderTransferPopup DataSource="{TroopController}"/>
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

@@ -1,0 +1,27 @@
+<Prefab>
+  <Constants>
+    <Constant Name="Item.Background.Width" BrushName="Order.Item.Background" BrushLayer="Default" BrushValueType="Width" MultiplyResult="6"/>
+    <Constant Name="Item.Background.Height" BrushName="Order.Item.Background" BrushLayer="Default" BrushValueType="Height" MultiplyResult="6"/>
+  </Constants>
+  <Window>
+    <Widget DoNotAcceptEvents="true" Command.AlternateClick="..\..\OnEscape" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Item.Background.Width" SuggestedHeight="!Item.Background.Height" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <Children>
+        <Widget DoNotAcceptEvents="true" IsVisible="@ShowOrders" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" >
+          <Children>
+            <!-- <ButtonWidget Command.AlternateClick="..\..\OnEscape"  WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" >
+              <Children> -->
+                <CircleActionSelectorWidget DoNotAcceptEvents="true"  DataSource="{Orders}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="400" SuggestedHeight="400" HorizontalAlignment="Center" VerticalAlignment="Center" DirectionWidget="..\..\DirectionWidget" DistanceFromCenterModifier="130" Sprite="General\RadialMenu\radial_menu_bg" Color="#00000099" ActivateOnlyWithController="true">
+                  <ItemTemplate>
+                    <OrderItemRadial Command.AlternateClick="..\..\..\..\OnEscape" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </ItemTemplate>
+                </CircleActionSelectorWidget>
+              <!-- </Children>
+            </ButtonWidget> -->
+          </Children>
+        </Widget>
+        <TextWidget DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Text="@SelectedOrderText" MarginRight="15" Brush="Order.SelectedOrder.Text" IsVisible="@ShowOrders"/>
+        <Widget DoNotAcceptEvents="true" Id="DirectionWidget" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="13" SuggestedHeight="13" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="BlankWhiteCircle" AlphaFactor="0.5"/>
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

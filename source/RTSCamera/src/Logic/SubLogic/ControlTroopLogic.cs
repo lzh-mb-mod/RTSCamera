@@ -260,7 +260,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnMissionTick(float dt)
         {
-            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).IsKeyPressed(Mission.InputManager) && !Mission.IsInPhotoMode)
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).IsKeyPressed() && !Mission.IsInPhotoMode)
             {
                 if (!_selectCharacterView.IsSelectingCharacter)
                 {

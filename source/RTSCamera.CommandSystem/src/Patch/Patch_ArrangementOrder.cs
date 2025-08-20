@@ -41,10 +41,10 @@ namespace RTSCamera.CommandSystem.Patch
         {
             if (__instance.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Square && CommandSystemConfig.Get().HollowSquare)
             {
-                bool isFormationUnderPlayerCommand = Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(formation);
+                bool shouldEnableHollowSquareFor = Utilities.Utility.ShouldEnableHollowSquareFormationFor(formation);
                 bool isSimuationFormation = formation.Team == null;
                 bool isAIControlled = formation.IsAIControlled;
-                if (isFormationUnderPlayerCommand || isSimuationFormation)
+                if (shouldEnableHollowSquareFor || isSimuationFormation)
                 {
                     __result = new SquareFormation(formation);
                     return false;

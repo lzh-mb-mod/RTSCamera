@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using MissionLibrary;
 using MissionLibrary.Controller;
-using MissionLibrary.Extension;
 using MissionLibrary.View;
 using MissionSharedLibrary;
 using MissionSharedLibrary.Utilities;

@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
-using NetworkMessages.FromClient;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using System;
@@ -143,19 +142,26 @@ namespace RTSCamera.CommandSystem.Patch
                 case OrderSubType.MoveToPosition:
                     Vec3 orderFlagPosition = missionScreen.GetOrderFlagPosition();
                     WorldPosition unitPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, orderFlagPosition, false);
-                    if (Mission.Current.IsFormationUnitPositionAvailable(ref unitPosition, Mission.Current.PlayerTeam) && queueCommand)
+                    if (Mission.Current.IsFormationUnitPositionAvailable(ref unitPosition, Mission.Current.PlayerTeam))
                     {
                         Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.MoveToLineSegment, selectedFormations, null, null, null);
-                        OrderController.SimulateNewOrderWithPositionAndDirection(selectedFormations, __instance.OrderController.simulationFormations, unitPosition, unitPosition, out var formationChanges, out var isLineShort, true);
                         orderToAdd.OrderType = OrderType.MoveToLineSegment;
-                        orderToAdd.IsLineShort = isLineShort;
-                        orderToAdd.ActualFormationChanges = formationChanges;
                         orderToAdd.PositionBegin = unitPosition;
                         orderToAdd.PositionEnd = unitPosition;
+                        if (!queueCommand)
+                        {
+                            Patch_OrderController.SimulateNewOrderWithPositionAndDirection(selectedFormations, __instance.OrderController.simulationFormations, unitPosition, unitPosition, true, out var simulationAgentFrames, false, out _, out var isLineShort, true, true);
+                            orderToAdd.IsLineShort = isLineShort;
+                        }
+                        else
+                        {
+                            OrderController.SimulateNewOrderWithPositionAndDirection(selectedFormations, __instance.OrderController.simulationFormations, unitPosition, unitPosition, out var formationChanges, out var isLineShort, true);
+                            orderToAdd.IsLineShort = isLineShort;
+                            orderToAdd.ActualFormationChanges = formationChanges;
+                        }
                         orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                        break;
                     }
-                    return null;
+                    break;
                 case OrderSubType.Charge:
                     orderToAdd.OrderType = OrderType.Charge;
                     focusedFormations = (MBReadOnlyList<Formation>)_focusedFormationsCache.GetValue(__instance);
@@ -285,6 +291,7 @@ namespace RTSCamera.CommandSystem.Patch
                     }
                     break;
                 case OrderSubType.ToggleFacing:
+                    // see OrderItemVM.OrderSelectionState
                     if (__instance.LastSelectedOrderItem.SelectionState == 3)
                     {
                         orderToAdd.OrderType = OrderType.LookAtDirection;

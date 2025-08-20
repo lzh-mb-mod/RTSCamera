@@ -31,7 +31,7 @@ namespace RTSCamera.Logic.SubLogic
             if (!NativeConfig.CheatMode || Mission.IsInPhotoMode)
                 return;
 
-            if (_config.SwitchTeamHotkeyEnabled && RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SwitchTeam).IsKeyPressed(Mission.InputManager))
+            if (_config.SwitchTeamHotkeyEnabled && RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SwitchTeam).IsKeyPressed())
                 SwapTeam();
         }
 

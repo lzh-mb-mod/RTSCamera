@@ -19,23 +19,29 @@
     <string id="RTSCameraCommandSystem_after_charge_behavior_hold" text="Hold" />
  
     <string id="RTSCameraCommandSystem_troop_highlight_character_mode" text="Troop Highlight (Character Mode)" />
-    <string id="RTSCameraCommandSystem_troop_highlight_character_mode_hint" text="Troop highlight style in character mode" />
+    <string id="RTSCameraCommandSystem_troop_highlight_character_mode_hint" text="Troop highlight style in character mode." />
     <string id="RTSCameraCommandSystem_troop_highlight_option_no" text="No" />
     <string id="RTSCameraCommandSystem_troop_highlight_option_outline" text="Outline" />
     <string id="RTSCameraCommandSystem_troop_highlight_option_ground_marker" text="Ground Marker" />
 
     <string id="RTSCameraCommandSystem_troop_highlight_rts_mode" text="Troop Highlight (RTS Mode)" />
-    <string id="RTSCameraCommandSystem_troop_highlight_rts_mode_hint" text="Troop highlight style in RTS mode" />
+    <string id="RTSCameraCommandSystem_troop_highlight_rts_mode_hint" text="Troop highlight style in RTS mode." />
 
-    <string id="RTSCameraCommandSystem_movement_target_highlight_mode" text="When to Highlight Movement Target" />
-    <string id="RTSCameraCommandSystem_movement_target_highlight_mode_hint" text="Make Movement Target more visible." />
+    <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode" text="Movement Target Style (Character Mode)" />
+    <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode_hint" text="Movement target style in character mode." />
+    <string id="RTSCameraCommandSystem_highlight_style_original" text="Original" />
+    <string id="RTSCameraCommandSystem_highlight_style_new_model_only" text="New Model Only" />
+    <string id="RTSCameraCommandSystem_highlight_style_always_visible" text="Always Visible" />
+
+    <string id="RTSCameraCommandSystem_movement_target_highlight_rts_mode" text="Movement Target Style (RTS Mode)" />
+    <string id="RTSCameraCommandSystem_movement_target_highlight_rts_mode_hint" text="Movement target style in RTS mode." />
+
+    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode" text="When to Show Order Flag" />
+    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode_hint" text="Command targets in Command Queue will be marked using flags." />
     <string id="RTSCameraCommandSystem_highlight_mode_never" text="Never" />
     <string id="RTSCameraCommandSystem_highlight_mode_free_camera_only" text="Free Camera Only" />
     <string id="RTSCameraCommandSystem_highlight_mode_night_or_free_camera" text="At Night Or Free Camera" />
     <string id="RTSCameraCommandSystem_highlight_mode_always" text="Always" />
-
-    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode" text="When to Show Order Flag" />
-    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode_hint" text="Command targets in Command Queue will be marked using flags." />
 
     <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode" text="When to Show Order Arrow" />
     <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode_hint" text="Command targets in Command Queue will be connected using arrows." />

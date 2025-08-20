@@ -53,7 +53,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
   
   - After your character is killed in battle, you can press `E` to follow one of your soldiers and press `E` again to control it and continue fighting.
 
-    - You can press `L` to open menu and check `Control Ally After Death` option to do this automatically.
+    - You can press `L` to open menu and set `When To Control Ally After Death` option to 'Always", so that you will control another unit automatically after you are down.
   
   - You can select your formations by clicking on troop cards.
 
@@ -119,8 +119,6 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
     - Left click on the ground and drag to change the position, direction and width of the formation you selected.
 
-      - Hold `ctrl` when dragging to keep formation width unchanged.
-
     - Hold `right ctrl` and `up` or `down` to adjust camera movement speed.
 
     - Hold `right ctrl` and click middle mouse button to reset camera movement speed.
@@ -129,7 +127,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
 - After your character is killed in battle, you can press `E` to follow one of your soldiers and press `E` again to control it and continue fighting.
 
-  - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your character dies, by enabling `Control Ally After Death` option. It's always enabled in free camera mode to ensure a smooth gaming experience.
+  - You can immediately control one of your soldiers to avoid all your formations been delegated to AI when your character dies, by setting `When To Control Ally After Death` option to `Always`. It's always enabled in free camera mode to ensure a smooth gaming experience.
 
   - Soldiers in the same formation as player character will be considered first when deciding which soldier to control.
 
@@ -211,7 +209,9 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 ## Hotkeys
 You can config hotkeys by pressing `L` to open menu, and click `Config Key`.
 
-You can click `+` or `-` to edit key sequence.
+You can click `Add Shortcut` to add a new way to trigger hotkey.
+
+You can click `Extend Key Combo` to add more keys into key combo. The hotkey will be triggered when all the keys in a key combo are pressed.
 
 Here is a list of default hotkeys:
 

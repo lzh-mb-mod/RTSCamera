@@ -361,7 +361,7 @@ namespace RTSCamera.View
                     }
                     if (MissionScreen.LastFollowedAgent != null)
                     {
-                        var moveOrigin = Utility.GetCameraFrameWhenLockedToAgent(MissionScreen, MissionScreen.LastFollowedAgent, SpectatorCameraTypes.LockToMainPlayer);
+                        var moveOrigin = Utility.GetCameraFrameWhenLockedToAgent(MissionScreen, MissionScreen.LastFollowedAgent, SpectatorCameraTypes.LockToMainPlayer, MissionScreen.CameraElevation, MissionScreen.CameraBearing);
                         diff = moveOrigin.origin - MissionScreen.CombatCamera.Frame.origin + diff;
                     }
                     BeginForcedMove(diff);
@@ -421,11 +421,11 @@ namespace RTSCamera.View
                 heightFactorForVerticalMove = 5;
             }
 
-            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.IncreaseCameraSpeed).IsKeyPressedInOrder(MissionScreen.InputManager))
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.IncreaseCameraSpeed).IsKeyPressedInOrder())
                 _cameraSpeedMultiplier *= 1.25f;
-            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.DecreaseCameraSpeed).IsKeyPressedInOrder(MissionScreen.InputManager))
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.DecreaseCameraSpeed).IsKeyPressedInOrder())
                 _cameraSpeedMultiplier *= 0.8f;
-            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ResetCameraSpeed).IsKeyPressedInOrder(MissionScreen.InputManager))
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ResetCameraSpeed).IsKeyPressedInOrder())
                 _cameraSpeedMultiplier = 1f;
             _cameraSpeed *= (float)(1.0 - 10 * (double)dt);
             //if (MissionScreen.InputManager.IsControlDown())

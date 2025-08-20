@@ -58,12 +58,12 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnMissionTick(float dt)
         {
-            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.Pause).IsKeyPressed(Mission.InputManager))
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.Pause).IsKeyPressed())
             {
                 TogglePause();
             }
 
-            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SlowMotion).IsKeyPressed(Mission.InputManager))
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SlowMotion).IsKeyPressed())
             {
                 SetSlowMotionMode(!_config.SlowMotionMode);
             }

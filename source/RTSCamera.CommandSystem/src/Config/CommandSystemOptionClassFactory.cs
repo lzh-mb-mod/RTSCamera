@@ -75,15 +75,24 @@ namespace RTSCamera.CommandSystem.Config
                             new SelectionItem(true, "str_rts_camera_command_system_troop_highlight_option", nameof(TroopHighlightStyle.GroundMarker))
                         }), false));
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_mode"),
-                    GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_mode_hint"),
-                    new SelectionOptionData(i => CommandSystemConfig.Get().MovementTargetHighlightMode = (MovementTargetHighlightMode)i,
-                        () => (int)CommandSystemConfig.Get().MovementTargetHighlightMode, (int)MovementTargetHighlightMode.Count, new List<SelectionItem>
+                    GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_character_mode"),
+                    GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_character_mode_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().MovementTargetHighlightStyleInCharacterMode = (MovementTargetHighlightStyle)i,
+                        () => (int)CommandSystemConfig.Get().MovementTargetHighlightStyleInCharacterMode, (int)MovementTargetHighlightStyle.Count, new List<SelectionItem>
                         {
-                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(MovementTargetHighlightMode.Never)),
-                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(MovementTargetHighlightMode.FreeCameraOnly)),
-                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(MovementTargetHighlightMode.NightOrFreeCamera)),
-                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_mode_option", nameof(MovementTargetHighlightMode.Always))
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.Original)),
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.NewModelOnly)),
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.AlwaysVisible)),
+                        }), false));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_rts_mode"),
+                    GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_rts_mode_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().MovementTargetHighlightStyleInRTSMode = (MovementTargetHighlightStyle)i,
+                        () => (int)CommandSystemConfig.Get().MovementTargetHighlightStyleInRTSMode, (int)MovementTargetHighlightStyle.Count, new List<SelectionItem>
+                        {
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.Original)),
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.NewModelOnly)),
+                            new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.AlwaysVisible)),
                         }), false));
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_command_queue_flag_show_mode"),
@@ -133,8 +142,8 @@ namespace RTSCamera.CommandSystem.Config
                         CommandSystemConfig.Get().HollowSquare = b;
                     }));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_sqaure_formation_corner_fix"),
-                    GameTexts.FindText("str_rts_camera_command_system_sqaure_formation_corner_fix_hint"),
+                    GameTexts.FindText("str_rts_camera_command_system_square_formation_corner_fix"),
+                    GameTexts.FindText("str_rts_camera_command_system_square_formation_corner_fix_hint"),
                     () => CommandSystemConfig.Get().SquareFormationCornerFix, b =>
                     {
                         CommandSystemConfig.Get().SquareFormationCornerFix = b;

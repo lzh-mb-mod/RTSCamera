@@ -29,6 +29,14 @@ namespace RTSCamera.CommandSystem.Config
         Count
     }
 
+    public enum MovementTargetHighlightStyle
+    {
+        Original,
+        NewModelOnly,
+        AlwaysVisible,
+        Count
+    }
+
     public enum ShowMode
     {
         Never,
@@ -49,7 +57,7 @@ namespace RTSCamera.CommandSystem.Config
     {
         protected override XmlSerializer Serializer => new XmlSerializer(typeof(CommandSystemConfig));
 
-        protected static Version BinaryVersion => new Version(1, 2);
+        protected static Version BinaryVersion => new Version(1, 3);
         public string ConfigVersion { get; set; } = BinaryVersion.ToString();
 
         public bool ClickToSelectFormation = true;
@@ -62,12 +70,17 @@ namespace RTSCamera.CommandSystem.Config
 
         public TroopHighlightStyle TroopHighlightStyleInRTSMode = TroopHighlightStyle.GroundMarker;
 
+        public MovementTargetHighlightStyle MovementTargetHighlightStyleInCharacterMode = MovementTargetHighlightStyle.NewModelOnly;
+
+        public MovementTargetHighlightStyle MovementTargetHighlightStyleInRTSMode = MovementTargetHighlightStyle.AlwaysVisible;
+
+        // deprecated. use MovementTargetHighlightStyle instead.
         public MovementTargetHighlightMode MovementTargetHighlightMode = MovementTargetHighlightMode.Always;
 
-        // deprecated. use MovementTargetHighlightMode instead.
+        // deprecated. use MovementTargetHighlightStyle instead.
         public bool MoreVisibleMovementTarget = true;
 
-        // deprecated. use MovementTargetHighlightMode instead.
+        // deprecated. use MovementTargetHighlightStyle instead.
         public bool MovementTargetMoreVisibleOnRtsViewOnly = true;
 
         public ShowMode CommandQueueFlagShowMode = ShowMode.FreeCameraOnly;
@@ -92,6 +105,8 @@ namespace RTSCamera.CommandSystem.Config
             BehaviorAfterCharge = other.BehaviorAfterCharge;
             TroopHighlightStyleInCharacterMode = other.TroopHighlightStyleInCharacterMode;
             TroopHighlightStyleInRTSMode = other.TroopHighlightStyleInRTSMode;
+            MovementTargetHighlightStyleInCharacterMode = other.MovementTargetHighlightStyleInCharacterMode;
+            MovementTargetHighlightStyleInRTSMode = other.MovementTargetHighlightStyleInRTSMode;
             MovementTargetHighlightMode = other.MovementTargetHighlightMode;
             MoreVisibleMovementTarget = other.MoreVisibleMovementTarget;
             MovementTargetMoreVisibleOnRtsViewOnly = other.MovementTargetMoreVisibleOnRtsViewOnly;
@@ -141,7 +156,24 @@ namespace RTSCamera.CommandSystem.Config
                     }
                     goto case "1.2";
                 case "1.2":
-                    ConfigVersion = "1.2";
+                    switch (MovementTargetHighlightMode)
+                    {
+                        case MovementTargetHighlightMode.Never:
+                            MovementTargetHighlightStyleInCharacterMode = MovementTargetHighlightStyle.Original;
+                            MovementTargetHighlightStyleInRTSMode = MovementTargetHighlightStyle.Original;
+                            break;
+                        case MovementTargetHighlightMode.FreeCameraOnly:
+                            MovementTargetHighlightStyleInCharacterMode = MovementTargetHighlightStyle.Original;
+                            MovementTargetHighlightStyleInRTSMode = MovementTargetHighlightStyle.AlwaysVisible;
+                            break;
+                        case MovementTargetHighlightMode.Always:
+                            MovementTargetHighlightStyleInCharacterMode = MovementTargetHighlightStyle.NewModelOnly;
+                            MovementTargetHighlightStyleInRTSMode = MovementTargetHighlightStyle.AlwaysVisible;
+                            break;
+                    }
+                    break;
+                case "1.3":
+                    ConfigVersion = "1.3";
                     break;
             }
         }

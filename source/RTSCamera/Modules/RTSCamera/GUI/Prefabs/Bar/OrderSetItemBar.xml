@@ -1,0 +1,21 @@
+<Prefab>
+  <Constants>
+    <Constant Name="Item.Background.Width" BrushName="Order.Item.Background.Square" BrushLayer="Default" BrushValueType="Width" MultiplyResult="0.75"/>
+    <Constant Name="Item.Background.Height" BrushName="Order.Item.Background.Square" BrushLayer="Default" BrushValueType="Height" MultiplyResult="9"/>
+  </Constants>
+  <Window>
+    <Widget DoNotAcceptEvents="true"  WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Item.Background.Width" SuggestedHeight="!Item.Background.Height" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <Children>
+        <Widget IsVisible="@ShowOrders" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren">
+          <Children>
+            <ListPanel DataSource="{Orders}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalBottomToTop">
+              <ItemTemplate>
+                <OrderItemBar/>
+              </ItemTemplate>
+            </ListPanel>
+          </Children>
+        </Widget>
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

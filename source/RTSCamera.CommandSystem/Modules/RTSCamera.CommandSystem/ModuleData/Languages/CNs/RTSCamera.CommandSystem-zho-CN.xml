@@ -20,24 +20,30 @@
     <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="冲锋" />
     <string id="RTSCameraCommandSystem_after_charge_behavior_hold" text="原地等待" />
 
-    <string id="RTSCameraCommandSystem_troop_highlight_character_mode" text="部队高亮（角色模式）" />
-    <string id="RTSCameraCommandSystem_troop_highlight_character_mode_hint" text="角色模式下的部队高亮样式" />
+    <string id="RTSCameraCommandSystem_troop_highlight_character_mode" text="部队高亮样式（角色模式）" />
+    <string id="RTSCameraCommandSystem_troop_highlight_character_mode_hint" text="角色模式下的部队高亮样式。" />
     <string id="RTSCameraCommandSystem_troop_highlight_option_no" text="无" />
     <string id="RTSCameraCommandSystem_troop_highlight_option_outline" text="轮廓" />
     <string id="RTSCameraCommandSystem_troop_highlight_option_ground_marker" text="地面标记" />
 
-    <string id="RTSCameraCommandSystem_troop_highlight_rts_mode" text="部队高亮（RTS模式）" />
-    <string id="RTSCameraCommandSystem_troop_highlight_rts_mode_hint" text="RTS模式下的部队高亮样式" />
-    
-    <string id="RTSCameraCommandSystem_movement_target_highlight_mode" text="何时启用更易识别的移动目标地点" />
-    <string id="RTSCameraCommandSystem_movement_target_highlight_mode_hint" text="让移动目标更易识别。" />
+    <string id="RTSCameraCommandSystem_troop_highlight_rts_mode" text="部队高亮样式（RTS模式）" />
+    <string id="RTSCameraCommandSystem_troop_highlight_rts_mode_hint" text="RTS模式下的部队高亮样式。" />
+
+    <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode" text="移动目标样式（角色模式）" />
+    <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode_hint" text="角色模式下的移动目标样式。" />
+    <string id="RTSCameraCommandSystem_highlight_style_original" text="原始" />
+    <string id="RTSCameraCommandSystem_highlight_style_new_model_only" text="仅新模型" />
+    <string id="RTSCameraCommandSystem_highlight_style_always_visible" text="始终可见" />
+
+    <string id="RTSCameraCommandSystem_movement_target_highlight_rts_mode" text="移动目标样式（RTS模式）" />
+    <string id="RTSCameraCommandSystem_movement_target_highlight_rts_mode_hint" text="RTS模式下的移动目标样式。" />
+
+    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode" text="何时显示命令旗帜" />
+    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode_hint" text="命令队列中的命令目标将会用旗帜标识出来。" />
     <string id="RTSCameraCommandSystem_highlight_mode_never" text="从不" />
     <string id="RTSCameraCommandSystem_highlight_mode_free_camera_only" text="仅自由视角下" />
     <string id="RTSCameraCommandSystem_highlight_mode_night_or_free_camera" text="夜间或自由视角下" />
     <string id="RTSCameraCommandSystem_highlight_mode_always" text="总是" />
-
-    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode" text="何时显示命令旗帜" />
-    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode_hint" text="命令队列中的命令目标将会用旗帜标识出来。" />
   
     <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode" text="何时显示命令箭头" />
     <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode_hint" text="命令队列中的命令目标将会用箭头连接起来。" />
