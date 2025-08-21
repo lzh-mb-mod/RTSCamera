@@ -2,6 +2,7 @@
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
+using RTSCamera.Patch.TOR_fix;
 using RTSCamera.View;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -421,6 +422,8 @@ namespace RTSCamera.Logic.SubLogic
                         if (Mission.MainAgent.Controller != Agent.ControllerType.Player)
                             _controlTroopLogic.ControlMainAgent(false);
                     }
+                    // Fix crash in The Old Realms.
+                    Patch_CareerHelper.OnMainAgentChanged();
                 }
             }
             else if (IsSpectatorCamera && _config.TimingOfControlAllyAfterDeath >= ControlAllyAfterDeathTiming.FreeCamera || (_config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.Always && !Mission.IsFastForward))

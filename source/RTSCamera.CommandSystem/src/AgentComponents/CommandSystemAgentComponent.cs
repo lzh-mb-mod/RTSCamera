@@ -49,7 +49,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
                 return;
             }
 
-            _mesh = MetaMesh.GetCopy("banpian");
+            _mesh = MetaMesh.GetCopy("rts_unit_arrow");
             ClearColor();
             UpdateMeshFrame(Agent.HasMount);
             Agent.AgentVisuals.GetEntity().AddMultiMesh(_mesh);

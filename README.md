@@ -1,5 +1,4 @@
 # RTS Camera
-(Old name: EnhancedMission, Enhanced Mission RTS Camera)
 
 A mod for Mount&Blade II Bannerlord that provides free camera and better commanding in battle.
 

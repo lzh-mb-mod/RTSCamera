@@ -1,5 +1,4 @@
 # RTS Camera
-(旧名：EnhancedMission, Enhanced Mission RTS Camera)
 
 这是一个骑马与砍杀2：霸主的mod，能在战斗中以自由视角指挥，和更好的指挥命令。
 

@@ -27,7 +27,7 @@ namespace RTSCamera.CommandSystem.Patch
 {
     public class Patch_OrderTroopPlacer
     {
-        public static uint OrderPositionEntityColor = new Color(0.1f, 0.5f, 0.1f).ToUnsignedInteger();
+        public static uint OrderPositionEntityColor = new Color(0.15f, 0.65f, 0.15f).ToUnsignedInteger();
         public static float OrderPositionEntityPreviewAlpha = 1f;
         public static float OrderPositionEntityDestinationAlpha = 0.5f;
         private static float _cachedTimeOfDay = 0;

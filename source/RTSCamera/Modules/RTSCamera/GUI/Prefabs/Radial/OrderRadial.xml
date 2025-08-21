@@ -44,7 +44,7 @@
                   </Children>
                 </OrderReturnButtonWidget> -->
                 <!--Order Sets-->
-                <ListPanel DoNotAcceptEvents="true" DataSource="{OrderSets}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginLeft="300" >
+                <ListPanel DoNotAcceptEvents="true" DataSource="{OrderSets}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginLeft="300" MarginBottom="20">
                   <ItemTemplate>
                     <OrderSetRadial MarginLeft="-50" MarginRight="-290"  MinWidth="300"/>
                   </ItemTemplate>

@@ -11,6 +11,7 @@ using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
+using RTSCamera.Patch.TOR_fix;
 using RTSCamera.Usage;
 using SandBox.Objects;
 using System;
@@ -126,6 +127,8 @@ namespace RTSCamera
         protected override void OnBeforeInitialModuleScreenSetAsRoot()
         {
             base.OnBeforeInitialModuleScreenSetAsRoot();
+
+            Patch_CareerHelper.Patch(_harmony);
 
             if (!SecondInitialize())
                 return;

@@ -2115,6 +2115,10 @@ namespace RTSCamera.CommandSystem.Patch
                     newWidth = MathF.Min(Utilities.Utility.GetMinimumWidthOfSquareFormation(formation), newFlankWidth);
                 }
             }
+            else if (newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Loose)
+            {
+                newWidth = MathF.Min(newWidth, GetFormationMaximumWidthOfArrangementOrder(formation, ArrangementOrder.ArrangementOrderEnum.Loose));
+            }
             return newWidth;
         }
 
@@ -2335,6 +2339,11 @@ namespace RTSCamera.CommandSystem.Patch
         private static float GetFormationVirtualMaximumWidth(Formation formation)
         {
             var arrangementOrder = GetFormationVirtualArrangementOrder(formation);
+            return GetFormationMaximumWidthOfArrangementOrder(formation, arrangementOrder);
+        }
+
+        private static float GetFormationMaximumWidthOfArrangementOrder(Formation formation, ArrangementOrder.ArrangementOrderEnum arrangementOrder)
+        {
             switch (arrangementOrder)
             {
                 case ArrangementOrder.ArrangementOrderEnum.Square:

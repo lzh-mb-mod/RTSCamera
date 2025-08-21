@@ -1,5 +1,100 @@
 # Changelog
 
+## [v5.1.7] - 2025-08-21
+### Fixed
+- Fix crash in The Old Realms.
+
+## [v5.1.6] - 2025-08-20
+### Added
+- Make order button clickable.
+- Add option to change movement target style.
+
+## [v5.1.5] - 2025-08-18
+### Added
+- Linux is supported.
+
+### Fixed
+- Minor formation layout issue.
+
+## [v5.1.4] - 2025-08-16
+### Fixed
+- Fix formation frame when AI controls formation.
+
+## [v5.1.3] - 2025-08-16
+### Added
+- Add unit ground marker.
+- Add formation frame marker.
+- Add hollow square formation for player.
+
+### Fixed
+- Fix direction of corner units in square formation.
+
+## [v5.1.1] - 2025-08-16
+### Added
+- Add option to not keep order UI open in free camera mode.
+
+### Fixed
+- Fix camera vertical movement speed.
+
+### Changed
+- Make movement target more visible at night by default.
+
+## [v5.1.0] - 2025-08-13
+### Added
+- Hold shift to add orders to queue so that troops will execute them one by one. For example, let cavalry follow a given path and then charge.
+- Multiple formations will be locked when moving together.
+
+## [v5.0.7] - 2025-07-25
+### Added
+- Add option to fast forward in hideout.
+
+## [v5.0.6] - 2025-07-24
+### Changed
+- Remake hotkey page to support multiple shortcuts. Note that shortcut config will be reset.
+- Support controller input in free camera mode.
+
+### Fixed
+- Fix startup issue when Command system is enabled alone.
+
+## [v5.0.5] - 2025-07-21
+### Changed
+- Replace option "Control ally after death" with "Control ally after death timing".
+- Fast forward UI will be shown in free camera mode. In previous versions it's only shown when Control ally after death option is enabled.
+- By default, switching to free camera will automatically control a unit if player unit is down to avoid issue that orders cannot be given.
+
+## [v5.0.4] - 2025-07-19
+### Fixed
+- Fix crash caused by selectable troop cards.
+
+## [v5.0.3] - 2025-07-18
+### Fixed
+- Fix an error message when issuing movement orders.
+
+## [v5.0.2] - 2025-07-18
+### Fixed
+- Fix the issue in base game: the order position preview is not consistent with final order when dragging formation on the ground.
+- Fix the issue in base game: narrowed width of a formation cannot be kept after a movement command.
+
+### Added
+- Added an option to show hotkey hint in free camera mode.
+- Added an option to decide whether to rotate camera when switching from free camera.
+
+## [v5.0.1] - 2025-07-13
+### Fixed
+- Fix crash when player is dead and switch to agent camera, if 'control ally after death' option is disabled.
+
+## [v5.0.0] - 2025-07-12
+### Added
+- In free camera mode, while command UI is open, you can press `E` to stick camera to selected formation.
+- Press `Alt` while middle-button clicking to target the enemy without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
+- Add option for always giving orders in free camera.
+- Add slow motion in free camera.
+- Automatically open ordering UI in free camera.
+- Automatically switch to free camera in deployment stage.
+
+### Changed
+- Remove some default hotkeys to avoid accidental triggering.
+
 ## [e4.1.16] - 2022-10-14
 ### Fixed
 - Fix crash in custom battle when issue orders.

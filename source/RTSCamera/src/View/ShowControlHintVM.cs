@@ -39,7 +39,7 @@ namespace RTSCamera.View
             }
             else
             {
-                CharacterName.IsVisible = Mission.Current?.GetMissionBehavior<MissionGauntletSpectatorControl>() == null;
+                CharacterName.IsVisible = true;
                 CharacterName.TextObject = new TextObject(characterName);
             }
         }

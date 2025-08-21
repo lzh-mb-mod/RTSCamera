@@ -33,7 +33,7 @@
     <DotNetCliToolReference Include="dotnet-md2html" Version="1.0.0.1-preview1" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Lib.Harmony" Version="2.3.6" >
+    <PackageReference Include="Lib.Harmony" Version="2.3.6">
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -148,17 +148,14 @@
     <Exec Command="rmdir &quot;$(ModulePackagePath)&quot; /s /q" />
   </Target>
   
-   <Target Name="CopyHarmonyCompileAssemblies" AfterTargets="ResolveAssemblyReferences"
-          Condition="'$(TargetFramework)' == 'net6.0'">
+   <Target Name="CopyHarmonyCompileAssemblies" AfterTargets="ResolveAssemblyReferences" Condition="'$(TargetFramework)' == 'net6.0'">
     <ItemGroup>
       <_HarmonyAssemblies Include="@(ReferencePath)" Condition="'%(FileName)' == '0Harmony'" />
     </ItemGroup>
     
     <Message Text="Copying Harmony assemblies: @(_HarmonyAssemblies)" Importance="High" />
     
-    <Copy SourceFiles="@(_HarmonyAssemblies)"
-          DestinationFolder="$(TargetDir)"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_HarmonyAssemblies)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
   </Target> 
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

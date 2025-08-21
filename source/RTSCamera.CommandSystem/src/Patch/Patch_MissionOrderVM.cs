@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -415,8 +416,14 @@ namespace RTSCamera.CommandSystem.Patch
                 {
                     formation.FormOrder = FormOrder.FormOrderCustom(change.Width.Value);
                 }
+                if (Mission.Current.Mode == MissionMode.Deployment)
+                {
+                    // Fix the issue that in Deployment mode, after switching to loose formation, the units are not teleported to correct position.
+                    formation.SetPositioning(change.WorldPosition);
+                }
                 CommandQueueLogic.CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(order.SelectedFormations));
             }
+            //__instance.OrderController.SetOrder(order.OrderType);
         }
     }
 }

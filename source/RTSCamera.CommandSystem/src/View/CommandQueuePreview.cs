@@ -502,17 +502,17 @@ namespace RTSCamera.CommandSystem.View
             {
                 GameEntity empty = GameEntity.CreateEmpty(Mission.Scene);
                 empty.EntityFlags |= EntityFlags.NotAffectedBySeason;
-                MetaMesh copy = MetaMesh.GetCopy("pyhsics_test_box");
+                MetaMesh copy = MetaMesh.GetCopy("barrier_sphere");
                 //MetaMesh copy = MetaMesh.GetCopy("unit_arrow");
                 if (_agentPositionMeshMaterial == (NativeObject)null)
                 {
                     //_agentPositionMeshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
                     //_agentPositionMeshMaterial = Material.GetFromResource("vertex_color_blend_mat
-                    _agentPositionMeshMaterial = Material.GetFromResource("unit_arrow").CreateCopy();
+                    _agentPositionMeshMaterial = Material.GetFromResource("vertex_color_blend_no_depth_mat").CreateCopy();
                     //_agentPositionMeshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
                 }
                 copy.SetMaterial(_agentPositionMeshMaterial);
-                copy.SetFactor1(new Color(80, 255, 80, alpha).ToUnsignedInteger());
+                copy.SetFactor1(Patch_OrderTroopPlacer.OrderPositionEntityColor);
                 empty.AddComponent((GameEntityComponent)copy);
                 empty.SetVisibilityExcludeParents(false);
                 _agentPositionEntities.Add(empty);
@@ -601,8 +601,8 @@ namespace RTSCamera.CommandSystem.View
                     ArrowHead = GameEntity.CreateEmpty(Mission.Scene),
                     ArrowBody = GameEntity.CreateEmpty(Mission.Scene)
                 };
-                var headMesh = MetaMesh.GetCopy("jiantou");
-                var bodyMesh = MetaMesh.GetCopy("jianshen");
+                var headMesh = MetaMesh.GetCopy("rts_arrow_head");
+                var bodyMesh = MetaMesh.GetCopy("rts_arrow_body");
                 //var bodyMaterial = bodyMesh.GetMeshAtIndex(0).GetMaterial().CreateCopy();
                 //bodyMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
                 //bodyMaterial.SetShader(Shader.GetFromResource("pbr_shading"));
