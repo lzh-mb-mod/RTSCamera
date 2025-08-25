@@ -487,7 +487,7 @@ namespace RTSCamera.View
                 if (mouseInput.LengthSquared > 0.0)
                     mouseInput.Normalize();
 
-                if (!MissionScreen.MouseVisible)
+                if (!MissionScreen.MouseVisible && MissionScreen.SceneLayer.Input.GetIsControllerConnected())
                 {
                     var x = MissionScreen.SceneLayer.Input.GetGameKeyAxis("MovementAxisX");
                     var y = MissionScreen.SceneLayer.Input.GetGameKeyAxis("MovementAxisY");
