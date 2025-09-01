@@ -9,7 +9,6 @@ namespace RTSCamera.CommandSystem.Patch
 {
     public class Patch_ArrangementOrder
     {
-
         private static bool _patched;
 
         public static bool Patch(Harmony harmony)

@@ -25,6 +25,14 @@ namespace RTSCamera.Config
         Count
     }
 
+    public enum AssignPlayerFormation
+    {
+        DefaultOrGeneralFormation,
+        Default,
+        Overwrite,
+        Count
+    }
+
     public enum  FollowFaceDirection
     {
         Never,
@@ -102,9 +110,12 @@ namespace RTSCamera.Config
             return (Agent.ControllerType) PlayerControllerInFreeCamera;
         }
 
-        public FormationClass PlayerFormation = FormationClass.Unset;
+        public FormationClass PlayerFormation = FormationClass.General;
 
+        // deprecated
         public AutoSetPlayerFormation AutoSetPlayerFormation = AutoSetPlayerFormation.Never;
+
+        public AssignPlayerFormation AssignPlayerFormation = AssignPlayerFormation.Default;
 
         public bool ConstantSpeed;
 
@@ -175,6 +186,7 @@ namespace RTSCamera.Config
             PlayerControllerInFreeCamera = other.PlayerControllerInFreeCamera;
             PlayerFormation = other.PlayerFormation;
             AutoSetPlayerFormation = other.AutoSetPlayerFormation;
+            AssignPlayerFormation = other.AssignPlayerFormation;
             ConstantSpeed = other.ConstantSpeed;
             CameraHeightFollowsTerrain = other.CameraHeightFollowsTerrain;
             IgnoreTerrain = other.IgnoreTerrain;

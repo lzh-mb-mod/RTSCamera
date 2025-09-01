@@ -90,6 +90,7 @@ namespace RTSCamera
                 _successPatch &= Patch_MissionGauntletMainAgentEquipmentControllerView.Patch(_harmony);
                 _successPatch &= Patch_AgentHumanAILogic.Patch(_harmony);
                 _successPatch &= Patch_Mission.Patch(_harmony);
+                _successPatch &= Patch_Team.Patch(_harmony);
                 _successPatch &= Patch_LineFormation.Patch(_harmony);
                 _successPatch &= Patch_ColumnFormation.Patch(_harmony);
                 _successPatch &= Patch_MissionGauntletSingleplayerOrderUIHandler.Patch(_harmony);

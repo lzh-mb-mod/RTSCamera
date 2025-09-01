@@ -45,7 +45,6 @@ namespace RTSCamera.CommandSystem.Patch
         private static MissionFormationTargetSelectionHandler _targetSelectionHandler;
         private static MBReadOnlyList<Formation> _focusedFormationsCache;
         private static bool _isFreeCamera;
-        private static bool _previousMoreVisibleTroopPlacer;
         private static MovementTargetHighlightStyle _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
         private static List<GameEntity> _originalOrderPositionEntities;
         private static List<GameEntity> _newModelOrderPositionEntities;
@@ -136,7 +135,6 @@ namespace RTSCamera.CommandSystem.Patch
             }
             MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
             _isFreeCamera = false;
-            _previousMoreVisibleTroopPlacer = false;
             _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
         }
 
@@ -155,7 +153,6 @@ namespace RTSCamera.CommandSystem.Patch
             _targetSelectionHandler = null;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             _isFreeCamera = false;
-            _previousMoreVisibleTroopPlacer = false;
             _originalOrderPositionEntities = _newModelOrderPositionEntities = _alwaysVisibleOrderPositionEntities = null;
             _originalMaterial = _newModelMaterial = _alwaysVisibleMaterial = null;
             _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;

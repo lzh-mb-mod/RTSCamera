@@ -417,7 +417,7 @@ namespace RTSCamera.View
             }
             else
             {
-                heightFactorForHorizontalMove = 5;
+                heightFactorForHorizontalMove = 10;
                 heightFactorForVerticalMove = 5;
             }
 
@@ -448,7 +448,7 @@ namespace RTSCamera.View
 
             bool hasVerticalInput = false;
             //if (!MissionScreen.InputManager.IsControlDown() || !MissionScreen.InputManager.IsAltDown())
-            //{
+            {
                 float keyInputVertical = 0;
                 Vec2 keyInput = Vec2.Zero;
                 Vec2 mouseInput = Vec2.Zero;
@@ -482,8 +482,6 @@ namespace RTSCamera.View
                     }
                 }
 
-                if (keyInput.LengthSquared > 0.0)
-                    keyInput.Normalize();
                 if (mouseInput.LengthSquared > 0.0)
                     mouseInput.Normalize();
 
@@ -498,6 +496,8 @@ namespace RTSCamera.View
                     keyInput.x += x;
                     keyInput.y += y;
                 }
+                if (keyInput.LengthSquared > 0.0)
+                    keyInput.Normalize();
 
                 hasVerticalInput = keyInputVertical != 0 || Input.GetDeltaMouseScroll() != 0;
                 if (keyInput + mouseInput != Vec2.Zero || keyInputVertical != 0)
@@ -505,7 +505,7 @@ namespace RTSCamera.View
                     FocusOnFormation(null);
                 }
                 _cameraSpeed += ((keyInput + mouseInput) * cameraBasicSpeed * heightFactorForHorizontalMove).ToVec3(keyInputVertical * cameraBasicSpeed * heightFactorForVerticalMove);
-            //}
+            }
             float horizontalLimit = heightFactorForHorizontalMove * cameraBasicSpeed;
             float verticalLimit = heightFactorForVerticalMove * cameraBasicSpeed * VerticalMovementSpeedFactor;
             _cameraSpeed.x = MBMath.ClampFloat(_cameraSpeed.x, -horizontalLimit, horizontalLimit);

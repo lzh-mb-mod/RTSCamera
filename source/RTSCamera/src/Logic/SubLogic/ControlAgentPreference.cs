@@ -15,15 +15,15 @@ namespace RTSCamera.Logic.SubLogic
         private Mission Mission => Mission.Current;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
 
-        public void UpdateAgentPreferenceFromTeam(Team team, Vec3 position, bool ignoreRetreatingAgents)
+        public void UpdateAgentPreferenceFromTeam(Team team, Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly)
         {
             foreach (var agent in team.ActiveAgents)
             {
-                UpdateAgentPreference(agent, position, ignoreRetreatingAgents);
+                UpdateAgentPreference(agent, position, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly);
             }
         }
 
-        public void UpdateAgentPreferenceFromFormation(FormationClass formationClass, Vec3 position, bool ignoreRetreatingAgents)
+        public void UpdateAgentPreferenceFromFormation(FormationClass formationClass, Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly)
         {
             if (formationClass < 0 || formationClass >= FormationClass.NumberOfAllFormations)
             {
@@ -31,14 +31,14 @@ namespace RTSCamera.Logic.SubLogic
             }
 
             var formation = Mission.PlayerTeam.GetFormation(formationClass);
-            formation.ApplyActionOnEachUnit(agent => UpdateAgentPreference(agent, position, ignoreRetreatingAgents));
+            formation.ApplyActionOnEachUnit(agent => UpdateAgentPreference(agent, position, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly));
         }
 
-        private void UpdateAgentPreference(Agent agent, Vec3 position, bool ignoreRetreatingAgents)
+        private void UpdateAgentPreference(Agent agent, Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly)
         {
             if (!CanControl(agent) || (ignoreRetreatingAgents && agent.IsRunningAway))
                 return;
-            if (!_config.ControlTroopsInPlayerPartyOnly || Utility.IsInPlayerParty(agent) || WatchBattleBehavior.WatchMode)
+            if (!controlTroopsInPlayerPartyOnly || Utility.IsInPlayerParty(agent) || WatchBattleBehavior.WatchMode)
             {
                 if (BestAgent == null || !BestAgent.IsHero && agent.IsHero || (!Utility.IsInPlayerParty(BestAgent) && Utility.IsInPlayerParty(agent)) ||
                     BestAgent.IsHero && agent.IsHero && (Utility.IsHigherInMemberRoster(agent, BestAgent) ??

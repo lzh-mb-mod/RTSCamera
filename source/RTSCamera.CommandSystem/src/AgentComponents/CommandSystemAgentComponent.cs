@@ -20,7 +20,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
     }
     public class CommandSystemAgentComponent : AgentComponent
     {
-        private readonly uint InvisibleColor = 0x00000000; // Transparent color for invisible contour
+        public static uint InvisibleColor = 0x00000000; // Transparent color for invisible contour
         private readonly Highlight[] _colors = new Highlight[(int)ColorLevel.NumberOfLevel];
         private int _currentLevel = -1;
 
@@ -32,6 +32,9 @@ namespace RTSCamera.CommandSystem.AgentComponents
         public float DistanceSquaredToTargetPosition = 0;
         private Timer _cachedDistanceUpdateTimer;
         private MetaMesh _mesh;
+        private static Material _material;
+        private static Material _defaultMaterial;
+        private bool _materialCleared;
         public CommandSystemAgentComponent(Agent agent) : base(agent)
         {
             for (int i = 0; i < _colors.Length; ++i)
@@ -44,19 +47,56 @@ namespace RTSCamera.CommandSystem.AgentComponents
         public override void Initialize()
         {
             base.Initialize();
+
+            //InitializeAux();
+        }
+
+        private void InitializeAux()
+        {
             if (Agent.IsMount)
             {
                 return;
             }
 
             _mesh = MetaMesh.GetCopy("rts_unit_arrow");
-            ClearColor();
+            if (_material == null)
+            {
+                _material = _mesh.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+            }
+
+            _mesh.SetFactor1(InvisibleColor);
+            _mesh.SetContourColor(InvisibleColor);
+            _mesh.SetContourState(false);
+            ClearMaterial();
             UpdateMeshFrame(Agent.HasMount);
             Agent.AgentVisuals.GetEntity().AddMultiMesh(_mesh);
+            Agent.AgentVisuals.LazyUpdateAgentRendererData();
+        }
+
+        private void ClearMaterial()
+        {
+            if (_defaultMaterial == null)
+            {
+                _defaultMaterial = Material.GetFromResource("default_empty");
+            }
+            _mesh.SetMaterial(_defaultMaterial);
+            _materialCleared = true;
+        }
+        
+        private void RecoverMaterial()
+        {
+            _mesh.SetMaterial(_material);
+            _materialCleared = false;
+            Agent.SetRenderCheckEnabled(true);
+            Agent.AgentVisuals.SetVisible(true);
         }
 
         public void SetColor(int level, uint? color, bool alwaysVisible, bool updateInstantly)
         {
+            if (_mesh == null)
+            {
+                InitializeAux();
+            }
             if (SetColorWithoutUpdate(level, color, alwaysVisible))
             {
                 _currentLevel = color.HasValue ? level : EffectiveLevel(level - 1);
@@ -89,10 +129,27 @@ namespace RTSCamera.CommandSystem.AgentComponents
             _shouldUpdateColor = true;
         }
 
+        public static void ClearColorForAgent(Agent agent)
+        {
+            var component = agent.GetComponent<CommandSystemAgentComponent>();
+            if (component == null)
+                return;
+
+            component.ClearColor();
+        }
+
         public void ClearColor()
         {
             try
             {
+                if (_mesh == null)
+                {
+                    InitializeAux();
+                }
+                if (_mesh == null)
+                {
+                    return;
+                }
                 for (int i = 0; i < _colors.Length; ++i)
                 {
                     _colors[i].Color = null;
@@ -110,6 +167,14 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
         public void ClearTargetOrSelectedFormationColor()
         {
+            if (_mesh == null)
+            {
+                InitializeAux();
+            }
+            if (_mesh == null)
+            {
+                return;
+            }
             bool needUpdate = SetColorWithoutUpdate((int)ColorLevel.TargetFormation, null, true);
             needUpdate |= SetColorWithoutUpdate((int)ColorLevel.SelectedFormation, null, true);
             if (needUpdate)
@@ -118,6 +183,14 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
         public void ClearFormationColor()
         {
+            if (_mesh == null)
+            {
+                InitializeAux();
+            }
+            if (_mesh == null)
+            {
+                return;
+            }
             bool needUpdate = SetColorWithoutUpdate((int)ColorLevel.TargetFormation, null, true);
             needUpdate |= SetColorWithoutUpdate((int)ColorLevel.SelectedFormation, null, true);
             needUpdate |= SetColorWithoutUpdate((int)ColorLevel.MouseOverFormation, null, true);
@@ -131,7 +204,10 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
             try
             {
-                UpdateMeshFrame(true);
+                if (_mesh != null)
+                {
+                    UpdateMeshFrame(true);
+                }
             }
             catch (Exception e)
             {
@@ -145,7 +221,10 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
             try
             {
-                UpdateMeshFrame(false);
+                if (_mesh != null)
+                {
+                    UpdateMeshFrame(false);
+                }
             }
             catch (Exception e)
             {
@@ -155,6 +234,14 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
         public void TryUpdateColor()
         {
+            if (_mesh == null)
+            {
+                InitializeAux();
+            }
+            if (_mesh == null)
+            {
+                return;
+            }
             if (_shouldUpdateColor)
             {
                 _shouldUpdateColor = false;
@@ -177,6 +264,10 @@ namespace RTSCamera.CommandSystem.AgentComponents
         {
             try
             {
+                if (_materialCleared)
+                {
+                    RecoverMaterial();
+                }
                 var color = CurrentColor.HasValue ? CurrentColor.Value : InvisibleColor;
                 _mesh.SetFactor1(color);
                 _mesh.SetContourColor(color);
@@ -197,10 +288,19 @@ namespace RTSCamera.CommandSystem.AgentComponents
                 return;
             }
             ClearColor();
+            Agent.AgentVisuals.GetEntity().RemoveComponent(_mesh);
         }
 
         public void SetContourState(bool alwaysVisible)
         {
+            if (_mesh == null)
+            {
+                InitializeAux();
+            }
+            if (_mesh == null)
+            {
+                return;
+            }
             if (alwaysVisible)
             {
                 _mesh.SetContourState(true);

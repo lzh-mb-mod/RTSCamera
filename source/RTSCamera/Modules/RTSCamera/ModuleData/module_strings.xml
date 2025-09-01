@@ -77,10 +77,11 @@
   <string id="str_rts_camera_controller_type.Player" text="{=RTSCamera_controller_type_player}Player" />
   <string id="str_rts_camera_player_formation" text="{=RTSCamera_playerformation}Player Formation" />
   <string id="str_rts_camera_player_formation_unset" text="{=RTSCamera_player_formation_unset}Unset" />
-  <string id="str_rts_camera_auto_set_player_formation" text="{=RTSCamera_auto_set_player_formation}Auto Set Player Formation" />
-  <string id="str_rts_camera_auto_set_player_formation.Never" text="{=RTSCamera_auto_set_player_formation_never}Never" />
-  <string id="str_rts_camera_auto_set_player_formation.DeploymentStage" text="{=RTSCamera_auto_set_player_formation_deployment_stage}Deployment Stage" />
-  <string id="str_rts_camera_auto_set_player_formation.Always" text="{=RTSCamera_auto_set_player_formation_always}Always" />
+  <string id="str_rts_camera_assign_player_formation" text="{=RTSCamera_assign_player_formation}Player Formation Assignment" />
+  <string id="str_rts_camera_assign_player_formation_hint" text="{=RTSCamera_assign_player_formation_hint}Which formation to add player to during deployment stage." />
+  <string id="str_rts_camera_assign_player_formation.DefaultOrGeneralFormation" text="{=RTSCamera_assign_player_formation_default_or_general_formation}Default Or General Formation" />
+  <string id="str_rts_camera_assign_player_formation.Default" text="{=RTSCamera_assign_player_formation_default}Always Default Formation" />
+  <string id="str_rts_camera_assign_player_formation.Overwrite" text="{=RTSCamera_assign_player_formation_overwrite}Formation in Above Option" />
   <string id="str_rts_camera_watch_another_hero" text="{=RTSCamera_watchanotherhero}Watch Another Hero" />
   <string id="str_rts_camera_select_character" text="{=RTSCamera_select_character}Select Character" />
   <string id="str_rts_camera_control_ally_after_death_timing" text="{=RTSCamera_control_ally_after_death_timing}When To Control Ally After Death" />

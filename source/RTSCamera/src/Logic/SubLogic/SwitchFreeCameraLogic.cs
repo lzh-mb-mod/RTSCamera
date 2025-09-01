@@ -4,6 +4,7 @@ using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Patch.TOR_fix;
 using RTSCamera.View;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace RTSCamera.Logic.SubLogic
         private bool _skipSwitchingCameraOnOrderingFinished;
         private bool _skipClosingUIOnSwitchingCamera;
         private List<FormationClass> _playerFormations;
-        private float _updatePlayerFormationTime;
+        //private float _updatePlayerFormationTime;
         private bool _hasShownOrderHint = false;
         private bool _isSwitchCameraKeyPressedLastTick = false;
         private bool _shouldShowFastForwardInHideoutPromptInThisMission = false;
@@ -170,36 +171,84 @@ namespace RTSCamera.Logic.SubLogic
             }
         }
 
-        public void OnTeamDeployed(Team team)
+        public void OnEarlyTeamDeployed(Team team)
         {
-            // TODO: Redundant with Patch_MissionOrderDeploymentControllerVM.Prefix_ExecuteDeployAll
             if (team == Mission.PlayerTeam)
             {
-                if (WatchBattleBehavior.WatchMode && Mission.MainAgent == null)
+                if (WatchBattleBehavior.WatchMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite)
                 {
-                    // Force control agent, setting controller to Player, to avoid the issue that,
-                    // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
-                    // DeploymentMissionController.FinishDeployment set controller of main agent to Player.
-                    //_controlTroopLogic.ForceControlAgent();
-                    Utility.PlayerControlAgent(_controlTroopLogic.GetAgentToControl());
-                    if (Mission.MainAgent != null)
-                    {
-                        Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
-                        if (Mission.PlayerTeam.IsPlayerGeneral)
-                            Utility.SetPlayerAsCommander(true);
-                        team.PlayerOrderController?.SelectAllFormations();
-                    }
-                }
-                if (WatchBattleBehavior.WatchMode || _config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
-                    // switch to free camera during deployment stage
-                    _switchToFreeCameraNextTick = true;
-                if (!WatchBattleBehavior.WatchMode && _config.AutoSetPlayerFormation >= AutoSetPlayerFormation.DeploymentStage)
-                {
-                    // Set player formation when team is deployed.
-                    TrySetPlayerFormation();
+                    if (Mission.MainAgent?.Formation != null)
+                        CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
                 }
             }
-        }   
+        }
+
+        public void OnTeamDeployed(Team team)
+        {
+            try
+            {
+                // TODO: Redundant with Patch_MissionOrderDeploymentControllerVM.Prefix_ExecuteDeployAll
+                if (team == Mission.PlayerTeam)
+                {
+                    if (WatchBattleBehavior.WatchMode && Mission.MainAgent == null)
+                    {
+                        // Force control agent, setting controller to Player, to avoid the issue that,
+                        // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
+                        // DeploymentMissionController.FinishDeployment set controller of main agent to Player.
+                        Utility.PlayerControlAgent(_controlTroopLogic.GetAgentToControl());
+                        if (Mission.MainAgent != null)
+                        {
+                            Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
+                            if (Mission.PlayerTeam.IsPlayerGeneral)
+                            {
+                                Utility.SetPlayerAsCommander(true);
+                                Mission.MainAgent?.SetCanLeadFormationsRemotely(true);
+                                Mission.PlayerTeam.GeneralAgent = Mission.MainAgent;
+                            }
+                            team.PlayerOrderController?.SelectAllFormations();
+                        }
+                    }
+                    if (WatchBattleBehavior.WatchMode || _config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
+                        // switch to free camera during deployment stage
+                        _switchToFreeCameraNextTick = true;
+                    if ((WatchBattleBehavior.WatchMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
+                    {
+                        if (Mission.MainAgent?.Formation != null)
+                            CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
+                    }
+                    if (_config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
+                    {
+                        // Set player formation when team is deployed.
+                        TrySetPlayerFormation();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
+                Console.WriteLine(e);
+            }
+        }
+
+        public void OnEarlyDeploymentFinished()
+        {
+            try
+            {
+                // In siege battle, at this point the player is already added to general formation
+                if ((WatchBattleBehavior.WatchMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && !Mission.IsSiegeBattle)
+                {
+                    if (Mission.MainAgent?.Formation != null)
+                        CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
+                }
+            }
+            catch(Exception e)
+            {
+                Utility.DisplayMessage(e.ToString());
+                Console.WriteLine(e);
+            }
+        }
+
+
         public void OnDeploymentFinished()
         {
             if (_config.DefaultToFreeCamera != DefaultToFreeCamera.Always && !WatchBattleBehavior.WatchMode)
@@ -237,13 +286,13 @@ namespace RTSCamera.Logic.SubLogic
                 Utilities.Utility.FastForwardInHideout(Mission);
             }
 
-            _updatePlayerFormationTime += dt;
-            if (_updatePlayerFormationTime > 0.1f && !Utility.IsPlayerDead() &&
-                Mission.MainAgent.Formation != null)
-            {
-                _updatePlayerFormationTime = 0;
-                CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
-            }
+            //_updatePlayerFormationTime += dt;
+            //if (_updatePlayerFormationTime > 0.1f && !Utility.IsPlayerDead() &&
+            //    Mission.MainAgent.Formation != null)
+            //{
+            //    _updatePlayerFormationTime = 0;
+            //    CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
+            //}
 
             // In fastforward mode, the key may be triggered in 2 ticks
             if (_isSwitchCameraKeyPressedLastTick)
@@ -332,16 +381,16 @@ namespace RTSCamera.Logic.SubLogic
 
                 if (agent.Formation == null)
                     return;
-                CurrentPlayerFormation = agent.Formation.FormationIndex;
+                //CurrentPlayerFormation = agent.Formation.FormationIndex;
             }
             else if (agent == Mission.MainAgent)
             {
                 //Utility.SetHasPlayerControlledTroop(agent.Formation, false);
-                TrySetPlayerFormation();
+                //TrySetPlayerFormation();
 
-                if (agent.Formation == null)
-                    return;
-                CurrentPlayerFormation = agent.Formation.FormationIndex;
+                //if (agent.Formation == null)
+                //    return;
+                //CurrentPlayerFormation = agent.Formation.FormationIndex;
             }
         }
 
@@ -353,10 +402,18 @@ namespace RTSCamera.Logic.SubLogic
             // OnMainAgentChanged triggered by `MainAgent.Controller = Controller.Player` in DeploymentMissionController
             // followed by OnAgentControllerChanged
             // OnAgentControllerChanged triggered by `MainAgent.Controller = Controller.AI` in DeploymentMissionController
-            // OnTeamDeployed
+            // 
+            // If has deployment stage:
+            // OnTeamDeployed is called
             // Player deploy troops and click ready ...
-            // Player may be set to general formation by GeneralsAndCaptainsAssignmentLogic.OnDeploymentFinished
-            // OnDeploymentFinished
+            // Player is assigned to general formation in GeneralsAndCaptainsAssignmentLogic.OnDeploymentFinished
+            // OnDeploymentFinished is called
+            // else:
+            // Player is assigned to general formation if player is general in GeneralsAndCaptainsAssignmentLogic.OnTeamDeployed
+            // OnTeamDeployed is called
+            // In the same tick, Player is added to general formation if player is not general in GeneralsAndCaptainsAssignmentLogic.OnDeploymentFinished
+            // In the same tick, OnDeploymentFinished is called.
+            // 
             // OnMainAgentChanged triggered by `MainAgent.Controller = Controller.Player` in DeploymentMissionController
             // followed by OnAgentControllerChanged
             // OnMissionModeChange(Deployment) with Mission.Mode == Deployment
@@ -393,16 +450,29 @@ namespace RTSCamera.Logic.SubLogic
 
         private void TrySetPlayerFormation(bool isDeploymentFinishing = false)
         {
-            if (_config.AutoSetPlayerFormation == AutoSetPlayerFormation.Never)
+            bool isDeployment = isDeploymentFinishing || Mission.Mode == MissionMode.Deployment;
+            if (!isDeployment)
+                return;
+            if (Mission.MainAgent?.Formation?.FormationIndex == null)
                 return;
 
-            var formationToSet = CurrentPlayerFormation;
-            // When deployment finishes, the player formation needs to be reset from General formation.
-            if (isDeploymentFinishing || Mission.Mode == MissionMode.Deployment)
+            var formationToSet = Mission.MainAgent.Formation.FormationIndex;
+            // When deployment finishes, the player formation needs to be reset from General formation if AssignPlayerFormation is set to Default.
+            // In watch mode, recover to previous formation instead of configured formation
+            if ((WatchBattleBehavior.WatchMode || _config.AssignPlayerFormation == AssignPlayerFormation.Default))
+            {
+                formationToSet = CurrentPlayerFormation;
+            }
+            if (!WatchBattleBehavior.WatchMode && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
+            {
                 formationToSet = _config.PlayerFormation;
-            if (_config.AutoSetPlayerFormation == AutoSetPlayerFormation.Always ||
-                (isDeploymentFinishing || Mission.Mode == MissionMode.Deployment))
-                Utility.SetPlayerFormationClass(formationToSet);
+            }
+
+            // If has bodyguard formation and the general formation only contains player, we do not remove player from General formation to avoid the bodyguard formation being charging alone.
+            if (Mission.MainAgent?.Formation?.FormationIndex == FormationClass.General && Mission.PlayerTeam?.BodyGuardFormation != null
+                && Mission.MainAgent?.Formation?.CountOfUnits == 1)
+                return;
+            Utility.SetPlayerFormationClass(formationToSet);
         }
 
         private void OnMainAgentChanged(object sender, PropertyChangedEventArgs e)
@@ -411,8 +481,8 @@ namespace RTSCamera.Logic.SubLogic
             {
                 if (Mission.Mode == MissionMode.Battle || Mission.Mode == MissionMode.Deployment || Mission.Mode == MissionMode.Stealth || Mission.Mode == MissionMode.Tournament)
                 {
-                    if (Mission.MainAgent.Formation != null)
-                        CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
+                    //if (Mission.MainAgent.Formation != null)
+                    //    CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
                     if (IsSpectatorCamera || WatchBattleBehavior.WatchMode)
                     {
                         UpdateMainAgentControllerInFreeCamera();
