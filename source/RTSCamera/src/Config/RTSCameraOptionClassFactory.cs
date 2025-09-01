@@ -270,6 +270,7 @@ namespace RTSCamera.Config
                             new SelectionItem(true, "str_rts_camera_assign_player_formation", nameof(AssignPlayerFormation.Default)),
                             new SelectionItem(true, "str_rts_camera_assign_player_formation", nameof(AssignPlayerFormation.Overwrite))
                             }), true));
+                }
                 controlOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_watch_another_hero"),
                     GameTexts.FindText("str_rts_camera_watch_another_hero_hint"),
