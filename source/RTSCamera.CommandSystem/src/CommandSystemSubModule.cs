@@ -24,7 +24,7 @@ namespace RTSCamera.CommandSystem
         public static readonly string ModuleId = "RTSCamera.CommandSystem";
         public static bool IsRealisticBattleModuleInstalled = true;
 
-        private readonly Harmony _harmony = new Harmony("RTSCameraPatch");
+        private readonly Harmony _harmony = new Harmony("RTSCommandPatch");
         private bool _successPatch;
 
         protected override void OnSubModuleLoad()

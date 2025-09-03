@@ -15,6 +15,7 @@ using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View;
+using static TaleWorlds.MountAndBlade.Agent;
 
 namespace RTSCamera.Logic.SubLogic
 {
@@ -38,6 +39,7 @@ namespace RTSCamera.Logic.SubLogic
         private bool _switchToAgentNextTick;
         private bool _skipSwitchingCameraOnOrderingFinished;
         private bool _skipClosingUIOnSwitchingCamera;
+        public bool ShouldKeepUIOpen = false;
         private List<FormationClass> _playerFormations;
         //private float _updatePlayerFormationTime;
         private bool _hasShownOrderHint = false;
@@ -209,8 +211,10 @@ namespace RTSCamera.Logic.SubLogic
                         }
                     }
                     if (WatchBattleBehavior.WatchMode || _config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
+                    {
                         // switch to free camera during deployment stage
                         _switchToFreeCameraNextTick = true;
+                    }
                     if ((WatchBattleBehavior.WatchMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
                     {
                         if (Mission.MainAgent?.Formation != null)
@@ -234,8 +238,8 @@ namespace RTSCamera.Logic.SubLogic
         {
             try
             {
-                // In siege battle, at this point the player is already added to general formation
-                if ((WatchBattleBehavior.WatchMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && !Mission.IsSiegeBattle)
+                // When player joins as reinforcement, at this point the player is already added to general formation
+                if ((WatchBattleBehavior.WatchMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
                 {
                     if (Mission.MainAgent?.Formation != null)
                         CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
@@ -303,12 +307,11 @@ namespace RTSCamera.Logic.SubLogic
             else if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).IsKeyPressed())
             {
                 _isSwitchCameraKeyPressedLastTick = true;
-                SwitchCamera();
-                ToggleOrderUIOnSwitchingCamera();
+                SwitchCamera(true);
             }
         }
 
-        public void SwitchCamera()
+        public void SwitchCamera(bool toggleOrderUI = false)
         {
             if (IsSpectatorCamera)
             {
@@ -317,6 +320,10 @@ namespace RTSCamera.Logic.SubLogic
             else
             {
                 SwitchToFreeCamera();
+            }
+            if (toggleOrderUI)
+            {
+                ToggleOrderUIOnSwitchingCamera();
             }
         }
 
@@ -334,10 +341,13 @@ namespace RTSCamera.Logic.SubLogic
                         Utilities.Utility.PrintOrderHint();
                         _hasShownOrderHint = true;
                     }
+                    // Should keep UI open if we actively switch to free camera mode by pressing hotkey.
+                    ShouldKeepUIOpen = true;
                 }
                 else
                 {
                     _hasShownOrderHint = false;
+                    ShouldKeepUIOpen = false;
                 }
 
                 if (_config.OrderOnSwitchingCamera)
@@ -348,7 +358,9 @@ namespace RTSCamera.Logic.SubLogic
                         // If order UI is already shown when switch to free camera,
                         // we will not close it when switching to agent camera.
                         if (dataSource.IsToggleOrderShown)
+                        {
                             _skipClosingUIOnSwitchingCamera = true;
+                        }
                         else
                         {
                             _skipClosingUIOnSwitchingCamera = false;
@@ -376,6 +388,12 @@ namespace RTSCamera.Logic.SubLogic
             {
                 agent.SetMaximumSpeedLimit(-1, false);
                 agent.MountAgent?.SetMaximumSpeedLimit(-1, false);
+                if (agent.WalkMode)
+                {
+                    agent.EventControlFlags |= EventControlFlag.Run;
+                    // required to fix the issue that the agent may still walk after switching to player controller, after deployment.
+                    agent.EventControlFlags &= ~EventControlFlag.Walk;
+                }
                 //agent.StopRetreating();
                 TrySetPlayerFormation();
 

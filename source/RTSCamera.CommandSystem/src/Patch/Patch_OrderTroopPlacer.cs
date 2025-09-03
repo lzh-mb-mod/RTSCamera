@@ -387,6 +387,11 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static Formation GetMouseOverFormation(OrderTroopPlacer __instance, float collisionDistance, OrderController ___PlayerOrderController, ref Vec2 ____deltaMousePosition, bool ____formationDrawingMode)
         {
+
+            if (_focusedFormationsCache != null && _focusedFormationsCache.Count > 0)
+            {
+                return _focusedFormationsCache[0];
+            }
             var agent = RayCastForAgent(__instance, collisionDistance, ref ____deltaMousePosition);
             if (agent != null && agent.IsMount)
                 agent = agent.RiderAgent;
@@ -759,7 +764,7 @@ namespace RTSCamera.CommandSystem.Patch
                     .Invoke(__instance, new object[] { false });
             }
 
-            UpdateInputForContour(____mouseOverFormation);
+            UpdateMouseOverFormation(____mouseOverFormation);
             foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
                 orderPositionEntity.SetPreviousFrameInvalid();
             foreach (GameEntity orderRotationEntity in ____orderRotationEntities)
@@ -772,7 +777,7 @@ namespace RTSCamera.CommandSystem.Patch
             return false;
         }
 
-        private static void UpdateInputForContour(Formation ____mouseOverFormation)
+        private static void UpdateMouseOverFormation(Formation ____mouseOverFormation)
         {
             _outlineView?.MouseOver(____mouseOverFormation);
             _groundMarkerView?.MouseOver(____mouseOverFormation);
@@ -827,7 +832,7 @@ namespace RTSCamera.CommandSystem.Patch
             WorldPosition formationRealEndingPosition,
             bool isFormationLayoutVertical, ref bool ___isDrawnThisFrame, OrderController ___PlayerOrderController)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(__instance.MissionScreen.SceneLayer.Input);
+            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
             if (!queueCommand)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
@@ -895,7 +900,7 @@ namespace RTSCamera.CommandSystem.Patch
         public static bool Prefix_UpdateFormationDrawingForFacingOrder(OrderTroopPlacer __instance,
             bool giveOrder, ref bool ___isDrawnThisFrame, OrderController ___PlayerOrderController)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(__instance.MissionScreen.SceneLayer.Input);
+            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
             if (!queueCommand)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
@@ -905,6 +910,13 @@ namespace RTSCamera.CommandSystem.Patch
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
             }
             return true;
+        }
+
+        public static void SetIsDraingFacing(bool isDrawingFacing)
+        {
+            if (_orderTroopPlacer == null)
+                return;
+            _orderTroopPlacer.IsDrawingFacing = isDrawingFacing;
         }
     }
 }

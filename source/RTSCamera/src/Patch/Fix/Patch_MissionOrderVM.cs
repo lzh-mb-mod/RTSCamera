@@ -19,7 +19,7 @@ namespace RTSCamera.Patch.Fix
         private static readonly PropertyInfo OrderSubTypeProperty = typeof(OrderItemVM).GetProperty("OrderSubType", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly PropertyInfo LastSelectedOrderItem = typeof(MissionOrderVM).GetProperty(nameof(MissionOrderVM.LastSelectedOrderItem),
                 BindingFlags.Instance | BindingFlags.Public);
-        private static readonly MethodInfo UpdateTitleOrdersKeyVisualVisibility = typeof(MissionOrderVM).GetMethod("UpdateTitleOrdersKeyVisualVisibility", BindingFlags.Instance | BindingFlags.NonPublic);
+        public static readonly MethodInfo UpdateTitleOrdersKeyVisualVisibility = typeof(MissionOrderVM).GetMethod("UpdateTitleOrdersKeyVisualVisibility", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static bool AllowEscape = true;
 
@@ -85,11 +85,42 @@ namespace RTSCamera.Patch.Fix
             AllowEscape = true;
         }
 
-        public static bool Prefix_OnEscape(MissionOrderVM __instance)
+        public static bool Prefix_OnEscape(MissionOrderVM __instance, MissionOrderVM.ActivationType ____currentActivationType, Dictionary<OrderSetType, OrderSetVM> ___OrderSetsWithOrdersByType)
         {
             // Do nothing during draging camera using right mouse button.
             return AllowEscape;
+            //if (!AllowEscape)
+            //    return false;
+            //if (!__instance.IsToggleOrderShown)
+            //    return false;
+            //if (____currentActivationType == MissionOrderVM.ActivationType.Hold)
+            //{
+            //    if (__instance.LastSelectedOrderItem == null)
+            //        return false;
+            //    UpdateTitleOrdersKeyVisualVisibility.Invoke(__instance, null);
+            //    ___OrderSetsWithOrdersByType[__instance.LastSelectedOrderSetType].ShowOrders = false;
+            //    LastSelectedOrderItem.SetValue(__instance, null);
+            //}
+            //else
+            //{
+            //    if (____currentActivationType != MissionOrderVM.ActivationType.Click)
+            //        return false;
+            //    LastSelectedOrderItem.SetValue(__instance, null);
+            //    if (__instance.LastSelectedOrderSetType != OrderSetType.None)
+            //    {
+            //        ___OrderSetsWithOrdersByType[__instance.LastSelectedOrderSetType].ShowOrders = false;
+            //        __instance.LastSelectedOrderSetType = OrderSetType.None;
+            //        UpdateTitleOrdersKeyVisualVisibility.Invoke(__instance, null);
+            //    }
+            //    else
+            //    {
+            //        __instance.LastSelectedOrderSetType = OrderSetType.None;
+            //        __instance.TryCloseToggleOrder();
+            //    }
+            //}
+            //return false;
         }
+
         public static bool Prefix_OnOrder(MissionOrderVM __instance, OrderItemVM orderItem, OrderSetType orderSetType, bool fromSelection, ref MissionOrderVM.ActivationType ____currentActivationType)
         {
 
@@ -145,9 +176,9 @@ namespace RTSCamera.Patch.Fix
             UpdateTitleOrdersKeyVisualVisibility.Invoke(__instance, null);
 
 
-            // TODO: don't need to close the order ui and open it again.
+            // TODO: don't close the order ui and open it again.
             // Keep orders UI open after issuing an order in free camera mode.
-            if (!__instance.IsToggleOrderShown && !__instance.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
+            if (!__instance.IsToggleOrderShown && !__instance.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
             {
                 __instance.OpenToggleOrder(false);
             }

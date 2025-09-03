@@ -473,7 +473,6 @@ namespace RTSCamera.CommandSystem.Logic
                 case CustomOrderType.FollowMainAgent:
                     break;
                 case CustomOrderType.SetTargetFormation:
-                    Utilities.Utility.DisplayFocusAttackMessage(new List<Formation> { formation }, order.TargetFormation);
                     formation.SetTargetFormation(order.TargetFormation);
                     break;
             }

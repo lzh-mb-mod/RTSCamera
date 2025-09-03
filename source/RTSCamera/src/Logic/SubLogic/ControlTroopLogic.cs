@@ -102,7 +102,7 @@ namespace RTSCamera.Logic.SubLogic
                     {
                         if (Mission.MainAgent != agent)
                             Mission.MainAgent = agent;
-                        _switchFreeCameraLogic.SwitchCamera();
+                        _switchFreeCameraLogic.SwitchCamera(true);
                     }
                     else
                     {

@@ -58,11 +58,11 @@ namespace RTSCamera.Patch
                 __result = int.MaxValue;
                 return false;
             }
-            if ((double)num <= 10.0)
-            {
-                __result = 0.0f;
-                return false;
-            }
+            //if ((double)num <= 10.0)
+            //{
+            //    __result = 0.0f;
+            //    return false;
+            //}
             float screenX = 0.0f;
             float screenY = 0.0f;
             float w = 0.0f;

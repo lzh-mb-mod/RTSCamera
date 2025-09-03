@@ -72,9 +72,10 @@ namespace RTSCamera
 
                 //_successPatch &= Patch_OrderOfBattleVM.Patch();
                 // below checked
-                _successPatch &= Patch_DeploymentMissionController.Patch();
+                _successPatch &= Patch_DeploymentMissionController.Patch(_harmony);
                 _successPatch &= Patch_LadderQueueManager.Patch(_harmony);
                 _successPatch &= Patch_MissionFormationTargetSelectionHandler.Patch(_harmony);
+                _successPatch &= Patch_FormationMarkerListPanel.Patch(_harmony);
                 _successPatch &= Patch_OrderTroopPlacer.Patch(_harmony);
                 _successPatch &= Patch_RangedSiegeWeaponView.Patch(_harmony);
                 _successPatch &= Patch_ArenaPracticeFightMissionController.Patch(_harmony);
@@ -83,6 +84,7 @@ namespace RTSCamera
                 _successPatch &= Patch_MissionBoundaryCrossingHandler.Patch(_harmony);
                 _successPatch &= Patch_MissionFormationMarkerVM.Patch(_harmony);
                 _successPatch &= Patch_MissionOrderVM.Patch(_harmony);
+                _successPatch &= Patch_MissionOrderTroopControllerVM.Patch(_harmony);
                 _successPatch &= Patch_CrosshairVM.Patch(_harmony);
                 _successPatch &= Patch_MissionGauntletSpectatorControl.Patch(_harmony);
                 _successPatch &= Patch_ScoreboardScreenWidget.Patch(_harmony);

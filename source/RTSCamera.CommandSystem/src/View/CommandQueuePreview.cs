@@ -21,6 +21,7 @@ namespace RTSCamera.CommandSystem.View
         public WorldPosition OrderPosition;
         public float? Width;
         public float? Depth;
+        public float? RightSideOffset;
         public Vec2 Direction;
         public List<WorldPosition> AgentPositions = new List<WorldPosition>();
 
@@ -81,11 +82,11 @@ namespace RTSCamera.CommandSystem.View
             return result;
         }
 
-        public void Update(Vec3 orderPosition, Vec2 direciton, float width, float depth)
+        public void Update(Vec3 orderPosition, Vec2 direciton, float width, float depth, float rightSideOffset)
         {
-            var frontBorder = 1f;
-            var leftBorder = 1f;
-            var rightBorder = 1f;
+            var frontBorder = 0.5f;
+            var leftBorder = 0.1f;
+            var rightBorder = 0.1f + rightSideOffset;
             var backBorder = 0f;
             var rightVec2 = direciton.RightVec();
             var heightOffset = -1f;
@@ -113,7 +114,7 @@ namespace RTSCamera.CommandSystem.View
             matrixFrame.origin = middlePosition;
             matrixFrame.rotation = Mat3.CreateMat3WithForward(lineDirection.ToVec3());
             //matrixFrame.Scale(new Vec3(10, length * 1.095424f, 1f));
-            matrixFrame.Scale(new Vec3(0.2f, length, 20f));
+            matrixFrame.Scale(new Vec3(0.2f, length, 100f));
             return matrixFrame;
         }
 
@@ -313,7 +314,7 @@ namespace RTSCamera.CommandSystem.View
                     if (order.Width != null && order.Depth != null &&
                         _config.CommandQueueFormationShapeShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueFormationShapeShowMode == ShowMode.FreeCameraOnly)
                     {
-                        AddFormationShape(formationShapeIndex, arrowEnd, order.Direction, order.Width.Value, order.Depth.Value);
+                        AddFormationShape(formationShapeIndex, arrowEnd, order.Direction, order.Width.Value, order.Depth.Value, order.RightSideOffset ?? 0);
                         ++formationShapeIndex;
                     }
                     if (_config.CommandQueueFlagShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueFlagShowMode == ShowMode.FreeCameraOnly)
@@ -369,11 +370,20 @@ namespace RTSCamera.CommandSystem.View
 
         private OrderPreviewData CollectOrderPreviewData(OrderInQueue order, Formation formation)
         {
+            var movementOrder = Patch_OrderController.GetFormationVirtualMovementorder(formation);
+            var facingOrder = Patch_OrderController.GetFormationVirtualFacingOrder(formation);
+            switch (facingOrder)
+            {
+                case OrderType.LookAtEnemy:
+                    var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
+                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
+                    break;
+            }
             switch (order.CustomOrderType)
             {
                 case CustomOrderType.Original:
                     {
-                        switch (order.OrderType)
+                        switch (movementOrder)
                         {
                             case OrderType.MoveToLineSegment:
                             case OrderType.MoveToLineSegmentWithHorizontalLayout:
@@ -413,16 +423,17 @@ namespace RTSCamera.CommandSystem.View
                                     }
                                 }
                                 return null;
-                            case OrderType.LookAtEnemy:
-                                {
-                                    var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
-                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
-                                    return CollectOrderPreviewData(formation, true);
-                                }
+                            //case OrderType.LookAtEnemy:
+                            //    {
+                            //        var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
+                            //        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
+                            //        return CollectOrderPreviewData(formation, true);
+                            //    }
                             case OrderType.FollowMe:
                                 {
                                     var targetPosition = Patch_OrderController.GetFollowOrderPosition(formation, order.TargetAgent);
-                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
+                                    var direction = Patch_OrderController.GetFormationVirtualDirectionWhenFollowingAgent(formation, order.TargetAgent);
+                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, direction, null, null);
                                     return CollectOrderPreviewData(formation, true);
                                 }
                             case OrderType.FollowEntity:
@@ -448,11 +459,10 @@ namespace RTSCamera.CommandSystem.View
                                     Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
                                     return CollectOrderPreviewData(formation, true);
                                 }
-
-                            case OrderType.LookAtDirection:
-                                {
-                                    return CollectOrderPreviewData(formation, true);
-                                }
+                            //case OrderType.LookAtDirection:
+                            //    {
+                            //        return CollectOrderPreviewData(formation, true);
+                            //    }
                             case OrderType.Advance:
                                 {
                                     var targetPosition = Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPosition.WorldPositionEnforcedCache.None, order.TargetFormation);
@@ -529,7 +539,7 @@ namespace RTSCamera.CommandSystem.View
                 agentPositionEntity.FadeIn();
         }
 
-        private void AddFormationShape(int index, Vec3 orderPosition, Vec2 direciton, float width, float depth)
+        private void AddFormationShape(int index, Vec3 orderPosition, Vec2 direciton, float width, float depth, float rightSideOffset)
         {
             while (_formationShapeEntities.Count <= index)
             {
@@ -540,7 +550,7 @@ namespace RTSCamera.CommandSystem.View
 
             var formationShapeEntity = _formationShapeEntities[index];
 
-            formationShapeEntity.Update(orderPosition, direciton, width, depth);
+            formationShapeEntity.Update(orderPosition, direciton, width, depth, rightSideOffset);
         }
 
         private void AddOrderPositionFlag(int index, Vec3 groundPosition, Vec2 direction, float alpha)
@@ -692,14 +702,15 @@ namespace RTSCamera.CommandSystem.View
             }
         }
 
-        private OrderPreviewData CollectOrderPreviewData(Formation formation, bool includeFormatioShape)
+        private OrderPreviewData CollectOrderPreviewData(Formation formation, bool includeFormationShape)
         {
-            float? previeweWidth = null, previewDepth = null;
-            if (includeFormatioShape)
+            float? previeweWidth = null, previewDepth = null, previewRightSideOffset = null;
+            if (includeFormationShape)
             {
-                Patch_OrderController.GetFormationVirtualShape(formation, out var width, out var depth);
+                Patch_OrderController.GetFormationVirtualShape(formation, out var width, out var depth, out var rightSideOffset);
                 previeweWidth = width;
                 previewDepth = depth;
+                previewRightSideOffset = rightSideOffset;
             }
             if (_showAgentFrames)
             {
@@ -712,7 +723,8 @@ namespace RTSCamera.CommandSystem.View
                     OrderPosition = Patch_OrderController.GetFormationVirtualPosition(formation),
                     Direction = Patch_OrderController.GetFormationVirtualDirection(formation),
                     Width = previeweWidth,
-                    Depth = previewDepth
+                    Depth = previewDepth,
+                    RightSideOffset = previewRightSideOffset
                 };
             }
             else
@@ -722,7 +734,8 @@ namespace RTSCamera.CommandSystem.View
                     OrderPosition = Patch_OrderController.GetFormationVirtualPosition(formation),
                     Direction = Patch_OrderController.GetFormationVirtualDirection(formation),
                     Width = previeweWidth,
-                    Depth = previewDepth
+                    Depth = previewDepth,
+                    RightSideOffset = previewRightSideOffset
                 };
             }
         }

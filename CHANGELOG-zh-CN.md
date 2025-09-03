@@ -1,7 +1,16 @@
 # 改动日志
+
+## [v5.1.9]
+### 新增
+- 支持在点击开战或朝向按钮的同时按住Alt键，来指定目标。
+
+### 修复
+- 修复多个关于命令预览的问题。
+
+- 修复部署后玩家可能卡在走路模式的问题。
+
 ## [v5.1.8] - 2025-09-01
 ### 修复
-- Fix the issue that in arena practice fight, ground marker is shown with black color.
 
 - 修复在竞技场练习战斗中，角色脚下标记显示出黑色的问题。
 

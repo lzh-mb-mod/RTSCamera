@@ -1,5 +1,14 @@
 # Changelog
 
+## [v5.1.9]
+### Added
+- Support targeting when clicking advance or facing button by holding Alt.
+
+### Fixed
+- Fix several order position preview issues.
+
+- Fix the issue that player may be stuck in walk mode after deployment.
+
 ## [v5.1.8] - 2025-09-01
 ### Fixed
 - Fix the issue that in arena practice fight, ground marker is shown with black color.

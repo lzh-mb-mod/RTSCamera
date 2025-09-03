@@ -21,6 +21,9 @@ namespace RTSCamera.CommandSystem.Patch
         private static FieldInfo _focusedFormationsCache = typeof(MissionOrderVM).GetField("_focusedFormationsCache", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static bool _patched;
+
+        public static OrderSubType OrderToSelectTarget = OrderSubType.None;
+
         public static bool Patch(Harmony harmony)
         {
             try
@@ -34,6 +37,15 @@ namespace RTSCamera.CommandSystem.Patch
                         BindingFlags.Public | BindingFlags.Instance),
                     transpiler: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(
                         nameof(Transpile_ApplySelectedOrder), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    AccessTools.PropertyGetter(typeof(MissionOrderVM), nameof(MissionOrderVM.IsFacingSubOrdersShown)),
+                    prefix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(
+                        nameof(Prefix_GetIsFacingSubOrdersShown), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(MissionOrderVM).GetMethod(nameof(MissionOrderVM.OnEscape),
+                        BindingFlags.Instance | BindingFlags.Public),
+                    prefix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Prefix_OnEscape),
+                        BindingFlags.Static | BindingFlags.Public), after: new string[] { "RTSCameraPatch" }));
                 return true;
             }
             catch (Exception e)
@@ -122,7 +134,7 @@ namespace RTSCamera.CommandSystem.Patch
             var missionScreen = Utility.GetMissionScreen();
             skipNativeOrder = false;
             var selectedFormations = __instance.OrderController.SelectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
+            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
             if (!queueCommand)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(selectedFormations));
@@ -131,12 +143,18 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(selectedFormations));
             }
+            OrderSubType orderSubType = (OrderSubType)_orderSubType.GetValue(__instance.LastSelectedOrderItem);
+            bool isSelectTargetForMouseClickingKeyDown = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectTargetForMouseClicking).IsKeyDownInOrder();
+            if (!isSelectTargetForMouseClickingKeyDown)
+            {
+                OrderToSelectTarget = OrderSubType.None;
+            }
             var orderToAdd = new OrderInQueue
             {
                 SelectedFormations = selectedFormations
             };
             MBReadOnlyList<Formation> focusedFormations = null;
-            switch ((OrderSubType)_orderSubType.GetValue(__instance.LastSelectedOrderItem))
+            switch (orderSubType)
             {
                 case OrderSubType.None:
                     return null;
@@ -181,6 +199,13 @@ namespace RTSCamera.CommandSystem.Patch
                     orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                     break;
                 case OrderSubType.Advance:
+                    if (isSelectTargetForMouseClickingKeyDown)
+                    {
+                        // Allows to click enemy to select target to advance to.
+                        OrderToSelectTarget = OrderSubType.Advance;
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     orderToAdd.OrderType = OrderType.Advance;
                     focusedFormations = (MBReadOnlyList<Formation>)_focusedFormationsCache.GetValue(__instance);
                     if (focusedFormations != null && focusedFormations.Count > 0)
@@ -295,6 +320,13 @@ namespace RTSCamera.CommandSystem.Patch
                     // see OrderItemVM.OrderSelectionState
                     if (__instance.LastSelectedOrderItem.SelectionState == 3)
                     {
+                        if (isSelectTargetForMouseClickingKeyDown)
+                        {
+                            // Allows to click ground to select direction to facing to.
+                            OrderToSelectTarget = OrderSubType.ActivationFaceDirection;
+                            skipNativeOrder = true;
+                            return null;
+                        }
                         orderToAdd.OrderType = OrderType.LookAtDirection;
                     }
                     else
@@ -380,6 +412,13 @@ namespace RTSCamera.CommandSystem.Patch
                 case OrderSubType.ToggleTransfer:
                     return null;
                 case OrderSubType.ActivationFaceDirection:
+                    if (isSelectTargetForMouseClickingKeyDown)
+                    {
+                        // Allows to click ground to select direction to facing to.
+                        OrderToSelectTarget = OrderSubType.ActivationFaceDirection;
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     orderToAdd.OrderType = OrderType.LookAtDirection;
                     if (queueCommand)
                     {
@@ -424,6 +463,27 @@ namespace RTSCamera.CommandSystem.Patch
                 CommandQueueLogic.CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(order.SelectedFormations));
             }
             //__instance.OrderController.SetOrder(order.OrderType);
+        }
+
+        public static bool Prefix_GetIsFacingSubOrdersShown(MissionOrderVM __instance, ref bool __result)
+        {
+            if (OrderToSelectTarget == OrderSubType.ActivationFaceDirection)
+            {
+                __result = true;
+                Patch_OrderTroopPlacer.SetIsDraingFacing(true);
+                return false;
+            }
+            return true;
+        }
+
+        public static bool Prefix_OnEscape(MissionOrderVM __instance)
+        {
+            if (OrderToSelectTarget != OrderSubType.None)
+            {
+                OrderToSelectTarget = OrderSubType.None;
+                return false;
+            }
+            return true;
         }
     }
 }

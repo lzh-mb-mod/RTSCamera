@@ -111,19 +111,16 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _isFreeCamera = freeCamera;
             if (_isOrderShown)
             {
-                if (_isFreeCamera)
+                bool shouldHighlight = _isFreeCamera && HighlightEnabledInRtsMode() || !_isFreeCamera && HighlightEnabledInCharacterMode();
+                if (shouldHighlight)
                 {
-                    if (HighlightEnabledInRtsMode())
-                        SetFocusColor();
+                    SetFocusColor();
                 }
                 else
                 {
-                    if (!HighlightEnabledInCharacterMode())
-                    {
-                        ClearAllySelectedColor();
-                        ClearEnemyFocusColor();
-                        ClearAllyAsTargetColor();
-                    }
+                    ClearAllySelectedColor();
+                    ClearEnemyFocusColor();
+                    ClearAllyAsTargetColor();
                 }
             }
         }

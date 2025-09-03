@@ -1,4 +1,6 @@
-﻿using RTSCamera.CommandSystem.Config;
+﻿using Microsoft.VisualBasic;
+using NetworkMessages.FromClient;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
@@ -266,7 +268,7 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
             //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
-            var queueOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
+            var queueOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
             if (!queueOrder)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(playerController.SelectedFormations));
@@ -312,6 +314,7 @@ namespace RTSCamera.CommandSystem.Utilities
                     // In current game version, set ChargeWithTarget has no effect except voice and gesture
                     // so movement order will not be changed here
                     playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
+                    DisplayFocusAttackMessage(playerController.SelectedFormations, order.TargetFormation);
                 }
                 else
                 {
@@ -383,7 +386,7 @@ namespace RTSCamera.CommandSystem.Utilities
                     case OrderType.ChargeWithTarget:
                         {
                             var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
-                            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder(missionScreen.SceneLayer.Input);
+                            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
                             return queueCommand ? Patch_OrderController.GetFormationVirtualPosition(formation) : formation.QuerySystem.MedianPosition;
                         }
                     case OrderType.Advance:

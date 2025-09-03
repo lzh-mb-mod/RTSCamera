@@ -1,27 +1,23 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
-using RTSCamera.Logic;
 using System;
 using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.GauntletUI.Mission;
 
 namespace RTSCamera.Patch
 {
     public class Patch_DeploymentMissionController
     {
-        private static readonly Harmony Harmony = new Harmony(RTSCameraSubModule.ModuleId + "_" + nameof(Patch_DeploymentMissionController));
-
         private static bool _patched;
-        public static bool Patch()
+        public static bool Patch(Harmony harmony)
         {
             try
             {
                 if (_patched)
                     return false;
                 _patched = true;
-                Harmony.Patch(
+                harmony.Patch(
                    typeof(DeploymentMissionController).GetMethod("FinishDeployment",
                        BindingFlags.Instance | BindingFlags.Public),
                    postfix: new HarmonyMethod(typeof(Patch_DeploymentMissionController).GetMethod(
