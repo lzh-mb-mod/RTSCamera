@@ -60,6 +60,9 @@
     <string id="RTSCameraCommandSystem_hollow_square_formation" text="启用空心方阵" />
     <string id="RTSCameraCommandSystem_hollow_square_formation_hint" text="是否为玩家启用空心方阵。" />
 
+    <string id="RTSCamera_order_ui_clickable" text="命令界面可点击" />
+    <string id="RTSCamera_order_ui_clickable_hint" text="让命令界面可点击。重启游戏来生效。" />
+
     <string id="RTSCameraCommandSystem_square_formation_corner_Fix" text="方阵角落修正" />
     <string id="RTSCameraCommandSystem_square_formation_corner_Fix_hint" text="启用后，位于方阵角落的士兵将面向方阵的对角线方向，以确保更好的防御覆盖和更自然的外观。" />
 
@@ -72,6 +75,8 @@
     <string id="RTSCameraCommandSystem_keep_movement_order_hint" text="按下以在攻击敌方编队的同时维持之前的移动指令不变。" />
     <string id="RTSCameraCommandSystem_formation_lock_movement" text="切换整体行军" />
     <string id="RTSCameraCommandSystem_formation_lock_movement_hint" text="按住以启用/关闭整体行军" />
+    <string id="RTSCameraCommandSystem_select_target_for_command" text="选择指令目标" />
+    <string id="RTSCameraCommandSystem_select_target_for_command_hint" text="按住以在开战/朝向指令中选择目标。" />
     <string id="RTSCameraCommandSystem_command_queue" text="命令队列" />
     <string id="RTSCameraCommandSystem_command_queue_hint" text="将命令添加到队列。士兵会一个个顺序执行队列中的命令。" />
     <string id="RTSCameraCommandSystem_command_keep_formation_width" text="保持编队宽度" />

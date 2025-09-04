@@ -341,11 +341,6 @@ namespace RTSCamera.Config
                         menuManager.RequestToCloseMenu();
                     }));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_order_ui_clickable"),
-                    GameTexts.FindText("str_rts_camera_order_ui_clickable_hint"),
-                    () => RTSCameraConfig.Get().OrderUIClickable,
-                    b => RTSCameraConfig.Get().OrderUIClickable = UIConfig.DoNotUseGeneratedPrefabs = b));
-                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_switch_camera_on_ordering"),
                     GameTexts.FindText("str_rts_camera_switch_camera_on_ordering_hint"),
                     () => RTSCameraConfig.Get().SwitchCameraOnOrdering,

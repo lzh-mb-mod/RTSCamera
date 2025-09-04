@@ -52,6 +52,7 @@ namespace RTSCamera.CommandSystem.Patch
             MissionOrderVM ____missionOrder)
         {
             CloseFacingOrderSet(____missionOrder);
+            DisableSelectTargetMode();
             return true;
         }
 
@@ -68,6 +69,11 @@ namespace RTSCamera.CommandSystem.Patch
                 if (missionOrderVM.LastSelectedOrderSetType == OrderSetType.Facing)
                     missionOrderVM.LastSelectedOrderSetType = OrderSetType.None;
             }
+        }
+
+        private static void DisableSelectTargetMode()
+        {
+            Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
         }
     }
 }

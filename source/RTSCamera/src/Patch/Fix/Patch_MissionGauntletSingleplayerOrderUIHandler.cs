@@ -152,6 +152,7 @@ namespace RTSCamera.Patch.Fix
                 (IsAnyDeployment(__instance) || ____dataSource.TroopController.IsTransferActive ||
                  ____dataSource.IsToggleOrderShown && (__instance.Input.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null)) &&
                 !_rightButtonDraggingMode && !_earlyDraggingMode;
+            var sceneLayer = __instance.MissionScreen.SceneLayer;
             if (mouseVisibility != ____gauntletLayer.InputRestrictions.MouseVisibility)
             {
                 ____gauntletLayer.InputRestrictions.SetInputRestrictions(mouseVisibility,

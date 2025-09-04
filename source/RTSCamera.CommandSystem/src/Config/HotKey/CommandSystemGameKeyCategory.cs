@@ -13,7 +13,7 @@ namespace RTSCamera.CommandSystem.Config.HotKey
         SelectFormation,
         KeepMovementOrder,
         FormationLockMovement,
-        SelectTargetForMouseClicking,
+        SelectTargetForCommand,
         CommandQueue,
         KeepFormationWidth,
         NumberOfGameKeyEnums
@@ -73,14 +73,19 @@ namespace RTSCamera.CommandSystem.Config.HotKey
                             InputKey.RightAlt
                         })
                 }));
-            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.SelectTargetForMouseClicking,
-                nameof(GameKeyEnum.SelectTargetForMouseClicking),
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.SelectTargetForCommand,
+                nameof(GameKeyEnum.SelectTargetForCommand),
                 CategoryId, new List<GameKeySequenceAlternative>()
                 {
                     new GameKeySequenceAlternative(
                         new List<InputKey>()
                         {
                             InputKey.LeftAlt
+                        }),
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.RightAlt
                         })
                 }));
             result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.CommandQueue,

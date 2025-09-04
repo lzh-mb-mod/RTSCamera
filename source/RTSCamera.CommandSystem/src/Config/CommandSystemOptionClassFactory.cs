@@ -11,6 +11,7 @@ using RTSCamera.CommandSystem.View;
 using System;
 using System.Collections.Generic;
 using TaleWorlds.Core;
+using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Config
@@ -148,6 +149,11 @@ namespace RTSCamera.CommandSystem.Config
                     {
                         CommandSystemConfig.Get().SquareFormationCornerFix = b;
                     }));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable"),
+                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable_hint"),
+                    () => CommandSystemConfig.Get().OrderUIClickable,
+                    b => CommandSystemConfig.Get().OrderUIClickable = UIConfig.DoNotUseGeneratedPrefabs = b));
                 //commandOptionCategory.AddOption(new NumericOptionViewModel(
                 //    new TaleWorlds.Localization.TextObject("r"), null,
                 //    () => CommandQueuePreview.r, f =>

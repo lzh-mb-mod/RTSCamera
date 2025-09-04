@@ -519,10 +519,10 @@ namespace RTSCamera.CommandSystem.Patch
                 }
                 else
                 {
-                    //alpha = OrderPositionEntityPreviewAlpha;
-                    //orderPositionEntity.SetVisibilityExcludeParents(true);
-                    //orderPositionEntity.SetAlpha(alpha);
-                    orderPositionEntity.FadeIn();
+                    alpha = OrderPositionEntityPreviewAlpha;
+                    orderPositionEntity.SetVisibilityExcludeParents(true);
+                    orderPositionEntity.SetAlpha(alpha);
+                    //orderPositionEntity.FadeIn();
                 }
 
                 return false;

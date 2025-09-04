@@ -97,6 +97,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool SquareFormationCornerFix = true;
 
+        public bool OrderUIClickable = true;
+
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;
@@ -117,6 +119,7 @@ namespace RTSCamera.CommandSystem.Config
             HasHintDisplayed = other.HasHintDisplayed;
             HollowSquare = other.HollowSquare;
             SquareFormationCornerFix = other.SquareFormationCornerFix;
+            OrderUIClickable = other.OrderUIClickable;
         }
 
         public static void OnMenuClosed()

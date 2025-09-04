@@ -361,17 +361,23 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             if (Patch_OrderController.LivePreviewFormationChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
             {
-                switch (formationChange.MovementOrderType)
-                {
-                    case OrderType.Charge:
-                    case OrderType.ChargeWithTarget:
-                    case OrderType.Advance:
-                    case OrderType.FollowEntity:
-                    case OrderType.AttackEntity:
-                    case OrderType.FollowMe:
-                    case OrderType.FallBack:
-                        return true;
-                }
+                return IsMovementOrderMoving(formationChange.MovementOrderType);
+            }
+            return false;
+        }
+
+        public static bool IsMovementOrderMoving(OrderType? movementOrderType)
+        {
+            switch (movementOrderType)
+            {
+                case OrderType.Charge:
+                case OrderType.ChargeWithTarget:
+                case OrderType.Advance:
+                case OrderType.FollowEntity:
+                case OrderType.AttackEntity:
+                case OrderType.FollowMe:
+                case OrderType.FallBack:
+                    return true;
             }
             return false;
         }
@@ -391,7 +397,7 @@ namespace RTSCamera.CommandSystem.Utilities
                         }
                     case OrderType.Advance:
                         {
-                            return Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPositionEnforcedCache.None, formationChange.TargetFormation);
+                            return Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPositionEnforcedCache.NavMeshVec3, formationChange.TargetFormation);
                         }
                     case OrderType.FollowEntity:
                         {
@@ -410,7 +416,7 @@ namespace RTSCamera.CommandSystem.Utilities
                         }
                     case OrderType.FallBack:
                         {
-                            return Patch_OrderController.GetFallbackOrderPosition(formation, WorldPositionEnforcedCache.None, formationChange.TargetFormation);
+                            return Patch_OrderController.GetFallbackOrderPosition(formation, WorldPositionEnforcedCache.NavMeshVec3, formationChange.TargetFormation);
                         }
                 }
             }

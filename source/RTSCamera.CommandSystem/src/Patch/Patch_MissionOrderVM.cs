@@ -11,6 +11,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera.CommandSystem.Patch
@@ -19,6 +20,13 @@ namespace RTSCamera.CommandSystem.Patch
     {
         private static PropertyInfo _orderSubType = typeof(OrderItemVM).GetProperty("OrderSubType", BindingFlags.Instance | BindingFlags.NonPublic);
         private static FieldInfo _focusedFormationsCache = typeof(MissionOrderVM).GetField("_focusedFormationsCache", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly PropertyInfo LastSelectedOrderSetType =
+            typeof(MissionOrderVM).GetProperty(nameof(MissionOrderVM.LastSelectedOrderSetType),
+                BindingFlags.Instance | BindingFlags.Public);
+        private static readonly PropertyInfo OrderSubTypeProperty = typeof(OrderItemVM).GetProperty("OrderSubType", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly PropertyInfo LastSelectedOrderItem = typeof(MissionOrderVM).GetProperty(nameof(MissionOrderVM.LastSelectedOrderItem),
+                BindingFlags.Instance | BindingFlags.Public);
+        public static readonly MethodInfo UpdateTitleOrdersKeyVisualVisibility = typeof(MissionOrderVM).GetMethod("UpdateTitleOrdersKeyVisualVisibility", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static bool _patched;
 
@@ -46,6 +54,11 @@ namespace RTSCamera.CommandSystem.Patch
                         BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Prefix_OnEscape),
                         BindingFlags.Static | BindingFlags.Public), after: new string[] { "RTSCameraPatch" }));
+                harmony.Patch(
+                    typeof(MissionOrderVM).GetMethod("OnOrder",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Prefix_OnOrder),
+                        BindingFlags.Static | BindingFlags.Public)));
                 return true;
             }
             catch (Exception e)
@@ -144,7 +157,7 @@ namespace RTSCamera.CommandSystem.Patch
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(selectedFormations));
             }
             OrderSubType orderSubType = (OrderSubType)_orderSubType.GetValue(__instance.LastSelectedOrderItem);
-            bool isSelectTargetForMouseClickingKeyDown = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectTargetForMouseClicking).IsKeyDownInOrder();
+            bool isSelectTargetForMouseClickingKeyDown = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectTargetForCommand).IsKeyDownInOrder();
             if (!isSelectTargetForMouseClickingKeyDown)
             {
                 OrderToSelectTarget = OrderSubType.None;
@@ -320,7 +333,8 @@ namespace RTSCamera.CommandSystem.Patch
                     // see OrderItemVM.OrderSelectionState
                     if (__instance.LastSelectedOrderItem.SelectionState == 3)
                     {
-                        if (isSelectTargetForMouseClickingKeyDown)
+                        // OrderLayoutType 0 means default layout without facing order set.
+                        if (BannerlordConfig.OrderLayoutType == 0 && isSelectTargetForMouseClickingKeyDown)
                         {
                             // Allows to click ground to select direction to facing to.
                             OrderToSelectTarget = OrderSubType.ActivationFaceDirection;
@@ -338,19 +352,20 @@ namespace RTSCamera.CommandSystem.Patch
                         Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, missionScreen);
                     }
                     Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(orderToAdd.OrderType, selectedFormations);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                     if (!queueCommand)
                     {
                         if (orderToAdd.OrderType == OrderType.LookAtDirection)
                         {
                             __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false));
+                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
                         else
                         {
+                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                             __instance.OrderController.SetOrder(OrderType.LookAtEnemy);
                         }
                         skipNativeOrder = true;
-                        return null;
+                        break;
                     }
                     break;
                 case OrderSubType.ToggleFire:
@@ -420,12 +435,19 @@ namespace RTSCamera.CommandSystem.Patch
                         return null;
                     }
                     orderToAdd.OrderType = OrderType.LookAtDirection;
+                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtDirection, selectedFormations);
+
                     if (queueCommand)
                     {
                         Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, missionScreen);
                     }
-                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtDirection, selectedFormations);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                    else
+                    {
+                        __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false));
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                        skipNativeOrder = true;
+                        break;
+                    }
                     break;
                 case OrderSubType.FaceEnemy:
                     orderToAdd.OrderType = OrderType.LookAtEnemy;
@@ -484,6 +506,85 @@ namespace RTSCamera.CommandSystem.Patch
                 return false;
             }
             return true;
+        }
+
+        public static bool Prefix_OnOrder(MissionOrderVM __instance, OrderItemVM orderItem, OrderSetType orderSetType, bool fromSelection, ref MissionOrderVM.ActivationType ____currentActivationType)
+        {
+
+            if (__instance.LastSelectedOrderItem == orderItem && fromSelection)
+                return false;
+            (typeof(MissionOrderVM).GetField("_onBeforeOrderDelegate", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance) as OnBeforeOrderDelegate).Invoke();
+            if (__instance.LastSelectedOrderItem != null)
+                __instance.LastSelectedOrderItem.IsSelected = false;
+            //if (orderItem.IsTitle)
+            //    this.LastSelectedOrderSetType = orderSetType;
+            LastSelectedOrderItem.SetValue(__instance, orderItem);
+
+            var orderSetsWithOrdersByType = typeof(MissionOrderVM).GetField("OrderSetsWithOrdersByType", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance) as Dictionary<OrderSetType, OrderSetVM>;
+
+            if (__instance.LastSelectedOrderItem != null)
+            {
+                __instance.LastSelectedOrderItem.IsSelected = true;
+                if ((OrderSubType)OrderSubTypeProperty.GetValue(__instance.LastSelectedOrderItem) == OrderSubType.None)
+                {
+                    if (orderSetsWithOrdersByType.ContainsKey(__instance.LastSelectedOrderSetType))
+                        orderSetsWithOrdersByType[__instance.LastSelectedOrderSetType].ShowOrders = false;
+                    LastSelectedOrderSetType.SetValue(__instance, orderSetType);
+                    orderSetsWithOrdersByType[__instance.LastSelectedOrderSetType].ShowOrders = true;
+                }
+            }
+            if (__instance.LastSelectedOrderItem != null && (OrderSubType)OrderSubTypeProperty.GetValue(__instance.LastSelectedOrderItem) != OrderSubType.None && !fromSelection)
+            {
+                OrderSetVM orderSetVm;
+                if ((OrderSubType)OrderSubTypeProperty.GetValue(__instance.LastSelectedOrderItem) == OrderSubType.Return && orderSetsWithOrdersByType.TryGetValue(__instance.LastSelectedOrderSetType, out orderSetVm))
+                {
+                    orderSetVm.ShowOrders = false;
+                    UpdateTitleOrdersKeyVisualVisibility.Invoke(__instance, null);
+                    LastSelectedOrderSetType.SetValue(__instance, OrderSetType.None);
+                }
+                else if (____currentActivationType == MissionOrderVM.ActivationType.Hold && __instance.LastSelectedOrderSetType != OrderSetType.None)
+                {
+                    __instance.ApplySelectedOrder();
+                    if (__instance.LastSelectedOrderItem != null && __instance.LastSelectedOrderSetType != OrderSetType.None)
+                    {
+                        orderSetsWithOrdersByType[__instance.LastSelectedOrderSetType].ShowOrders = false;
+                        UpdateTitleOrdersKeyVisualVisibility.Invoke(__instance, null);
+                        LastSelectedOrderItem.SetValue(__instance, (object)null);
+                    }
+                    __instance.OrderSets.ApplyActionOnAllItems((Action<OrderSetVM>)(s => s.Orders.ApplyActionOnAllItems((Action<OrderItemVM>)(o => o.IsSelected = false))));
+                }
+                else if (__instance.IsDeployment)
+                    __instance.ApplySelectedOrder();
+                else
+                    __instance.TryCloseToggleOrder();
+            }
+            if (fromSelection)
+                return false;
+            UpdateTitleOrdersKeyVisualVisibility.Invoke(__instance, null);
+
+
+            // TODO: don't close the order ui and open it again.
+            // Keep orders UI open after issuing an order in free camera mode.
+            //if (!__instance.IsToggleOrderShown && !__instance.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
+            //{
+            //    __instance.OpenToggleOrder(false);
+            //}
+            //var orderTroopPlacer = Mission.Current.GetMissionBehavior<OrderTroopPlacer>();
+            //if (orderTroopPlacer != null)
+            //{
+            //    typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)
+            //        .Invoke(orderTroopPlacer, null);
+            //}
+            //var orderUIHandler = Mission.Current.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
+            //if (orderUIHandler == null)
+            //{
+            //    return false;
+            //}
+            //var missionOrderVM = typeof(MissionGauntletSingleplayerOrderUIHandler).GetField("_dataSource", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(orderUIHandler) as MissionOrderVM;
+            //var setActiveOrders = typeof(MissionOrderVM).GetMethod("SetActiveOrders", BindingFlags.Instance | BindingFlags.NonPublic);
+            //setActiveOrders.Invoke(missionOrderVM, new object[] { });
+
+            return false;
         }
     }
 }

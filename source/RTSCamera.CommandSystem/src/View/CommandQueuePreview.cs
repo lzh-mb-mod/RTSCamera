@@ -24,7 +24,6 @@ namespace RTSCamera.CommandSystem.View
         public float? RightSideOffset;
         public Vec2 Direction;
         public List<WorldPosition> AgentPositions = new List<WorldPosition>();
-
     }
 
     public struct ArrowEntity
@@ -267,6 +266,8 @@ namespace RTSCamera.CommandSystem.View
                 var selectedFormations = Mission.PlayerTeam.PlayerOrderController.SelectedFormations;
                 foreach (var formation in selectedFormations)
                 {
+                    if (formation.CountOfUnits == 0)
+                        continue;
                     var commandQueuePreviewData = CollectCommandQueuePreviewData(formation);
                     _commandQueuePreviewData[formation] = commandQueuePreviewData;
                 }
@@ -344,6 +345,9 @@ namespace RTSCamera.CommandSystem.View
             var result = new CommandQueueFormationPreviewData();
             result.Formation = formation;
 
+            // clear saved moving target
+            Patch_OrderController.ClearFormationLivePositionForPreview(formation);
+
             if (CommandQueueLogic.PendingOrders.TryGetValue(formation, out var pendingOrder))
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(new List<Formation> { formation }));
@@ -368,142 +372,212 @@ namespace RTSCamera.CommandSystem.View
             return result;
         }
 
+        private bool ShouldIncludeFormationShape(OrderType orderType)
+        {
+            switch (orderType)
+            {
+                case OrderType.MoveToLineSegment:
+                case OrderType.MoveToLineSegmentWithHorizontalLayout:
+                case OrderType.Move:
+                case OrderType.FollowMe:
+                case OrderType.FollowEntity:
+                case OrderType.AttackEntity:
+                case OrderType.PointDefence:
+                case OrderType.LookAtDirection:
+                case OrderType.LookAtEnemy:
+                case OrderType.Advance:
+                case OrderType.FallBack:
+                    {
+                        return true;
+                    }
+                case OrderType.Charge:
+                case OrderType.ChargeWithTarget:
+                case OrderType.StandYourGround:
+                case OrderType.Retreat:
+                case OrderType.ArrangementLine:
+                case OrderType.ArrangementCloseOrder:
+                case OrderType.ArrangementLoose:
+                case OrderType.ArrangementCircular:
+                case OrderType.ArrangementSchiltron:
+                case OrderType.ArrangementVee:
+                case OrderType.ArrangementColumn:
+                case OrderType.ArrangementScatter:
+                case OrderType.FireAtWill:
+                case OrderType.HoldFire:
+                case OrderType.Mount:
+                case OrderType.Dismount:
+                case OrderType.AIControlOn:
+                case OrderType.AIControlOff:
+                    {
+                        return false;
+                    }
+                default:
+                    Utility.DisplayMessage("Error: unexpected order type");
+                    break;
+            }
+            return false;
+        }
+
+        private static bool UpdateMovingOrderTarget(Formation formation, OrderType? movementOrder, WorldPosition? orderPosition,  Formation targetFormation, Agent targetAgent, IOrderable targetEntity)
+        {
+            switch (movementOrder)
+            {
+                case OrderType.MoveToLineSegment:
+                case OrderType.MoveToLineSegmentWithHorizontalLayout:
+                    {
+                        break;
+                    }
+                case OrderType.Move:
+                    {
+                        //Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, orderPosition, null, null, null);
+                        break;
+                    }
+                case OrderType.Charge:
+                case OrderType.ChargeWithTarget:
+                    {
+                        if (targetFormation == null)
+                            return false;
+                        var targetPosition = targetFormation.QuerySystem.MedianPosition;
+                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
+                        break;
+                    }
+                case OrderType.FollowMe:
+                    {
+                        if (targetAgent == null)
+                            return false;
+                        var targetPosition = Patch_OrderController.GetFollowOrderPosition(formation, targetAgent);
+                        var direction = Patch_OrderController.GetFormationVirtualDirectionWhenFollowingAgent(formation, targetAgent);
+                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, direction, null, null);
+                        break;
+                    }
+                case OrderType.FollowEntity:
+                    {
+                        if (targetEntity == null)
+                            return false;
+                        var waitEntity = (targetEntity as UsableMachine)?.WaitEntity;
+                        if (waitEntity == null)
+                            return false;
+                        Vec2 direction = Patch_OrderController.GetFollowEntityDirection(formation, waitEntity);
+                        var targetPosition = Patch_OrderController.GetFollowEntityOrderPosition(formation, waitEntity);
+                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, direction, null, null);
+                        break;
+                    }
+                case OrderType.AttackEntity:
+                    {
+                        if (targetEntity == null)
+                            return false;
+                        var missionObject = targetEntity as MissionObject;
+                        if (missionObject == null)
+                            return false;
+                        var gameEntity = missionObject.GameEntity;
+                        WorldPosition position = Patch_OrderController.GetAttackEntityWaitPosition(formation, gameEntity);
+                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
+                        break;
+                    }
+                case OrderType.PointDefence:
+                    {
+                        if (targetEntity == null)
+                            return false;
+                        var pointDefendable = targetEntity as IPointDefendable;
+                        if (pointDefendable == null)
+                            return false;
+                        var position = pointDefendable.MiddleFrame.Origin;
+                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
+                        break;
+                    }
+                case OrderType.Advance:
+                    {
+                        var targetPosition = Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPosition.WorldPositionEnforcedCache.NavMeshVec3, targetFormation);
+                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
+                        break;
+                    }
+                case OrderType.FallBack:
+                    {
+                        var targetPosition = Patch_OrderController.GetFallbackOrderPosition(formation, WorldPosition.WorldPositionEnforcedCache.NavMeshVec3, targetFormation);
+                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
+                        break;
+                    }
+                case OrderType.StandYourGround:
+                case OrderType.Retreat:
+                case OrderType.ArrangementLine:
+                case OrderType.ArrangementCloseOrder:
+                case OrderType.ArrangementLoose:
+                case OrderType.ArrangementCircular:
+                case OrderType.ArrangementSchiltron:
+                case OrderType.ArrangementVee:
+                case OrderType.ArrangementColumn:
+                case OrderType.ArrangementScatter:
+                case OrderType.FireAtWill:
+                case OrderType.HoldFire:
+                case OrderType.Mount:
+                case OrderType.Dismount:
+                case OrderType.AIControlOn:
+                case OrderType.AIControlOff:
+                    return false;
+                case null:
+                    return false;
+                default:
+                    Utility.DisplayMessage("Error: unexpected order type");
+                    return false;
+            }
+            return true;
+        }
+
         private OrderPreviewData CollectOrderPreviewData(OrderInQueue order, Formation formation)
         {
-            var movementOrder = Patch_OrderController.GetFormationVirtualMovementorder(formation);
             var facingOrder = Patch_OrderController.GetFormationVirtualFacingOrder(formation);
+            switch (order.CustomOrderType)
+            {
+                case CustomOrderType.Original:
+                    {
+                        switch (order.OrderType)
+                        {
+                            case OrderType.LookAtEnemy:
+                                {
+                                    if (order.VirtualFormationChanges.TryGetValue(formation, out var formationChange))
+                                    {
+                                        UpdateMovingOrderTarget(formation, formationChange.MovementOrderType, formationChange.WorldPosition, formationChange.TargetFormation, formationChange.TargetAgent, formationChange.TargetEntity);
+                                        var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
+                                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
+                                    }
+                                    return CollectOrderPreviewData(formation, ShouldIncludeFormationShape(order.OrderType));
+                                }
+                            case OrderType.LookAtDirection:
+                                {
+                                    if (order.VirtualFormationChanges.TryGetValue(formation, out var formationChange))
+                                    {
+                                        UpdateMovingOrderTarget(formation, formationChange.MovementOrderType, formationChange.WorldPosition, formationChange.TargetFormation, formationChange.TargetAgent, formationChange.TargetEntity);
+                                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, formationChange.Direciton, null, null);
+                                    }
+                                    return CollectOrderPreviewData(formation, ShouldIncludeFormationShape(order.OrderType));
+                                }
+                            default:
+                                UpdateFacingOrderForOtherOrder(facingOrder, formation);
+                                break;
+                        }
+                        break;
+                    }
+                default:
+                    UpdateFacingOrderForOtherOrder(facingOrder, formation);
+                    break;
+            }
+            UpdateMovingOrderTarget(formation, order.OrderType, order.PositionBegin, order.TargetFormation, order.TargetAgent, order.TargetEntity);
+            Patch_OrderController.SaveFormationLivePositionForPreview(formation, Patch_OrderController.GetFormationVirtualMedianPosition(formation));
+            return CollectOrderPreviewData(formation, ShouldIncludeFormationShape(order.OrderType));
+        }
+
+        private void UpdateFacingOrderForOtherOrder(OrderType facingOrder, Formation formation)
+        {
             switch (facingOrder)
             {
                 case OrderType.LookAtEnemy:
                     var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
                     Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
                     break;
+                case OrderType.LookAtDirection:
+                    // do nothing as the positon and direciton is already in order.VirtualFormationChanges
+                    break;
             }
-            switch (order.CustomOrderType)
-            {
-                case CustomOrderType.Original:
-                    {
-                        switch (movementOrder)
-                        {
-                            case OrderType.MoveToLineSegment:
-                            case OrderType.MoveToLineSegmentWithHorizontalLayout:
-                                {
-                                    if (order.IsLineShort)
-                                    {
-                                        switch (Patch_OrderController.GetFormationVirtualFacingOrder(formation))
-                                        {
-                                            case OrderType.LookAtEnemy:
-                                                var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
-                                                Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
-                                                break;
-                                            case OrderType.LookAtDirection:
-                                                // do nothing as the positon and direciton is already in order.VirtualFormationChanges
-                                                break;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // do nothing as the positon and direciton is already in order.VirtualFormationChanges
-                                    }
-                                    return CollectOrderPreviewData(formation, true);
-                                }
-                            case OrderType.Move:
-                                {
-                                    var position = order.PositionBegin;
-                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
-                                    return CollectOrderPreviewData(formation, true);
-                                }
-                            case OrderType.Charge:
-                            case OrderType.ChargeWithTarget:
-                                {
-                                    if (order.TargetFormation != null)
-                                    {
-                                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, order.TargetFormation.QuerySystem.MedianPosition, null, null, null);
-                                        return CollectOrderPreviewData(formation, false);
-                                    }
-                                }
-                                return null;
-                            //case OrderType.LookAtEnemy:
-                            //    {
-                            //        var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
-                            //        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
-                            //        return CollectOrderPreviewData(formation, true);
-                            //    }
-                            case OrderType.FollowMe:
-                                {
-                                    var targetPosition = Patch_OrderController.GetFollowOrderPosition(formation, order.TargetAgent);
-                                    var direction = Patch_OrderController.GetFormationVirtualDirectionWhenFollowingAgent(formation, order.TargetAgent);
-                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, direction, null, null);
-                                    return CollectOrderPreviewData(formation, true);
-                                }
-                            case OrderType.FollowEntity:
-                                {
-                                    var waitEntity = (order.TargetEntity as UsableMachine).WaitEntity;
-                                    Vec2 direction = Patch_OrderController.GetFollowEntityDirection(formation, waitEntity);
-                                    var targetPosition = Patch_OrderController.GetFollowEntityOrderPosition(formation, waitEntity);
-                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, direction, null, null);
-                                    return CollectOrderPreviewData(formation, true);
-                                }
-                            case OrderType.AttackEntity:
-                                {
-                                    var missionObject = order.TargetEntity as MissionObject;
-                                    var gameEntity = missionObject.GameEntity;
-                                    WorldPosition position = Patch_OrderController.GetAttackEntityWaitPosition(formation, gameEntity);
-                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
-                                    return CollectOrderPreviewData(formation, true);
-                                }
-                            case OrderType.PointDefence:
-                                {
-                                    var pointDefendable = order.TargetEntity as IPointDefendable;
-                                    var position = pointDefendable.MiddleFrame.Origin;
-                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
-                                    return CollectOrderPreviewData(formation, true);
-                                }
-                            //case OrderType.LookAtDirection:
-                            //    {
-                            //        return CollectOrderPreviewData(formation, true);
-                            //    }
-                            case OrderType.Advance:
-                                {
-                                    var targetPosition = Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPosition.WorldPositionEnforcedCache.None, order.TargetFormation);
-                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
-                                    return CollectOrderPreviewData(formation, true);
-                                }
-                            case OrderType.FallBack:
-                                {
-                                    var targetPosition = Patch_OrderController.GetFallbackOrderPosition(formation, WorldPosition.WorldPositionEnforcedCache.None, order.TargetFormation);
-                                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
-                                    return CollectOrderPreviewData(formation, true);
-                                }
-                            case OrderType.StandYourGround:
-                            case OrderType.Retreat:
-                            case OrderType.ArrangementLine:
-                            case OrderType.ArrangementCloseOrder:
-                            case OrderType.ArrangementLoose:
-                            case OrderType.ArrangementCircular:
-                            case OrderType.ArrangementSchiltron:
-                            case OrderType.ArrangementVee:
-                            case OrderType.ArrangementColumn:
-                            case OrderType.ArrangementScatter:
-                            case OrderType.FireAtWill:
-                            case OrderType.HoldFire:
-                            case OrderType.Mount:
-                            case OrderType.Dismount:
-                            case OrderType.AIControlOn:
-                            case OrderType.AIControlOff:
-                                return null;
-                            default:
-                                Utility.DisplayMessage("Error: unexpected order type");
-                                break;
-                        }
-                        break;
-                    }
-                case CustomOrderType.FollowMainAgent:
-                    return null;
-                case CustomOrderType.SetTargetFormation:
-                    return null;
-            }
-            return null;
         }
 
         private void AddAgentFrameEntity(int index, Vec3 groundPosition, float alpha)

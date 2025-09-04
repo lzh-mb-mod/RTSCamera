@@ -57,6 +57,9 @@
 
     <string id="RTSCameraCommandSystem_hollow_square_formation" text="Enable Hollow Square Formation" />
     <string id="RTSCameraCommandSystem_hollow_square_formation_hint" text="Whether to enable hollow square formation for player." />
+    
+    <string id="RTSCamera_order_ui_clickable" text="Order UI Clickable" />
+    <string id="RTSCamera_order_ui_clickable_hint" text="Make troop card clickable. Restart game to take effect." />
 
     <string id="RTSCameraCommandSystem_square_formation_corner_Fix" text="Square Formation Corner Fix" />
     <string id="RTSCameraCommandSystem_square_formation_corner_Fix_hint" text="When enabled, soldiers positioned at the corners of a square formation will face toward the diagonal direction of the formation, ensuring better defensive coverage and a more natural appearance." />
@@ -70,6 +73,8 @@
     <string id="RTSCameraCommandSystem_keep_movement_order_hint" text="Press to attack the enemy formation while keeping the previous movement order." />
     <string id="RTSCameraCommandSystem_formation_lock_movement" text="Toggle Formation Lock Movement" />
     <string id="RTSCameraCommandSystem_formation_lock_movement_hint" text="Hold to toggle Formation Lock Movement behavior." />
+    <string id="RTSCameraCommandSystem_select_target_for_command" text="Select Target for Command" />
+    <string id="RTSCameraCommandSystem_select_target_for_command_hint" text="Hold when giving advance/facing order to select target." />
     <string id="RTSCameraCommandSystem_command_queue" text="Command Queue" />
     <string id="RTSCameraCommandSystem_command_queue_hint" text="Add command to queue. Troops will execute commands in queue one by one." />
     <string id="RTSCameraCommandSystem_command_keep_formation_width" text="Keep formation width" />

@@ -61,6 +61,9 @@
   <string id="str_rts_camera_command_system_square_formation_corner_fix" text="{=RTSCameraCommandSystem_square_formation_corner_Fix}Square Formation Corner Fix" />
   <string id="str_rts_camera_command_system_square_formation_corner_fix_hint" text="{=RTSCameraCommandSystem_square_formation_corner_Fix_hint}When enabled, soldiers positioned at the corners of a square formation will face toward the diagonal direction of the formation, ensuring better defensive coverage and a more natural appearance." />
 
+  <string id="str_rts_camera_command_system_order_ui_clickable" text="{=RTSCamera_order_ui_clickable}Order UI Clickable" />
+  <string id="str_rts_camera_command_system_order_ui_clickable_hint" text="{=RTSCamera_order_ui_clickable_hint}Make troop card clickable. Restart game to take effect." />
+
   <string id="str_rts_camera_command_system_defensive_attack" text="{=RTSCameraCommandSystem_defensive_attack}focusing on enemy {TARGET_NAME}" />
 
   <string id="str_key_category_name.RTSCameraCommandSystemHotKey" text="{=RTSCameraCommandSystem_hotkeycategory}CommandSystem Hot Key" />
@@ -70,6 +73,8 @@
   <string id="str_key_description.RTSCameraCommandSystemHotKey_KeepMovementOrder" text="{=RTSCameraCommandSystem_keep_movement_order_hint}Press to attack the enemy formation while keeping the previous movement order." />
   <string id="str_key_name.RTSCameraCommandSystemHotKey_FormationLockMovement" text="{=RTSCameraCommandSystem_formation_lock_movement}Toggle Formation Lock Movement" />
   <string id="str_key_description.RTSCameraCommandSystemHotKey_FormationLockMovement" text="{=RTSCameraCommandSystem_formation_lock_movement_hint}Hold to toggle Formation Lock Movement behavior." />
+  <string id="str_key_name.RTSCameraCommandSystemHotKey_SelectTargetForCommand" text="{=RTSCameraCommandSystem_select_target_for_command}Select Target for Command" />
+  <string id="str_key_description.RTSCameraCommandSystemHotKey_SelectTargetForCommand" text="{=RTSCameraCommandSystem_select_target_for_command_hint}Hold when giving advance/facing order to select target." />
   <string id="str_key_name.RTSCameraCommandSystemHotKey_CommandQueue" text="{=RTSCameraCommandSystem_command_queue}Command Queue" />
   <string id="str_key_description.RTSCameraCommandSystemHotKey_CommandQueue" text="{=RTSCameraCommandSystem_command_queue_hint}Add command to queue. Troops will execute commands in queue one by one." />
   <string id="str_key_name.RTSCameraCommandSystemHotKey_KeepFormationWidth" text="{=RTSCameraCommandSystem_command_keep_formation_width}Keep formation width" />

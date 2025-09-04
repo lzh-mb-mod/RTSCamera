@@ -29,7 +29,6 @@
   <string id="str_rts_camera_ignore_boundaries_hint" text="{=RTSCamera_ignore_boundaries_hint}Camera will not be restricted by boundaries when enabled." />
   <string id="str_rts_camera_display_message_hint" text="{=RTSCamera_display_message_hint}Whether to display message of this mod." />
   <string id="str_rts_camera_toggle_ui_hint" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
-  <string id="str_rts_camera_order_ui_clickable_hint" text="{=RTSCamera_order_ui_clickable_hint}Make troop card clickable. Restart game to take effect." />
 
   <string id="str_rts_camera_all_invulnerable_hint" text="{=RTSCamera_disable_death_hint}All units will not die, for making video." />
   <string id="str_rts_camera_switch_team_hint" text="{=RTSCamera_switch_team_hint}Swap player's team, for making video." />
@@ -122,7 +121,6 @@
 
   <string id="str_rts_camera_display_mod_message" text="{=RTSCamera_displaymodmessage}Display Message" />
   <string id="str_rts_camera_toggle_ui" text="{=RTSCamera_toggleui}Toggle HUD" />
-  <string id="str_rts_camera_order_ui_clickable" text="{=RTSCamera_order_ui_clickable}Order UI Clickable" />
   <string id="str_rts_camera_switch_camera_on_ordering" text="{=RTSCamera_switchcameraonordering}Switch Camera on Ordering" />
   <string id="str_rts_camera_switch_camera_on_ordering_hint" text="{=RTSCamera_switchcameraonorderinghint}Automatically switch to free camera when giving orders, and switch back when finished." />
   <string id="str_rts_camera_order_on_switching_camera" text="{=RTSCamera_orderonswitchingcamera}Order on Switching Camera" />

@@ -69,15 +69,16 @@ namespace RTSCamera.CommandSystem.QuerySystem
                 {
                     if (enemyTeam.IsEnemyOf(formation.Team))
                     {
-                        foreach (Formation formation in enemyTeam.FormationsIncludingSpecialAndEmpty)
+                        foreach (Formation enemyFormation in enemyTeam.FormationsIncludingSpecialAndEmpty)
                         {
-                            if (formation.CountOfUnits > 0)
+                            if (enemyFormation.CountOfUnits > 0)
                             {
-                                float currentDistance = formation.QuerySystem.MedianPosition.GetNavMeshVec3().DistanceSquared(Patch_OrderController.GetFormationVirtualPosition(formation).GetNavMeshVec3());
+                                Patch_OrderController.GetFormationMovingTargetForPreview(formation, out var medianPosition);
+                                float currentDistance = enemyFormation.QuerySystem.MedianPosition.GetNavMeshVec3().DistanceSquared((medianPosition ?? formation.QuerySystem.MedianPosition).GetNavMeshVec3());
                                 if (currentDistance < minDistance)
                                 {
                                     minDistance = currentDistance;
-                                    closestFormation = formation;
+                                    closestFormation = enemyFormation;
                                 }
                             }
                         }
@@ -96,7 +97,8 @@ namespace RTSCamera.CommandSystem.QuerySystem
                     {
                         foreach (Agent agent in (List<Agent>)team.ActiveAgents)
                         {
-                            float currentDistance = agent.Position.DistanceSquared(Patch_OrderController.GetFormationVirtualPosition(formation).GetNavMeshVec3());
+                            Patch_OrderController.GetFormationMovingTargetForPreview(formation, out var medianPosition);
+                            float currentDistance = agent.Position.DistanceSquared((medianPosition ?? formation.QuerySystem.MedianPosition).GetNavMeshVec3());
                             if ((double)currentDistance < (double)minDistance)
                             {
                                 minDistance = currentDistance;

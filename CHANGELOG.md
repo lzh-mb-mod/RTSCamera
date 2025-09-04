@@ -9,6 +9,9 @@
 
 - Fix the issue that player may be stuck in walk mode after deployment.
 
+### Changed
+- Move clickable order UI to Command System.
+
 ## [v5.1.8] - 2025-09-01
 ### Fixed
 - Fix the issue that in arena practice fight, ground marker is shown with black color.

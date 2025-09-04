@@ -10,6 +10,7 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
+using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -49,7 +50,12 @@ namespace RTSCamera.CommandSystem.Patch
                     transpiler: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
                         nameof(Transpile_TickInput), BindingFlags.Static | BindingFlags.Public)));
 
-
+                harmony.Patch(
+                    typeof(MissionGauntletSingleplayerOrderUIHandler).GetMethod(
+                        nameof(MissionGauntletSingleplayerOrderUIHandler.OnMissionScreenTick),
+                        BindingFlags.Instance | BindingFlags.Public),
+                    postfix: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
+                        nameof(Postfix_OnMissionScreenTick), BindingFlags.Static | BindingFlags.Public), before: new string[] {"RTSCameraPatch"}));
                 return true;
             }
             catch (Exception e)
@@ -168,17 +174,20 @@ namespace RTSCamera.CommandSystem.Patch
             if (dataSource == null)
                 return null;
             bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            var selectedFormations = dataSource.OrderController.SelectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
+            if (selectedFormations.Count == 0)
+                return null;
             if (!queueCommand)
             {
-                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(dataSource.OrderController.SelectedFormations));
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(selectedFormations));
             }
             else
             {
-                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(dataSource.OrderController.SelectedFormations));
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(selectedFormations));
             }
             var orderToAdd = new OrderInQueue
             {
-                SelectedFormations = dataSource.OrderController.SelectedFormations
+                SelectedFormations = selectedFormations
             };
             switch (__instance.cursorState)
             {
@@ -192,8 +201,8 @@ namespace RTSCamera.CommandSystem.Patch
                                 orderToAdd.OrderType = OrderType.Advance;
                                 orderToAdd.TargetFormation = focusedFormationCache[0];
                                 skipNativeOrder = true;
-                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Advance, dataSource.OrderController.SelectedFormations, focusedFormationCache[0], null, null);
-                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(dataSource.OrderController.SelectedFormations);
+                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Advance, selectedFormations, focusedFormationCache[0], null, null);
+                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                                 Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
                                 if (!queueCommand)
                                     dataSource.OrderController.SetOrderWithFormation(OrderType.Advance, focusedFormationCache[0]);
@@ -202,8 +211,8 @@ namespace RTSCamera.CommandSystem.Patch
                             {
                                 orderToAdd.OrderType = OrderType.Charge;
                                 orderToAdd.TargetFormation = focusedFormationCache[0];
-                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Charge, dataSource.OrderController.SelectedFormations, focusedFormationCache[0], null, null);
-                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(dataSource.OrderController.SelectedFormations);
+                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Charge, selectedFormations, focusedFormationCache[0], null, null);
+                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                             }
                             var orderTroopPlacer = _orderTroopPlacer.GetValue(__instance) as OrderTroopPlacer;
                             if (orderTroopPlacer != null)
@@ -216,9 +225,9 @@ namespace RTSCamera.CommandSystem.Patch
                         var focusedOrderableObject = __instance.MissionScreen.OrderFlag.FocusedOrderableObject;
                         if (focusedOrderableObject != null)
                         {
-                            if (dataSource.OrderController.SelectedFormations.Count > 0)
+                            if (selectedFormations.Count > 0)
                             {
-                                BattleSideEnum side = dataSource.OrderController.SelectedFormations[0].Team.Side;
+                                BattleSideEnum side = selectedFormations[0].Team.Side;
                                 var orderType = focusedOrderableObject.GetOrder(side);
                                 var missionObject = focusedOrderableObject as MissionObject;
                                 switch (orderType)
@@ -228,12 +237,12 @@ namespace RTSCamera.CommandSystem.Patch
                                             WorldPosition position = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, missionObject.GameEntity.GlobalPosition, false);
                                             orderToAdd.OrderType = OrderType.Move;
                                             orderToAdd.PositionBegin = position;
-                                            foreach (var formation in dataSource.OrderController.SelectedFormations)
+                                            foreach (var formation in selectedFormations)
                                             {
                                                 Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
                                             }
-                                            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Move, dataSource.OrderController.SelectedFormations, null, null, null);
-                                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(dataSource.OrderController.SelectedFormations);
+                                            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Move, selectedFormations, null, null, null);
+                                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                                             break;
                                         }
                                     case OrderType.MoveToLineSegment:
@@ -242,21 +251,19 @@ namespace RTSCamera.CommandSystem.Patch
                                             IPointDefendable pointDefendable = focusedOrderableObject as IPointDefendable;
                                             Vec3 globalPosition1 = pointDefendable.DefencePoints.Last().GameEntity.GlobalPosition;
                                             Vec3 globalPosition2 = pointDefendable.DefencePoints.First().GameEntity.GlobalPosition;
-                                            IEnumerable<Formation> formations = dataSource.OrderController.SelectedFormations.Where((f => f.CountOfUnitsWithoutDetachedOnes > 0));
-                                            if (formations.Any() && queueCommand)
+                                            if (selectedFormations.Count > 0 && queueCommand)
                                             {
                                                 orderToAdd.OrderType = orderType == OrderType.MoveToLineSegment ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout;
-                                                orderToAdd.SelectedFormations = formations.ToList();
                                                 WorldPosition targetLineSegmentBegin = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, globalPosition1, false);
                                                 WorldPosition targetLineSegmentEnd = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, globalPosition2, false);
-                                                OrderController.SimulateNewOrderWithPositionAndDirection(formations, dataSource.OrderController.simulationFormations,
+                                                OrderController.SimulateNewOrderWithPositionAndDirection(selectedFormations, dataSource.OrderController.simulationFormations,
                                                     targetLineSegmentBegin, targetLineSegmentEnd, out var formationChanges, out var isLineShort, orderType == OrderType.MoveToLineSegment);
                                                 orderToAdd.IsLineShort = isLineShort;
                                                 orderToAdd.ActualFormationChanges = formationChanges;
                                                 orderToAdd.PositionBegin = targetLineSegmentBegin;
                                                 orderToAdd.PositionEnd = targetLineSegmentEnd;
-                                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(orderType == OrderType.MoveToLineSegment ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout, dataSource.OrderController.SelectedFormations, null, null, null);
-                                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(formations);
+                                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(orderType == OrderType.MoveToLineSegment ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout, selectedFormations, null, null, null);
+                                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                                                 break;
                                             }
                                             return null;
@@ -265,25 +272,25 @@ namespace RTSCamera.CommandSystem.Patch
                                         {
                                             orderToAdd.OrderType = OrderType.FollowEntity;
                                             orderToAdd.TargetEntity = focusedOrderableObject;
-                                            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FollowEntity, dataSource.OrderController.SelectedFormations, null, null, focusedOrderableObject);
-                                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(dataSource.OrderController.SelectedFormations);
+                                            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FollowEntity, selectedFormations, null, null, focusedOrderableObject);
+                                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                                             break;
                                         }
                                     case OrderType.Use:
                                         {
                                             var usable = focusedOrderableObject as UsableMachine;
-                                            IEnumerable<Formation> source = dataSource.OrderController.SelectedFormations.Where(new Func<Formation, bool>(usable.IsUsedByFormation));
+                                            IEnumerable<Formation> source = selectedFormations.Where(new Func<Formation, bool>(usable.IsUsedByFormation));
                                             if (source.IsEmpty())
                                             {
-                                                foreach (Formation formation in dataSource.OrderController.SelectedFormations)
+                                                foreach (Formation formation in selectedFormations)
                                                     formation.StartUsingMachine(usable, true);
                                                 if (!usable.HasWaitFrame)
                                                     // will not be added to queue because orderToAdd.OrderType is OrderType.None.
                                                     break;
                                                 orderToAdd.OrderType = OrderType.FollowEntity;
                                                 orderToAdd.TargetEntity = usable;
-                                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FollowEntity, dataSource.OrderController.SelectedFormations, null, null, focusedOrderableObject);
-                                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(dataSource.OrderController.SelectedFormations);
+                                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FollowEntity, selectedFormations, null, null, focusedOrderableObject);
+                                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                                             }
                                             else
                                             {
@@ -297,16 +304,16 @@ namespace RTSCamera.CommandSystem.Patch
                                         {
                                             orderToAdd.OrderType = OrderType.AttackEntity;
                                             orderToAdd.TargetEntity = focusedOrderableObject;
-                                            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.AttackEntity, dataSource.OrderController.SelectedFormations, null, null, focusedOrderableObject);
-                                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(dataSource.OrderController.SelectedFormations);
+                                            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.AttackEntity, selectedFormations, null, null, focusedOrderableObject);
+                                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                                             break;
                                         }
                                     case OrderType.PointDefence:
                                         {
                                             orderToAdd.OrderType = OrderType.PointDefence;
                                             orderToAdd.TargetEntity = focusedOrderableObject;
-                                            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.PointDefence, dataSource.OrderController.SelectedFormations, null, null, focusedOrderableObject);
-                                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(dataSource.OrderController.SelectedFormations);
+                                            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.PointDefence, selectedFormations, null, null, focusedOrderableObject);
+                                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                                             break;
                                         }
                                 }
@@ -317,21 +324,18 @@ namespace RTSCamera.CommandSystem.Patch
                 case MissionOrderVM.CursorState.Face:
                     {
                         orderToAdd.OrderType = OrderType.LookAtDirection;
+                        Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtDirection, selectedFormations);
+                        Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
                         if (queueCommand)
                         {
                             Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, dataSource.OrderController, missionScreen);
                             Patch_MissionOrderTroopControllerVM.CloseFacingOrderSet(dataSource);
                         }
-                        Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtDirection, dataSource.OrderController.SelectedFormations);
-                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(dataSource.OrderController.SelectedFormations);
-                        if (Patch_MissionOrderVM.OrderToSelectTarget == OrderSubType.ActivationFaceDirection)
+                        else
                         {
-                            Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
-                            if (!queueCommand)
-                            {
-                                skipNativeOrder = true;
-                                dataSource.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(TaleWorlds.MountAndBlade.Mission.Current.Scene, UIntPtr.Zero, __instance.MissionScreen.GetOrderFlagPosition(), false));
-                            }
+                            skipNativeOrder = true;
+                            dataSource.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, __instance.MissionScreen.GetOrderFlagPosition(), false));
+                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
                         break;
                     }
@@ -340,10 +344,47 @@ namespace RTSCamera.CommandSystem.Patch
             }
             if (!queueCommand)
             {
-                CommandQueueLogic.TryPendingOrder(dataSource.OrderController.SelectedFormations, orderToAdd);
+                CommandQueueLogic.TryPendingOrder(selectedFormations, orderToAdd);
                 return null;
             }
             return orderToAdd;
+        }
+        public static void Postfix_OnMissionScreenTick(MissionGauntletSingleplayerOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
+        {
+            UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer);
+            //return true;
+        }
+
+        private static bool IsAnyDeployment(MissionGauntletSingleplayerOrderUIHandler __instance)
+        {
+            return __instance.IsBattleDeployment || __instance.IsSiegeDeployment;
+        }
+
+        private static void UpdateMouseVisibility(MissionGauntletSingleplayerOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
+        {
+            if (__instance == null)
+                return;
+
+            bool mouseVisibility =
+                (IsAnyDeployment(__instance) || ____dataSource.TroopController.IsTransferActive ||
+                 ____dataSource.IsToggleOrderShown && (__instance.Input.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null));
+            var sceneLayer = __instance.MissionScreen.SceneLayer;
+            if (mouseVisibility != ____gauntletLayer.InputRestrictions.MouseVisibility)
+            {
+                ____gauntletLayer.InputRestrictions.SetInputRestrictions(mouseVisibility,
+                    mouseVisibility ? InputUsageMask.All : InputUsageMask.Invalid);
+            }
+
+            //if (__instance.MissionScreen.OrderFlag != null)
+            //{
+            //    bool orderFlagVisibility = (____dataSource.IsToggleOrderShown || IsAnyDeployment(__instance)) &&
+            //                               !____dataSource.TroopController.IsTransferActive &&
+            //                               !_rightButtonDraggingMode && !_earlyDraggingMode;
+            //    if (orderFlagVisibility != __instance.MissionScreen.OrderFlag.IsVisible)
+            //    {
+            //        __instance.MissionScreen.SetOrderFlagVisibility(orderFlagVisibility);
+            //    }
+            //}
         }
     }
 }

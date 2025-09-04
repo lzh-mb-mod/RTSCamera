@@ -19,7 +19,6 @@ using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
-using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using Module = TaleWorlds.MountAndBlade.Module;
@@ -101,11 +100,6 @@ namespace RTSCamera
                 _successPatch &= Patch_OrderFlag.Patch(_harmony);
                 // Use Patch to add game menu
                 WatchBattleBehavior.Patch(_harmony);
-
-                if (!UIConfig.DoNotUseGeneratedPrefabs && RTSCameraConfig.Get().OrderUIClickable)
-                {
-                   UIConfig.DoNotUseGeneratedPrefabs = true;
-                }
             }
             catch (Exception e)
             {

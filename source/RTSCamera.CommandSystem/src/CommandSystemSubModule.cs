@@ -12,6 +12,7 @@ using System;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
@@ -43,6 +44,11 @@ namespace RTSCamera.CommandSystem
 
             Utility.ShouldDisplayMessage = true;
             Initialize();
+
+            if (!UIConfig.DoNotUseGeneratedPrefabs && CommandSystemConfig.Get().OrderUIClickable)
+            {
+                UIConfig.DoNotUseGeneratedPrefabs = true;
+            }
         }
 
         private void Initialize()

@@ -175,7 +175,7 @@ namespace RTSCamera.CommandSystem.Logic
 
             foreach (var formation in appliedFormations)
             {
-                if (GetOrderForFormation(formation) == null)
+                if (GetNextOrderForFormation(formation) == null)
                 {
                     LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(appliedFormations));
                 }
@@ -214,7 +214,7 @@ namespace RTSCamera.CommandSystem.Logic
                 TicksToSkip--;
                 return;
             }
-            var order = GetOrderForFormation(formation);
+            var order = GetNextOrderForFormation(formation);
             bool isApplicable = formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
             bool isPendingOrderCompleted = IsPendingOrderCompleted(formation);
             while (TicksToSkip <= 0 && order != null &&
@@ -222,12 +222,14 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 ExecuteOrderForFormation(order, formation);
                 OnOrderExecutedForFormation(order, formation);
-                order = GetOrderForFormation(formation);
+                order = GetNextOrderForFormation(formation);
             }
         }
 
         public static bool IsMovementOrderCompleted(Formation formation)
         {
+            if (formation.CountOfUnits == 0)
+                return true;
             switch (formation.GetReadonlyMovementOrderReference().OrderEnum)
             {
                 case MovementOrder.MovementOrderEnum.Charge:
@@ -238,12 +240,16 @@ namespace RTSCamera.CommandSystem.Logic
                 case MovementOrder.MovementOrderEnum.AttackEntity:
                 case MovementOrder.MovementOrderEnum.FollowEntity:
                     return !formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
+                case MovementOrder.MovementOrderEnum.FallBack:
+                    // fallback is considered complete instantly.
+                    return true;
             }
             return !formation.OrderPositionIsValid || CommandQuerySystem.GetQueryForFormation(formation).HasCurrentMovementOrderCompleted;
         }
 
         public static bool IsPendingOrderCompleted(Formation formation)
         {
+
             if (PendingOrders.TryGetValue(formation, out var order))
             {
                 foreach (var otherFormation in order.SelectedFormations)
@@ -481,7 +487,7 @@ namespace RTSCamera.CommandSystem.Logic
         {
             if (GameNetwork.IsClientOrReplay || formation.GetReadonlyMovementOrderReference().OrderEnum != MovementOrder.MovementOrderEnum.Stop)
                 return;
-            WorldPosition orderWorldPosition = formation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.None);
+            WorldPosition orderWorldPosition = formation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.NavMeshVec3);
             if (!orderWorldPosition.IsValid)
                 return;
             formation.SetMovementOrder(MovementOrder.MovementOrderMove(orderWorldPosition));
@@ -504,7 +510,7 @@ namespace RTSCamera.CommandSystem.Logic
             }
         }
 
-        private static OrderInQueue GetOrderForFormation(Formation formation)
+        private static OrderInQueue GetNextOrderForFormation(Formation formation)
         {
             var order = OrderQueue.FirstOrDefault(order => order.RemainingFormations.Contains(formation));
             return order;
@@ -518,7 +524,7 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 OrderQueue.Remove(order);
             }
-            if (GetOrderForFormation(formation) == null)
+            if (GetNextOrderForFormation(formation) == null)
             {
                 LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(new List<Formation> { formation }));
             }

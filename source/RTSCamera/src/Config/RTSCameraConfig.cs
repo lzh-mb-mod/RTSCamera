@@ -159,8 +159,6 @@ namespace RTSCamera.Config
 
         public float CameraDistanceLimitFactor = 1;
 
-        public bool OrderUIClickable = true;
-
         public bool SwitchCameraOnOrdering = false;
 
         public bool OrderOnSwitchingCamera = true;
@@ -207,7 +205,6 @@ namespace RTSCamera.Config
             SwitchTeamHotkeyEnabled = other.SwitchTeamHotkeyEnabled;
             LimitCameraDistance = other.LimitCameraDistance;
             CameraDistanceLimitFactor = other.CameraDistanceLimitFactor;
-            OrderUIClickable = other.OrderUIClickable;
             SwitchCameraOnOrdering = other.SwitchCameraOnOrdering;
             OrderOnSwitchingCamera = other.OrderOnSwitchingCamera;
             KeepOrderUIOpenInFreeCamera = other.KeepOrderUIOpenInFreeCamera;
