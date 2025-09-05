@@ -17,8 +17,6 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Control one of your soldiers and continue fighting/commanding after player character is injured in battle.
 
-  - Select your troops by directly clicking on troop cards.
-
   - **New:** Allows automatic fast forward in hideout.
 
 - Command System
@@ -43,6 +41,8 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Movement target becomes more visible.
 
+  - Select your troops and give orders by directly clicking on order UI.
+
 ## Main usage
 
 - RTS Camera
@@ -53,10 +53,6 @@ This mod is composed of 2 parts, RTS Camera and Command System.
   - After your character is killed in battle, you can press `E` to follow one of your soldiers and press `E` again to control it and continue fighting.
 
     - You can press `L` to open menu and set `When To Control Ally After Death` option to 'Always", so that you will control another unit automatically after you are down.
-  
-  - You can select your formations by clicking on troop cards.
-
-    - Hold `Alt` to show the mouse so that you can click on troop cards.
 
 - Command System
 
@@ -75,6 +71,10 @@ This mod is composed of 2 parts, RTS Camera and Command System.
     - **New:** Hold `Alt` while clicking to target the enemy without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
   - You can select your formations by clicking middle mouse button on soldiers.
+  
+  - You can select your formations by clicking on troop cards and give orders by clicking on order buttons.
+
+    - Hold `Alt` to show the mouse.
 
 - For more features, you can read `Details` below or press `L` to open mod menu.
 

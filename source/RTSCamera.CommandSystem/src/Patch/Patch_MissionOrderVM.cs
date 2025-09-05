@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using NetworkMessages.FromClient;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using System;
@@ -9,6 +10,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
+using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
@@ -212,7 +214,7 @@ namespace RTSCamera.CommandSystem.Patch
                     orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                     break;
                 case OrderSubType.Advance:
-                    if (isSelectTargetForMouseClickingKeyDown)
+                    if (isSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == OrderSubType.None)
                     {
                         // Allows to click enemy to select target to advance to.
                         OrderToSelectTarget = OrderSubType.Advance;
@@ -334,7 +336,7 @@ namespace RTSCamera.CommandSystem.Patch
                     if (__instance.LastSelectedOrderItem.SelectionState == 3)
                     {
                         // OrderLayoutType 0 means default layout without facing order set.
-                        if (BannerlordConfig.OrderLayoutType == 0 && isSelectTargetForMouseClickingKeyDown)
+                        if (BannerlordConfig.OrderLayoutType == 0 && isSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == OrderSubType.None)
                         {
                             // Allows to click ground to select direction to facing to.
                             OrderToSelectTarget = OrderSubType.ActivationFaceDirection;
@@ -427,7 +429,7 @@ namespace RTSCamera.CommandSystem.Patch
                 case OrderSubType.ToggleTransfer:
                     return null;
                 case OrderSubType.ActivationFaceDirection:
-                    if (isSelectTargetForMouseClickingKeyDown)
+                    if (isSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == OrderSubType.None)
                     {
                         // Allows to click ground to select direction to facing to.
                         OrderToSelectTarget = OrderSubType.ActivationFaceDirection;
@@ -477,11 +479,7 @@ namespace RTSCamera.CommandSystem.Patch
                 {
                     formation.FormOrder = FormOrder.FormOrderCustom(change.Width.Value);
                 }
-                if (Mission.Current.Mode == MissionMode.Deployment)
-                {
-                    // Fix the issue that in Deployment mode, after switching to loose formation, the units are not teleported to correct position.
-                    formation.SetPositioning(change.WorldPosition);
-                }
+                CommandQueueLogic.TryTeleportSelectedFormationInDeployment(__instance.OrderController, __instance.OrderController.SelectedFormations);
                 CommandQueueLogic.CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(order.SelectedFormations));
             }
             //__instance.OrderController.SetOrder(order.OrderType);

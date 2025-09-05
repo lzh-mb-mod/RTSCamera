@@ -140,6 +140,7 @@
   <string id="str_key_category_name.RTSCameraHotKey" text="{=RTSCamera_hotkeycategory}RTSCamera Hot Key" />
   <string id="str_key_name.RTSCameraHotKey_Pause" text="{=RTSCamera_pausekey}Pause" />
   <string id="str_key_name.RTSCameraHotKey_SlowMotion" text="{=RTSCamera_slowmotionkey}Slow Motion" />
+  <string id="str_key_name.RTSCameraHotKey_Fastforward" text="{=RTSCamera_fastforwardkey}Fast Forward" />
   <string id="str_key_name.RTSCameraHotKey_FreeCamera" text="{=RTSCamera_freecamerakey}Free Camera" />
   <string id="str_key_name.RTSCameraHotKey_DisableDeath" text="{=RTSCamera_disabledeathkey}All Invulnerable" />
   <string id="str_key_name.RTSCameraHotKey_ControlTroop" text="{=RTSCamera_controltroopkey}Focus Camera/Control Troop" />
@@ -165,9 +166,10 @@
   <!-- same as str_rts_camera_toggle_pause_hint -->
   <string id="str_key_description.RTSCameraHotKey_Pause" text="{=RTSCamera_toggle_pause_hint}Pause or unpause the game." />
   <string id="str_key_description.RTSCameraHotKey_SlowMotion" text="{=RTSCamera_slowmotionkey_description}Enable slow motion mode. Press again to recover." />
+  <string id="str_key_description.RTSCameraHotKey_Fastforward" text="{=RTSCamera_fastforwardkey_description}Toggle Fast Forward" />
   <!-- same as str_rts_camera_auto_mode_hint -->
   <string id="str_key_description.RTSCameraHotKey_FreeCamera" text="{=RTSCamera_switch_free_camera_hint}Switch between free camera and player camera." />
-  <string id="str_key_description.RTSCameraHotKey_DisableDeath" text="{=RTSCamera_disable_death_desciption}All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
+  <string id="str_key_description.RTSCameraHotKey_DisableDeath" text="{=RTSCamera_disable_death_description}All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
   <string id="str_key_description.RTSCameraHotKey_ControlTroop" text="{=RTSCamera_controltroopkey_description}Focus camera to character or selected formation. Control one of your teammates when you are killed." />
   <!-- same as str_rts_camera_toggle_ui_hint -->
   <string id="str_key_description.RTSCameraHotKey_ToggleHUD" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />

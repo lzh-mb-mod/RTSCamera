@@ -99,6 +99,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool OrderUIClickable = true;
 
+        public bool FacingEnemyByDefault = false;
+
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;
@@ -120,6 +122,8 @@ namespace RTSCamera.CommandSystem.Config
             HollowSquare = other.HollowSquare;
             SquareFormationCornerFix = other.SquareFormationCornerFix;
             OrderUIClickable = other.OrderUIClickable;
+            FacingEnemyByDefault = other.FacingEnemyByDefault;
+
         }
 
         public static void OnMenuClosed()

@@ -154,6 +154,11 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable_hint"),
                     () => CommandSystemConfig.Get().OrderUIClickable,
                     b => CommandSystemConfig.Get().OrderUIClickable = UIConfig.DoNotUseGeneratedPrefabs = b));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default"),
+                    GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default_hint"),
+                    () => CommandSystemConfig.Get().FacingEnemyByDefault,
+                    b => CommandSystemConfig.Get().FacingEnemyByDefault =  b));
                 //commandOptionCategory.AddOption(new NumericOptionViewModel(
                 //    new TaleWorlds.Localization.TextObject("r"), null,
                 //    () => CommandQueuePreview.r, f =>

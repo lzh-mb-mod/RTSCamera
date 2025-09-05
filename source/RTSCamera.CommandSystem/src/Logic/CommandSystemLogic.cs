@@ -139,6 +139,22 @@ namespace RTSCamera.CommandSystem.Logic
             GroundMarkerColorSubLogic.OnPreDisplayMissionTick(dt);
         }
 
+        public override void OnDeploymentFinished()
+        {
+            base.OnDeploymentFinished();
+
+            if (Mission.PlayerTeam != null && CommandSystemConfig.Get().FacingEnemyByDefault)
+            {
+                foreach (var formation in Mission.PlayerTeam.FormationsIncludingEmpty)
+                {
+                    if (Mission.PlayerTeam.PlayerOrderController.IsFormationSelectable(formation) && !formation.IsAIControlled && formation.PlayerOwner != null && formation.PlayerOwner == Mission.MainAgent)
+                    {
+                        formation.FacingOrder = FacingOrder.FacingOrderLookAtEnemy;
+                    }
+                }
+            }
+        }
+
         public override void AfterAddTeam(Team team)
         {
             OutlineColorSubLogic.AfterAddTeam(team);

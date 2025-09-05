@@ -140,6 +140,7 @@
     <string id="RTSCamera_hotkeycategory" text="RTS Camera Hot Key" />
     <string id="RTSCamera_pausekey" text="Pause" />
     <string id="RTSCamera_slowmotionkey" text="Slow Motion" />
+    <string id="RTSCamera_fastforwardkey" text="Fast Forward" />
     <string id="RTSCamera_freecamerakey" text="Free Camera" />
     <string id="RTSCamera_disabledeathkey" text="All Invulnerable" />
     <string id="RTSCamera_controltroopkey" text="Focus Camera/Control Troop" />
@@ -156,7 +157,8 @@
     <string id="RTSCamera_camera_reset_camera_speed" text="Reset Camera speed" />
 
     <string id="RTSCamera_slowmotionkey_description" text="Enable slow motion mode. Press again to recover." />
-    <string id="RTSCamera_disable_death_desciption" text="All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
+    <string id="RTSCamera_fastforwardkey_description" text="Toggle Fast Forward" />
+    <string id="RTSCamera_disable_death_description" text="All units will not die, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
     <string id="RTSCamera_controltroopkey_description" text="Focus camera to character or selected formation. Control focused character." />
     <string id="RTSCamera_switchteam_description" text="Swap player's team, for making video. Cheat mode needs to be on and the hotkey needs to be enabled in menu." />
     <string id="RTSCamera_camera_move_forward_description" text="Move the camera forward" />

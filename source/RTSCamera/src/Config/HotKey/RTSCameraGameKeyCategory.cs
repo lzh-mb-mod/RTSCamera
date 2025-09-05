@@ -12,6 +12,7 @@ namespace RTSCamera.Config.HotKey
     {
         Pause,
         SlowMotion,
+        Fastforward,
         FreeCamera,
         DisableDeath,
         ControlTroop,
@@ -53,6 +54,10 @@ namespace RTSCamera.Config.HotKey
                 }));
             result.AddGameKeySequence(new GameKeySequence((int) GameKeyEnum.SlowMotion,
                 nameof(GameKeyEnum.SlowMotion), CategoryId, new List<GameKeySequenceAlternative>
+                {
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.Fastforward,
+                nameof(GameKeyEnum.Fastforward), CategoryId, new List<GameKeySequenceAlternative>
                 {
                 }));
             result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.FreeCamera,

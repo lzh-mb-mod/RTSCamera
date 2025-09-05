@@ -9,6 +9,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 
 namespace RTSCamera.CommandSystem.Logic
 {
@@ -495,19 +496,13 @@ namespace RTSCamera.CommandSystem.Logic
 
         private static void FacingOrderLookAtDirection(OrderInQueue order, Formation formation)
         {
+            var formationChanges = order.ActualFormationChanges;
+            (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.First(c => c.formation == formation);
             if (order.ShouldLockFormationInFacingOrder)
             {
-                var formationChanges = order.ActualFormationChanges;
-                (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.First(c => c.formation == formation);
                 formation.SetMovementOrder(MovementOrder.MovementOrderMove(position));
-                formation.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
             }
-            else
-            {
-                var formationChanges = order.ActualFormationChanges;
-                (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.First(c => c.formation == formation);
-                formation.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
-            }
+            formation.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
         }
 
         private static OrderInQueue GetNextOrderForFormation(Formation formation)
@@ -519,6 +514,8 @@ namespace RTSCamera.CommandSystem.Logic
         private static void OnOrderExecutedForFormation(OrderInQueue order, Formation formation)
         {
             Utilities.Utility.DisplayExecuteOrderMessage(new List<Formation> { formation }, order);
+            var orderController = Mission.Current.PlayerTeam.PlayerOrderController;
+            TryTeleportSelectedFormationInDeployment(orderController, new List<Formation> { formation });
             order.RemainingFormations.Remove(formation);
             if (order.RemainingFormations.Count == 0)
             {
@@ -620,6 +617,32 @@ namespace RTSCamera.CommandSystem.Logic
                     formation.FormOrder = FormOrder.FormOrderCustom(change.Width.Value);
                 }
                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+            }
+        }
+
+        public static void TryTeleportSelectedFormationInDeployment(OrderController orderController, IEnumerable<Formation> formations)
+        {
+            if (Mission.Current.Mode == MissionMode.Deployment && orderController.FormationUpdateEnabledAfterSetOrder)
+            {
+                // Fix the issue that in Deployment mode, after switching to loose formation, the units are not teleported to correct position.
+                foreach (Formation formation in formations)
+                {
+                    bool flag = false;
+                    if (formation.IsPlayerTroopInFormation)
+                    {
+                        flag = formation.GetReadonlyMovementOrderReference().OrderEnum == MovementOrder.MovementOrderEnum.Follow;
+                    }
+                    // update direction instantly in deployment mode
+                    var target = formation.GetReadonlyMovementOrderReference()._targetAgent;
+                    formation.SetPositioning(direction: formation.FacingOrder.GetDirection(formation, flag && target == Mission.Current.MainAgent ? null : target));
+                    formation.ApplyActionOnEachUnit(delegate (Agent agent)
+                    {
+                        agent.UpdateCachedAndFormationValues(updateOnlyMovement: false, arrangementChangeAllowed: false);
+                    }, flag ? Mission.Current.MainAgent : null);
+                    Mission.Current.SetRandomDecideTimeOfAgentsWithIndices(formation.CollectUnitIndices());
+                }
+                // calls OrderOfBattleFormationItemVM.RefreshMarkerWorldPosition
+                Mission.Current.GetMissionBehavior<OrderTroopPlacer>()?.OnUnitDeployed?.Invoke();
             }
         }
     }

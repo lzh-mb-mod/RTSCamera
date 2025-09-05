@@ -60,11 +60,14 @@
     <string id="RTSCameraCommandSystem_hollow_square_formation" text="启用空心方阵" />
     <string id="RTSCameraCommandSystem_hollow_square_formation_hint" text="是否为玩家启用空心方阵。" />
 
+    <string id="RTSCameraCommandSystem_square_formation_corner_Fix" text="方阵角落修正" />
+    <string id="RTSCameraCommandSystem_square_formation_corner_Fix_hint" text="启用后，位于方阵角落的士兵将面向方阵的对角线方向，以确保更好的防御覆盖和更自然的外观。" />
+
     <string id="RTSCamera_order_ui_clickable" text="命令界面可点击" />
     <string id="RTSCamera_order_ui_clickable_hint" text="让命令界面可点击。重启游戏来生效。" />
 
-    <string id="RTSCameraCommandSystem_square_formation_corner_Fix" text="方阵角落修正" />
-    <string id="RTSCameraCommandSystem_square_formation_corner_Fix_hint" text="启用后，位于方阵角落的士兵将面向方阵的对角线方向，以确保更好的防御覆盖和更自然的外观。" />
+    <string id="RTSCameraCommandSystem_face_enemy_by_default" text="默认面朝敌军" />
+    <string id="RTSCameraCommandSystem_face_enemy_by_default_hint" text="战斗开始时部队是否应该默认面朝敌军。" />
 
     <string id="RTSCameraCommandSystem_defensive_attack" text="优先攻击敌军的{TARGET_NAME}" />
 

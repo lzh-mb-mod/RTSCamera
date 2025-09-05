@@ -196,29 +196,38 @@ namespace RTSCamera.CommandSystem.Patch
                         var focusedFormationCache = _focusedFormationsCache.GetValue(__instance) as MBReadOnlyList<Formation>;
                         if (focusedFormationCache != null && focusedFormationCache.Count > 0)
                         {
-                            if (Patch_MissionOrderVM.OrderToSelectTarget == OrderSubType.Advance)
-                            {
-                                orderToAdd.OrderType = OrderType.Advance;
-                                orderToAdd.TargetFormation = focusedFormationCache[0];
-                                skipNativeOrder = true;
-                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Advance, selectedFormations, focusedFormationCache[0], null, null);
-                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                                Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
-                                if (!queueCommand)
-                                    dataSource.OrderController.SetOrderWithFormation(OrderType.Advance, focusedFormationCache[0]);
-                            }
-                            else
-                            {
-                                orderToAdd.OrderType = OrderType.Charge;
-                                orderToAdd.TargetFormation = focusedFormationCache[0];
-                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Charge, selectedFormations, focusedFormationCache[0], null, null);
-                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                            }
                             var orderTroopPlacer = _orderTroopPlacer.GetValue(__instance) as OrderTroopPlacer;
                             if (orderTroopPlacer != null)
                             {
                                 orderTroopPlacer.SuspendTroopPlacer = true;
                                 _targetFormationOrderGivenWithActionButton?.SetValue(__instance, true);
+                            }
+                            if (Patch_MissionOrderVM.OrderToSelectTarget == OrderSubType.Advance)
+                            {
+                                orderToAdd.OrderType = OrderType.Advance;
+                                orderToAdd.TargetFormation = focusedFormationCache[0];
+                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Advance, selectedFormations, focusedFormationCache[0], null, null);
+                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
+                                if (!queueCommand)
+                                {
+                                    skipNativeOrder = true;
+                                    dataSource.OrderController.SetOrderWithFormation(OrderType.Advance, focusedFormationCache[0]);
+                                }
+                            }
+                            else
+                            {
+                                bool keepMovementOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.KeepMovementOrder).IsKeyDownInOrder(__instance.Input);
+                                if (keepMovementOrder)
+                                {
+                                    Utilities.Utility.FocusOnFormation(dataSource.OrderController, focusedFormationCache[0]);
+                                    skipNativeOrder = true;
+                                    return null;
+                                }
+                                orderToAdd.OrderType = OrderType.Charge;
+                                orderToAdd.TargetFormation = focusedFormationCache[0];
+                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Charge, selectedFormations, focusedFormationCache[0], null, null);
+                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                             }
                             break;
                         }

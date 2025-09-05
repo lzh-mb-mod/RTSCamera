@@ -4,6 +4,12 @@
 ### Added
 - Support targeting when clicking advance or facing button by holding Alt.
 
+- Add hotkey to fastforward.
+
+- Add option to face the enemy by default.
+
+- Add preview arrow for focus attack order.
+
 ### Fixed
 - Fix several order position preview issues.
 

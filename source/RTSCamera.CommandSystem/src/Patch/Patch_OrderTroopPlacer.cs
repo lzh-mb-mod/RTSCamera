@@ -519,10 +519,10 @@ namespace RTSCamera.CommandSystem.Patch
                 }
                 else
                 {
-                    alpha = OrderPositionEntityPreviewAlpha;
-                    orderPositionEntity.SetVisibilityExcludeParents(true);
-                    orderPositionEntity.SetAlpha(alpha);
-                    //orderPositionEntity.FadeIn();
+                    //alpha = OrderPositionEntityPreviewAlpha;
+                    //orderPositionEntity.SetVisibilityExcludeParents(true);
+                    //orderPositionEntity.SetAlpha(alpha);
+                    orderPositionEntity.FadeIn();
                 }
 
                 return false;
@@ -600,7 +600,7 @@ namespace RTSCamera.CommandSystem.Patch
                             {
                                 if (Campaign.Current == null || CommandSystemSkillBehavior.CanIssueChargeToFormationOrder)
                                 {
-                                    Utilities.Utility.ChargeToFormation(___PlayerOrderController, ____clickedFormation, true);
+                                    Utilities.Utility.FocusOnFormation(___PlayerOrderController, ____clickedFormation);
                                 }
                                 else
                                 {
@@ -613,7 +613,7 @@ namespace RTSCamera.CommandSystem.Patch
                             }
                             else
                             {
-                                Utilities.Utility.ChargeToFormation(___PlayerOrderController, ____clickedFormation, false);
+                                Utilities.Utility.ChargeToFormation(___PlayerOrderController, ____clickedFormation);
                             }
                         }
                     }

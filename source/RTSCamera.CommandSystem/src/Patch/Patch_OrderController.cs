@@ -1632,7 +1632,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 var formation = pair.Key;
                 var orderPositionVec2 = pair.Value;
-                Vec2 newPositionVec2 = rotateVector(orderPositionVec2 -averageOrderPosition, weightedAverageDirection, direction) +averageOrderPosition;
+                Vec2 newPositionVec2 = rotateVector(orderPositionVec2 - averageOrderPosition, weightedAverageDirection, direction) + averageOrderPosition;
                 Vec2 newDirection = rotateVector(GetFormationVirtualDirection(formation), weightedAverageDirection, direction);
                 float width = GetFormationVirtualWidth(formation) ?? GetActualOrCurrentWidth(formation);
                 WorldPosition formationPosition = formation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.NavMeshVec3);
@@ -1799,6 +1799,7 @@ namespace RTSCamera.CommandSystem.Patch
                     width = change.PreviewWidth.Value;
                     depth = change.PreviewDepth.Value;
                     rightSideOffset = GetRightSideOffset(formation);
+                    return;
                 }
             }
             width = formation.Width;
