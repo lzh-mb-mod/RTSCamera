@@ -677,10 +677,6 @@ namespace RTSCamera.View
             {
                 targetPosition.z = distanceLimit * _cameraDistanceLimitVerticalScale + mainAgentPosition.z;
             }
-            else if (heightDiff <= 0)
-            {
-                targetPosition.z = mainAgentPosition.z;
-            }
             var centerPosition = mainAgentPosition.AsVec2.ToVec3(targetPosition.z);
             var distance = targetPosition.Distance(centerPosition);
             if (distance > distanceLimit)

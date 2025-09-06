@@ -1,11 +1,9 @@
 ﻿using MissionLibrary.Usage;
-using MissionSharedLibrary.HotKey;
 using MissionSharedLibrary.Usage;
 using RTSCamera.CommandSystem.Config.HotKey;
 using System;
 using System.Collections.Generic;
 using TaleWorlds.Core;
-using TaleWorlds.Library;
 
 namespace RTSCamera.CommandSystem.Usage
 {

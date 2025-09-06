@@ -1,6 +1,6 @@
 # Changelog
 
-## [v5.1.9]
+## [v5.1.9] - 2025-07-09
 ### Added
 - Support targeting when clicking advance or facing button by holding Alt.
 
@@ -14,6 +14,8 @@
 - Fix several order position preview issues.
 
 - Fix the issue that player may be stuck in walk mode after deployment.
+
+- Fix the issue that hotkey config is reset on second startup.
 
 ### Changed
 - Move clickable order UI to Command System.

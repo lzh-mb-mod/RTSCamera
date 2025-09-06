@@ -20,6 +20,14 @@ namespace RTSCamera.Config.HotKey
         };
         protected static Version BinaryVersion => new Version(1, 1);
 
+        public string ConfigVersion = BinaryVersion.ToString(2);
+
+        protected override void CopyFrom(GameKeyConfig other)
+        {
+            base.CopyFrom(other);
+            ConfigVersion = other.ConfigVersion;
+        }
+
         protected override void UpgradeToCurrentVersion()
         {
             switch (ConfigVersion)
