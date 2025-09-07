@@ -106,11 +106,18 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 __result = (float)(currentCustomWidth / Math.PI);
                 return false;
+                //return true;
+            }
+            else if (orderTypeOld == ArrangementOrder.ArrangementOrderEnum.Square && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Square && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Column)
+            {
+                __result = currentCustomWidth / 4f;
+                return false;
             }
             else if (orderTypeOld != ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew == ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeOld != ArrangementOrder.ArrangementOrderEnum.Column)
             {
-                __result = (float)(currentCustomWidth / Math.PI);
-                return false;
+                //__result = (float)(currentCustomWidth / Math.PI);
+                //return false;
+                return true;
             }
             return true;
         }

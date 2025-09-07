@@ -462,9 +462,14 @@ namespace RTSCamera.CommandSystem.Utilities
             return false;
         }
 
-        public static bool ShouldLockFormationDuringLookAtDirection(IEnumerable<Formation> formations)
+        //public static bool ShouldLockFormationDuringLookAtDirection(IEnumerable<Formation> formations)
+        //{
+        //    return !IsAnyFormationHavingMovingOrderPostion(formations) && ShouldLockFormation();
+        //}
+
+        public static bool ShouldLockFormationDuringLookAtDirection(Formation formation)
         {
-            return !IsAnyFormationHavingMovingOrderPostion(formations) && ShouldLockFormation();
+            return !IsFormationOrderPositionMoving(formation) && Patch_OrderController.GetFormationVirtualFacingOrder(formation) == OrderType.LookAtDirection && ShouldLockFormation();
         }
 
         public static bool ShouldKeepFormationWidth()
@@ -492,16 +497,32 @@ namespace RTSCamera.CommandSystem.Utilities
             }
         }
 
-        public static Type GetTypeOfArrangement(ArrangementOrderEnum orderEnum)
+        public static Type GetTypeOfArrangement(ArrangementOrderEnum orderEnum, bool hollowSquareAllowed = false)
         {
             return orderEnum switch
             {
                 ArrangementOrderEnum.Circle => typeof(CircularFormation),
                 ArrangementOrderEnum.Column => typeof(ColumnFormation),
                 ArrangementOrderEnum.Skein => typeof(SkeinFormation),
-                ArrangementOrderEnum.Square => typeof(RectilinearSchiltronFormation),
+                ArrangementOrderEnum.Square => CommandSystemConfig.Get().HollowSquare && hollowSquareAllowed ? typeof(SquareFormation) : typeof(RectilinearSchiltronFormation),
                 _ => typeof(LineFormation),
             };
+        }
+
+        public static ArrangementOrderEnum GetOrderEnumOfArrangement(IFormationArrangement arrangement)
+        {
+            var type = arrangement.GetType();
+            if (type == typeof(LineFormation))
+                return ArrangementOrderEnum.Line;
+            if (type == typeof(ColumnFormation))
+                return ArrangementOrderEnum.Column;
+            if (type == typeof(SkeinFormation))
+                return ArrangementOrderEnum.Skein;
+            if (type == typeof(CircularFormation) || type == typeof(CircularSchiltronFormation))
+                return ArrangementOrderEnum.Circle;
+            if (type == typeof(SquareFormation) || type == typeof(RectilinearSchiltronFormation))
+                return ArrangementOrderEnum.Square;
+            return ArrangementOrderEnum.Line;
         }
 
          public static ArrangementOrder GetArrangementOrder(ArrangementOrder.ArrangementOrderEnum arrangementOrder)

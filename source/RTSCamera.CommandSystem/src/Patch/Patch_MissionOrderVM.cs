@@ -353,7 +353,6 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, missionScreen);
                     }
-                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(orderToAdd.OrderType, selectedFormations);
                     if (!queueCommand)
                     {
                         if (orderToAdd.OrderType == OrderType.LookAtDirection)
@@ -363,8 +362,9 @@ namespace RTSCamera.CommandSystem.Patch
                         }
                         else
                         {
-                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                            Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations);
                             __instance.OrderController.SetOrder(OrderType.LookAtEnemy);
+                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
                         skipNativeOrder = true;
                         break;
@@ -437,7 +437,6 @@ namespace RTSCamera.CommandSystem.Patch
                         return null;
                     }
                     orderToAdd.OrderType = OrderType.LookAtDirection;
-                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtDirection, selectedFormations);
 
                     if (queueCommand)
                     {
@@ -469,6 +468,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static void ExecuteArrangementOrder(MissionOrderVM __instance, OrderInQueue order)
         {
+            Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(order.SelectedFormations));
             __instance.OrderController.SetOrder(order.OrderType);
             foreach (var pair in order.VirtualFormationChanges)
             {
@@ -479,10 +479,9 @@ namespace RTSCamera.CommandSystem.Patch
                 {
                     formation.FormOrder = FormOrder.FormOrderCustom(change.Width.Value);
                 }
-                CommandQueueLogic.TryTeleportSelectedFormationInDeployment(__instance.OrderController, __instance.OrderController.SelectedFormations);
-                CommandQueueLogic.CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(order.SelectedFormations));
             }
-            //__instance.OrderController.SetOrder(order.OrderType);
+            CommandQueueLogic.TryTeleportSelectedFormationInDeployment(__instance.OrderController, order.SelectedFormations);
+            CommandQueueLogic.CurrentFormationChanges.SetChanges(order.VirtualFormationChanges);
         }
 
         public static bool Prefix_GetIsFacingSubOrdersShown(MissionOrderVM __instance, ref bool __result)

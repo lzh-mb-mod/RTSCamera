@@ -47,9 +47,9 @@ namespace RTSCamera.CommandSystem.Logic
 
         public bool IsLineShort { get; set; }
 
-        public bool ShouldLockFormationInFacingOrder { get; set; }
+        public Dictionary<Formation, bool> ShouldLockFormationInFacingOrder { get; set; }
 
-        public List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)> ActualFormationChanges { get; set; } 
+        public List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)> ActualFormationChanges { get; set; } = new List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)>();
 
         public Dictionary<Formation, FormationChange> VirtualFormationChanges { get; set; } = new Dictionary<Formation, FormationChange>();
     }
@@ -498,7 +498,7 @@ namespace RTSCamera.CommandSystem.Logic
         {
             var formationChanges = order.ActualFormationChanges;
             (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.First(c => c.formation == formation);
-            if (order.ShouldLockFormationInFacingOrder)
+            if (order.ShouldLockFormationInFacingOrder.TryGetValue(formation, out var shouldLockFormationInFacingOrder) && shouldLockFormationInFacingOrder)
             {
                 formation.SetMovementOrder(MovementOrder.MovementOrderMove(position));
             }

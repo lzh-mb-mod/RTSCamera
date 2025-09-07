@@ -25,6 +25,11 @@ namespace RTSCamera.CommandSystem.Patch
                     BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(typeof(Patch_ArrangementOrder).GetMethod(
                         nameof(Prefix_GetArrangement), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(ArrangementOrder).GetMethod(nameof(ArrangementOrder.OnApply),
+                    BindingFlags.Instance | BindingFlags.Public),
+                    prefix: new HarmonyMethod(typeof(Patch_ArrangementOrder).GetMethod(
+                        nameof(Prefix_OnApply), BindingFlags.Static | BindingFlags.Public)));
 
             }
             catch (Exception e)
@@ -50,6 +55,39 @@ namespace RTSCamera.CommandSystem.Patch
                 }
             }
             return true;
+        }
+
+        public static bool Prefix_OnApply(ArrangementOrder __instance, Formation formation)
+        {
+            var previousUnitSpacing = formation.UnitSpacing;
+            var newUnitSpacing = __instance.GetUnitSpacing();
+            if (formation.Team != null && formation.Arrangement.GetType() != Utilities.Utility.GetTypeOfArrangement(__instance.OrderEnum, Utilities.Utility.ShouldEnableHollowSquareFormationFor(formation)))
+            {
+                AccessTools.Field(typeof(Formation), "_formOrder").SetValue(formation, FormOrder.FormOrderCustom(Patch_OrderController.GetNewWidthOfArrangementChange(formation, formation.Arrangement, __instance.OrderEnum)));
+                AccessTools.Field(typeof(Formation), "_unitSpacing").SetValue(formation, newUnitSpacing);
+            }
+            else
+            {
+                formation.SetPositioning(unitSpacing: newUnitSpacing);
+            }
+            __instance.Rearrange(formation);
+            if (__instance.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Scatter)
+            {
+                __instance.TickOccasionally(formation);
+                formation.ResetArrangementOrderTickTimer();
+            }
+            ArrangementOrder.ArrangementOrderEnum orderEnum = __instance.OrderEnum;
+            formation.ApplyActionOnEachUnit((Action<Agent>)(agent =>
+            {
+                if (agent.IsAIControlled)
+                {
+                    Agent.UsageDirection shieldDirectionOfUnit = ArrangementOrder.GetShieldDirectionOfUnit(formation, agent, orderEnum);
+                    agent.EnforceShieldUsage(shieldDirectionOfUnit);
+                }
+                agent.UpdateAgentProperties();
+                agent.RefreshBehaviorValues(formation.GetReadonlyMovementOrderReference().OrderEnum, orderEnum);
+            }));
+            return false;
         }
     }
 }

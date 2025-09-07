@@ -333,7 +333,6 @@ namespace RTSCamera.CommandSystem.Patch
                 case MissionOrderVM.CursorState.Face:
                     {
                         orderToAdd.OrderType = OrderType.LookAtDirection;
-                        Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtDirection, selectedFormations);
                         Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
                         if (queueCommand)
                         {

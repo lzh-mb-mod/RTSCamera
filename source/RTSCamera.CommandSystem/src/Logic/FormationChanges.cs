@@ -118,6 +118,17 @@ namespace RTSCamera.CommandSystem.Logic
             }
         }
 
+        public void SetFacingOrder(OrderType orderType, Formation formation)
+        {
+            if (!VirtualChanges.TryGetValue(formation, out var change))
+            {
+                change = new FormationChange();
+            }
+
+            change.FacingOrderType = orderType;
+            VirtualChanges[formation] = change;
+        }
+
         public void SetFiringOrder(OrderType orderType, IEnumerable<Formation> formations)
         {
             foreach (var formation in formations)

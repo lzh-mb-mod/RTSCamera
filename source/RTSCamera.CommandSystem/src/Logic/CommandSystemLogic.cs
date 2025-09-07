@@ -87,6 +87,12 @@ namespace RTSCamera.CommandSystem.Logic
                 });
         }
 
+        public override void OnAfterMissionCreated()
+        {
+            base.OnAfterMissionCreated();
+            Patch_OrderController.OnAfterMissionCreated();
+        }
+
         public override void OnBehaviorInitialize()
         {
             base.OnBehaviorInitialize();
@@ -94,7 +100,6 @@ namespace RTSCamera.CommandSystem.Logic
             OutlineColorSubLogic.OnBehaviourInitialize();
             GroundMarkerColorSubLogic.OnBehaviourInitialize();
             Patch_OrderTroopPlacer.OnBehaviorInitialize();
-            Patch_OrderController.OnBehaviorInitialize();
             CommandQueueLogic.OnBehaviorInitialize();
             CommandQuerySystem.OnBehaviorInitialize();
 
