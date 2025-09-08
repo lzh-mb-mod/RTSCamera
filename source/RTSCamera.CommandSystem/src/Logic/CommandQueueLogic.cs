@@ -215,6 +215,11 @@ namespace RTSCamera.CommandSystem.Logic
                 TicksToSkip--;
                 return;
             }
+            var facingTarget = Patch_OrderController.GetFacingEnemyTargetFormation(formation);
+            if (facingTarget != null &&facingTarget.CountOfUnits == 0)
+            {
+                Patch_OrderController.SetFacingEnemyTargetFormation(formation, null);
+            }
             var order = GetNextOrderForFormation(formation);
             bool isApplicable = formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
             bool isPendingOrderCompleted = IsPendingOrderCompleted(formation);
@@ -375,6 +380,7 @@ namespace RTSCamera.CommandSystem.Logic
                                 break;
                             case OrderType.LookAtEnemy:
                                 TryCancelStopOrder(formation);
+                                Patch_OrderController.SetFacingEnemyTargetFormation(formation, order.TargetFormation);
                                 formation.FacingOrder = FacingOrder.FacingOrderLookAtEnemy;
                                 TryPendingOrder(new List<Formation> { formation }, order);
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
@@ -463,11 +469,13 @@ namespace RTSCamera.CommandSystem.Logic
                                 break;
                             case OrderType.AIControlOn:
                                 formation.SetControlledByAI(true);
+                                Patch_OrderController.SetFacingEnemyTargetFormation(formation, null);
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 ClearOrderInQueue(new List<Formation> { formation });
                                 break;
                             case OrderType.AIControlOff:
                                 formation.SetControlledByAI(false);
+                                Patch_OrderController.SetFacingEnemyTargetFormation(formation, null);
                                 TryPendingOrder(new List<Formation> { formation }, order);
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
@@ -497,6 +505,7 @@ namespace RTSCamera.CommandSystem.Logic
         private static void FacingOrderLookAtDirection(OrderInQueue order, Formation formation)
         {
             var formationChanges = order.ActualFormationChanges;
+            Patch_OrderController.SetFacingEnemyTargetFormation(formation, null);
             (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.First(c => c.formation == formation);
             if (order.ShouldLockFormationInFacingOrder.TryGetValue(formation, out var shouldLockFormationInFacingOrder) && shouldLockFormationInFacingOrder)
             {

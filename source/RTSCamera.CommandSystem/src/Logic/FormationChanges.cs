@@ -19,6 +19,7 @@ namespace RTSCamera.CommandSystem.Logic
         public OrderType? MovementOrderType;
         public Formation TargetFormation;
         public Agent TargetAgent;
+        public Formation FacingEnemyTargetFormation;
         public IOrderable TargetEntity;
         public OrderType? FacingOrderType;
         public OrderType? FiringOrderType;
@@ -104,7 +105,7 @@ namespace RTSCamera.CommandSystem.Logic
             }
         }
         
-        public void SetFacingOrder(OrderType orderType, IEnumerable<Formation> formations)
+        public void SetFacingOrder(OrderType orderType, IEnumerable<Formation> formations, Formation targetFormation = null)
         {
             foreach (var formation in formations)
             {
@@ -114,11 +115,12 @@ namespace RTSCamera.CommandSystem.Logic
                 }
 
                 change.FacingOrderType = orderType;
+                change.FacingEnemyTargetFormation = targetFormation;
                 VirtualChanges[formation] = change;
             }
         }
 
-        public void SetFacingOrder(OrderType orderType, Formation formation)
+        public void SetFacingOrder(OrderType orderType, Formation formation, Formation targetFormation = null)
         {
             if (!VirtualChanges.TryGetValue(formation, out var change))
             {
@@ -126,6 +128,32 @@ namespace RTSCamera.CommandSystem.Logic
             }
 
             change.FacingOrderType = orderType;
+            change.FacingEnemyTargetFormation = targetFormation;
+            VirtualChanges[formation] = change;
+        }
+
+        public void ClearFacingOrderTarget(IEnumerable<Formation> formations)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    change = new FormationChange();
+                }
+
+                change.FacingEnemyTargetFormation = null;
+                VirtualChanges[formation] = change;
+            }
+        }
+
+        public void ClearFacingOrderTarget(Formation formation)
+        {
+            if (!VirtualChanges.TryGetValue(formation, out var change))
+            {
+                change = new FormationChange();
+            }
+
+            change.FacingEnemyTargetFormation = null;
             VirtualChanges[formation] = change;
         }
 

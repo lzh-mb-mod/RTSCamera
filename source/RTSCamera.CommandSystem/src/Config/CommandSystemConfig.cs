@@ -53,6 +53,13 @@ namespace RTSCamera.CommandSystem.Config
         Count
     }
 
+    public enum CircleFormationUnitSpacingPreference
+    {
+        Tight,
+        Loose,
+        Count
+    }
+
     public class CommandSystemConfig : MissionConfigBase<CommandSystemConfig>
     {
         protected override XmlSerializer Serializer => new XmlSerializer(typeof(CommandSystemConfig));
@@ -99,7 +106,11 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool OrderUIClickable = true;
 
+        public bool OrderUIClickableExtension = false;
+
         public bool FacingEnemyByDefault = false;
+
+        public CircleFormationUnitSpacingPreference CircleFormationUnitSpacingPreference = CircleFormationUnitSpacingPreference.Tight;
 
         protected override void CopyFrom(CommandSystemConfig other)
         {
@@ -122,8 +133,9 @@ namespace RTSCamera.CommandSystem.Config
             HollowSquare = other.HollowSquare;
             SquareFormationCornerFix = other.SquareFormationCornerFix;
             OrderUIClickable = other.OrderUIClickable;
+            OrderUIClickableExtension = other.OrderUIClickableExtension;
             FacingEnemyByDefault = other.FacingEnemyByDefault;
-
+            CircleFormationUnitSpacingPreference = other.CircleFormationUnitSpacingPreference;
         }
 
         public static void OnMenuClosed()

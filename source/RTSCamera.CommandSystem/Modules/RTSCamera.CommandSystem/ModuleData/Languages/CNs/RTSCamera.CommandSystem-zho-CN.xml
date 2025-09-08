@@ -63,8 +63,16 @@
     <string id="RTSCameraCommandSystem_square_formation_corner_Fix" text="方阵角落修正" />
     <string id="RTSCameraCommandSystem_square_formation_corner_Fix_hint" text="启用后，位于方阵角落的士兵将面向方阵的对角线方向，以确保更好的防御覆盖和更自然的外观。" />
 
+    <string id="RTSCameraCommandSystem_circle_formation_preference" text="圆阵偏好" />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_hint" text="偏好紧凑圆阵或松散圆阵" />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_option_tight" text="紧凑圆阵" />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_option_loose" text="松散圆阵" />
+
     <string id="RTSCamera_order_ui_clickable" text="命令界面可点击" />
     <string id="RTSCamera_order_ui_clickable_hint" text="让命令界面可点击。重启游戏来生效。" />
+
+    <string id="RTSCameraCommandSystem_order_ui_clickable_extension" text="命令界面点击功能扩展" />
+    <string id="RTSCameraCommandSystem_order_ui_clickable_extension_hint" text="可在下达朝向或开战指令的同时按住{KeyName}，然后点击目标来指定命令的目标。" />
 
     <string id="RTSCameraCommandSystem_face_enemy_by_default" text="默认面朝敌军" />
     <string id="RTSCameraCommandSystem_face_enemy_by_default_hint" text="战斗开始时部队是否应该默认面朝敌军。" />

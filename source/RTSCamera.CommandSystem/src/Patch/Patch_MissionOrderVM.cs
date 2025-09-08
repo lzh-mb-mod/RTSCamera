@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
+using Microsoft.VisualBasic;
 using MissionSharedLibrary.Utilities;
 using NetworkMessages.FromClient;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using System;
@@ -214,7 +216,7 @@ namespace RTSCamera.CommandSystem.Patch
                     orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                     break;
                 case OrderSubType.Advance:
-                    if (isSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == OrderSubType.None)
+                    if (isSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == OrderSubType.None && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
                     {
                         // Allows to click enemy to select target to advance to.
                         OrderToSelectTarget = OrderSubType.Advance;
@@ -336,7 +338,7 @@ namespace RTSCamera.CommandSystem.Patch
                     if (__instance.LastSelectedOrderItem.SelectionState == 3)
                     {
                         // OrderLayoutType 0 means default layout without facing order set.
-                        if (BannerlordConfig.OrderLayoutType == 0 && isSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == OrderSubType.None)
+                        if (BannerlordConfig.OrderLayoutType == 0 && isSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == OrderSubType.None && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
                         {
                             // Allows to click ground to select direction to facing to.
                             OrderToSelectTarget = OrderSubType.ActivationFaceDirection;
@@ -347,22 +349,49 @@ namespace RTSCamera.CommandSystem.Patch
                     }
                     else
                     {
+                        if (isSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == OrderSubType.None && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
+                        {
+                            // Allows to click enemy formation to select target formation to facing to.
+                            OrderToSelectTarget = OrderSubType.FaceEnemy;
+                            skipNativeOrder = true;
+                            return null;
+                        }
                         orderToAdd.OrderType = OrderType.LookAtEnemy;
                     }
-                    if (queueCommand && orderToAdd.OrderType == OrderType.LookAtDirection)
-                    {
-                        Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, missionScreen);
-                    }
-                    if (!queueCommand)
+                    if (queueCommand)
                     {
                         if (orderToAdd.OrderType == OrderType.LookAtDirection)
                         {
+                            Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, missionScreen);
+                        }
+                        else
+                        {
+                            focusedFormations = (MBReadOnlyList<Formation>)_focusedFormationsCache.GetValue(__instance);
+                            if (focusedFormations != null && focusedFormations.Count > 0)
+                            {
+                                orderToAdd.TargetFormation = focusedFormations[0];
+                            }
+                            Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations, orderToAdd.TargetFormation);
+                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                        }
+                    }
+                    else
+                    {
+                        if (orderToAdd.OrderType == OrderType.LookAtDirection)
+                        {
+                            Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, null);
                             __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false));
                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
                         else
                         {
-                            Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations);
+                            focusedFormations = (MBReadOnlyList<Formation>)_focusedFormationsCache.GetValue(__instance);
+                            if (focusedFormations != null && focusedFormations.Count > 0)
+                            {
+                                orderToAdd.TargetFormation = focusedFormations[0];
+                            }
+                            Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations, orderToAdd.TargetFormation);
+                            Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, orderToAdd.TargetFormation);
                             __instance.OrderController.SetOrder(OrderType.LookAtEnemy);
                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
@@ -416,10 +445,12 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         orderToAdd.OrderType = OrderType.AIControlOn;
                     }
+                    Patch_OrderController.LivePreviewFormationChanges.ClearFacingOrderTarget(selectedFormations);
                     Patch_OrderController.LivePreviewFormationChanges.SetAIControlOrder(orderToAdd.OrderType, selectedFormations);
                     orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                     if (!queueCommand)
                     {
+                        Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, null);
                         __instance.OrderController.SetOrder(orderToAdd.OrderType);
                         CommandQueueLogic.CancelPendingOrder(selectedFormations);
                         skipNativeOrder = true;
@@ -429,7 +460,7 @@ namespace RTSCamera.CommandSystem.Patch
                 case OrderSubType.ToggleTransfer:
                     return null;
                 case OrderSubType.ActivationFaceDirection:
-                    if (isSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == OrderSubType.None)
+                    if (isSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == OrderSubType.None && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
                     {
                         // Allows to click ground to select direction to facing to.
                         OrderToSelectTarget = OrderSubType.ActivationFaceDirection;
@@ -444,6 +475,7 @@ namespace RTSCamera.CommandSystem.Patch
                     }
                     else
                     {
+                        Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, null);
                         __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false));
                         orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         skipNativeOrder = true;
@@ -451,8 +483,24 @@ namespace RTSCamera.CommandSystem.Patch
                     }
                     break;
                 case OrderSubType.FaceEnemy:
+                    if (isSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == OrderSubType.None && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
+                    {
+                        // Allows to click enemy formation to select target formation to facing to.
+                        OrderToSelectTarget = OrderSubType.FaceEnemy;
+                        skipNativeOrder = true;
+                        return null;
+                    }
                     orderToAdd.OrderType = OrderType.LookAtEnemy;
-                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations);
+                    focusedFormations = (MBReadOnlyList<Formation>)_focusedFormationsCache.GetValue(__instance);
+                    if (focusedFormations != null && focusedFormations.Count > 0)
+                    {
+                        orderToAdd.TargetFormation = focusedFormations[0];
+                    }
+                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations, orderToAdd.TargetFormation);
+                    if (!queueCommand)
+                    {
+                        Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, orderToAdd.TargetFormation);
+                    }
                     orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                     break;
                 case OrderSubType.Return:
@@ -468,7 +516,8 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static void ExecuteArrangementOrder(MissionOrderVM __instance, OrderInQueue order)
         {
-            Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(order.SelectedFormations));
+            //Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(order.SelectedFormations));
+            Patch_OrderController.LivePreviewFormationChanges.SetChanges(order.VirtualFormationChanges);
             __instance.OrderController.SetOrder(order.OrderType);
             foreach (var pair in order.VirtualFormationChanges)
             {
@@ -483,10 +532,10 @@ namespace RTSCamera.CommandSystem.Patch
             CommandQueueLogic.TryTeleportSelectedFormationInDeployment(__instance.OrderController, order.SelectedFormations);
             CommandQueueLogic.CurrentFormationChanges.SetChanges(order.VirtualFormationChanges);
         }
-
+         
         public static bool Prefix_GetIsFacingSubOrdersShown(MissionOrderVM __instance, ref bool __result)
         {
-            if (OrderToSelectTarget == OrderSubType.ActivationFaceDirection)
+            if (OrderToSelectTarget == OrderSubType.ActivationFaceDirection && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
             {
                 __result = true;
                 Patch_OrderTroopPlacer.SetIsDraingFacing(true);
@@ -500,7 +549,7 @@ namespace RTSCamera.CommandSystem.Patch
             if (OrderToSelectTarget != OrderSubType.None)
             {
                 OrderToSelectTarget = OrderSubType.None;
-                return false;
+                return !Patch_OrderTroopPlacer.IsFreeCamera;
             }
             return true;
         }

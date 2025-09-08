@@ -20,7 +20,9 @@ namespace RTSCamera.CommandSystem.View
     {
         Move,
         Focus,
-        Attack
+        Attack,
+        Facing,
+        Count
     }
     public class OrderPreviewData
     {
@@ -38,6 +40,7 @@ namespace RTSCamera.CommandSystem.View
         public static uint ArrowColor = new Color(0.4f, 0.8f, 0.4f).ToUnsignedInteger();
         public static uint FocusingArrowColor = new Color(0.7f, 0.3f, 0.2f).ToUnsignedInteger();
         public static uint AttackingArrowColor = new Color(0.95f, 0.1f, 0.1f).ToUnsignedInteger();
+        public static uint FacingArrowColor = new Color(0.9f, 0.6f, 0.2f).ToUnsignedInteger();
 
         public GameEntity ArrowHead;
         public GameEntity ArrowBody;
@@ -66,6 +69,8 @@ namespace RTSCamera.CommandSystem.View
                     return FocusingArrowColor;
                 case OrderTargetType.Attack:
                     return AttackingArrowColor;
+                case OrderTargetType.Facing:
+                    return FacingArrowColor;
                 default:
                     return ArrowColor;
             }
@@ -138,7 +143,7 @@ namespace RTSCamera.CommandSystem.View
             var rightMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (rightVec2 * (width / 2 + rightBorder) + direciton * (-depth + frontBorder - backBorder) / 2).ToVec3(), direciton, depth + frontBorder + backBorder);
             RightLine.SetFrame(ref rightMatrix);
             RightLine.SetVisibilityExcludeParents(true);
-            float shortLength = MathF.Min(MathF.Clamp(width * 0.1f, 1f, 10f), depth * 0.8f);
+            float shortLength = MathF.Min(MathF.Clamp(width * 0.1f, 1f, 10f), depth * 0.3f);
             var leftBackmatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (direciton * (-depth - backBorder) + rightVec2 * ((shortLength - width) / 2 - leftBorder)).ToVec3(), rightVec2, shortLength);
             LeftBackLine.SetFrame(ref leftBackmatrix);
             LeftBackLine.SetVisibilityExcludeParents(true);
@@ -372,7 +377,7 @@ namespace RTSCamera.CommandSystem.View
                             ++arrowIndex;
                         }
                     }
-                    if (order.OrderTargetType != OrderTargetType.Focus)
+                    if (order.OrderTargetType == OrderTargetType.Move || order.OrderTargetType == OrderTargetType.Attack)
                         arrowStart = arrowEnd;
                     ++orderRank;
                 }
@@ -387,7 +392,7 @@ namespace RTSCamera.CommandSystem.View
             // clear saved moving target
             Patch_OrderController.ClearFormationLivePositionForPreview(formation);
 
-            var targetPreview = CollectFocusPreviewData(formation);
+            var targetPreview = CollectFocusOrFacingPreviewData(formation);
             if (targetPreview != null)
             {
                 result.OrderList.Add(targetPreview);
@@ -581,11 +586,19 @@ namespace RTSCamera.CommandSystem.View
                                 {
                                     if (order.VirtualFormationChanges.TryGetValue(formation, out var formationChange))
                                     {
-                                        UpdateMovingOrderTarget(formation, formationChange.MovementOrderType, formationChange.WorldPosition, formationChange.TargetFormation, formationChange.TargetAgent, formationChange.TargetEntity);
+                                        if (order.TargetFormation != null)
+                                        {
+                                            var targetPosition = order.TargetFormation.QuerySystem.MedianPosition;
+                                            Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
+                                        }
+                                        else
+                                        {
+                                            UpdateMovingOrderTarget(formation, formationChange.MovementOrderType, formationChange.WorldPosition, formationChange.TargetFormation, formationChange.TargetAgent, formationChange.TargetEntity);
+                                        }
                                         var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
                                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
                                     }
-                                    return CollectOrderPreviewData(formation, ShouldIncludeFormationShape(order.OrderType));
+                                    return CollectOrderPreviewData(formation, order.TargetFormation != null ?  false: ShouldIncludeFormationShape(order.OrderType), order.TargetFormation != null ? OrderTargetType.Facing : OrderTargetType.Move);
                                 }
                             case OrderType.LookAtDirection:
                                 {
@@ -867,12 +880,24 @@ namespace RTSCamera.CommandSystem.View
             }
         }
 
-        private OrderPreviewData CollectFocusPreviewData(Formation formation)
+        private OrderPreviewData CollectFocusOrFacingPreviewData(Formation formation)
         {
             if (formation.TargetFormation == null)
+            {
+                if (formation.FacingOrder.OrderType == OrderType.LookAtEnemy)
+                {
+                    var targetFacingEnemy = Patch_OrderController.GetFacingEnemyTargetFormation(formation);
+                    if (targetFacingEnemy != null)
+                    {
+                        var targetPosition1 = targetFacingEnemy.QuerySystem.MedianPosition;
+                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition1, null, null, null);
+                        return CollectOrderPreviewData(formation, false, OrderTargetType.Facing);
+                    }
+                }
                 return null;
+            }
             var orderTargetType = GetOrderTargetType(formation.GetReadonlyMovementOrderReference().OrderType);
-            if (orderTargetType == OrderTargetType.Attack)
+            if (orderTargetType == OrderTargetType.Attack || orderTargetType == OrderTargetType.Move)
             {
                 // for attack order type
                 // the preview will be included in pended order so we don't need to include it here.

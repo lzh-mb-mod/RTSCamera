@@ -149,11 +149,31 @@ namespace RTSCamera.CommandSystem.Config
                     {
                         CommandSystemConfig.Get().SquareFormationCornerFix = b;
                     }));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_circle_formation_preference"),
+                    GameTexts.FindText("str_rts_camera_command_system_circle_formation_preference_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().CircleFormationUnitSpacingPreference = (CircleFormationUnitSpacingPreference)i,
+                        () => (int)CommandSystemConfig.Get().CircleFormationUnitSpacingPreference, (int)CircleFormationUnitSpacingPreference.Count, new List<SelectionItem>
+                        {
+                            new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Tight"),
+                            new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Loose")
+                        }), false));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable"),
                     GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable_hint"),
                     () => CommandSystemConfig.Get().OrderUIClickable,
                     b => CommandSystemConfig.Get().OrderUIClickable = UIConfig.DoNotUseGeneratedPrefabs = b));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable_extension"),
+                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable_extension_hint").SetTextVariable("KeyName", CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectTargetForCommand).ToSequenceString()),
+                    () => CommandSystemConfig.Get().OrderUIClickableExtension,
+                    b => {
+                        CommandSystemConfig.Get().OrderUIClickableExtension = b;
+                        if (!b)
+                        {
+                            Patch_MissionOrderVM.OrderToSelectTarget = TaleWorlds.MountAndBlade.ViewModelCollection.Order.OrderSubType.None;
+                        }
+                    }));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default"),
                     GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default_hint"),

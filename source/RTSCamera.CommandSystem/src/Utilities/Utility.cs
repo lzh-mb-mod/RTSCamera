@@ -24,7 +24,7 @@ namespace RTSCamera.CommandSystem.Utilities
     public static class Utility
     {
         public static Color MessageColor = new Color(0.2f, 0.9f, 0.7f);
-        private static PropertyInfo MinimumFileCount = typeof(LineFormation).GetProperty("MinimumFileCount", BindingFlags.Instance | BindingFlags.NonPublic);
+        public static PropertyInfo MinimumFileCount = typeof(LineFormation).GetProperty("MinimumFileCount", BindingFlags.Instance | BindingFlags.NonPublic);
         public static void PrintOrderHint()
         {
             //if (CommandSystemConfig.Get().ClickToSelectFormation)
@@ -754,7 +754,12 @@ namespace RTSCamera.CommandSystem.Utilities
         public static int GetFileCountFromWidth(Formation formation, float flankWidth, int unitSpacing)
         {
             // TODO the formation may be a column formation. MinimumFileCount is a property of LineFormation, so it may not be available.
-            return MathF.Max(MathF.Max(0, (int)(((double)flankWidth - (double)formation.UnitDiameter) / ((double)GetFormationInterval(formation, unitSpacing) + (double)formation.UnitDiameter) + 9.9999997473787516E-06)) + 1, formation.Arrangement is ColumnFormation ? 1 : (int)MinimumFileCount.GetValue(formation.Arrangement));
+            return MathF.Max(GetUnlimitedFileCountFromWidth(formation, flankWidth, unitSpacing), formation.Arrangement is ColumnFormation ? 1 : (int)MinimumFileCount.GetValue(formation.Arrangement));
+        }
+
+        public static int GetUnlimitedFileCountFromWidth(Formation formation, float flankWidth, int unitSpacing)
+        {
+            return MathF.Max(0, (int)(((double)flankWidth - (double)formation.UnitDiameter) / ((double)GetFormationInterval(formation, unitSpacing) + (double)formation.UnitDiameter) + 9.9999997473787516E-06)) + 1;
         }
 
         // Copied From LineFormation.get_FlankWidth
@@ -782,6 +787,12 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             var team = selectedFormations.FirstOrDefault()?.Team;
             return selectedFormations.All(f => !f.IsAIControlled) && team != null && team == Mission.Current.PlayerTeam && (team.IsPlayerGeneral || team.IsPlayerSergeant && selectedFormations.All(f => f.PlayerOwner == Agent.Main));
+        }
+
+        public static bool ShouldEnablePlayerOrderControllerPatchForFormation(Formation formation)
+        {
+            var team = formation.Team;
+            return !formation.IsAIControlled && team != null && team == Mission.Current.PlayerTeam && (team.IsPlayerGeneral || team.IsPlayerSergeant && formation.PlayerOwner == Agent.Main);
         }
 
 

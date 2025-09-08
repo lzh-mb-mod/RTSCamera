@@ -44,7 +44,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static OrderTroopPlacer _orderTroopPlacer;
         private static MissionFormationTargetSelectionHandler _targetSelectionHandler;
         private static MBReadOnlyList<Formation> _focusedFormationsCache;
-        private static bool _isFreeCamera;
+        public static bool IsFreeCamera;
         private static MovementTargetHighlightStyle _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
         private static List<GameEntity> _originalOrderPositionEntities;
         private static List<GameEntity> _newModelOrderPositionEntities;
@@ -134,7 +134,7 @@ namespace RTSCamera.CommandSystem.Patch
                 _targetSelectionHandler.OnFormationFocused += OnFormationFocused;
             }
             MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
-            _isFreeCamera = false;
+            IsFreeCamera = false;
             _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
         }
 
@@ -152,7 +152,7 @@ namespace RTSCamera.CommandSystem.Patch
             }
             _targetSelectionHandler = null;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
-            _isFreeCamera = false;
+            IsFreeCamera = false;
             _originalOrderPositionEntities = _newModelOrderPositionEntities = _alwaysVisibleOrderPositionEntities = null;
             _originalMaterial = _newModelMaterial = _alwaysVisibleMaterial = null;
             _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
@@ -165,7 +165,8 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static void OnToggleFreeCamera(bool isFreeCamera)
         {
-            _isFreeCamera = isFreeCamera;
+            IsFreeCamera = isFreeCamera;
+            Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
         }
 
         public static bool IsDraggingFormation(OrderTroopPlacer __instance, Vec2? ____formationDrawingStartingPointOfMouse, float? ____formationDrawingStartingTime)
@@ -413,7 +414,7 @@ namespace RTSCamera.CommandSystem.Patch
         {
             var config = CommandSystemConfig.Get();
             var timeOfDay =__instance.Mission.Scene.TimeOfDay;
-            var currentMovementTargetHighlightStyle = _isFreeCamera ? config.MovementTargetHighlightStyleInRTSMode : config.MovementTargetHighlightStyleInCharacterMode;
+            var currentMovementTargetHighlightStyle = IsFreeCamera ? config.MovementTargetHighlightStyleInRTSMode : config.MovementTargetHighlightStyleInCharacterMode;
 
             switch (currentMovementTargetHighlightStyle)
             {

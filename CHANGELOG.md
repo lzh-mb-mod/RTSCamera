@@ -1,5 +1,14 @@
 # Changelog
 
+## [v5.1.10]
+### Added
+- Add option for circle formation tight/loose preference.
+
+- Add option for clickable UI extension to allow setting command target when giving order by clicking UI.
+
+### Fix
+- Fix performence issue of hollow square formation.
+
 ## [v5.1.9] - 2025-07-09
 ### Added
 - Support targeting when clicking advance or facing button by holding Alt.

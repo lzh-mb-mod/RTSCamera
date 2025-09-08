@@ -13,7 +13,7 @@ namespace RTSCamera.Logic.SubLogic
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
         private bool _slowMotionRequestAdded = false;
         private bool _slowMotionByRTSView = false;
-        private bool _isFastForwardKeyPressed = false;
+        private int _fastForwardHotKeyCollDown = 0;
 
         public Mission Mission => _logic.Mission;
 
@@ -69,16 +69,16 @@ namespace RTSCamera.Logic.SubLogic
                 SetSlowMotionMode(!_config.SlowMotionMode);
             }
 
-            if (_isFastForwardKeyPressed)
+            if (_fastForwardHotKeyCollDown > 0)
             {
-                // hotkey may be triggered twice in fast forward mode so we disable next tick trigger.
-                _isFastForwardKeyPressed = false;
+                // hotkey may be triggered multiple times in fast forward mode so we need to cool it down.
+                _fastForwardHotKeyCollDown--;
             }
             else
             {
                 if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.Fastforward).IsKeyPressedInOrder())
                 {
-                    _isFastForwardKeyPressed = true;
+                    _fastForwardHotKeyCollDown = 10;
                     Mission.Current.SetFastForwardingFromUI(!Mission.Current.IsFastForward);
                 }
             }

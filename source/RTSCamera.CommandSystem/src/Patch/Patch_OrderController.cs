@@ -67,6 +67,8 @@ namespace RTSCamera.CommandSystem.Patch
         public static FormationChanges LivePreviewFormationChanges = new FormationChanges();
         private static Dictionary<Formation, MovingTarget> _currentMovingTarget;
 
+        public static Dictionary<Formation, Formation> FacingEnemeyTarget = new Dictionary<Formation, Formation>();
+
         public static bool Patch(Harmony harmony)
         {
             try
@@ -165,6 +167,7 @@ namespace RTSCamera.CommandSystem.Patch
             _widthsBackup = new Dictionary<Formation, float>();
             LivePreviewFormationChanges = new FormationChanges();
             _currentMovingTarget = new Dictionary<Formation, MovingTarget>();
+            FacingEnemeyTarget = new Dictionary<Formation, Formation>();
         }
 
         public static void OnRemoveBehavior()
@@ -174,6 +177,7 @@ namespace RTSCamera.CommandSystem.Patch
             _widthsBackup = null;
             LivePreviewFormationChanges = null;
             _currentMovingTarget = null;
+            FacingEnemeyTarget = null;
         }
 
         public static void OnAddTeam(Team team)
@@ -417,6 +421,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 if (!isFromPlayerInput && !Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(formations))
                     return true;
+                var allFormations = formations.ToList();
                 simulationAgentFrames = ((!isSimulatingAgentFrames) ? null : new List<WorldPosition>());
                 simulationFormationChanges = ((!isSimulatingFormationChanges) ? null : new List<(Formation, int, float, WorldPosition, Vec2)>());
                 float length = (formationLineEnd.AsVec2 - formationLineBegin.AsVec2).Length;
@@ -482,11 +487,15 @@ namespace RTSCamera.CommandSystem.Patch
                                 //    actualUnitSpacings[formation] = _customUnitSpacings[formation];
                                 //}
                             }
-                            //else
-                            //{
-                            //    _customUnitSpacings.Remove(formation);
-                            //    //_widthsBackup.Remove(formation);
-                            //}
+                            else
+                            {
+                                _naturalUnitSpacings[formation] = ArrangementOrder.GetUnitSpacingOf(GetFormationVirtualArrangementOrder(formation));
+                            }
+                                //else
+                                //{
+                                //    _customUnitSpacings.Remove(formation);
+                                //    //_widthsBackup.Remove(formation);
+                                //}
                             var virtualUnitSpacing = GetFormationVirtualUnitSpacing(formation);
                             if (virtualUnitSpacing != null)
                                 actualUnitSpacings[formation] = virtualUnitSpacing.Value;
@@ -545,6 +554,11 @@ namespace RTSCamera.CommandSystem.Patch
                         SimulateNewOrderWithHorizontalLayout(formations, simulationFormations, isLineShort, formationLineBegin, formationLineEnd, isSimulatingAgentFrames, simulationAgentFrames, isSimulatingFormationChanges, simulationFormationChanges);
                 }
 
+                foreach (var formation in allFormations)
+                {
+                    //RemoveActualUnitSpacing(formation);
+                    RemoveActualWidth(formation);
+                }
                 return false;
             }
             catch (Exception e)
@@ -724,20 +738,20 @@ namespace RTSCamera.CommandSystem.Patch
             }
         }
 
-        private static Vec2 GetLeftFlankPosition(Formation formation, Vec2 orderPosition)
+        private static Vec2 GetLeftFlankPosition(Formation formation, Vec2 orderPosition, Vec2 dragVec)
         {
             var width = GetActualOrCurrentWidth(formation);
-            var formationDirection = GetFormationVirtualDirection(formation);
-            var directionToLeftFlank = new Vec2(-formationDirection.y, formationDirection.x);
-            return orderPosition + directionToLeftFlank * width * 0.5f;
+            //var formationDirection = GetFormationVirtualDirection(formation);
+            //var directionToLeftFlank = new Vec2(-formationDirection.y, formationDirection.x);
+            return orderPosition + -dragVec * width * 0.5f;
         }
 
-        private static Vec2 GetRightFlankPosition(Formation formation, Vec2 orderPosition)
+        private static Vec2 GetRightFlankPosition(Formation formation, Vec2 orderPosition, Vec2 dragVec)
         {
             var width = GetActualOrCurrentWidth(formation);
-            var formationDirection = GetFormationVirtualDirection(formation);
-            var directionToRightFlank = new Vec2(formationDirection.y, -formationDirection.x);
-            return orderPosition + directionToRightFlank * width * 0.5f;
+            //var formationDirection = GetFormationVirtualDirection(formation);
+            //var directionToRightFlank = new Vec2(formationDirection.y, -formationDirection.x);
+            return orderPosition + dragVec * width * 0.5f;
         }
 
         private static void CollectStacksRecord(
@@ -762,13 +776,13 @@ namespace RTSCamera.CommandSystem.Patch
             formationOrderPositionList.Sort((pair1, pair2) =>
             {
                 // compare by left flank
-                return GetLeftFlankPosition(pair1.Key, pair1.Value).DotProduct(oldDragVec).CompareTo(GetLeftFlankPosition(pair2.Key, pair2.Value).DotProduct(oldDragVec));
+                return GetLeftFlankPosition(pair1.Key, pair1.Value, oldDragVec).DotProduct(oldDragVec).CompareTo(GetLeftFlankPosition(pair2.Key, pair2.Value, oldDragVec).DotProduct(oldDragVec));
             });
             var currentStack = new StackRecord()
             {
                 Formations = new List<Formation> { formationOrderPositionList[0].Key },
-                LeftMost = GetLeftFlankPosition(formationOrderPositionList[0].Key, formationOrderPositionList[0].Value).DotProduct(oldDragVec),
-                RightMost = GetRightFlankPosition(formationOrderPositionList[0].Key, formationOrderPositionList[0].Value).DotProduct(oldDragVec),
+                LeftMost = GetLeftFlankPosition(formationOrderPositionList[0].Key, formationOrderPositionList[0].Value, oldDragVec).DotProduct(oldDragVec),
+                RightMost = GetRightFlankPosition(formationOrderPositionList[0].Key, formationOrderPositionList[0].Value, oldDragVec).DotProduct(oldDragVec),
                 MinimumWidth = GetFormationVirtualMinimumWidth(formationOrderPositionList[0].Key),
                 MaximumWidth = GetFormationVirtualMaximumWidth(formationOrderPositionList[0].Key),
             };
@@ -782,8 +796,8 @@ namespace RTSCamera.CommandSystem.Patch
                     shouldFormationBeStackedWithPreviousFormation[currentFormation] = true;
                     currentStack.MinimumWidth = MathF.Max(currentStack.MinimumWidth, GetFormationVirtualMinimumWidth(currentFormation));
                     currentStack.MaximumWidth = MathF.Max(currentStack.MaximumWidth, GetFormationVirtualMaximumWidth(currentFormation));
-                    currentStack.LeftMost = MathF.Min(currentStack.LeftMost, GetLeftFlankPosition(currentFormation, currentFormationOrderPosition).DotProduct(oldDragVec));
-                    currentStack.RightMost = MathF.Max(currentStack.RightMost, GetRightFlankPosition(currentFormation, currentFormationOrderPosition).DotProduct(oldDragVec));
+                    currentStack.LeftMost = MathF.Min(currentStack.LeftMost, GetLeftFlankPosition(currentFormation, currentFormationOrderPosition, oldDragVec).DotProduct(oldDragVec));
+                    currentStack.RightMost = MathF.Max(currentStack.RightMost, GetRightFlankPosition(currentFormation, currentFormationOrderPosition, oldDragVec).DotProduct(oldDragVec));
                     currentStack.Formations.Add(currentFormation);
                 }
                 else
@@ -795,8 +809,8 @@ namespace RTSCamera.CommandSystem.Patch
                     currentStack = new StackRecord()
                     {
                         Formations = new List<Formation> { currentFormation },
-                        LeftMost = GetLeftFlankPosition(currentFormation, currentFormationOrderPosition).DotProduct(oldDragVec),
-                        RightMost = GetRightFlankPosition(currentFormation, currentFormationOrderPosition).DotProduct(oldDragVec),
+                        LeftMost = GetLeftFlankPosition(currentFormation, currentFormationOrderPosition, oldDragVec).DotProduct(oldDragVec),
+                        RightMost = GetRightFlankPosition(currentFormation, currentFormationOrderPosition, oldDragVec).DotProduct(oldDragVec),
                         MinimumWidth = GetFormationVirtualMinimumWidth(currentFormation),
                         MaximumWidth = GetFormationVirtualMaximumWidth(currentFormation),
                     };
@@ -1895,6 +1909,12 @@ namespace RTSCamera.CommandSystem.Patch
             return hasFormation && LivePreviewFormationChanges.VirtualChanges[formation].TargetFormation != null ? LivePreviewFormationChanges.VirtualChanges[formation].TargetFormation : null;
         }
 
+        public static Agent GetFormationVirtualTargetAgent(Formation formation)
+        {
+            bool hasFormation = LivePreviewFormationChanges.VirtualChanges.ContainsKey(formation);
+            return hasFormation && LivePreviewFormationChanges.VirtualChanges[formation].TargetAgent != null ? LivePreviewFormationChanges.VirtualChanges[formation].TargetAgent : null;
+        }
+
         public static OrderType GetFormationVirtualRidingOrder(Formation formation)
         {
             bool hasFormation = LivePreviewFormationChanges.VirtualChanges.ContainsKey(formation);
@@ -1980,10 +2000,24 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static Vec2 GetVirtualDirectionOfFacingEnemy(Formation f)
         {
-            // TODO: what if arrangement is changed in command queue?
+            var targetAgent = GetFormationVirtualTargetAgent(f);
+            if (f.PhysicalClass.IsMounted() && targetAgent != null)
+            {
+                Vec3 velocity = targetAgent.Velocity;
+                if (velocity.LengthSquared > targetAgent.RunSpeedCached * targetAgent.RunSpeedCached * 0.090000003576278687)
+                {
+                    velocity = targetAgent.Velocity;
+                    return velocity.AsVec2.Normalized();
+                }
+            }
             var arrangementOrder = GetFormationVirtualArrangementOrder(f);
             if (arrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle || arrangementOrder == ArrangementOrder.ArrangementOrderEnum.Square)
                 return f.Direction;
+            var targetFormation = GetFacingEnemyTargetFormation(f);
+            if (targetFormation != null)
+            {
+                return Patch_FacingOrder.GetDirectionFacingToEnemyFormation(f, targetFormation);
+            }
             var averageEnemyPosition = f.QuerySystem.WeightedAverageEnemyPosition;
             if (!averageEnemyPosition.IsValid)
                 return f.Direction;
@@ -2144,14 +2178,13 @@ namespace RTSCamera.CommandSystem.Patch
                 var oldArrangementOrder = GetFormationVirtualArrangementOrder(formation);
                 Vec2 positionVec2 = GetFormationVirtualPositionVec2(formation);
                 Vec2 direction = GetFormationVirtualDirectionIncludingFacingEnemy(formation);
-                float width = GetNewWidthOfArrangementOrder(formation, oldArrangementOrder, newArrangementOrder);
+                //var actualUnitSpacing = GetFormationVirtualUnitSpacing(formation) ?? GetActualOrCurrentUnitSpacing(formation);
+                var actualUnitSpacing = ArrangementOrder.GetUnitSpacingOf(newArrangementOrder);
+                float width = GetNewWidthOfArrangementOrder(formation, oldArrangementOrder, newArrangementOrder, actualUnitSpacing);
                 WorldPosition formationPosition = formation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.NavMeshVec3);
                 formationPosition.SetVec2(positionVec2);
 
-                int unitSpacingReduction = 0;
-                //var actualUnitSpacing = GetFormationVirtualUnitSpacing(formation) ?? GetActualOrCurrentUnitSpacing(formation);
-                var actualUnitSpacing = ArrangementOrder.GetUnitSpacingOf(newArrangementOrder);
-                DecreaseUnitSpacingAndWidthWithNewArrangementOrderIfNotAllUnitsFit(formation, GetSimulationFormation(formation, simulationFormations), oldArrangementOrder, newArrangementOrder, in formationPosition, in direction, ref width, ref unitSpacingReduction, actualUnitSpacing);
+                DecreaseUnitSpacingAndWidthWithNewArrangementOrderIfNotAllUnitsFit(formation, GetSimulationFormation(formation, simulationFormations), oldArrangementOrder, newArrangementOrder, in formationPosition, in direction, ref width, out var unitSpacingReduction, actualUnitSpacing);
                 SimulateNewArrangementOrderWithFrameAndWidth(formation, GetSimulationFormation(formation, simulationFormations), oldArrangementOrder, newArrangementOrder, simulationAgentFrames, simulationFormationChanges, in formationPosition, in direction, width, unitSpacingReduction, true, out var simulatedFormationDepth, actualUnitSpacing);
                 if (isSimulatingFormationChanges)
                 {
@@ -2162,105 +2195,112 @@ namespace RTSCamera.CommandSystem.Patch
             }
         }
 
-        public static float GetNewWidthOfArrangementChange(Formation formation,
-            IFormationArrangement oldArrangement,
-            ArrangementOrder.ArrangementOrderEnum newArrangementOrder)
-        {
-            var oldWidth = GetFormationVirtualWidth(formation) ?? formation.Width;
-            var oldArrangementType = oldArrangement.GetType();
-            var newArrangementType = Utilities.Utility.GetTypeOfArrangement(newArrangementOrder, true);
-            var oldArrangementOrder = Utilities.Utility.GetOrderEnumOfArrangement(oldArrangement);
-            if (oldArrangementOrder != ArrangementOrder.ArrangementOrderEnum.Column && newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Column)
-            {
-                return oldWidth * 0.1f;
-            }
-            if (oldArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Column && newArrangementOrder != ArrangementOrder.ArrangementOrderEnum.Column)
-            {
-                return oldWidth / 0.1f;
-            }
-            var oldUnitSpacing = GetFormationVirtualUnitSpacing(formation) ?? formation.UnitSpacing;
-            var oldFlankWidth = oldWidth;
-            if (oldArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle)
-            {
-                oldFlankWidth = oldWidth * MathF.PI;
-            }
-            else if (oldArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Square)
-            {
-                // given that:
-                // flankwidth = (filecount - 1) * (interval + unitdiameter) + unitdiameter
-                // width = (ceiling(filecount / 4)) * (interval + unitdiameter) + unitdiameter
-                // we have:
-                // ceiling(filecount / 4) = (width - unitdiameter) / (interval + unitdiameter)
-                // filecount = 4 * (width - unitdiameter) / (interval + unitdiameter)
-                // flankwidth = (4 * (width - unitdiameter) / (interval + unitdiameter) - 1) * (interval + unitdiameter) + unitdiameter
-                // flankwidth = 4 * (width - unitdiameter) - interval
-                oldFlankWidth = 4 * (oldWidth - formation.UnitDiameter) - Utilities.Utility.GetFormationInterval(formation, oldUnitSpacing);
-            }
+        //public static float GetNewWidthOfArrangementChange(Formation formation,
+        //    IFormationArrangement oldArrangement,
+        //    ArrangementOrder.ArrangementOrderEnum newArrangementOrder)
+        //{
+        //    var oldWidth = GetFormationVirtualWidth(formation) ?? formation.Width;
+        //    var oldArrangementType = oldArrangement.GetType();
+        //    var newArrangementType = Utilities.Utility.GetTypeOfArrangement(newArrangementOrder, true);
+        //    var oldArrangementOrder = Utilities.Utility.GetOrderEnumOfArrangement(oldArrangement);
+        //    if (oldArrangementOrder != ArrangementOrder.ArrangementOrderEnum.Column && newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Column)
+        //    {
+        //        return oldWidth * 0.1f;
+        //    }
+        //    if (oldArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Column && newArrangementOrder != ArrangementOrder.ArrangementOrderEnum.Column)
+        //    {
+        //        return oldWidth / 0.1f;
+        //    }
+        //    var oldUnitSpacing = GetFormationVirtualUnitSpacing(formation) ?? formation.UnitSpacing;
+        //    var oldFlankWidth = oldWidth;
+        //    if (oldArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle)
+        //    {
+        //        oldFlankWidth = oldWidth * MathF.PI;
+        //    }
+        //    else if (oldArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Square)
+        //    {
+        //        // given that:
+        //        // flankwidth = (filecount - 1) * (interval + unitdiameter) + unitdiameter
+        //        // width = (ceiling(filecount / 4)) * (interval + unitdiameter) + unitdiameter
+        //        // we have:
+        //        // ceiling(filecount / 4) = (width - unitdiameter) / (interval + unitdiameter)
+        //        // filecount = 4 * (width - unitdiameter) / (interval + unitdiameter)
+        //        // flankwidth = (4 * (width - unitdiameter) / (interval + unitdiameter) - 1) * (interval + unitdiameter) + unitdiameter
+        //        // flankwidth = 4 * (width - unitdiameter) - interval
+        //        oldFlankWidth = 4 * (oldWidth - formation.UnitDiameter) - Utilities.Utility.GetFormationInterval(formation, oldUnitSpacing);
+        //    }
 
-            var newUnitSpacing = ArrangementOrder.GetUnitSpacingOf(newArrangementOrder);
-            var oldFileCount = Utilities.Utility.GetFileCountFromWidth(formation, oldFlankWidth, oldUnitSpacing);
-            var newFlankWidth = Utilities.Utility.GetFlankWidthFromFileCount(formation, oldFileCount, newUnitSpacing);
-            //if (oldArrangementType == newArrangementType)
-            //{
-            //    var fileCount = Utilities.Utility.GetFileCountFromWidth(formation, oldFlankWidth, oldUnitSpacing);
-            //    newFlankWidth = Utilities.Utility.GetFlankWidthFromFileCount(formation, fileCount, newUnitSpacing);
-            //}
-            //else if (oldArrangementType == typeof(LineFormation))
-            //{
-            //    //From line to circle: new width = old width / pi, ignoring unit spacing.
-            //    //From circle to line: new width = pi * old width, ignoring unit spacing
-            //    //From shieldwall to circle:
-            //    //                1.convert to line with file count unchanged
-            //    //    2.convert to circle with new width = old width / pi, ignoring unit spacing.
-            //    //From circle to shieldwall:
-            //    //    1.convert to line with new width = pi * old width, ignoring unit spacing.
-            //    //    2.convert to shieldwall with file count unchanged.
+        //    var oldFileCount = Utilities.Utility.GetFileCountFromWidth(formation, oldFlankWidth, oldUnitSpacing);
+        //    var naturalUnitSpacing = ArrangementOrder.GetUnitSpacingOf(newArrangementOrder);
+        //    var newUnitSpacing = naturalUnitSpacing;
+        //    var minimumFileCount = (int)Utilities.Utility.MinimumFileCount.GetValue(formation.Arrangement);
+        //    while (newUnitSpacing < naturalUnitSpacing && Utilities.Utility.GetUnlimitedFileCountFromWidth(formation, oldFlankWidth, newUnitSpacing + 1) >= minimumFileCount)
+        //    {
+        //        newUnitSpacing++;
+        //    }
+        //    var newFlankWidth = Utilities.Utility.GetFlankWidthFromFileCount(formation, oldFileCount, newUnitSpacing);
+        //    //if (oldArrangementType == newArrangementType)
+        //    //{
+        //    //    var fileCount = Utilities.Utility.GetFileCountFromWidth(formation, oldFlankWidth, oldUnitSpacing);
+        //    //    newFlankWidth = Utilities.Utility.GetFlankWidthFromFileCount(formation, fileCount, newUnitSpacing);
+        //    //}
+        //    //else if (oldArrangementType == typeof(LineFormation))
+        //    //{
+        //    //    //From line to circle: new width = old width / pi, ignoring unit spacing.
+        //    //    //From circle to line: new width = pi * old width, ignoring unit spacing
+        //    //    //From shieldwall to circle:
+        //    //    //                1.convert to line with file count unchanged
+        //    //    //    2.convert to circle with new width = old width / pi, ignoring unit spacing.
+        //    //    //From circle to shieldwall:
+        //    //    //    1.convert to line with new width = pi * old width, ignoring unit spacing.
+        //    //    //    2.convert to shieldwall with file count unchanged.
 
-            //    //From loose to circle:
-            //    //    1.convert to line with file count unchanged
-            //    //    2.convert to circle with new width = old width / pi, ignoring unit spacing.
-            //    //From circle to loose:
-            //    //    1.convert to line with file count unchanged
-            //    //    2.convert to circle with new width = old width / pi, ignoring unit spacing.
-            //    var fileCount = Utilities.Utility.GetFileCountFromWidth(formation, oldFlankWidth, oldUnitSpacing);
-            //    newFlankWidth = Utilities.Utility.GetFlankWidthFromFileCount(formation, fileCount, ArrangementOrder.GetUnitSpacingOf(ArrangementOrder.ArrangementOrderEnum.Line));
-            //}
-            //else if (newArrangementType == typeof(LineFormation))
-            //{
-            //    var fileCount = Utilities.Utility.GetFileCountFromWidth(formation, oldFlankWidth, ArrangementOrder.GetUnitSpacingOf(ArrangementOrder.ArrangementOrderEnum.Line));
-            //    newFlankWidth = Utilities.Utility.GetFlankWidthFromFileCount(formation, fileCount, newUnitSpacing);
-            //}
-            var newWidth = newFlankWidth;
-            if (newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle)
-            {
-                newWidth = newFlankWidth / MathF.PI;
-            }
-            else if (newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Square)
-            {
-                // given that:
-                // flankwidth = (filecount - 1) * (interval + unitdiameter) + unitdiameter
-                // width = (ceiling(filecount / 4)) * (interval + unitdiameter) + unitdiameter
-                // we have:
-                // ceiling(filecount / 4) = (width - unitdiameter) / (interval + unitdiameter)
-                // filecount = 4 * (width - unitdiameter) / (interval + unitdiameter)
-                // flankwidth = (4 * (width - unitdiameter) / (interval + unitdiameter) - 1) * (interval + unitdiameter) + unitdiameter
-                // flankwidth = 4 * (width - unitdiameter) - interval
-                if (CommandSystemConfig.Get().HollowSquare)
-                {
-                    newWidth = Utilities.Utility.ConvertFromFlankWidthToWidthOfSquareFormation(formation, newUnitSpacing, newFlankWidth);
-                }
-                else
-                {
-                    newWidth = MathF.Min(Utilities.Utility.GetMinimumWidthOfSquareFormation(formation), newFlankWidth);
-                }
-            }
-            newWidth = MathF.Clamp(newWidth, GetFormationMinimumWidthOfArrangementOrder(formation, newArrangementOrder), GetFormationMaximumWidthOfArrangementOrder(formation, newArrangementOrder));
-            return newWidth;
-        }
+        //    //    //From loose to circle:
+        //    //    //    1.convert to line with file count unchanged
+        //    //    //    2.convert to circle with new width = old width / pi, ignoring unit spacing.
+        //    //    //From circle to loose:
+        //    //    //    1.convert to line with file count unchanged
+        //    //    //    2.convert to circle with new width = old width / pi, ignoring unit spacing.
+        //    //    var fileCount = Utilities.Utility.GetFileCountFromWidth(formation, oldFlankWidth, oldUnitSpacing);
+        //    //    newFlankWidth = Utilities.Utility.GetFlankWidthFromFileCount(formation, fileCount, ArrangementOrder.GetUnitSpacingOf(ArrangementOrder.ArrangementOrderEnum.Line));
+        //    //}
+        //    //else if (newArrangementType == typeof(LineFormation))
+        //    //{
+        //    //    var fileCount = Utilities.Utility.GetFileCountFromWidth(formation, oldFlankWidth, ArrangementOrder.GetUnitSpacingOf(ArrangementOrder.ArrangementOrderEnum.Line));
+        //    //    newFlankWidth = Utilities.Utility.GetFlankWidthFromFileCount(formation, fileCount, newUnitSpacing);
+        //    //}
+        //    var newWidth = newFlankWidth;
+        //    if (newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle)
+        //    {
+        //        newWidth = newFlankWidth / MathF.PI/*+ 0.363f*/;
+        //    }
+        //    else if (newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Square)
+        //    {
+        //        // given that:
+        //        // flankwidth = (filecount - 1) * (interval + unitdiameter) + unitdiameter
+        //        // width = (ceiling(filecount / 4)) * (interval + unitdiameter) + unitdiameter
+        //        // we have:
+        //        // ceiling(filecount / 4) = (width - unitdiameter) / (interval + unitdiameter)
+        //        // filecount = 4 * (width - unitdiameter) / (interval + unitdiameter)
+        //        // flankwidth = (4 * (width - unitdiameter) / (interval + unitdiameter) - 1) * (interval + unitdiameter) + unitdiameter
+        //        // flankwidth = 4 * (width - unitdiameter) - interval
+        //        if (CommandSystemConfig.Get().HollowSquare)
+        //        {
+        //            newWidth = Utilities.Utility.ConvertFromFlankWidthToWidthOfSquareFormation(formation, newUnitSpacing, newFlankWidth);
+        //        }
+        //        else
+        //        {
+        //            newWidth = MathF.Min(Utilities.Utility.GetMinimumWidthOfSquareFormation(formation), newFlankWidth);
+        //        }
+        //    }
+        //    newWidth = MathF.Clamp(newWidth, GetFormationMinimumWidthOfArrangementOrder(formation, newArrangementOrder), GetFormationMaximumWidthOfArrangementOrder(formation, newArrangementOrder));
+        //    return newWidth;
+        //}
 
         private static float GetNewWidthOfArrangementOrder(Formation formation,
             ArrangementOrder.ArrangementOrderEnum oldArrangementOrder,
-            ArrangementOrder.ArrangementOrderEnum newArrangementOrder)
+            ArrangementOrder.ArrangementOrderEnum newArrangementOrder,
+            int newUnitSpacing)
         {
             var oldWidth = GetFormationVirtualWidth(formation) ?? formation.Width;
             if (oldArrangementOrder == newArrangementOrder)
@@ -2294,8 +2334,17 @@ namespace RTSCamera.CommandSystem.Patch
                 oldFlankWidth = 4 * (oldWidth - formation.UnitDiameter) - Utilities.Utility.GetFormationInterval(formation, oldUnitSpacing);
             }
 
-            var newUnitSpacing = ArrangementOrder.GetUnitSpacingOf(newArrangementOrder);
             var oldFileCount = Utilities.Utility.GetFileCountFromWidth(formation, oldFlankWidth, oldUnitSpacing);
+            //var naturalUnitSpacing = ArrangementOrder.GetUnitSpacingOf(newArrangementOrder);
+            //if (newUnitSpacing == null)
+            //{
+            //    newUnitSpacing = naturalUnitSpacing;
+            //}
+            //var minimumFileCount = (int)Utilities.Utility.MinimumFileCount.GetValue(formation.Arrangement);
+            //while (newUnitSpacing < naturalUnitSpacing && Utilities.Utility.GetUnlimitedFileCountFromWidth(formation, oldFlankWidth, newUnitSpacing + 1) >= minimumFileCount)
+            //{
+            //    newUnitSpacing++;
+            //}
             var newFlankWidth = Utilities.Utility.GetFlankWidthFromFileCount(formation, oldFileCount, newUnitSpacing);
             //if (Utilities.Utility.GetTypeOfArrangement(oldArrangementOrder) == Utilities.Utility.GetTypeOfArrangement(newArrangementOrder))
             //{
@@ -2330,7 +2379,7 @@ namespace RTSCamera.CommandSystem.Patch
             var newWidth = newFlankWidth;
             if (newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle)
             {
-                newWidth = newFlankWidth / MathF.PI;
+                newWidth = newFlankWidth / MathF.PI/* + 0.363f*/;
             }
             else if (newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Square)
             {
@@ -2362,7 +2411,7 @@ namespace RTSCamera.CommandSystem.Patch
             in WorldPosition formationPosition,
             in Vec2 formationDirection,
             ref float formationWidth,
-            ref int unitSpacingReduction,
+            out int unitSpacingReduction,
             int actualUnitSpacing)
         {
             if (simulationFormation.UnitSpacing != actualUnitSpacing)
@@ -2376,22 +2425,50 @@ namespace RTSCamera.CommandSystem.Patch
             float actualWidth = formationWidth;
             if (unitIndex >= 0)
             {
-                do
+                if (CommandSystemConfig.Get().CircleFormationUnitSpacingPreference == CircleFormationUnitSpacingPreference.Tight && arrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle)
                 {
-
-                    GetUnitPositionWithIndexAccordingToNewOrder(formation, simulationFormation, oldArrangementOrder, arrangementOrder, unitIndex, in formationPosition, in formationDirection, formation.Arrangement, formationWidth, actualUnitSpacing - unitSpacingReduction, formation.Arrangement.UnitCount, formation.HasAnyMountedUnit, formation.Index, out var unitSpawnPosition, out var _, out actualWidth);
-                    if (unitSpawnPosition.HasValue)
+                    unitSpacingReduction = actualUnitSpacing;
+                    do
                     {
-                        break;
+                        formationWidth = GetNewWidthOfArrangementOrder(formation, oldArrangementOrder, arrangementOrder, actualUnitSpacing - unitSpacingReduction);
+                        GetUnitPositionWithIndexAccordingToNewOrder(formation, simulationFormation, oldArrangementOrder, arrangementOrder, unitIndex, in formationPosition, in formationDirection, formation.Arrangement, formationWidth, actualUnitSpacing - unitSpacingReduction, formation.Arrangement.UnitCount, formation.HasAnyMountedUnit, formation.Index, out var unitSpawnPosition, out var _, out actualWidth);
+                        if (unitSpawnPosition.HasValue)
+                        {
+                            break;
+                        }
+                        unitSpacingReduction--;
                     }
-                    unitSpacingReduction++;
+                    while (unitSpacingReduction >= 0);
+                    unitSpacingReduction = MathF.Max(unitSpacingReduction, 0);
+                    if (unitSpacingReduction > 0)
+                    {
+                        formationWidth = actualWidth;
+                    }
                 }
-                while (actualUnitSpacing - unitSpacingReduction >= 0);
+                else
+                {
+                    unitSpacingReduction = 0;
+                    do
+                    {
+                        formationWidth = GetNewWidthOfArrangementOrder(formation, oldArrangementOrder, arrangementOrder, actualUnitSpacing - unitSpacingReduction);
+                        GetUnitPositionWithIndexAccordingToNewOrder(formation, simulationFormation, oldArrangementOrder, arrangementOrder, unitIndex, in formationPosition, in formationDirection, formation.Arrangement, formationWidth, actualUnitSpacing - unitSpacingReduction, formation.Arrangement.UnitCount, formation.HasAnyMountedUnit, formation.Index, out var unitSpawnPosition, out var _, out actualWidth);
+                        if (unitSpawnPosition.HasValue)
+                        {
+                            break;
+                        }
+                        unitSpacingReduction++;
+                    }
+                    while (actualUnitSpacing - unitSpacingReduction >= 0);
+                    unitSpacingReduction = MathF.Min(unitSpacingReduction, actualUnitSpacing);
+                    if (unitSpacingReduction > 0)
+                    {
+                        formationWidth = actualWidth;
+                    }
+                }
             }
-            unitSpacingReduction = MathF.Min(unitSpacingReduction, actualUnitSpacing);
-            if (unitSpacingReduction > 0)
+            else
             {
-                formationWidth = actualWidth;
+                unitSpacingReduction = 0;
             }
             _overridenHasAnyMountedUnit.SetValue(formation, null);
             _overridenHasAnyMountedUnit.SetValue(simulationFormation, null);
@@ -2714,6 +2791,35 @@ namespace RTSCamera.CommandSystem.Patch
                 }
             }
             return true;
+        }
+
+        public static Formation GetFacingEnemyTargetFormation(Formation formation)
+        {
+            if (FacingEnemeyTarget.TryGetValue(formation, out var target))
+            {
+                return target;
+            }
+            return null;
+        }
+
+        public static void SetFacingEnemyTargetFormation(IEnumerable<Formation> formations, Formation targetFormation)
+        {
+            foreach (var formation in formations)
+            {
+                SetFacingEnemyTargetFormation(formation, targetFormation);
+            }
+        }
+
+        public static void SetFacingEnemyTargetFormation(Formation formation, Formation targetFormation)
+        {
+            if (targetFormation == null)
+            {
+                FacingEnemeyTarget.Remove(formation);
+            }
+            else
+            {
+                FacingEnemeyTarget[formation] = targetFormation;
+            }
         }
     }
 }

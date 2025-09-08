@@ -61,10 +61,10 @@ namespace RTSCamera.CommandSystem.Patch
         {
             var previousUnitSpacing = formation.UnitSpacing;
             var newUnitSpacing = __instance.GetUnitSpacing();
-            if (formation.Team != null && formation.Arrangement.GetType() != Utilities.Utility.GetTypeOfArrangement(__instance.OrderEnum, Utilities.Utility.ShouldEnableHollowSquareFormationFor(formation)))
+            if (Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(formation) && formation.Arrangement.GetType() != Utilities.Utility.GetTypeOfArrangement(__instance.OrderEnum, Utilities.Utility.ShouldEnableHollowSquareFormationFor(formation)))
             {
-                AccessTools.Field(typeof(Formation), "_formOrder").SetValue(formation, FormOrder.FormOrderCustom(Patch_OrderController.GetNewWidthOfArrangementChange(formation, formation.Arrangement, __instance.OrderEnum)));
-                AccessTools.Field(typeof(Formation), "_unitSpacing").SetValue(formation, newUnitSpacing);
+                AccessTools.Field(typeof(Formation), "_formOrder").SetValue(formation, FormOrder.FormOrderCustom(Patch_OrderController.GetFormationVirtualWidth(formation) ?? formation.Width));
+                AccessTools.Field(typeof(Formation), "_unitSpacing").SetValue(formation, Patch_OrderController.GetFormationVirtualUnitSpacing(formation) ?? newUnitSpacing);
             }
             else
             {

@@ -108,6 +108,9 @@ namespace RTSCamera.CommandSystem
 
             // fix unit direction of square formation in the corner
             _successPatch &= Patch_SquareFormation.Patch(_harmony);
+
+            // allows setting target formation to face to when facing enemy
+            _successPatch &= Patch_FacingOrder.Patch(_harmony);
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera Command System: patch failed"));

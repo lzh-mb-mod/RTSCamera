@@ -60,9 +60,17 @@
 
     <string id="RTSCameraCommandSystem_square_formation_corner_Fix" text="Square Formation Corner Fix" />
     <string id="RTSCameraCommandSystem_square_formation_corner_Fix_hint" text="When enabled, soldiers positioned at the corners of a square formation will face toward the diagonal direction of the formation, ensuring better defensive coverage and a more natural appearance." />
-    
+
+    <string id="RTSCameraCommandSystem_circle_formation_preference" text="Circle Formation Preference" />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_hint" text="Preferes tight circle formation or loose circle formation" />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_option_tight" text="Tight Circle Formation" />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_option_loose" text="Loose Circle Formation" />
+
     <string id="RTSCamera_order_ui_clickable" text="Order UI Clickable" />
     <string id="RTSCamera_order_ui_clickable_hint" text="Make troop card clickable. Restart game to take effect." />
+
+    <string id="RTSCameraCommandSystem_order_ui_clickable_extension" text="Order UI Clickable Extension" />
+    <string id="RTSCameraCommandSystem_order_ui_clickable_extension_hint" text="Allows to select command target for facing/advance order by holding {KeyName} while give orders, and then click the target." />
 
     <string id="RTSCameraCommandSystem_face_enemy_by_default" text="Face Enemy By Default" />
     <string id="RTSCameraCommandSystem_face_enemy_by_default_hint" text="Whether troops should face the enemy when battle starts." />

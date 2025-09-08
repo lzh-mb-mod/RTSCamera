@@ -215,6 +215,20 @@ namespace RTSCamera.CommandSystem.Patch
                                     dataSource.OrderController.SetOrderWithFormation(OrderType.Advance, focusedFormationCache[0]);
                                 }
                             }
+                            else if (Patch_MissionOrderVM.OrderToSelectTarget == OrderSubType.FaceEnemy)
+                            {
+                                orderToAdd.OrderType = OrderType.LookAtEnemy;
+                                orderToAdd.TargetFormation = focusedFormationCache[0];
+                                Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations, focusedFormationCache[0]);
+                                if (!queueCommand)
+                                {
+                                    skipNativeOrder = true;
+                                    Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, orderToAdd.TargetFormation);
+                                    dataSource.OrderController.SetOrder(OrderType.LookAtEnemy);
+                                }
+                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
+                            }
                             else
                             {
                                 bool keepMovementOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.KeepMovementOrder).IsKeyDownInOrder(__instance.Input);

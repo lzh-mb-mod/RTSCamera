@@ -2,6 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using System;
 using System.Reflection;
+using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI.Widgets.Mission;
 
 namespace RTSCamera.Patch
@@ -35,12 +36,19 @@ namespace RTSCamera.Patch
 
         public static bool Prefix_GetDistanceRelatedAlphaTarget(FormationMarkerListPanel __instance, float distance, ref float __result)
         {
+            var minAlpha = MinAlpha;
+            Agent main = Agent.Main;
+            // minaplha set to 0 if main agent is controlled by player
+            if (main != null && main.IsPlayerControlled)
+            {
+                minAlpha = 0;
+            }
             if ((double)distance > (double)__instance.FarDistanceCutoff)
                 __result = __instance.FarAlphaTarget;
             else if ((double)distance <= (double)__instance.FarDistanceCutoff && (double)distance >= (double)__instance.CloseDistanceCutoff)
                 __result = TaleWorlds.Library.MathF.Clamp(TaleWorlds.Library.MathF.Lerp(1f, __instance.FarAlphaTarget, (float)Math.Pow(((double)distance - (double)__instance.CloseDistanceCutoff) / ((double)__instance.FarDistanceCutoff - (double)__instance.CloseDistanceCutoff), 1.0 / 3.0)), __instance.FarAlphaTarget, 1f);
             else
-                __result = (double)distance < (double)__instance.CloseDistanceCutoff && (double)distance > (double)__instance.CloseDistanceCutoff - (double)__instance.ClosestFadeoutRange ? TaleWorlds.Library.MathF.Lerp(MinAlpha, 1f, (distance - (__instance.CloseDistanceCutoff - __instance.ClosestFadeoutRange)) / __instance.ClosestFadeoutRange) : MinAlpha;
+                __result = (double)distance < (double)__instance.CloseDistanceCutoff && (double)distance > (double)__instance.CloseDistanceCutoff - (double)__instance.ClosestFadeoutRange ? TaleWorlds.Library.MathF.Lerp(minAlpha, 1f, (distance - (__instance.CloseDistanceCutoff - __instance.ClosestFadeoutRange)) / __instance.ClosestFadeoutRange) : minAlpha;
             return false;
         }
     }
