@@ -1,6 +1,6 @@
 # Changelog
 
-## [v5.1.10]
+## [v5.1.10] - 2025-07-10
 ### Added
 - Add option for circle formation tight/loose preference.
 
@@ -8,6 +8,8 @@
 
 ### Fix
 - Fix performence issue of hollow square formation.
+
+- Fix the issue that facing order is determined by the formation with most units when moving multiple formations together.
 
 ## [v5.1.9] - 2025-07-09
 ### Added

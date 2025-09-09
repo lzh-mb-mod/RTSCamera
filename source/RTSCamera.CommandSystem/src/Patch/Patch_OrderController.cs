@@ -205,11 +205,12 @@ namespace RTSCamera.CommandSystem.Patch
         {
             var codes = new List<CodeInstruction>(instructions);
             //FixFormationUnitspacing(codes);
-            FixFormationDirection(codes);
+            FixNoLineShortFormationDirection(codes);
+            FixLineShortFacingOrder(codes);
             return codes.AsEnumerable();
         }
 
-        private static void FixFormationDirection(List<CodeInstruction> codes)
+        private static void FixNoLineShortFormationDirection(List<CodeInstruction> codes)
         {
             bool foundGetActiveFacingOrderOf = false;
             bool foundLookAtDirection = false;
@@ -279,6 +280,50 @@ namespace RTSCamera.CommandSystem.Patch
                 codes[startIndex + 2].opcode = OpCodes.Ldloc_S;
                 codes[startIndex + 2].operand = (sbyte)13;
                 codes[startIndex + 3].opcode = OpCodes.Nop;
+            }
+        }
+
+        private static void FixLineShortFacingOrder(List<CodeInstruction> codes)
+        {
+            bool foundGetActiveFacingOrderOf = false;
+            bool foundSetMovementOrder = false;
+            int indexOfGetActiveFacingOrderOf = -1;
+            int indexOfSetMovementOf = -1;
+            for (int i = 0; i < codes.Count; ++i)
+            {
+                if (!foundGetActiveFacingOrderOf)
+                {
+                    if (codes[i].opcode == OpCodes.Call)
+                    {
+                        var methodOperand = codes[i].operand as MethodInfo;
+                        if (methodOperand != null && methodOperand.Name == nameof(OrderController.GetActiveFacingOrderOf))
+                        {
+                            // IL_024a
+                            foundGetActiveFacingOrderOf = true;
+                            indexOfGetActiveFacingOrderOf = i;
+                        }
+                    }
+                }
+                else if (!foundSetMovementOrder)
+                {
+                    if (codes[i].opcode == OpCodes.Callvirt)
+                    {
+                        var operand = codes[i].operand as MethodInfo;
+                        if (operand.Name == nameof(Formation.SetMovementOrder))
+                        {
+                            // IL_0260
+                            foundSetMovementOrder = true;
+                            indexOfSetMovementOf = i;
+                        }
+
+                    }
+                }
+            }
+            if (foundGetActiveFacingOrderOf && foundSetMovementOrder)
+            {
+                // use argument of SetMovementOrder
+                codes[indexOfGetActiveFacingOrderOf - 1].opcode = OpCodes.Ldloc_S;
+                codes[indexOfGetActiveFacingOrderOf - 1].operand = codes[indexOfSetMovementOf - 3].operand;
             }
         }
 
@@ -642,11 +687,20 @@ namespace RTSCamera.CommandSystem.Patch
                 formationPositionVec2 = oldOrderPosition - averageOrderPosition + clickedCenter.AsVec2;
                 formationPosition = clickedCenter;
                 formationPosition.SetVec2(formationPositionVec2);
+                Vec2 formationDirection;
                 if (GetFormationVirtualFacingOrder(formation) == OrderType.LookAtEnemy)
                 {
+                    // set formation virtual position to preview position to allows previewing the facing direction
+                    var formationPositionToRecover = GetFormationVirtualPosition(formation);
                     LivePreviewFormationChanges.UpdateFormationChange(formation, formationPosition, null, null, null);
+                    formationDirection = GetFormationVirtualDirectionIncludingFacingEnemy(formation);
+                    // recover previous position after getting the direction.
+                    LivePreviewFormationChanges.UpdateFormationChange(formation, formationPositionToRecover, null, null, null);
                 }
-                Vec2 formationDirection = GetFormationVirtualDirectionIncludingFacingEnemy(formation);
+                else
+                {
+                    formationDirection = GetFormationVirtualDirectionIncludingFacingEnemy(formation);
+                }
                 GetFormationLineBeginEnd(formation, formationPosition, out var begin, out var end);
                 Vec2 vec = end.AsVec2 - begin.AsVec2;
                 float length = vec.Length;
