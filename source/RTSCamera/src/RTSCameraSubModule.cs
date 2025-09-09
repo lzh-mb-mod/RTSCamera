@@ -100,7 +100,7 @@ namespace RTSCamera
                 _successPatch &= Patch_OrderFlag.Patch(_harmony);
                 _successPatch &= Patch_SandboxBattleBannerBearsModel.Patch(_harmony);
                 // Use Patch to add game menu
-                WatchBattleBehavior.Patch(_harmony);
+                CommandBattleBehavior.Patch(_harmony);
             }
             catch (Exception e)
             {
@@ -177,7 +177,7 @@ namespace RTSCamera
         {
             if (gameStarter is CampaignGameStarter campaignGameStarter)
             {
-                campaignGameStarter.AddBehavior(new WatchBattleBehavior());
+                campaignGameStarter.AddBehavior(new CommandBattleBehavior());
                 campaignGameStarter.AddBehavior(new RTSCameraSkillBehavior());
             }
         }

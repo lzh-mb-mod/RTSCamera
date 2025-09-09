@@ -105,7 +105,7 @@ namespace RTSCamera.Config
 
         public Agent.ControllerType GetPlayerControllerInFreeCamera(Mission mission)
         {
-            if (WatchBattleBehavior.WatchMode || mission?.Mode == MissionMode.Deployment)
+            if (CommandBattleBehavior.CommandMode || mission?.Mode == MissionMode.Deployment)
                 return Agent.ControllerType.AI;
             return (Agent.ControllerType) PlayerControllerInFreeCamera;
         }

@@ -153,7 +153,7 @@ namespace RTSCamera.Config
                             new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "FreeCamera"),
                             new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "Always")
                         }), true));
-                if (!WatchBattleBehavior.WatchMode)
+                if (!CommandBattleBehavior.CommandMode)
                 {
                     controlOptionCategory.AddOption(new SelectionOptionViewModel(
                         GameTexts.FindText("str_rts_camera_player_controller_in_free_camera"),
@@ -194,7 +194,7 @@ namespace RTSCamera.Config
                             new SelectionItem(true, "str_rts_camera_controller_type", "Player")
                         }), true));
             }
-                if (!WatchBattleBehavior.WatchMode)
+                if (!CommandBattleBehavior.CommandMode)
                 {
                     var playerFormationOption = new SelectionOptionViewModel(
                         GameTexts.FindText("str_rts_camera_player_formation"),
@@ -206,7 +206,7 @@ namespace RTSCamera.Config
                                 if (i >= 0 && i < (int)FormationClass.NumberOfAllFormations)
                                 {
                                     rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)i;
-                                    if (WatchBattleBehavior.WatchMode)
+                                    if (CommandBattleBehavior.CommandMode)
                                         return;
                                     Utility.SetPlayerFormationClass((FormationClass)i);
                                 }
@@ -258,7 +258,7 @@ namespace RTSCamera.Config
                                     : Mission.Current.MainAgent.Formation.FormationIndex;
                                 config.PlayerFormation = formationClass;
                                 rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = formationClass;
-                                if (WatchBattleBehavior.WatchMode)
+                                if (CommandBattleBehavior.CommandMode)
                                     return;
                                 Utility.SetPlayerFormationClass(formationClass);
                                 playerFormationOption.UpdateData(false);

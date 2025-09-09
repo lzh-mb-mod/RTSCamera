@@ -44,7 +44,7 @@ namespace RTSCamera.Patch
         }
         public static bool Prefix_CanBannerBearerProvideEffectToFormation(Agent agent, Formation formation, ref bool __result)
         {
-            if (WatchBattleBehavior.WatchMode || RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera != true)
+            if (CommandBattleBehavior.CommandMode || RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera != true)
                 return true;
             if (agent != null && agent.IsMainAgent && agent.Team == formation.Team)
             {

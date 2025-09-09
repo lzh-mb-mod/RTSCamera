@@ -86,7 +86,7 @@ namespace RTSCamera.Logic.SubLogic
         public void OnRemoveBehaviour()
         {
             Mission.OnMainAgentChanged -= OnMainAgentChanged;
-            WatchBattleBehavior.WatchMode = false;
+            CommandBattleBehavior.CommandMode = false;
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggledOrderView);
         }
 
@@ -107,7 +107,7 @@ namespace RTSCamera.Logic.SubLogic
                         // So we will wait for a tick if UI is closed,
                         // and if a false positive UI open event is triggered during this tick,
                         // we will not switch to agent camera, instead we will cancel the wait.
-                        if (_config.SwitchCameraOnOrdering && !WatchBattleBehavior.WatchMode)
+                        if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
                         {
                             _switchToAgentNextTick = false;
                         }
@@ -116,7 +116,7 @@ namespace RTSCamera.Logic.SubLogic
                     else
                     {
                         showOrderHint = true;
-                        if (_config.SwitchCameraOnOrdering && !WatchBattleBehavior.WatchMode)
+                        if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
                         {
                             // The camera is already in free camera mode when ordering begins,
                             // so we skip switching camera to agent on ordering finished.
@@ -126,7 +126,7 @@ namespace RTSCamera.Logic.SubLogic
                 }
                 else
                 {
-                    if (_config.SwitchCameraOnOrdering && !WatchBattleBehavior.WatchMode)
+                    if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
                     {
                         _skipSwitchingCameraOnOrderingFinished = false;
                         SwitchToFreeCamera();
@@ -136,7 +136,7 @@ namespace RTSCamera.Logic.SubLogic
             }
             else
             {
-                if (_config.SwitchCameraOnOrdering && !WatchBattleBehavior.WatchMode)
+                if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
                 {
                     if (!_skipSwitchingCameraOnOrderingFinished)
                     {
@@ -177,7 +177,7 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (team == Mission.PlayerTeam)
             {
-                if (WatchBattleBehavior.WatchMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite)
+                if (CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite)
                 {
                     if (Mission.MainAgent?.Formation != null)
                         CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
@@ -192,7 +192,7 @@ namespace RTSCamera.Logic.SubLogic
                 // TODO: Redundant with Patch_MissionOrderDeploymentControllerVM.Prefix_ExecuteDeployAll
                 if (team == Mission.PlayerTeam)
                 {
-                    if (WatchBattleBehavior.WatchMode && Mission.MainAgent == null)
+                    if (CommandBattleBehavior.CommandMode && Mission.MainAgent == null)
                     {
                         // Force control agent, setting controller to Player, to avoid the issue that,
                         // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
@@ -210,12 +210,12 @@ namespace RTSCamera.Logic.SubLogic
                             team.PlayerOrderController?.SelectAllFormations();
                         }
                     }
-                    if (WatchBattleBehavior.WatchMode || _config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
+                    if (CommandBattleBehavior.CommandMode || _config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
                     {
                         // switch to free camera during deployment stage
                         _switchToFreeCameraNextTick = true;
                     }
-                    if ((WatchBattleBehavior.WatchMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
+                    if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
                     {
                         if (Mission.MainAgent?.Formation != null)
                             CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
@@ -239,7 +239,7 @@ namespace RTSCamera.Logic.SubLogic
             try
             {
                 // When player joins as reinforcement, at this point the player is already added to general formation
-                if ((WatchBattleBehavior.WatchMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
+                if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
                 {
                     if (Mission.MainAgent?.Formation != null)
                         CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
@@ -255,7 +255,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnDeploymentFinished()
         {
-            if (_config.DefaultToFreeCamera != DefaultToFreeCamera.Always && !WatchBattleBehavior.WatchMode)
+            if (_config.DefaultToFreeCamera != DefaultToFreeCamera.Always && !CommandBattleBehavior.CommandMode)
             {
                 _switchToAgentNextTick = true;
                 // If not deployment is required, we need to set _switchToFreeCameraNextTick to false to prevent camera set to free mode.
@@ -477,11 +477,11 @@ namespace RTSCamera.Logic.SubLogic
             var formationToSet = Mission.MainAgent.Formation.FormationIndex;
             // When deployment finishes, the player formation needs to be reset from General formation if AssignPlayerFormation is set to Default.
             // In watch mode, recover to previous formation instead of configured formation
-            if ((WatchBattleBehavior.WatchMode || _config.AssignPlayerFormation == AssignPlayerFormation.Default))
+            if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation == AssignPlayerFormation.Default))
             {
                 formationToSet = CurrentPlayerFormation;
             }
-            if (!WatchBattleBehavior.WatchMode && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
+            if (!CommandBattleBehavior.CommandMode && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
             {
                 formationToSet = _config.PlayerFormation;
             }
@@ -501,7 +501,7 @@ namespace RTSCamera.Logic.SubLogic
                 {
                     //if (Mission.MainAgent.Formation != null)
                     //    CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
-                    if (IsSpectatorCamera || WatchBattleBehavior.WatchMode)
+                    if (IsSpectatorCamera || CommandBattleBehavior.CommandMode)
                     {
                         UpdateMainAgentControllerInFreeCamera();
                     }
@@ -585,7 +585,7 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (!IsSpectatorCamera)
                 return;
-            if (WatchBattleBehavior.WatchMode)
+            if (CommandBattleBehavior.CommandMode)
             {
                 Utility.DisplayLocalizedText("str_rts_camera_cannot_control_agent_in_command_mode");
                 if (Mission.MainAgent == null)

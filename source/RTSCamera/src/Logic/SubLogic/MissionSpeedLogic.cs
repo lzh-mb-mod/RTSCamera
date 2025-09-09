@@ -50,7 +50,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public  void OnToggleFreeCamera(bool freeCamera)
         {
-            if (_config.SlowMotionOnRtsView && !WatchBattleBehavior.WatchMode)
+            if (_config.SlowMotionOnRtsView && !CommandBattleBehavior.CommandMode)
             {
                 SetSlowMotionMode(freeCamera);
                 _slowMotionByRTSView = freeCamera;

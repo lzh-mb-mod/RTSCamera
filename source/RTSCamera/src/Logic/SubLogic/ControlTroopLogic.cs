@@ -55,7 +55,7 @@ namespace RTSCamera.Logic.SubLogic
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
                 Utility.DisplayLocalizedText("str_rts_camera_control_troop");
                 bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
-                if (_switchFreeCameraLogic.IsSpectatorCamera || WatchBattleBehavior.WatchMode || Mission.Current.Mode == MissionMode.Deployment)
+                if (_switchFreeCameraLogic.IsSpectatorCamera || CommandBattleBehavior.CommandMode || Mission.Current.Mode == MissionMode.Deployment)
                 {
                     Mission.MainAgent = agent;
                     Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, false);
@@ -177,7 +177,7 @@ namespace RTSCamera.Logic.SubLogic
             if (!Utility.IsTeamValid(Mission.PlayerTeam))
                 return null;
 
-            bool controlTroopsInPlayerPartyOnly = WatchBattleBehavior.WatchMode ? false : _config.ControlTroopsInPlayerPartyOnly;
+            bool controlTroopsInPlayerPartyOnly = CommandBattleBehavior.CommandMode ? false : _config.ControlTroopsInPlayerPartyOnly;
             return GetOtherAgentToControl(true, controlTroopsInPlayerPartyOnly) ??
                    (RTSCameraConfig.Get().IgnoreRetreatingTroops && !_switchFreeCameraLogic.IsSpectatorCamera ? null : GetOtherAgentToControl(false, controlTroopsInPlayerPartyOnly));
         }

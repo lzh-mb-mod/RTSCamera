@@ -15,9 +15,9 @@ using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace RTSCamera.CampaignGame.Behavior
 {
-    public class WatchBattleBehavior : CampaignBehaviorBase
+    public class CommandBattleBehavior : CampaignBehaviorBase
     {
-        public static bool WatchMode;
+        public static bool CommandMode;
 
         public override void SyncData(IDataStore dataStore)
         {
@@ -60,7 +60,7 @@ namespace RTSCamera.CampaignGame.Behavior
             try
             {
                 var commandBattleString = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_command_battle")?.ToString() ?? new TextObject("{=RTSCamera_command_battle}(RTS Camera)Command the battle.").ToString();
-                gameStarter.AddGameMenuOption("encounter", "rts_camera_watch_battle",
+                gameStarter.AddGameMenuOption("encounter", "rts_camera_command_battle",
                     commandBattleString, args =>
                     {
                         try
@@ -79,18 +79,18 @@ namespace RTSCamera.CampaignGame.Behavior
                     {
                         try
                         {
-                            WatchMode = true;
+                            CommandMode = true;
                             MenuHelper.EncounterAttackConsequence(args);
                         }
                         catch (Exception e)
                         {
-                            WatchMode = false;
+                            CommandMode = false;
                             Utility.DisplayMessage(e.ToString());
                         }
                     });
 
-                gameStarter.AddGameMenuOption("menu_siege_strategies", "rts_camera_watch_battle",
-                    commandBattleString, WatchSiegeCondition, WatchSiegeConsequence);
+                gameStarter.AddGameMenuOption("menu_siege_strategies", "rts_camera_command_battle",
+                    commandBattleString, CommandSiegeCondition, CommandSiegeConsequence);
             }
             catch (Exception e)
             {
@@ -100,7 +100,7 @@ namespace RTSCamera.CampaignGame.Behavior
         }
 
         // TODO: need update by referencing the latest official code
-        private static bool WatchSiegeCondition(MenuCallbackArgs args)
+        private static bool CommandSiegeCondition(MenuCallbackArgs args)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace RTSCamera.CampaignGame.Behavior
                     }
 
                     args.IsEnabled = true;
-                    args.Tooltip = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_watch_mode_tool_tip") ?? new TextObject("{=RTSCamera_watch_mode_tool_tip}You are injured. You may be able to command your troops but you cannot directly participate in the battle.");
+                    args.Tooltip = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_command_mode_tool_tip") ?? new TextObject("{=RTSCamera_command_mode_tool_tip}You are injured. You may be able to command your troops but you cannot directly participate in the battle.");
                     return true;
                 }
             }
@@ -133,7 +133,7 @@ namespace RTSCamera.CampaignGame.Behavior
             return false;
         }
 
-        private static void WatchSiegeConsequence(MenuCallbackArgs args)
+        private static void CommandSiegeConsequence(MenuCallbackArgs args)
         {
             try
             {
@@ -141,12 +141,12 @@ namespace RTSCamera.CampaignGame.Behavior
                     PlayerEncounter.LeaveEncounter = false;
                 else
                     EncounterManager.StartSettlementEncounter(MobileParty.MainParty, PlayerSiege.PlayerSiegeEvent.BesiegedSettlement);
-                WatchMode = true;
+                CommandMode = true;
                 GameMenu.SwitchToMenu("assault_town");
             }
             catch (Exception e)
             {
-                WatchMode = false;
+                CommandMode = false;
                 Utility.DisplayMessage(e.ToString());
             }
         }

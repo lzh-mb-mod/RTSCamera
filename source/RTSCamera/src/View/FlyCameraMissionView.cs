@@ -317,7 +317,7 @@ namespace RTSCamera.View
         private void MissionScreenOnSpectateAgentFocusIn(Agent agent)
         {
             _showControlHintVM.SetShowText(true,
-                !WatchBattleBehavior.WatchMode && (LockToAgent || Mission.MainAgent == null) && Utility.IsTeamValid(agent.Team) &&
+                !CommandBattleBehavior.CommandMode && (LockToAgent || Mission.MainAgent == null) && Utility.IsTeamValid(agent.Team) &&
                 agent.Team == Mission.PlayerTeam, LockToAgent ? agent.Name : null);
         }
 
@@ -329,7 +329,7 @@ namespace RTSCamera.View
         private void MissionScreenOnSpectateAgentFocusOut(Agent agent)
         {
             _showControlHintVM.SetShowText(false,
-                !WatchBattleBehavior.WatchMode && Mission.MainAgent == null &&
+                !CommandBattleBehavior.CommandMode && Mission.MainAgent == null &&
                 Mission.PlayerTeam?.ActiveAgents.Count > 0);
         }
 

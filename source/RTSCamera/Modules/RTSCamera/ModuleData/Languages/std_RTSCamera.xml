@@ -9,7 +9,7 @@
 
     <string id="RTSCamera_command_battle" text="(RTS Camera)Command the battle." />
     <string id="RTSCamera_cannot_control_agent_in_command_mode" text="Cannot control units in command only mode." />
-    <string id="RTSCamera_watch_mode_tool_tip" text="You are injured. You may be able to command your troops but you cannot directly participate in the battle." />
+    <string id="RTSCamera_command_mode_tool_tip" text="You are injured. You may be able to command your troops but you cannot directly participate in the battle." />
 
     <string id="RTSCamera_switch_camera_hint" text="Press {KeyName} in battle to toggle free Camera" />
 
