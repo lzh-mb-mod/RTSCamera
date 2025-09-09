@@ -642,6 +642,10 @@ namespace RTSCamera.CommandSystem.Patch
                 formationPositionVec2 = oldOrderPosition - averageOrderPosition + clickedCenter.AsVec2;
                 formationPosition = clickedCenter;
                 formationPosition.SetVec2(formationPositionVec2);
+                if (GetFormationVirtualFacingOrder(formation) == OrderType.LookAtEnemy)
+                {
+                    LivePreviewFormationChanges.UpdateFormationChange(formation, formationPosition, null, null, null);
+                }
                 Vec2 formationDirection = GetFormationVirtualDirectionIncludingFacingEnemy(formation);
                 GetFormationLineBeginEnd(formation, formationPosition, out var begin, out var end);
                 Vec2 vec = end.AsVec2 - begin.AsVec2;
@@ -2013,27 +2017,13 @@ namespace RTSCamera.CommandSystem.Patch
             var arrangementOrder = GetFormationVirtualArrangementOrder(f);
             if (arrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle || arrangementOrder == ArrangementOrder.ArrangementOrderEnum.Square)
                 return f.Direction;
-            var targetFormation = GetFacingEnemyTargetFormation(f);
+            var targetFormation = GetVirtualFacingEnemyTargetFormation(f);
             if (targetFormation != null)
             {
-                return Patch_FacingOrder.GetDirectionFacingToEnemyFormation(f, targetFormation);
+                return Patch_FacingOrder.GetVirtualDirectionFacingToEnemyFormation(f, targetFormation);
             }
-            var averageEnemyPosition = f.QuerySystem.WeightedAverageEnemyPosition;
-            if (!averageEnemyPosition.IsValid)
-                return f.Direction;
-            var currentPosition = f.CurrentPosition;
-            Vec2 vec2 = (averageEnemyPosition - currentPosition).Normalized();
-            float length = (averageEnemyPosition - currentPosition).Length;
-            int enemyUnitCount = f.QuerySystem.Team.EnemyUnitCount;
-            int countOfUnits = f.CountOfUnits;
-            Vec2 vector2 = f.Direction;
-            bool flag = (double)length >= countOfUnits * 0.20000000298023224;
-            if (enemyUnitCount == 0 || countOfUnits == 0)
-                flag = false;
-            float num = !flag ? 1f : MBMath.ClampFloat(countOfUnits * 1f / enemyUnitCount, 0.333333343f, 3f) * MBMath.ClampFloat(length / countOfUnits, 0.333333343f, 3f);
-            if (flag && (double)MathF.Abs(vec2.AngleBetween(vector2)) > 0.17453292012214661 * (double)num)
-                vector2 = vec2;
-            return vector2;
+            var averageEnemyPosition = CommandQuerySystem.GetQueryForFormation(f).VirtualWeightedAverageEnemyPosition;
+            return Patch_FacingOrder.GetDirectionFacingToEnemy(f, GetFormationVirtualPositionVec2(f), GetFormationVirtualDirection(f), averageEnemyPosition);
         }
 
         public static WorldPosition GetFollowOrderPosition(Formation f, Agent targetAgent)
@@ -2800,6 +2790,12 @@ namespace RTSCamera.CommandSystem.Patch
                 return target;
             }
             return null;
+        }
+
+        public static Formation GetVirtualFacingEnemyTargetFormation(Formation formation)
+        {
+            bool hasFormation = LivePreviewFormationChanges.VirtualChanges.ContainsKey(formation);
+            return hasFormation ? LivePreviewFormationChanges.VirtualChanges[formation].FacingEnemyTargetFormation : GetFacingEnemyTargetFormation(formation);
         }
 
         public static void SetFacingEnemyTargetFormation(IEnumerable<Formation> formations, Formation targetFormation)

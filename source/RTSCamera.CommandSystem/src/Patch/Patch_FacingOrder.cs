@@ -61,22 +61,48 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static Vec2 GetDirectionFacingToEnemyFormation(Formation f, Formation target)
         {
-            Vec2 currentPosition = f.CurrentPosition;
-            Vec2 averageEnemyPosition = CommandQuerySystem.GetQueryForFormation(f).WeightedAverageEnemyPosition;
+            return GetDirectionFacingToEnemyFormationAux(f, target, f.CurrentPosition, f.Direction, CommandQuerySystem.GetQueryForFormation(f).WeightedAverageFacingTargetEnemyPosition);
+        }
+
+        public static Vec2 GetVirtualDirectionFacingToEnemyFormation(Formation f, Formation target)
+        {
+            return GetDirectionFacingToEnemyFormationAux(f, target, Patch_OrderController.GetFormationVirtualPositionVec2(f), Patch_OrderController.GetFormationVirtualDirection(f), CommandQuerySystem.GetQueryForFormation(f).VirtualWeightedAverageFacingTargetEnemyPosition);
+        }
+
+        private static Vec2 GetDirectionFacingToEnemyFormationAux(Formation f, Formation target, Vec2 currentPosition, Vec2 currentDirection, Vec2 averageEnemyPosition)
+        {
             if (!averageEnemyPosition.IsValid)
             {
-                return f.Direction;
+                return currentDirection;
             }
             Vec2 vec2 = (averageEnemyPosition - currentPosition).Normalized();
             float length = (averageEnemyPosition - currentPosition).Length;
             int enemyUnitCount = target.CountOfUnits;
             int countOfUnits = f.CountOfUnits;
-            Vec2 vector2 = f.Direction;
+            Vec2 vector2 = currentDirection;
             bool flag = (double)length >= (double)countOfUnits * 0.20000000298023224;
             if (enemyUnitCount == 0 || countOfUnits == 0)
                 flag = false;
             float num = !flag ? 1f : MBMath.ClampFloat((float)countOfUnits * 1f / (float)enemyUnitCount, 0.333333343f, 3f) * MBMath.ClampFloat(length / (float)countOfUnits, 0.333333343f, 3f);
-            if (flag && (double)TaleWorlds.Library.MathF.Abs(vec2.AngleBetween(vector2)) > 0.17453292012214661 * (double)num)
+            if (flag && (double)TaleWorlds.Library.MathF.Abs(vec2.AngleBetween(vector2)) > (TaleWorlds.Library.MathF.PI / 18) * (double)num)
+                vector2 = vec2;
+            return vector2;
+        }
+
+        public static Vec2 GetDirectionFacingToEnemy(Formation f, Vec2 currentPosition, Vec2 currentDirection, Vec2 averageEnemyPosition)
+        {
+            if (!averageEnemyPosition.IsValid)
+                return currentDirection;
+            Vec2 vec2 = (averageEnemyPosition - currentPosition).Normalized();
+            float length = (averageEnemyPosition - currentPosition).Length;
+            int enemyUnitCount = f.QuerySystem.Team.EnemyUnitCount;
+            int countOfUnits = f.CountOfUnits;
+            Vec2 vector2 = currentDirection;
+            bool flag = (double)length >= countOfUnits * 0.20000000298023224;
+            if (enemyUnitCount == 0 || countOfUnits == 0)
+                flag = false;
+            float num = !flag ? 1f : MBMath.ClampFloat(countOfUnits * 1f / enemyUnitCount, 0.333333343f, 3f) * MBMath.ClampFloat(length / countOfUnits, 0.333333343f, 3f);
+            if (flag && (double)TaleWorlds.Library.MathF.Abs(vec2.AngleBetween(vector2)) > (TaleWorlds.Library.MathF.PI / 18) * (double)num)
                 vector2 = vec2;
             return vector2;
         }

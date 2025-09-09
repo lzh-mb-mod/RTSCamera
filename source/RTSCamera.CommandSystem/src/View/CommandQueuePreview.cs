@@ -401,7 +401,7 @@ namespace RTSCamera.CommandSystem.View
             if (CommandQueueLogic.PendingOrders.TryGetValue(formation, out var pendingOrder))
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(new List<Formation> { formation }));
-                var pendingOrderPreviewData = CollectOrderPreviewData(pendingOrder, formation);
+                var pendingOrderPreviewData = CollectOrderPreviewData(pendingOrder, formation, false);
                 if (pendingOrderPreviewData != null)
                 {
                     result.OrderList.Add(pendingOrderPreviewData);
@@ -573,7 +573,7 @@ namespace RTSCamera.CommandSystem.View
             return true;
         }
 
-        private OrderPreviewData CollectOrderPreviewData(OrderInQueue order, Formation formation)
+        private OrderPreviewData CollectOrderPreviewData(OrderInQueue order, Formation formation, bool virtualFacingDirection = true)
         {
             var facingOrder = Patch_OrderController.GetFormationVirtualFacingOrder(formation);
             switch (order.CustomOrderType)
@@ -586,6 +586,9 @@ namespace RTSCamera.CommandSystem.View
                                 {
                                     if (order.VirtualFormationChanges.TryGetValue(formation, out var formationChange))
                                     {
+                                        var direction = virtualFacingDirection ? Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation) :
+                                            formation.FacingOrder.GetDirection(formation, formation.GetReadonlyMovementOrderReference()._targetAgent);
+                                        // formation position can only be set after getting the direction because position will affect result of facing enemy direction.
                                         if (order.TargetFormation != null)
                                         {
                                             var targetPosition = order.TargetFormation.QuerySystem.MedianPosition;
@@ -595,7 +598,6 @@ namespace RTSCamera.CommandSystem.View
                                         {
                                             UpdateMovingOrderTarget(formation, formationChange.MovementOrderType, formationChange.WorldPosition, formationChange.TargetFormation, formationChange.TargetAgent, formationChange.TargetEntity);
                                         }
-                                        var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
                                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
                                     }
                                     return CollectOrderPreviewData(formation, order.TargetFormation != null ?  false: ShouldIncludeFormationShape(order.OrderType), order.TargetFormation != null ? OrderTargetType.Facing : OrderTargetType.Move);
@@ -610,7 +612,7 @@ namespace RTSCamera.CommandSystem.View
                                     return CollectOrderPreviewData(formation, ShouldIncludeFormationShape(order.OrderType));
                                 }
                             default:
-                                UpdateFacingOrderForOtherOrder(facingOrder, formation);
+                                UpdateFacingOrderForOtherOrder(facingOrder, formation, virtualFacingDirection);
                                 break;
                         }
                         break;
@@ -621,11 +623,11 @@ namespace RTSCamera.CommandSystem.View
                             return null;
                         var targetPosition = order.TargetFormation.QuerySystem.MedianPosition;
                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
-                        UpdateFacingOrderForOtherOrder(facingOrder, formation);
+                        UpdateFacingOrderForOtherOrder(facingOrder, formation, virtualFacingDirection);
                         return CollectOrderPreviewData(formation, false, OrderTargetType.Focus);
                     }
                 default:
-                    UpdateFacingOrderForOtherOrder(facingOrder, formation);
+                    UpdateFacingOrderForOtherOrder(facingOrder, formation, virtualFacingDirection);
                     break;
             }
             UpdateMovingOrderTarget(formation, order.OrderType, order.PositionBegin, order.TargetFormation, order.TargetAgent, order.TargetEntity);
@@ -676,12 +678,13 @@ namespace RTSCamera.CommandSystem.View
             return OrderTargetType.Move;
         }
 
-        private void UpdateFacingOrderForOtherOrder(OrderType facingOrder, Formation formation)
+        private void UpdateFacingOrderForOtherOrder(OrderType facingOrder, Formation formation, bool virtualFacingDirection)
         {
             switch (facingOrder)
             {
                 case OrderType.LookAtEnemy:
-                    var direction = Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation);
+                    var direction = virtualFacingDirection ? Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation) :
+                        formation.FacingOrder.GetDirection(formation, formation.GetReadonlyMovementOrderReference()._targetAgent);
                     Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
                     break;
                 case OrderType.LookAtDirection:

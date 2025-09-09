@@ -47,7 +47,7 @@ namespace RTSCamera.CommandSystem.Logic
 
         public bool IsLineShort { get; set; }
 
-        public Dictionary<Formation, bool> ShouldLockFormationInFacingOrder { get; set; }
+        public Dictionary<Formation, bool> ShouldLockFormationInFacingOrder { get; set; } = new Dictionary<Formation, bool>();
 
         public List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)> ActualFormationChanges { get; set; } = new List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)>();
 

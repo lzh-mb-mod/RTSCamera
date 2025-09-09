@@ -1,4 +1,5 @@
-﻿using RTSCamera.CommandSystem.AgentComponents;
+﻿using Microsoft.VisualBasic;
+using RTSCamera.CommandSystem.AgentComponents;
 using RTSCamera.CommandSystem.Patch;
 using System.Collections.Generic;
 using TaleWorlds.Core;
@@ -12,8 +13,9 @@ namespace RTSCamera.CommandSystem.QuerySystem
         public readonly Formation Formation;
         public readonly QueryData<Formation> _closestEnemyFormation;
         private readonly QueryData<Agent> _closestEnemyAgent;
-        private readonly QueryData<Vec2> _weightedAverageEnemyPosition;
+        private readonly QueryData<Vec2> _virtualWeightedAverageEnemyPosition;
         private readonly QueryData<Vec2> _weightedAverageFacingTargetEnemyPosition;
+        private readonly QueryData<Vec2> _virtualWeightedAverageFacingTargetEnemyPosition;
         private readonly QueryData<bool> _areAgentsNearTargetPositions;
         private readonly QueryData<bool> _coolDownToEvaluateAgentsDistanceToTarget;
 
@@ -31,9 +33,10 @@ namespace RTSCamera.CommandSystem.QuerySystem
         }
         public Agent ClosestEnemyAgent => this._closestEnemyAgent.Value;
 
-        public Vec2 WeightedAverageEnemyPosition => this._weightedAverageEnemyPosition.Value;
+        public Vec2 VirtualWeightedAverageEnemyPosition => this._virtualWeightedAverageEnemyPosition.Value;
 
         public Vec2 WeightedAverageFacingTargetEnemyPosition => this._weightedAverageFacingTargetEnemyPosition.Value;
+        public Vec2 VirtualWeightedAverageFacingTargetEnemyPosition => this._virtualWeightedAverageFacingTargetEnemyPosition.Value;
 
         public bool AreAgentsNearTargetPositions => _areAgentsNearTargetPositions.Value;
 
@@ -111,24 +114,22 @@ namespace RTSCamera.CommandSystem.QuerySystem
                 }
                 return closestAgent;
             }, 1.5f);
-            _weightedAverageEnemyPosition = new QueryData<Vec2>(() => Formation.Team.GetWeightedAverageOfEnemies(Patch_OrderController.GetFormationVirtualPositionVec2(formation)), 0.5f);
+            _virtualWeightedAverageEnemyPosition = new QueryData<Vec2>(() => Formation.Team.GetWeightedAverageOfEnemies(Patch_OrderController.GetFormationVirtualPositionVec2(formation)), 0.5f);
             _weightedAverageFacingTargetEnemyPosition = new QueryData<Vec2>(() =>
             {
                 var targetFormation = Patch_OrderController.GetFacingEnemyTargetFormation(formation);
                 if (targetFormation == null)
                     return formation.QuerySystem.WeightedAverageEnemyPosition;
                 var basePoint = formation.CurrentPosition;
-
-                Vec2 zero = Vec2.Zero;
-                float num1 = 0.0f;
-                targetFormation.ApplyActionOnEachUnit((agent) =>
-                {
-                    Vec2 asVec2 = agent.Position.AsVec2;
-                    float num2 = 1f / (basePoint - asVec2).LengthSquared;
-                    zero += asVec2 * num2;
-                    num1 += num2;
-                });
-                return (double)num1 > 0.0 ? zero * (1f / num1) : Vec2.Invalid;
+                return WeightedAverageFormationPosition(targetFormation, basePoint);
+            }, 0.5f);
+            _virtualWeightedAverageFacingTargetEnemyPosition = new QueryData<Vec2>(() =>
+            {
+                var targetFormation = Patch_OrderController.GetVirtualFacingEnemyTargetFormation(formation);
+                if (targetFormation == null)
+                    return formation.QuerySystem.WeightedAverageEnemyPosition;
+                var basePoint = Patch_OrderController.GetFormationVirtualPositionVec2(formation);
+                return WeightedAverageFormationPosition(targetFormation, basePoint);
             }, 0.5f);
             _areAgentsNearTargetPositions = new QueryData<bool>(() =>
             {
@@ -156,11 +157,25 @@ namespace RTSCamera.CommandSystem.QuerySystem
         {
             _closestEnemyFormation?.Expire();
             _closestEnemyAgent?.Expire();
-            _weightedAverageEnemyPosition?.Expire();
+            _virtualWeightedAverageEnemyPosition?.Expire();
             _weightedAverageFacingTargetEnemyPosition?.Expire();
             _areAgentsNearTargetPositions.Expire();
             _coolDownToEvaluateAgentsDistanceToTarget.SetValue(true, Mission.Current.CurrentTime);
             NeedToUpdateTargetPositionDistance = true;
+        }
+
+        private static Vec2 WeightedAverageFormationPosition(Formation targetFormation, Vec2 basePoint)
+        {
+            Vec2 zero = Vec2.Zero;
+            float num1 = 0.0f;
+            targetFormation.ApplyActionOnEachUnit((agent) =>
+            {
+                Vec2 asVec2 = agent.Position.AsVec2;
+                float num2 = 1f / (basePoint - asVec2).LengthSquared;
+                zero += asVec2 * num2;
+                num1 += num2;
+            });
+            return (double)num1 > 0.0 ? zero * (1f / num1) : Vec2.Invalid;
         }
     }
 }

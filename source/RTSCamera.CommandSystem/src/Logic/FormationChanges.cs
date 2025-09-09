@@ -48,6 +48,7 @@ namespace RTSCamera.CommandSystem.Logic
                 change.MovementOrderType = pair.Value.MovementOrderType;
                 change.TargetFormation = pair.Value.TargetFormation;
                 change.TargetAgent = pair.Value.TargetAgent;
+                change.FacingEnemyTargetFormation = pair.Value.FacingEnemyTargetFormation;
                 change.TargetEntity = pair.Value.TargetEntity;
                 change.FacingOrderType = pair.Value.FacingOrderType;
                 change.FiringOrderType = pair.Value.FiringOrderType;
