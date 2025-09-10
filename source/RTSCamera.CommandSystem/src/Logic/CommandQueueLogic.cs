@@ -99,7 +99,61 @@ namespace RTSCamera.CommandSystem.Logic
                 orderController.OnOrderIssued += OnOrderIssued;
             }
         }
-        public static bool ShouldClearQueueAndPendingOrder(OrderType orderType)
+
+        public static bool ShouldClearQueue(OrderType orderType)
+        {
+            switch (orderType)
+            {
+                case OrderType.Move:
+                case OrderType.MoveToLineSegment:
+                case OrderType.MoveToLineSegmentWithHorizontalLayout:
+                case OrderType.Charge:
+                case OrderType.ChargeWithTarget:
+                case OrderType.StandYourGround:
+                case OrderType.FollowMe:
+                case OrderType.FollowEntity:
+                case OrderType.GuardMe:
+                case OrderType.Retreat:
+                case OrderType.AdvanceTenPaces:
+                case OrderType.FallBackTenPaces:
+                case OrderType.Advance:
+                case OrderType.FallBack:
+                case OrderType.LookAtEnemy:
+                case OrderType.LookAtDirection:
+                case OrderType.AIControlOn:
+                case OrderType.Use:
+                case OrderType.AttackEntity:
+                case OrderType.PointDefence:
+                case OrderType.ArrangementLine:
+                case OrderType.ArrangementCloseOrder:
+                case OrderType.ArrangementLoose:
+                case OrderType.ArrangementCircular:
+                case OrderType.ArrangementSchiltron:
+                case OrderType.ArrangementVee:
+                case OrderType.ArrangementColumn:
+                case OrderType.ArrangementScatter:
+                case OrderType.FormCustom:
+                case OrderType.FormDeep:
+                case OrderType.FormWide:
+                case OrderType.FormWider:
+                case OrderType.CohesionHigh:
+                case OrderType.CohesionMedium:
+                case OrderType.CohesionLow:
+                case OrderType.None:
+                case OrderType.HoldFire:
+                case OrderType.FireAtWill:
+                case OrderType.RideFree:
+                case OrderType.Mount:
+                case OrderType.Dismount:
+                    return true;
+                case OrderType.AIControlOff:
+                case OrderType.Transfer:
+                default:
+                    return false;
+            }
+        }
+
+        public static bool ShouldClearPendingOrder(OrderType orderType)
         {
             switch (orderType)
             {
@@ -152,24 +206,24 @@ namespace RTSCamera.CommandSystem.Logic
             }
         }
 
-        public static bool ShouldClearQueueAndPendingOrder(OrderInQueue order)
-        {
-            switch (order.CustomOrderType)
-            {
-                case CustomOrderType.Original:
-                    return ShouldClearQueueAndPendingOrder(order.OrderType);
-                case CustomOrderType.FollowMainAgent:
-                    return true;
-                case CustomOrderType.SetTargetFormation:
-                default:
-                    return false;
-            }
-        }
+        //public static bool ShouldClearQueueAndPendingOrder(OrderInQueue order)
+        //{
+        //    switch (order.CustomOrderType)
+        //    {
+        //        case CustomOrderType.Original:
+        //            return ShouldClearQueueAndPendingOrder(order.OrderType);
+        //        case CustomOrderType.FollowMainAgent:
+        //            return true;
+        //        case CustomOrderType.SetTargetFormation:
+        //        default:
+        //            return false;
+        //    }
+        //}
 
         private static void OnOrderIssued(OrderType orderType, MBReadOnlyList<Formation> appliedFormations, OrderController orderController, params object[] delegateParams)
         {
             CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(appliedFormations));
-            if (ShouldClearQueueAndPendingOrder(orderType))
+            if (ShouldClearQueue(orderType))
             {
                 ClearOrderInQueue(appliedFormations);
             }
@@ -589,7 +643,7 @@ namespace RTSCamera.CommandSystem.Logic
             }
             else
             {
-                if (ShouldClearQueueAndPendingOrder(order.OrderType))
+                if (ShouldClearPendingOrder(order.OrderType))
                 {
                     CancelPendingOrder(formations);
                 }

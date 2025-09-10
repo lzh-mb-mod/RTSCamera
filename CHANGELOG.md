@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.1.11] - 2025-07-10
+### Fixed
+- Fix the display of facing to enemy formation order.
+
 ## [v5.1.10] - 2025-07-10
 ### Added
 - Support facing to specific enemy formation.
