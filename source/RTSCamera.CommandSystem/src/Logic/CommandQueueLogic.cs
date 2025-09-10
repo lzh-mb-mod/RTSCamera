@@ -117,8 +117,6 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.FallBackTenPaces:
                 case OrderType.Advance:
                 case OrderType.FallBack:
-                case OrderType.LookAtEnemy:
-                case OrderType.LookAtDirection:
                 case OrderType.AIControlOn:
                 case OrderType.Use:
                 case OrderType.AttackEntity:
@@ -145,6 +143,8 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.Mount:
                 case OrderType.Dismount:
                     return true;
+                case OrderType.LookAtEnemy:
+                case OrderType.LookAtDirection:
                 case OrderType.AIControlOff:
                 case OrderType.Transfer:
                 default:
@@ -561,11 +561,14 @@ namespace RTSCamera.CommandSystem.Logic
                             case OrderType.FollowEntity:
                             case OrderType.AttackEntity:
                             case OrderType.PointDefence:
-                            case OrderType.LookAtDirection:
-                            case OrderType.LookAtEnemy:
                             case OrderType.Advance:
                                 {
                                     return true;
+                                }
+                            case OrderType.LookAtDirection:
+                            case OrderType.LookAtEnemy:
+                                {
+                                    return false;
                                 }
                         }
                         break;

@@ -392,10 +392,15 @@ namespace RTSCamera.CommandSystem.View
             // clear saved moving target
             Patch_OrderController.ClearFormationLivePositionForPreview(formation);
 
-            var targetPreview = CollectFocusOrFacingPreviewData(formation);
+            var targetPreview = CollectFocusPreviewData(formation);
             if (targetPreview != null)
             {
                 result.OrderList.Add(targetPreview);
+            }
+            var facingPreview = CollectFacingPreviewData(formation);
+            if (facingPreview != null)
+            {
+                result.OrderList.Add(facingPreview);
             }
 
             if (CommandQueueLogic.PendingOrders.TryGetValue(formation, out var pendingOrder))
@@ -820,12 +825,20 @@ namespace RTSCamera.CommandSystem.View
             arrowEntity.UpdateColor(orderTargetType);
             var direction = arrowEnd - arrowStart;
             var length = direction.Normalize();
-            var scale = length;
             var basicScale = 10f;
-            var connectPointToArrowEndDistance = 0.27f * basicScale;
-            MatrixFrame headFrame = new MatrixFrame(Mat3.CreateMat3WithForward(-direction), arrowStart + (1f * length - connectPointToArrowEndDistance) * direction + Vec3.Up * 2f);
-            MatrixFrame bodyFrame = new MatrixFrame(Mat3.CreateMat3WithForward(-direction), arrowStart + Vec3.Up * 2f);
-            headFrame.Scale(new Vec3(basicScale, basicScale, -1));
+            var height = 2f;
+            if (orderTargetType == OrderTargetType.Facing)
+            {
+                basicScale = 7.5f;
+                height = 2.01f;
+                var startOffset = MathF.Min(length * 0.2f, 0.2f);
+                arrowStart += startOffset * direction;
+                length -= startOffset;
+            }
+            var connectPointToArrowEndDistance = 2.7f;
+            MatrixFrame headFrame = new MatrixFrame(Mat3.CreateMat3WithForward(-direction), arrowStart + (length - connectPointToArrowEndDistance) * direction + Vec3.Up * height);
+            MatrixFrame bodyFrame = new MatrixFrame(Mat3.CreateMat3WithForward(-direction), arrowStart + Vec3.Up * height);
+            headFrame.Scale(new Vec3(basicScale, basicScale, 1));
             // original length = x
             // x * k = 1
             // scale * (x * k) = length - connectPointToArrowEndDistance
@@ -883,20 +896,10 @@ namespace RTSCamera.CommandSystem.View
             }
         }
 
-        private OrderPreviewData CollectFocusOrFacingPreviewData(Formation formation)
+        private OrderPreviewData CollectFocusPreviewData(Formation formation)
         {
             if (formation.TargetFormation == null)
             {
-                if (formation.FacingOrder.OrderType == OrderType.LookAtEnemy)
-                {
-                    var targetFacingEnemy = Patch_OrderController.GetFacingEnemyTargetFormation(formation);
-                    if (targetFacingEnemy != null)
-                    {
-                        var targetPosition1 = targetFacingEnemy.QuerySystem.MedianPosition;
-                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition1, null, null, null);
-                        return CollectOrderPreviewData(formation, false, OrderTargetType.Facing);
-                    }
-                }
                 return null;
             }
             var orderTargetType = GetOrderTargetType(formation.GetReadonlyMovementOrderReference().OrderType);
@@ -909,6 +912,21 @@ namespace RTSCamera.CommandSystem.View
             var targetPosition = formation.TargetFormation.QuerySystem.MedianPosition;
             Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
             return CollectOrderPreviewData(formation, false, OrderTargetType.Focus);
+        }
+
+        private OrderPreviewData CollectFacingPreviewData(Formation formation)
+        {
+            if (formation.FacingOrder.OrderType == OrderType.LookAtEnemy)
+            {
+                var targetFacingEnemy = Patch_OrderController.GetFacingEnemyTargetFormation(formation);
+                if (targetFacingEnemy != null)
+                {
+                    var targetPosition1 = targetFacingEnemy.QuerySystem.MedianPosition;
+                    Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition1, null, null, null);
+                    return CollectOrderPreviewData(formation, false, OrderTargetType.Facing);
+                }
+            }
+            return null;
         }
 
         private OrderPreviewData CollectOrderPreviewData(Formation formation, bool includeFormationShape, OrderTargetType orderTargetType = OrderTargetType.Move)
