@@ -37,6 +37,8 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - **New:** Set attack target without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
+  - Facing to enemy order now has an optional enemy formation target.
+
   - Select your troops by clicking middle button on units.
 
   - Movement target becomes more visible.
@@ -190,6 +192,8 @@ This mod is composed of 2 parts, RTS Camera and Command System.
   - For archers they can shoot target enemy while holding positions.
 
   - Note that for melee units, they will still follow previous movement orders, which may limit their ability to reach the target.
+
+- Place your mouse on the enemy formation marker and giving facing to enemy order. You formation will facing to the selected enemy formation only.
 
 - Movement target marker is more visible. The original marker is hard to see if camera is too high.
 

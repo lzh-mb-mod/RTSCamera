@@ -2,12 +2,14 @@
 
 ## [v5.1.10] - 2025-07-10
 ### Added
+- Support facing to specific enemy formation.
+
 - Add option for circle formation tight/loose preference.
 
 - Add option for clickable UI extension to allow setting command target when giving order by clicking UI.
 
 ### Fix
-- Fix performence issue of hollow square formation.
+- Fix performance issue of hollow square formation.
 
 - Fix the issue that facing order is determined by the formation with most units when moving multiple formations together.
 
