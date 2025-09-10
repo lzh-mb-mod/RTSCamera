@@ -864,7 +864,7 @@ namespace RTSCamera.CommandSystem.Patch
                         ___PlayerOrderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegment, formationRealStartingPosition, formationRealEndingPosition);
                     CommandQueueLogic.TryPendingOrder(formations, new OrderInQueue
                     {
-                        SelectedFormations = ___PlayerOrderController.SelectedFormations,
+                        SelectedFormations = formations.ToList(),
                         OrderType = isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout,
                         IsLineShort = isLineShort,
                         PositionBegin = formationRealStartingPosition,
@@ -875,7 +875,7 @@ namespace RTSCamera.CommandSystem.Patch
                 {
                     CommandQueueLogic.AddOrderToQueue(new OrderInQueue
                     {
-                        SelectedFormations = ___PlayerOrderController.SelectedFormations,
+                        SelectedFormations = formations.ToList(),
                         OrderType = isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout,
                         IsLineShort = isLineShort,
                         ActualFormationChanges = formationChanges,

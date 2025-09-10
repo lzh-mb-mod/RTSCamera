@@ -356,6 +356,8 @@ namespace RTSCamera.CommandSystem.Patch
                         else
                         {
                             skipNativeOrder = true;
+                            // only pending order for formations that should be locked.
+                            orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => Utilities.Utility.ShouldLockFormationDuringLookAtDirection(f)).ToList();
                             dataSource.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, __instance.MissionScreen.GetOrderFlagPosition(), false));
                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
@@ -366,7 +368,7 @@ namespace RTSCamera.CommandSystem.Patch
             }
             if (!queueCommand)
             {
-                CommandQueueLogic.TryPendingOrder(selectedFormations, orderToAdd);
+                CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
                 return null;
             }
             return orderToAdd;

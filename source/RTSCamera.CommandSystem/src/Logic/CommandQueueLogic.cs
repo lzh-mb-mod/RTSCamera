@@ -171,6 +171,7 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.FallBackTenPaces:
                 case OrderType.Advance:
                 case OrderType.FallBack:
+                case OrderType.LookAtDirection:
                 case OrderType.AIControlOn:
                 case OrderType.Use:
                 case OrderType.AttackEntity:
@@ -198,7 +199,6 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.Dismount:
                     return true;
                 case OrderType.LookAtEnemy:
-                case OrderType.LookAtDirection:
                 case OrderType.AIControlOff:
                 case OrderType.Transfer:
                 default:
@@ -428,8 +428,12 @@ namespace RTSCamera.CommandSystem.Logic
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
                             case OrderType.LookAtDirection:
+                                var shouldBePended = Utilities.Utility.ShouldLockFormationDuringLookAtDirection(formation);
                                 FacingOrderLookAtDirection(order, formation);
-                                TryPendingOrder(new List<Formation> { formation }, order);
+                                if (shouldBePended)
+                                {
+                                    TryPendingOrder(new List<Formation> { formation }, order);
+                                }
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
                             case OrderType.LookAtEnemy:
@@ -616,10 +620,10 @@ namespace RTSCamera.CommandSystem.Logic
                             case OrderType.AttackEntity:
                             case OrderType.PointDefence:
                             case OrderType.Advance:
+                            case OrderType.LookAtDirection:
                                 {
                                     return true;
                                 }
-                            case OrderType.LookAtDirection:
                             case OrderType.LookAtEnemy:
                                 {
                                     return false;

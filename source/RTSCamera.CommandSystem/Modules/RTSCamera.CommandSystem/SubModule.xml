@@ -2,7 +2,7 @@
 <Module>
   <Name value="RTS Camera Command System"/>
   <Id value="RTSCamera.CommandSystem"/>
-  <Version value="v5.1.11"/>
+  <Version value="v5.1.12"/>
   <SingleplayerModule value="true"/>
   <MultiplayerModule value="false"/>
   <DependedModules>
