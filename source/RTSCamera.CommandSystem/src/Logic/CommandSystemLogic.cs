@@ -4,6 +4,7 @@ using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCameraAgentComponent;
+using System.Collections.Generic;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
@@ -86,6 +87,19 @@ namespace RTSCamera.CommandSystem.Logic
                     formation.ApplyActionOnEachUnit(a => a.GetComponent<CommandSystemAgentComponent>()?.TryUpdateColor());
                 });
         }
+
+        public void OnMovementOrderChanged(Formation formation)
+        {
+            OutlineColorSubLogic.OnMovementOrderChanged(formation);
+            GroundMarkerColorSubLogic.OnMovementOrderChanged(formation);
+        }
+
+        public void OnMovementOrderChanged(IEnumerable<Formation> appliedFormations)
+        {
+            OutlineColorSubLogic.OnMovementOrderChanged(appliedFormations);
+            GroundMarkerColorSubLogic.OnMovementOrderChanged(appliedFormations);
+        }
+
 
         public override void OnAfterMissionCreated()
         {

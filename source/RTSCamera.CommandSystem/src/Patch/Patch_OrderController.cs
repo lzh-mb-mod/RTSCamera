@@ -2195,7 +2195,7 @@ namespace RTSCamera.CommandSystem.Patch
                     out _,
                     true,
                     out var simulationFormationChanges);
-                order.ActualFormationChanges = simulationFormationChanges;
+                order.ActualFormationChanges.AddRange(simulationFormationChanges);
                 var changes = LivePreviewFormationChanges.CollectChanges(formationsWithoutLocking);
                 foreach (var change in changes)
                 {

@@ -376,8 +376,8 @@ namespace RTSCamera.CommandSystem.Patch
                         if (orderToAdd.OrderType == OrderType.LookAtDirection)
                         {
                             Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, null);
-                            // only pending order for formations that should be locked.
-                            orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => Utilities.Utility.ShouldLockFormationDuringLookAtDirection(f)).ToList();
+                            // only pending order for formations that is not executing attacking/advance/fallback, etc.
+                            orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
                             __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false));
                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
@@ -388,6 +388,7 @@ namespace RTSCamera.CommandSystem.Patch
                             {
                                 orderToAdd.TargetFormation = focusedFormations[0];
                             }
+                            orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
                             Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations, orderToAdd.TargetFormation);
                             Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, orderToAdd.TargetFormation);
                             __instance.OrderController.SetOrder(OrderType.LookAtEnemy);
@@ -475,7 +476,7 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, null);
                         // only pending order for formations that should be locked.
-                        orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => Utilities.Utility.ShouldLockFormationDuringLookAtDirection(f)).ToList();
+                        orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
                         __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false));
                         orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         skipNativeOrder = true;

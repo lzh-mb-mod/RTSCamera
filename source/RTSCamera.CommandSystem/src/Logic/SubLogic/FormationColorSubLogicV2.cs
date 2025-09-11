@@ -264,15 +264,22 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             }
         }
 
-        private void OnOrderIssued(OrderType orderType, MBReadOnlyList<Formation> appliedFormations, OrderController orderController, params object[] delegateParams)
+        public void OnMovementOrderChanged(IEnumerable<Formation> appliedFormations)
         {
-            if (!HighlightEnabledForTargetFormation || movementOrderTypes.FindIndex(o => o == orderType) == -1)
+            if (!HighlightEnabledForTargetFormation)
                 return;
             if (!_allySelectedFormations.Intersect(appliedFormations).IsEmpty())
             {
                 ClearEnemyFocusColor();
                 SetFocusColor();
             }
+        }
+
+        private void OnOrderIssued(OrderType orderType, MBReadOnlyList<Formation> appliedFormations, OrderController orderController, params object[] delegateParams)
+        {
+            if (movementOrderTypes.FindIndex(o => o == orderType) == -1)
+                return;
+            OnMovementOrderChanged(appliedFormations);
         }
 
         private void OnFormationsChanged(Team team, Formation formation)

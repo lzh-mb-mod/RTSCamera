@@ -326,9 +326,9 @@ namespace RTSCamera.CommandSystem.View
             {
                 case MovementOrder.MovementStateEnum.Charge:
                 case MovementOrder.MovementStateEnum.Hold:
+                case MovementOrder.MovementStateEnum.StandGround:
                     return formation.QuerySystem.MedianPosition.GetGroundVec3();
                 case MovementOrder.MovementStateEnum.Retreat:
-                case MovementOrder.MovementStateEnum.StandGround:
                 default:
                     return Vec3.Invalid;
             }
@@ -406,7 +406,7 @@ namespace RTSCamera.CommandSystem.View
             if (CommandQueueLogic.PendingOrders.TryGetValue(formation, out var pendingOrder))
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(new List<Formation> { formation }));
-                var pendingOrderPreviewData = CollectOrderPreviewData(pendingOrder, formation, false);
+                var pendingOrderPreviewData = CollectOrderPreviewData(pendingOrder, formation, false, true);
                 if (pendingOrderPreviewData != null)
                 {
                     result.OrderList.Add(pendingOrderPreviewData);
@@ -473,7 +473,7 @@ namespace RTSCamera.CommandSystem.View
             return false;
         }
 
-        private static bool UpdateMovingOrderTarget(Formation formation, OrderType? movementOrder, WorldPosition? orderPosition,  Formation targetFormation, Agent targetAgent, IOrderable targetEntity)
+        private static bool UpdateMovingOrderTarget(Formation formation, OrderType? movementOrder, WorldPosition? orderPosition,  Formation targetFormation, Agent targetAgent, IOrderable targetEntity, bool isPendingOrder = false)
         {
             switch (movementOrder)
             {
@@ -490,6 +490,10 @@ namespace RTSCamera.CommandSystem.View
                 case OrderType.Charge:
                 case OrderType.ChargeWithTarget:
                     {
+                        if (isPendingOrder)
+                        {
+                            targetFormation = formation.TargetFormation;
+                        }
                         if (targetFormation == null)
                             return false;
                         var targetPosition = targetFormation.QuerySystem.MedianPosition;
@@ -498,6 +502,10 @@ namespace RTSCamera.CommandSystem.View
                     }
                 case OrderType.FollowMe:
                     {
+                        if (isPendingOrder)
+                        {
+                            targetAgent = formation.GetReadonlyMovementOrderReference()._targetAgent;
+                        }
                         if (targetAgent == null)
                             return false;
                         var targetPosition = Patch_OrderController.GetFollowOrderPosition(formation, targetAgent);
@@ -510,6 +518,10 @@ namespace RTSCamera.CommandSystem.View
                         if (targetEntity == null)
                             return false;
                         var waitEntity = (targetEntity as UsableMachine)?.WaitEntity;
+                        if (isPendingOrder)
+                        {
+                            waitEntity = formation.GetReadonlyMovementOrderReference().TargetEntity;
+                        }
                         if (waitEntity == null)
                             return false;
                         Vec2 direction = Patch_OrderController.GetFollowEntityDirection(formation, waitEntity);
@@ -525,6 +537,10 @@ namespace RTSCamera.CommandSystem.View
                         if (missionObject == null)
                             return false;
                         var gameEntity = missionObject.GameEntity;
+                        if (isPendingOrder)
+                        {
+                            gameEntity = formation.GetReadonlyMovementOrderReference().TargetEntity;
+                        }
                         WorldPosition position = Patch_OrderController.GetAttackEntityWaitPosition(formation, gameEntity);
                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
                         break;
@@ -542,12 +558,20 @@ namespace RTSCamera.CommandSystem.View
                     }
                 case OrderType.Advance:
                     {
+                        if (isPendingOrder)
+                        {
+                            targetFormation = formation.TargetFormation;
+                        }
                         var targetPosition = Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPosition.WorldPositionEnforcedCache.NavMeshVec3, targetFormation);
                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
                         break;
                     }
                 case OrderType.FallBack:
                     {
+                        if (isPendingOrder)
+                        {
+                            targetFormation = formation.TargetFormation;
+                        }
                         var targetPosition = Patch_OrderController.GetFallbackOrderPosition(formation, WorldPosition.WorldPositionEnforcedCache.NavMeshVec3, targetFormation);
                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
                         break;
@@ -578,7 +602,7 @@ namespace RTSCamera.CommandSystem.View
             return true;
         }
 
-        private OrderPreviewData CollectOrderPreviewData(OrderInQueue order, Formation formation, bool virtualFacingDirection = true)
+        private OrderPreviewData CollectOrderPreviewData(OrderInQueue order, Formation formation, bool virtualFacingDirection = true, bool isPendingOrder = false)
         {
             var facingOrder = Patch_OrderController.GetFormationVirtualFacingOrder(formation);
             switch (order.CustomOrderType)
@@ -635,7 +659,7 @@ namespace RTSCamera.CommandSystem.View
                     UpdateFacingOrderForOtherOrder(facingOrder, formation, virtualFacingDirection);
                     break;
             }
-            UpdateMovingOrderTarget(formation, order.OrderType, order.PositionBegin, order.TargetFormation, order.TargetAgent, order.TargetEntity);
+            UpdateMovingOrderTarget(formation, order.OrderType, order.PositionBegin, order.TargetFormation, order.TargetAgent, order.TargetEntity, isPendingOrder);
             Patch_OrderController.SaveFormationLivePositionForPreview(formation, Patch_OrderController.GetFormationVirtualMedianPosition(formation));
             return CollectOrderPreviewData(formation, ShouldIncludeFormationShape(order.OrderType), GetOrderTargetType(order.OrderType));
         }
@@ -903,7 +927,7 @@ namespace RTSCamera.CommandSystem.View
                 return null;
             }
             var orderTargetType = GetOrderTargetType(formation.GetReadonlyMovementOrderReference().OrderType);
-            if (orderTargetType == OrderTargetType.Attack || orderTargetType == OrderTargetType.Move)
+            if (orderTargetType == OrderTargetType.Attack)
             {
                 // for attack order type
                 // the preview will be included in pended order so we don't need to include it here.

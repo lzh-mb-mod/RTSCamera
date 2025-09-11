@@ -1,10 +1,16 @@
 # Changelog
 
-## [v5.1.11] - 2025-07-10
+## [v5.1.12] - 2025-09-12
+### Fixed
+- Fixed facing order in order queue。
+
+- Fix highlight of focus attack.
+
+## [v5.1.11] - 2025-09-10
 ### Fixed
 - Fix the display of facing to enemy formation order.
 
-## [v5.1.10] - 2025-07-10
+## [v5.1.10] - 2025-09-10
 ### Added
 - Support facing to specific enemy formation.
 
@@ -17,7 +23,7 @@
 
 - Fix the issue that facing order is determined by the formation with most units when moving multiple formations together.
 
-## [v5.1.9] - 2025-07-09
+## [v5.1.9] - 2025-09-09
 ### Added
 - Support targeting when clicking advance or facing button by holding Alt.
 

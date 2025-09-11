@@ -172,6 +172,7 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.Advance:
                 case OrderType.FallBack:
                 case OrderType.LookAtDirection:
+                case OrderType.LookAtEnemy:
                 case OrderType.AIControlOn:
                 case OrderType.Use:
                 case OrderType.AttackEntity:
@@ -198,7 +199,6 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.Mount:
                 case OrderType.Dismount:
                     return true;
-                case OrderType.LookAtEnemy:
                 case OrderType.AIControlOff:
                 case OrderType.Transfer:
                 default:
@@ -428,7 +428,8 @@ namespace RTSCamera.CommandSystem.Logic
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
                             case OrderType.LookAtDirection:
-                                var shouldBePended = Utilities.Utility.ShouldLockFormationDuringLookAtDirection(formation);
+                                var movementOrder = order.VirtualFormationChanges[formation].MovementOrderType ?? formation.GetReadonlyMovementOrderReference().OrderType;
+                                var shouldBePended = !Utilities.Utility.IsMovementOrderMoving(movementOrder);
                                 FacingOrderLookAtDirection(order, formation);
                                 if (shouldBePended)
                                 {
@@ -593,8 +594,7 @@ namespace RTSCamera.CommandSystem.Logic
                 LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(new List<Formation> { formation }));
             }
             CommandQueuePreview.IsPreviewOutdated = true;
-            Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.OutlineColorSubLogic?.OnMovementOrderChanged(formation);
-            Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.GroundMarkerColorSubLogic?.OnMovementOrderChanged(formation);
+            Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.OnMovementOrderChanged(formation);
 
             Utilities.Utility.UpdateActiveOrders();
         }
@@ -621,12 +621,9 @@ namespace RTSCamera.CommandSystem.Logic
                             case OrderType.PointDefence:
                             case OrderType.Advance:
                             case OrderType.LookAtDirection:
-                                {
-                                    return true;
-                                }
                             case OrderType.LookAtEnemy:
                                 {
-                                    return false;
+                                    return true;
                                 }
                         }
                         break;

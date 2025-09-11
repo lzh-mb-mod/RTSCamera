@@ -297,6 +297,7 @@ namespace RTSCamera.CommandSystem.Utilities
                 // In current game version, set ChargeWithTarget has no effect except voice and gesture
                 // so movement order will not be changed here
                 //playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
+                Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.OnMovementOrderChanged(playerController.SelectedFormations);
                 DisplayFocusAttackMessage(playerController.SelectedFormations, order.TargetFormation);
             }
         }
@@ -801,6 +802,5 @@ namespace RTSCamera.CommandSystem.Utilities
             var team = formation?.Team;
             return !formation.IsAIControlled && team != null && team == Mission.Current.PlayerTeam && (team.IsPlayerGeneral || team.IsPlayerSergeant && formation.PlayerOwner == Agent.Main);
         }
-
     }
 }
