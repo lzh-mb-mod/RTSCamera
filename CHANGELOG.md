@@ -1,8 +1,19 @@
 # Changelog
 
+## [v5.1.13] - 2025-09-14
+### Fixed
+- Fix crash in commanding mode when player party is in army.
+
+- Fix the issue that agent may ride horses after switching to free camera
+
+- Fix black screen when fast forwarding in hideout.
+
+### Improved
+- Size of circle formation is smaller when circle formation preference is set to "Tight".
+
 ## [v5.1.12] - 2025-09-12
 ### Fixed
-- Fixed facing order in order queue。
+- Fixed facing order in order queue.
 
 - Fix highlight of focus attack.
 

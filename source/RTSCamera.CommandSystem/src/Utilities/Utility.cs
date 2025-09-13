@@ -614,7 +614,7 @@ namespace RTSCamera.CommandSystem.Utilities
             return MathF.Max(0.0f, (float)GetUnitCountWithOverride(formation) * (formation.MaximumInterval + formation.UnitDiameter)) / MathF.PI;
         }
 
-        private static int GetMaximumRankCountOfCircularFormation(Formation formation, int unitCount, int unitSpacing)
+        public static int GetMaximumRankCountOfCircularFormation(Formation formation, int unitCount, int unitSpacing)
         {
             int rankCount = 0;
             int placedUnitCount = 0;
@@ -630,22 +630,44 @@ namespace RTSCamera.CommandSystem.Utilities
         }
 
         // Copied from CircularFormation.GetCircumferenceAux
-        private static float GetCircumferenceAuxOfCircularFormation(
+        public static float GetCircumferenceAuxOfCircularFormation(
             int unitCount,
             int rankCount,
             float radialInterval,
             float distanceInterval)
         {
-            float num = MathF.TwoPI * distanceInterval;
-            float circumference = MathF.Max(0.0f, (float)unitCount * radialInterval);
-            float circumferenceAux;
+            float circuferenceDiffBetweenRank = (float)(TaleWorlds.Library.MathF.PI * 2.0 * (double)distanceInterval);
+            float initialCircumference = TaleWorlds.Library.MathF.Max(0f, (float)unitCount * radialInterval);
+            float OutmostCircumference;
+            int unitCountAux;
+            int rankToReduce = 0;
             do
             {
-                circumferenceAux = circumference;
-                circumference = MathF.Max(0.0f, circumferenceAux - num);
+                OutmostCircumference = initialCircumference - rankToReduce * circuferenceDiffBetweenRank;
+                OutmostCircumference -= OutmostCircumference % radialInterval;
+                var nextCircumference = TaleWorlds.Library.MathF.Max(0f, initialCircumference - (rankToReduce + 1) * circuferenceDiffBetweenRank);
+                unitCountAux = GetUnitCountAuxOfCircularFormation(nextCircumference, rankCount, radialInterval, distanceInterval);
+                ++rankToReduce;
             }
-            while (GetUnitCountAuxOfCircularFormation(circumference, rankCount, radialInterval, distanceInterval) > unitCount && (double)circumferenceAux > 0.0);
-            return circumferenceAux;
+            while (unitCountAux >= unitCount && OutmostCircumference > 0f);
+            if (CommandSystemConfig.Get().CircleFormationUnitSpacingPreference == CircleFormationUnitSpacingPreference.Loose)
+            {
+                return OutmostCircumference;
+            }
+            else
+            {
+                int unitCountToReduceInOutmostRank = 0;
+                initialCircumference = OutmostCircumference;
+                do
+                {
+                    OutmostCircumference = initialCircumference - unitCountToReduceInOutmostRank * radialInterval;
+                    var nextCircumference = TaleWorlds.Library.MathF.Max(0f, initialCircumference - (unitCountToReduceInOutmostRank + 1) * radialInterval);
+                    unitCountAux = GetUnitCountAuxOfCircularFormation(nextCircumference, rankCount, radialInterval, distanceInterval);
+                    ++unitCountToReduceInOutmostRank;
+                }
+                while (unitCountAux >= unitCount && OutmostCircumference > 0f);
+                return OutmostCircumference;
+            }
         }
 
         // Copied from CircularFormation.GetUnitCountAux
@@ -655,11 +677,16 @@ namespace RTSCamera.CommandSystem.Utilities
           float radialInterval,
           float distanceInterval)
         {
-            int unitCountAux = 0;
-            double num = 2.0 * Math.PI * (double)distanceInterval;
-            for (int index = 1; index <= rankCount; ++index)
-                unitCountAux += (int)(Math.Max(0.0, (double)circumference - (double)(rankCount - index) * num) / (double)radialInterval);
-            return unitCountAux;
+            int num = 0;
+            double circuferenceDiffBetweenRank = TaleWorlds.Library.MathF.PI * 2.0 * (double)distanceInterval;
+            for (int i = 1; i <= rankCount; i++)
+            {
+                var numInCurrentRank = (int)(TaleWorlds.Library.MathF.Max(0.0, (double)circumference - (double)(rankCount - i) * circuferenceDiffBetweenRank) / (double)radialInterval);
+                num += numInCurrentRank;
+            }
+            // original code
+            //return num;
+            return TaleWorlds.Library.MathF.Max(num, 1);
         }
 
         private static float GetDiameterOfCircularFormation(Formation formation, float circumference, int unitSpacing)

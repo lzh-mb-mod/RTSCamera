@@ -69,8 +69,8 @@ namespace RTSCamera
                         nameof(Patch_PassageUsePoint.IsDisabledForAgent_Prefix),
                         BindingFlags.Static | BindingFlags.Public)));
 
-                //_successPatch &= Patch_OrderOfBattleVM.Patch();
                 // below checked
+                _successPatch &= Patch_OrderOfBattleVM.Patch();
                 _successPatch &= Patch_DeploymentMissionController.Patch(_harmony);
                 _successPatch &= Patch_LadderQueueManager.Patch(_harmony);
                 _successPatch &= Patch_MissionFormationTargetSelectionHandler.Patch(_harmony);

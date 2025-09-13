@@ -36,11 +36,9 @@ namespace RTSCamera.Patch
             return true;
         }
 
-        public static bool Prefix_OnDeployed(Team __instance)
+        public static void Prefix_OnDeployed(Team __instance)
         {
             RTSCameraLogic.Instance?.SwitchFreeCameraLogic.OnEarlyTeamDeployed(__instance);
-
-            return true;
         }
     }
 }

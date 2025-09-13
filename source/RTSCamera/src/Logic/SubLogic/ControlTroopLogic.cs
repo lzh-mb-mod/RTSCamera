@@ -54,7 +54,7 @@ namespace RTSCamera.Logic.SubLogic
                 }
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
                 Utility.DisplayLocalizedText("str_rts_camera_control_troop");
-                bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
+                bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent(agent);
                 if (_switchFreeCameraLogic.IsSpectatorCamera || CommandBattleBehavior.CommandMode || Mission.Current.Mode == MissionMode.Deployment)
                 {
                     Mission.MainAgent = agent;
@@ -97,7 +97,7 @@ namespace RTSCamera.Logic.SubLogic
                     }
 
                     bool isInDeployment = Mission.Mode == MissionMode.Deployment;
-                    bool shouldSmoothMoveToAgent = isInDeployment ? false : Utility.BeforeSetMainAgent();
+                    bool shouldSmoothMoveToAgent = isInDeployment ? false : Utility.BeforeSetMainAgent(agent);
                     if (_switchFreeCameraLogic.IsSpectatorCamera)
                     {
                         if (Mission.MainAgent != agent)
@@ -143,7 +143,7 @@ namespace RTSCamera.Logic.SubLogic
                         Utility.DisplayLocalizedText("str_rts_camera_control_troop");
                     }
 
-                    bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent();
+                    bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent(Mission.MainAgent);
                     Utility.PlayerControlAgent(Mission.MainAgent);
                     Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFaceDirection >= FollowFaceDirection.Always);
 
@@ -283,9 +283,19 @@ namespace RTSCamera.Logic.SubLogic
                     return;
                 if (_selectCharacterView.LockOnAgent(GetAgentToControl()))
                     return;
+
+                if (CommandBattleBehavior.CommandMode)
+                {
+                    Utility.DisplayLocalizedText("str_rts_camera_cannot_control_agent_in_command_mode");
+                    if (Mission.MainAgent == null)
+                    {
+                        Utility.DisplayLocalizedText("str_rts_camera_player_dead");
+                        SetMainAgent();
+                    }
+                    return;
+                }
                 if (!_switchFreeCameraLogic.IsSpectatorCamera && Mission.MainAgent?.Controller == Agent.ControllerType.Player)
                     return;
-
                 if (Mission.MainAgent == null && !_config.IsControlAllyAfterDeathPrompted && _config.TimingOfControlAllyAfterDeath <= ControlAllyAfterDeathTiming.FreeCamera)
                 {
                     _config.IsControlAllyAfterDeathPrompted = true;

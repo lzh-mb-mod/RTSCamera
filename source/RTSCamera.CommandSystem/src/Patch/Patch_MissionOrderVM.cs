@@ -528,6 +528,7 @@ namespace RTSCamera.CommandSystem.Patch
                 if (change.Width != null)
                 {
                     formation.FormOrder = FormOrder.FormOrderCustom(change.Width.Value);
+                    formation.SetPositioning(unitSpacing: change.UnitSpacing);
                 }
             }
             CommandQueueLogic.TryTeleportSelectedFormationInDeployment(__instance.OrderController, order.SelectedFormations);

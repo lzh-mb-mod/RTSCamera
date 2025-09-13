@@ -27,6 +27,14 @@ namespace RTSCamera.Patch.Fix
                 //        BindingFlags.Instance | BindingFlags.NonPublic),
                 //    prefix: new HarmonyMethod(typeof(Patch_OrderOfBattleVM).GetMethod(
                 //        nameof(Prefix_OnCommanderAssignmentRequested), BindingFlags.Static | BindingFlags.Public)));
+
+                // Fix crash when there's not available hero.
+                Harmony.Patch(
+                    typeof(OrderOfBattleVM).GetMethod("SelectHeroItem",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_OrderOfBattleVM).GetMethod(
+                        nameof(Prefix_SelectHeroItem), BindingFlags.Static | BindingFlags.Public)));
+
             }
             catch (Exception e)
             {
@@ -37,6 +45,14 @@ namespace RTSCamera.Patch.Fix
 
             return true;
         }
+
+        public static bool Prefix_SelectHeroItem(OrderOfBattleHeroItemVM heroItem)
+        {
+            if (heroItem == null)
+                return false;
+            return true;
+        }
+
         // TODO: Resolve this legacy patch
         //public static bool Prefix_OnCommanderAssignmentRequested(OrderOfBattleVM __instance, OrderOfBattleHeroItemVM emptyCaptainSlotItem,
         //    ref int ____selectedFormationIndex, List<OrderOfBattleFormationItemVM> ____allFormations, Mission ____mission)

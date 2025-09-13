@@ -2363,7 +2363,10 @@ namespace RTSCamera.CommandSystem.Patch
             var oldFlankWidth = oldWidth;
             if (oldArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle)
             {
-                oldFlankWidth = oldWidth * MathF.PI;
+                // For circle formation, Arrangement.FlankWidth = Circumference - interval
+                // Circumference = FormOrder.FlankWidth * PI
+                // Width = FormOrder.FlankWidth
+                oldFlankWidth = oldWidth * MathF.PI - Utilities.Utility.GetFormationInterval(formation, oldUnitSpacing);
             }
             else if (oldArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Square)
             {
@@ -2423,7 +2426,7 @@ namespace RTSCamera.CommandSystem.Patch
             var newWidth = newFlankWidth;
             if (newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle)
             {
-                newWidth = newFlankWidth / MathF.PI/* + 0.363f*/;
+                newWidth = (newFlankWidth + Utilities.Utility.GetFormationInterval(formation, newUnitSpacing)) / MathF.PI;
             }
             else if (newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Square)
             {
@@ -2641,7 +2644,7 @@ namespace RTSCamera.CommandSystem.Patch
             simulationFormation.SetPositioning(new WorldPosition?(formationPosition), new Vec2?(formationDirection));
             simulationFormation.Rearrange(arrangement.Clone(simulationFormation));
             simulationFormation.Arrangement.DeepCopyFrom(arrangement);
-            simulationFormation.Arrangement.Width = width;
+            //simulationFormation.Arrangement.Width = width;
             _simulationFormationUniqueIdentifier.SetValue(null, index);
         label_1:
             //if (arrangement.GetType() != oldArrangementType)

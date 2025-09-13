@@ -47,11 +47,9 @@ namespace RTSCamera.Patch
                 __instance.Scene.TimeSpeed = RTSCameraConfig.Get().SlowMotionFactor;
         }
 
-        public static bool Prefix_OnDeploymentFinished(Mission __instance)
+        public static void Prefix_OnDeploymentFinished(Mission __instance)
         {
             RTSCameraLogic.Instance?.SwitchFreeCameraLogic.OnEarlyDeploymentFinished();
-
-            return true;
         }
     }
 }

@@ -177,6 +177,24 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (team == Mission.PlayerTeam)
             {
+                if (CommandBattleBehavior.CommandMode && Mission.MainAgent == null)
+                {
+                    // Force control agent, setting controller to Player, to avoid the issue that,
+                    // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
+                    // DeploymentMissionController.FinishDeployment set controller of main agent to Player.
+                    Utility.PlayerControlAgent(_controlTroopLogic.GetAgentToControl());
+                    if (Mission.MainAgent != null)
+                    {
+                        Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
+                        if (Mission.PlayerTeam.IsPlayerGeneral)
+                        {
+                            Utility.SetPlayerAsCommander(true);
+                            Mission.MainAgent?.SetCanLeadFormationsRemotely(true);
+                            Mission.PlayerTeam.GeneralAgent = Mission.MainAgent;
+                        }
+                        team.PlayerOrderController?.SelectAllFormations();
+                    }
+                }
                 if (CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite)
                 {
                     if (Mission.MainAgent?.Formation != null)
@@ -192,24 +210,24 @@ namespace RTSCamera.Logic.SubLogic
                 // TODO: Redundant with Patch_MissionOrderDeploymentControllerVM.Prefix_ExecuteDeployAll
                 if (team == Mission.PlayerTeam)
                 {
-                    if (CommandBattleBehavior.CommandMode && Mission.MainAgent == null)
-                    {
-                        // Force control agent, setting controller to Player, to avoid the issue that,
-                        // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
-                        // DeploymentMissionController.FinishDeployment set controller of main agent to Player.
-                        Utility.PlayerControlAgent(_controlTroopLogic.GetAgentToControl());
-                        if (Mission.MainAgent != null)
-                        {
-                            Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
-                            if (Mission.PlayerTeam.IsPlayerGeneral)
-                            {
-                                Utility.SetPlayerAsCommander(true);
-                                Mission.MainAgent?.SetCanLeadFormationsRemotely(true);
-                                Mission.PlayerTeam.GeneralAgent = Mission.MainAgent;
-                            }
-                            team.PlayerOrderController?.SelectAllFormations();
-                        }
-                    }
+                    //if (CommandBattleBehavior.CommandMode && Mission.MainAgent == null)
+                    //{
+                    //    // Force control agent, setting controller to Player, to avoid the issue that,
+                    //    // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
+                    //    // DeploymentMissionController.FinishDeployment set controller of main agent to Player.
+                    //    Utility.PlayerControlAgent(_controlTroopLogic.GetAgentToControl());
+                    //    if (Mission.MainAgent != null)
+                    //    {
+                    //        Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
+                    //        if (Mission.PlayerTeam.IsPlayerGeneral)
+                    //        {
+                    //            Utility.SetPlayerAsCommander(true);
+                    //            Mission.MainAgent?.SetCanLeadFormationsRemotely(true);
+                    //            Mission.PlayerTeam.GeneralAgent = Mission.MainAgent;
+                    //        }
+                    //        team.PlayerOrderController?.SelectAllFormations();
+                    //    }
+                    //}
                     if (CommandBattleBehavior.CommandMode || _config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
                     {
                         // switch to free camera during deployment stage
@@ -260,6 +278,10 @@ namespace RTSCamera.Logic.SubLogic
                 _switchToAgentNextTick = true;
                 // If not deployment is required, we need to set _switchToFreeCameraNextTick to false to prevent camera set to free mode.
                 _switchToFreeCameraNextTick = false;
+            }
+            else
+            {
+                ShouldKeepUIOpen = true;
             }
         }
 
@@ -315,6 +337,16 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (IsSpectatorCamera)
             {
+                if (CommandBattleBehavior.CommandMode)
+                {
+                    Utility.DisplayLocalizedText("str_rts_camera_cannot_control_agent_in_command_mode");
+                    if (Mission.MainAgent == null)
+                    {
+                        Utility.DisplayLocalizedText("str_rts_camera_player_dead");
+                        _controlTroopLogic.SetMainAgent();
+                    }
+                    return;
+                }
                 SwitchToAgent();
             }
             else
@@ -454,10 +486,11 @@ namespace RTSCamera.Logic.SubLogic
                     if (_config.FastForwardHideout >= FastForwardHideout.UntilBossFight)
                         FastForwardHideoutNextTick = true;
                 }
-                if (oldMissionMode == MissionMode.Stealth && Mission.Mode == MissionMode.Conversation)
+                if (oldMissionMode == MissionMode.Stealth && (Mission.Mode == MissionMode.CutScene || Mission.Mode == MissionMode.Conversation))
                 {
                     // do not fast forward in conversation.
                     Mission.SetFastForwardingFromUI(false);
+                    _logic.MissionSpeedLogic.SetSlowMotionMode(false);
                     if (IsSpectatorCamera)
                     {
                         SwitchToAgent();
@@ -541,17 +574,18 @@ namespace RTSCamera.Logic.SubLogic
                         Mission.MainAgent.Character == CharacterObject.PlayerCharacter)
                         Utility.DisplayLocalizedText("str_rts_camera_player_dead", null, new Color(1, 0, 0));
                     // mask code in Mission.OnAgentRemoved so that formations will not be delegated to AI after player dead.
-                    if (_controlTroopLogic.GetAgentToControl() != null)
+                    var agent = _controlTroopLogic.GetAgentToControl();
+                    if (agent != null)
                     {
                         affectedAgent.OnMainAgentWieldedItemChange = null;
                         // TODO: optimize this logic
-                        bool shouldSmoothToAgent = Utility.BeforeSetMainAgent();
+                        bool shouldSmoothToAgent = Utility.BeforeSetMainAgent(agent);
                         if (IsSpectatorCamera && _config.TimingOfControlAllyAfterDeath >= ControlAllyAfterDeathTiming.FreeCamera || (_config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.Always && !Mission.IsFastForward))
                         {
                             // will there be 2 agent with player controller in the same formation
                             // if we set new main agent here?
                             // yes so we need to resolve it in Patch_Formation.
-                            _controlTroopLogic.SetMainAgent();
+                            _controlTroopLogic.SetToMainAgent(agent);
                         }
                         // Set smooth move again if controls another agent instantly.
                         // Otherwise MissionScreen will reset camera elevate and bearing.
@@ -585,16 +619,6 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (!IsSpectatorCamera)
                 return;
-            if (CommandBattleBehavior.CommandMode)
-            {
-                Utility.DisplayLocalizedText("str_rts_camera_cannot_control_agent_in_command_mode");
-                if (Mission.MainAgent == null)
-                {
-                    Utility.DisplayLocalizedText("str_rts_camera_player_dead");
-                    _controlTroopLogic.SetMainAgent();
-                }
-                return;
-            }
             IsSpectatorCamera = false;
             if (Mission.MainAgent != null)
             {

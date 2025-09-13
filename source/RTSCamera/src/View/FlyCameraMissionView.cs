@@ -201,11 +201,15 @@ namespace RTSCamera.View
         {
             FocusOnFormation(null);
             LockToAgent = true;
+            var shouldSmoothMove = MissionScreen.LastFollowedAgent != agent;
             typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true)
                 ?.Invoke(MissionScreen, new object[] { agent });
             if (!_freeCameraLogic.IsSpectatorCamera)
                 _freeCameraLogic.SwitchCamera();
-            Utility.SmoothMoveToAgent(MissionScreen, true, false);
+            if (shouldSmoothMove)
+            {
+                Utility.SmoothMoveToAgent(MissionScreen, true, false);
+            }
         }
 
         public void FocusOnFormation(Formation formation)
@@ -452,17 +456,17 @@ namespace RTSCamera.View
                 float keyInputVertical = 0;
                 Vec2 keyInput = Vec2.Zero;
                 Vec2 mouseInput = Vec2.Zero;
-                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveForward).IsKeyDown(Input))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveForward).IsKeyDown())
                     ++keyInput.y;
-                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveBackward).IsKeyDown(Input))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveBackward).IsKeyDown())
                     --keyInput.y;
-                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveLeft).IsKeyDown(Input))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveLeft).IsKeyDown())
                     --keyInput.x;
-                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveRight).IsKeyDown(Input))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveRight).IsKeyDown())
                     ++keyInput.x;
-                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveUp).IsKeyDown(Input))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveUp).IsKeyDown())
                     ++keyInputVertical;
-                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveDown).IsKeyDown(Input))
+                if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveDown).IsKeyDown())
                     --keyInputVertical;
 
                 if (MissionScreen.MouseVisible && !MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton))
@@ -567,9 +571,9 @@ namespace RTSCamera.View
                 }
                 else
                 {
-                    bool isSpeedKeyDown = RTSCameraGameKeyCategory.GetKey(GameKeyEnum.IncreaseCameraSpeed).IsKeyDownInOrder(MissionScreen.InputManager) ||
-                        RTSCameraGameKeyCategory.GetKey(GameKeyEnum.DecreaseCameraSpeed).IsKeyDownInOrder(MissionScreen.InputManager) ||
-                        RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ResetCameraSpeed).IsKeyDownInOrder(MissionScreen.InputManager);
+                    bool isSpeedKeyDown = RTSCameraGameKeyCategory.GetKey(GameKeyEnum.IncreaseCameraSpeed).IsKeyDownInOrder() ||
+                        RTSCameraGameKeyCategory.GetKey(GameKeyEnum.DecreaseCameraSpeed).IsKeyDownInOrder() ||
+                        RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ResetCameraSpeed).IsKeyDownInOrder();
                     if (!isSpeedKeyDown)
                         _cameraHeightToAdd -= (mouseScroll / 2000.0f + controllerHeightInput / 100f) * verticalLimit;
                     // hold middle button and move mouse vertically to adjust height
@@ -659,11 +663,11 @@ namespace RTSCamera.View
 
         private void LimitCameraDistance(ref MatrixFrame cameraFrame, float dt, float speed)
         {
-            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.IncreaseCameraDistanceLimit).IsKeyDownInOrder(Input))
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.IncreaseCameraDistanceLimit).IsKeyDownInOrder())
             {
                 RTSCameraSkillBehavior.UpdateCameraDistanceLimit(RTSCameraSkillBehavior.CameraDistanceLimit + dt * speed);
             }
-            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.DecreaseCameraDistanceLimit).IsKeyDownInOrder(Input))
+            if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.DecreaseCameraDistanceLimit).IsKeyDownInOrder())
             {
                 RTSCameraSkillBehavior.UpdateCameraDistanceLimit(RTSCameraSkillBehavior.CameraDistanceLimit - dt * speed);
             }
@@ -837,12 +841,12 @@ namespace RTSCamera.View
             //}
 
             if (LockToAgent && (Math.Abs(Input.GetDeltaMouseScroll()) > 0.0001f ||
-                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveForward).IsKeyDown(Input) ||
-                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveBackward).IsKeyDown(Input) ||
-                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveLeft).IsKeyDown(Input) ||
-                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveRight).IsKeyDown(Input) ||
-                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveUp).IsKeyDown(Input) ||
-                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveDown).IsKeyDown(Input) ||
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveForward).IsKeyDown() ||
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveBackward).IsKeyDown() ||
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveLeft).IsKeyDown() ||
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveRight).IsKeyDown() ||
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveUp).IsKeyDown() ||
+                                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveDown).IsKeyDown() ||
                                 Input.GetIsControllerConnected() &&
                                 (Input.GetKeyState(InputKey.ControllerLStick).y != 0.0 ||
                                  Input.GetKeyState(InputKey.ControllerLStick).x != 0.0)))

@@ -111,6 +111,9 @@ namespace RTSCamera.CommandSystem
 
             // allows setting target formation to face to when facing enemy
             _successPatch &= Patch_FacingOrder.Patch(_harmony);
+
+            // solid circle formation
+            _successPatch &= Patch_CircularFormation.Patch(_harmony);
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera Command System: patch failed"));

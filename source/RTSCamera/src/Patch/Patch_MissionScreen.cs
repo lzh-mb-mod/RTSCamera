@@ -3,9 +3,7 @@ using MissionSharedLibrary.Utilities;
 using System;
 using System.Reflection;
 using TaleWorlds.Core;
-using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View.Screens;
-using TaleWorlds.MountAndBlade.ViewModelCollection;
 
 namespace RTSCamera.Patch
 {
