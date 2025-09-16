@@ -256,6 +256,7 @@ namespace RTSCamera.View
             _showControlHintVM = new ShowControlHintVM(Mission.GetMissionBehavior<SiegeDeploymentHandler>() == null);
             _showControlHintLayer = new GauntletLayer(ViewOrderPriority);
             _showControlHintLayer.LoadMovie("RTSCameraShowControlHint", _showControlHintVM);
+            _showControlHintLayer.InputRestrictions.SetInputRestrictions(false, InputUsageMask.Invalid);
             MissionScreen.AddLayer(_showControlHintLayer);
 
             MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
@@ -629,14 +630,13 @@ namespace RTSCamera.View
                     cameraFrame.origin.AsVec2 = Mission.GetClosestBoundaryPosition(cameraFrame.origin.AsVec2);
                 if (!_config.IgnoreBoundaries && Mission.Mode == MissionMode.Deployment)
                 {
-                    BattleSideEnum side = Mission.PlayerTeam.Side;
                     IMissionDeploymentPlan deploymentPlan = Mission.DeploymentPlan;
-                    if (deploymentPlan?.HasDeploymentBoundaries(side) ?? false)
+                    if (deploymentPlan?.HasDeploymentBoundaries(Mission.PlayerTeam) ?? false)
                     {
                         Vec2 cameraFrameVec2 = cameraFrame.origin.AsVec2;
-                        if (!deploymentPlan.IsPositionInsideDeploymentBoundaries(side, in cameraFrameVec2))
+                        if (!deploymentPlan.IsPositionInsideDeploymentBoundaries(Mission.PlayerTeam, in cameraFrameVec2))
                         {
-                            Vec2 boundaryPosition = deploymentPlan.GetClosestDeploymentBoundaryPosition(side,
+                            Vec2 boundaryPosition = deploymentPlan.GetClosestDeploymentBoundaryPosition(Mission.PlayerTeam,
                                     in cameraFrameVec2);
                             cameraFrame.origin.AsVec2 = boundaryPosition;
                         }
@@ -715,9 +715,9 @@ namespace RTSCamera.View
                 Mission.Scene.SetDepthOfFieldParameters(DepthOfFieldStart, DepthOfFieldEnd, false);
                 if (Math.Abs(DepthOfFieldDistance) < 0.0001f)
                 {
-                    Mission.Scene.RayCastForClosestEntityOrTerrain(CombatCamera.Position, CombatCamera.Position + CombatCamera.Direction * 3000f, out var terrainCollisionDistance, out GameEntity _, 0.5f, BodyFlags.CameraCollisionRayCastExludeFlags);
+                    Mission.Scene.RayCastForClosestEntityOrTerrain(CombatCamera.Position, CombatCamera.Position + CombatCamera.Direction * 3000f, out var terrainCollisionDistance, out WeakGameEntity _, 0.5f, BodyFlags.CameraCollisionRayCastExludeFlags | BodyFlags.DontCollideWithCamera);
                     Mission.RayCastForClosestAgent(CameraPosition,
-                        CombatCamera.Position + CombatCamera.Direction * 3000f, out var agentCollisionDistance);
+                        CombatCamera.Position + CombatCamera.Direction * 3000f, -1, 0.1f, out var agentCollisionDistance);
                     if (float.IsNaN(terrainCollisionDistance))
                     {
                         terrainCollisionDistance = float.MaxValue;

@@ -25,7 +25,7 @@ namespace RTSCamera.Logic.SubLogic
             Mission.OnMainAgentChanged -= OnMainAgentChanged;
         }
 
-        private void OnMainAgentChanged(object sender, PropertyChangedEventArgs e)
+        private void OnMainAgentChanged(Agent oldAgent)
         {
             if (Mission.MainAgent != null)
                 Utility.SetPlayerAsCommander();

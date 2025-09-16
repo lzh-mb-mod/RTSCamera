@@ -124,7 +124,7 @@ namespace RTSCamera.Logic
             CampaignSkillLogic.ShowBattleResults();
         }
 
-        protected override void OnAgentControllerChanged(Agent agent, Agent.ControllerType oldController)
+        protected override void OnAgentControllerChanged(Agent agent, AgentControllerType oldController)
         {
             base.OnAgentControllerChanged(agent, oldController);
 

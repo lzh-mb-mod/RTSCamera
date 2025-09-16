@@ -50,9 +50,9 @@ namespace RTSCamera.Patch
                 return true;
             }
 
-            WorldPosition medianPosition = formation.QuerySystem.MedianPosition;
-            medianPosition.SetVec2(formation.QuerySystem.AveragePosition);
-            float num = formation.QuerySystem.AveragePosition.Distance(cameraPosition.AsVec2);
+            WorldPosition medianPosition = formation.CachedMedianPosition;
+            medianPosition.SetVec2(formation.CachedAveragePosition);
+            float num = formation.CachedAveragePosition.Distance(cameraPosition.AsVec2);
             if ((double)num >= 1000.0)
             {
                 __result = int.MaxValue;

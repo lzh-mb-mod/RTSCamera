@@ -47,10 +47,10 @@ namespace RTSCamera.Logic.SubLogic
                     // Let AI control previous main agent.
                     Utility.AIControlMainAgent(false);
                 }
-                else if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
+                else if (Mission.MainAgent != null && Mission.MainAgent.Controller == AgentControllerType.Player)
                 {
                     // avoid 2 agent with player controller appears in the same formation, which will cause stack overflow in formation logic.
-                    Mission.MainAgent.Controller = Agent.ControllerType.None;
+                    Mission.MainAgent.Controller = AgentControllerType.None;
                 }
                 GameTexts.SetVariable("ControlledTroopName", agent.Name);
                 Utility.DisplayLocalizedText("str_rts_camera_control_troop");
@@ -87,7 +87,7 @@ namespace RTSCamera.Logic.SubLogic
             {
                 if (agent != null)
                 {
-                    if ((!_switchFreeCameraLogic.IsSpectatorCamera && agent.Controller == Agent.ControllerType.Player) || agent.Team != Mission.PlayerTeam)
+                    if ((!_switchFreeCameraLogic.IsSpectatorCamera && agent.Controller == AgentControllerType.Player) || agent.Team != Mission.PlayerTeam)
                         return false;
                     if (!Utility.IsPlayerDead() && Mission.MainAgent != agent)
                     {
@@ -294,7 +294,7 @@ namespace RTSCamera.Logic.SubLogic
                     }
                     return;
                 }
-                if (!_switchFreeCameraLogic.IsSpectatorCamera && Mission.MainAgent?.Controller == Agent.ControllerType.Player)
+                if (!_switchFreeCameraLogic.IsSpectatorCamera && Mission.MainAgent?.Controller == AgentControllerType.Player)
                     return;
                 if (Mission.MainAgent == null && !_config.IsControlAllyAfterDeathPrompted && _config.TimingOfControlAllyAfterDeath <= ControlAllyAfterDeathTiming.FreeCamera)
                 {

@@ -5,6 +5,7 @@ using MissionSharedLibrary.Usage;
 using System;
 using System.Collections.Generic;
 using TaleWorlds.InputSystem;
+using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Config.HotKey
 {
@@ -45,7 +46,7 @@ namespace RTSCamera.Config.HotKey
 
         public static GameKeyCategory CreateCategory()
         {
-            var nativeCategory = HotKeyManager.GetCategory("CombatHotKeyCategory");
+            var combatHotKeyCategory = HotKeyManager.GetCategory("CombatHotKeyCategory");
             var result = new GameKeyCategory(CategoryId,
                 (int)GameKeyEnum.NumberOfGameKeyEnums, GameKeyConfig.Get());
             result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.Pause, nameof(GameKeyEnum.Pause),
@@ -104,7 +105,7 @@ namespace RTSCamera.Config.HotKey
                 {
                     new GameKeySequenceAlternative(
                         new List<InputKey> () {
-                            nativeCategory?.GetGameKey("Up")?.KeyboardKey?.InputKey ?? InputKey.W
+                            combatHotKeyCategory?.GetGameKey(GenericGameKeyContext.Up)?.KeyboardKey?.InputKey ?? InputKey.W
                         }
                     )
                 }));
@@ -113,7 +114,7 @@ namespace RTSCamera.Config.HotKey
                 {
                     new GameKeySequenceAlternative(
                         new List<InputKey> () {
-                            nativeCategory?.GetGameKey("Down")?.KeyboardKey?.InputKey ?? InputKey.S
+                            combatHotKeyCategory?.GetGameKey(GenericGameKeyContext.Down)?.KeyboardKey?.InputKey ?? InputKey.S
                         }
                     )
                 }));
@@ -122,7 +123,7 @@ namespace RTSCamera.Config.HotKey
                 {
                     new GameKeySequenceAlternative(
                         new List<InputKey> () {
-                            nativeCategory?.GetGameKey("Left")?.KeyboardKey?.InputKey ?? InputKey.A
+                            combatHotKeyCategory?.GetGameKey(GenericGameKeyContext.Left)?.KeyboardKey?.InputKey ?? InputKey.A
                         }
                     )
                 }));
@@ -131,7 +132,7 @@ namespace RTSCamera.Config.HotKey
                 {
                     new GameKeySequenceAlternative(
                         new List<InputKey> () {
-                            nativeCategory?.GetGameKey("Right")?.KeyboardKey?.InputKey ?? InputKey.D
+                            combatHotKeyCategory?.GetGameKey(GenericGameKeyContext.Right)?.KeyboardKey?.InputKey ?? InputKey.D
                         }
                     )
                 }));
@@ -140,7 +141,7 @@ namespace RTSCamera.Config.HotKey
                 {
                     new GameKeySequenceAlternative(
                         new List<InputKey> () {
-                            nativeCategory?.GetGameKey("Jump")?.KeyboardKey?.InputKey ?? InputKey.Space
+                            combatHotKeyCategory?.GetGameKey(CombatHotKeyCategory.Jump)?.KeyboardKey?.InputKey ?? InputKey.Space
                         }
                     )
                 }));
@@ -149,7 +150,7 @@ namespace RTSCamera.Config.HotKey
                 {
                     new GameKeySequenceAlternative(
                         new List<InputKey> () {
-                            nativeCategory?.GetGameKey("Crouch")?.KeyboardKey?.InputKey ?? InputKey.X
+                            combatHotKeyCategory?.GetGameKey(CombatHotKeyCategory.Crouch)?.KeyboardKey?.InputKey ?? InputKey.X
                         }
                     )
                 }));

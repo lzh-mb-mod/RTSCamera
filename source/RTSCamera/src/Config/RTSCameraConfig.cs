@@ -101,13 +101,13 @@ namespace RTSCamera.Config
 
         public float RaisedHeight = 10;
 
-        public int PlayerControllerInFreeCamera = (int)Agent.ControllerType.AI;
+        public int PlayerControllerInFreeCamera = (int)AgentControllerType.AI;
 
-        public Agent.ControllerType GetPlayerControllerInFreeCamera(Mission mission)
+        public AgentControllerType GetPlayerControllerInFreeCamera(Mission mission)
         {
             if (CommandBattleBehavior.CommandMode || mission?.Mode == MissionMode.Deployment)
-                return Agent.ControllerType.AI;
-            return (Agent.ControllerType) PlayerControllerInFreeCamera;
+                return AgentControllerType.AI;
+            return (AgentControllerType) PlayerControllerInFreeCamera;
         }
 
         public FormationClass PlayerFormation = FormationClass.General;

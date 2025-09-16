@@ -26,6 +26,13 @@ namespace RTSCamera.Patch
                         nameof(Postfix_UpdateSceneTimeSpeed), BindingFlags.Static | BindingFlags.Public)));
                 // recover player formation from general formation
                 harmony.Patch(
+                    typeof(Mission).GetMethod("OnTeamDeployed",
+                        BindingFlags.Instance | BindingFlags.Public),
+                    prefix: new HarmonyMethod(
+                        typeof(Patch_Mission).GetMethod(nameof(Prefix_OnTeamDeployed),
+                            BindingFlags.Static | BindingFlags.Public)));
+                // recover player formation from general formation
+                harmony.Patch(
                     typeof(Mission).GetMethod("OnDeploymentFinished",
                         BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(
@@ -45,6 +52,11 @@ namespace RTSCamera.Patch
         {
             if (RTSCameraConfig.Get().SlowMotionMode)
                 __instance.Scene.TimeSpeed = RTSCameraConfig.Get().SlowMotionFactor;
+        }
+
+        public static void Prefix_OnTeamDeployed(Team team)
+        {
+            RTSCameraLogic.Instance?.SwitchFreeCameraLogic.OnEarlyTeamDeployed(team);
         }
 
         public static void Prefix_OnDeploymentFinished(Mission __instance)

@@ -416,7 +416,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnAgentControllerChanged(Agent agent)
         {
-            if (agent.Controller == Agent.ControllerType.Player || agent.Controller == Agent.ControllerType.None)
+            if (agent.Controller == AgentControllerType.Player || agent.Controller == AgentControllerType.None)
             {
                 agent.SetMaximumSpeedLimit(-1, false);
                 agent.MountAgent?.SetMaximumSpeedLimit(-1, false);
@@ -526,7 +526,7 @@ namespace RTSCamera.Logic.SubLogic
             Utility.SetPlayerFormationClass(formationToSet);
         }
 
-        private void OnMainAgentChanged(object sender, PropertyChangedEventArgs e)
+        private void OnMainAgentChanged(Agent oldAgent)
         {
             if (Mission.MainAgent != null)
             {
@@ -540,7 +540,7 @@ namespace RTSCamera.Logic.SubLogic
                     }
                     else
                     {
-                        if (Mission.MainAgent.Controller != Agent.ControllerType.Player)
+                        if (Mission.MainAgent.Controller != AgentControllerType.Player)
                             _controlTroopLogic.ControlMainAgent(false);
                     }
                     // Fix crash in The Old Realms.
@@ -555,7 +555,7 @@ namespace RTSCamera.Logic.SubLogic
 
         private void UpdateMainAgentControllerInFreeCamera()
         {
-            Agent.ControllerType controllerType = _config.GetPlayerControllerInFreeCamera(Mission);
+            AgentControllerType controllerType = _config.GetPlayerControllerInFreeCamera(Mission);
             Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.MainAgent, controllerType);
             Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera, controllerType);
         }
@@ -589,7 +589,7 @@ namespace RTSCamera.Logic.SubLogic
                         }
                         // Set smooth move again if controls another agent instantly.
                         // Otherwise MissionScreen will reset camera elevate and bearing.
-                        if (Mission.MainAgent != null && Mission.MainAgent.Controller == Agent.ControllerType.Player)
+                        if (Mission.MainAgent != null && Mission.MainAgent.Controller == AgentControllerType.Player)
                             Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen, _config.FollowFaceDirection >= FollowFaceDirection.ControlNewTroopOnly);
                         // Restore the variables to initial state
                         else if (shouldSmoothToAgent)

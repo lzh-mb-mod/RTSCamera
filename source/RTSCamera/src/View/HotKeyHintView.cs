@@ -16,7 +16,7 @@ namespace RTSCamera.View
         private readonly string _movieName;
         private HotKeyHintCollectionVM _dataSource;
         private GauntletLayer GauntletLayer;
-        private IGauntletMovie _movie;
+        private GauntletMovieIdentifier _movie;
         private RTSCameraLogic _rtsCameraLogic;
 
         public bool IsActivated { get; set; }
@@ -102,7 +102,10 @@ namespace RTSCamera.View
             MissionScreen.RemoveLayer(GauntletLayer);
             _dataSource.OnFinalize();
             _dataSource = null;
-            _movie?.Release();
+            if (_movie != null)
+            {
+                GauntletLayer.ReleaseMovie(_movie);
+            }
             _movie = null;
             GauntletLayer = null;
         }

@@ -3,6 +3,7 @@ using MissionSharedLibrary.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch.Fix
@@ -38,7 +39,7 @@ namespace RTSCamera.Patch.Fix
             for (int index = ____userAgents.Count - 1; index >= 0; index--)
             {
                 Agent agent = ____userAgents[index];
-                if (agent.Controller == Agent.ControllerType.Player)
+                if (agent.Controller == AgentControllerType.Player)
                 {
                     ____userAgents.RemoveAt(index);
                 }

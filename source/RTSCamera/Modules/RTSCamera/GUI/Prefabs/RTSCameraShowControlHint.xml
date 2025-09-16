@@ -1,6 +1,6 @@
 <Prefab>
   <Window>
-    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="RTSCamera.TransparentBrush">
+    <Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="RTSCamera.TransparentBrush">
       <Children>
         <TextWidget DataSource="{Hint}" Text="@Text" IsVisible="@IsVisible" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="240" Brush="AgentHUD.Interaction.Text" />
       

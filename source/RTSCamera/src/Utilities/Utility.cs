@@ -26,15 +26,15 @@ namespace RTSCamera.Utilities
         }
 
 
-        public static void UpdateMainAgentControllerInFreeCamera(Agent agent, Agent.ControllerType controller)
+        public static void UpdateMainAgentControllerInFreeCamera(Agent agent, AgentControllerType controller)
         {
             switch (controller)
             {
-                case Agent.ControllerType.None:
+                case AgentControllerType.None:
                     MissionSharedLibrary.Utilities.Utility.PlayerControlAgent(agent);
                     agent.LookDirection = agent.GetMovementDirection().ToVec3();
                     break;
-                case Agent.ControllerType.AI:
+                case AgentControllerType.AI:
                     MissionSharedLibrary.Utilities.Utility.AIControlMainAgent(
                         Mission.Current.Mode != MissionMode.StartUp &&
                         Mission.Current.Mode != MissionMode.Conversation &&
@@ -43,20 +43,20 @@ namespace RTSCamera.Utilities
                         Mission.Current.Mode != MissionMode.Deployment &&
                         Mission.Current.Mode != MissionMode.Replay, true);
                     break;
-                case Agent.ControllerType.Player:
+                case AgentControllerType.Player:
                     MissionSharedLibrary.Utilities.Utility.PlayerControlAgent(agent);
                     break;
             }
         }
 
-        public static void UpdateMainAgentControllerState(Agent agent, bool isSpectatorCamera, Agent.ControllerType playerControllerInFreeCamera)
+        public static void UpdateMainAgentControllerState(Agent agent, bool isSpectatorCamera, AgentControllerType playerControllerInFreeCamera)
         {
             var controller = Mission.Current.GetMissionBehavior<MissionMainAgentController>();
             if (controller != null)
             {
-                if (agent.Controller == Agent.ControllerType.Player &&
+                if (agent.Controller == AgentControllerType.Player &&
                     (!isSpectatorCamera ||
-                     playerControllerInFreeCamera == Agent.ControllerType.Player))
+                     playerControllerInFreeCamera == AgentControllerType.Player))
                 {
                     controller.CustomLookDir = isSpectatorCamera ? agent.LookDirection : Vec3.Zero;
                     controller.Enable();
@@ -101,7 +101,7 @@ namespace RTSCamera.Utilities
                 if (formation.CountOfUnits > 0)
                 {
                     formation.SetMovementOrder(MovementOrder.MovementOrderCharge);
-                    formation.FiringOrder = FiringOrder.FiringOrderFireAtWill;
+                    formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using MissionSharedLibrary.Utilities;
+﻿using Helpers;
+using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Skills;
 using RTSCamera.Config;
 using TaleWorlds.CampaignSystem;
@@ -82,18 +83,17 @@ namespace RTSCamera.CampaignGame.Behavior
                     }
                     else
                     {
-                        AddSkillBonusForCharacter(DefaultSkills.Tactics, RTSCameraSkillEffects.TacticRTSCameraMaxDistance,
+                        SkillHelper.AddSkillBonusForCharacter(RTSCameraSkillEffects.TacticRTSCameraMaxDistance,
                             Hero.MainHero.CharacterObject, ref explainedNumber);
-                        AddSkillBonusForCharacter(DefaultSkills.Scouting,
-                            RTSCameraSkillEffects.ScoutingRTSCameraMaxDistance,
+                        SkillHelper.AddSkillBonusForCharacter(RTSCameraSkillEffects.ScoutingRTSCameraMaxDistance,
                             Hero.MainHero.CharacterObject, ref explainedNumber);
                     }
                 }
                 else
                 {
-                    AddSkillBonusForParty(DefaultSkills.Tactics, RTSCameraSkillEffects.TacticRTSCameraMaxDistance,
+                    SkillHelper.AddSkillBonusForParty(RTSCameraSkillEffects.TacticRTSCameraMaxDistance,
                         Campaign.Current.MainParty, ref explainedNumber);
-                    AddSkillBonusForParty(DefaultSkills.Scouting, RTSCameraSkillEffects.ScoutingRTSCameraMaxDistance,
+                    SkillHelper.AddSkillBonusForParty(RTSCameraSkillEffects.ScoutingRTSCameraMaxDistance,
                         Campaign.Current.MainParty, ref explainedNumber);
                 }
 
@@ -110,206 +110,39 @@ namespace RTSCamera.CampaignGame.Behavior
 
         public static Hero GetHeroForTacticLevel()
         {
-            return PartyBase.MainParty?.MobileParty?.GetEffectiveRoleHolder(SkillEffect.PerkRole.PartyLeader) ??
+            return PartyBase.MainParty?.MobileParty?.GetEffectiveRoleHolder(PartyRole.PartyLeader) ??
                    Hero.MainHero;
         }
 
         public static Hero GetHeroForScoutingLevel()
         {
-            return PartyBase.MainParty?.MobileParty?.GetEffectiveRoleHolder(SkillEffect.PerkRole.Scout) ??
+            return PartyBase.MainParty?.MobileParty?.GetEffectiveRoleHolder(PartyRole.Scout) ??
                    Hero.MainHero;
         }
 
         private static void AddToStat(
             ref ExplainedNumber stat,
-            SkillEffect.EffectIncrementType effectIncrementType,
+            EffectIncrementType effectIncrementType,
             float number,
             TextObject text)
         {
-            if (effectIncrementType == SkillEffect.EffectIncrementType.Add)
+            if (effectIncrementType == EffectIncrementType.Add)
             {
                 stat.Add(number, text);
             }
             else
             {
-                if (effectIncrementType != SkillEffect.EffectIncrementType.AddFactor)
+                if (effectIncrementType != EffectIncrementType.AddFactor)
                     return;
                 stat.AddFactor(number * 0.01f, text);
             }
         }
 
-        private static void AddSkillBonusForParty(
-          SkillObject skill,
-          SkillEffect skillEffect,
-          MobileParty party,
-          ref ExplainedNumber stat)
-        {
-            Hero leaderHero = party.LeaderHero;
-            if (leaderHero == null || skillEffect == null)
-                return;
-
-            if (skillEffect.PrimaryRole == SkillEffect.PerkRole.PartyLeader || skillEffect.SecondaryRole == SkillEffect.PerkRole.PartyLeader)
-            {
-                int skillValue = leaderHero.GetSkillValue(skill);
-                bool isPrimaryRole = skillEffect.PrimaryRole == SkillEffect.PerkRole.PartyLeader;
-                var description = GetEffectDescriptionForSkillLevel(skillEffect, skillValue, isPrimaryRole);
-                float effectValue = isPrimaryRole
-                    ? skillEffect.GetPrimaryValue(skillValue)
-                    : skillEffect.GetSecondaryValue(skillValue);
-                AddToStat(ref stat, skillEffect.IncrementType, effectValue, description);
-            }
-            if (skillEffect.PrimaryRole == SkillEffect.PerkRole.Engineer || skillEffect.SecondaryRole == SkillEffect.PerkRole.Engineer)
-            {
-                Hero effectiveEngineer = party.EffectiveEngineer;
-                if (effectiveEngineer != null)
-                {
-                    int skillValue = effectiveEngineer.GetSkillValue(skill);
-                    bool isPrimaryRole = skillEffect.PrimaryRole == SkillEffect.PerkRole.Engineer;
-                    var description = GetEffectDescriptionForSkillLevel(skillEffect, skillValue, isPrimaryRole);
-                    float effectValue = isPrimaryRole
-                        ? skillEffect.GetPrimaryValue(skillValue)
-                        : skillEffect.GetSecondaryValue(skillValue);
-                    AddToStat(ref stat, skillEffect.IncrementType, effectValue, description);
-                }
-            }
-            if (skillEffect.PrimaryRole == SkillEffect.PerkRole.Scout || skillEffect.SecondaryRole == SkillEffect.PerkRole.Scout)
-            {
-                Hero effectiveScout = party.EffectiveScout;
-                if (effectiveScout != null)
-                {
-                    int skillValue = effectiveScout.GetSkillValue(skill);
-                    bool isPrimaryRole = skillEffect.PrimaryRole == SkillEffect.PerkRole.Scout;
-                    var description = GetEffectDescriptionForSkillLevel(skillEffect, skillValue, isPrimaryRole);
-                    float effectValue = isPrimaryRole
-                        ? skillEffect.GetPrimaryValue(skillValue)
-                        : skillEffect.GetSecondaryValue(skillValue);
-                    AddToStat(ref stat, skillEffect.IncrementType, effectValue, description);
-                }
-            }
-            if (skillEffect.PrimaryRole == SkillEffect.PerkRole.Surgeon || skillEffect.SecondaryRole == SkillEffect.PerkRole.Surgeon)
-            {
-                Hero effectiveSurgeon = party.EffectiveSurgeon;
-                if (effectiveSurgeon != null)
-                {
-                    int skillValue = effectiveSurgeon.GetSkillValue(skill);
-                    bool isPrimaryRole = skillEffect.PrimaryRole == SkillEffect.PerkRole.Scout;
-                    var description = GetEffectDescriptionForSkillLevel(skillEffect, skillValue, isPrimaryRole);
-                    float effectValue = isPrimaryRole
-                        ? skillEffect.GetPrimaryValue(skillValue)
-                        : skillEffect.GetSecondaryValue(skillValue);
-                    AddToStat(ref stat, skillEffect.IncrementType, effectValue, description);
-                }
-            }
-
-            if (skillEffect.PrimaryRole == SkillEffect.PerkRole.Quartermaster ||
-                skillEffect.SecondaryRole == SkillEffect.PerkRole.Quartermaster)
-            {
-                Hero effectiveQuartermaster = party.EffectiveQuartermaster;
-                if (effectiveQuartermaster != null)
-                {
-                    int skillValue = effectiveQuartermaster.GetSkillValue(skill);
-                    bool isPrimaryRole = skillEffect.PrimaryRole == SkillEffect.PerkRole.Scout;
-                    var description = GetEffectDescriptionForSkillLevel(skillEffect, skillValue, isPrimaryRole);
-                    float effectValue = isPrimaryRole
-                        ? skillEffect.GetPrimaryValue(skillValue)
-                        : skillEffect.GetSecondaryValue(skillValue);
-                    AddToStat(ref stat, skillEffect.IncrementType, effectValue, description);
-                }
-            }
-        }
-
-        private static void AddSkillBonusForCharacter(
-          SkillObject skill,
-          SkillEffect skillEffect,
-          CharacterObject character,
-          ref ExplainedNumber stat,
-          int baseSkillOverride = -1,
-          bool isBonusPositive = true,
-          int extraSkillValue = 0)
-        {
-            int skillLevel = (baseSkillOverride >= 0 ? baseSkillOverride : character.GetSkillValue(skill)) + extraSkillValue;
-            int sign = isBonusPositive ? 1 : -1;
-            if (skillEffect.PrimaryRole == SkillEffect.PerkRole.Personal ||
-                skillEffect.SecondaryRole == SkillEffect.PerkRole.Personal)
-            {
-                bool isPrimaryRole = skillEffect.PrimaryRole == SkillEffect.PerkRole.Personal;
-                var description = GetEffectDescriptionForSkillLevel(skillEffect, skillLevel, isPrimaryRole);
-                float effectValue = isPrimaryRole
-                    ? skillEffect.GetPrimaryValue(skillLevel)
-                    : skillEffect.GetSecondaryValue(skillLevel);
-                AddToStat(ref stat, skillEffect.IncrementType, (float)sign * effectValue, description);
-            }
-
-            Hero heroObject = character.HeroObject;
-            if (heroObject == null)
-                return;
-            if ((skillEffect.PrimaryRole == SkillEffect.PerkRole.Engineer ||
-                 skillEffect.SecondaryRole == SkillEffect.PerkRole.Engineer) && character.IsHero &&
-                heroObject.PartyBelongedTo?.EffectiveEngineer == heroObject)
-            {
-                bool isPrimaryRole = skillEffect.PrimaryRole == SkillEffect.PerkRole.Engineer;
-                var description = GetEffectDescriptionForSkillLevel(skillEffect, skillLevel, isPrimaryRole);
-                float effectValue = isPrimaryRole
-                    ? skillEffect.GetPrimaryValue(skillLevel)
-                    : skillEffect.GetSecondaryValue(skillLevel);
-                AddToStat(ref stat, skillEffect.IncrementType, (float)sign * effectValue, description);
-            }
-
-            if ((skillEffect.PrimaryRole == SkillEffect.PerkRole.Quartermaster ||
-                 skillEffect.SecondaryRole == SkillEffect.PerkRole.Quartermaster) && character.IsHero &&
-                heroObject.PartyBelongedTo?.EffectiveQuartermaster == heroObject)
-            {
-                bool isPrimaryRole = skillEffect.PrimaryRole == SkillEffect.PerkRole.Quartermaster;
-                var description = GetEffectDescriptionForSkillLevel(skillEffect, skillLevel, isPrimaryRole);
-                float effectValue = isPrimaryRole
-                    ? skillEffect.GetPrimaryValue(skillLevel)
-                    : skillEffect.GetSecondaryValue(skillLevel);
-                AddToStat(ref stat, skillEffect.IncrementType, (float)sign * effectValue, description);
-            }
-
-            if ((skillEffect.PrimaryRole == SkillEffect.PerkRole.Scout ||
-                 skillEffect.SecondaryRole == SkillEffect.PerkRole.Scout) && character.IsHero &&
-                heroObject.PartyBelongedTo?.EffectiveScout == heroObject)
-            {
-                bool isPrimaryRole = skillEffect.PrimaryRole == SkillEffect.PerkRole.Scout;
-                var description = GetEffectDescriptionForSkillLevel(skillEffect, skillLevel, isPrimaryRole);
-                float effectValue = isPrimaryRole
-                    ? skillEffect.GetPrimaryValue(skillLevel)
-                    : skillEffect.GetSecondaryValue(skillLevel);
-                AddToStat(ref stat, skillEffect.IncrementType, (float)sign * effectValue, description);
-            }
-
-            if ((skillEffect.PrimaryRole == SkillEffect.PerkRole.Surgeon ||
-                 skillEffect.SecondaryRole == SkillEffect.PerkRole.Surgeon) && character.IsHero &&
-                heroObject.PartyBelongedTo?.EffectiveSurgeon == heroObject)
-            {
-                bool isPrimaryRole = skillEffect.PrimaryRole == SkillEffect.PerkRole.Surgeon;
-                var description = GetEffectDescriptionForSkillLevel(skillEffect, skillLevel, isPrimaryRole);
-                float effectValue = isPrimaryRole
-                    ? skillEffect.GetPrimaryValue(skillLevel)
-                    : skillEffect.GetSecondaryValue(skillLevel);
-                AddToStat(ref stat, skillEffect.IncrementType, (float)sign * effectValue, description);
-            }
-
-            if ((skillEffect.PrimaryRole == SkillEffect.PerkRole.PartyLeader ||
-                 skillEffect.SecondaryRole == SkillEffect.PerkRole.PartyLeader) && character.IsHero &&
-                heroObject.PartyBelongedTo?.LeaderHero == heroObject)
-            {
-                bool isPrimaryRole = skillEffect.PrimaryRole == SkillEffect.PerkRole.Surgeon;
-                var description = GetEffectDescriptionForSkillLevel(skillEffect, skillLevel, isPrimaryRole);
-                float effectValue = isPrimaryRole
-                    ? skillEffect.GetPrimaryValue(skillLevel)
-                    : skillEffect.GetSecondaryValue(skillLevel);
-                AddToStat(ref stat, skillEffect.IncrementType, (float)sign * effectValue, description);
-            }
-        }
-        private static TextObject GetEffectDescriptionForSkillLevel(SkillEffect effect, int level, bool isPrimaryRole)
+        private static TextObject GetEffectDescriptionForSkillLevel(SkillEffect effect, int level)
         {
             var text = effect.Description.CopyTextObject();
             text.SetTextVariable("a0",
-                isPrimaryRole
-                    ? effect.GetPrimaryValue(level).ToString("0.0")
-                    : effect.GetSecondaryValue(level).ToString("0.0"));
+                effect.GetSkillEffectValue(level).ToString("0.0"));
             return text;
         }
 

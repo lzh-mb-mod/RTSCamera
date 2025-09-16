@@ -78,16 +78,18 @@ namespace RTSCamera.Patch
         //    return codes.AsEnumerable();
         //}
 
-        public static bool Prefix_GetCollidedEntity(OrderFlag __instance, ref GameEntity __result, MissionScreen ____missionScreen, Mission ____mission)
+        public static bool Prefix_GetCollidedEntity(OrderFlag __instance, ref WeakGameEntity __result, ref Vec3 closestPoint, MissionScreen ____missionScreen, Mission ____mission)
         {
             // use Input.MousePositionRanged if mouse is visible. In official code the condition is Mission.Current.GetMissionBehavior<BattleDeploymentHandler>() != null
             Vec2 screenPoint = ____missionScreen.MouseVisible ? Input.MousePositionRanged : new Vec2(0.5f, 0.5f);
             ____missionScreen.ScreenPointToWorldRay(screenPoint, out var rayBegin, out var rayEnd);
-            ____mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out float _, out GameEntity collidedEntity, 0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora);
-            while (collidedEntity != null && !collidedEntity.GetScriptComponents().Any((ScriptComponentBehavior sc) => sc is IOrderable orderable && orderable.GetOrder(Mission.Current.PlayerTeam.Side) != OrderType.None))
-            {
+            Vec3 vec3 = (rayEnd - rayBegin).NormalizedCopy();
+            rayEnd = rayBegin + vec3 * 10000f;
+            rayBegin = Agent.Main.GetEyeGlobalPosition();
+            WeakGameEntity collidedEntity;
+            ____mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out float _, out closestPoint, out collidedEntity, 0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora);
+            while (collidedEntity.IsValid && !collidedEntity.GetScriptComponents().Any<ScriptComponentBehavior>((Func<ScriptComponentBehavior, bool>)(sc => sc is IOrderable orderable && orderable.GetOrder(Mission.Current.PlayerTeam.Side) != 0)))
                 collidedEntity = collidedEntity.Parent;
-            }
             __result = collidedEntity;
             return false;
         }

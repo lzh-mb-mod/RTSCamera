@@ -16,8 +16,8 @@ namespace RTSCamera.View
 
         public ShowControlHintVM(bool showHint)
         {
-            Hint = new TextViewModel(new TextObject(), showHint);
-            CharacterName = new TextViewModel(new TextObject(), false);
+            Hint = new TextViewModel(new TextObject(""), showHint);
+            CharacterName = new TextViewModel(new TextObject(""), false);
             RefreshValues();
         }
 

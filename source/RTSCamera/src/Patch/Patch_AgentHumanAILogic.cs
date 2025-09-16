@@ -2,6 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using System;
 using System.Reflection;
+using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch
@@ -34,15 +35,15 @@ namespace RTSCamera.Patch
         }
         public static bool Prefix_OnAgentControllerChanged(AgentHumanAILogic __instance,
             Agent agent,
-            Agent.ControllerType oldController)
+            AgentControllerType oldController)
         {
             try
             {
                 if (!agent.IsHuman)
                     return true;
-                if (agent.Controller != Agent.ControllerType.AI)
+                if (agent.Controller != AgentControllerType.AI)
                 {
-                    if (oldController != Agent.ControllerType.AI || agent.HumanAIComponent == null)
+                    if (oldController != AgentControllerType.AI || agent.HumanAIComponent == null)
                         return true;
                     // HumanAIComponent registered the following action in constructor, but didn't unregister it.
                     // TODO: Need to check the official code whether this fix affects other behaviors.

@@ -2,7 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Logic;
-using SandBox.Missions.MissionLogics;
+using SandBox.Missions.MissionLogics.Hideout;
 using System;
 using System.Reflection;
 using TaleWorlds.MountAndBlade;

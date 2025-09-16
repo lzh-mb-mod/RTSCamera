@@ -6,6 +6,7 @@ using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.GauntletUI;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
@@ -52,8 +53,8 @@ namespace RTSCamera.Patch.Fix
                     postfix: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
                         nameof(Postfix_OnMissionScreenFinalize), BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(
-                    typeof(MissionGauntletSingleplayerOrderUIHandler).GetMethod(
-                        nameof(MissionGauntletSingleplayerOrderUIHandler.OnMissionScreenTick),
+                    typeof(GauntletOrderUIHandler).GetMethod(
+                        nameof(GauntletOrderUIHandler.OnMissionScreenTick),
                         BindingFlags.Instance | BindingFlags.Public),
                     postfix: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
                         nameof(Postfix_OnMissionScreenTick), BindingFlags.Static | BindingFlags.Public)));
@@ -78,23 +79,23 @@ namespace RTSCamera.Patch.Fix
         }
 
 
-        private static bool ShouldBeginEarlyDragging(MissionGauntletSingleplayerOrderUIHandler __instance)
+        private static bool ShouldBeginEarlyDragging(GauntletOrderUIHandler __instance)
         {
             return !_earlyDraggingMode &&
                    (__instance.MissionScreen.InputManager.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null) && IsDragKeyPressed(__instance);
         }
 
-        private static bool IsDragKeyPressed(MissionGauntletSingleplayerOrderUIHandler __instance)
+        private static bool IsDragKeyPressed(GauntletOrderUIHandler __instance)
         {
             return __instance.MissionScreen.SceneLayer.Input.IsKeyPressed(InputKey.RightMouseButton) || __instance.MissionScreen.SceneLayer.Input.IsKeyPressed(InputKey.ControllerLTrigger);
         }
 
-        private static bool IsDragKeyDown(MissionGauntletSingleplayerOrderUIHandler __instance)
+        private static bool IsDragKeyDown(GauntletOrderUIHandler __instance)
         {
             return __instance.MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton) || __instance.MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.ControllerLTrigger);
         }
 
-        private static bool IsDragKeyReleased(MissionGauntletSingleplayerOrderUIHandler __instance)
+        private static bool IsDragKeyReleased(GauntletOrderUIHandler __instance)
         {
             return __instance.MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton) || __instance.MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.ControllerLTrigger);
         }
@@ -138,25 +139,20 @@ namespace RTSCamera.Patch.Fix
             Patch_MissionOrderVM.AllowEscape = true;
         }
 
-        private static bool IsAnyDeployment(MissionGauntletSingleplayerOrderUIHandler __instance)
-        {
-            return __instance.IsBattleDeployment || __instance.IsSiegeDeployment;
-        }
-
-        private static void UpdateMouseVisibility(MissionGauntletSingleplayerOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
+        private static void UpdateMouseVisibility(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
         {
             if (__instance == null)
                 return;
 
             bool mouseVisibility =   
-                (IsAnyDeployment(__instance) || ____dataSource.TroopController.IsTransferActive ||
+                (__instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ||
                  ____dataSource.IsToggleOrderShown && (__instance.Input.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null)) &&
                 !_rightButtonDraggingMode && !_earlyDraggingMode;
             var sceneLayer = __instance.MissionScreen.SceneLayer;
             if (mouseVisibility != ____gauntletLayer.InputRestrictions.MouseVisibility)
             {
                 ____gauntletLayer.InputRestrictions.SetInputRestrictions(mouseVisibility,
-                    mouseVisibility ? InputUsageMask.All : InputUsageMask.Invalid);
+                    mouseVisibility ? InputUsageMask.Keyboardkeys : InputUsageMask.Invalid);
             }
 
             //if (__instance.MissionScreen.OrderFlag != null)
@@ -171,19 +167,19 @@ namespace RTSCamera.Patch.Fix
             //}
         }
 
-        private static void UpdateDragData(MissionGauntletSingleplayerOrderUIHandler __instance, MissionOrderVM ____dataSource, OrderTroopPlacer ____orderTroopPlacer)
+        private static void UpdateDragData(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, OrderTroopPlacer ____orderTroopPlacer)
         {
             if (_willEndDraggingMode)
             {
                 _willEndDraggingMode = false;
                 EndDrag(____orderTroopPlacer);
             }
-            else if (!____dataSource.IsToggleOrderShown && !IsAnyDeployment(__instance) || IsDragKeyReleased(__instance))
+            else if (!____dataSource.IsToggleOrderShown && !__instance.IsDeployment || IsDragKeyReleased(__instance))
             {
                 if (_earlyDraggingMode || _rightButtonDraggingMode)
                     _willEndDraggingMode = true;
             }
-            else if (____dataSource.IsToggleOrderShown || IsAnyDeployment(__instance))
+            else if (____dataSource.IsToggleOrderShown || __instance.IsDeployment)
             {
                 if (ShouldBeginEarlyDragging(__instance))
                 {
@@ -205,7 +201,7 @@ namespace RTSCamera.Patch.Fix
             }
         }
 
-        public static void Postfix_OnMissionScreenTick(MissionGauntletSingleplayerOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
+        public static void Postfix_OnMissionScreenTick(GauntletOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
         {
             UpdateDragData(__instance, ____dataSource, ____orderTroopPlacer);
             UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer);

@@ -12,14 +12,7 @@ using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 namespace RTSCamera.Patch.Fix
 {
     public class Patch_MissionOrderVM
-    {
-        private static readonly PropertyInfo LastSelectedOrderSetType =
-            typeof(MissionOrderVM).GetProperty(nameof(MissionOrderVM.LastSelectedOrderSetType),
-                BindingFlags.Instance | BindingFlags.Public);
-        private static readonly PropertyInfo OrderSubTypeProperty = typeof(OrderItemVM).GetProperty("OrderSubType", BindingFlags.Instance | BindingFlags.NonPublic);
-        private static readonly PropertyInfo LastSelectedOrderItem = typeof(MissionOrderVM).GetProperty(nameof(MissionOrderVM.LastSelectedOrderItem),
-                BindingFlags.Instance | BindingFlags.Public);
-        public static readonly MethodInfo UpdateTitleOrdersKeyVisualVisibility = typeof(MissionOrderVM).GetMethod("UpdateTitleOrdersKeyVisualVisibility", BindingFlags.Instance | BindingFlags.NonPublic);
+    { 
 
         public static bool AllowEscape = true;
 
@@ -37,19 +30,19 @@ namespace RTSCamera.Patch.Fix
                         BindingFlags.NonPublic | BindingFlags.Instance),
                     new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(
                         nameof(Prefix_CheckCanBeOpened), BindingFlags.Static | BindingFlags.Public)));
-                harmony.Patch(
-                    typeof(MissionOrderVM).GetMethod("AfterInitialize", BindingFlags.Instance | BindingFlags.Public),
-                    postfix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Postfix_AfterInitialize),
-                        BindingFlags.Static | BindingFlags.Public)));
+                //harmony.Patch(
+                //    typeof(MissionOrderVM).GetMethod("AfterInitialize", BindingFlags.Instance | BindingFlags.Public),
+                //    postfix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Postfix_AfterInitialize),
+                //        BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(
                     typeof(MissionOrderVM).GetMethod(nameof(MissionOrderVM.OnEscape),
                         BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Prefix_OnEscape),
                         BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(
-                    typeof(MissionOrderVM).GetMethod("OnOrder",
+                    typeof(MissionOrderVM).GetMethod("OnOrderExecuted",
                         BindingFlags.Instance | BindingFlags.NonPublic),
-                    postfix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Postfix_OnOrder),
+                    postfix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Postfix_OnOrderExecuted),
                         BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(
                     typeof(MissionOrderVM).GetMethod("OnTransferFinished",
@@ -79,13 +72,13 @@ namespace RTSCamera.Patch.Fix
             return true;
         }
 
-        public static void Postfix_AfterInitialize(MissionOrderVM __instance)
-        {
-            LastSelectedOrderSetType.SetValue(__instance, (object)OrderSetType.None);
-            AllowEscape = true;
-        }
+        //public static void Postfix_AfterInitialize(MissionOrderVM __instance)
+        //{
+        //    LastSelectedOrderSetType.SetValue(__instance, (object)OrderSetType.None);
+        //    AllowEscape = true;
+        //}
 
-        public static bool Prefix_OnEscape(MissionOrderVM __instance, MissionOrderVM.ActivationType ____currentActivationType, Dictionary<OrderSetType, OrderSetVM> ___OrderSetsWithOrdersByType)
+        public static bool Prefix_OnEscape(MissionOrderVM __instance)
         {
             // Do nothing during draging camera using right mouse button.
             return AllowEscape;
@@ -121,7 +114,7 @@ namespace RTSCamera.Patch.Fix
             //return false;
         }
 
-        public static void Postfix_OnOrder(MissionOrderVM __instance, OrderItemVM orderItem, OrderSetType orderSetType, bool fromSelection, ref MissionOrderVM.ActivationType ____currentActivationType)
+        public static void Postfix_OnOrderExecuted(MissionOrderVM __instance, OrderItemVM orderItem)
         {
             // TODO: don't close the order ui and open it again.
             // Keep orders UI open after issuing an order in free camera mode.

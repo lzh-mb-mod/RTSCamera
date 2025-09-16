@@ -160,34 +160,34 @@ namespace RTSCamera.Config
                         GameTexts.FindText("str_rts_camera_player_controller_in_free_camera_hint"),
                         new SelectionOptionData(i =>
                         {
-                            if (i < 0 || i >= (int)Agent.ControllerType.Count)
+                            if (i < 0 || i >= (int)AgentControllerType.Count)
                                 return;
                             RTSCameraConfig.Get().PlayerControllerInFreeCamera = i;
                             if (rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera && !Utility.IsPlayerDead() && rtsCameraLogic.Mission.Mode != MissionMode.Deployment)
                             {
                                 Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.Current.MainAgent,
-                                    (Agent.ControllerType)i);
+                                    (AgentControllerType)i);
                                 Utilities.Utility.UpdateMainAgentControllerState(Mission.Current.MainAgent,
-                                    rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera, (Agent.ControllerType)i);
+                                    rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera, (AgentControllerType)i);
                             }
                         }, () =>
                         {
                             if (rtsCameraLogic.SwitchFreeCameraLogic.IsSpectatorCamera && !Utility.IsPlayerDead())
                             {
-                                if (Mission.Current.MainAgent.Controller == Agent.ControllerType.AI)
-                                    return (int)Agent.ControllerType.AI;
+                                if (Mission.Current.MainAgent.Controller == AgentControllerType.AI)
+                                    return (int)AgentControllerType.AI;
                                 var controller = Mission.Current.GetMissionBehavior<MissionMainAgentController>();
                                 if (controller == null ||
                                     !((bool?)typeof(MissionMainAgentController)
                                         .GetField("_activated", BindingFlags.Instance | BindingFlags.NonPublic)
                                         ?.GetValue(controller) ?? true) ||
-                                    Mission.Current.MainAgent.Controller == Agent.ControllerType.None)
-                                    return (int)Agent.ControllerType.None;
-                                return (int)Agent.ControllerType.Player;
+                                    Mission.Current.MainAgent.Controller == AgentControllerType.None)
+                                    return (int)AgentControllerType.None;
+                                return (int)AgentControllerType.Player;
                             }
 
                             return RTSCameraConfig.Get().PlayerControllerInFreeCamera;
-                        }, (int)Agent.ControllerType.Count, new[]
+                        }, (int)AgentControllerType.Count, new[]
                         {
                             new SelectionItem(true, "str_rts_camera_controller_type", "none"),
                             new SelectionItem(true, "str_rts_camera_controller_type", "AI"),

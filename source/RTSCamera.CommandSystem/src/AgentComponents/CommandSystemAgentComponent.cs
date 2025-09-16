@@ -327,9 +327,14 @@ namespace RTSCamera.CommandSystem.AgentComponents
             _mesh.Frame = frame;
         }
 
-        public override void OnTickAsAI(float dt)
+        public override void OnAIInputSet(ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)
         {
-            base.OnTickAsAI(dt);
+            base.OnAIInputSet(ref eventFlag, ref movementFlag, ref inputVector);
+        }
+
+        public override void OnTick(float dt)
+        {
+            base.OnTick(dt);
             if (Agent.Formation == null)
             {
                 return;
