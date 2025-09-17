@@ -2,6 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
+using RTSCamera.CommandSystem.Orders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,24 +15,25 @@ using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.GauntletUI;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera.CommandSystem.Patch
 {
-    public class Patch_MissionGauntletSingleplayerOrderUIHandler
+    public class Patch_GauntletOrderUIHandler
     {
-        private static FieldInfo _focusedFormationsCache = typeof(MissionGauntletSingleplayerOrderUIHandler).GetField("_focusedFormationsCache", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static FieldInfo _focusedFormationsCache = typeof(GauntletOrderUIHandler).GetField("_focusedFormationsCache", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static FieldInfo _dataSource =
-            typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_dataSource),
+            typeof(GauntletOrderUIHandler).GetField(nameof(_dataSource),
                 BindingFlags.Instance | BindingFlags.NonPublic);
         private static FieldInfo _targetFormationOrderGivenWithActionButton =
-            typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_targetFormationOrderGivenWithActionButton),
+            typeof(GauntletOrderUIHandler).GetField(nameof(_targetFormationOrderGivenWithActionButton),
                 BindingFlags.Instance | BindingFlags.NonPublic);
         private static FieldInfo _orderTroopPlacer =
-            typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_orderTroopPlacer),
+            typeof(GauntletOrderUIHandler).GetField(nameof(_orderTroopPlacer),
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static bool _patched;
@@ -45,16 +47,16 @@ namespace RTSCamera.CommandSystem.Patch
                 _patched = true;
 
                 harmony.Patch(
-                typeof(MissionGauntletSingleplayerOrderUIHandler).GetMethod("TickInput",
+                typeof(GauntletOrderUIHandler).GetMethod("TickInput",
                     BindingFlags.NonPublic | BindingFlags.Instance),
-                    transpiler: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
+                    transpiler: new HarmonyMethod(typeof(Patch_GauntletOrderUIHandler).GetMethod(
                         nameof(Transpile_TickInput), BindingFlags.Static | BindingFlags.Public)));
 
                 harmony.Patch(
-                    typeof(MissionGauntletSingleplayerOrderUIHandler).GetMethod(
-                        nameof(MissionGauntletSingleplayerOrderUIHandler.OnMissionScreenTick),
+                    typeof(GauntletOrderUIHandler).GetMethod(
+                        nameof(GauntletOrderUIHandler.OnMissionScreenTick),
                         BindingFlags.Instance | BindingFlags.Public),
-                    postfix: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
+                    postfix: new HarmonyMethod(typeof(Patch_GauntletOrderUIHandler).GetMethod(
                         nameof(Postfix_OnMissionScreenTick), BindingFlags.Static | BindingFlags.Public), before: new string[] {"RTSCameraPatch"}));
                 return true;
             }
@@ -131,7 +133,7 @@ namespace RTSCamera.CommandSystem.Patch
             codes.InsertRange(index_get_ActiveTargetState - 2, new List<CodeInstruction>
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Call, typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(nameof(TryAddSelectedOrderToQueue), BindingFlags.Static | BindingFlags.NonPublic)),
+                new CodeInstruction(OpCodes.Call, typeof(Patch_GauntletOrderUIHandler).GetMethod(nameof(TryAddSelectedOrderToQueue), BindingFlags.Static | BindingFlags.NonPublic)),
                 new CodeInstruction(OpCodes.Brtrue, codes[index_get_ActiveTargetState + 1].operand)
             });
             //codes.InsertRange(index_get_cursorState - 1, new List<CodeInstruction>
@@ -142,13 +144,13 @@ namespace RTSCamera.CommandSystem.Patch
             //});
         }
 
-        private static bool TryAddSelectedOrderToQueue(MissionGauntletSingleplayerOrderUIHandler __instance)
+        private static bool TryAddSelectedOrderToQueue(GauntletOrderUIHandler __instance)
         {
             var dataSource = _dataSource.GetValue(__instance) as MissionOrderVM;
             if (dataSource.ActiveTargetState == 0 && (__instance.Input.IsKeyReleased(InputKey.LeftMouseButton) || __instance.Input.IsKeyReleased(InputKey.ControllerRTrigger)))
             {
-                OrderItemVM selectedOrderItem = dataSource.LastSelectedOrderItem;
-                if (selectedOrderItem != null && !selectedOrderItem.IsTitle && Input.IsGamepadActive)
+                OrderSetVM selectedOrderSet = dataSource.SelectedOrderSet;
+                if (selectedOrderSet != null && Input.IsGamepadActive)
                 {
                     // return false to run original code.
                     return false;
@@ -167,7 +169,7 @@ namespace RTSCamera.CommandSystem.Patch
             return false;
         }
 
-        private static OrderInQueue GetOrderToAdd(MissionGauntletSingleplayerOrderUIHandler __instance, MissionOrderVM dataSource, out bool skipNativeOrder)
+        private static OrderInQueue GetOrderToAdd(GauntletOrderUIHandler __instance, MissionOrderVM dataSource, out bool skipNativeOrder)
         {
             var missionScreen = __instance.MissionScreen;
             skipNativeOrder = false;
@@ -189,9 +191,9 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 SelectedFormations = selectedFormations
             };
-            switch (__instance.cursorState)
+            switch (__instance.CursorState)
             {
-                case MissionOrderVM.CursorState.Move:
+                case MissionOrderVM.CursorStates.Move:
                     {
                         var focusedFormationCache = _focusedFormationsCache.GetValue(__instance) as MBReadOnlyList<Formation>;
                         if (focusedFormationCache != null && focusedFormationCache.Count > 0)
@@ -202,20 +204,20 @@ namespace RTSCamera.CommandSystem.Patch
                                 orderTroopPlacer.SuspendTroopPlacer = true;
                                 _targetFormationOrderGivenWithActionButton?.SetValue(__instance, true);
                             }
-                            if (Patch_MissionOrderVM.OrderToSelectTarget == OrderSubType.Advance)
+                            if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.Advance)
                             {
                                 orderToAdd.OrderType = OrderType.Advance;
                                 orderToAdd.TargetFormation = focusedFormationCache[0];
                                 Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Advance, selectedFormations, focusedFormationCache[0], null, null);
                                 orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                                Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
+                                RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
                                 if (!queueCommand)
                                 {
                                     skipNativeOrder = true;
                                     dataSource.OrderController.SetOrderWithFormation(OrderType.Advance, focusedFormationCache[0]);
                                 }
                             }
-                            else if (Patch_MissionOrderVM.OrderToSelectTarget == OrderSubType.FaceEnemy)
+                            else if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.LookAtEnemy)
                             {
                                 orderToAdd.OrderType = OrderType.LookAtEnemy;
                                 orderToAdd.TargetFormation = focusedFormationCache[0];
@@ -227,7 +229,7 @@ namespace RTSCamera.CommandSystem.Patch
                                     dataSource.OrderController.SetOrder(OrderType.LookAtEnemy);
                                 }
                                 orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                                Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
+                                RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
                             }
                             else
                             {
@@ -305,8 +307,8 @@ namespace RTSCamera.CommandSystem.Patch
                                             IEnumerable<Formation> source = selectedFormations.Where(new Func<Formation, bool>(usable.IsUsedByFormation));
                                             if (source.IsEmpty())
                                             {
-                                                foreach (Formation formation in selectedFormations)
-                                                    formation.StartUsingMachine(usable, true);
+                                                //foreach (Formation formation in selectedFormations)
+                                                //    formation.StartUsingMachine(usable, true);
                                                 if (!usable.HasWaitFrame)
                                                     // will not be added to queue because orderToAdd.OrderType is OrderType.None.
                                                     break;
@@ -317,8 +319,8 @@ namespace RTSCamera.CommandSystem.Patch
                                             }
                                             else
                                             {
-                                                foreach (Formation formation in source)
-                                                    formation.StopUsingMachine(usable, true);
+                                                //foreach (Formation formation in source)
+                                                //    formation.StopUsingMachine(usable, true);
                                                 // will not be added to queue because orderToAdd.OrderType is OrderType.None.
                                             }
                                             break;
@@ -344,14 +346,13 @@ namespace RTSCamera.CommandSystem.Patch
                         }
                         break;
                     }
-                case MissionOrderVM.CursorState.Face:
+                case MissionOrderVM.CursorStates.Face:
                     {
                         orderToAdd.OrderType = OrderType.LookAtDirection;
-                        Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
+                        RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
                         if (queueCommand)
                         {
-                            Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, dataSource.OrderController, missionScreen);
-                            Patch_MissionOrderTroopControllerVM.CloseFacingOrderSet(dataSource);
+                            Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, dataSource.OrderController, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, __instance.MissionScreen.GetOrderFlagPosition(), false));
                         }
                         else
                         {
@@ -363,8 +364,8 @@ namespace RTSCamera.CommandSystem.Patch
                         }
                         break;
                     }
-                case MissionOrderVM.CursorState.Form:
-                    break;
+                case MissionOrderVM.CursorStates.Form:
+                    return null;
             }
             if (!queueCommand)
             {
@@ -373,30 +374,25 @@ namespace RTSCamera.CommandSystem.Patch
             }
             return orderToAdd;
         }
-        public static void Postfix_OnMissionScreenTick(MissionGauntletSingleplayerOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
+        public static void Postfix_OnMissionScreenTick(GauntletOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
         {
             UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer);
             //return true;
         }
 
-        private static bool IsAnyDeployment(MissionGauntletSingleplayerOrderUIHandler __instance)
-        {
-            return __instance.IsBattleDeployment || __instance.IsSiegeDeployment;
-        }
-
-        private static void UpdateMouseVisibility(MissionGauntletSingleplayerOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
+        private static void UpdateMouseVisibility(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
         {
             if (__instance == null)
                 return;
 
             bool mouseVisibility =
-                (IsAnyDeployment(__instance) || ____dataSource.TroopController.IsTransferActive ||
+                (__instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ||
                  ____dataSource.IsToggleOrderShown && (__instance.Input.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null));
             var sceneLayer = __instance.MissionScreen.SceneLayer;
             if (mouseVisibility != ____gauntletLayer.InputRestrictions.MouseVisibility)
             {
                 ____gauntletLayer.InputRestrictions.SetInputRestrictions(mouseVisibility,
-                    mouseVisibility ? InputUsageMask.All : InputUsageMask.Invalid);
+                    mouseVisibility ? InputUsageMask.Keyboardkeys : InputUsageMask.Invalid);
             }
 
             //if (__instance.MissionScreen.OrderFlag != null)

@@ -6,6 +6,7 @@ using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.CampaignGame;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
+using RTSCamera.CommandSystem.Orders;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.Usage;
 using System;
@@ -16,6 +17,7 @@ using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
 
 namespace RTSCamera.CommandSystem
 {
@@ -49,6 +51,8 @@ namespace RTSCamera.CommandSystem
             {
                 UIConfig.DoNotUseGeneratedPrefabs = true;
             }
+
+            VisualOrderFactory.RegisterProvider(new RTSCommandVisualOrderProvider());
         }
 
         private void Initialize()
@@ -93,7 +97,7 @@ namespace RTSCamera.CommandSystem
             _successPatch = true;
             _successPatch &=  Patch_OrderTroopPlacer.Patch(_harmony);
             _successPatch &= Patch_OrderTroopItemVM.Patch(_harmony);
-            _successPatch &= Patch_FormationMarkerParentWidget.Patch(_harmony);
+            //_successPatch &= Patch_FormationMarkerParentWidget.Patch(_harmony);
             _successPatch &= Patch_MissionOrderTroopControllerVM.Patch(_harmony);
             // Patch issue that order troop placer is inconsistent with actual order issued during dragging
             _successPatch &= Patch_OrderController.Patch(_harmony);
@@ -101,7 +105,7 @@ namespace RTSCamera.CommandSystem
 
             // command queue
             _successPatch &= Patch_MissionOrderVM.Patch(_harmony);
-            _successPatch &= Patch_MissionGauntletSingleplayerOrderUIHandler.Patch(_harmony);
+            _successPatch &= Patch_GauntletOrderUIHandler.Patch(_harmony);
 
             // resizable square formation
             _successPatch &= Patch_ArrangementOrder.Patch(_harmony);

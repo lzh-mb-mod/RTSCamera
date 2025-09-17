@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using Microsoft.VisualBasic;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
@@ -14,7 +13,6 @@ using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Screens;
 using MathF = TaleWorlds.Library.MathF;
 
 
@@ -49,7 +47,7 @@ namespace RTSCamera.CommandSystem.Patch
             BindingFlags.Instance | BindingFlags.NonPublic);
         private static MethodInfo ResetForSimulation = typeof(Formation).GetMethod("ResetForSimulation", BindingFlags.Instance | BindingFlags.NonPublic);
         private static PropertyInfo OverridenUnitCount = typeof(Formation).GetProperty("OverridenUnitCount", BindingFlags.Instance | BindingFlags.Public);
-        private static FieldInfo _arrangementOrder = typeof(Formation).GetField("_arrangementOrder", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static PropertyInfo ArrangementOrderProperty = typeof(Formation).GetProperty("ArrangementOrder", BindingFlags.Instance | BindingFlags.Public);
         private static FieldInfo _simulationFormationTemp = typeof(Formation).GetField("_simulationFormationTemp", BindingFlags.Static | BindingFlags.NonPublic);
         private static FieldInfo _simulationFormationUniqueIdentifier = typeof(Formation).GetField("_simulationFormationUniqueIdentifier", BindingFlags.Static | BindingFlags.NonPublic);
 
@@ -1539,7 +1537,7 @@ namespace RTSCamera.CommandSystem.Patch
                     foreach ((Formation formation, int unitSpacingReduction, float customWidth, WorldPosition position, Vec2 direction) in simulationFormationChanges)
                     {
                         formation.SetMovementOrder(MovementOrder.MovementOrderMove(position));
-                        formation.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
+                        formation.SetFacingOrder(FacingOrder.FacingOrderLookAtDirection(direction));
                     }
                 }
                 if (formationsWithoutLocking.Count > 0)
@@ -1548,7 +1546,7 @@ namespace RTSCamera.CommandSystem.Patch
                     FacingOrder facingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
                     foreach (var formation in formationsWithoutLocking)
                     {
-                        formation.FacingOrder = facingOrder;
+                        formation.SetFacingOrder(facingOrder);
                         LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
                         LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtDirection, formation);
                     }
@@ -1569,12 +1567,12 @@ namespace RTSCamera.CommandSystem.Patch
         {
             bool foundFacingOrderLookAtDirection = false;
             bool foundget_SelectedFormations = false;
-            bool foundset_FacingOrder = false;
+            bool foundSetFacingOrder = false;
             bool foundEndFinally = false;
 
             int facingOrderLookAtDirectionIndex = -1;
             int get_SelectedFormationsIndex = -1;
-            int set_FacingOrderIndex = -1;
+            int setFacingOrderIndex = -1;
             int endFinallyIndex = -1;
             for (int i = 0; i < codes.Count; ++i)
             {
@@ -1591,16 +1589,16 @@ namespace RTSCamera.CommandSystem.Patch
                         }
                     }
                 }
-                else if (!foundset_FacingOrder)
+                else if (!foundSetFacingOrder)
                 {
                     if (codes[i].opcode == OpCodes.Callvirt)
                     {
                         // IL_00f0
                         var operand = codes[i].operand as MethodInfo;
-                        if (operand.Name == "set_FacingOrder")
+                        if (operand.Name == nameof(Formation.SetFacingOrder) )
                         {
-                            foundset_FacingOrder = true;
-                            set_FacingOrderIndex = i;
+                            foundSetFacingOrder = true;
+                            setFacingOrderIndex = i;
                         }
                     }
                 }
@@ -1635,7 +1633,7 @@ namespace RTSCamera.CommandSystem.Patch
                     }
                 }
             }
-            if (!foundset_FacingOrder)
+            if (!foundSetFacingOrder)
             {
                 throw new Exception("set_FacingOrderIndex not found");
             }
@@ -1643,9 +1641,9 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 throw new Exception("EndFinally not found");
             }
-            // jump to IL_0173
+            // jump to IL_0174
             codes[get_SelectedFormationsIndex - 1].opcode = OpCodes.Br_S;
-            codes[get_SelectedFormationsIndex - 1].operand = codes[set_FacingOrderIndex + 4].operand;
+            codes[get_SelectedFormationsIndex - 1].operand = codes[setFacingOrderIndex + 4].operand;
             // from IL_00c3
             codes.RemoveRange(get_SelectedFormationsIndex, endFinallyIndex - get_SelectedFormationsIndex + 1);
         }
@@ -1822,7 +1820,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static WorldPosition GetFormationCurrentPositionAsWorldPosition(Formation formation)
         {
-            var result = formation.QuerySystem.MedianPosition;
+            var result = formation.CachedMedianPosition;
             var vec2 = formation.CurrentPosition;
             result.SetVec2(vec2);
             return result;
@@ -1847,14 +1845,24 @@ namespace RTSCamera.CommandSystem.Patch
         {
             if (formation.PhysicalClass.IsMounted() && targetAgent != null)
             {
-                Vec3 velocity = targetAgent.Velocity;
-                if ((double)velocity.LengthSquared > (double)targetAgent.RunSpeedCached * (double)targetAgent.RunSpeedCached * 0.090000003576278687)
-                {
-                    velocity = targetAgent.Velocity;
-                    return velocity.AsVec2.Normalized();
-                }
+                var result = FollowingAgentDirection(targetAgent);
+                if (result.IsValid)
+                    return result;
             }
             return GetFormationVirtualDirection(formation);
+        }
+
+        private static Vec2 FollowingAgentDirection(Agent targetAgent)
+        {
+            // FacingOrder.GetDirectionAux
+            Vec3 velocity = targetAgent.Velocity;
+            var speed = targetAgent.GetMaximumForwardUnlimitedSpeed();
+            if ((double)velocity.LengthSquared > (double)speed * speed * 0.090000003576278687)
+            {
+                velocity = targetAgent.Velocity;
+                return velocity.AsVec2.Normalized();
+            }
+            return Vec2.Invalid;
         }
 
         private static void TryIntializeFormationChanges(Formation formation)
@@ -2009,11 +2017,21 @@ namespace RTSCamera.CommandSystem.Patch
         {
             var enemyQuerySystem = GetTargetOrClosestEnemyFormationQuerySystem(f, targetFormation);
             GetFormationMovingTargetForPreview(f, out var medianPosition);
-            return enemyQuerySystem == null ? Vec2.Forward : (enemyQuerySystem.MedianPosition.AsVec2 - (medianPosition?.AsVec2 ?? f.QuerySystem.AveragePosition)).Normalized();
+            return enemyQuerySystem == null ? Vec2.Forward : (enemyQuerySystem.Formation.CachedMedianPosition.AsVec2 - (medianPosition?.AsVec2 ?? f.CachedAveragePosition)).Normalized();
         }
+
+        private static FieldInfo _engageTargetPositionCache = AccessTools.Field(typeof(MovementOrder), "_engageTargetPositionCache");
 
         public static WorldPosition GetAdvanceOrderPosition(Formation f, WorldPosition.WorldPositionEnforcedCache worldPositionEnforcedCache, Formation targetFormation)
         {
+            if (_engageTargetPositionCache != null)
+            {
+                var targetPositionCache = (WorldPosition)_engageTargetPositionCache.GetValue(f.GetReadonlyMovementOrderReference());
+                if (targetPositionCache.IsValid)
+                {
+                    return targetPositionCache;
+                }
+            }
             var querySystem = f.QuerySystem;
             var enemyQuerySystem = GetTargetOrClosestEnemyFormationQuerySystem(f, targetFormation);
             WorldPosition targetPosition;
@@ -2028,7 +2046,7 @@ namespace RTSCamera.CommandSystem.Patch
             }
             else
             {
-                targetPosition = enemyQuerySystem.MedianPosition;
+                targetPosition = enemyQuerySystem.Formation.CachedMedianPosition;
             }
             if (querySystem.IsRangedFormation || querySystem.IsRangedCavalryFormation || querySystem.HasThrowing)
             {
@@ -2038,7 +2056,7 @@ namespace RTSCamera.CommandSystem.Patch
             else if (enemyQuerySystem != null)
             {
                 GetFormationMovingTargetForPreview(f, out var medianPosition);
-                Vec2 vec2 = (enemyQuerySystem.AveragePosition - (medianPosition?.AsVec2 ?? f.QuerySystem.AveragePosition)).Normalized();
+                Vec2 vec2 = (enemyQuerySystem.Formation.CachedAveragePosition - (medianPosition?.AsVec2 ?? f.CachedAveragePosition)).Normalized();
                 float num = 2f;
                 if ((double)enemyQuerySystem.FormationPower < (double)f.QuerySystem.FormationPower * 0.20000000298023224)
                     num = 0.1f;
@@ -2051,8 +2069,8 @@ namespace RTSCamera.CommandSystem.Patch
         {
             Vec2 direction = GetAdvanceOrFallbackEnemyDirection(f, targetFormation);
             GetFormationMovingTargetForPreview(f, out var medianPosition);
-            var averagePosition = medianPosition ?? f.QuerySystem.MedianPosition;
-            averagePosition.SetVec2((medianPosition?.AsVec2 ?? f.QuerySystem.AveragePosition) - direction * 7f);
+            var averagePosition = medianPosition ?? f.CachedMedianPosition;
+            averagePosition.SetVec2((medianPosition?.AsVec2 ?? f.CachedAveragePosition) - direction * 7f);
             return averagePosition;
         }
 
@@ -2061,12 +2079,9 @@ namespace RTSCamera.CommandSystem.Patch
             var targetAgent = GetFormationVirtualTargetAgent(f);
             if (f.PhysicalClass.IsMounted() && targetAgent != null)
             {
-                Vec3 velocity = targetAgent.Velocity;
-                if (velocity.LengthSquared > targetAgent.RunSpeedCached * targetAgent.RunSpeedCached * 0.090000003576278687)
-                {
-                    velocity = targetAgent.Velocity;
-                    return velocity.AsVec2.Normalized();
-                }
+                var result = FollowingAgentDirection(targetAgent);
+                if (result.IsValid)
+                    return result;
             }
             var arrangementOrder = GetFormationVirtualArrangementOrder(f);
             if (arrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle || arrangementOrder == ArrangementOrder.ArrangementOrderEnum.Square)
@@ -2125,34 +2140,34 @@ namespace RTSCamera.CommandSystem.Patch
             return result;
         }
 
-        // Copied from MovementOrder
+        // Copied from MovementOrder.ComputeAttackEntityWaitPosition
         public static  WorldPosition GetAttackEntityWaitPosition(
           Formation formation,
           GameEntity targetEntity)
         {
             Scene scene = formation.Team.Mission.Scene;
             WorldPosition worldPosition = new WorldPosition(scene, UIntPtr.Zero, targetEntity.GlobalPosition, false);
-            Vec2 vec2_1 = formation.QuerySystem.AveragePosition - worldPosition.AsVec2;
+            Vec2 vec2_1 = formation.CachedAveragePosition - worldPosition.AsVec2;
             Vec2 v = targetEntity.GetGlobalFrame().rotation.f.AsVec2.Normalized();
             Vec2 vec2_2 = (double)vec2_1.DotProduct(v) >= 0.0 ? v : -v;
             WorldPosition position1 = worldPosition;
             position1.SetVec2(worldPosition.AsVec2 + vec2_2 * 3f);
-            if (scene.DoesPathExistBetweenPositions(position1, formation.QuerySystem.MedianPosition))
+            if (scene.DoesPathExistBetweenPositions(position1, formation.CachedMedianPosition))
                 return position1;
             WorldPosition position2 = worldPosition;
             position2.SetVec2(worldPosition.AsVec2 - vec2_2 * 3f);
-            if (scene.DoesPathExistBetweenPositions(position2, formation.QuerySystem.MedianPosition))
+            if (scene.DoesPathExistBetweenPositions(position2, formation.CachedMedianPosition))
                 return position2;
             WorldPosition position3 = worldPosition;
             position3.SetVec2(worldPosition.AsVec2 + targetEntity.GetGlobalFrame().rotation.s.AsVec2.Normalized() * 3f);
-            if (scene.DoesPathExistBetweenPositions(position3, formation.QuerySystem.MedianPosition))
+            if (scene.DoesPathExistBetweenPositions(position3, formation.CachedMedianPosition))
                 return position3;
             WorldPosition position4 = worldPosition;
             position4.SetVec2(worldPosition.AsVec2 - targetEntity.GetGlobalFrame().rotation.s.AsVec2.Normalized() * 3f);
-            return scene.DoesPathExistBetweenPositions(position4, formation.QuerySystem.MedianPosition) ? position4 : position1;
+            return scene.DoesPathExistBetweenPositions(position4, formation.CachedMedianPosition) ? position4 : position1;
         }
 
-        public static void FillOrderLookingAtPosition(OrderInQueue order, OrderController orderController, MissionScreen missionScreen)
+        public static void FillOrderLookingAtPosition(OrderInQueue order, OrderController orderController, WorldPosition position)
         {
             var selectedFormations = orderController.SelectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
             var formationsWithLocking = new List<Formation> { };
@@ -2172,7 +2187,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 SimulateNewFacingOrderWithLockingFormations(formationsWithLocking,
                     orderController.simulationFormations,
-                    OrderController.GetOrderLookAtDirection(selectedFormations, missionScreen.GetOrderFlagPosition().AsVec2),
+                    OrderController.GetOrderLookAtDirection(selectedFormations, position.AsVec2),
                     false,
                     out _,
                     true,
@@ -2187,10 +2202,10 @@ namespace RTSCamera.CommandSystem.Patch
             }
             if (formationsWithoutLocking.Count > 0)
             {
-                order.PositionBegin = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false);
+                order.PositionBegin = position;
                 SimulateNewFacingOrderWithoutLockingFormations(formationsWithoutLocking,
                     orderController.simulationFormations,
-                    OrderController.GetOrderLookAtDirection(selectedFormations, missionScreen.GetOrderFlagPosition().AsVec2),
+                    OrderController.GetOrderLookAtDirection(selectedFormations, position.AsVec2),
                     false,
                     out _,
                     true,
@@ -2612,22 +2627,32 @@ namespace RTSCamera.CommandSystem.Patch
                     _simulationFormationTemp.SetValue(null, new Formation((Team)null, -1));
                 simulationFormation = (Formation)_simulationFormationTemp.GetValue(null);
             }
+            WorldPosition worldPosition;
+            Vec3 vec3;
             Vec2 direction;
             var oldArrangementType = Utilities.Utility.GetTypeOfArrangement(oldArrangementOrder, true);
             if (simulationFormation.UnitSpacing == unitSpacing && /*(double)MathF.Abs((float)((double)simulationFormation.Width - (double)width + 9.9999997473787516E-06)) < (double)simulationFormation.Interval + (double)simulationFormation.UnitDiameter - 9.9999997473787516E-06 &&*/ simulationFormation.OrderPositionIsValid && simulationFormation.OrderGroundPosition.NearlyEquals(formationPosition.GetGroundVec3(), 0.1f))
             {
-                direction = simulationFormation.Direction;
-                var newArrangementType = newArrangementOrder == null ? null : Utilities.Utility.GetTypeOfArrangement(newArrangementOrder.Value, true);
-                var simulationFormationArrangementType = simulationFormation.Arrangement.GetType();
-                var simulationFormationArrangementOrderType = Utilities.Utility.GetTypeOfArrangement(simulationFormation.ArrangementOrder.OrderEnum, true);
-                if (direction.NearlyEquals(formationDirection, 0.1f))
+                Vec3 orderGroundPosition = simulationFormation.OrderGroundPosition;
+                ref Vec3 local1 = ref orderGroundPosition;
+                worldPosition = formationPosition;
+                vec3 = worldPosition.GetGroundVec3();
+                ref Vec3 local2 = ref vec3;
+                if (local1.NearlyEquals(in local2, 0.1f))
                 {
-                    if (simulationFormationArrangementType == arrangement.GetType())
-                        goto label_1;
-                    else if (direction.NearlyEquals(formationDirection, 0.1f) && simulationFormationArrangementType == oldArrangementType && simulationFormationArrangementOrderType == oldArrangementType)
-                        goto label_2;
-                    else if (direction.NearlyEquals(formationDirection, 0.1f) && newArrangementOrder != null && simulationFormationArrangementType == newArrangementType && simulationFormationArrangementOrderType == newArrangementType)
-                        goto label_3;
+                    direction = simulationFormation.Direction;
+                    var newArrangementType = newArrangementOrder == null ? null : Utilities.Utility.GetTypeOfArrangement(newArrangementOrder.Value, true);
+                    var simulationFormationArrangementType = simulationFormation.Arrangement.GetType();
+                    var simulationFormationArrangementOrderType = Utilities.Utility.GetTypeOfArrangement(simulationFormation.ArrangementOrder.OrderEnum, true);
+                    if (direction.NearlyEquals(formationDirection, 0.1f))
+                    {
+                        if (simulationFormationArrangementType == arrangement.GetType())
+                            goto label_1;
+                        else if (direction.NearlyEquals(formationDirection, 0.1f) && simulationFormationArrangementType == oldArrangementType && simulationFormationArrangementOrderType == oldArrangementType)
+                            goto label_2;
+                        else if (direction.NearlyEquals(formationDirection, 0.1f) && newArrangementOrder != null && simulationFormationArrangementType == newArrangementType && simulationFormationArrangementOrderType == newArrangementType)
+                            goto label_3;
+                    }
                 }
             }
             _overridenHasAnyMountedUnit.SetValue(simulationFormation, new bool?(isMounted));
@@ -2646,20 +2671,34 @@ namespace RTSCamera.CommandSystem.Patch
             simulationFormation.Arrangement.DeepCopyFrom(arrangement);
             //simulationFormation.Arrangement.Width = width;
             _simulationFormationUniqueIdentifier.SetValue(null, index);
+            if (arrangement is ColumnFormation columnFormation && arrangement.RankCount > 1)
+            {
+                vec3 = (arrangement.GetUnit(columnFormation.VanguardFileIndex, 0) as Agent).Position;
+                Vec2 asVec2_1 = vec3.AsVec2;
+                vec3 = (arrangement.GetUnit(columnFormation.VanguardFileIndex, 1) as Agent).Position;
+                Vec2 asVec2_2 = vec3.AsVec2;
+                direction = asVec2_1 - asVec2_2;
+                Vec2 previousDirection = direction.Normalized();
+                worldPosition = formationPosition;
+                direction = worldPosition.AsVec2 - asVec2_1;
+                Vec2 vec2_2 = direction.Normalized();
+                if (arrangement.IsTurnBackwardsNecessary(asVec2_1, new WorldPosition?(formationPosition), previousDirection, true, new Vec2?(vec2_2)))
+                    (simulationFormation.Arrangement as ColumnFormation).UnitPositionsOnVanguardFileIndex.Reverse();
+            }
         label_1:
             //if (arrangement.GetType() != oldArrangementType)
             {
-                _arrangementOrder.SetValue(simulationFormation, formation.ArrangementOrder);
-                simulationFormation.ArrangementOrder = Utilities.Utility.GetArrangementOrder(oldArrangementOrder);
+                ArrangementOrderProperty.SetValue(simulationFormation, formation.ArrangementOrder);
+                simulationFormation.SetArrangementOrder(Utilities.Utility.GetArrangementOrder(oldArrangementOrder));
                 simulationFormation.SetPositioning(unitSpacing: new int?(unitSpacing));
-                simulationFormation.FormOrder = FormOrder.FormOrderCustom(width);
+                simulationFormation.SetFormOrder(FormOrder.FormOrderCustom(width));
             }
         label_2:
             if (newArrangementOrder != null)
             {
-                simulationFormation.ArrangementOrder = Utilities.Utility.GetArrangementOrder(newArrangementOrder.Value);
+                simulationFormation.SetArrangementOrder(Utilities.Utility.GetArrangementOrder(newArrangementOrder.Value));
                 simulationFormation.SetPositioning(unitSpacing: new int?(unitSpacing));
-                simulationFormation.FormOrder = FormOrder.FormOrderCustom(width);
+                simulationFormation.SetFormOrder(FormOrder.FormOrderCustom(width));
             }
         label_3:
             newWidth = simulationFormation.Width;
@@ -2731,7 +2770,7 @@ namespace RTSCamera.CommandSystem.Patch
                         switch (Utilities.Utility.MovementStateFromMovementOrderType(orderType))
                         {
                             case MovementOrder.MovementStateEnum.Charge:
-                                 __result = orderType == OrderType.GuardMe ? OrderType.GuardMe : OrderType.Charge;
+                                 __result = OrderType.Charge;
                                 return false;
                             case MovementOrder.MovementStateEnum.Hold:
                                 switch (orderType)

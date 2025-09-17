@@ -4,6 +4,7 @@ using RTSCamera.CommandSystem.Logic;
 using System;
 using System.Reflection;
 using TaleWorlds.MountAndBlade;
+using static TaleWorlds.MountAndBlade.ArrangementOrder;
 
 namespace RTSCamera.CommandSystem.Patch
 {
@@ -19,29 +20,45 @@ namespace RTSCamera.CommandSystem.Patch
                     return false;
                 _patched = true;
 
-                var distanceInterfaceMethod = typeof(IFormation).GetProperty(nameof(IFormation.MinimumDistance), BindingFlags.Instance | BindingFlags.Public)
+                var minimumDistanceInterfaceMethod = typeof(IFormation).GetProperty(nameof(IFormation.MinimumDistance), BindingFlags.Instance | BindingFlags.Public)
                         .GetMethod;
-                var distanceMap = typeof(Formation).GetInterfaceMap(distanceInterfaceMethod.DeclaringType);
-                var distanceIndex = Array.IndexOf(distanceMap.InterfaceMethods, distanceInterfaceMethod);
-                var distanceTargetMethod = distanceMap.TargetMethods[distanceIndex];
-                var intervalInterfaceMethod = typeof(IFormation).GetProperty(nameof(IFormation.MinimumInterval), BindingFlags.Instance | BindingFlags.Public)
+                var minimumDistanceMap = typeof(Formation).GetInterfaceMap(minimumDistanceInterfaceMethod.DeclaringType);
+                var minimumDistanceIndex = Array.IndexOf(minimumDistanceMap.InterfaceMethods, minimumDistanceInterfaceMethod);
+                var minimumDistanceTargetMethod = minimumDistanceMap.TargetMethods[minimumDistanceIndex];
+                var maximumDistanceInterfaceMethod = typeof(IFormation).GetProperty(nameof(IFormation.MaximumDistance), BindingFlags.Instance | BindingFlags.Public)
                         .GetMethod;
-                var intervalMap = typeof(Formation).GetInterfaceMap(intervalInterfaceMethod.DeclaringType);
-                var intervalIndex = Array.IndexOf(intervalMap.InterfaceMethods, intervalInterfaceMethod);
-                var intervalTargetMethod = intervalMap.TargetMethods[intervalIndex];
-                harmony.Patch(distanceTargetMethod,
+                var maximumDistanceMap = typeof(Formation).GetInterfaceMap(maximumDistanceInterfaceMethod.DeclaringType);
+                var maximumDistanceIndex = Array.IndexOf(maximumDistanceMap.InterfaceMethods, maximumDistanceInterfaceMethod);
+                var maximumDistanceTargetMethod = maximumDistanceMap.TargetMethods[maximumDistanceIndex];
+                var minimumIntervalInterfaceMethod = typeof(IFormation).GetProperty(nameof(IFormation.MinimumInterval), BindingFlags.Instance | BindingFlags.Public)
+                        .GetMethod;
+                var minimumIntervalMap = typeof(Formation).GetInterfaceMap(minimumIntervalInterfaceMethod.DeclaringType);
+                var minimumIntervalIndex = Array.IndexOf(minimumIntervalMap.InterfaceMethods, minimumIntervalInterfaceMethod);
+                var minimumIntervalTargetMethod = minimumIntervalMap.TargetMethods[minimumIntervalIndex];
+                var maximumIntervalInterfaceMethod = typeof(IFormation).GetProperty(nameof(IFormation.MaximumInterval), BindingFlags.Instance | BindingFlags.Public)
+                        .GetMethod;
+                var maximumIntervalMap = typeof(Formation).GetInterfaceMap(maximumIntervalInterfaceMethod.DeclaringType);
+                var maximumIntervalIndex = Array.IndexOf(maximumIntervalMap.InterfaceMethods, maximumIntervalInterfaceMethod);
+                var maximumIntervalTargetMethod = maximumIntervalMap.TargetMethods[maximumIntervalIndex];
+                harmony.Patch(minimumDistanceTargetMethod,
                     prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
                         nameof(Prefix_MinimumDistance), BindingFlags.Static | BindingFlags.Public)));
-                harmony.Patch(intervalTargetMethod,
+                harmony.Patch(maximumDistanceTargetMethod,
+                    prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
+                        nameof(Prefix_MaximumDistance), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(minimumIntervalTargetMethod,
                     prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
                         nameof(Prefix_MinimumInterval), BindingFlags.Static | BindingFlags.Public)));
-
-
-                harmony.Patch(
-                    typeof(Formation).GetMethod("TransformCustomWidthBetweenArrangementOrientations",
-                    BindingFlags.Static | BindingFlags.NonPublic),
+                harmony.Patch(maximumIntervalTargetMethod,
                     prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
-                        nameof(Prefix_TransformCustomWidthBetweenArrangementOrientations), BindingFlags.Static | BindingFlags.Public)));
+                        nameof(Prefix_MaximumInterval), BindingFlags.Static | BindingFlags.Public)));
+
+
+                //harmony.Patch(
+                //    typeof(Formation).GetMethod("TransformCustomWidthBetweenArrangementOrientations",
+                //    BindingFlags.Static | BindingFlags.NonPublic),
+                //    prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
+                //        nameof(Prefix_TransformCustomWidthBetweenArrangementOrientations), BindingFlags.Static | BindingFlags.Public)));
 
                 // Command Queue
                 harmony.Patch(
@@ -70,7 +87,22 @@ namespace RTSCamera.CommandSystem.Patch
         {
             try
             {
-                __result = Formation.GetDefaultMinimumDistance(__instance.CalculateHasSignificantNumberOfMounted && !(__instance.RidingOrder == RidingOrder.RidingOrderDismount));
+                __result = Formation.GetDefaultMinimumUnitDistance(__instance.CalculateHasSignificantNumberOfMounted && !(__instance.RidingOrder == RidingOrder.RidingOrderDismount));
+                return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Utility.DisplayMessage(e.ToString());
+            }
+            return true;
+        }
+
+        public static bool Prefix_MaximumDistance(Formation __instance, ref float __result)
+        {
+            try
+            {
+                __result = Formation.GetDefaultUnitDistance(__instance.CalculateHasSignificantNumberOfMounted && !(__instance.RidingOrder == RidingOrder.RidingOrderDismount), GetUnitSpacingOf(__instance.ArrangementOrder.OrderEnum));
                 return false;
             }
             catch (Exception e)
@@ -86,7 +118,22 @@ namespace RTSCamera.CommandSystem.Patch
         {
             try
             {
-                __result = Formation.GetDefaultMinimumInterval(__instance.CalculateHasSignificantNumberOfMounted && !(__instance.RidingOrder == RidingOrder.RidingOrderDismount));
+                __result = Formation.GetDefaultMinimumUnitInterval(__instance.CalculateHasSignificantNumberOfMounted && !(__instance.RidingOrder == RidingOrder.RidingOrderDismount));
+                return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Utility.DisplayMessage(e.ToString());
+            }
+            return true;
+        }
+
+        public static bool Prefix_MaximumInterval(Formation __instance, ref float __result)
+        {
+            try
+            {
+                __result = Formation.GetDefaultUnitInterval(__instance.CalculateHasSignificantNumberOfMounted && !(__instance.RidingOrder == RidingOrder.RidingOrderDismount), GetUnitSpacingOf(__instance.ArrangementOrder.OrderEnum));
                 return false;
             }
             catch (Exception e)
@@ -100,27 +147,27 @@ namespace RTSCamera.CommandSystem.Patch
         // Fix the problem that switch from circle arrangement to line arrangement, the width becomes PI times larger than it should be.
         // Because for circle arrangement, the flank width is the circumference, and width is the diameter.
         // flank width is passed in, and we should convert it to diameter and set it as the width of line formation.
-        public static bool Prefix_TransformCustomWidthBetweenArrangementOrientations(ArrangementOrder.ArrangementOrderEnum orderTypeOld, ArrangementOrder.ArrangementOrderEnum orderTypeNew, float currentCustomWidth, ref float __result)
-        {
-            if (orderTypeOld == ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Column)
-            {
-                __result = (float)(currentCustomWidth / Math.PI);
-                return false;
-                //return true;
-            }
-            else if (orderTypeOld == ArrangementOrder.ArrangementOrderEnum.Square && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Square && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Column)
-            {
-                __result = currentCustomWidth / 4f;
-                return false;
-            }
-            else if (orderTypeOld != ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew == ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeOld != ArrangementOrder.ArrangementOrderEnum.Column)
-            {
-                //__result = (float)(currentCustomWidth / Math.PI);
-                //return false;
-                return true;
-            }
-            return true;
-        }
+        //public static bool Prefix_TransformCustomWidthBetweenArrangementOrientations(ArrangementOrder.ArrangementOrderEnum orderTypeOld, ArrangementOrder.ArrangementOrderEnum orderTypeNew, float currentCustomWidth, ref float __result)
+        //{
+        //    if (orderTypeOld == ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Column)
+        //    {
+        //        __result = (float)(currentCustomWidth / Math.PI);
+        //        return false;
+        //        //return true;
+        //    }
+        //    else if (orderTypeOld == ArrangementOrder.ArrangementOrderEnum.Square && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Square && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Column)
+        //    {
+        //        __result = currentCustomWidth / 4f;
+        //        return false;
+        //    }
+        //    else if (orderTypeOld != ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeNew == ArrangementOrder.ArrangementOrderEnum.Circle && orderTypeOld != ArrangementOrder.ArrangementOrderEnum.Column)
+        //    {
+        //        //__result = (float)(currentCustomWidth / Math.PI);
+        //        //return false;
+        //        return true;
+        //    }
+        //    return true;
+        //}
 
         public static bool Prefix_Tick(Formation __instance, float dt)
         {
@@ -139,7 +186,7 @@ namespace RTSCamera.CommandSystem.Patch
                 __instance.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Circle ||
                 __instance.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Square)
             {
-                __instance.FormOrder = formOrder;
+                __instance.SetFormOrder(formOrder, false);
                 return false;
             }
             return true;

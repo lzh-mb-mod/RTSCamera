@@ -168,7 +168,7 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     if (Mission.PlayerTeam.PlayerOrderController.IsFormationSelectable(formation) && !formation.IsAIControlled && formation.PlayerOwner != null && formation.PlayerOwner == Mission.MainAgent)
                     {
-                        formation.FacingOrder = FacingOrder.FacingOrderLookAtEnemy;
+                        formation.SetFacingOrder(FacingOrder.FacingOrderLookAtEnemy);
                     }
                 }
             }

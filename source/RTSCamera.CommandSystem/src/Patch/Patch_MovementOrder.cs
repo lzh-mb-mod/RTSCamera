@@ -15,7 +15,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 if (CommandSystemConfig.Get().BehaviorAfterCharge == BehaviorAfterCharge.Hold)
                 {
-                    var position = formation.QuerySystem.MedianPosition;
+                    var position = formation.CachedMedianPosition;
                     position.SetVec2(formation.CurrentPosition);
                     if (formation.Team == Mission.Current.PlayerTeam && formation.PlayerOwner == Agent.Main)
                     {

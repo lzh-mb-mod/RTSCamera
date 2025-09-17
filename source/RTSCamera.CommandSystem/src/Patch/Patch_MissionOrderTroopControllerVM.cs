@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Orders;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -51,29 +52,29 @@ namespace RTSCamera.CommandSystem.Patch
             OrderController orderController,
             MissionOrderVM ____missionOrder)
         {
-            CloseFacingOrderSet(____missionOrder);
+            //CloseFacingOrderSet(____missionOrder);
             DisableSelectTargetMode();
             return true;
         }
 
-        public static void CloseFacingOrderSet(MissionOrderVM missionOrderVM)
-        {
-            var orderSets = typeof(MissionOrderVM).GetField("OrderSetsWithOrdersByType", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(missionOrderVM) as Dictionary<OrderSetType, OrderSetVM>;
-            if (orderSets != null)
-            {
-                // hide facing orders
-                if (orderSets.ContainsKey(OrderSetType.Facing))
-                    orderSets[OrderSetType.Facing].ShowOrders = false;
-                // fix the issue that in legacy order layour type,
-                // after giving facing orders by clicking on ground and then press escape, the order UI cannot be closed.
-                if (missionOrderVM.LastSelectedOrderSetType == OrderSetType.Facing)
-                    missionOrderVM.LastSelectedOrderSetType = OrderSetType.None;
-            }
-        }
+        //public static void CloseFacingOrderSet(MissionOrderVM missionOrderVM)
+        //{
+        //    var orderSets = typeof(MissionOrderVM).GetField("OrderSetsWithOrdersByType", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(missionOrderVM) as Dictionary<OrderSetType, OrderSetVM>;
+        //    if (orderSets != null)
+        //    {
+        //        // hide facing orders
+        //        if (orderSets.ContainsKey(OrderSetType.Facing))
+        //            orderSets[OrderSetType.Facing].ShowOrders = false;
+        //        // fix the issue that in legacy order layour type,
+        //        // after giving facing orders by clicking on ground and then press escape, the order UI cannot be closed.
+        //        if (missionOrderVM.LastSelectedOrderSetType == OrderSetType.Facing)
+        //            missionOrderVM.LastSelectedOrderSetType = OrderSetType.None;
+        //    }
+        //}
 
         private static void DisableSelectTargetMode()
         {
-            Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
+            RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
         }
     }
 }

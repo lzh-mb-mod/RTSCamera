@@ -15,6 +15,7 @@ namespace RTSCamera.Patch.Fix
     { 
 
         public static bool AllowEscape = true;
+        public static bool EscapeRequested = false;
 
         private static bool _patched;
         public static bool Patch(Harmony harmony)
@@ -80,6 +81,7 @@ namespace RTSCamera.Patch.Fix
 
         public static bool Prefix_OnEscape(MissionOrderVM __instance)
         {
+            EscapeRequested = true;
             // Do nothing during draging camera using right mouse button.
             return AllowEscape;
             //if (!AllowEscape)

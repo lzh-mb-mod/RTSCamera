@@ -158,6 +158,25 @@ namespace RTSCamera.CommandSystem.Logic
             VirtualChanges[formation] = change;
         }
 
+        public void SetToggleOrder(OrderType orderType, IEnumerable<Formation> formations)
+        {
+            switch (orderType)
+            {
+                case OrderType.FireAtWill:
+                case OrderType.HoldFire:
+                    SetFiringOrder(orderType, formations);
+                    break;
+                case OrderType.Mount:
+                case OrderType.Dismount:
+                    SetRidingOrder(orderType, formations);
+                    break;
+                case OrderType.AIControlOn:
+                case OrderType.AIControlOff:
+                    SetAIControlOrder(orderType, formations);
+                    break;
+            }
+        }
+
         public void SetFiringOrder(OrderType orderType, IEnumerable<Formation> formations)
         {
             foreach (var formation in formations)

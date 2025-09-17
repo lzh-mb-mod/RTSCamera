@@ -6,6 +6,7 @@ using MissionSharedLibrary.View.ViewModelCollection.Options;
 using MissionSharedLibrary.View.ViewModelCollection.Options.Selection;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
+using RTSCamera.CommandSystem.Orders;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.View;
 using System;
@@ -171,7 +172,7 @@ namespace RTSCamera.CommandSystem.Config
                         CommandSystemConfig.Get().OrderUIClickableExtension = b;
                         if (!b)
                         {
-                            Patch_MissionOrderVM.OrderToSelectTarget = TaleWorlds.MountAndBlade.ViewModelCollection.Order.OrderSubType.None;
+                            RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
                         }
                     }));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(

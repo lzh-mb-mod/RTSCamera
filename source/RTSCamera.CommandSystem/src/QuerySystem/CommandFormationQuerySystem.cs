@@ -79,7 +79,7 @@ namespace RTSCamera.CommandSystem.QuerySystem
                             if (enemyFormation.CountOfUnits > 0)
                             {
                                 Patch_OrderController.GetFormationMovingTargetForPreview(formation, out var medianPosition);
-                                float currentDistance = enemyFormation.QuerySystem.MedianPosition.GetNavMeshVec3().DistanceSquared((medianPosition ?? formation.QuerySystem.MedianPosition).GetNavMeshVec3());
+                                float currentDistance = enemyFormation.CachedMedianPosition.GetNavMeshVec3().DistanceSquared((medianPosition ?? formation.CachedMedianPosition).GetNavMeshVec3());
                                 if (currentDistance < minDistance)
                                 {
                                     minDistance = currentDistance;
@@ -103,7 +103,7 @@ namespace RTSCamera.CommandSystem.QuerySystem
                         foreach (Agent agent in (List<Agent>)team.ActiveAgents)
                         {
                             Patch_OrderController.GetFormationMovingTargetForPreview(formation, out var medianPosition);
-                            float currentDistance = agent.Position.DistanceSquared((medianPosition ?? formation.QuerySystem.MedianPosition).GetNavMeshVec3());
+                            float currentDistance = agent.Position.DistanceSquared((medianPosition ?? formation.CachedMedianPosition).GetNavMeshVec3());
                             if ((double)currentDistance < (double)minDistance)
                             {
                                 minDistance = currentDistance;

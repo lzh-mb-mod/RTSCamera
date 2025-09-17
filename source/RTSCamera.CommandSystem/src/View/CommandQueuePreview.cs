@@ -327,7 +327,7 @@ namespace RTSCamera.CommandSystem.View
                 case MovementOrder.MovementStateEnum.Charge:
                 case MovementOrder.MovementStateEnum.Hold:
                 case MovementOrder.MovementStateEnum.StandGround:
-                    return formation.QuerySystem.MedianPosition.GetGroundVec3();
+                    return formation.CachedMedianPosition.GetGroundVec3();
                 case MovementOrder.MovementStateEnum.Retreat:
                 default:
                     return Vec3.Invalid;
@@ -496,7 +496,7 @@ namespace RTSCamera.CommandSystem.View
                         }
                         if (targetFormation == null)
                             return false;
-                        var targetPosition = targetFormation.QuerySystem.MedianPosition;
+                        var targetPosition = targetFormation.CachedMedianPosition;
                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
                         break;
                     }
@@ -536,7 +536,7 @@ namespace RTSCamera.CommandSystem.View
                         var missionObject = targetEntity as MissionObject;
                         if (missionObject == null)
                             return false;
-                        var gameEntity = missionObject.GameEntity;
+                        var gameEntity = GameEntity.CreateFromWeakEntity(missionObject.GameEntity);
                         if (isPendingOrder)
                         {
                             gameEntity = formation.GetReadonlyMovementOrderReference().TargetEntity;
@@ -620,7 +620,7 @@ namespace RTSCamera.CommandSystem.View
                                         // formation position can only be set after getting the direction because position will affect result of facing enemy direction.
                                         if (order.TargetFormation != null)
                                         {
-                                            var targetPosition = order.TargetFormation.QuerySystem.MedianPosition;
+                                            var targetPosition = order.TargetFormation.CachedMedianPosition;
                                             Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
                                         }
                                         else
@@ -650,7 +650,7 @@ namespace RTSCamera.CommandSystem.View
                     {
                         if (order.TargetFormation == null)
                             return null;
-                        var targetPosition = order.TargetFormation.QuerySystem.MedianPosition;
+                        var targetPosition = order.TargetFormation.CachedMedianPosition;
                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
                         UpdateFacingOrderForOtherOrder(facingOrder, formation, virtualFacingDirection);
                         return CollectOrderPreviewData(formation, false, OrderTargetType.Focus);
@@ -933,7 +933,7 @@ namespace RTSCamera.CommandSystem.View
                 // the preview will be included in pended order so we don't need to include it here.
                 return null;
             }
-            var targetPosition = formation.TargetFormation.QuerySystem.MedianPosition;
+            var targetPosition = formation.TargetFormation.CachedMedianPosition;
             Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
             return CollectOrderPreviewData(formation, false, OrderTargetType.Focus);
         }
@@ -945,7 +945,7 @@ namespace RTSCamera.CommandSystem.View
                 var targetFacingEnemy = Patch_OrderController.GetFacingEnemyTargetFormation(formation);
                 if (targetFacingEnemy != null)
                 {
-                    var targetPosition1 = targetFacingEnemy.QuerySystem.MedianPosition;
+                    var targetPosition1 = targetFacingEnemy.CachedMedianPosition;
                     Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition1, null, null, null);
                     return CollectOrderPreviewData(formation, false, OrderTargetType.Facing);
                 }

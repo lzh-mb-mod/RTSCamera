@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.Config;
+using RTSCamera.Logic;
 using System;
 using System.Reflection;
 using TaleWorlds.Engine.GauntletUI;
@@ -166,6 +168,32 @@ namespace RTSCamera.Patch.Fix
             //    }
             //}
         }
+        private static void UpdateOrderUIVisibility(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
+        {
+            // TODO: don't close the order ui and open it again.
+            // Keep orders UI open after issuing an order in free camera mode.
+            
+            if (____dataSource.IsToggleOrderShown)
+            {
+                Patch_MissionOrderVM.EscapeRequested = false;
+            }
+            if (Patch_MissionOrderVM.EscapeRequested)
+            {
+                return;
+            }
+            if (!____dataSource.IsToggleOrderShown && !____dataSource.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
+            {
+                ____dataSource.OpenToggleOrder(false);
+                var orderTroopPlacer = Mission.Current.GetMissionBehavior<OrderTroopPlacer>();
+                if (orderTroopPlacer != null)
+                {
+                    typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .Invoke(orderTroopPlacer, null);
+                }
+            }
+        }
+
+
 
         private static void UpdateDragData(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, OrderTroopPlacer ____orderTroopPlacer)
         {
@@ -205,6 +233,7 @@ namespace RTSCamera.Patch.Fix
         {
             UpdateDragData(__instance, ____dataSource, ____orderTroopPlacer);
             UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer);
+            UpdateOrderUIVisibility(__instance, ____dataSource, ____gauntletLayer);
             //return true;
         }
 

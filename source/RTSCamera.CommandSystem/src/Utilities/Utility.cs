@@ -3,6 +3,7 @@ using NetworkMessages.FromClient;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
+using RTSCamera.CommandSystem.Orders.VisualOrders;
 using RTSCamera.CommandSystem.Patch;
 using System;
 using System.Collections.Generic;
@@ -146,8 +147,6 @@ namespace RTSCamera.CommandSystem.Utilities
 
         private static TextObject GetOrderString(OrderInQueue order)
         {
-            var stringIdOn = "str_order_name_on";
-            var stringIdOff = "str_order_name_off";
             var stringId = "str_order_name";
             string variation = null;
             switch (order.CustomOrderType)
@@ -159,25 +158,16 @@ namespace RTSCamera.CommandSystem.Utilities
                             case OrderType.MoveToLineSegment:
                             case OrderType.MoveToLineSegmentWithHorizontalLayout:
                             case OrderType.Move:
-                                {
-                                    variation = nameof(OrderSubType.MoveToPosition);
-                                    break;
-                                }
+                                return RTSCommandMoveVisualOrder.GetName();
                             case OrderType.Charge:
                             case OrderType.ChargeWithTarget:
-                                variation = nameof(OrderSubType.Charge);
-                                break;
+                                return RTSCommandChargeVisualOrder.GetName();
                             case OrderType.LookAtDirection:
-                                stringId = stringIdOn;
-                                variation = nameof(OrderSubType.ToggleFacing);
-                                break;
+                                return RTSCommandToggleFacingVisualOrder.GetName(order.OrderType);
                             case OrderType.LookAtEnemy:
-                                stringId = stringIdOff;
-                                variation = nameof(OrderSubType.ToggleFacing);
-                                break;
+                                return RTSCommandToggleFacingVisualOrder.GetName(order.OrderType);
                             case OrderType.FollowMe:
-                                variation = nameof(OrderSubType.FollowMe);
-                                break;
+                                return RTSCommandFollowMeVisualOrder.GetName();
                             case OrderType.FollowEntity:
                                 stringId = "str_rts_camera_command_system_follow_entity";
                                 break;
@@ -188,65 +178,29 @@ namespace RTSCamera.CommandSystem.Utilities
                                 stringId = "str_rts_camera_command_system_point_defense";
                                 break;
                             case OrderType.Advance:
-                                variation = nameof(OrderSubType.Advance);
-                                break;
+                                return RTSCommandAdvanceVisualOrder.GetName();
                             case OrderType.FallBack:
-                                variation = nameof(OrderSubType.Fallback);
-                                break;
+                                return RTSCommandFallbackVisualOrder.GetName();
                             case OrderType.StandYourGround:
-                                variation = nameof(OrderSubType.Stop);
-                                break;
+                                return RTSCommandStopVisualOrder.GetName();
                             case OrderType.Retreat:
-                                variation = nameof(OrderSubType.Retreat);
-                                break;
+                                return RTSCommandRetreatVisualOrder.GetName();
                             case OrderType.ArrangementLine:
-                                variation = nameof(OrderSubType.FormLine);
-                                break;
                             case OrderType.ArrangementCloseOrder:
-                                variation = nameof(OrderSubType.FormClose);
-                                break;
                             case OrderType.ArrangementLoose:
-                                variation = nameof(OrderSubType.FormLoose);
-                                break;
                             case OrderType.ArrangementCircular:
-                                variation = nameof(OrderSubType.FormCircular);
-                                break;
                             case OrderType.ArrangementSchiltron:
-                                variation = nameof(OrderSubType.FormSchiltron);
-                                break;
                             case OrderType.ArrangementVee:
-                                variation = nameof(OrderSubType.FormV);
-                                break;
                             case OrderType.ArrangementColumn:
-                                variation = nameof(OrderSubType.FormColumn);
-                                break;
                             case OrderType.ArrangementScatter:
-                                variation = nameof(OrderSubType.FormScatter);
-                                break;
+                                return RTSCommandArrangementVisualOrder.GetName(OrderTypeToArrangementOrderEnum(order.OrderType));
                             case OrderType.FireAtWill:
-                                stringId = stringIdOn;
-                                variation = nameof(OrderSubType.ToggleFire);
-                                break;
                             case OrderType.HoldFire:
-                                stringId = stringIdOff;
-                                variation = nameof(OrderSubType.ToggleFire);
-                                break;
                             case OrderType.Mount:
-                                stringId = stringIdOn;
-                                variation = nameof(OrderSubType.ToggleMount);
-                                break;
                             case OrderType.Dismount:
-                                stringId = stringIdOff;
-                                variation = nameof(OrderSubType.ToggleMount);
-                                break;
                             case OrderType.AIControlOn:
-                                stringId = stringIdOn;
-                                variation = nameof(OrderSubType.ToggleAI);
-                                break;
                             case OrderType.AIControlOff:
-                                stringId = stringIdOff;
-                                variation = nameof(OrderSubType.ToggleAI);
-                                break;
+                                return RTSCommandGenericToggleVisualOrder.GetName(order.OrderType);
                             default:
                                 MissionSharedLibrary.Utilities.Utility.DisplayMessage("Error: unexpected order type");
                                 break;
@@ -254,8 +208,7 @@ namespace RTSCamera.CommandSystem.Utilities
                         break;
                     }
                 case CustomOrderType.FollowMainAgent:
-                    variation = nameof(OrderSubType.FollowMe);
-                    break;
+                    return RTSCommandFollowMeVisualOrder.GetName();
                 case CustomOrderType.SetTargetFormation:
                     var orderMessage = GameTexts.FindText("str_rts_camera_command_system_defensive_attack");
                     orderMessage.SetTextVariable("TARGET_NAME", GameTexts.FindText("str_troop_group_name", ((int)order.TargetFormation.PhysicalClass).ToString()));
@@ -401,7 +354,7 @@ namespace RTSCamera.CommandSystem.Utilities
                         {
                             var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
                             bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
-                            return queueCommand ? Patch_OrderController.GetFormationVirtualPosition(formation) : formation.QuerySystem.MedianPosition;
+                            return queueCommand ? Patch_OrderController.GetFormationVirtualPosition(formation) : formation.CachedMedianPosition;
                         }
                     case OrderType.Advance:
                         {
@@ -415,7 +368,7 @@ namespace RTSCamera.CommandSystem.Utilities
                     case OrderType.AttackEntity:
                         {
                             var missionObject = formationChange.TargetEntity as MissionObject;
-                            var gameEntity = missionObject.GameEntity;
+                            var gameEntity = GameEntity.CreateFromWeakEntity(missionObject.GameEntity);
                             return Patch_OrderController.GetAttackEntityWaitPosition(formation, gameEntity);
                         }
                     case OrderType.FollowMe:
@@ -487,7 +440,6 @@ namespace RTSCamera.CommandSystem.Utilities
             {
                 case OrderType.Charge:
                 case OrderType.ChargeWithTarget:
-                case OrderType.GuardMe:
                     return MovementOrder.MovementStateEnum.Charge;
                 case OrderType.Retreat:
                     return MovementOrder.MovementStateEnum.Retreat;
@@ -526,44 +478,60 @@ namespace RTSCamera.CommandSystem.Utilities
             return ArrangementOrderEnum.Line;
         }
 
-         public static ArrangementOrder GetArrangementOrder(ArrangementOrder.ArrangementOrderEnum arrangementOrder)
+         public static ArrangementOrder GetArrangementOrder(ArrangementOrderEnum arrangementOrder)
         {
             switch (arrangementOrder)
             {
-                case ArrangementOrder.ArrangementOrderEnum.Line:
+                case ArrangementOrderEnum.Line:
                     return ArrangementOrder.ArrangementOrderLine;
-                case ArrangementOrder.ArrangementOrderEnum.ShieldWall:
+                case ArrangementOrderEnum.ShieldWall:
                     return ArrangementOrder.ArrangementOrderShieldWall;
-                case ArrangementOrder.ArrangementOrderEnum.Loose:
+                case ArrangementOrderEnum.Loose:
                     return ArrangementOrder.ArrangementOrderLoose;
-                case ArrangementOrder.ArrangementOrderEnum.Circle:
+                case ArrangementOrderEnum.Circle:
                     return ArrangementOrder.ArrangementOrderCircle;
-                case ArrangementOrder.ArrangementOrderEnum.Square:
+                case ArrangementOrderEnum.Square:
                     return ArrangementOrder.ArrangementOrderSquare;
-                case ArrangementOrder.ArrangementOrderEnum.Skein:
+                case ArrangementOrderEnum.Skein:
                     return ArrangementOrder.ArrangementOrderSkein;
-                case ArrangementOrder.ArrangementOrderEnum.Column:
+                case ArrangementOrderEnum.Column:
                     return ArrangementOrder.ArrangementOrderColumn;
-                case ArrangementOrder.ArrangementOrderEnum.Scatter:
+                case ArrangementOrderEnum.Scatter:
                     return ArrangementOrder.ArrangementOrderScatter;
             }
 
             return ArrangementOrder.ArrangementOrderLine;
         }
 
-        public static OrderType ArrangementOrderEnumToOrderType(ArrangementOrder.ArrangementOrderEnum arrangementOrder)
+        public static OrderType ArrangementOrderEnumToOrderType(ArrangementOrderEnum arrangementOrder)
         {
             return arrangementOrder switch
             {
-                ArrangementOrder.ArrangementOrderEnum.Line => OrderType.ArrangementLine,
-                ArrangementOrder.ArrangementOrderEnum.ShieldWall => OrderType.ArrangementCloseOrder,
-                ArrangementOrder.ArrangementOrderEnum.Loose => OrderType.ArrangementLoose,
-                ArrangementOrder.ArrangementOrderEnum.Circle => OrderType.ArrangementCircular,
-                ArrangementOrder.ArrangementOrderEnum.Square => OrderType.ArrangementSchiltron,
-                ArrangementOrder.ArrangementOrderEnum.Skein => OrderType.ArrangementVee,
-                ArrangementOrder.ArrangementOrderEnum.Column => OrderType.ArrangementColumn,
-                ArrangementOrder.ArrangementOrderEnum.Scatter => OrderType.ArrangementScatter,
+                ArrangementOrderEnum.Line => OrderType.ArrangementLine,
+                ArrangementOrderEnum.ShieldWall => OrderType.ArrangementCloseOrder,
+                ArrangementOrderEnum.Loose => OrderType.ArrangementLoose,
+                ArrangementOrderEnum.Circle => OrderType.ArrangementCircular,
+                ArrangementOrderEnum.Square => OrderType.ArrangementSchiltron,
+                ArrangementOrderEnum.Skein => OrderType.ArrangementVee,
+                ArrangementOrderEnum.Column => OrderType.ArrangementColumn,
+                ArrangementOrderEnum.Scatter => OrderType.ArrangementScatter,
                 _ => OrderType.None
+            };
+        }
+
+        public static ArrangementOrderEnum OrderTypeToArrangementOrderEnum(OrderType orderType)
+        {
+            return orderType switch
+            {
+                OrderType.ArrangementLine => ArrangementOrderEnum.Line,
+                OrderType.ArrangementCloseOrder => ArrangementOrderEnum.ShieldWall,
+                OrderType.ArrangementLoose => ArrangementOrderEnum.Loose,
+                OrderType.ArrangementCircular => ArrangementOrderEnum.Circle,
+                OrderType.ArrangementSchiltron => ArrangementOrderEnum.Square,
+                OrderType.ArrangementVee => ArrangementOrderEnum.Skein,
+                OrderType.ArrangementColumn => ArrangementOrderEnum.Column,
+                OrderType.ArrangementScatter => ArrangementOrderEnum.Scatter,
+                _ => ArrangementOrderEnum.Line
             };
         }
 
@@ -804,11 +772,9 @@ namespace RTSCamera.CommandSystem.Utilities
                 return;
             }
             var missionOrderVM = typeof(MissionGauntletSingleplayerOrderUIHandler).GetField("_dataSource", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(orderUIHandler) as MissionOrderVM;
-            var setTroopActiveOrders = typeof(MissionOrderTroopControllerVM).GetMethod("SetTroopActiveOrders", BindingFlags.Instance | BindingFlags.NonPublic);
             foreach (OrderTroopItemVM orderTroopItemVm in missionOrderVM.TroopController.TroopList.Where((item => item.IsSelected)))
-                setTroopActiveOrders.Invoke(missionOrderVM.TroopController, new object[] { orderTroopItemVm });
-            var setActiveOrders = typeof(MissionOrderVM).GetMethod("SetActiveOrders", BindingFlags.Instance | BindingFlags.NonPublic);
-            setActiveOrders.Invoke(missionOrderVM, new object[] { });
+                missionOrderVM.TroopController.SetTroopActiveOrders(orderTroopItemVm);
+            missionOrderVM.SetActiveOrders();
         }
 
         public static bool ShouldEnablePlayerOrderControllerPatchForFormation(IEnumerable<Formation> selectedFormations)

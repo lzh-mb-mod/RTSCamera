@@ -63,8 +63,8 @@ namespace RTSCamera.CommandSystem.Patch
             var newUnitSpacing = __instance.GetUnitSpacing();
             if (Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(formation) && formation.Arrangement.GetType() != Utilities.Utility.GetTypeOfArrangement(__instance.OrderEnum, Utilities.Utility.ShouldEnableHollowSquareFormationFor(formation)))
             {
-                AccessTools.Field(typeof(Formation), "_formOrder").SetValue(formation, FormOrder.FormOrderCustom(Patch_OrderController.GetFormationVirtualWidth(formation) ?? formation.Width));
-                AccessTools.Field(typeof(Formation), "_unitSpacing").SetValue(formation, Patch_OrderController.GetFormationVirtualUnitSpacing(formation) ?? newUnitSpacing);
+                AccessTools.Property(typeof(Formation), "FormOrder").SetValue(formation, FormOrder.FormOrderCustom(Patch_OrderController.GetFormationVirtualWidth(formation) ?? formation.Width));
+                AccessTools.Property(typeof(Formation), "UnitSpacing").SetValue(formation, Patch_OrderController.GetFormationVirtualUnitSpacing(formation) ?? newUnitSpacing);
             }
             else
             {
@@ -85,6 +85,19 @@ namespace RTSCamera.CommandSystem.Patch
                     agent.EnforceShieldUsage(shieldDirectionOfUnit);
                 }
                 agent.UpdateAgentProperties();
+                MovementOrder movementOrder1 = formation.GetReadonlyMovementOrderReference();
+                MovementOrder.MovementOrderEnum movementOrder2 = movementOrder1.OrderEnum;
+                switch (movementOrder2)
+                {
+                    case MovementOrder.MovementOrderEnum.Charge:
+                    case MovementOrder.MovementOrderEnum.ChargeToTarget:
+                        if (movementOrder1.GetPosition(formation).IsValid)
+                        {
+                            movementOrder2 = MovementOrder.MovementOrderEnum.Move;
+                            break;
+                        }
+                        break;
+                }
                 agent.RefreshBehaviorValues(formation.GetReadonlyMovementOrderReference().OrderEnum, orderEnum);
             }));
             return false;

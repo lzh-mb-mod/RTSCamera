@@ -52,7 +52,7 @@ namespace RTSCamera.CommandSystem.CampaignGame
         }
         public static Hero GetHeroForTacticLevel()
         {
-            return Campaign.Current?.MainParty?.GetEffectiveRoleHolder(SkillEffect.PerkRole.PartyLeader) ??
+            return Campaign.Current?.MainParty?.GetEffectiveRoleHolder(PartyRole.PartyLeader) ??
                    (Game.Current?.PlayerTroop == null ? null : Hero.MainHero);
         }
     }

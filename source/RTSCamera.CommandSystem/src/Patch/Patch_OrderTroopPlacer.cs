@@ -7,6 +7,7 @@ using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Logic.SubLogic;
+using RTSCamera.CommandSystem.Orders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,17 @@ using CursorState = TaleWorlds.MountAndBlade.View.MissionViews.Order.OrderTroopP
 
 namespace RTSCamera.CommandSystem.Patch
 {
+    public enum CurrentCursorState
+    {
+        Invisible,
+        Normal,
+        Ground,
+        Rotation,
+        Count,
+        OrderableEntity,
+        Friend,
+        Enemy,
+    }
     public class Patch_OrderTroopPlacer
     {
         public static uint OrderPositionEntityColor = new Color(0.15f, 0.65f, 0.15f).ToUnsignedInteger();
@@ -37,8 +49,10 @@ namespace RTSCamera.CommandSystem.Patch
             typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_dataSource),
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
-        private static CursorState _currentCursorState = CursorState.Invisible;
-        private static UiQueryData<CursorState> _cachedCursorState;
+        private static bool _isInitialized = false;
+        private static CurrentCursorState _currentCursorState = CurrentCursorState.Invisible;
+        private static Formation _clickedFormation = null;
+        private static UiQueryData<CurrentCursorState> _cachedCursorState;
         private static FormationColorSubLogicV2 _outlineView;
         private static FormationColorSubLogicV2 _groundMarkerView;
         private static OrderTroopPlacer _orderTroopPlacer;
@@ -49,6 +63,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static List<GameEntity> _originalOrderPositionEntities;
         private static List<GameEntity> _newModelOrderPositionEntities;
         private static List<GameEntity> _alwaysVisibleOrderPositionEntities;
+        private static Material _currentMaterial;
         private static Material _originalMaterial;
         private static Material _newModelMaterial;
         private static Material _alwaysVisibleMaterial;
@@ -63,10 +78,10 @@ namespace RTSCamera.CommandSystem.Patch
                 _patched = true;
 
                 harmony.Patch(
-                    typeof(OrderTroopPlacer).GetMethod("InitializeInADisgustingManner",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    typeof(OrderTroopPlacer).GetMethod("OnMissionTick",
+                        BindingFlags.Instance | BindingFlags.Public),
                     postfix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(
-                        nameof(Postfix_InitializeInADisgustingManner), BindingFlags.Static | BindingFlags.Public)));
+                        nameof(Postfix_OnMissionTick), BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(
                     typeof(OrderTroopPlacer).GetMethod("HandleMouseDown",
                         BindingFlags.Instance | BindingFlags.NonPublic),
@@ -113,10 +128,16 @@ namespace RTSCamera.CommandSystem.Patch
             }
         }
 
-        public static void Postfix_InitializeInADisgustingManner(OrderTroopPlacer __instance)
+        public static void Postfix_OnMissionTick(OrderTroopPlacer __instance, bool ____initialized)
         {
+            if (!____initialized)
+                return;
+            if (_isInitialized)
+                return;
+            _isInitialized = true;
             _orderTroopPlacer = __instance;
-            _cachedCursorState = new UiQueryData<CursorState>(GetCursorState, 0.05f);
+            _cachedCursorState = new UiQueryData<CurrentCursorState>(GetCursorState, 0.05f);
+            _clickedFormation = null;
             _outlineView = Mission.Current.GetMissionBehavior<CommandSystemLogic>().OutlineColorSubLogic;
             _groundMarkerView = Mission.Current.GetMissionBehavior<CommandSystemLogic>().GroundMarkerColorSubLogic;
 
@@ -142,9 +163,11 @@ namespace RTSCamera.CommandSystem.Patch
         {
             _cachedTimeOfDay = 0;
             _orderTroopPlacer = null;
+            _isInitialized = false;
             _outlineView = null;
             _groundMarkerView = null;
             _cachedCursorState = null;
+            _clickedFormation = null;
             _focusedFormationsCache = null;
             if (_targetSelectionHandler != null)
             {
@@ -154,7 +177,7 @@ namespace RTSCamera.CommandSystem.Patch
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             IsFreeCamera = false;
             _originalOrderPositionEntities = _newModelOrderPositionEntities = _alwaysVisibleOrderPositionEntities = null;
-            _originalMaterial = _newModelMaterial = _alwaysVisibleMaterial = null;
+            _currentMaterial = _originalMaterial = _newModelMaterial = _alwaysVisibleMaterial = null;
             _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
         }
 
@@ -166,7 +189,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static void OnToggleFreeCamera(bool isFreeCamera)
         {
             IsFreeCamera = isFreeCamera;
-            Patch_MissionOrderVM.OrderToSelectTarget = OrderSubType.None;
+            RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
         }
 
         public static bool IsDraggingFormation(OrderTroopPlacer __instance, Vec2? ____formationDrawingStartingPointOfMouse, float? ____formationDrawingStartingTime)
@@ -190,10 +213,11 @@ namespace RTSCamera.CommandSystem.Patch
             return false;
         }
 
-        public static CursorState GetCursorState()
+        public static CurrentCursorState GetCursorState()
         {
-            return (CursorState)typeof(OrderTroopPlacer).GetMethod("GetCursorState", BindingFlags.Instance | BindingFlags.NonPublic)
+            typeof(OrderTroopPlacer).GetMethod("GetCursorState", BindingFlags.Instance | BindingFlags.NonPublic)
                 .Invoke(_orderTroopPlacer, new object[] { });
+            return _currentCursorState;
         }
         private static Vec2 GetScreenPoint(OrderTroopPlacer __instance, ref Vec2 ____deltaMousePosition)
         {
@@ -227,23 +251,23 @@ namespace RTSCamera.CommandSystem.Patch
             ____formationDrawingStartingTime = new float?();
         }
 
-        public static bool Prefix_HandleMouseDown(OrderTroopPlacer __instance, ref Formation ____clickedFormation, ref Formation ____mouseOverFormation,
+        public static bool Prefix_HandleMouseDown(OrderTroopPlacer __instance, ref Formation ____mouseOverFormation,
             ref bool ____formationDrawingMode, ref Vec2 ____deltaMousePosition,
             ref WorldPosition? ____formationDrawingStartingPosition, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime, bool ____isMouseDown)
         {
-            if (__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.IsEmpty() || ____clickedFormation != null)
+            if (__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.IsEmpty() || _clickedFormation != null)
                 return false;
             switch (_currentCursorState)
             {
-                case CursorState.Normal:
-                case CursorState.Enemy:
-                case CursorState.Friend:
+                case CurrentCursorState.Normal:
+                case CurrentCursorState.Enemy:
+                case CurrentCursorState.Friend:
                     ____formationDrawingMode = true;
                     BeginFormationDraggingOrClicking(__instance, ref ____deltaMousePosition,
                         ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
                         ref ____formationDrawingStartingTime);
                     break;
-                case CursorState.Rotation:
+                case CurrentCursorState.Rotation:
                     return true;
             }
 
@@ -272,8 +296,8 @@ namespace RTSCamera.CommandSystem.Patch
                 return;
             switch (_currentCursorState)
             {
-                case CursorState.Enemy:
-                case CursorState.Friend:
+                case CurrentCursorState.Enemy:
+                case CurrentCursorState.Friend:
                     if (IsDraggingFormation(__instance, ____formationDrawingStartingPointOfMouse, ____formationDrawingStartingTime))
                     {
                         if ((__instance.Input.IsKeyDown(InputKey.LeftMouseButton) ||
@@ -287,20 +311,46 @@ namespace RTSCamera.CommandSystem.Patch
                     break;
             }
         }
+        public static bool TryGetScreenMiddleToWorldPosition(
+            OrderTroopPlacer __instance,
+            ref Vec2 ____deltaMousePosition,
+            out WorldPosition worldPosition,
+            out float collisionDistance,
+            out WeakGameEntity collidedEntity)
+        {
+            Vec3 rayBegin;
+            Vec3 rayEnd;
+            __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance, ref ____deltaMousePosition), out rayBegin, out rayEnd);
+            float collisionDistance1;
+            WeakGameEntity collidedEntity1;
+            if (__instance.Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out collisionDistance1, out collidedEntity1, 0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora))
+            {
+                Vec3 vec3 = rayEnd - rayBegin;
+                double num = (double)vec3.Normalize();
+                collisionDistance = collisionDistance1;
+                collidedEntity = collidedEntity1;
+                worldPosition = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, rayBegin + vec3 * collisionDistance, false);
+                return true;
+            }
+            worldPosition = WorldPosition.Invalid;
+            collisionDistance = 0.0f;
+            collidedEntity = WeakGameEntity.Invalid;
+            return false;
+        }
 
-        public static bool Prefix_GetCursorState(OrderTroopPlacer __instance, ref CursorState __result, OrderController ___PlayerOrderController, ref Formation ____clickedFormation, ref Formation ____mouseOverFormation,
+        public static bool Prefix_GetCursorState(OrderTroopPlacer __instance, ref CursorState __result, ref Formation ____mouseOverFormation,
             List<GameEntity> ____orderRotationEntities, ref Vec2 ____deltaMousePosition, ref bool ____formationDrawingMode, ref int ____mouseOverDirection, bool ____isMouseDown)
         {
             CursorState cursorState = CursorState.Invisible;
-            if (!___PlayerOrderController.SelectedFormations.IsEmpty() && ____clickedFormation == null)
+            if (!__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.IsEmpty() && _clickedFormation == null)
             {
-                __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance, ref ____deltaMousePosition), out var rayBegin, out var rayEnd);
-                if (!__instance.Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out var collisionDistance,
-                    out GameEntity collidedEntity, 0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora))
+                float collisionDistance;
+                WeakGameEntity collidedEntity;
+                if (!TryGetScreenMiddleToWorldPosition(__instance, ref ____deltaMousePosition, out WorldPosition _, out collisionDistance, out collidedEntity))
                     collisionDistance = 1000f;
                 if (cursorState == CursorState.Invisible && collisionDistance < 1000.0)
                 {
-                    if (!____formationDrawingMode && collidedEntity == null)
+                    if (!____formationDrawingMode && !collidedEntity.IsValid)
                     {
                         for (int index = 0; index < ____orderRotationEntities.Count; ++index)
                         {
@@ -309,9 +359,10 @@ namespace RTSCamera.CommandSystem.Patch
                                 collidedEntity == orderRotationEntity)
                             {
                                 ____mouseOverFormation =
-                                    ___PlayerOrderController.SelectedFormations.ElementAt(index / 2);
+                                    __instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.ElementAt(index / 2);
                                 ____mouseOverDirection = 1 - (index & 1);
                                 cursorState = CursorState.Rotation;
+                                _currentCursorState = CurrentCursorState.Rotation;
                                 break;
                             }
                         }
@@ -320,11 +371,14 @@ namespace RTSCamera.CommandSystem.Patch
                     if (cursorState == CursorState.Invisible)
                     {
                         if (__instance.MissionScreen.OrderFlag.FocusedOrderableObject != null)
+                        {
                             cursorState = CursorState.OrderableEntity;
+                            _currentCursorState = CurrentCursorState.OrderableEntity;
+                        }
                         else if (CommandSystemConfig.Get().IsMouseOverEnabled())
                         {
                             var formation = GetMouseOverFormation(__instance, collisionDistance,
-                                ___PlayerOrderController, ref ____deltaMousePosition,
+                                __instance.Mission.PlayerTeam.PlayerOrderController, ref ____deltaMousePosition,
                                 ____formationDrawingMode);
                             ____mouseOverFormation = formation;
                             if (formation != null)
@@ -333,14 +387,14 @@ namespace RTSCamera.CommandSystem.Patch
                                 {
                                     if (CommandSystemConfig.Get().AttackSpecificFormation)
                                     {
-                                        cursorState = CursorState.Enemy;
+                                        _currentCursorState = CurrentCursorState.Enemy;
                                     }
                                 }
                                 else
                                 {
                                     if (CommandSystemConfig.Get().ClickToSelectFormation)
                                     {
-                                        cursorState = CursorState.Friend;
+                                        _currentCursorState = CurrentCursorState.Friend;
                                     }
                                 }
                             }
@@ -351,12 +405,13 @@ namespace RTSCamera.CommandSystem.Patch
                         ____formationDrawingMode)
                     {
                         cursorState = IsCursorStateGroundOrNormal(____formationDrawingMode);
+                        _currentCursorState = (CurrentCursorState)cursorState;
                     }
                 }
             }
-            else if (____clickedFormation != null) // click on formation and hold.
+            else if (_clickedFormation != null) // click on formation and hold.
             {
-                cursorState = _currentCursorState;
+                _currentCursorState = (CurrentCursorState)cursorState;
             }
 
             if (cursorState != CursorState.Ground &&
@@ -376,12 +431,12 @@ namespace RTSCamera.CommandSystem.Patch
         private static Agent RayCastForAgent(OrderTroopPlacer __instance, float distance, ref Vec2 ____deltaMousePosition)
         {
             __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance, ref ____deltaMousePosition), out var rayBegin, out var rayEnd);
-            var agent = __instance.Mission.RayCastForClosestAgent(rayBegin, rayEnd, out var agentDistance,
-                __instance.MissionScreen.LastFollowedAgent?.Index ?? -1, 0.3f);
+            var agent = __instance.Mission.RayCastForClosestAgent(rayBegin, rayEnd,
+                __instance.MissionScreen.LastFollowedAgent?.Index ?? -1, 0.3f, out var agentDistance);
             if (agentDistance > distance || agent == null)
             {
-                agent = __instance.Mission.RayCastForClosestAgent(rayBegin, rayEnd, out agentDistance,
-                    __instance.MissionScreen.LastFollowedAgent?.Index ?? -1, 0.8f);
+                agent = __instance.Mission.RayCastForClosestAgent(rayBegin, rayEnd,
+                    __instance.MissionScreen.LastFollowedAgent?.Index ?? -1, 0.8f, out agentDistance);
             }
             return agentDistance > distance ? null : agent;
         }
@@ -410,7 +465,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_AddOrderPositionEntity(OrderTroopPlacer __instance, int entityIndex,
             ref Vec3 groundPosition, bool fadeOut, float alpha,
-            ref List<GameEntity> ____orderPositionEntities, ref Material ____meshMaterial)
+            ref List<GameEntity> ____orderPositionEntities)
         {
             var config = CommandSystemConfig.Get();
             var timeOfDay =__instance.Mission.Scene.TimeOfDay;
@@ -429,14 +484,14 @@ namespace RTSCamera.CommandSystem.Patch
                     if (_newModelOrderPositionEntities == null)
                     {
                         _newModelOrderPositionEntities = new List<GameEntity>();
-                        _newModelMaterial = Material.GetFromResource("vertex_color_blend_mat").CreateCopy(); ;
+                        _newModelMaterial = Material.GetFromResource("vertex_color_blend_mat").CreateCopy();
                     }
                     break;
                 case MovementTargetHighlightStyle.AlwaysVisible:
                     if (_alwaysVisibleOrderPositionEntities == null)
                     {
                         _alwaysVisibleOrderPositionEntities = new List<GameEntity>();
-                        _alwaysVisibleMaterial = Material.GetFromResource("vertex_color_blend_no_depth_mat").CreateCopy(); ;
+                        _alwaysVisibleMaterial = Material.GetFromResource("vertex_color_blend_no_depth_mat").CreateCopy();
                     }
                     break;
             }
@@ -445,7 +500,7 @@ namespace RTSCamera.CommandSystem.Patch
                 switch (_previousMovementTargetHightlightStyle)
                 {
                     case MovementTargetHighlightStyle.Original:
-                        _originalMaterial = ____meshMaterial;
+                        _originalMaterial = _currentMaterial;
                         foreach (GameEntity orderPositionEntity in _originalOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
                         {
                             orderPositionEntity.HideIfNotFadingOut();
@@ -470,15 +525,15 @@ namespace RTSCamera.CommandSystem.Patch
                 {
                     case MovementTargetHighlightStyle.Original:
                         ____orderPositionEntities = _originalOrderPositionEntities;
-                        ____meshMaterial = _originalMaterial;
+                        _currentMaterial = _originalMaterial;
                         break;
                     case MovementTargetHighlightStyle.NewModelOnly:
                         ____orderPositionEntities = _newModelOrderPositionEntities;
-                        ____meshMaterial = _newModelMaterial;
+                        _currentMaterial = _newModelMaterial;
                         break;
                     case MovementTargetHighlightStyle.AlwaysVisible:
                         ____orderPositionEntities = _alwaysVisibleOrderPositionEntities;
-                        ____meshMaterial = _alwaysVisibleMaterial;
+                        _currentMaterial = _alwaysVisibleMaterial;
                         break;
                 }
             }
@@ -491,14 +546,14 @@ namespace RTSCamera.CommandSystem.Patch
                     MetaMesh copy = MetaMesh.GetCopy("barrier_sphere");
                     //MetaMesh copy = MetaMesh.GetCopy("pyhsics_test_box");
                     //MetaMesh copy = MetaMesh.GetCopy("unit_arrow");
-                    if (____meshMaterial == null)
+                    if (_currentMaterial == null)
                     {
                         //____meshMaterial = copy.GetMeshAtIndex(0).GetMaterial().CreateCopy();
-                        ____meshMaterial = Material.GetFromResource("vertex_color_blend_no_depth_mat").CreateCopy();
+                        _currentMaterial = Material.GetFromResource("vertex_color_blend_no_depth_mat").CreateCopy();
                         //____meshMaterial = Material.GetFromResource("unit_arrow").CreateCopy();
                         //____meshMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
                     }
-                    copy.SetMaterial(____meshMaterial);
+                    copy.SetMaterial(_currentMaterial);
                     copy.SetFactor1(OrderPositionEntityColor);
                     //copy.SetContourColor(OrderPositionEntityColor);
                     //copy.SetContourState(true);
@@ -548,7 +603,7 @@ namespace RTSCamera.CommandSystem.Patch
                 return;
             switch (_currentCursorState)
             {
-                case CursorState.Enemy:
+                case CurrentCursorState.Enemy:
                     ____formationDrawingMode = false;
                     ____clickedFormation = ____mouseOverFormation;
 
@@ -556,7 +611,7 @@ namespace RTSCamera.CommandSystem.Patch
                         ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
                         ref ____formationDrawingStartingTime);
                     break;
-                case CursorState.Friend:
+                case CurrentCursorState.Friend:
                     ____formationDrawingMode = false;
                     if (____mouseOverFormation != null && __instance.Mission.PlayerTeam.PlayerOrderController.IsFormationSelectable(____mouseOverFormation))
                     {
@@ -630,18 +685,21 @@ namespace RTSCamera.CommandSystem.Patch
             }
         }
 
-        public static bool Prefix_OnMissionScreenTick(OrderTroopPlacer __instance, ref bool ____initialized, ref OrderController ___PlayerOrderController,
-            ref bool ___isDrawnThisFrame, ref bool ____isMouseDown, ref Timer ___formationDrawTimer, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime,
-            ref Formation ____clickedFormation, ref bool ____formationDrawingMode, Formation ____mouseOverFormation,
+        public static bool Prefix_OnMissionScreenTick(OrderTroopPlacer __instance, ref bool ____initialized,
+            ref bool ____isDrawnThisFrame, ref bool ____isMouseDown, ref Timer ___formationDrawTimer, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime,
+            ref bool ____formationDrawingMode, Formation ____mouseOverFormation,
             ref List<GameEntity> ____orderPositionEntities, ref List<GameEntity> ____orderRotationEntities,
-            ref bool ____wasDrawingForced, ref bool ____wasDrawingFacing, ref bool ____wasDrawingForming, ref bool ___wasDrawnPreviousFrame, ref WorldPosition? ____formationDrawingStartingPosition,
-            ref Vec2 ____deltaMousePosition)
+            ref bool ____wasDrawingForced, ref bool ____wasDrawingFacing, ref bool ____wasDrawingForming, ref bool ____wasDrawnPreviousFrame, ref WorldPosition? ____formationDrawingStartingPosition,
+            ref Vec2 ____deltaMousePosition, ref CursorState ____activeCursorState)
         {
             if (!____initialized)
                 return false;
-            if (!___PlayerOrderController.SelectedFormations.Any())
+
+            ____activeCursorState = (CursorState)typeof(OrderTroopPlacer).GetMethod("GetCursorState", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(_orderTroopPlacer, new object[] { });
+            if (!__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.Any())
                 return false;
-            ___isDrawnThisFrame = false;
+            ____isDrawnThisFrame = false;
             if (__instance.SuspendTroopPlacer)
                 return false;
             
@@ -666,13 +724,13 @@ namespace RTSCamera.CommandSystem.Patch
             }
             if (isSelectFormationKeyPressed)
             {
-                HandleSelectFormationKeyDown(__instance, ref ____clickedFormation, ref ____mouseOverFormation,
+                HandleSelectFormationKeyDown(__instance, ref _clickedFormation, ref ____mouseOverFormation,
                     ref ____formationDrawingMode, ref ____deltaMousePosition, ref ____formationDrawingStartingPosition,
                     ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime);
             }
             if (isSelectFormationKeyReleased)
             {
-                HandleSelectFormationKeyUp(__instance, ref ____clickedFormation, ___PlayerOrderController,
+                HandleSelectFormationKeyUp(__instance, ref _clickedFormation, __instance.Mission.PlayerTeam.PlayerOrderController,
                     ____orderRotationEntities, ref ____formationDrawingMode, ref ____deltaMousePosition,
                     ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
                     ref ____formationDrawingStartingTime);
@@ -691,7 +749,7 @@ namespace RTSCamera.CommandSystem.Patch
                 if (!__instance.IsDrawingFacing && !__instance.IsDrawingForming)
                 {
                     TryTransformFromClickingToDragging(__instance, ____formationDrawingStartingPointOfMouse,
-                        ____formationDrawingStartingTime, ___PlayerOrderController, ref ____clickedFormation,
+                        ____formationDrawingStartingTime, __instance.Mission.PlayerTeam.PlayerOrderController, ref _clickedFormation,
                         ref ____formationDrawingMode, ____isMouseDown);
                 }
             }
@@ -701,7 +759,7 @@ namespace RTSCamera.CommandSystem.Patch
                     !__instance.IsDrawingFacing &&
                     !__instance.IsDrawingForming)
                 {
-                    if (_currentCursorState == CursorState.Ground)
+                    if (_currentCursorState == CurrentCursorState.Ground)
                         typeof(OrderTroopPlacer)
                             .GetMethod("UpdateFormationDrawing", BindingFlags.Instance | BindingFlags.NonPublic)
                             .Invoke(__instance, new object[] { false });
@@ -712,7 +770,7 @@ namespace RTSCamera.CommandSystem.Patch
                 //Utilities.DisplayMessage("drawing forced");
                 Reset(ref ____isMouseDown, ref ____formationDrawingMode, ref ____formationDrawingStartingPosition,
                     ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
-                    ref ____mouseOverFormation, ref ____clickedFormation);
+                    ref ____mouseOverFormation, ref _clickedFormation);
                 ____formationDrawingMode = true;
                 BeginFormationDraggingOrClicking(__instance, ref ____deltaMousePosition,
                     ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
@@ -728,7 +786,7 @@ namespace RTSCamera.CommandSystem.Patch
                 {
                     Reset(ref ____isMouseDown, ref ____formationDrawingMode, ref ____formationDrawingStartingPosition,
                         ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
-                        ref ____mouseOverFormation, ref ____clickedFormation);
+                        ref ____mouseOverFormation, ref _clickedFormation);
 
                     typeof(OrderTroopPlacer)
                         .GetMethod("UpdateFormationDrawingForFacingOrder", BindingFlags.Instance | BindingFlags.NonPublic)
@@ -741,7 +799,7 @@ namespace RTSCamera.CommandSystem.Patch
                 {
                     Reset(ref ____isMouseDown, ref ____formationDrawingMode, ref ____formationDrawingStartingPosition,
                         ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
-                        ref ____mouseOverFormation, ref ____clickedFormation);
+                        ref ____mouseOverFormation, ref _clickedFormation);
 
                     typeof(OrderTroopPlacer)
                         .GetMethod("UpdateFormationDrawingForFormingOrder", BindingFlags.Instance | BindingFlags.NonPublic)
@@ -752,7 +810,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 Reset(ref ____isMouseDown, ref ____formationDrawingMode, ref ____formationDrawingStartingPosition,
                     ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
-                    ref ____mouseOverFormation, ref ____clickedFormation);
+                    ref ____mouseOverFormation, ref _clickedFormation);
             }
             else if (_skipDrawingForDestinationForOneTick)
             {
@@ -773,7 +831,7 @@ namespace RTSCamera.CommandSystem.Patch
             ____wasDrawingForced = __instance.IsDrawingForced;
             ____wasDrawingFacing = __instance.IsDrawingFacing;
             ____wasDrawingForming = __instance.IsDrawingForming;
-            ___wasDrawnPreviousFrame = ___isDrawnThisFrame;
+            ____wasDrawnPreviousFrame = ____isDrawnThisFrame;
 
             return false;
         }
@@ -796,19 +854,19 @@ namespace RTSCamera.CommandSystem.Patch
             ____clickedFormation = (Formation)null;
         }
 
-        public static void SelectFormationFromUI(OrderTroopPlacer __instance, Formation ____clickedFormation)
-        {
-            var uiHandler = __instance.Mission.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
-            if (uiHandler == null)
-                return;
-            var dataSource = (MissionOrderVM)_dataSource.GetValue(uiHandler);
-            if (dataSource == null)
-            {
-                return;
-            }
+        //public static void SelectFormationFromUI(OrderTroopPlacer __instance, Formation ____clickedFormation)
+        //{
+        //    var uiHandler = __instance.Mission.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
+        //    if (uiHandler == null)
+        //        return;
+        //    var dataSource = (MissionOrderVM)_dataSource.GetValue(uiHandler);
+        //    if (dataSource == null)
+        //    {
+        //        return;
+        //    }
 
-            dataSource.OnSelect(____clickedFormation.Index);
-        }
+        //    dataSource.OnSelect(____clickedFormation.Index);
+        //}
 
         public static void SelectFormationFromController(OrderTroopPlacer __instance, OrderController ___PlayerOrderController, Formation ____clickedFormation)
         {
@@ -831,25 +889,25 @@ namespace RTSCamera.CommandSystem.Patch
             bool giveOrder,
             WorldPosition formationRealStartingPosition,
             WorldPosition formationRealEndingPosition,
-            bool isFormationLayoutVertical, ref bool ___isDrawnThisFrame, OrderController ___PlayerOrderController)
+            bool isFormationLayoutVertical, ref bool ____isDrawnThisFrame)
         {
             bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
             if (!queueCommand)
             {
-                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations));
             }
             else
             {
-                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations));
             }
-            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout, ___PlayerOrderController.SelectedFormations, null, null, null);
-            ___isDrawnThisFrame = true;
+            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(isFormationLayoutVertical ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout, __instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations, null, null, null);
+            ____isDrawnThisFrame = true;
             List<WorldPosition> simulationAgentFrames = null;
             bool isLineShort = false;
-            IEnumerable<Formation> formations = ___PlayerOrderController.SelectedFormations.Where((f => f.CountOfUnitsWithoutDetachedOnes > 0));
+            IEnumerable<Formation> formations = __instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.Where((f => f.CountOfUnitsWithoutDetachedOnes > 0));
             if (!formations.Any())
                 return true;
-            Patch_OrderController.SimulateNewOrderWithPositionAndDirection(formations, ___PlayerOrderController.simulationFormations, formationRealStartingPosition, formationRealEndingPosition, true, out simulationAgentFrames, giveOrder && queueCommand, out var formationChanges, out isLineShort, isFormationLayoutVertical, true);
+            Patch_OrderController.SimulateNewOrderWithPositionAndDirection(formations, __instance.Mission.PlayerTeam.PlayerOrderController.simulationFormations, formationRealStartingPosition, formationRealEndingPosition, true, out simulationAgentFrames, giveOrder && queueCommand, out var formationChanges, out isLineShort, isFormationLayoutVertical, true);
             if (simulationAgentFrames == null)
             {
                 return true;
@@ -859,9 +917,9 @@ namespace RTSCamera.CommandSystem.Patch
                 if (!queueCommand)
                 {
                     if (!isFormationLayoutVertical)
-                        ___PlayerOrderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegmentWithHorizontalLayout, formationRealStartingPosition, formationRealEndingPosition);
+                        __instance.Mission.PlayerTeam.PlayerOrderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegmentWithHorizontalLayout, formationRealStartingPosition, formationRealEndingPosition);
                     else
-                        ___PlayerOrderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegment, formationRealStartingPosition, formationRealEndingPosition);
+                        __instance.Mission.PlayerTeam.PlayerOrderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegment, formationRealStartingPosition, formationRealEndingPosition);
                     CommandQueueLogic.TryPendingOrder(formations, new OrderInQueue
                     {
                         SelectedFormations = formations.ToList(),
@@ -881,7 +939,7 @@ namespace RTSCamera.CommandSystem.Patch
                         ActualFormationChanges = formationChanges,
                         PositionBegin = formationRealStartingPosition,
                         PositionEnd = formationRealEndingPosition,
-                        VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations)
+                        VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations)
                     });
                 }
             }
@@ -899,16 +957,16 @@ namespace RTSCamera.CommandSystem.Patch
         }
 
         public static bool Prefix_UpdateFormationDrawingForFacingOrder(OrderTroopPlacer __instance,
-            bool giveOrder, ref bool ___isDrawnThisFrame, OrderController ___PlayerOrderController)
+            bool giveOrder)
         {
             bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
             if (!queueCommand)
             {
-                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations));
             }
             else
             {
-                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.LatestOrderInQueueChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations));
             }
             return true;
         }
