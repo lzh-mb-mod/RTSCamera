@@ -1,4 +1,4 @@
-﻿<Prefab>
+<Prefab>
   <Constants>
     <Constant Name="Troop.Icon.Width" BrushName="Order.Troop.Icon" BrushLayer="Default" BrushValueType="Width" MultiplyResult="0.35"/>
     <Constant Name="Troop.Icon.Height" BrushName="Order.Troop.Icon" BrushLayer="Default" BrushValueType="Height" MultiplyResult="0.35"/>

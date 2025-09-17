@@ -327,6 +327,8 @@ namespace RTSCamera.CommandSystem.View
                 case MovementOrder.MovementStateEnum.Charge:
                 case MovementOrder.MovementStateEnum.Hold:
                 case MovementOrder.MovementStateEnum.StandGround:
+                    if (formation.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Column)
+                        return Utilities.Utility.GetColumnFormationCurrentPosition(formation);
                     return formation.CachedMedianPosition.GetGroundVec3();
                 case MovementOrder.MovementStateEnum.Retreat:
                 default:

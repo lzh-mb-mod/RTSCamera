@@ -764,6 +764,16 @@ namespace RTSCamera.CommandSystem.Utilities
             return MathF.Max(0, fileCount - 1) * (GetFormationInterval(formation, unitSpacing) + formation.UnitDiameter) + formation.UnitDiameter;
         }
 
+        public static float GetMinimumWidthOfColumnFormation(Formation formation, int unitSpacing)
+        {
+            return (MathF.Max(1, MathF.Ceiling(MathF.Sqrt((formation.Arrangement.UnitCount / ColumnFormation.ArrangementAspectRatio)))) - 1) * (formation.UnitDiameter + GetFormationInterval(formation, unitSpacing)) + formation.UnitDiameter;
+        }
+
+        public static float GetMaximumWidthOfColumnFormation(Formation formation, int unitSpacing)
+        {
+            return (float)(formation.Arrangement.UnitCount - 1) * (formation.UnitDiameter + GetFormationInterval(formation, unitSpacing)) + formation.UnitDiameter;
+        }
+
         public static void UpdateActiveOrders()
         {
             var orderUIHandler = Mission.Current.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
@@ -794,6 +804,15 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             var team = formation?.Team;
             return !formation.IsAIControlled && team != null && team == Mission.Current.PlayerTeam && (team.IsPlayerGeneral || team.IsPlayerSergeant && formation.PlayerOwner == Agent.Main);
+        }
+
+        public static Vec3 GetColumnFormationCurrentPosition(Formation formation)
+        {
+            if (formation.Arrangement is ColumnFormation columnFormation && (columnFormation.GetUnit(columnFormation.VanguardFileIndex, 0) ?? columnFormation.Vanguard) is Agent { Position: var position })
+            {
+                return position;
+            }
+            return Vec3.Invalid;
         }
     }
 }

@@ -191,6 +191,7 @@ namespace RTSCamera.View
         public Camera CombatCamera => MissionScreen.CombatCamera;
 
         public Vec3 CameraPosition { get; set; }
+        public float RollAngle { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public FlyCameraMissionView()
         {

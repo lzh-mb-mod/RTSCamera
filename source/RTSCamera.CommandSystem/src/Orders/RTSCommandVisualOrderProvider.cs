@@ -51,6 +51,7 @@ namespace RTSCamera.CommandSystem.Orders
             RTSCommandGenericToggleVisualOrder order5 = new RTSCommandGenericToggleVisualOrder("order_toggle_mount", OrderType.Mount, OrderType.Dismount);
             RTSCommandGenericToggleVisualOrder order6 = GameNetwork.IsMultiplayer ? null : new RTSCommandGenericToggleVisualOrder("order_toggle_ai", OrderType.AIControlOn, OrderType.AIControlOff);
             TransferTroopsVisualOrder order7 = GameNetwork.IsMultiplayer ? null : new TransferTroopsVisualOrder();
+            RTSCommandActivateFacingVisualOrder order8 = new RTSCommandActivateFacingVisualOrder(OrderType.LookAtDirection, "order_toggle_facing");
             genericVisualOrderSet3.AddOrder(order3);
             genericVisualOrderSet3.AddOrder(order4);
             genericVisualOrderSet3.AddOrder(order5);
@@ -72,6 +73,7 @@ namespace RTSCamera.CommandSystem.Orders
                 defaultOrders.Add(new SingleVisualOrderSet(order2));
                 defaultOrders.Add(new SingleVisualOrderSet(order1));
             }
+            defaultOrders.Add(new SingleVisualOrderSet(new ReturnVisualOrder()));
             return defaultOrders;
         }
 
@@ -93,16 +95,16 @@ namespace RTSCamera.CommandSystem.Orders
             genericVisualOrderSet2.AddOrder(order1);
             genericVisualOrderSet2.AddOrder(order2);
             GenericVisualOrderSet genericVisualOrderSet3 = new GenericVisualOrderSet("order_type_form", new TextObject("{=iBk2wbn3}Form"), true, true);
-            ArrangementVisualOrder order3 = new ArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Line, "order_form_line");
-            ArrangementVisualOrder order4 = new ArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.ShieldWall, "order_form_close");
+            RTSCommandArrangementVisualOrder order3 = new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Line, "order_form_line");
+            RTSCommandArrangementVisualOrder order4 = new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.ShieldWall, "order_form_close");
             genericVisualOrderSet3.AddOrder(order3);
             genericVisualOrderSet3.AddOrder(order4);
-            genericVisualOrderSet3.AddOrder(new ArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Loose, "order_form_loose"));
-            genericVisualOrderSet3.AddOrder(new ArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Circle, "order_form_circular"));
-            genericVisualOrderSet3.AddOrder(new ArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Square, "order_form_schiltron"));
-            genericVisualOrderSet3.AddOrder(new ArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Skein, "order_form_v"));
-            genericVisualOrderSet3.AddOrder(new ArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Column, "order_form_column"));
-            genericVisualOrderSet3.AddOrder(new ArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Scatter, "order_form_scatter"));
+            genericVisualOrderSet3.AddOrder(new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Loose, "order_form_loose"));
+            genericVisualOrderSet3.AddOrder(new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Circle, "order_form_circular"));
+            genericVisualOrderSet3.AddOrder(new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Square, "order_form_schiltron"));
+            genericVisualOrderSet3.AddOrder(new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Skein, "order_form_v"));
+            genericVisualOrderSet3.AddOrder(new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Column, "order_form_column"));
+            genericVisualOrderSet3.AddOrder(new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Scatter, "order_form_scatter"));
             genericVisualOrderSet3.AddOrder(new ReturnVisualOrder());
             legacyOrders.Add(genericVisualOrderSet1);
             legacyOrders.Add(genericVisualOrderSet2);
@@ -110,12 +112,15 @@ namespace RTSCamera.CommandSystem.Orders
             RTSCommandGenericToggleVisualOrder order5 = new RTSCommandGenericToggleVisualOrder("order_toggle_fire", OrderType.FireAtWill, OrderType.HoldFire);
             RTSCommandGenericToggleVisualOrder order6 = new RTSCommandGenericToggleVisualOrder("order_toggle_mount", OrderType.Mount, OrderType.Dismount);
             RTSCommandGenericToggleVisualOrder order7 = GameNetwork.IsMultiplayer ? null : new RTSCommandGenericToggleVisualOrder("order_toggle_ai", OrderType.AIControlOn, OrderType.AIControlOff);
+            TransferTroopsVisualOrder order8 = GameNetwork.IsMultiplayer ? null : new TransferTroopsVisualOrder();
             if (!Input.IsGamepadActive)
             {
                 legacyOrders.Add(new SingleVisualOrderSet(order5));
                 legacyOrders.Add(new SingleVisualOrderSet(order6));
                 if (order7 != null)
                     legacyOrders.Add(new SingleVisualOrderSet(order7));
+                if (order8 != null)
+                    legacyOrders.Add(new SingleVisualOrderSet(order8));
                 legacyOrders.Add(new SingleVisualOrderSet(new ReturnVisualOrder()));
             }
             return legacyOrders;

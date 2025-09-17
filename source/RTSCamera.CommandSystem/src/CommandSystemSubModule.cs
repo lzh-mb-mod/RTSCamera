@@ -66,7 +66,7 @@ namespace RTSCamera.CommandSystem
             base.OnBeforeInitialModuleScreenSetAsRoot();
 
 
-            if (!SecondInitialize())
+            if (!ThirdInitialize())
                 return;
 
             Utilities.Utility.PrintOrderHint();
@@ -79,9 +79,9 @@ namespace RTSCamera.CommandSystem
             Initializer.OnApplicationTick(dt);
         }
 
-        private bool SecondInitialize()
+        private bool ThirdInitialize()
         {
-            if (!Initializer.SecondInitialize())
+            if (!Initializer.ThirdInitialize())
                 return false;
 
             CommandSystemGameKeyCategory.RegisterGameKeyCategory();

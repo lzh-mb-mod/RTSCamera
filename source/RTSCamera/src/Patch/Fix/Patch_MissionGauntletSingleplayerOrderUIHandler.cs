@@ -12,6 +12,7 @@ using TaleWorlds.MountAndBlade.GauntletUI;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
+using TaleWorlds.ScreenSystem;
 
 namespace RTSCamera.Patch.Fix
 {
@@ -141,20 +142,37 @@ namespace RTSCamera.Patch.Fix
             Patch_MissionOrderVM.AllowEscape = true;
         }
 
-        private static void UpdateMouseVisibility(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer)
+        private static void UpdateMouseVisibility(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, ref bool ____isTransferEnabled)
         {
             if (__instance == null)
                 return;
 
-            bool mouseVisibility =   
+            bool mouseVisibility =
                 (__instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ||
                  ____dataSource.IsToggleOrderShown && (__instance.Input.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null)) &&
                 !_rightButtonDraggingMode && !_earlyDraggingMode;
-            var sceneLayer = __instance.MissionScreen.SceneLayer;
-            if (mouseVisibility != ____gauntletLayer.InputRestrictions.MouseVisibility)
+            var inputUsageMask = __instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ? InputUsageMask.All : InputUsageMask.MouseButtons;
+            var layer = ____gauntletLayer;
+            if (mouseVisibility != layer.InputRestrictions.MouseVisibility || inputUsageMask != layer.InputRestrictions.InputUsageMask)
             {
-                ____gauntletLayer.InputRestrictions.SetInputRestrictions(mouseVisibility,
-                    mouseVisibility ? InputUsageMask.Keyboardkeys : InputUsageMask.Invalid);
+                layer.InputRestrictions.SetInputRestrictions(mouseVisibility,
+                    inputUsageMask);
+            }
+            if (____dataSource.TroopController.IsTransferActive != ____isTransferEnabled)
+            {
+                ____isTransferEnabled = ____dataSource.TroopController.IsTransferActive;
+                if (!____isTransferEnabled)
+                {
+                    ____gauntletLayer.UIContext.ContextAlpha = BannerlordConfig.HideBattleUI ? 0.0f : 1f;
+                    ____gauntletLayer.IsFocusLayer = false;
+                    ScreenManager.TryLoseFocus(____gauntletLayer);
+                }
+                else
+                {
+                    ____gauntletLayer.UIContext.ContextAlpha = 1f;
+                    ____gauntletLayer.IsFocusLayer = true;
+                    ScreenManager.TrySetFocus(____gauntletLayer);
+                }
             }
 
             //if (__instance.MissionScreen.OrderFlag != null)
@@ -229,10 +247,10 @@ namespace RTSCamera.Patch.Fix
             }
         }
 
-        public static void Postfix_OnMissionScreenTick(GauntletOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
+        public static void Postfix_OnMissionScreenTick(GauntletOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer, ref bool ____isTransferEnabled)
         {
             UpdateDragData(__instance, ____dataSource, ____orderTroopPlacer);
-            UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer);
+            UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer, ref ____isTransferEnabled);
             UpdateOrderUIVisibility(__instance, ____dataSource, ____gauntletLayer);
             //return true;
         }

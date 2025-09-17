@@ -128,7 +128,7 @@ namespace RTSCamera
 
             Patch_CareerHelper.Patch(_harmony);
 
-            if (!SecondInitialize())
+            if (!ThirdInitialize())
                 return;
 
             if (!_successPatch)
@@ -140,9 +140,9 @@ namespace RTSCamera
             Utility.PrintUsageHint();
         }
 
-        private bool SecondInitialize()
+        private bool ThirdInitialize()
         {
-            if (!Initializer.SecondInitialize())
+            if (!Initializer.ThirdInitialize())
                 return false;
 
             RTSCameraGameKeyCategory.RegisterGameKeyCategory();

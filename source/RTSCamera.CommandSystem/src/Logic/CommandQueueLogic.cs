@@ -301,6 +301,10 @@ namespace RTSCamera.CommandSystem.Logic
                     // fallback is considered complete instantly.
                     return true;
             }
+            if (formation.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Column)
+            {
+                return Utilities.Utility.GetColumnFormationCurrentPosition(formation).Distance(formation.OrderGroundPosition) < 5f;
+            }
             return !formation.OrderPositionIsValid || CommandQuerySystem.GetQueryForFormation(formation).HasCurrentMovementOrderCompleted;
         }
 
@@ -376,7 +380,7 @@ namespace RTSCamera.CommandSystem.Logic
                                     }
                                     if (order.IsLineShort)
                                     {
-                                        if (virtualFormationChange.Width != null && formation.Width != virtualFormationChange.Width)
+                                        if (virtualFormationChange.Width != null && formation.Width != virtualFormationChange.Width && formation.ArrangementOrder.OrderEnum != ArrangementOrder.ArrangementOrderEnum.Column)
                                         {
                                             formation.SetFormOrder(FormOrder.FormOrderCustom(virtualFormationChange.Width.Value));
                                         }

@@ -1,4 +1,5 @@
-﻿using RTSCamera.CommandSystem.Logic;
+﻿using Microsoft.VisualBasic;
+using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using System.Linq;
 using TaleWorlds.Localization;
@@ -97,6 +98,12 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             }
             CommandQueueLogic.TryTeleportSelectedFormationInDeployment(orderController, order.SelectedFormations);
             CommandQueueLogic.CurrentFormationChanges.SetChanges(order.VirtualFormationChanges);
+            // for column formation, the direciton in VirtualFormationChanges is the heading direction.
+            foreach (var pair in order.VirtualFormationChanges)
+            {
+                var formation = pair.Key;
+                CommandQueueLogic.CurrentFormationChanges.UpdateFormationChange(formation, null, formation.Direction, null, null);
+            }
         }
     }
 }

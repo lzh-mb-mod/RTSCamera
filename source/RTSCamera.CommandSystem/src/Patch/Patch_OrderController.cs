@@ -686,7 +686,12 @@ namespace RTSCamera.CommandSystem.Patch
                 formationPosition = clickedCenter;
                 formationPosition.SetVec2(formationPositionVec2);
                 Vec2 formationDirection;
-                if (GetFormationVirtualFacingOrder(formation) == OrderType.LookAtEnemy)
+                bool isColumnFormation = GetFormationVirtualArrangementOrder(formation) == ArrangementOrder.ArrangementOrderEnum.Column;
+                if (isColumnFormation)
+                {
+                    formationDirection = GetColumnFormationNewDirection(formation, oldOrderPosition, formationPositionVec2);
+                }
+                else if (GetFormationVirtualFacingOrder(formation) == OrderType.LookAtEnemy)
                 {
                     // set formation virtual position to preview position to allows previewing the facing direction
                     var formationPositionToRecover = GetFormationVirtualPosition(formation);
@@ -708,6 +713,10 @@ namespace RTSCamera.CommandSystem.Patch
                 if (isSimulatingFormationChanges)
                 {
                     LivePreviewFormationChanges.UpdateFormationChange(formation, formationPosition, null, null, null);
+                    if (isColumnFormation)
+                    {
+                        LivePreviewFormationChanges.UpdateFormationChange(formation, null, formationDirection, null, null);
+                    }
                 }
                 if (!Mission.Current.IsPositionInsideBoundaries(formationPosition.AsVec2))
                 {
@@ -767,14 +776,21 @@ namespace RTSCamera.CommandSystem.Patch
                 var actualUnitSpacing = GetActualOrCurrentUnitSpacing(formation);
                 var actualOrCurrentWidth = GetActualOrCurrentWidth(formation);
 
-
-                Vec2 formationDirection = GetFormationVirtualDirection(formation);
-                float formationWidth;
                 formationPositionVec2 = rotateVector(oldOrderPosition - averageOrderPosition, weightedAverageDirection, newOverallDirection) + clickedCenter.AsVec2;
                 formationPosition = clickedCenter;
                 formationPosition.SetVec2(formationPositionVec2);
-                formationWidth = MathF.Min(actualOrCurrentWidth, GetFormationVirtualMaximumWidth(formation));
-                formationDirection = rotateVector(formationDirection, weightedAverageDirection, newOverallDirection);
+                float formationWidth = MathF.Min(actualOrCurrentWidth, GetFormationVirtualMaximumWidth(formation));
+
+                Vec2 formationDirection = GetFormationVirtualDirection(formation);
+                bool isColumnFormation = GetFormationVirtualArrangementOrder(formation) == ArrangementOrder.ArrangementOrderEnum.Column;
+                if (isColumnFormation)
+                {
+                    formationDirection = GetColumnFormationNewDirection(formation, oldOrderPosition, formationPositionVec2);
+                }
+                else
+                {
+                    formationDirection = rotateVector(formationDirection, weightedAverageDirection, newOverallDirection);
+                }
                 if (isSimulatingFormationChanges)
                 {
                     LivePreviewFormationChanges.UpdateFormationChange(formation, formationPosition, formationDirection, null, formationWidth);
@@ -932,7 +948,6 @@ namespace RTSCamera.CommandSystem.Patch
                     var actualUnitSpacing = GetActualOrCurrentUnitSpacing(formation);
                     var actualOrCurrentWidth = GetActualOrCurrentWidth(formation);
                     var newFormationWidth = MathF.Max(MathF.Min(isWidthApproximatelySame ? actualOrCurrentWidth : availableWidthFromDragging * (actualOrCurrentWidth / oldOverallWidth), GetFormationVirtualMaximumWidth(formation)), GetFormationVirtualMinimumWidth(formation));
-                    var newFormationDireciton = newOverallDirection;
                     Vec2 formationPositionVec2 = rotateVector(oldOrderPosition - averageOrderPosition, weightedAverageDirection, newOverallDirection) + clickedCenter.AsVec2;
                     if (startPoint == null)
                     {
@@ -942,6 +957,12 @@ namespace RTSCamera.CommandSystem.Patch
                     formationPositionVec2 += dragVec * (newStackWidth * 0.5f + offset);
                     WorldPosition formationPosition = clickedCenter;
                     formationPosition.SetVec2(formationPositionVec2);
+                    var newFormationDireciton = newOverallDirection;
+                    bool isColumnFormation = GetFormationVirtualArrangementOrder(formation) == ArrangementOrder.ArrangementOrderEnum.Column;
+                    if (isColumnFormation)
+                    {
+                        newFormationDireciton = GetColumnFormationNewDirection(formation, oldOrderPosition, formationPositionVec2);
+                    }
                     if (isSimulatingFormationChanges)
                     {
                         LivePreviewFormationChanges.UpdateFormationChange(formation, formationPosition, newFormationDireciton, null, newFormationWidth);
@@ -1014,6 +1035,20 @@ namespace RTSCamera.CommandSystem.Patch
         private static bool ShouldFormationBeStackedTogether(StackRecord stackRecord, Formation formation, Vec2 orderPosition, Vec2 dragVec)
         {
             return MathF.Abs(stackRecord.Center - orderPosition.DotProduct(dragVec)) < MathF.Max(stackRecord.Width, GetActualOrCurrentWidth(formation)) * 0.5f;
+        }
+
+        private static Vec2 GetColumnFormationNewDirection(Formation formation, Vec2 oldOrderPositionVec2, Vec2 newOrderPositionVec2)
+        {
+            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            if (queueCommand)
+            {
+                return (newOrderPositionVec2 - oldOrderPositionVec2).Normalized();
+            }
+            else
+            {
+                var columnFormation = formation.Arrangement as ColumnFormation;
+                return (newOrderPositionVec2 - formation.CurrentPosition).Normalized();
+            }
         }
 
         private static void GetFormationLineBeginEnd(Formation formation, WorldPosition formationLineBegin, out WorldPosition begin, out WorldPosition end)
@@ -2368,11 +2403,11 @@ namespace RTSCamera.CommandSystem.Patch
             }
             if (oldArrangementOrder != ArrangementOrder.ArrangementOrderEnum.Column && newArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Column)
             {
-                return oldWidth * 0.1f;
+                return MathF.Clamp(oldWidth * 0.1f, GetFormationMinimumWidthOfArrangementOrder(formation, newArrangementOrder), GetFormationMaximumWidthOfArrangementOrder(formation, newArrangementOrder));
             }
             if (oldArrangementOrder == ArrangementOrder.ArrangementOrderEnum.Column && newArrangementOrder != ArrangementOrder.ArrangementOrderEnum.Column)
             {
-                return oldWidth / 0.1f;
+                return MathF.Clamp(oldWidth / 0.1f, GetFormationMinimumWidthOfArrangementOrder(formation, newArrangementOrder), GetFormationMaximumWidthOfArrangementOrder(formation, newArrangementOrder));
             }
             var oldUnitSpacing = GetFormationVirtualUnitSpacing(formation) ?? formation.UnitSpacing;
             var oldFlankWidth = oldWidth;
@@ -2732,6 +2767,8 @@ namespace RTSCamera.CommandSystem.Patch
                     return Utilities.Utility.GetMinimumWidthOfSquareFormation(formation);
                 case ArrangementOrder.ArrangementOrderEnum.Circle:
                     return Utilities.Utility.GetMinimumWidthOfCircularFormation(formation, GetFormationVirtualUnitSpacing(formation) ?? formation.UnitSpacing);
+                case ArrangementOrder.ArrangementOrderEnum.Column:
+                    return Utilities.Utility.GetMinimumWidthOfColumnFormation(formation, GetFormationVirtualUnitSpacing(formation) ?? formation.UnitSpacing);
                 default:
                     return Utilities.Utility.GetMinimumWidthOfLineFormation(formation);
             }
@@ -2751,6 +2788,8 @@ namespace RTSCamera.CommandSystem.Patch
                     return Utilities.Utility.GetMaximumWidthOfSquareFormation(formation);
                 case ArrangementOrder.ArrangementOrderEnum.Circle:
                     return Utilities.Utility.GetMaximumWidthOfCircularFormation(formation, GetFormationVirtualUnitSpacing(formation) ?? formation.UnitSpacing);
+                case ArrangementOrder.ArrangementOrderEnum.Column:
+                    return Utilities.Utility.GetMaximumWidthOfColumnFormation(formation, GetFormationVirtualUnitSpacing(formation) ?? formation.UnitSpacing);
                 default:
                     return Utilities.Utility.GetMaximumWidthOfLineFormation(formation);
             }
