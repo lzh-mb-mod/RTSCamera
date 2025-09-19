@@ -1,6 +1,6 @@
 <Tasks>
   <GetItem>
-    <ItemId Value="2879991660"/>
+    <ItemId Value="3570706807"/>
     <!-- Can be found in the URL of your workshop item -->
   </GetItem>
   <UpdateItem>
@@ -56,7 +56,7 @@ source code: https://github.com/lzh-mb-mod/RTSCamera"/>
       <Tag Value="UI"/>
       <Tag Value="AI"/>
       <Tag Value="Singleplayer"/>
-      <Tag Value="v1.2.12" />
+      <Tag Value="v1.3.0" />
     </Tags>
   </UpdateItem>
 </Tasks>
