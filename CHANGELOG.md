@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.2.0] - 2025-09-19
+### Fixed
+- Keep compatible with game v1.3.0.
+
 ## [v5.1.13] - 2025-09-14
 ### Fixed
 - Fix crash in commanding mode when player party is in army.
