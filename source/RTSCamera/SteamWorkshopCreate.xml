@@ -74,7 +74,7 @@ mountandblade.com.cn: https://bbs.mountblade.com.cn/thread-2061243-1-1.html"/>
       <!-- <Tag Value="Multiplayer"/> -->
       <Tag Value="v1.0.0"/>
     </Tags>
-    <Image Value="D:\develop\src\RTSCamera\source\RTSCamera\RTSCamera.jpeg"/>
+    <Image Value="D:\develop\src\RTSCamera\RTS Camera preview.jpg"/>
     <!--  Determines the featured image displayed on Steam Workshop, a direct path to it must be inserted here (the image should be smaller than 1 MB)  -->
     <Visibility Value="FriendsOnly"/>
     <!--  Determines visibility on Steam Workshop. Can be: Public, FriendsOnly, Private  -->
