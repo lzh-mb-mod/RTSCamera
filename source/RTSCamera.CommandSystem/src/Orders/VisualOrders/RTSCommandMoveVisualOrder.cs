@@ -25,7 +25,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
           OrderController orderController,
           VisualOrderExecutionParameters executionParameters)
         {
-            if (!executionParameters.HasWorldPosition)
+            if (!executionParameters.HasWorldPosition || IsFromClicking)
                 return;
 
             bool queueCommand = OnBeforeExecuteOrder(orderController, executionParameters);

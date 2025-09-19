@@ -93,7 +93,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
 
         protected override bool? OnGetFormationHasOrder(Formation formation)
         {
-            return VisualOrderHelper.DoesFormationHaveOrderType(formation, PositiveOrder) ? new bool?(true) : new bool?(false);
+            return Utilities.Utility.DoesFormationHaveOrderType(formation, PositiveOrder);
         }
 
         protected override string GetIconId()

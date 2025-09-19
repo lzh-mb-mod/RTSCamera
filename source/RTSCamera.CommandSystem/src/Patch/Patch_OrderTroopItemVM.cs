@@ -12,7 +12,7 @@ namespace RTSCamera.CommandSystem.Patch
     {
         private static bool _patched;
 
-        public static bool  Patch(Harmony harmony)
+        public static bool Patch(Harmony harmony)
         {
             try
             {
@@ -20,12 +20,13 @@ namespace RTSCamera.CommandSystem.Patch
                     return false;
                 _patched = true;
 
+                // always show current orders.
                 //harmony.Patch(
-                    //typeof(OrderTroopItemVM).GetMethod("RefreshTargetedOrderVisual",
-                    //    BindingFlags.Instance | BindingFlags.Public),
-                    //postfix: new HarmonyMethod(
-                    //    typeof(Patch_OrderTroopItemVM).GetMethod(nameof(Postfix_RefreshTargetedOrderVisual),
-                    //        BindingFlags.Static | BindingFlags.Public)));
+                //    typeof(OrderTroopItemVM).GetMethod("RefreshTargetedOrderVisual",
+                //        BindingFlags.Instance | BindingFlags.Public),
+                //    prefix: new HarmonyMethod(
+                //        typeof(Patch_OrderTroopItemVM).GetMethod(nameof(Prefix_RefreshTargetedOrderVisual),
+                //            BindingFlags.Static | BindingFlags.Public)));
 
             }
             catch (Exception e)
@@ -37,21 +38,29 @@ namespace RTSCamera.CommandSystem.Patch
 
             return true;
         }
-        public static void Postfix_RefreshTargetedOrderVisual(OrderTroopItemVM __instance)
-        {
-            // show target formation icon event if current order is neither charge nor advance
-            //Formation targetFormation = __instance.Formation.TargetFormation;
-            //OrderSubType orderSubType = (OrderSubType)typeof(OrderUIHelper).GetMethod("GetActiveMovementOrderOfFormation", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(__instance, new object[] { __instance.Formation });
-            //__instance.HasTarget = true;
-            //__instance.CurrentOrderIconId = orderSubType.ToString();
-            //if (targetFormation != null)
-            //{
-            //    __instance.CurrentTargetFormationType = MissionFormationMarkerTargetVM.GetFormationType(targetFormation.PhysicalClass);
-            //}
-            //else
-            //{
-            //    __instance.CurrentTargetFormationType = "";
-            //}
-        }
+        //public static bool Prefix_RefreshTargetedOrderVisual(OrderTroopItemVM __instance)
+        //{
+        //    bool flag = false;
+        //    string str1 = "";
+        //    string str2 = "";
+        //    for (int index = 0; index < __instance.ActiveOrders.Count; ++index)
+        //    {
+        //        OrderItemVM activeOrder = __instance.ActiveOrders[index];
+        //        if (activeOrder.Order.IsTargeted())
+        //        {
+        //            Formation targetFormation = __instance.Formation.TargetFormation;
+        //            if (targetFormation != null)
+        //            {
+        //                str2 = MissionFormationMarkerTargetVM.GetFormationType(targetFormation.PhysicalClass);
+        //                flag = true;
+        //            }
+        //            str1 = activeOrder.OrderIconId;
+        //        }
+        //    }
+        //    __instance.HasTarget = flag;
+        //    __instance.CurrentOrderIconId = str1;
+        //    __instance.CurrentTargetFormationType = str2;
+        //    return false;
+        //}
     }
 }

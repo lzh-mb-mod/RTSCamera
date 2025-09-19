@@ -1,0 +1,50 @@
+<Prefab>
+  <Window>
+    <Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+      <Children>
+        <Siege />
+        <Widget IsVisible="@IsToggleOrderShown" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+          <Children>
+            <Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsVisible="@IsTroopListShown">
+              <Children>
+
+                <Widget DoNotAcceptEvents="true" DataSource="{TroopController}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="20" MarginRight="20" MarginTop="20" MarginBottom="20">
+                  <Children>
+                    <ListPanel DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" StackLayout.LayoutMethod="VerticalBottomToTop">
+                      <Children>
+                        <OrderTroopItem DataSource="{TroopItem0}" />
+                        <OrderTroopItem DataSource="{TroopItem1}" />
+                        <OrderTroopItem DataSource="{TroopItem2}" />
+                        <OrderTroopItem DataSource="{TroopItem3}" />
+                      </Children>
+                    </ListPanel>
+                    <ListPanel DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" StackLayout.LayoutMethod="VerticalBottomToTop">
+                      <Children>
+                        <OrderTroopItem DataSource="{TroopItem4}" />
+                        <OrderTroopItem DataSource="{TroopItem5}" />
+                        <OrderTroopItem DataSource="{TroopItem6}" />
+                        <OrderTroopItem DataSource="{TroopItem7}" />
+                      </Children>
+                    </ListPanel>
+                  </Children>
+                </Widget>
+
+              </Children>
+            </Widget>
+            <ListPanel DoNotAcceptEvents="true" DataSource="{OrderSets}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginLeft="180" MarginTop="120" StackLayout.LayoutMethod="VerticalBottomToTop">
+              <ItemTemplate>
+                <OrderSetBar MarginBottom="8"/>
+              </ItemTemplate>
+            </ListPanel>
+            <Widget DoNotAcceptEvents="true" DataSource="{OrderSets}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginLeft="295" MarginTop="120" >
+              <ItemTemplate>
+                <OrderSetItemBar MarginBottom="8"/>
+              </ItemTemplate>
+            </Widget>
+          </Children>
+        </Widget>
+        <OrderTransferPopup DataSource="{TroopController}"/>
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

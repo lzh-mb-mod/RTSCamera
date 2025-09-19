@@ -53,7 +53,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             orderToAdd.OrderType = IsFacingEnemy(GetActiveState(orderController)) ? OrderType.LookAtDirection : OrderType.LookAtEnemy;
             if (orderToAdd.OrderType == OrderType.LookAtDirection)
             {
-                if (IsSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == SelectTargetMode.None && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
+                if (IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
                 {
                     // Allows to click ground to select target to facing to.
                     OrderToSelectTarget = SelectTargetMode.LookAtDirection;
@@ -62,7 +62,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             }
             else
             {
-                if (IsSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == SelectTargetMode.None && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
+                if (IsSelectTargetForMouseClickingKeyDown && IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
                 {
                     // Allows to click enemy to select target to facing to.
                     OrderToSelectTarget = SelectTargetMode.LookAtEnemy;

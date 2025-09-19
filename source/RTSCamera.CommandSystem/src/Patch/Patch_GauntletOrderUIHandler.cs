@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Orders;
@@ -308,8 +309,8 @@ namespace RTSCamera.CommandSystem.Patch
                                             IEnumerable<Formation> source = selectedFormations.Where(new Func<Formation, bool>(usable.IsUsedByFormation));
                                             if (source.IsEmpty())
                                             {
-                                                //foreach (Formation formation in selectedFormations)
-                                                //    formation.StartUsingMachine(usable, true);
+                                                foreach (Formation formation in selectedFormations)
+                                                    formation.StartUsingMachine(usable, true);
                                                 if (!usable.HasWaitFrame)
                                                     // will not be added to queue because orderToAdd.OrderType is OrderType.None.
                                                     break;
@@ -320,8 +321,8 @@ namespace RTSCamera.CommandSystem.Patch
                                             }
                                             else
                                             {
-                                                //foreach (Formation formation in source)
-                                                //    formation.StopUsingMachine(usable, true);
+                                                foreach (Formation formation in source)
+                                                    formation.StopUsingMachine(usable, true);
                                                 // will not be added to queue because orderToAdd.OrderType is OrderType.None.
                                             }
                                             break;
@@ -363,6 +364,8 @@ namespace RTSCamera.CommandSystem.Patch
                             dataSource.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, __instance.MissionScreen.GetOrderFlagPosition(), false));
                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
+                        RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
+                        dataSource.SelectedOrderSet?.ExecuteDeSelect();
                         break;
                     }
                 case MissionOrderVM.CursorStates.Form:
@@ -378,6 +381,7 @@ namespace RTSCamera.CommandSystem.Patch
         public static void Postfix_OnMissionScreenTick(GauntletOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer, ref bool ____isTransferEnabled)
         {
             UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer, ref ____isTransferEnabled);
+            UpdateOrderTroopPlacerDrawingFacing(__instance, ____dataSource, ____gauntletLayer, ____orderTroopPlacer);
             //return true;
         }
 
@@ -389,7 +393,7 @@ namespace RTSCamera.CommandSystem.Patch
             bool mouseVisibility =
                 (__instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ||
                  ____dataSource.IsToggleOrderShown && (__instance.Input.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null));
-            var inputUsageMask = __instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ? InputUsageMask.All : InputUsageMask.MouseButtons;
+            var inputUsageMask = __instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ? InputUsageMask.All : CommandSystemConfig.Get().OrderUIClickable ? InputUsageMask.All : InputUsageMask.Invalid;
             var layer = ____gauntletLayer;
             if (mouseVisibility != layer.InputRestrictions.MouseVisibility || inputUsageMask != layer.InputRestrictions.InputUsageMask)
             {
@@ -423,6 +427,14 @@ namespace RTSCamera.CommandSystem.Patch
             //        __instance.MissionScreen.SetOrderFlagVisibility(orderFlagVisibility);
             //    }
             //}
+        }
+
+        private static void UpdateOrderTroopPlacerDrawingFacing(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
+        {
+            if (__instance.IsValidForTick && ____dataSource != null && ____gauntletLayer.IsActive && ____dataSource.IsToggleOrderShown && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension == true)
+            {
+                ____orderTroopPlacer.IsDrawingFacing = ____dataSource.SelectedOrderSet?.OrderIconId == "order_type_facing" || RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.LookAtDirection;
+            }
         }
     }
 }

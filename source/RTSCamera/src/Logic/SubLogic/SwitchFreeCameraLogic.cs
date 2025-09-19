@@ -471,32 +471,32 @@ namespace RTSCamera.Logic.SubLogic
             {
                 TrySetPlayerFormation(true);
             }
-            if (MissionState.Current?.MissionName == "HideoutBattle")
-            {
-                if (oldMissionMode == MissionMode.Battle && Mission.Mode == MissionMode.Stealth)
-                {
-                    if (!_config.FastForwardHideoutPrompted)
-                    {
-                        _config.FastForwardHideoutPrompted = true;
-                        if (_config.FastForwardHideout == FastForwardHideout.Never)
-                        {
-                            _shouldShowFastForwardInHideoutPromptInThisMission = true;
-                        }
-                    }
-                    if (_config.FastForwardHideout >= FastForwardHideout.UntilBossFight)
-                        FastForwardHideoutNextTick = true;
-                }
-                if (oldMissionMode == MissionMode.Stealth && (Mission.Mode == MissionMode.CutScene || Mission.Mode == MissionMode.Conversation))
-                {
-                    // do not fast forward in conversation.
-                    Mission.SetFastForwardingFromUI(false);
-                    _logic.MissionSpeedLogic.SetSlowMotionMode(false);
-                    if (IsSpectatorCamera)
-                    {
-                        SwitchToAgent();
-                    }
-                }
-            }
+            //if (MissionState.Current?.MissionName == "HideoutBattle")
+            //{
+            //    if (oldMissionMode == MissionMode.Battle && Mission.Mode == MissionMode.Stealth)
+            //    {
+            //        if (!_config.FastForwardHideoutPrompted)
+            //        {
+            //            _config.FastForwardHideoutPrompted = true;
+            //            if (_config.FastForwardHideout == FastForwardHideout.Never)
+            //            {
+            //                _shouldShowFastForwardInHideoutPromptInThisMission = true;
+            //            }
+            //        }
+            //        if (_config.FastForwardHideout >= FastForwardHideout.UntilBossFight)
+            //            FastForwardHideoutNextTick = true;
+            //    }
+            //    if (oldMissionMode == MissionMode.Stealth && (Mission.Mode == MissionMode.CutScene || Mission.Mode == MissionMode.Conversation))
+            //    {
+            //        // do not fast forward in conversation.
+            //        Mission.SetFastForwardingFromUI(false);
+            //        _logic.MissionSpeedLogic.SetSlowMotionMode(false);
+            //        if (IsSpectatorCamera)
+            //        {
+            //            SwitchToAgent();
+            //        }
+            //    }
+            //}
         }
 
         private void TrySetPlayerFormation(bool isDeploymentFinishing = false)

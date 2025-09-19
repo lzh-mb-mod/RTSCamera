@@ -48,21 +48,25 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             orderToAdd.OrderType = _orderType;
             if (orderToAdd.OrderType == OrderType.LookAtDirection)
             {
-                if (IsSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == SelectTargetMode.None && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
+                if (IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
                 {
                     // Allows to click ground to select target to facing to.
                     OrderToSelectTarget = SelectTargetMode.LookAtDirection;
                     return;
                 }
             }
-            else
+            else if (orderToAdd.OrderType == OrderType.LookAtEnemy)
             {
-                if (IsSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == SelectTargetMode.None && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
+                if (IsSelectTargetForMouseClickingKeyDown && IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
                 {
                     // Allows to click enemy to select target to facing to.
                     OrderToSelectTarget = SelectTargetMode.LookAtEnemy;
                     return;
                 }
+            }
+            else
+            {
+                return;
             }
             if (queueCommand)
             {
@@ -114,7 +118,5 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             string iconId = base.GetIconId();
             return iconId;
         }
-
-        private static bool IsFacingEnemy(OrderState activeState) => activeState == OrderState.Active;
     }
 }

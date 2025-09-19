@@ -977,5 +977,12 @@ namespace RTSCamera.CommandSystem.Patch
                 return;
             _orderTroopPlacer.IsDrawingFacing = isDrawingFacing;
         }
+
+        public static void Reset()
+        {
+            if (_orderTroopPlacer == null)
+                return;
+            typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(_orderTroopPlacer, new object[] { });
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using RTSCamera.CommandSystem.Logic;
+﻿using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using System.Linq;
 using TaleWorlds.Localization;
@@ -75,7 +74,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
 
         protected override bool? OnGetFormationHasOrder(Formation formation)
         {
-            return new bool?(formation.ArrangementOrder.OrderEnum == this.ArrangementOrder);
+            return OrderController.GetActiveArrangementOrderOf(formation) == Utilities.Utility.ArrangementOrderEnumToOrderType(ArrangementOrder);
         }
 
         public override bool IsTargeted() => false;

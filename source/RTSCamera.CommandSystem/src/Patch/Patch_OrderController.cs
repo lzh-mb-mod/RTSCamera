@@ -1431,7 +1431,7 @@ namespace RTSCamera.CommandSystem.Patch
                     return false;
                 }
             }
-            if (Utilities.Utility.ShouldLockFormation())
+            //if (Utilities.Utility.ShouldLockFormation())
             {
                 var formationCount = 0;
                 Vec2 averageOrderPosition = Vec2.Zero;

@@ -83,9 +83,9 @@ namespace RTSCamera.Patch
             // use Input.MousePositionRanged if mouse is visible. In official code the condition is Mission.Current.GetMissionBehavior<BattleDeploymentHandler>() != null
             Vec2 screenPoint = ____missionScreen.MouseVisible ? Input.MousePositionRanged : new Vec2(0.5f, 0.5f);
             ____missionScreen.ScreenPointToWorldRay(screenPoint, out var rayBegin, out var rayEnd);
-            Vec3 vec3 = (rayEnd - rayBegin).NormalizedCopy();
-            rayEnd = rayBegin + vec3 * 10000f;
-            rayBegin = Agent.Main.GetEyeGlobalPosition();
+            //Vec3 vec3 = (rayEnd - rayBegin).NormalizedCopy();
+            //rayEnd = rayBegin + vec3 * 10000f;
+            //rayBegin = Agent.Main.GetEyeGlobalPosition();
             WeakGameEntity collidedEntity;
             ____mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out float _, out closestPoint, out collidedEntity, 0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora);
             while (collidedEntity.IsValid && !collidedEntity.GetScriptComponents().Any<ScriptComponentBehavior>((Func<ScriptComponentBehavior, bool>)(sc => sc is IOrderable orderable && orderable.GetOrder(Mission.Current.PlayerTeam.Side) != 0)))

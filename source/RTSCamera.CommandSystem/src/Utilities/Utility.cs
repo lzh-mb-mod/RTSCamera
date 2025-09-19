@@ -14,6 +14,7 @@ using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.GauntletUI;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 using static TaleWorlds.Engine.WorldPosition;
@@ -72,7 +73,7 @@ namespace RTSCamera.CommandSystem.Utilities
                             nameof(BehaviorTacticalCharge))
                         .SetTextVariable("AI_SIDE", GameTexts.FindText("str_formation_ai_side_strings", targetFormation.AI.Side.ToString()))
                         // TODO: Verify PhysicalClass
-                        .SetTextVariable("CLASS", GameTexts.FindText("str_troop_group_name", ((int)targetFormation.PhysicalClass).ToString())));                
+                        .SetTextVariable("CLASS", GameTexts.FindText("str_troop_group_name", ((int)targetFormation.PhysicalClass).ToString())));
                 //MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
                 InformationManager.DisplayMessage(new InformationMessage(message.ToString()));
             }
@@ -478,7 +479,7 @@ namespace RTSCamera.CommandSystem.Utilities
             return ArrangementOrderEnum.Line;
         }
 
-         public static ArrangementOrder GetArrangementOrder(ArrangementOrderEnum arrangementOrder)
+        public static ArrangementOrder GetArrangementOrder(ArrangementOrderEnum arrangementOrder)
         {
             switch (arrangementOrder)
             {
@@ -776,14 +777,14 @@ namespace RTSCamera.CommandSystem.Utilities
 
         public static void UpdateActiveOrders()
         {
-            var orderUIHandler = Mission.Current.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
+            var orderUIHandler = Mission.Current.GetMissionBehavior<GauntletOrderUIHandler>();
             if (orderUIHandler == null)
             {
                 return;
             }
-            var missionOrderVM = typeof(MissionGauntletSingleplayerOrderUIHandler).GetField("_dataSource", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(orderUIHandler) as MissionOrderVM;
-            foreach (OrderTroopItemVM orderTroopItemVm in missionOrderVM.TroopController.TroopList.Where((item => item.IsSelected)))
-                missionOrderVM.TroopController.SetTroopActiveOrders(orderTroopItemVm);
+            var missionOrderVM = typeof(GauntletOrderUIHandler).GetField("_dataSource", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(orderUIHandler) as MissionOrderVM;
+            //foreach (OrderTroopItemVM orderTroopItemVm in missionOrderVM.TroopController.TroopList.Where((item => item.IsSelected)))
+            //    missionOrderVM.TroopController.SetTroopActiveOrders(orderTroopItemVm);
             missionOrderVM.SetActiveOrders();
         }
 
@@ -813,6 +814,41 @@ namespace RTSCamera.CommandSystem.Utilities
                 return position;
             }
             return Vec3.Invalid;
+        }
+        public static bool DoesFormationHaveOrderType(Formation formation, OrderType type)
+        {
+            MovementOrder readonlyMovementOrderReference = formation.GetReadonlyMovementOrderReference();
+            switch (type)
+            {
+                case OrderType.FireAtWill:
+                case OrderType.HoldFire:
+                    return OrderController.GetActiveFiringOrderOf(formation) == type;
+                case OrderType.Mount:
+                case OrderType.Dismount:
+                    return OrderController.GetActiveRidingOrderOf(formation) == type;
+                case OrderType.AIControlOn:
+                case OrderType.AIControlOff:
+                    return OrderController.GetActiveAIControlOrderOf(formation) == type;
+                case OrderType.LookAtDirection:
+                case OrderType.LookAtEnemy:
+                    return OrderController.GetActiveFacingOrderOf(formation) == type;
+                case OrderType.ArrangementLine:
+                case OrderType.ArrangementLoose:
+                case OrderType.ArrangementScatter:
+                case OrderType.ArrangementVee:
+                case OrderType.ArrangementCloseOrder:
+                case OrderType.ArrangementCircular:
+                case OrderType.ArrangementSchiltron:
+                case OrderType.ArrangementColumn:
+                    return OrderController.GetActiveArrangementOrderOf(formation) == type;
+                default:
+                    if (readonlyMovementOrderReference.OrderType != type && formation.ArrangementOrder.OrderType != type && formation.FacingOrder.OrderType != type && formation.FiringOrder.OrderType != type && formation.FormOrder.OrderType != type)
+                    {
+                        return formation.RidingOrder.OrderType == type;
+                    }
+
+                    return true;
+            }
         }
     }
 }

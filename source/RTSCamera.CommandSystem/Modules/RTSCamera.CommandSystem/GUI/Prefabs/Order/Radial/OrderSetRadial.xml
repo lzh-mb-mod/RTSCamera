@@ -1,0 +1,57 @@
+<Prefab>
+  <Constants>
+    <Constant Name="Item.Background.Width" BrushName="Order.Item.Background" BrushLayer="Default" BrushValueType="Width" MultiplyResult="6"/>
+    <Constant Name="Item.Background.Height" BrushName="Order.Item.Background" BrushLayer="Default" BrushValueType="Height" MultiplyResult="6"/>
+
+    <Constant Name="CircleSelected.Additive" Value="20" />
+
+    <Constant Name="Circle.Height" BrushLayer="Default" BrushName="Mission.Radial.Item.Background" BrushValueType="Height" />
+    <Constant Name="Circle.Width" BrushLayer="Default" BrushName="Mission.Radial.Item.Background" BrushValueType="Width" />
+
+    <Constant Name="Circle.Selected.Height" Additive="!CircleSelected.Additive" Value="!Circle.Height" />
+    <Constant Name="Circle.Selected.Width" Additive="!CircleSelected.Additive" Value="!Circle.Width" />
+
+    <Constant Name="CircleGlow.Height" BrushLayer="Default" BrushName="Mission.Radial.Item.Glow" BrushValueType="Height" MultiplyResult="0.55" />
+    <Constant Name="CircleGlow.Width" BrushLayer="Default" BrushName="Mission.Radial.Item.Glow" BrushValueType="Width" MultiplyResult="0.55" />
+
+    <Constant Name="CircleGlow.Selected.Height" Additive="!CircleSelected.Additive" Value="!CircleGlow.Height" />
+    <Constant Name="CircleGlow.Selected.Width" Additive="!CircleSelected.Additive" Value="!CircleGlow.Width" />
+  </Constants>
+  <VisualDefinitions>
+    <VisualDefinition Name="CircleBackground" TransitionDuration="0.15">
+      <VisualState SuggestedHeight="!Circle.Selected.Height" SuggestedWidth="!Circle.Selected.Width" State="Selected" />
+      <VisualState SuggestedHeight="!Circle.Height" SuggestedWidth="!Circle.Width" State="Default" />
+      <VisualState SuggestedHeight="!Circle.Height" SuggestedWidth="!Circle.Width" State="Pressed" />
+      <VisualState SuggestedHeight="!Circle.Height" SuggestedWidth="!Circle.Width" State="Hovered" />
+      <VisualState SuggestedHeight="!Circle.Height" SuggestedWidth="!Circle.Width" State="Disabled" />
+    </VisualDefinition>
+    <VisualDefinition Name="CircleGlow" TransitionDuration="0.15">
+      <VisualState SuggestedHeight="!CircleGlow.Selected.Height" SuggestedWidth="!CircleGlow.Selected.Width" State="Selected" />
+      <VisualState SuggestedHeight="!CircleGlow.Height" SuggestedWidth="!CircleGlow.Width" State="Default" />
+      <VisualState SuggestedHeight="!CircleGlow.Height" SuggestedWidth="!CircleGlow.Width" State="Pressed" />
+      <VisualState SuggestedHeight="!CircleGlow.Height" SuggestedWidth="!CircleGlow.Width" State="Hovered" />
+      <VisualState SuggestedHeight="!CircleGlow.Height" SuggestedWidth="!CircleGlow.Width" State="Disabled" />
+    </VisualDefinition>
+  </VisualDefinitions>
+  <Window>
+    <Widget DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Item.Background.Width" SuggestedHeight="!Item.Background.Height" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <Children>
+
+        <OrderItemRadial HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+
+        <!--<Widget IsVisible="@IsSelected" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="30" SuggestedHeight="41" MarginLeft="80" VerticalAlignment="Center" Sprite="StdAssets\arrow_little"/>-->
+        <Widget DoNotAcceptEvents="true" IsVisible="@IsSelected" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginBottom="115" MinWidth="370">
+          <Children>
+            <CircleActionSelectorWidget DoNotAcceptEvents="true" DataSource="{Orders}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="430" SuggestedHeight="400" HorizontalAlignment="Center" VerticalAlignment="Bottom" DistanceFromCenterModifier="130" DirectionWidget="..\..\DirectionWidget" Sprite="General\RadialMenu\radial_menu_bg" Color="#00000099" ActivateOnlyWithController="true">
+              <ItemTemplate>
+                <OrderItemRadial HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </ItemTemplate>
+            </CircleActionSelectorWidget>
+          </Children>
+        </Widget>
+        <TextWidget DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="@SelectedOrderText" MarginBottom="280" MarginRight="15" Brush="Order.SelectedOrder.Text" IsVisible="@IsSelected"/>
+        <Widget DoNotAcceptEvents="true" Id="DirectionWidget" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="13" SuggestedHeight="13" HorizontalAlignment="Center" VerticalAlignment="Center" MarginBottom="460" Sprite="BlankWhiteCircle" AlphaFactor="0.5"/>
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

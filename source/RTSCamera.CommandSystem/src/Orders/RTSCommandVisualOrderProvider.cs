@@ -5,7 +5,6 @@ using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.VisualOrders.OrderSets;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
-using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual.Default.Orders.FormOrders;
 
 namespace RTSCamera.CommandSystem.Orders
 {
@@ -69,7 +68,7 @@ namespace RTSCamera.CommandSystem.Orders
                 defaultOrders.Add(new SingleVisualOrderSet(order5));
                 if (order6 != null)
                     defaultOrders.Add(new SingleVisualOrderSet(order6));
-                defaultOrders.Add(new SingleVisualOrderSet(order3));
+                defaultOrders.Add(new SingleVisualOrderSet(order8));
                 defaultOrders.Add(new SingleVisualOrderSet(order2));
                 defaultOrders.Add(new SingleVisualOrderSet(order1));
             }

@@ -19,6 +19,7 @@ namespace RTSCamera.CommandSystem.Orders
     {
         protected bool QueueCommand = false;
         protected bool IsSelectTargetForMouseClickingKeyDown = false;
+        public static bool IsFromClicking = false;
 
         public static SelectTargetMode OrderToSelectTarget = SelectTargetMode.None;
         protected RTSCommandVisualOrder(string stringId) : base(stringId)

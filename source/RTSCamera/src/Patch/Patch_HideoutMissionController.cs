@@ -42,10 +42,10 @@ namespace RTSCamera.Patch
             {
                 return;
             }
-            if (RTSCameraConfig.Get().FastForwardHideout == FastForwardHideout.Always)
-            {
-                rtsCameraLogic.SwitchFreeCameraLogic.FastForwardHideoutNextTick = true;
-            }
+            //if (RTSCameraConfig.Get().FastForwardHideout == FastForwardHideout.Always)
+            //{
+            //    rtsCameraLogic.SwitchFreeCameraLogic.FastForwardHideoutNextTick = true;
+            //}
         }
     }
 }

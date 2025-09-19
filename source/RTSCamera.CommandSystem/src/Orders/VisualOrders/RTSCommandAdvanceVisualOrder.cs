@@ -29,7 +29,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
         {
             bool queueCommand = OnBeforeExecuteOrder(orderController, executionParameters);
 
-            if (IsSelectTargetForMouseClickingKeyDown && OrderToSelectTarget == SelectTargetMode.None && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
+            if (IsSelectTargetForMouseClickingKeyDown && IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
             {
                 // Allows to click enemy to select target to advance to.
                 OrderToSelectTarget = SelectTargetMode.Advance;

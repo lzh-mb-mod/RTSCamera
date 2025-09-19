@@ -264,8 +264,8 @@ namespace RTSCamera.CommandSystem.View
             base.OnMissionScreenTick(dt);
 
             var commandQueueKey = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue);
-            if ((commandQueueKey.IsKeyPressedInOrder(Utility.GetMissionScreen().SceneLayer.Input) ||
-                commandQueueKey.IsKeyReleasedInOrder(Utility.GetMissionScreen().SceneLayer.Input)))
+            if ((commandQueueKey.IsKeyPressedInOrder() ||
+                commandQueueKey.IsKeyReleasedInOrder()))
             {
                 Utilities.Utility.UpdateActiveOrders();
             }

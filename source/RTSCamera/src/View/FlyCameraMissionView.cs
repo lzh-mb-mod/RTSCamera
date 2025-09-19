@@ -271,17 +271,23 @@ namespace RTSCamera.View
             base.OnMissionScreenFinalize();
 
             MissionScreen.RemoveLayer(_showControlHintLayer);
-            _showControlHintLayer = null;
-            _showControlHintVM = null;
 
             MissionScreen.OnSpectateAgentFocusIn -= MissionScreenOnSpectateAgentFocusIn;
             MissionScreen.OnSpectateAgentFocusOut -= MissionScreenOnSpectateAgentFocusOut;
+        }
+
+        public override void OnRemoveBehavior()
+        {
+            base.OnRemoveBehavior();
+            _showControlHintLayer = null;
+            _showControlHintVM = null;
 
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             _freeCameraLogic = null;
             _config = null;
 
             ACameraControllerManager.Get().Clear();
+
         }
 
         public override bool UpdateOverridenCamera(float dt)
@@ -310,6 +316,9 @@ namespace RTSCamera.View
         {
             base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
 
+            // Since 1.3.0 MissionScreen may be null because that OnMissionScreenFinalize may be already called.
+            if (MissionScreen == null)
+                return;
             if (affectedAgent == MissionScreen.LastFollowedAgent && _freeCameraLogic.IsSpectatorCamera && LockToAgent)
             {
                 LeaveFromAgent();

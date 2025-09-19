@@ -15,11 +15,13 @@ using RTSCamera.Patch.TOR_fix;
 using RTSCamera.Usage;
 using SandBox.Objects;
 using System;
+using System.Linq;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
+using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 using Module = TaleWorlds.MountAndBlade.Module;
 
@@ -32,6 +34,7 @@ namespace RTSCamera
 
         private readonly Harmony _harmony = new Harmony("RTSCameraPatch");
         private bool _successPatch;
+        public static bool IsCommandSystemInstalled = false;
 
         // random generated
         public const int MissionTimeSpeedRequestId = 936012602;
@@ -42,6 +45,8 @@ namespace RTSCamera
 
             try
             {
+                IsCommandSystemInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
+                    info.Id == "RTSCamera.CommandSystem") != null;
                 Utility.ShouldDisplayMessage = true;
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts();
                 Initialize();

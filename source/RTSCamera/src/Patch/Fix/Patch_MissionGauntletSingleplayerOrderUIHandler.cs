@@ -2,6 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Logic;
+using RTSCamera.Logic.SubLogic;
 using System;
 using System.Reflection;
 using TaleWorlds.Engine.GauntletUI;
@@ -146,12 +147,11 @@ namespace RTSCamera.Patch.Fix
         {
             if (__instance == null)
                 return;
-
             bool mouseVisibility =
                 (__instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ||
                  ____dataSource.IsToggleOrderShown && (__instance.Input.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null)) &&
                 !_rightButtonDraggingMode && !_earlyDraggingMode;
-            var inputUsageMask = __instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ? InputUsageMask.All : InputUsageMask.MouseButtons;
+            var inputUsageMask = __instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ? InputUsageMask.All : RTSCameraSubModule.IsCommandSystemInstalled && UIConfig.DoNotUseGeneratedPrefabs ? InputUsageMask.All : InputUsageMask.Invalid;
             var layer = ____gauntletLayer;
             if (mouseVisibility != layer.InputRestrictions.MouseVisibility || inputUsageMask != layer.InputRestrictions.InputUsageMask)
             {

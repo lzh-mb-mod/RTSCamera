@@ -1,4 +1,5 @@
 ﻿using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using System;
@@ -53,6 +54,24 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             }
             if (orderToAdd.OrderType == OrderType.LookAtDirection)
             {
+                if (IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
+                {
+                    // Allows to click ground to select target to facing to.
+                    OrderToSelectTarget = SelectTargetMode.LookAtDirection;
+                    return;
+                }
+            }
+            else
+            {
+                if (IsSelectTargetForMouseClickingKeyDown && IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
+                {
+                    // Allows to click enemy to select target to facing to.
+                    OrderToSelectTarget = SelectTargetMode.LookAtEnemy;
+                    return;
+                }
+            }
+            if (orderToAdd.OrderType == OrderType.LookAtDirection)
+            {
                 Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, orderController, executionParameters.WorldPosition);
             }
             else if (orderToAdd.OrderType == OrderType.LookAtEnemy)
@@ -83,11 +102,11 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
 
         public override TextObject GetName(OrderController orderController) => this._name;
 
-        public override bool IsTargeted() => this._useFormationTarget || this._useWorldPositionTarget;
+        public override bool IsTargeted() => false;
 
         protected override bool? OnGetFormationHasOrder(Formation formation)
         {
-            return new bool?(VisualOrderHelper.DoesFormationHaveOrderType(formation, this._orderType));
+            return Utilities.Utility.DoesFormationHaveOrderType(formation, _orderType);
         }
     }
 }

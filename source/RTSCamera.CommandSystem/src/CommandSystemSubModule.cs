@@ -106,6 +106,7 @@ namespace RTSCamera.CommandSystem
             // command queue
             _successPatch &= Patch_MissionOrderVM.Patch(_harmony);
             _successPatch &= Patch_GauntletOrderUIHandler.Patch(_harmony);
+            _successPatch &= Patch_OrderSetVM.Patch(_harmony);
 
             // resizable square formation
             _successPatch &= Patch_ArrangementOrder.Patch(_harmony);

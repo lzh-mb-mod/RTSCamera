@@ -1,0 +1,22 @@
+<Prefab>
+  <Constants>
+    <Constant Name="Item.Background.Width" BrushName="Order.Item.Background.Square" BrushLayer="Default" BrushValueType="Width" MultiplyResult="0.75"/>
+    <Constant Name="Item.Background.Height" BrushName="Order.Item.Background.Square" BrushLayer="Default" BrushValueType="Height" MultiplyResult="0.75"/>
+  </Constants>
+  <Window>
+    <OrderItemButtonWidget Command.Click="ExecuteClickAction" Command.AlternateClick="OnEscape" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Item.Background.Width" SuggestedHeight="!Item.Background.Height" SelectionState="@SelectionState" IconWidget="Icon" IsSelected="@IsSelected" UpdateChildrenStates="true" SelectionVisualWidget="SelectionVisualWidget" MarginBottom="8">
+      <Children>
+        <ImageWidget Id="SelectionVisualWidget" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Order.Item.Background.Square" OverrideDefaultStateSwitchingEnabled="true"/>
+        <IconBrushWidget Id="Icon" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Order.Icon" IconBrush="Order.Icons.Square" IconID="@OrderIconId" IsSelected="@IsSelected" />
+
+        <!-- Input Key Visual -->
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="55" SuggestedHeight="55" HorizontalAlignment="Right" VerticalAlignment="Top" PositionXOffset="25" PositionYOffset="-12" IsVisible="@CanUseShortcuts">
+          <Children>
+            <InputKeyVisualWidget DataSource="{ShortcutKey}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" KeyID="@KeyID" IsVisible="@IsVisible"/>            
+          </Children>
+        </Widget>
+        <TextWidget Text="@Name" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="25" VerticalAlignment="Bottom" Brush="Order.Item.DescriptionText.Bar"/>
+      </Children>
+    </OrderItemButtonWidget>
+  </Window>
+</Prefab>
