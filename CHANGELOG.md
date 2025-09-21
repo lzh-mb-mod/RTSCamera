@@ -1,5 +1,14 @@
 # Changelog
 
+## [v5.2.1] - 2025-09-22
+### Fixed
+- Fix crash related with incompatible shader.
+
+- Fix crash when player is down.
+
+### Changed
+- Camera will not lock to other units automatically when the unit that camera is locking to is killed.
+
 ## [v5.2.0] - 2025-09-19
 ### Fixed
 - Keep compatible with game v1.3.0.

@@ -76,7 +76,7 @@ namespace RTSCamera.Patch.Fix
                     Vec3 position;
                     double num;
                     // Here is the only change: set distance to combat camera when main agent is not controlled by player
-                    if (main  != null && main.IsActive() || !main.IsPlayerControlled)
+                    if (main == null || !main.IsActive() || !main.IsPlayerControlled)
                     {
                         position = __instance.MissionScreen.CombatCamera.Position;
                         num = (double)position.Distance(cachedMedianPosition.GetGroundVec3());
