@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.2.2] - 2025-09-22
+### Fixed
+- Fix the issue that player cannot leaving in sneaking toturial mission.
+
 ## [v5.2.1] - 2025-09-22
 ### Fixed
 - Fix crash related with incompatible shader.
