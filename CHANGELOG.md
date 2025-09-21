@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.1.14] - 2025-09-22
+### Changed
+- Camera will not lock to other units automatically when the unit that camera is locking to is killed.
+
 ## [v5.1.13] - 2025-09-14
 ### Fixed
 - Fix crash in commanding mode when player party is in army.

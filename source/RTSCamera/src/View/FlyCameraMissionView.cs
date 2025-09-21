@@ -239,6 +239,20 @@ namespace RTSCamera.View
             _previousHeightToTerrain = null;
         }
 
+        private void LeaveFromAgentOnAgentRemoved()
+        {
+            LockToAgent = false;
+            CameraPosition = MissionScreen.CombatCamera.Frame.origin;
+            CameraBearing = MissionScreen.CameraBearing +
+                (float?)CameraSpecialCurrentAddedBearing?.GetValue(MissionScreen) ?? 0;
+            CameraElevation = MissionScreen.CameraElevation +
+                (float)(CameraSpecialCurrentAddedElevation?.GetValue(MissionScreen) ?? 0) +
+                (float)(CameraAddedElevation?.GetValue(MissionScreen) ?? 0);
+            CameraBearingDelta?.SetValue(MissionScreen, 0);
+            CameraElevationDelta?.SetValue(MissionScreen, 0);
+            _previousHeightToTerrain = null;
+        }
+
         public override void OnMissionScreenInitialize()
         {
             base.OnMissionScreenInitialize();
@@ -310,11 +324,11 @@ namespace RTSCamera.View
 
             if (affectedAgent == MissionScreen.LastFollowedAgent && _freeCameraLogic.IsSpectatorCamera && LockToAgent)
             {
-                LeaveFromAgent();
-                if (!Utility.IsAgentDead(Mission.MainAgent))
-                {
-                    FocusOnAgent(Mission.MainAgent);
-                }
+                LeaveFromAgentOnAgentRemoved();
+                //if (!Utility.IsAgentDead(Mission.MainAgent))
+                //{
+                //    FocusOnAgent(Mission.MainAgent);
+                //}
             }
         }
 
