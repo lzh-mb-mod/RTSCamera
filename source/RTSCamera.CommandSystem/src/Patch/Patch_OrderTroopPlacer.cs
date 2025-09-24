@@ -339,9 +339,10 @@ namespace RTSCamera.CommandSystem.Patch
         }
 
         public static bool Prefix_GetCursorState(OrderTroopPlacer __instance, ref CursorState __result, ref Formation ____mouseOverFormation,
-            List<GameEntity> ____orderRotationEntities, ref Vec2 ____deltaMousePosition, ref bool ____formationDrawingMode, ref int ____mouseOverDirection, bool ____isMouseDown)
+            List<GameEntity> ____orderRotationEntities, ref Vec2 ____deltaMousePosition, ref bool ____formationDrawingMode, ref int ____mouseOverDirection, bool ____isMouseDown, ref CursorState ____activeCursorState)
         {
             CursorState cursorState = CursorState.Invisible;
+            CurrentCursorState myCursorState = CurrentCursorState.Invisible;
             if (!__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.IsEmpty() && _clickedFormation == null)
             {
                 float collisionDistance;
@@ -362,7 +363,7 @@ namespace RTSCamera.CommandSystem.Patch
                                     __instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.ElementAt(index / 2);
                                 ____mouseOverDirection = 1 - (index & 1);
                                 cursorState = CursorState.Rotation;
-                                _currentCursorState = CurrentCursorState.Rotation;
+                                myCursorState = CurrentCursorState.Rotation;
                                 break;
                             }
                         }
@@ -373,7 +374,7 @@ namespace RTSCamera.CommandSystem.Patch
                         if (__instance.MissionScreen.OrderFlag.FocusedOrderableObject != null)
                         {
                             cursorState = CursorState.OrderableEntity;
-                            _currentCursorState = CurrentCursorState.OrderableEntity;
+                            myCursorState = CurrentCursorState.OrderableEntity;
                         }
                         else if (CommandSystemConfig.Get().IsMouseOverEnabled())
                         {
@@ -387,36 +388,40 @@ namespace RTSCamera.CommandSystem.Patch
                                 {
                                     if (CommandSystemConfig.Get().AttackSpecificFormation)
                                     {
-                                        _currentCursorState = CurrentCursorState.Enemy;
+                                        myCursorState = CurrentCursorState.Enemy;
                                     }
                                 }
                                 else
                                 {
                                     if (CommandSystemConfig.Get().ClickToSelectFormation)
                                     {
-                                        _currentCursorState = CurrentCursorState.Friend;
+                                        myCursorState = CurrentCursorState.Friend;
                                     }
                                 }
                             }
                         }
                     }
-                    if (cursorState == CursorState.Invisible &&
-                        !(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(__instance.Input) && CommandSystemConfig.Get().IsMouseOverEnabled()) || // press middle mouse button to avoid accidentally click on ground.
-                        ____formationDrawingMode)
+                    if (cursorState == CursorState.Invisible)
                     {
                         cursorState = IsCursorStateGroundOrNormal(____formationDrawingMode);
-                        _currentCursorState = (CurrentCursorState)cursorState;
+                    }
+                    if (myCursorState == CurrentCursorState.Invisible /*&& !(CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).IsKeyDown(__instance.Input) && CommandSystemConfig.Get().IsMouseOverEnabled()) */|| // press middle mouse button to avoid accidentally click on ground.
+                        ____formationDrawingMode)
+                    {
+                        myCursorState = (CurrentCursorState)cursorState;
                     }
                 }
             }
             else if (_clickedFormation != null) // click on formation and hold.
             {
-                _currentCursorState = (CurrentCursorState)cursorState;
+                cursorState = ____activeCursorState;
+                myCursorState = (CurrentCursorState)_currentCursorState;
             }
 
             if (cursorState != CursorState.Ground &&
                 cursorState != CursorState.Rotation)
                 ____mouseOverDirection = 0;
+            _currentCursorState = myCursorState;
             __result = cursorState;
             return false;
         }
@@ -712,7 +717,7 @@ namespace RTSCamera.CommandSystem.Patch
             bool isSelectFormationKeyDown = CommandSystemConfig.Get().IsMouseOverEnabled() &&
                                             CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
                                                 .IsKeyDown(__instance.Input);
-            _currentCursorState = _cachedCursorState.Value;
+            //_currentCursorState = _cachedCursorState.Value;
             bool isLeftButtonPressed = __instance.Input.IsKeyPressed(InputKey.LeftMouseButton) ||
                               __instance.Input.IsKeyPressed(InputKey.ControllerRTrigger);
 

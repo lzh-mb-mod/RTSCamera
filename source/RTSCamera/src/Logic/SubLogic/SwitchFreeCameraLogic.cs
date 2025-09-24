@@ -649,7 +649,8 @@ namespace RTSCamera.Logic.SubLogic
             {
                 UpdateMainAgentControllerInFreeCamera();
             }
-            else if (_config.TimingOfControlAllyAfterDeath >= ControlAllyAfterDeathTiming.FreeCamera)
+            // When main agent is null and player press E to lock to agent, we should not set the main agent to allow pressing E again to show inquiry and control the locked agent.
+            else if (_config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.Always || _config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.FreeCamera && Mission?.GetMissionBehavior<FlyCameraMissionView>()?.LockToAgent != true)
             {
                 _controlTroopLogic.SetMainAgent();
             }

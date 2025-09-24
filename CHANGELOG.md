@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.2.3] - 2025-09-24
+### Fixed
+- Fix support to select formations using left mouse button.
+
 ## [v5.2.2] - 2025-09-22
 ### Fixed
 - Fix the issue that player cannot leaving in sneaking toturial mission.

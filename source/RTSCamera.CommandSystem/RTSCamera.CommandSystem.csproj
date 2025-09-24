@@ -22,7 +22,7 @@
   <Import Project="..\library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems" Label="Shared" />
   <Import Project="..\library\mission-library\source\BasicSharedLibrary\BasicSharedLibrary.projitems" Label="Shared" />
   <ItemGroup>
-    <PackageReference Include="Lib.Harmony" Version="2.4.1">
+    <PackageReference Include="Lib.Harmony" Version="2.3.6">
     </PackageReference>
   </ItemGroup>
 
