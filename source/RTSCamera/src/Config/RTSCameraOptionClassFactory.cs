@@ -53,7 +53,7 @@ namespace RTSCamera.Config
                         }, () =>
                         {
                             return (int)RTSCameraConfig.Get().DefaultToFreeCamera;
-                        }, (int)DefaultToFreeCamera.Count, new[]
+                        }, () => (int)DefaultToFreeCamera.Count, () => new[]
                         {
                             new SelectionItem(true, "str_rts_camera_default_to_free_camera_option", "Never"),
                             new SelectionItem(true, "str_rts_camera_default_to_free_camera_option", "DeploymentStage"),
@@ -126,7 +126,7 @@ namespace RTSCamera.Config
                     }, () =>
                     {
                         return (int)RTSCameraConfig.Get().FollowFaceDirection;
-                    }, (int)FollowFaceDirection.Count, new[]
+                    }, () => (int)FollowFaceDirection.Count, () => new[]
                         {
                             new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Never"),
                             new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "ControlNewUnitOnly"),
@@ -147,7 +147,7 @@ namespace RTSCamera.Config
                     }, () =>
                     {
                         return (int)RTSCameraConfig.Get().TimingOfControlAllyAfterDeath;
-                    }, (int)ControlAllyAfterDeathTiming.Count, new[]
+                    }, () => (int)ControlAllyAfterDeathTiming.Count, () => new[]
                         {
                             new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "Never"),
                             new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "FreeCamera"),
@@ -187,7 +187,7 @@ namespace RTSCamera.Config
                             }
 
                             return RTSCameraConfig.Get().PlayerControllerInFreeCamera;
-                        }, (int)AgentControllerType.Count, new[]
+                        }, () => (int)AgentControllerType.Count, () => new[]
                         {
                             new SelectionItem(true, "str_rts_camera_controller_type", "none"),
                             new SelectionItem(true, "str_rts_camera_controller_type", "AI"),
@@ -224,7 +224,7 @@ namespace RTSCamera.Config
 
                                 return Mission.Current.MainAgent.Formation.Index;
                             },
-                            (int)FormationClass.NumberOfRegularFormations, new[]
+                            () => (int)FormationClass.NumberOfRegularFormations, () => new[]
                             {
                             new SelectionItem(true, "str_troop_group_name", "0"),
                             new SelectionItem(true, "str_troop_group_name", "1"),
@@ -263,8 +263,8 @@ namespace RTSCamera.Config
                                 Utility.SetPlayerFormationClass(formationClass);
                                 playerFormationOption.UpdateData(false);
                             }
-                        }, () => (int)RTSCameraConfig.Get().AssignPlayerFormation, (int)AssignPlayerFormation.Count,
-                            new[]
+                        }, () => (int)RTSCameraConfig.Get().AssignPlayerFormation, () => (int)AssignPlayerFormation.Count,
+                            () => new[]
                             {
                             new SelectionItem(true, "str_rts_camera_assign_player_formation", nameof(AssignPlayerFormation.DefaultOrGeneralFormation)),
                             new SelectionItem(true, "str_rts_camera_assign_player_formation", nameof(AssignPlayerFormation.Default)),

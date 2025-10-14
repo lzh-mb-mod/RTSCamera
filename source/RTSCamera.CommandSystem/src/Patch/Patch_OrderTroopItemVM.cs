@@ -1,10 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using System;
-using System.Reflection;
-using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
-using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera.CommandSystem.Patch
 {

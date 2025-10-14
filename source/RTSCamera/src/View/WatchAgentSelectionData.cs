@@ -20,8 +20,8 @@ namespace RTSCamera.View
                 {
                     WatchAgent(agents[i]);
                 }
-            }, () => agents.IndexOf(missionScreen.LastFollowedAgent), agents.Count,
-                agents.Select(agent => new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem(false, agent.Name)));
+            }, () => agents.IndexOf(missionScreen.LastFollowedAgent), () => agents.Count,
+                () => agents.Select(agent => new MissionSharedLibrary.View.ViewModelCollection.Options.Selection.SelectionItem(false, agent.Name)));
         }
 
         private void WatchAgent(Agent agent)
