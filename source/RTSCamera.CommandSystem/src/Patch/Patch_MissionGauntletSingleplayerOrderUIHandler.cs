@@ -366,7 +366,7 @@ namespace RTSCamera.CommandSystem.Patch
                 case MissionOrderVM.CursorState.Form:
                     break;
             }
-            if (!queueCommand)
+            if (!queueCommand && !(orderToAdd.CustomOrderType == CustomOrderType.Original && orderToAdd.OrderType == OrderType.None))
             {
                 CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
                 return null;

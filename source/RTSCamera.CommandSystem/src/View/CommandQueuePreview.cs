@@ -356,7 +356,7 @@ namespace RTSCamera.CommandSystem.View
                     }
                     var arrowEnd = order.OrderPosition.GetGroundVec3();
                     if (order.Width != null && order.Depth != null &&
-                        _config.CommandQueueFormationShapeShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueFormationShapeShowMode == ShowMode.FreeCameraOnly)
+                        (_config.CommandQueueFormationShapeShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueFormationShapeShowMode == ShowMode.FreeCameraOnly))
                     {
                         AddFormationShape(formationShapeIndex, arrowEnd, order.Direction, order.Width.Value, order.Depth.Value, order.RightSideOffset ?? 0);
                         ++formationShapeIndex;
