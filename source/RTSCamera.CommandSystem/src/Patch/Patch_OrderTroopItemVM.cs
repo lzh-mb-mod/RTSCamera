@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using System;
+using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera.CommandSystem.Patch
 {
@@ -23,7 +24,10 @@ namespace RTSCamera.CommandSystem.Patch
                 //    prefix: new HarmonyMethod(
                 //        typeof(Patch_OrderTroopItemVM).GetMethod(nameof(Prefix_RefreshTargetedOrderVisual),
                 //            BindingFlags.Static | BindingFlags.Public)));
-
+                harmony.Patch(
+                    typeof(OrderTroopItemVM).GetMethod(nameof(OrderTroopItemVM.ExecuteAction), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance),
+                    prefix: new HarmonyMethod(
+                        typeof(Patch_OrderTroopItemVM).GetMethod(nameof(Prefix_ExecuteAction), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)));
             }
             catch (Exception e)
             {
@@ -58,5 +62,16 @@ namespace RTSCamera.CommandSystem.Patch
         //    __instance.CurrentTargetFormationType = str2;
         //    return false;
         //}
+
+        public static bool Prefix_ExecuteAction(OrderTroopItemVM __instance)
+        {
+            if (__instance.SetSelected == null)
+                return false;
+
+            if (!__instance.IsSelectable)
+                return false;
+
+            return true;
+        }
     }
 }

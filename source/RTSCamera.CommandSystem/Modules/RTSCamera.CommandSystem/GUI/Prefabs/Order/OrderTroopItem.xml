@@ -15,7 +15,7 @@
   </Constants>
   <Window>
     <!--Must fill space even when invisible-->
-    <ButtonWidget Command.Click="ExecuteAction" Command.AlternateClick="..\..\OnEscape" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="131" SuggestedHeight="223" MarginTop="35" MarginBottom="10">
+    <ButtonWidget Command.Click="ExecuteAction" CanAcceptEvents="@IsSelectable" Command.AlternateClick="..\..\OnEscape" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="131" SuggestedHeight="223" MarginTop="35" MarginBottom="10">
       <Children>
         <!-- Highlight -->
         <OrderTroopItemBrushWidget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" RangedCardBrush="Order.Card.Highlight.Ranged" MeleeCardBrush="Order.Card.Highlight.Melee" HasAmmo="@IsAmmoAvailable" IsVisible="@IsSelectionHighlightActive"/>
