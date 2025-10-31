@@ -41,7 +41,7 @@ namespace RTSCamera.Logic.SubLogic
         private bool _skipClosingUIOnSwitchingCamera;
         public bool ShouldKeepUIOpen = false;
         private List<FormationClass> _playerFormations;
-        //private float _updatePlayerFormationTime;
+        private float _updatePlayerFormationTime;
         private bool _hasShownOrderHint = false;
         private bool _isSwitchCameraKeyPressedLastTick = false;
         private bool _shouldShowFastForwardInHideoutPromptInThisMission = false;
@@ -312,13 +312,13 @@ namespace RTSCamera.Logic.SubLogic
                 Utilities.Utility.FastForwardInHideout(Mission);
             }
 
-            //_updatePlayerFormationTime += dt;
-            //if (_updatePlayerFormationTime > 0.1f && !Utility.IsPlayerDead() &&
-            //    Mission.MainAgent.Formation != null)
-            //{
-            //    _updatePlayerFormationTime = 0;
-            //    CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
-            //}
+            _updatePlayerFormationTime += dt;
+            if (_updatePlayerFormationTime > 0.1f && !Utility.IsPlayerDead() &&
+                Mission.MainAgent.Formation != null)
+            {
+                _updatePlayerFormationTime = 0;
+                CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
+            }
 
             // In fastforward mode, the key may be triggered in 2 ticks
             if (_isSwitchCameraKeyPressedLastTick)
