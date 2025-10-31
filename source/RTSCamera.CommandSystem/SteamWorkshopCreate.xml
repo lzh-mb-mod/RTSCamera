@@ -3,43 +3,38 @@
   <UpdateItem>
     <ModuleFolder Value="D:\develop\src\RTSCamera\source\package\net472\RTSCamera.CommandSystem\"/>
     <!--  A direct path of your module  -->
-    <ItemDescription Value="RTS Camera Command System
+    <ItemDescription Value="RTS Camera Command System part from original creator
 
-English below.
+Only compatible with beta v1.3.2. For other versions:
+v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991827
+v1.3.0/v1.3.1: https://steamcommunity.com/sharedfiles/filedetails/?id=3570723963
+v1.3.2: https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285
 
-让你的编队攻击指定的敌方编队。仅对近战武器生效。
-让你可以用鼠标选择己方编队。
+Dependency:
+Do not require any of ButterLib/MCM/UIExtenderEx.
 
-Let your formation attack one of the enemy formation. Only effective with melee weapons.
+Please also subscribe RTS Camera here for complete experience: https://steamcommunity.com/sharedfiles/filedetails/?id=3570706807
+
+Reworked the command system in the base game.
+Order Queue: Allows to add order to queue to let troops execute orders one by one. For example, move along a given path and then shooting/charging.
+Allows your formation attack one of the enemy formation by middle clicking on enemy units.
 Allows you to select your formation using mouse.
+Fixed issues of formation width and unit spacing in the base game.
 
 
-存档兼容性：
-这个mod不会向存档读写任何东西，放心随时启用随时卸载。
-
-
-使用指南：
-指挥时对着敌方士兵按下鼠标中键可让你的编队攻击该士兵所在的编队。仅对近战武器生效。
-对着己方士兵按下鼠标中键可选择该编队。
-被攻击的敌方编队会用红色轮廓标出。
-己方选中的编队会以绿色轮廓标出。
-己方被攻击的编队会以深蓝色轮廓标出。
-
-
-在场景中按L键可打开配置菜单以关闭轮廓高亮功能。
-
-快捷键列表：
-鼠标中键 - 选择/攻击编队
-L  -    打开配置菜单
-所有快捷键均可在配置菜单中设置。
-
+For latest RTS Camera: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991660
+For compatible Battle Mini Map: https://steamcommunity.com/sharedfiles/filedetails/?id=2876503777
 
 Save compatibility:
 This mod won&apos;t read/write anything from/into your save, so you can feel free to enable or uninstall this mod at any time.
 
 
 Usage:
-Click middle mouse button on the enemy formation to make your formation attack it. Only effective with melee weapons.
+Please enable &quot;RTS Camera&quot; and &quot;RTSCamera.CommandSystem&quot; in launcher.
+For complete usage: https://github.com/lzh-mb-mod/RTSCamera/blob/master/README.md
+Hold Shift and give orders to add orders to queue. Your troops will execute them one by one.
+If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
+Click middle mouse button on the enemy formation to make your formation attack it.
 Click middle mouse button on your formation to select it.
 The attacked enemy formation will be highlighted with red outline when you open command panel.
 Your attacked formation will be highlighted with dark blue outline when you open command panel.
@@ -48,14 +43,25 @@ Your selected formation will be highlighted with green outline when you open com
 Press L to open config menu during battles.
 
 Hotkeys:
+Shift                      -  Hold to add order to queue when giving orders.
+Ctrl                       -  Hold to lock formation widths while dragging on the ground.
+Alt                        -  Hold to cancel formation locking during movement or turning.
 Click mouse middle button  -  Select/Attack formation.
-L      -    Open the config menu.
+Hold Alt + Click mouse middle button - Attack enemy formation without interrupting previous movement orders
+L                          -    Open the config menu.
 All the hotkeys can be changed in config menu.
 
+Troubleshooting
+If there&apos;re a lot of &quot;text with id xxxxx doesn&apos;t exist&quot;:
+    If you enabled Realm of Thrones, please move RTS Camera and Command System above it. As version 6.2 of Realm of Thrones, there&apos;s a bug in its file that causes all the mods below it cannot load text correctly.
 
-links：
+Feedback or suggestion
+Feel free to comment below or send email to lizhenhuan1019@outlook.com
+
+links:
 Nexusmods: https://www.nexusmods.com/mountandblade2bannerlord/mods/355
-mountandblade.com.cn: https://bbs.mountblade.com.cn/thread-2061243-1-1.html"/>
+source code: https://github.com/lzh-mb-mod/RTSCamera
+"/>
     <!--  A description that will be displayed on Steam Workshop, can be edited via the Steam UI  -->
     <Tags>
       <!--  You can use the following tags:  -->
