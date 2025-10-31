@@ -18,7 +18,7 @@ namespace RTSCamera.CommandSystem.Patch
                 _patched = true;
                 harmony.Patch(
                    typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawing",
-                       BindingFlags.Instance | BindingFlags.NonPublic),
+                       BindingFlags.Instance | BindingFlags.Public),
                    prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(
                        nameof(Prefix_UpdateFormationDrawing), BindingFlags.Static | BindingFlags.Public)));
                 return true;

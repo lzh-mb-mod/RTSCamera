@@ -158,7 +158,7 @@ namespace RTSCamera.CommandSystem.View
             matrixFrame.origin = middlePosition;
             matrixFrame.rotation = Mat3.CreateMat3WithForward(lineDirection.ToVec3());
             //matrixFrame.Scale(new Vec3(10, length * 1.095424f, 1f));
-            matrixFrame.Scale(new Vec3(0.2f, length, 100f));
+            matrixFrame.Scale(new Vec3(0.2f, length / 2f, 100f));
             return matrixFrame;
         }
 

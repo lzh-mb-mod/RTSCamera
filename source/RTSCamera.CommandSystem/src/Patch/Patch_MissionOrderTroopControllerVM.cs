@@ -49,10 +49,8 @@ namespace RTSCamera.CommandSystem.Patch
         public static bool Prefix_OrderController_OnTroopOrderIssued(MissionOrderTroopControllerVM __instance,
             OrderType orderType,
             IEnumerable<Formation> appliedFormations,
-            OrderController orderController,
-            MissionOrderVM ____missionOrder)
+            OrderController orderController)
         {
-            //CloseFacingOrderSet(____missionOrder);
             DisableSelectTargetMode();
             return true;
         }

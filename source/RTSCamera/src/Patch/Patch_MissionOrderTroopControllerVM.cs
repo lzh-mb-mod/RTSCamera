@@ -73,11 +73,11 @@ namespace RTSCamera.Patch
             OrderType orderType,
             IEnumerable<Formation> appliedFormations,
             OrderController orderController,
-            MissionOrderVM ____missionOrder)
+            MissionOrderVM ___MissionOrder)
         {
-            if (!____missionOrder.IsToggleOrderShown && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
+            if (!___MissionOrder.IsToggleOrderShown && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
             {
-                ____missionOrder.OpenToggleOrder(false);
+                ___MissionOrder.OpenToggleOrder(false);
             }
         }
     }

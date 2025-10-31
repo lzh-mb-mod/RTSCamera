@@ -48,6 +48,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static readonly FieldInfo _dataSource =
             typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_dataSource),
                 BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly PropertyInfo _activeCursorState = typeof(OrderTroopPlacer).GetProperty("ActiveCursorState", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static bool _isInitialized = false;
         private static CurrentCursorState _currentCursorState = CurrentCursorState.Invisible;
@@ -339,8 +340,9 @@ namespace RTSCamera.CommandSystem.Patch
         }
 
         public static bool Prefix_GetCursorState(OrderTroopPlacer __instance, ref CursorState __result, ref Formation ____mouseOverFormation,
-            List<GameEntity> ____orderRotationEntities, ref Vec2 ____deltaMousePosition, ref bool ____formationDrawingMode, ref int ____mouseOverDirection, bool ____isMouseDown, ref CursorState ____activeCursorState)
+            List<GameEntity> ____orderRotationEntities, ref Vec2 ____deltaMousePosition, ref bool ____formationDrawingMode, ref int ____mouseOverDirection, bool ____isMouseDown)
         {
+            var activeCursorState = (CursorState)_activeCursorState.GetValue(__instance);
             CursorState cursorState = CursorState.Invisible;
             CurrentCursorState myCursorState = CurrentCursorState.Invisible;
             if (!__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.IsEmpty() && _clickedFormation == null)
@@ -414,7 +416,7 @@ namespace RTSCamera.CommandSystem.Patch
             }
             else if (_clickedFormation != null) // click on formation and hold.
             {
-                cursorState = ____activeCursorState;
+                cursorState = activeCursorState;
                 myCursorState = (CurrentCursorState)_currentCursorState;
             }
 
@@ -695,13 +697,15 @@ namespace RTSCamera.CommandSystem.Patch
             ref bool ____formationDrawingMode, Formation ____mouseOverFormation,
             ref List<GameEntity> ____orderPositionEntities, ref List<GameEntity> ____orderRotationEntities,
             ref bool ____wasDrawingForced, ref bool ____wasDrawingFacing, ref bool ____wasDrawingForming, ref bool ____wasDrawnPreviousFrame, ref WorldPosition? ____formationDrawingStartingPosition,
-            ref Vec2 ____deltaMousePosition, ref CursorState ____activeCursorState)
+            ref Vec2 ____deltaMousePosition)
         {
             if (!____initialized)
                 return false;
 
-            ____activeCursorState = (CursorState)typeof(OrderTroopPlacer).GetMethod("GetCursorState", BindingFlags.Instance | BindingFlags.NonPublic)
-                .Invoke(_orderTroopPlacer, new object[] { });
+
+            _activeCursorState.SetValue(__instance,
+                (CursorState)typeof(OrderTroopPlacer).GetMethod("GetCursorState", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(_orderTroopPlacer, new object[] { }));
             if (!__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.Any())
                 return false;
             ____isDrawnThisFrame = false;
@@ -765,9 +769,7 @@ namespace RTSCamera.CommandSystem.Patch
                     !__instance.IsDrawingForming)
                 {
                     if (_currentCursorState == CurrentCursorState.Ground)
-                        typeof(OrderTroopPlacer)
-                            .GetMethod("UpdateFormationDrawing", BindingFlags.Instance | BindingFlags.NonPublic)
-                            .Invoke(__instance, new object[] { false });
+                        __instance.UpdateFormationDrawing(false);
                 }
             }
             else if (__instance.IsDrawingForced)
@@ -781,9 +783,8 @@ namespace RTSCamera.CommandSystem.Patch
                     ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
                     ref ____formationDrawingStartingTime);
                 //HandleMousePressed();
-                typeof(OrderTroopPlacer)
-                    .GetMethod("UpdateFormationDrawing", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(__instance, new object[] { false });
+
+                __instance.UpdateFormationDrawing(false);
             }
             else if (__instance.IsDrawingFacing || ____wasDrawingFacing)
             {
