@@ -1,13 +1,24 @@
 <Tasks>
   <GetItem>
-    <ItemId Value="3570723963"/>
+    <ItemId Value="3596693285"/>
     <!-- Can be found in the URL of your workshop item -->
   </GetItem>
   <UpdateItem>
     <ModuleFolder Value="D:\develop\src\RTSCamera\source\package\net472\RTSCamera.CommandSystem\"/>
     
     <!-- A direct path of your module -->
-    <ItemDescription Value="RTS Camera Command System from original creator
+    <ItemDescription Value="RTS Camera Command System part from original creator
+
+Only compatible with beta v1.3.2. For other versions:
+v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991827
+v1.3.0/v1.3.1: https://steamcommunity.com/sharedfiles/filedetails/?id=3570723963
+v1.3.2: https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285
+
+Dependency:
+Do not require any of ButterLib/MCM/UIExtenderEx.
+
+Please also subscribe RTS Camera here for complete experience: https://steamcommunity.com/sharedfiles/filedetails/?id=3570706807
+
 Reworked the command system in the base game.
 Order Queue: Allows to add order to queue to let troops execute orders one by one. For example, move along a given path and then shooting/charging.
 Allows your formation attack one of the enemy formation by middle clicking on enemy units.
@@ -23,9 +34,11 @@ This mod won&apos;t read/write anything from/into your save, so you can feel fre
 
 
 Usage:
+Please enable &quot;RTS Camera&quot; and &quot;RTSCamera.CommandSystem&quot; in launcher.
+For complete usage: https://github.com/lzh-mb-mod/RTSCamera/blob/master/README.md
 Hold Shift and give orders to add orders to queue. Your troops will execute them one by one.
 If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
-Click middle mouse button on the enemy formation to make your formation attack it. Only effective with melee weapons.
+Click middle mouse button on the enemy formation to make your formation attack it.
 Click middle mouse button on your formation to select it.
 The attacked enemy formation will be highlighted with red outline when you open command panel.
 Your attacked formation will be highlighted with dark blue outline when you open command panel.
@@ -43,15 +56,16 @@ L                          -    Open the config menu.
 All the hotkeys can be changed in config menu.
 
 Troubleshooting
-If there're a lot of &quot;text with id xxxxx doesn't exist&quot;:
-    If you enabled Realm of Thrones, please move RTS Camera and Command System above it. As version 6.2 of Realm of Thrones, there's a bug in its file that causes all the mods below it cannot load text correctly.
+If there&apos;re a lot of &quot;text with id xxxxx doesn&apos;t exist&quot;:
+    If you enabled Realm of Thrones, please move RTS Camera and Command System above it. As version 6.2 of Realm of Thrones, there&apos;s a bug in its file that causes all the mods below it cannot load text correctly.
 
 Feedback or suggestion
 Feel free to comment below or send email to lizhenhuan1019@outlook.com
 
 links:
 Nexusmods: https://www.nexusmods.com/mountandblade2bannerlord/mods/355
-source code: https://github.com/lzh-mb-mod/RTSCamera"/>
+source code: https://github.com/lzh-mb-mod/RTSCamera
+"/>
     <ChangeNotes Value="" />
     <!-- Insert patch notes -->
     <Tags>
