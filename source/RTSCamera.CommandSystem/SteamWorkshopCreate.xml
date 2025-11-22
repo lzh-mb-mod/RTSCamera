@@ -73,7 +73,7 @@ source code: https://github.com/lzh-mb-mod/RTSCamera
       <Tag Value="AI"/>
       <Tag Value="Singleplayer"/>
       <!-- <Tag Value="Multiplayer"/> -->
-      <Tag Value="v1.3.0" />
+      <Tag Value="v1.3.2" />
     </Tags>
     <Image Value="D:\develop\src\RTSCamera\RTS Camera preview.jpg"/>
     <!--  Determines the featured image displayed on Steam Workshop, a direct path to it must be inserted here (the image should be smaller than 1 MB)  -->
