@@ -40,10 +40,13 @@ namespace RTSCamera.CommandSystem.Patch
             return true;
         }
 
-        public static bool Prefix_RefreshOrders(OrderSetVM __instance, ref OrderItemVM ____innerOrder, OrderController ____orderController)
+        public static bool Prefix_RefreshOrders(OrderSetVM __instance, OrderController ____orderController)
         {
+            // disabled for naval battle.
+            if (Mission.Current.IsNavalBattle)
+                return true;
             __instance.Orders.Clear();
-            ____innerOrder = (OrderItemVM)null;
+            __instance.SoloOrder = (OrderItemVM)null;
             if (__instance.OrderSet == null)
                 return false;
             MBReadOnlyList<VisualOrder> orders = __instance.OrderSet.Orders;
@@ -51,7 +54,7 @@ namespace RTSCamera.CommandSystem.Patch
                 __instance.Orders.Add(new RTSCommandOrderItemVM(____orderController, orders[index]));
             if (!__instance.OrderSet.IsSoloOrder)
                 return false;
-            ____innerOrder = __instance.Orders[0];
+            __instance.SoloOrder = __instance.Orders[0];
             return false;
         }
     }

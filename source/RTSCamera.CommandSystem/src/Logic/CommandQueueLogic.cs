@@ -262,6 +262,9 @@ namespace RTSCamera.CommandSystem.Logic
 
         public static void UpdateFormation(Formation formation)
         {
+            // Disabled for naval battle for now.
+            if (Mission.Current.IsNavalBattle)
+                return;
             if (TicksToSkip > 0)
             {
                 TicksToSkip--;
@@ -310,7 +313,6 @@ namespace RTSCamera.CommandSystem.Logic
 
         public static bool IsPendingOrderCompleted(Formation formation)
         {
-
             if (PendingOrders.TryGetValue(formation, out var order))
             {
                 foreach (var otherFormation in order.SelectedFormations)
@@ -635,6 +637,9 @@ namespace RTSCamera.CommandSystem.Logic
 
         public static void TryPendingOrder(IEnumerable<Formation> formations, OrderInQueue order)
         {
+            // Disabled for naval battle for now.
+            if (Mission.Current.IsNavalBattle)
+                return;
             if (CanBePended(order))
             {
                 CancelPendingOrder(formations);

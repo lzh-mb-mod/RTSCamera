@@ -382,6 +382,30 @@ namespace RTSCamera.Config
                 //        }), true));
                 optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
 
+                if (RTSCameraSubModule.IsNavalInstalled)
+                {
+                    var navalOptionCategory = new OptionCategory("Naval",
+                        GameTexts.FindText("str_rts_camera_naval_options"));
+                    navalOptionCategory.AddOption(new SelectionOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_player_ship_controller_in_free_camera"),
+                        GameTexts.FindText("str_rts_camera_player_ship_controller_in_free_camera_hint"),
+                        new SelectionOptionData(i =>
+                        {
+                            if (i < 0 || i >= (int)PlayerShipControllerInFreeCamera.Count)
+                                return;
+                            RTSCameraConfig.Get().PlayerShipControllerInFreeCamera = (PlayerShipControllerInFreeCamera)i;
+                        }, () =>
+                        {
+                            return RTSCameraConfig.Get().PlayerControllerInFreeCamera;
+                        }, () => (int)AgentControllerType.Count, () => new[]
+                        {
+                            new SelectionItem(true, "str_rts_camera_controller_type", "none"),
+                            new SelectionItem(true, "str_rts_camera_controller_type", "AI"),
+                            new SelectionItem(true, "str_rts_camera_controller_type", "Player")
+                        }), true));
+                    optionClass.AddOptionCategory(1, navalOptionCategory);
+                }
+
                 if (NativeConfig.CheatMode)
                 {
                     var cheatOptionCategory = new OptionCategory("Cheat",

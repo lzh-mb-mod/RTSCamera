@@ -230,17 +230,9 @@ namespace RTSCamera.CommandSystem.Patch
         private static void BeginFormationDraggingOrClicking(OrderTroopPlacer __instance, ref Vec2 ____deltaMousePosition,
             ref WorldPosition? ____formationDrawingStartingPosition, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime)
         {
-            Vec3 rayBegin;
-            Vec3 rayEnd;
-            __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance, ref ____deltaMousePosition), out rayBegin, out rayEnd);
-            float collisionDistance;
-            if (__instance.Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out collisionDistance,
-                    0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora))
+            if (TryGetScreenMiddleToWorldPosition(__instance, ref ____deltaMousePosition, out var worldPosition, out var _, out var _))
             {
-                Vec3 vec3 = rayEnd - rayBegin;
-                double num = vec3.Normalize();
-                ____formationDrawingStartingPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, rayBegin + vec3 * collisionDistance,
-                    false);
+                ____formationDrawingStartingPosition = worldPosition;
                 ____formationDrawingStartingPointOfMouse = __instance.Input.GetMousePositionPixel();
                 // Fix the issue that can't drag when slow motion is enabled and mouse is visible.
                 ____formationDrawingStartingTime = 0;
@@ -252,13 +244,55 @@ namespace RTSCamera.CommandSystem.Patch
             ____formationDrawingStartingTime = new float?();
         }
 
+        private static bool TryGetScreenMiddleToWorldPosition(
+            OrderTroopPlacer __instance,
+            ref Vec2 ____deltaMousePosition,
+            out WorldPosition worldPosition,
+            out float collisionDistance,
+            out WeakGameEntity collidedEntity)
+        {
+            if (!__instance.Mission.IsNavalBattle)
+            {
+                Vec3 rayBegin;
+                Vec3 rayEnd;
+                __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance, ref ____deltaMousePosition), out rayBegin, out rayEnd);
+                float collisionDistance1;
+                WeakGameEntity collidedEntity1;
+                if (__instance.Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out collisionDistance1, out collidedEntity1, 0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora))
+                {
+                    Vec3 vec3 = rayEnd - rayBegin;
+                    double num = (double)vec3.Normalize();
+                    collisionDistance = collisionDistance1;
+                    collidedEntity = collidedEntity1;
+                    worldPosition = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, rayBegin + vec3 * collisionDistance, false);
+                    return true;
+                }
+                worldPosition = WorldPosition.Invalid;
+                collisionDistance = 0.0f;
+                collidedEntity = WeakGameEntity.Invalid;
+                return false;
+            }
+            Vec3 waterPosition;
+            if (__instance.MissionScreen.GetProjectedMousePositionOnWater(out waterPosition))
+            {
+                worldPosition = new WorldPosition(__instance.Mission.Scene, waterPosition);
+                collisionDistance = (waterPosition - __instance.Mission.GetCameraFrame().origin).Length;
+                collidedEntity = WeakGameEntity.Invalid;
+                return true;
+            }
+            worldPosition = WorldPosition.Invalid;
+            collisionDistance = 0.0f;
+            collidedEntity = WeakGameEntity.Invalid;
+            return false;
+        }
+
         public static bool Prefix_HandleMouseDown(OrderTroopPlacer __instance, ref Formation ____mouseOverFormation,
             ref bool ____formationDrawingMode, ref Vec2 ____deltaMousePosition,
             ref WorldPosition? ____formationDrawingStartingPosition, ref Vec2? ____formationDrawingStartingPointOfMouse, ref float? ____formationDrawingStartingTime, bool ____isMouseDown)
         {
             if (__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.IsEmpty() || _clickedFormation != null)
                 return false;
-            switch (_currentCursorState)
+            switch (__instance.Mission.IsNavalBattle ? (CurrentCursorState)_activeCursorState.GetValue(__instance) : _currentCursorState)
             {
                 case CurrentCursorState.Normal:
                 case CurrentCursorState.Enemy:
@@ -311,32 +345,6 @@ namespace RTSCamera.CommandSystem.Patch
 
                     break;
             }
-        }
-        public static bool TryGetScreenMiddleToWorldPosition(
-            OrderTroopPlacer __instance,
-            ref Vec2 ____deltaMousePosition,
-            out WorldPosition worldPosition,
-            out float collisionDistance,
-            out WeakGameEntity collidedEntity)
-        {
-            Vec3 rayBegin;
-            Vec3 rayEnd;
-            __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance, ref ____deltaMousePosition), out rayBegin, out rayEnd);
-            float collisionDistance1;
-            WeakGameEntity collidedEntity1;
-            if (__instance.Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out collisionDistance1, out collidedEntity1, 0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora))
-            {
-                Vec3 vec3 = rayEnd - rayBegin;
-                double num = (double)vec3.Normalize();
-                collisionDistance = collisionDistance1;
-                collidedEntity = collidedEntity1;
-                worldPosition = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, rayBegin + vec3 * collisionDistance, false);
-                return true;
-            }
-            worldPosition = WorldPosition.Invalid;
-            collisionDistance = 0.0f;
-            collidedEntity = WeakGameEntity.Invalid;
-            return false;
         }
 
         public static bool Prefix_GetCursorState(OrderTroopPlacer __instance, ref CursorState __result, ref Formation ____mouseOverFormation,
@@ -487,7 +495,7 @@ namespace RTSCamera.CommandSystem.Patch
                         _originalMaterial = null;
                     }
                     break;
-                case MovementTargetHighlightStyle.NewModelOnly:
+                case MovementTargetHighlightStyle.NewModelOnly:  
                     if (_newModelOrderPositionEntities == null)
                     {
                         _newModelOrderPositionEntities = new List<GameEntity>();
@@ -499,6 +507,10 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         _alwaysVisibleOrderPositionEntities = new List<GameEntity>();
                         _alwaysVisibleMaterial = Material.GetFromResource("vertex_color_blend_no_depth_mat").CreateCopy();
+                        _alwaysVisibleMaterial.Flags |= MaterialFlags.NoDepthTest;
+                        // since v1.3.4, the AlwaysDepthTest flag may exists with NoDepthTest and the mesh will be invisible. We need to remove the flag here.
+                        _alwaysVisibleMaterial.Flags &= ~MaterialFlags.AlwaysDepthTest;
+                        
                     }
                     break;
             }
@@ -597,6 +609,10 @@ namespace RTSCamera.CommandSystem.Patch
         public static void Postfix_HideOrderPositionEntities()
         {
             foreach (GameEntity orderPositionEntity in _newModelOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
+            {
+                orderPositionEntity.HideIfNotFadingOut();
+            }
+            foreach (GameEntity orderPositionEntity in _alwaysVisibleOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
             {
                 orderPositionEntity.HideIfNotFadingOut();
             }
@@ -897,7 +913,7 @@ namespace RTSCamera.CommandSystem.Patch
             WorldPosition formationRealEndingPosition,
             bool isFormationLayoutVertical, ref bool ____isDrawnThisFrame)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             if (!queueCommand)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations));
@@ -965,7 +981,7 @@ namespace RTSCamera.CommandSystem.Patch
         public static bool Prefix_UpdateFormationDrawingForFacingOrder(OrderTroopPlacer __instance,
             bool giveOrder)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             if (!queueCommand)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations));
@@ -977,7 +993,7 @@ namespace RTSCamera.CommandSystem.Patch
             return true;
         }
 
-        public static void SetIsDraingFacing(bool isDrawingFacing)
+        public static void SetIsDrawingFacing(bool isDrawingFacing)
         {
             if (_orderTroopPlacer == null)
                 return;

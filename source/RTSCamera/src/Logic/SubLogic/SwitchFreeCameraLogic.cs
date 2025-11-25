@@ -555,9 +555,20 @@ namespace RTSCamera.Logic.SubLogic
 
         private void UpdateMainAgentControllerInFreeCamera()
         {
-            AgentControllerType controllerType = _config.GetPlayerControllerInFreeCamera(Mission);
+            // Avoid update if switch to agent next tick.
+            // For example, when DeploymentMissionController.FinishDeployment is called and MainAgent.Controller is set to Player.
+            if (_switchToAgentNextTick)
+                return;
+            AgentControllerType controllerType = GetPlayerControllerInFreeCamera(Mission);
             Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.MainAgent, controllerType);
             Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera, controllerType);
+        }
+
+        private AgentControllerType GetPlayerControllerInFreeCamera(Mission mission)
+        {
+            if (CommandBattleBehavior.CommandMode || mission?.Mode == MissionMode.Deployment)
+                return AgentControllerType.AI;
+            return (AgentControllerType)_config.PlayerControllerInFreeCamera;
         }
 
         public void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
@@ -634,7 +645,7 @@ namespace RTSCamera.Logic.SubLogic
             if (Mission.MainAgent != null && Mission.Mode != MissionMode.Deployment)
             {
                 Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
-                    _config.GetPlayerControllerInFreeCamera(Mission.Current));
+                    GetPlayerControllerInFreeCamera(Mission.Current));
             }
 
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(false);

@@ -58,7 +58,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
                 return;
             }
 
-            _mesh = MetaMesh.GetCopy("rts_unit_arrow");
+            _mesh = MetaMesh.GetCopy("rts_unit_marker");
             if (_material == null)
             {
                 _material = _mesh.GetMeshAtIndex(0).GetMaterial().CreateCopy();

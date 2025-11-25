@@ -2,7 +2,9 @@
 using MissionSharedLibrary.Utilities;
 using System;
 using System.Reflection;
+using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
+using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera.CommandSystem.Patch
 {
@@ -37,6 +39,9 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 // Fix the issue that can't drag when slow motion is enabled and mouse is visible.
                 ____formationDrawingStartingTime = 0;
+                var missionOrderVM = Utility.GetMissionOrderVM(Mission.Current);
+                // Fix the issue that movement order message may not be shown in free camera, when order UI is kept open.
+                AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(missionOrderVM, false);
             }
             return true;
         }

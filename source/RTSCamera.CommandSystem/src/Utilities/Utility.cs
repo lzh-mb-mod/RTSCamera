@@ -222,7 +222,7 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
             //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
-            var queueOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            var queueOrder = Utilities.Utility.ShouldQueueCommand();
             if (!queueOrder)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(playerController.SelectedFormations));
@@ -260,7 +260,7 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
             //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
-            var queueOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            var queueOrder = Utilities.Utility.ShouldQueueCommand();
             if (!queueOrder)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(playerController.SelectedFormations));
@@ -354,7 +354,7 @@ namespace RTSCamera.CommandSystem.Utilities
                     case OrderType.ChargeWithTarget:
                         {
                             var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
-                            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+                            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
                             return queueCommand ? Patch_OrderController.GetFormationVirtualPosition(formation) : formation.CachedMedianPosition;
                         }
                     case OrderType.Advance:
@@ -849,6 +849,14 @@ namespace RTSCamera.CommandSystem.Utilities
 
                     return true;
             }
+        }
+
+        public static bool ShouldQueueCommand()
+        {
+            // Disabled for naval battle for now.
+            if (Mission.Current?.IsNavalBattle ?? false)
+                return false;
+            return CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
         }
     }
 }

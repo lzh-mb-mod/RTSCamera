@@ -268,9 +268,10 @@ namespace RTSCamera.View
             _rtsCameraLogic = Mission.GetMissionBehavior<RTSCameraLogic>();
             _freeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
 
+            var movieName = "RTSCameraShowControlHint";
             _showControlHintVM = new ShowControlHintVM(Mission.GetMissionBehavior<SiegeDeploymentHandler>() == null);
-            _showControlHintLayer = new GauntletLayer(ViewOrderPriority);
-            _showControlHintLayer.LoadMovie("RTSCameraShowControlHint", _showControlHintVM);
+            _showControlHintLayer = new GauntletLayer(movieName, ViewOrderPriority);
+            _showControlHintLayer.LoadMovie(movieName, _showControlHintVM);
             _showControlHintLayer.InputRestrictions.SetInputRestrictions(false, InputUsageMask.Invalid);
             MissionScreen.AddLayer(_showControlHintLayer);
 
@@ -435,10 +436,12 @@ namespace RTSCamera.View
             float heightFactorForVerticalMove;
             var groundHeight = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin);
             var terrainHeight = Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2);
+            var waterHeight = Mission.Scene.GetWaterLevel();
+            bool isNaval = Mission.IsNavalBattle;
 
             if (!_config.ConstantSpeed)
             {
-                float heightAtPosition = _config.IgnoreTerrain ? terrainHeight : groundHeight;
+                float heightAtPosition = isNaval ? waterHeight : _config.IgnoreTerrain ? terrainHeight : groundHeight;
                 heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
                     1, 30);
                 heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
@@ -528,7 +531,7 @@ namespace RTSCamera.View
                 if (keyInput.LengthSquared > 0.0)
                     keyInput.Normalize();
 
-                hasVerticalInput = keyInputVertical != 0 || Input.GetDeltaMouseScroll() != 0;
+                hasVerticalInput = keyInputVertical != 0 || TaleWorlds.InputSystem.Input.DeltaMouseScroll != 0;
                 if (keyInput + mouseInput != Vec2.Zero || keyInputVertical != 0)
                 {
                     FocusOnFormation(null);
@@ -667,10 +670,17 @@ namespace RTSCamera.View
                     }
                 }
                 float heightAtPosition = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin + new Vec3(0.0f, 0.0f, 100f));
-                if (!MissionScreen.IsCheatGhostMode && !_config.IgnoreTerrain && heightAtPosition < 9999.0)
-                    cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition + 0.5f);
-                if (cameraFrame.origin.z > heightAtPosition + 80.0)
-                    cameraFrame.origin.z = heightAtPosition + 80f;
+                if (isNaval)
+                {
+                    cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, waterHeight - 20f);
+                    cameraFrame.origin.z = Math.Min(cameraFrame.origin.z, waterHeight + 80f);
+                }
+                else
+                {
+                    if (!MissionScreen.IsCheatGhostMode && !_config.IgnoreTerrain && heightAtPosition < 9999.0)
+                        cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition + 0.5f);
+                    cameraFrame.origin.z = Math.Min(cameraFrame.origin.z, heightAtPosition + 80f);
+                }
                 if (cameraFrame.origin.z < -100.0)
                     cameraFrame.origin.z = -100f;
             }

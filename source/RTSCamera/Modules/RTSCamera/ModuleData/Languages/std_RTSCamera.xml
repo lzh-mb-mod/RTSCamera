@@ -103,6 +103,10 @@
     <string id="RTSCamera_slowmotiononrtsview" text="Slow Motion in Free Camera" />
     <string id="RTSCamera_slowmotiononrtsviewhint" text="Automatically turn on Slow Motion mode in free camera" />
 
+    <string id="RTSCamera_naval_options" text="War Sails Options" />
+    <string id="RTSCamera_player_ship_controller_in_free_camera" text="Player Ship Controller in Free Camera" />
+    <string id="RTSCamera_player_ship_controller_in_free_camera_hint" text="Player ship control mode in Free Camera. If set to none, player ship will not be controlled. If set to AI, AI will control player ship. If set to Player, you can still directly control your ship." />
+
     <string id="RTSCamera_unbalancedoptionsdescription" text="Cheat Options" />
     <string id="RTSCamera_disabledeath" text="All Invulnerable" />
     <string id="RTSCamera_enable_all_invulnerable_hotkey" text="Enable All Invulnerable Hotkey" />

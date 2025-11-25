@@ -29,7 +29,7 @@ namespace RTSCamera.CommandSystem.Orders
         protected bool OnBeforeExecuteOrder(OrderController orderController, VisualOrderExecutionParameters executionParameters)
         {
             var selectedFormations = orderController.SelectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
-            QueueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            QueueCommand = Utilities.Utility.ShouldQueueCommand();
             if (!QueueCommand)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(selectedFormations));

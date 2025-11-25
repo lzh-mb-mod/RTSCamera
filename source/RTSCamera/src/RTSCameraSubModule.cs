@@ -11,6 +11,7 @@ using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Patch;
 using RTSCamera.Patch.Fix;
+using RTSCamera.Patch.Naval;
 using RTSCamera.Patch.TOR_fix;
 using RTSCamera.Usage;
 using SandBox.Objects;
@@ -35,6 +36,7 @@ namespace RTSCamera
         private readonly Harmony _harmony = new Harmony("RTSCameraPatch");
         private bool _successPatch;
         public static bool IsCommandSystemInstalled = false;
+        public static bool IsNavalInstalled = false;
 
         // random generated
         public const int MissionTimeSpeedRequestId = 936012602;
@@ -47,6 +49,8 @@ namespace RTSCamera
             {
                 IsCommandSystemInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
                     info.Id == "RTSCamera.CommandSystem") != null;
+                IsNavalInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
+                    info.Id == "NavalDLC") != null;
                 Utility.ShouldDisplayMessage = true;
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts();
                 Initialize();
@@ -75,7 +79,7 @@ namespace RTSCamera
                         BindingFlags.Static | BindingFlags.Public)));
 
                 // below checked
-                _successPatch &= Patch_OrderOfBattleVM.Patch();
+                _successPatch &= Patch_OrderOfBattleVM.Patch(_harmony);
                 _successPatch &= Patch_DeploymentMissionController.Patch(_harmony);
                 _successPatch &= Patch_LadderQueueManager.Patch(_harmony);
                 _successPatch &= Patch_MissionFormationTargetSelectionHandler.Patch(_harmony);
@@ -104,6 +108,14 @@ namespace RTSCamera
                 _successPatch &= Patch_HideoutMissionController.Patch(_harmony);
                 _successPatch &= Patch_OrderFlag.Patch(_harmony);
                 _successPatch &= Patch_SandboxBattleBannerBearsModel.Patch(_harmony);
+                _successPatch &= Patch_OrderItemBaseVM.Patch(_harmony);
+                // naval dlc
+                _successPatch &= Patch_MissionShipControlView.Patch(_harmony);
+                _successPatch &= Patch_MissionShip.Patch(_harmony);
+                _successPatch &= Patch_NavalDLCHelpers.Patch(_harmony);
+                _successPatch &= Patch_MissionGauntletNavalOrderUIHandler.Patch(_harmony);
+                _successPatch &= Patch_NarvalShipTargetSelectionHandler.Patch(_harmony);
+
                 // Use Patch to add game menu
                 CommandBattleBehavior.Patch(_harmony);
             }

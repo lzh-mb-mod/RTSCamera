@@ -4,15 +4,17 @@ using RTSCamera.Config;
 using RTSCamera.Logic;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
+using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
 
 namespace RTSCamera.Patch.Fix
 {
     public class Patch_MissionOrderVM
-    { 
+    {
 
         public static bool AllowEscape = true;
         public static bool EscapeRequested = false;
@@ -42,13 +44,18 @@ namespace RTSCamera.Patch.Fix
                         BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(
                     typeof(MissionOrderVM).GetMethod("OnOrderExecuted",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
+                        BindingFlags.Instance | BindingFlags.Public),
                     postfix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Postfix_OnOrderExecuted),
                         BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(
                     typeof(MissionOrderVM).GetMethod("OnTransferFinished",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     postfix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Postfix_OnTransferFinished),
+                        BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(MissionOrderVM).GetMethod("TryCloseToggleOrder",
+                        BindingFlags.Instance | BindingFlags.Public),
+                    prefix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Prefix_TryCloseToggleOrder),
                         BindingFlags.Static | BindingFlags.Public)));
                 return true;
             }
@@ -81,7 +88,7 @@ namespace RTSCamera.Patch.Fix
 
         public static bool Prefix_OnEscape(MissionOrderVM __instance)
         {
-            EscapeRequested = true;
+            EscapeRequested = AllowEscape;
             // Do nothing during draging camera using right mouse button.
             return AllowEscape;
             //if (!AllowEscape)
@@ -118,11 +125,14 @@ namespace RTSCamera.Patch.Fix
 
         public static void Postfix_OnOrderExecuted(MissionOrderVM __instance, OrderItemVM orderItem)
         {
+            // Already Implemented in Patch_MissionGauntletSingleplayerOrderUIHandler.UpdateOrderUIVisibility
             // TODO: don't close the order ui and open it again.
             // Keep orders UI open after issuing an order in free camera mode.
             if (!__instance.IsToggleOrderShown && !__instance.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
             {
-                __instance.OpenToggleOrder(false);
+                //var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
+                //__instance.OpenToggleOrder(false);
+                //AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(__instance, displayedOrderMessageForLastOrder);
             }
             var orderTroopPlacer = Mission.Current.GetMissionBehavior<OrderTroopPlacer>();
             if (orderTroopPlacer != null)
@@ -147,6 +157,35 @@ namespace RTSCamera.Patch.Fix
             {
                 __instance.OpenToggleOrder(false);
             }
+        }
+
+        public static bool Prefix_TryCloseToggleOrder(MissionOrderVM __instance, bool applySelectedOrders, ref bool __result, MissionOrderCallbacks ____callbacks)
+        {
+            if (__instance.IsToggleOrderShown)
+            {
+                bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera;
+                if (EscapeRequested)
+                {
+                    EscapeRequested = false;
+                    shouldKeepOpen = false;
+                }
+                Mission.Current.IsOrderMenuOpen = shouldKeepOpen;
+                if (!shouldKeepOpen)
+                    return true;
+
+                if (applySelectedOrders && __instance.SelectedOrderSet != null)
+                {
+                    OrderItemVM orderItemVm = __instance.SelectedOrderSet.Orders.FirstOrDefault(o => o.IsSelected);
+                    if (orderItemVm != null && ____callbacks.GetVisualOrderExecutionParameters != null)
+                    {
+                        VisualOrderExecutionParameters executionParameters = ____callbacks.GetVisualOrderExecutionParameters();
+                        orderItemVm.ExecuteAction(executionParameters);
+                    }
+                }
+                return false;
+            }
+            __result = false;
+            return false;
         }
     }
 }

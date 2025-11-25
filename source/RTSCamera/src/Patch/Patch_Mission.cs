@@ -38,6 +38,12 @@ namespace RTSCamera.Patch
                     prefix: new HarmonyMethod(
                         typeof(Patch_Mission).GetMethod(nameof(Prefix_OnDeploymentFinished),
                             BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(Mission).GetMethod(nameof(Mission.CanTakeControlOfAgent),
+                    BindingFlags.Instance | BindingFlags.Public),
+                    prefix: new HarmonyMethod(
+                        typeof(Patch_Mission).GetMethod(nameof(Prefix_CanTakeControlOfAgent),
+                            BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {
@@ -62,6 +68,13 @@ namespace RTSCamera.Patch
         public static void Prefix_OnDeploymentFinished(Mission __instance)
         {
             RTSCameraLogic.Instance?.SwitchFreeCameraLogic.OnEarlyDeploymentFinished();
+        }
+
+        public static bool Prefix_CanTakeControlOfAgent(Mission __instance, Agent agentToTakeControlOf, ref bool __result)
+        {
+            // Disable build-in take control because RTS provides it.
+            __result = false;
+            return false;
         }
     }
 }

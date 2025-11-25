@@ -38,6 +38,8 @@ namespace RTSCamera.Patch
         }
         public static void Postfix_OnMissionTick(MissionGauntletSpectatorControl __instance, MissionSpectatorControlVM ____dataSource)
         {
+            // Disable built-in take control hint because RTS provides it.
+            ____dataSource.IsTakeControlEnabled = false;
             if (RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true)
             {
                 // update 

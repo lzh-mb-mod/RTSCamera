@@ -99,12 +99,15 @@ namespace RTSCamera.CommandSystem.View
             RightBackLine = CreateLineEntity();
         }
 
+        public static void Clear()
+        {
+            _lineMesh = null;
+            _decalMaterial = null;
+        }
+
         private GameEntity CreateLineEntity()
         {
             GameEntity result = GameEntity.CreateEmpty(Mission.Current.Scene);
-            //decal.SetFactor1(FormationShapeColor);
-            //result.AddComponent(decal);
-            //var lineMesh = MetaMesh.GetCopy("fangkuang");
 
             if (_lineMesh == null)
             {
@@ -158,7 +161,7 @@ namespace RTSCamera.CommandSystem.View
             matrixFrame.origin = middlePosition;
             matrixFrame.rotation = Mat3.CreateMat3WithForward(lineDirection.ToVec3());
             //matrixFrame.Scale(new Vec3(10, length * 1.095424f, 1f));
-            matrixFrame.Scale(new Vec3(0.1f, length / 2f, 100f));
+            matrixFrame.Scale(new Vec3(0.1f, length / 2f, -100f));
             return matrixFrame;
         }
 
@@ -248,6 +251,7 @@ namespace RTSCamera.CommandSystem.View
             _arrowEntities = null;
             _commandQueuePreviewData = null;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
+            FormationShapeEntity.Clear();
             if (Mission.PlayerTeam?.PlayerOrderController == null)
                 return;
 
@@ -263,6 +267,11 @@ namespace RTSCamera.CommandSystem.View
         {
             base.OnMissionScreenTick(dt);
 
+            // Disabled for Naval Battle for now.
+            if (Mission.IsNavalBattle)
+            {
+                return;
+            }
             var commandQueueKey = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue);
             if ((commandQueueKey.IsKeyPressedInOrder() ||
                 commandQueueKey.IsKeyReleasedInOrder()))

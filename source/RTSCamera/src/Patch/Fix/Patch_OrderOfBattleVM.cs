@@ -11,10 +11,9 @@ namespace RTSCamera.Patch.Fix
 {
     public class Patch_OrderOfBattleVM
     {
-        private static readonly Harmony Harmony = new Harmony(RTSCameraSubModule.ModuleId + "_" + nameof(Patch_OrderOfBattleVM));
 
         private static bool _patched;
-        public static bool Patch()
+        public static bool Patch(Harmony harmony)
         {
             try
             {
@@ -29,7 +28,7 @@ namespace RTSCamera.Patch.Fix
                 //        nameof(Prefix_OnCommanderAssignmentRequested), BindingFlags.Static | BindingFlags.Public)));
 
                 // Fix crash when there's not available hero.
-                Harmony.Patch(
+                harmony.Patch(
                     typeof(OrderOfBattleVM).GetMethod("SelectHeroItem",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_OrderOfBattleVM).GetMethod(

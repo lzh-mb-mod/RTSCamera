@@ -114,9 +114,10 @@ namespace RTSCamera.View
 
         private void Activate()
         {
-            _gauntletLayer = new GauntletLayer(ViewOrderPriority) { IsFocusLayer = false };
+            var movieName = nameof(RTSCameraSelectCharacterView);
+            _gauntletLayer = new GauntletLayer(movieName, ViewOrderPriority) { IsFocusLayer = false };
             _dataSource = new SelectCharacterVM();
-            _gauntletLayer.LoadMovie(nameof(RTSCameraSelectCharacterView), _dataSource);
+            _gauntletLayer.LoadMovie(movieName, _dataSource);
             _gauntletLayer.InputRestrictions.SetInputRestrictions();
             _gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
             MissionScreen.AddLayer(_gauntletLayer);

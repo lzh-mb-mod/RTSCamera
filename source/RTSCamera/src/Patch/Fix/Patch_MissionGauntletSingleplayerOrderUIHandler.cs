@@ -191,24 +191,24 @@ namespace RTSCamera.Patch.Fix
             // TODO: don't close the order ui and open it again.
             // Keep orders UI open after issuing an order in free camera mode.
             
-            if (____dataSource.IsToggleOrderShown)
-            {
-                Patch_MissionOrderVM.EscapeRequested = false;
-            }
-            if (Patch_MissionOrderVM.EscapeRequested)
-            {
-                return;
-            }
-            if (!____dataSource.IsToggleOrderShown && !____dataSource.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
-            {
-                ____dataSource.OpenToggleOrder(false);
-                var orderTroopPlacer = Mission.Current.GetMissionBehavior<OrderTroopPlacer>();
-                if (orderTroopPlacer != null)
-                {
-                    typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Invoke(orderTroopPlacer, null);
-                }
-            }
+            //if (____dataSource.IsToggleOrderShown)
+            //{
+            //    Patch_MissionOrderVM.EscapeRequested = false;
+            //}
+            //if (Patch_MissionOrderVM.EscapeRequested)
+            //{
+            //    return;
+            //}
+            //if (!____dataSource.IsToggleOrderShown && !____dataSource.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
+            //{
+            //    //____dataSource.OpenToggleOrder(false);
+            //    var orderTroopPlacer = Mission.Current.GetMissionBehavior<OrderTroopPlacer>();
+            //    if (orderTroopPlacer != null)
+            //    {
+            //        typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)
+            //            .Invoke(orderTroopPlacer, null);
+            //    }
+            //}
         }
 
 

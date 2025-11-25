@@ -148,6 +148,8 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static bool TryAddSelectedOrderToQueue(GauntletOrderUIHandler __instance)
         {
+            if (__instance.Mission.IsNavalBattle)
+                return false;
             var dataSource = _dataSource.GetValue(__instance) as MissionOrderVM;
             if (dataSource.ActiveTargetState == 0 && (__instance.Input.IsKeyReleased(InputKey.LeftMouseButton) || __instance.Input.IsKeyReleased(InputKey.ControllerRTrigger)))
             {
@@ -177,7 +179,7 @@ namespace RTSCamera.CommandSystem.Patch
             skipNativeOrder = false;
             if (dataSource == null)
                 return null;
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             var selectedFormations = dataSource.OrderController.SelectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
             if (selectedFormations.Count == 0)
                 return null;

@@ -1,4 +1,7 @@
 <Prefab>
+  <Parameters>
+    <Parameter Name="DataSource" DefaultValue="" />
+  </Parameters>
   <Constants>
     <Constant Name="CircleSelected.Additive" Value="20" />
 

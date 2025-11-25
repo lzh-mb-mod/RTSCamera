@@ -60,7 +60,7 @@ namespace RTSCamera.View
             _dataSource = new HotKeyHintCollectionVM(OnClose, GetHintList());
             if (_dataSource == null)
                 return;
-            GauntletLayer = new GauntletLayer(ViewOrderPriority) { IsFocusLayer = false };
+            GauntletLayer = new GauntletLayer(_movieName, ViewOrderPriority) { IsFocusLayer = false };
             _movie = GauntletLayer.LoadMovie(_movieName, _dataSource);
             MissionScreen.AddLayer(GauntletLayer);
         }

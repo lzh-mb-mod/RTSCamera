@@ -12,7 +12,7 @@ namespace RTSCamera.CommandSystem.Orders
     {
         public override bool IsAvailable()
         {
-            return Mission.Current != null && !Mission.Current.IsFriendlyMission;
+            return Mission.Current != null && !Mission.Current.IsFriendlyMission && !Mission.Current.IsNavalBattle;
         }
 
         public override MBReadOnlyList<VisualOrderSet> GetOrders()

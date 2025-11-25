@@ -57,6 +57,14 @@ namespace RTSCamera.Config
         Count
     }
 
+    public enum PlayerShipControllerInFreeCamera
+    {
+        None,
+        AI,
+        Player,
+        Count
+    }
+
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
         protected static Version BinaryVersion => new Version(1, 8);
@@ -102,13 +110,6 @@ namespace RTSCamera.Config
         public float RaisedHeight = 10;
 
         public int PlayerControllerInFreeCamera = (int)AgentControllerType.AI;
-
-        public AgentControllerType GetPlayerControllerInFreeCamera(Mission mission)
-        {
-            if (CommandBattleBehavior.CommandMode || mission?.Mode == MissionMode.Deployment)
-                return AgentControllerType.AI;
-            return (AgentControllerType) PlayerControllerInFreeCamera;
-        }
 
         public FormationClass PlayerFormation = FormationClass.General;
 
@@ -171,6 +172,8 @@ namespace RTSCamera.Config
 
         public FastForwardHideout FastForwardHideout = FastForwardHideout.Never;
 
+        public PlayerShipControllerInFreeCamera PlayerShipControllerInFreeCamera = PlayerShipControllerInFreeCamera.AI;
+
         public static void OnMenuClosed()
         {
             Get().Serialize();
@@ -211,6 +214,7 @@ namespace RTSCamera.Config
             ShowHotKeyHint = other.ShowHotKeyHint;
             FastForwardHideoutPrompted = other.FastForwardHideoutPrompted;
             FastForwardHideout = other.FastForwardHideout;
+            PlayerShipControllerInFreeCamera = other.PlayerShipControllerInFreeCamera;
         }
         [XmlIgnore]
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");

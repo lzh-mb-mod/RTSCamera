@@ -103,6 +103,10 @@
     <string id="RTSCamera_slowmotiononrtsview" text="自动慢速模式" />
     <string id="RTSCamera_slowmotiononrtsviewhint" text="自由视角中自动切换慢速模式" />
 
+    <string id="RTSCamera_naval_options" text="战帆选项" />
+    <string id="RTSCamera_player_ship_controller_in_free_camera" text="自由视角下的玩家船只控制" />
+    <string id="RTSCamera_player_ship_controller_in_free_camera_hint" text="自由视角下的玩家船只控制模式。如果设置为无，玩家船只将不会被控制。如果设置为AI，AI将控制玩家船只。如果设置为玩家，您仍然可以直接控制您的船只。" />
+
     <string id="RTSCamera_unbalancedoptionsdescription" text="作弊选项" />
     <string id="RTSCamera_disabledeath" text="全员无敌" />
     <string id="RTSCamera_enable_all_invulnerable_hotkey" text="启用全员无敌的按键" />

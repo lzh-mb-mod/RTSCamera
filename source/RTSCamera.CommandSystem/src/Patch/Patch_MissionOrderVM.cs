@@ -544,7 +544,7 @@ namespace RTSCamera.CommandSystem.Patch
             if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.LookAtDirection && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
             {
                 __result = MissionOrderVM.CursorStates.Face;
-                Patch_OrderTroopPlacer.SetIsDraingFacing(true);
+                Patch_OrderTroopPlacer.SetIsDrawingFacing(true);
                 return false;
             }
             return true;
@@ -562,6 +562,8 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_PopulateOrderSets(MissionOrderVM __instance, bool ____isMultiplayer)
         {
+            if (Mission.Current.IsNavalBattle)
+                return true;
             __instance.OrderSets.ApplyActionOnAllItems((o => o.OnFinalize()));
             __instance.OrderSets.Clear();
             MBReadOnlyList<VisualOrderSet> orders = VisualOrderFactory.GetOrders();

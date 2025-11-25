@@ -4,6 +4,7 @@ using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.QuerySystem;
+using RTSCamera.CommandSystem.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -151,7 +152,7 @@ namespace RTSCamera.CommandSystem.Patch
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Utility.DisplayMessage(e.ToString());
+                MissionSharedLibrary.Utilities.Utility.DisplayMessage(e.ToString());
                 return false;
             }
 
@@ -213,7 +214,7 @@ namespace RTSCamera.CommandSystem.Patch
             bool foundGetActiveFacingOrderOf = false;
             bool foundLookAtDirection = false;
             bool foundSetMovementOrder = false;
-            bool foundset_FacingOrder = false;
+            bool foundSetFacingOrder = false;
             int startIndex = -1;
             int endIndex = -1;
             for (int i = 0; i < codes.Count; ++i)
@@ -225,7 +226,7 @@ namespace RTSCamera.CommandSystem.Patch
                         var methodOperand = codes[i].operand as MethodInfo;
                         if (methodOperand != null && methodOperand.Name == nameof(OrderController.GetActiveFacingOrderOf))
                         {
-                            // IL_024a
+                            // IL_0233
                             foundGetActiveFacingOrderOf = true;
                         }
                     }
@@ -237,7 +238,7 @@ namespace RTSCamera.CommandSystem.Patch
                         var operand = (sbyte)codes[i].operand;
                         if (operand == (sbyte)OrderType.LookAtDirection)
                         {
-                            // IL_02ba
+                            // IL_028e
                             foundLookAtDirection = true;
                         }
 
@@ -250,34 +251,38 @@ namespace RTSCamera.CommandSystem.Patch
                         var operand = codes[i].operand as MethodInfo;
                         if (operand.Name == nameof(Formation.SetMovementOrder))
                         {
-                            // IL_02c7
+                            // IL_029b
                             foundSetMovementOrder = true;
                             startIndex = i;
                         }
 
                     }
                 }
-                else if (!foundset_FacingOrder)
+                else if (!foundSetFacingOrder)
                 {
                     if (codes[i].opcode == OpCodes.Callvirt)
                     {
                         var operand = codes[i].operand as MethodInfo;
-                        if (operand.Name == "set_FacingOrder")
+                        if (operand.Name == nameof(Formation.SetFacingOrder))
                         {
                             // IL_02da
-                            foundset_FacingOrder = true;
+                            foundSetFacingOrder = true;
                             endIndex = i;
                             break;
                         }
                     }
                 }
             }
-            if (foundSetMovementOrder && foundset_FacingOrder)
+            if (foundSetMovementOrder && foundSetFacingOrder)
             {
                 // use direction returned from SimulateNewOrderWithPositionAndDirection
                 codes[startIndex + 2].opcode = OpCodes.Ldloc_S;
                 codes[startIndex + 2].operand = (sbyte)13;
                 codes[startIndex + 3].opcode = OpCodes.Nop;
+            }
+            else
+            {
+                throw new Exception("SetMovementOrder or SetFacingOrder not found");
             }
         }
 
@@ -296,7 +301,7 @@ namespace RTSCamera.CommandSystem.Patch
                         var methodOperand = codes[i].operand as MethodInfo;
                         if (methodOperand != null && methodOperand.Name == nameof(OrderController.GetActiveFacingOrderOf))
                         {
-                            // IL_024a
+                            // IL_0231
                             foundGetActiveFacingOrderOf = true;
                             indexOfGetActiveFacingOrderOf = i;
                         }
@@ -309,7 +314,7 @@ namespace RTSCamera.CommandSystem.Patch
                         var operand = codes[i].operand as MethodInfo;
                         if (operand.Name == nameof(Formation.SetMovementOrder))
                         {
-                            // IL_0260
+                            // IL_0249
                             foundSetMovementOrder = true;
                             indexOfSetMovementOf = i;
                         }
@@ -322,6 +327,10 @@ namespace RTSCamera.CommandSystem.Patch
                 // use argument of SetMovementOrder
                 codes[indexOfGetActiveFacingOrderOf - 1].opcode = OpCodes.Ldloc_S;
                 codes[indexOfGetActiveFacingOrderOf - 1].operand = codes[indexOfSetMovementOf - 3].operand;
+            }
+            else
+            {
+                throw new Exception("GetActiveFacingOrderOf or SetMovementOrder not found");
             }
         }
 
@@ -607,7 +616,7 @@ namespace RTSCamera.CommandSystem.Patch
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Utility.DisplayMessage(e.ToString());
+                MissionSharedLibrary.Utilities.Utility.DisplayMessage(e.ToString());
             }
             return true;
         }
@@ -1039,7 +1048,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static Vec2 GetColumnFormationNewDirection(Formation formation, Vec2 oldOrderPositionVec2, Vec2 newOrderPositionVec2)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             if (queueCommand)
             {
                 return (newOrderPositionVec2 - oldOrderPositionVec2).Normalized();
@@ -1630,7 +1639,7 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         // IL_00f0
                         var operand = codes[i].operand as MethodInfo;
-                        if (operand.Name == nameof(Formation.SetFacingOrder) )
+                        if (operand.Name == nameof(Formation.SetFacingOrder))
                         {
                             foundSetFacingOrder = true;
                             setFacingOrderIndex = i;
@@ -2798,7 +2807,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_GetActiveMovementOrderOf(Formation formation, ref OrderType __result)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             if (queueCommand)
             {
                 if (CommandQueueLogic.LatestOrderInQueueChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
@@ -2849,7 +2858,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_GetActiveFacingOrderOf(Formation formation, ref OrderType __result)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             if (queueCommand)
             {
                 if (CommandQueueLogic.LatestOrderInQueueChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
@@ -2867,7 +2876,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_GetActiveFiringOrderOf(Formation formation, ref OrderType __result)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             if (queueCommand)
             {
                 if (CommandQueueLogic.LatestOrderInQueueChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
@@ -2885,7 +2894,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_GetActiveRidingOrderOf(Formation formation, ref OrderType __result)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             if (queueCommand)
             {
                 if (CommandQueueLogic.LatestOrderInQueueChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
@@ -2903,7 +2912,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_GetActiveArrangementOrderOf(Formation formation, ref OrderType __result)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             if (queueCommand)
             {
                 if (CommandQueueLogic.LatestOrderInQueueChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
