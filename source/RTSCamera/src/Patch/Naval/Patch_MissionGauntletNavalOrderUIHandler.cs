@@ -1,10 +1,7 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
-using RTSCamera.Config;
-using RTSCamera.Logic;
 using System;
 using System.Reflection;
-using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews;
 
@@ -12,7 +9,7 @@ namespace RTSCamera.Patch.Naval
 {
     public class Patch_MissionGauntletNavalOrderUIHandler
     {
-        private static MethodInfo _setIsFormationTargetingDisabled = AccessTools.Method("NavalDLC.View.MissionViews.NavalShipTargetSelectionHandler:SetIsFormationTargetingDisabled");
+        private static MethodInfo _setIsFormationTargetingDisabled;
         private static bool _patched;
         public static bool Patch(Harmony harmony)
         {
@@ -47,6 +44,7 @@ namespace RTSCamera.Patch.Naval
             ____formationTargetHandler?.SetIsFormationTargetingDisabled(isDisabled);
             if (____shipTargetHandler == null)
                 return false;
+            _setIsFormationTargetingDisabled ??= AccessTools.Method("NavalDLC.View.MissionViews.NavalShipTargetSelectionHandler:SetIsFormationTargetingDisabled");
             _setIsFormationTargetingDisabled.Invoke(____shipTargetHandler, new object[] { isDisabled });
             return false;
         }

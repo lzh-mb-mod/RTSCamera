@@ -110,11 +110,14 @@ namespace RTSCamera
                 _successPatch &= Patch_SandboxBattleBannerBearsModel.Patch(_harmony);
                 _successPatch &= Patch_OrderItemBaseVM.Patch(_harmony);
                 // naval dlc
-                _successPatch &= Patch_MissionShipControlView.Patch(_harmony);
-                _successPatch &= Patch_MissionShip.Patch(_harmony);
-                _successPatch &= Patch_NavalDLCHelpers.Patch(_harmony);
-                _successPatch &= Patch_MissionGauntletNavalOrderUIHandler.Patch(_harmony);
-                _successPatch &= Patch_NarvalShipTargetSelectionHandler.Patch(_harmony);
+                if (IsNavalInstalled)
+                {
+                    _successPatch &= Patch_MissionShipControlView.Patch(_harmony);
+                    _successPatch &= Patch_MissionShip.Patch(_harmony);
+                    _successPatch &= Patch_NavalDLCHelpers.Patch(_harmony);
+                    _successPatch &= Patch_MissionGauntletNavalOrderUIHandler.Patch(_harmony);
+                    _successPatch &= Patch_NarvalShipTargetSelectionHandler.Patch(_harmony);
+                }
 
                 // Use Patch to add game menu
                 CommandBattleBehavior.Patch(_harmony);

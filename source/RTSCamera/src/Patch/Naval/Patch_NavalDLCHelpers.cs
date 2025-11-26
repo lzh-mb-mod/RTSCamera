@@ -36,11 +36,6 @@ namespace RTSCamera.Patch.Naval
             return true;
         }
 
-        private static Type NavalShipsLogicType = AccessTools.TypeByName("NavalDLC.Missions.MissionLogics.NavalShipsLogic");
-        private static MethodInfo GetShipAssignmentMethod = AccessTools.Method("NavalDLC.Missions.MissionLogics.NavalShipsLogic:GetShipAssignment");
-        private static PropertyInfo HasMissionShipProperty = AccessTools.Property("NavalDLC.ShipAssignment:HasMissionShip");
-        private static PropertyInfo MissionShipProperty = AccessTools.Property("NavalDLC.ShipAssignment:MissionShip");
-
         public static bool Prefix_IsShipOrdersAvailable(ref bool __result)
         {
             if (Mission.Current == null || !Mission.Current.IsNavalBattle || Mission.Current.PlayerTeam?.PlayerOrderController == null)
@@ -54,16 +49,6 @@ namespace RTSCamera.Patch.Naval
 
             __result = IsShipOrderAvailable();
             return false;
-        }
-
-        private static MissionObject GetShip(MissionBehavior navalShipsLogic, TeamSideEnum teamSide, FormationClass formationIndex)
-        {
-            Object shipAssignment = GetShipAssignmentMethod.Invoke(navalShipsLogic, new object[] { teamSide, formationIndex });
-            if ((bool)HasMissionShipProperty.GetValue(shipAssignment))
-            {
-                return (MissionObject)MissionShipProperty.GetValue(shipAssignment);
-            }
-            return null;
         }
 
         public static bool IsShipOrderAvailable()

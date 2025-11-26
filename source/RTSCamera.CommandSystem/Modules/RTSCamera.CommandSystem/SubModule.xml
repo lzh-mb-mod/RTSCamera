@@ -2,7 +2,7 @@
 <Module>
   <Name value="RTS Camera Command System"/>
   <Id value="RTSCamera.CommandSystem"/>
-  <Version value="v5.3.0"/>
+  <Version value="v5.3.0.1"/>
   <SingleplayerModule value="true"/>
   <MultiplayerModule value="false"/>
   <DependedModules>
@@ -11,7 +11,8 @@
     <DependedModule Id="Sandbox" DependentVersion="v1.3.4" />
     <DependedModule Id="CustomBattle" DependentVersion="v1.3.4"/>
     <DependedModule Id="StoryMode" DependentVersion="v1.3.4" />
-    <DependedModule Id="NavalDLC" DependentVersion="v1.0.0" Optional="true" />
+    <!-- Cannot start the game without Naval DLC with official launcher -->
+    <!-- <DependedModule Id="NavalDLC" DependentVersion="v1.0.0" Optional="true" /> -->
   </DependedModules>
   <SubModules>
     <SubModule>

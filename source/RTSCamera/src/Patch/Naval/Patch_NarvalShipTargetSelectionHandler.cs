@@ -11,7 +11,7 @@ namespace RTSCamera.Patch.Naval
 {
     public class Patch_NarvalShipTargetSelectionHandler
     {
-        private static PropertyInfo _globalFrame = AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:GlobalFrame");
+        private static PropertyInfo _globalFrame;
         private static bool _patched;
         public static bool Patch(Harmony harmony)
         {
@@ -20,6 +20,8 @@ namespace RTSCamera.Patch.Naval
                 if (_patched)
                     return false;
                 _patched = true;
+                if (!RTSCameraSubModule.IsNavalInstalled)
+                    return true;
                 harmony.Patch(
                     AccessTools.Method("NavalDLC.View.MissionViews.NavalShipTargetSelectionHandler:GetShipDistanceToCenter"),
                     prefix: new HarmonyMethod(typeof(Patch_NarvalShipTargetSelectionHandler).GetMethod(
@@ -43,6 +45,7 @@ namespace RTSCamera.Patch.Naval
                 return true;
             }
 
+            _globalFrame = AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:GlobalFrame");
             Vec3 origin = ((MatrixFrame)_globalFrame.GetValue(ship)).origin;
             float num = origin.AsVec2.Distance(cameraPosition.AsVec2);
             if ((double)num >= 1000.0)
