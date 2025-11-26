@@ -37,7 +37,7 @@
     </VisualDefinition>
   </VisualDefinitions>
   <Window>
-    <OrderItemButtonWidget Command.Click="ExecuteClickAction" Command.AlternateClick="OnEscape" DoNotPassEventsToChildren="true" VisualDefinition="CircleGlow" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Item.Background.Width" SuggestedHeight="!Item.Background.Height" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionState="@SelectionState" IconWidget="Icon" IsSelected="@IsSelected" UpdateChildrenStates="true" SelectionVisualWidget="SelectionVisualWidget" >
+    <OrderItemButtonWidget DataSource="*DataSource" Command.Click="ExecuteClickAction" Command.AlternateClick="OnEscape" DoNotPassEventsToChildren="true" VisualDefinition="CircleGlow" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Item.Background.Width" SuggestedHeight="!Item.Background.Height" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionState="@SelectionState" IconWidget="Icon" IsSelected="@IsSelected" UpdateChildrenStates="true" SelectionVisualWidget="SelectionVisualWidget" >
       <Children>
         <ImageWidget Id="SelectionVisualWidget" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Order.Item.Background" OverrideDefaultStateSwitchingEnabled="true"/>
         <IconBrushWidget Id="Icon" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="15" MarginBottom="15" MarginLeft="15" MarginRight="15" Brush="Order.Icon" IconBrush="Order.Icons.Round" IconID="@OrderIconId" IsSelected="@IsSelected"/>

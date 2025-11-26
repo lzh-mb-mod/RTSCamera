@@ -3,8 +3,12 @@ using MissionSharedLibrary.Utilities;
 using System;
 using System.Reflection;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
+using TaleWorlds.InputSystem;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.SiegeWeapon;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.Patch.Fix
 {
@@ -40,25 +44,27 @@ namespace RTSCamera.Patch.Fix
             var bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
             // In the original code, the condition is to check pilot agent is IsMainAgent.
             // We modify it to check if the controller is Player.
-            if (__instance.PilotAgent != null && __instance.PilotAgent.Controller == AgentControllerType.Player && __instance.CameraHolder != null)
+            bool isForceUse = Mission.Current?.MainAgent != null && Mission.Current.MainAgent.IsPlayerControlled && __instance.RangedSiegeWeapon.PlayerForceUse;
+            bool usingWeapon = __instance.PilotAgent != null && __instance.PilotAgent.Controller == AgentControllerType.Player || isForceUse;
+            if (__instance.CameraHolder != null && usingWeapon)
             {
                 if (!____isInWeaponCameraMode)
                 {
                     ____isInWeaponCameraMode = true;
-                    typeof(RangedSiegeWeaponView).GetMethod("StartUsingWeaponCamera", bindingFlags)?.Invoke(__instance, new object[0]);
+                    typeof(RangedSiegeWeaponView).GetMethod("StartUsingWeaponCamera", bindingFlags).Invoke(__instance, new object[0]);
                 }
                 typeof(RangedSiegeWeaponView).GetMethod("HandleUserCameraRotation", bindingFlags)
-                    ?.Invoke(__instance, new object[1] { dt });
+                    .Invoke(__instance, new object[1] { dt });
             }
-            if (____isInWeaponCameraMode && (__instance.PilotAgent == null || __instance.PilotAgent.Controller != AgentControllerType.Player))
+            if (____isInWeaponCameraMode && !usingWeapon)
             {
                 ____isInWeaponCameraMode = false;
                 typeof(RangedSiegeWeaponView).GetMethod("ResetCamera", bindingFlags)?.Invoke(__instance, new object[0]);
             }
 
-            if (__instance.PilotAgent != null && __instance.PilotAgent.Controller == AgentControllerType.Player)
+            if (__instance.PilotAgent != null && (__instance.PilotAgent.Controller == AgentControllerType.Player || isForceUse))
                 typeof(RangedSiegeWeaponView).GetMethod("HandleUserAiming", bindingFlags)
-                    ?.Invoke(__instance, new object[1] { dt });
+                    .Invoke(__instance, new object[1] { dt });
             return false;
         }
     }
