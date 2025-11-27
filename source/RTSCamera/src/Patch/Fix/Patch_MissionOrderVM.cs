@@ -17,7 +17,7 @@ namespace RTSCamera.Patch.Fix
     {
 
         public static bool AllowEscape = true;
-        public static bool EscapeRequested = false;
+        public static bool AllowClosingOrderUI = false;
 
         private static bool _patched;
         public static bool Patch(Harmony harmony)
@@ -88,7 +88,7 @@ namespace RTSCamera.Patch.Fix
 
         public static bool Prefix_OnEscape(MissionOrderVM __instance)
         {
-            EscapeRequested = AllowEscape;
+            AllowClosingOrderUI = AllowEscape;
             // Do nothing during draging camera using right mouse button.
             return AllowEscape;
             //if (!AllowEscape)
@@ -164,9 +164,9 @@ namespace RTSCamera.Patch.Fix
             if (__instance.IsToggleOrderShown)
             {
                 bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera;
-                if (EscapeRequested)
+                if (AllowClosingOrderUI)
                 {
-                    EscapeRequested = false;
+                    AllowClosingOrderUI = false;
                     shouldKeepOpen = false;
                 }
                 Mission.Current.IsOrderMenuOpen = shouldKeepOpen;

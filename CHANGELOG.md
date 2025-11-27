@@ -1,5 +1,17 @@
 # Changelog
 
+## [v5.3.2] - 2025-11-27
+### Fixed
+- Fix the crash when player is injured and command a sea battle.
+
+## [v5.3.1] - 2025-11-26
+### Fixed
+- Fix the issue that player cannot use ship weapon.
+
+## [v5.3.0] - 2025-11-26
+### Fixed
+- Support v1.3.4 and War Sail DLC.
+
 ## [v5.2.3] - 2025-09-24
 ### Fixed
 - Fix support to select formations using left mouse button.

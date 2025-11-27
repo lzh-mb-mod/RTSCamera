@@ -2,6 +2,7 @@
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
+using RTSCamera.Patch.Fix;
 using RTSCamera.Patch.TOR_fix;
 using RTSCamera.View;
 using System;
@@ -95,25 +96,24 @@ namespace RTSCamera.Logic.SubLogic
             bool showOrderHint = false;
             if (e.IsOrderEnabled)
             {
-                if (IsSpectatorCamera)
+                if (_shouldIgnoreNextOrderViewOpenEvent)
                 {
-                    if (_shouldIgnoreNextOrderViewOpenEvent)
+                    // To refresh orders during switching free camera,
+                    // order ui may be closed and opened again.
+                    // This means that an event that UI is closed will be triggered
+                    // and following an event that UI is opened.
+                    // So we will wait for a tick if UI is closed,
+                    // and if a false positive UI open event is triggered during this tick,
+                    // we will not switch to agent camera, instead we will cancel the wait.
+                    if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
                     {
-                        // To keep order UI open in free camera,
-                        // code is patched in a way that, if in free camera,
-                        // UI will be opened instantly after closed
-                        // This means that an event that UI is closed will be triggered
-                        // and following an event that UI is opened.
-                        // So we will wait for a tick if UI is closed,
-                        // and if a false positive UI open event is triggered during this tick,
-                        // we will not switch to agent camera, instead we will cancel the wait.
-                        if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
-                        {
-                            _switchToAgentNextTick = false;
-                        }
-                        _shouldIgnoreNextOrderViewOpenEvent = false;
+                        _switchToAgentNextTick = false;
                     }
-                    else
+                    _shouldIgnoreNextOrderViewOpenEvent = false;
+                }
+                else
+                {
+                    if (IsSpectatorCamera)
                     {
                         showOrderHint = true;
                         if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
@@ -123,14 +123,14 @@ namespace RTSCamera.Logic.SubLogic
                             _skipSwitchingCameraOnOrderingFinished = true;
                         }
                     }
-                }
-                else
-                {
-                    if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
+                    else
                     {
-                        _skipSwitchingCameraOnOrderingFinished = false;
-                        SwitchToFreeCamera();
-                        showOrderHint = true;
+                        if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
+                        {
+                            _skipSwitchingCameraOnOrderingFinished = false;
+                            SwitchToFreeCamera();
+                            showOrderHint = true;
+                        }
                     }
                 }
             }
@@ -182,7 +182,21 @@ namespace RTSCamera.Logic.SubLogic
                     // Force control agent, setting controller to Player, to avoid the issue that,
                     // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
                     // DeploymentMissionController.FinishDeployment set controller of main agent to Player.
-                    Utility.PlayerControlAgent(_controlTroopLogic.GetAgentToControl());
+                    Agent agentToControl = null;
+                    if (Mission.IsNavalBattle)
+                    {
+                        // in naval battle the first formation is player formation by default.
+                        var infantryFormation = Mission.PlayerTeam.GetFormation(FormationClass.Infantry);
+                        if (infantryFormation.Captain != null)
+                        {
+                            agentToControl = infantryFormation.Captain;
+                        }
+                    }
+                    if (agentToControl == null)
+                    {
+                        agentToControl = _controlTroopLogic.GetAgentToControl();
+                    }
+                    Utility.PlayerControlAgent(agentToControl);
                     if (Mission.MainAgent != null)
                     {
                         Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
@@ -504,6 +518,9 @@ namespace RTSCamera.Logic.SubLogic
             bool isDeployment = isDeploymentFinishing || Mission.Mode == MissionMode.Deployment;
             if (!isDeployment)
                 return;
+            // skip setting formation in naval battle.
+            if (Mission.IsNavalBattle)
+                return;
             if (Mission.MainAgent?.Formation?.FormationIndex == null)
                 return;
 
@@ -649,6 +666,10 @@ namespace RTSCamera.Logic.SubLogic
             }
 
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(false);
+            if (Mission.IsOrderMenuOpen && Mission.IsNavalBattle)
+            {
+                RefreshOrders();
+            }
         }
 
         private void SwitchToFreeCamera()
@@ -668,6 +689,24 @@ namespace RTSCamera.Logic.SubLogic
 
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(true);
             Utility.DisplayLocalizedText("str_rts_camera_switch_to_free_camera");
+            if (Mission.IsOrderMenuOpen && Mission.IsNavalBattle)
+            {
+                RefreshOrders();
+            }
+        }
+
+        private void RefreshOrders()
+        {
+            var missionOrderVM = Utility.GetMissionOrderVM(Mission);
+            if (missionOrderVM != null)
+            {
+                // allow it to be actually closed.
+                Patch_MissionOrderVM.AllowClosingOrderUI = true;
+                missionOrderVM.TryCloseToggleOrder();
+                // avoid switching to free camera automatically when opening order UI.
+                _shouldIgnoreNextOrderViewOpenEvent = true;
+                missionOrderVM.OpenToggleOrder(false, false);
+            }
         }
     }
 }

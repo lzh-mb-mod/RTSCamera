@@ -966,12 +966,13 @@ namespace RTSCamera.CommandSystem.Patch
                 }
             }
             int entityIndex = 0;
+            var getGroundedVec3Method = __instance.GetType().GetMethod("GetGroundedVec3", BindingFlags.Instance | BindingFlags.NonPublic);
             foreach (WorldPosition worldPosition in simulationAgentFrames)
             {
                 typeof(OrderTroopPlacer).GetMethod("AddOrderPositionEntity", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(__instance,
                     new object[]
                     {
-                        entityIndex, worldPosition.GetGroundVec3(), giveOrder, -1f
+                        entityIndex, getGroundedVec3Method.Invoke(__instance, new object[]{ worldPosition }), giveOrder, -1f
                     });
                 ++entityIndex;
             }
