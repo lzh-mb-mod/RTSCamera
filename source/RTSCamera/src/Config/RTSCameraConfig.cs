@@ -57,7 +57,7 @@ namespace RTSCamera.Config
         Count
     }
 
-    public enum PlayerShipControllerInFreeCamera
+    public enum PlayerShipController
     {
         None,
         AI,
@@ -150,6 +150,8 @@ namespace RTSCamera.Config
 
         public bool ControlTroopsInPlayerPartyOnly = false;
 
+        public bool ControlHeroOnly = false;
+
         public bool IgnoreRetreatingTroops = true;
 
         public bool DisableDeathHotkeyEnabled;
@@ -172,7 +174,9 @@ namespace RTSCamera.Config
 
         public FastForwardHideout FastForwardHideout = FastForwardHideout.Never;
 
-        public PlayerShipControllerInFreeCamera PlayerShipControllerInFreeCamera = PlayerShipControllerInFreeCamera.AI;
+        public PlayerShipController PlayerShipControllerInFreeCamera = PlayerShipController.AI;
+
+        public bool GivingShipOrdersInPlayerMode = true;
 
         public static void OnMenuClosed()
         {
@@ -204,6 +208,7 @@ namespace RTSCamera.Config
             IgnoreRetreatingTroops = other.IgnoreRetreatingTroops;
             PreferUnitsInSameFormation = other.PreferUnitsInSameFormation;
             ControlTroopsInPlayerPartyOnly = other.ControlTroopsInPlayerPartyOnly;
+            ControlHeroOnly = other.ControlHeroOnly;
             DisableDeathHotkeyEnabled = other.DisableDeathHotkeyEnabled;
             SwitchTeamHotkeyEnabled = other.SwitchTeamHotkeyEnabled;
             LimitCameraDistance = other.LimitCameraDistance;
@@ -215,6 +220,7 @@ namespace RTSCamera.Config
             FastForwardHideoutPrompted = other.FastForwardHideoutPrompted;
             FastForwardHideout = other.FastForwardHideout;
             PlayerShipControllerInFreeCamera = other.PlayerShipControllerInFreeCamera;
+            GivingShipOrdersInPlayerMode = other.GivingShipOrdersInPlayerMode;
         }
         [XmlIgnore]
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");

@@ -7,11 +7,8 @@ using RTSCamera.Patch.TOR_fix;
 using RTSCamera.View;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
-using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
@@ -47,6 +44,7 @@ namespace RTSCamera.Logic.SubLogic
         private bool _isSwitchCameraKeyPressedLastTick = false;
         private bool _shouldShowFastForwardInHideoutPromptInThisMission = false;
         public bool FastForwardHideoutNextTick = false;
+        public bool _openOrderUINextTick = false;
 
         public Mission Mission => _logic.Mission;
 
@@ -316,6 +314,11 @@ namespace RTSCamera.Logic.SubLogic
             {
                 _switchToAgentNextTick = false;
                 SwitchToAgent();
+            }
+            else if (_openOrderUINextTick)
+            {
+                _openOrderUINextTick = false;
+                Utility.GetMissionOrderVM(Mission)?.OpenToggleOrder(false, false);
             }
 
             if (FastForwardHideoutNextTick)
@@ -648,8 +651,10 @@ namespace RTSCamera.Logic.SubLogic
             if (!IsSpectatorCamera)
                 return;
             IsSpectatorCamera = false;
+            UsableMissionObject usableMissionObject = null;
             if (Mission.MainAgent != null)
             {
+                usableMissionObject = Mission.MainAgent.CurrentlyUsedGameObject;
                 Utility.DisplayLocalizedText("str_rts_camera_switch_to_player");
                 _controlTroopLogic.ControlMainAgent();
             }
@@ -666,9 +671,20 @@ namespace RTSCamera.Logic.SubLogic
             }
 
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(false);
-            if (Mission.IsOrderMenuOpen && Mission.IsNavalBattle)
+            if (Mission.IsNavalBattle && Mission.MainAgent != null)
             {
-                RefreshOrders();
+                // Referencing MissionMainAgentInteractionComponent.FocusStateCheckTick
+                if (usableMissionObject != null)
+                {
+                    if (!Mission.MainAgent.IsUsingGameObject && Mission.MainAgent.IsAbleToUseMachine() && !(usableMissionObject is SpawnedItemEntity) && Mission.MainAgent.ObjectHasVacantPosition(usableMissionObject))
+                    {
+                        Mission.MainAgent.HandleStartUsingAction(usableMissionObject, -1);
+                    }
+                }
+                if (Mission.IsOrderMenuOpen)
+                {
+                    RefreshOrders();
+                }
             }
         }
 
@@ -707,6 +723,11 @@ namespace RTSCamera.Logic.SubLogic
                 _shouldIgnoreNextOrderViewOpenEvent = true;
                 missionOrderVM.OpenToggleOrder(false, false);
             }
+        }
+
+        public void SetOpenToggleUINextTick(bool shouldOpenUI)
+        {
+            _openOrderUINextTick = shouldOpenUI;
         }
     }
 }

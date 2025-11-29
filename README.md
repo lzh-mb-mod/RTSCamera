@@ -150,7 +150,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - After `Limit Camera Distance` is enabled, using free camera and ordering in free camera can improve scouting and tactics skill level.
 
-- Click on castle gate won't attack the enemy formation behind the gate, which is an issue in the base game. 
+- Click on castle gate won't attack the enemy formation behind the gate, which is an issue in the base game.
 
 ### Command System
 - **New** Hold `Shift` when giving orders to add the order to queue. Your troops will execute orders in queue one by one.
@@ -254,6 +254,22 @@ There're more hotkeys configurable but are disabled by default. You can configur
   The hot key that opens the menu is saved in file `(user directory)\Documents\Mount and Blade II Bannerlord\Configs\MissionLibrary\GeneralGameKeyConfig.xml`.
 
   You can modify them manually, but if you edit them incorrectly or remove them, the configuration will be reset to default.
+
+## War Sail DLC Related
+### RTS Camera
+- When switch to free camera mode, AI will control your character and pilot player ship. You can give ship orders to player ship, such as Engage, Skirmish, etc.
+
+- When player ship is piloted by AI, selecting all formations will no longer exclude the playe ship, so that it will be easier to give orders like "all ships attack!". 
+
+- When player is injured and switched to another soldier on the other ship, ship orders will be updated accordingly so that you can give ship orders to the old ship (engage, skirmish, etc.) and troop orders to the new ship (defend ship, charge, etc.).
+
+- When you are controlling your character and not piloting your ship, a new order (with hotkey F5) to toggle soldier piloting your ship will be added. This is the same as the Helmsman mod.
+
+  To avoid conflict and weird behavior, when RTS Camera detects Helmsman is installed, it will not add the new order for the first ship.
+
+  For the other ships, Helmsman doesn't take effect, so RTS Camera will add the new order for them.
+
+  - Note that in this case, as of Helmsman v1.0.0, using Helmsman to toggle controller of the first ship when you are piloting other ships may cause your player character stops piloting.
 
 ## Troubleshoot
 - If the launcher can not start:

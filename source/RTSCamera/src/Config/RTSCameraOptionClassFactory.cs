@@ -299,6 +299,11 @@ namespace RTSCamera.Config
                     () => RTSCameraConfig.Get().ControlTroopsInPlayerPartyOnly,
                     b => RTSCameraConfig.Get().ControlTroopsInPlayerPartyOnly = b));
                 controlOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_control_hero_only"),
+                    GameTexts.FindText("str_rts_camera_control_hero_only_hint"),
+                    () => RTSCameraConfig.Get().ControlHeroOnly,
+                    b => RTSCameraConfig.Get().ControlHeroOnly = b));
+                controlOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_ignore_retreating_troops"),
                     GameTexts.FindText("str_rts_camera_ignore_retreating_troops_hint"),
                     () => RTSCameraConfig.Get().IgnoreRetreatingTroops,
@@ -391,12 +396,12 @@ namespace RTSCamera.Config
                         GameTexts.FindText("str_rts_camera_player_ship_controller_in_free_camera_hint"),
                         new SelectionOptionData(i =>
                         {
-                            if (i < 0 || i >= (int)PlayerShipControllerInFreeCamera.Count)
+                            if (i < 0 || i >= (int)PlayerShipController.Count)
                                 return;
-                            RTSCameraConfig.Get().PlayerShipControllerInFreeCamera = (PlayerShipControllerInFreeCamera)i;
+                            RTSCameraConfig.Get().PlayerShipControllerInFreeCamera = (PlayerShipController)i;
                         }, () =>
                         {
-                            return RTSCameraConfig.Get().PlayerControllerInFreeCamera;
+                            return (int)RTSCameraConfig.Get().PlayerShipControllerInFreeCamera;
                         }, () => (int)AgentControllerType.Count, () => new[]
                         {
                             new SelectionItem(true, "str_rts_camera_controller_type", "none"),

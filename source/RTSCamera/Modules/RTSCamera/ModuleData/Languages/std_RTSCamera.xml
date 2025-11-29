@@ -94,6 +94,8 @@
     <string id="RTSCamera_control_ally_after_death_timing_prompt" text="Do you want to enable 'Control Troop After Death'?" />
     <string id="RTSCamera_prefer_unit_in_same_formation" text="Prefer Units In Same Formation" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
+    <string id="RTSCamera_controlheroonly" text="Control Hero Only" />
+    <string id="RTSCamera_controlheroonlyhint" text="Only consider hero troops when looking for target to control." />
     <string id="RTSCamera_ignoreretreatingtroops" text="Ignore Retreating Troops" />
 
     <string id="RTSCamera_miscellaneous_options" text="Miscellaneous Options" />
@@ -140,6 +142,11 @@
     <string id="RTSCamera_fast_forward_hideout_option_until_boss_fight" text="Until Boss Fight" />
     <string id="RTSCamera_fast_forward_hideout_option_always" text="Always" />
     <string id="RTSCamera_fast_forward_hideout_prompt" text="Do you want to enable fast forward in hideout?" />
+
+    <string id="RTSCamera_ai_control_ship_on" text="Soldier Pilot On" />
+    <string id="RTSCamera_player_control_ship_off" text="Soldier Pilot Off" />
+    <string id="RTSCamera_soldiers_start_controlling_ship" text="Soldier starts piloting your ship." />
+    <string id="RTSCamera_soldiers_stop_controlling_ship" text="Soldier stops piloting your ship." />
 
     <string id="RTSCamera_hotkeycategory" text="RTS Camera Hot Key" />
     <string id="RTSCamera_pausekey" text="Pause" />

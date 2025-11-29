@@ -1,18 +1,23 @@
 ﻿using HarmonyLib;
+using Microsoft.VisualBasic;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Logic;
 using System;
 using System.Reflection;
+using TaleWorlds.Core;
+using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch.Naval
 {
     public class Patch_MissionShip
     {
         private static PropertyInfo _isSinking;
-        private static PropertyInfo _isPlayerShip ;
+        private static PropertyInfo _isPlayerShip;
         private static MethodInfo _setController;
         private static bool _patched;
+
+        public static bool ShouldAIControlPlayerShipInPlayerMode;
         public static bool Patch(Harmony harmony)
         {
             try
@@ -37,7 +42,7 @@ namespace RTSCamera.Patch.Naval
             return true;
         }
 
-        public static bool Prefix_UpdateController(object __instance)
+        public static bool Prefix_UpdateController(MissionObject __instance)
         {
             _isSinking ??= AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsSinking");
             if ((bool)_isSinking.GetValue(__instance))
@@ -47,13 +52,30 @@ namespace RTSCamera.Patch.Naval
             if (!(bool)_isPlayerShip.GetValue(__instance))
                 return true;
             var isSpectatorCamera = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? false;
-            // Only handles free camera mode.
-            if (!isSpectatorCamera)
+            if (isSpectatorCamera)
+            {
+                var controller = RTSCameraConfig.Get().PlayerShipControllerInFreeCamera;
+                _setController ??= AccessTools.Method("NavalDLC.Missions.Objects.MissionShip:SetController");
+                _setController.Invoke(__instance, new object[] { controller, true });
+                return false;
+            }
+            else
+            {
+                if (Utilities.Utility.IsShipPilotByPlayer(__instance))
+                {
+                    return true;
+                }
+                var shipFormation = Utilities.Utility.GetShipFormation(__instance);
+
+                // When helmsman is installed, exclude infantry formation because helmsman will handle it.
+                if (ShouldAIControlPlayerShipInPlayerMode && !(RTSCameraSubModule.IsHelmsmanInstalled && shipFormation.FormationIndex == FormationClass.Infantry))
+                {
+                    _setController ??= AccessTools.Method("NavalDLC.Missions.Objects.MissionShip:SetController");
+                    _setController.Invoke(__instance, new object[] { PlayerShipController.AI, true });
+                    return false;
+                }
                 return true;
-            var controller = RTSCameraConfig.Get().PlayerShipControllerInFreeCamera;
-            _setController ??= AccessTools.Method("NavalDLC.Missions.Objects.MissionShip:SetController");
-            _setController.Invoke(__instance, new object[] { RTSCameraConfig.Get().PlayerShipControllerInFreeCamera, true });
-            return false;
+            }
         }
     }
 }

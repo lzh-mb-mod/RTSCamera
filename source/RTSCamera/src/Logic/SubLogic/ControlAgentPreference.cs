@@ -15,15 +15,15 @@ namespace RTSCamera.Logic.SubLogic
         private Mission Mission => Mission.Current;
         private readonly RTSCameraConfig _config = RTSCameraConfig.Get();
 
-        public void UpdateAgentPreferenceFromTeam(Team team, Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly)
+        public void UpdateAgentPreferenceFromTeam(Team team, Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly, bool controlHeroOnly)
         {
             foreach (var agent in team.ActiveAgents)
             {
-                UpdateAgentPreference(agent, position, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly);
+                UpdateAgentPreference(agent, position, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly, controlHeroOnly);
             }
         }
 
-        public void UpdateAgentPreferenceFromFormation(FormationClass formationClass, Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly)
+        public void UpdateAgentPreferenceFromFormation(FormationClass formationClass, Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly, bool controlHeroOnly)
         {
             if (formationClass < 0 || formationClass >= FormationClass.NumberOfAllFormations)
             {
@@ -31,23 +31,26 @@ namespace RTSCamera.Logic.SubLogic
             }
 
             var formation = Mission.PlayerTeam.GetFormation(formationClass);
-            formation.ApplyActionOnEachUnit(agent => UpdateAgentPreference(agent, position, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly));
+            formation.ApplyActionOnEachUnit(agent => UpdateAgentPreference(agent, position, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly, controlHeroOnly));
         }
 
-        private void UpdateAgentPreference(Agent agent, Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly)
+        private void UpdateAgentPreference(Agent agent, Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly, bool controlHeroOnly)
         {
             if (!CanControl(agent) || (ignoreRetreatingAgents && agent.IsRunningAway))
                 return;
             if (!controlTroopsInPlayerPartyOnly || Utility.IsInPlayerParty(agent) || CommandBattleBehavior.CommandMode)
             {
-                if (BestAgent == null || !BestAgent.IsHero && agent.IsHero || (!Utility.IsInPlayerParty(BestAgent) && Utility.IsInPlayerParty(agent)) ||
-                    BestAgent.IsHero && agent.IsHero && (Utility.IsHigherInMemberRoster(agent, BestAgent) ??
-                                                         BestAgent.Position.DistanceSquared(position) >
-                                                         agent.Position.DistanceSquared(position)) ||
-                    !BestAgent.IsHero && !agent.IsHero &&
-                    BestAgent.Position.DistanceSquared(position) > agent.Position.DistanceSquared(position))
+                if (!controlHeroOnly)
                 {
-                    BestAgent = agent;
+                    if (BestAgent == null || !BestAgent.IsHero && agent.IsHero || (!Utility.IsInPlayerParty(BestAgent) && Utility.IsInPlayerParty(agent)) ||
+                        BestAgent.IsHero && agent.IsHero && (Utility.IsHigherInMemberRoster(agent, BestAgent) ??
+                                                             BestAgent.Position.DistanceSquared(position) >
+                                                             agent.Position.DistanceSquared(position)) ||
+                        !BestAgent.IsHero && !agent.IsHero &&
+                        BestAgent.Position.DistanceSquared(position) > agent.Position.DistanceSquared(position))
+                    {
+                        BestAgent = agent;
+                    }
                 }
 
                 if (!_config.PreferUnitsInSameFormation && agent.IsHero)

@@ -1,4 +1,13 @@
 # Changelog
+## [v5.3.3] - 2025-11-29
+### Added
+- Add command "Soldier Control Ship On" and "Soldier Control Ship Off" if player is not piloting the ship. When turned on the ship will be piloted by soldier.
+
+### Improved
+- In sea battle, available commands depends on current camera mode and soldier control mode and will be refreshed instantly.
+
+### Fixed
+- Fix the issue that player cannot give orders to the first ship, when player is down and control units on other ships.
 
 ## [v5.3.2] - 2025-11-27
 ### Fixed

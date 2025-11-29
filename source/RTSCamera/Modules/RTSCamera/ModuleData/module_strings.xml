@@ -91,6 +91,10 @@
   <string id="str_rts_camera_control_ally_after_death_timing_prompt" text="{=RTSCamera_control_ally_after_death_timing_prompt}Do you want to enable 'Control Troop After Death'?" />
   <string id="str_rts_camera_prefer_unit_in_same_formation" text="{=RTSCamera_prefer_unit_in_same_formation}Prefer Units In Same Formation" />
   <string id="str_rts_camera_control_troops_in_player_party_only" text="{=RTSCamera_controltroopsinplayerpartyonly}Control Troops In Player Party Only" />
+  <string id="str_rts_camera_limited_to_player_party_only" text="{=RTSCamera_limited_to_player_party_only}Control Troops In Player Party Only is enabled. Only troops in player party will be considered for control." />
+  <string id="str_rts_camera_control_hero_only" text="{=RTSCamera_controlheroonly}Control Hero Only" />
+  <string id="str_rts_camera_control_hero_only_hint" text="{=RTSCamera_controlheroonlyhint}Only consider hero troops when looking for target to control." />
+  <string id="str_rts_camera_limited_to_hero_only" text="{=RTSCamera_limitedtoheroonly}Control Hero Only is enabled. Only hero troops will be considered for control." />
   <string id="str_rts_camera_ignore_retreating_troops" text="{=RTSCamera_ignoreretreatingtroops}Ignore Retreating Troops" />
   <string id="str_rts_camera_slow_motion_on_rts_view" text="{=RTSCamera_slowmotiononrtsview}Slow Motion On RTS view" />
   <string id="str_rts_camera_slow_motion_on_rts_view_hint" text="{=RTSCamera_slowmotiononrtsviewhint}Automatically turn on Slow Motion mode On RTS view" />
@@ -138,6 +142,10 @@
   <string id="str_rts_camera_fast_forward_hideout_option.Always" text="{=RTSCamera_fast_forward_hideout_option_always}Always" />
   <string id="str_rts_camera_fast_forward_hideout_prompt" text="{=RTSCamera_fast_forward_hideout_prompt}Do you want to enable fast forward in hideout?" />
 
+  <string id="rts_camera_ai_control_ship_on" text="{=RTSCamera_ai_control_ship_on}Soldier Pilot On" />
+  <string id="rts_camera_ai_control_ship_off" text="{=RTSCamera_player_control_ship_off}Soldier Pilot Off" />
+  <string id="str_rts_camera_soldiers_start_controlling_ship" text="{=RTSCamera_soldiers_start_controlling_ship}Soldier starts piloting your ship." />
+  <string id="str_rts_camera_soldiers_stop_controlling_ship" text="{=RTSCamera_soldiers_stop_controlling_ship}Soldier stops piloting your ship." />
 
   <string id="str_key_category_name.RTSCameraHotKey" text="{=RTSCamera_hotkeycategory}RTSCamera Hot Key" />
   <string id="str_key_name.RTSCameraHotKey_Pause" text="{=RTSCamera_pausekey}Pause" />

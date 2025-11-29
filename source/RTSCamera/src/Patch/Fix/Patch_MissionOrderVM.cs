@@ -2,6 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Logic;
+using RTSCamera.Patch.Naval;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -125,14 +126,21 @@ namespace RTSCamera.Patch.Fix
 
         public static void Postfix_OnOrderExecuted(MissionOrderVM __instance, OrderItemVM orderItem)
         {
-            // Already Implemented in Patch_MissionGauntletSingleplayerOrderUIHandler.UpdateOrderUIVisibility
-            // TODO: don't close the order ui and open it again.
-            // Keep orders UI open after issuing an order in free camera mode.
-            if (!__instance.IsToggleOrderShown && !__instance.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
+            // Close UI if needed
+            bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true &&
+                RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true &&
+                RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera;
+            AllowClosingOrderUI = true;
+            if (shouldKeepOpen)
             {
-                //var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
-                //__instance.OpenToggleOrder(false);
-                //AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(__instance, displayedOrderMessageForLastOrder);
+                var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
+                __instance.TryCloseToggleOrder(false);
+                __instance.OpenToggleOrder(false);
+                AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(__instance, displayedOrderMessageForLastOrder);
+            }
+            else
+            {
+                __instance.TryCloseToggleOrder(false);
             }
             var orderTroopPlacer = Mission.Current.GetMissionBehavior<OrderTroopPlacer>();
             if (orderTroopPlacer != null)
@@ -140,14 +148,6 @@ namespace RTSCamera.Patch.Fix
                 typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)
                     .Invoke(orderTroopPlacer, null);
             }
-            //var orderUIHandler = Mission.Current.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
-            //if (orderUIHandler == null)
-            //{
-            //    return false;
-            //}
-            //var missionOrderVM = typeof(MissionGauntletSingleplayerOrderUIHandler).GetField("_dataSource", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(orderUIHandler) as MissionOrderVM;
-            //var setActiveOrders = typeof(MissionOrderVM).GetMethod("SetActiveOrders", BindingFlags.Instance | BindingFlags.NonPublic);
-            //setActiveOrders.Invoke(missionOrderVM, new object[] { });
         }
 
         public static void Postfix_OnTransferFinished(MissionOrderVM __instance)
@@ -164,6 +164,7 @@ namespace RTSCamera.Patch.Fix
             if (__instance.IsToggleOrderShown)
             {
                 bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera;
+                //bool shouldKeepOpen = !AllowClosingOrderUI;
                 if (AllowClosingOrderUI)
                 {
                     AllowClosingOrderUI = false;

@@ -37,6 +37,7 @@ namespace RTSCamera
         private bool _successPatch;
         public static bool IsCommandSystemInstalled = false;
         public static bool IsNavalInstalled = false;
+        public static bool IsHelmsmanInstalled = false;
 
         // random generated
         public const int MissionTimeSpeedRequestId = 936012602;
@@ -51,6 +52,8 @@ namespace RTSCamera
                     info.Id == "RTSCamera.CommandSystem") != null;
                 IsNavalInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
                     info.Id == "NavalDLC") != null;
+                IsHelmsmanInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
+                    info.Id == "Helmsman") != null;
                 Utility.ShouldDisplayMessage = true;
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts();
                 Initialize();
@@ -118,6 +121,9 @@ namespace RTSCamera
                     _successPatch &= Patch_MissionGauntletNavalOrderUIHandler.Patch(_harmony);
                     _successPatch &= Patch_NarvalShipTargetSelectionHandler.Patch(_harmony);
                     _successPatch &= Patch_ShipAgentSpawnLogicTeamSide.Patch(_harmony);
+                    _successPatch &= Patch_NavalShipVisualOrderProvider.Patch(_harmony);
+                    _successPatch &= Patch_NavalTroopVisualOrderProvider.Patch(_harmony);
+                    _successPatch &= Patch_ShipOrder.Patch(_harmony);
                 }
 
                 // Use Patch to add game menu
@@ -155,6 +161,10 @@ namespace RTSCamera
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera: patch failed"));
+            }
+            if (IsHelmsmanInstalled)
+            {
+                InformationManager.DisplayMessage(new InformationMessage("RTS Camera: Helmsman detected. Will disable soldier control command in RTS.", new Color(1, 0, 0)));
             }
 
             Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;
