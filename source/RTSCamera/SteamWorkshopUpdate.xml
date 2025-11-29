@@ -82,6 +82,9 @@ lzh, Norbivar"/>
       <Tag Value="AI"/>
       <Tag Value="Singleplayer"/>
       <Tag Value="v1.3.4" />
+      <Tag Value="v1.3.5" />
+      <Tag Value="v1.3.6" />
+      <Tag Value="v1.3.7" />
     </Tags>
   </UpdateItem>
 </Tasks>

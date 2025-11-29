@@ -140,7 +140,9 @@ namespace RTSCamera.Patch.Fix
             }
             else
             {
+                var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
                 __instance.TryCloseToggleOrder(false);
+                AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(__instance, displayedOrderMessageForLastOrder);
             }
             var orderTroopPlacer = Mission.Current.GetMissionBehavior<OrderTroopPlacer>();
             if (orderTroopPlacer != null)

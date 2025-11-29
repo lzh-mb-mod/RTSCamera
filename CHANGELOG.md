@@ -1,4 +1,9 @@
 # Changelog
+
+## [v5.3.4] - 2025-11-29
+### Fixed
+- Fix a crash when switching camera frequently on ship.
+
 ## [v5.3.3] - 2025-11-29
 ### Added
 - Add command "Soldier Control Ship On" and "Soldier Control Ship Off" if player is not piloting the ship. When turned on the ship will be piloted by soldier.

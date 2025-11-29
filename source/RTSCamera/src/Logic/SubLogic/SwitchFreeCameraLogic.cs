@@ -3,6 +3,7 @@ using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Patch.Fix;
+using RTSCamera.Patch.Naval;
 using RTSCamera.Patch.TOR_fix;
 using RTSCamera.View;
 using System;
@@ -301,10 +302,6 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (Mission.IsInPhotoMode)
                 return;
-            if (_shouldIgnoreNextOrderViewOpenEvent)
-            {
-                _shouldIgnoreNextOrderViewOpenEvent = false;
-            }
             if (_switchToFreeCameraNextTick)
             {
                 _switchToFreeCameraNextTick = false;
@@ -319,6 +316,10 @@ namespace RTSCamera.Logic.SubLogic
             {
                 _openOrderUINextTick = false;
                 Utility.GetMissionOrderVM(Mission)?.OpenToggleOrder(false, false);
+            }
+            if (_shouldIgnoreNextOrderViewOpenEvent)
+            {
+                _shouldIgnoreNextOrderViewOpenEvent = false;
             }
 
             if (FastForwardHideoutNextTick)
@@ -673,12 +674,15 @@ namespace RTSCamera.Logic.SubLogic
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(false);
             if (Mission.IsNavalBattle && Mission.MainAgent != null)
             {
-                // Referencing MissionMainAgentInteractionComponent.FocusStateCheckTick
-                if (usableMissionObject != null)
+                if (!Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode)
                 {
-                    if (!Mission.MainAgent.IsUsingGameObject && Mission.MainAgent.IsAbleToUseMachine() && !(usableMissionObject is SpawnedItemEntity) && Mission.MainAgent.ObjectHasVacantPosition(usableMissionObject))
+                    // Referencing MissionMainAgentInteractionComponent.FocusStateCheckTick
+                    if (usableMissionObject != null)
                     {
-                        Mission.MainAgent.HandleStartUsingAction(usableMissionObject, -1);
+                        if (!Mission.MainAgent.IsUsingGameObject && Mission.MainAgent.IsAbleToUseMachine() && !(usableMissionObject is SpawnedItemEntity) && Mission.MainAgent.ObjectHasVacantPosition(usableMissionObject))
+                        {
+                            Mission.MainAgent.HandleStartUsingAction(usableMissionObject, -1);
+                        }
                     }
                 }
                 if (Mission.IsOrderMenuOpen)
@@ -721,7 +725,7 @@ namespace RTSCamera.Logic.SubLogic
                 missionOrderVM.TryCloseToggleOrder();
                 // avoid switching to free camera automatically when opening order UI.
                 _shouldIgnoreNextOrderViewOpenEvent = true;
-                missionOrderVM.OpenToggleOrder(false, false);
+                SetOpenToggleUINextTick(true);
             }
         }
 
