@@ -253,13 +253,15 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     change = new FormationChange();
                 }
+                // Clear cached chagned because AI may change orders.
+                //var change = new FormationChange();
                 change.AIControlOrderType = orderType;
                 VirtualChanges[formation] = change;
             }
         }
 
         public void SetPreviewShape(Formation formation, float width, float depth)
-        {
+        { 
             if (!VirtualChanges.TryGetValue(formation, out var change))
             {
                 change = new FormationChange();

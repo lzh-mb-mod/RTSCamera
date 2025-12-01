@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using TaleWorlds.GauntletUI;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
@@ -128,20 +129,22 @@ namespace RTSCamera.Patch.Fix
         {
             // Close UI if needed
             bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true &&
-                RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true &&
-                RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera;
-            AllowClosingOrderUI = true;
+                RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepOrderUIOpen == true &&
+                RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera || Mission.Current.Mode == TaleWorlds.Core.MissionMode.Deployment || __instance.TroopController.IsTransferActive;
             if (shouldKeepOpen)
             {
-                var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
-                __instance.TryCloseToggleOrder(false);
-                __instance.OpenToggleOrder(false);
-                AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(__instance, displayedOrderMessageForLastOrder);
+                if (!__instance.TroopController.IsTransferActive)
+                {
+                    var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
+                    TryCloseToggleOrder(__instance);
+                    Patch_MissionOrderVM.OpenToggleOrder(__instance, false);
+                    AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(__instance, displayedOrderMessageForLastOrder);
+                }
             }
             else
             {
                 var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
-                __instance.TryCloseToggleOrder(false);
+                TryCloseToggleOrder(__instance);
                 AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(__instance, displayedOrderMessageForLastOrder);
             }
             var orderTroopPlacer = Mission.Current.GetMissionBehavior<OrderTroopPlacer>();
@@ -157,7 +160,7 @@ namespace RTSCamera.Patch.Fix
             // Keep orders UI open after transfer finished in free camera mode.
             if (!__instance.IsToggleOrderShown && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
             {
-                __instance.OpenToggleOrder(false);
+                Patch_MissionOrderVM.OpenToggleOrder(__instance, false);
             }
         }
 
@@ -165,7 +168,7 @@ namespace RTSCamera.Patch.Fix
         {
             if (__instance.IsToggleOrderShown)
             {
-                bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera;
+                bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepOrderUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera;
                 //bool shouldKeepOpen = !AllowClosingOrderUI;
                 if (AllowClosingOrderUI)
                 {
@@ -189,6 +192,18 @@ namespace RTSCamera.Patch.Fix
             }
             __result = false;
             return false;
+        }
+
+        public static bool TryCloseToggleOrder(MissionOrderVM __instance, bool applySelectedOrders = false)
+        {
+            Patch_MissionOrderVM.AllowClosingOrderUI = true;
+            return __instance?.TryCloseToggleOrder(applySelectedOrders) ?? false;
+        }
+
+        public static void OpenToggleOrder(MissionOrderVM __instance, bool fromHold, bool displayMessage = true)
+        {
+            __instance?.OpenToggleOrder(fromHold, displayMessage);
+            Utilities.Utility.RefreshOrderTargetDisabled();
         }
     }
 }

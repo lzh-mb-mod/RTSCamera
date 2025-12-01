@@ -1,5 +1,16 @@
 # Changelog
 
+## [v5.3.5] - 2025-12-01
+### Fixed
+- Fix the issue in the base game that player character cannot be teleported in deployment mode. Now during deployment stage player character can be teleported when controlled by AI in free camera mode.
+
+- Fix the issue in previous version that order UI is closed after giving orders in deployment stage.
+
+- Fix the issue in previous version that transfer troops UI cannot be opened.
+
+### Improved
+- Improved "Soldier Control Ship" command in sea battle.
+
 ## [v5.3.4] - 2025-11-29
 ### Fixed
 - Fix a crash when switching camera frequently on ship.

@@ -79,7 +79,7 @@ namespace RTSCamera.Logic.SubLogic
         public bool ForceControlAgent()
         {
             var agent = GetAgentToControl();
-            if (_config.ControlTroopsInPlayerPartyOnly && !Utility.IsInPlayerParty(agent))
+            if (agent == null || _config.ControlTroopsInPlayerPartyOnly && !Utility.IsInPlayerParty(agent))
             {
                 Utility.DisplayLocalizedText("str_rts_camera_limited_to_player_party_only");
                 return false;

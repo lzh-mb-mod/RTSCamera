@@ -96,6 +96,7 @@
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
     <string id="RTSCamera_controlheroonly" text="只控制英雄单位" />
     <string id="RTSCamera_controlheroonlyhint" text="只考虑英雄单位作为控制目标。" />
+    <string id="RTSCamera_limitedtoheroonly" text="只控制英雄单位已启用。只会考虑英雄单位作为控制目标。" />
     <string id="RTSCamera_ignoreretreatingtroops" text="忽略正在撤退的单位" />
 
     <string id="RTSCamera_miscellaneous_options" text="杂项" />
@@ -108,6 +109,12 @@
     <string id="RTSCamera_naval_options" text="战帆选项" />
     <string id="RTSCamera_player_ship_controller_in_free_camera" text="自由视角下的玩家船只控制" />
     <string id="RTSCamera_player_ship_controller_in_free_camera_hint" text="自由视角下的玩家船只控制模式。如果设置为无，玩家船只将不会被控制。如果设置为AI，AI将控制玩家船只。如果设置为玩家，您仍然可以直接控制您的船只。" />
+
+    <string id="RTSCamera_steering_mode_when_player_stops_piloting" text="玩家停止开船时的控船方式" />
+    <string id="RTSCamera_steering_mode_when_player_stops_piloting_hint" text="当玩家停止开船时，船只将如何被控制。如果设置为无，船只将保持不受控制。如果设置为士兵，船只将由士兵驾驶并接受您的指令。如果设置为委派指挥，船只将由士兵驾驶并接受来自AI的船只指令。" />
+    <string id="RTSCamera_steering_mode_none" text="无（默认）" />
+    <string id="RTSCamera_steering_mode_soldier" text="士兵" />
+    <string id="RTSCamera_steering_mode_delegate_command" text="委派指挥" />
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="作弊选项" />
     <string id="RTSCamera_disabledeath" text="全员无敌" />
@@ -122,7 +129,7 @@
     <string id="RTSCamera_fastfowardenabled" text="启用快速模式。" />
     <string id="RTSCamera_normalmodeenabled" text="启用正常速度。" />
 
-    <string id="RTSCamera_playeragentdead" text="玩家控制的角色已阵亡。" />
+    <string id="RTSCamera_playeragentdead" text="玩家控制的角色已受伤。" />
     <string id="RTSCamera_switchtoplayer" text="切换到玩家角色。" />
     <string id="RTSCamera_switchtofreecamera" text="切换到自由视角。" />
 

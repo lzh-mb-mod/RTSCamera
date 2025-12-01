@@ -1,15 +1,22 @@
 ﻿using HarmonyLib;
+using MissionSharedLibrary.Utilities;
+using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using RTSCamera.Logic;
+using RTSCamera.Patch.Naval;
 using RTSCamera.View;
 using SandBox.Missions.MissionLogics.Arena;
+using System;
 using System.Linq;
 using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.GauntletUI;
+using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View.MissionViews;
+using static TaleWorlds.MountAndBlade.Mission;
 
 namespace RTSCamera.Utilities
 {
@@ -27,6 +34,11 @@ namespace RTSCamera.Utilities
             var hint = GameTexts.FindText("str_rts_camera_focus_on_formation_hint");
             hint.SetTextVariable("KeyName", RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop).ToSequenceString());
             MissionSharedLibrary.Utilities.Utility.DisplayMessage(hint.ToString());
+        }
+
+        public static void PrintHelmsmanWarning()
+        {
+            MissionSharedLibrary.Utilities.Utility.DisplayMessage("RTS Camera: Helmsman detected. Will disable soldier control command in RTS.", new Color(1, 0, 0));
         }
 
 
@@ -115,10 +127,10 @@ namespace RTSCamera.Utilities
             return MissionSharedLibrary.Utilities.Utility.GetMissionBehaviorOfType(mission, AccessTools.TypeByName("NavalDLC.Missions.MissionLogics.NavalShipsLogic"));
         }
 
-        public static MissionObject GetShip(MissionBehavior missionShipLogic, TeamSideEnum teamSide, FormationClass formationClass)
+        public static MissionObject GetShip(MissionBehavior navalShipLogic, TeamSideEnum teamSide, FormationClass formationClass)
         {
-            var getShipAssignmentMethod = AccessTools.Method(missionShipLogic.GetType(), "GetShipAssignment");
-            var shipAssignment = getShipAssignmentMethod.Invoke(missionShipLogic, new object[] { teamSide, formationClass });
+            var getShipAssignmentMethod = AccessTools.Method(navalShipLogic.GetType(), "GetShipAssignment");
+            var shipAssignment = getShipAssignmentMethod.Invoke(navalShipLogic, new object[] { teamSide, formationClass });
 
             var missionShipProperty = AccessTools.Property(shipAssignment.GetType(), "MissionShip");
             var missionShip = (MissionObject)missionShipProperty.GetValue(shipAssignment);
@@ -127,10 +139,14 @@ namespace RTSCamera.Utilities
 
         private static PropertyInfo _shipControllerMachine;
 
-        public static bool IsShipPilotByPlayer(MissionObject missionShip)
+        public static UsableMachine GetShipControllerMachine(MissionObject ship)
         {
             _shipControllerMachine ??= AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:ShipControllerMachine");
-            var shipControllerMachine = (UsableMachine)_shipControllerMachine.GetValue(missionShip);
+            return (UsableMachine)_shipControllerMachine.GetValue(ship);
+        }
+        public static bool IsShipPilotByPlayer(MissionObject missionShip)
+        {
+            var shipControllerMachine = GetShipControllerMachine(missionShip);
 
             var pilotAgent = shipControllerMachine.PilotAgent;
             return pilotAgent != null && pilotAgent.IsPlayerControlled;
@@ -166,14 +182,7 @@ namespace RTSCamera.Utilities
                 {
                     return false;
                 }
-                var isSpectatorCamera = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? false;
-                var controller = RTSCameraConfig.Get().PlayerShipControllerInFreeCamera;
-                if (isSpectatorCamera && controller == PlayerShipController.AI)
-                {
-                    return false;
-                }
-                // When helmsman is installed, exclude infantry formation because helmsman will handle it.
-                if (formation == Agent.Main.Formation && !(RTSCameraSubModule.IsHelmsmanInstalled && formation.FormationIndex == FormationClass.Infantry))
+                if (formation == Agent.Main.Formation && !CommandBattleBehavior.CommandMode && !(RTSCameraSubModule.IsHelmsmanInstalled && formation.FormationIndex == FormationClass.Infantry))
                 {
                     return true;
                 }
@@ -191,13 +200,38 @@ namespace RTSCamera.Utilities
             return GetShip(navalShipsLogic, TeamSideEnum.PlayerTeam, Agent.Main.Formation.FormationIndex);
         }
 
+        public enum ShipControllerType
+        {
+            None,
+            AI,
+            Player,
+        }
+
+        public static bool IsShipAIControlled(MissionObject ship)
+        {
+            return (bool)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsAIControlled").GetValue(ship);
+        }
+
+        public static bool IsShipPlayerControlled(MissionObject ship)
+        {
+            return (bool)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsPlayerControlled").GetValue(ship);
+        }
+
+        public static MissionObject GetAgentSteppedShip(Agent agent)
+        {
+            var component = GetAgentComponent(agent, AccessTools.TypeByName("NavalDLC.Missions.AgentNavalComponent")) as AgentComponent;
+            if (component == null)
+                return null;
+            return AccessTools.Property(component.GetType(), "SteppedShip").GetValue(component) as MissionObject;
+            
+        }
+
         public static void CancelAIPilotPlayerShip(Mission mission)
         {
             var playerShip = GetPlayerShip(mission);
 
-            _shipControllerMachine ??= AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:ShipControllerMachine");
             var captain = GetShipFormation(playerShip).Captain;
-            var shipControllerMachine = (UsableMachine)_shipControllerMachine.GetValue(playerShip);
+            var shipControllerMachine = GetShipControllerMachine(playerShip);
             if (shipControllerMachine.PilotAgent != null && shipControllerMachine.PilotAgent.IsAIControlled && shipControllerMachine.PilotAgent != captain)
             {
                 shipControllerMachine.PilotAgent.StopUsingGameObject(flags: Agent.StopUsingGameObjectFlags.AutoAttachAfterStoppingUsingGameObject | Agent.StopUsingGameObjectFlags.DoNotWieldWeaponAfterStoppingUsingGameObject);
@@ -205,6 +239,67 @@ namespace RTSCamera.Utilities
             if (shipControllerMachine.PilotStandingPoint.MovingAgent != null && shipControllerMachine.PilotStandingPoint.MovingAgent.IsAIControlled && shipControllerMachine.PilotStandingPoint.MovingAgent != captain)
             {
                 shipControllerMachine.PilotStandingPoint.MovingAgent.StopUsingGameObject(flags: Agent.StopUsingGameObjectFlags.AutoAttachAfterStoppingUsingGameObject | Agent.StopUsingGameObjectFlags.DoNotWieldWeaponAfterStoppingUsingGameObject);
+            }
+        }
+
+        private static FieldInfo _components = AccessTools.Field("TaleWorlds.MountAndBlade.Agent:_components");
+
+        public static AgentComponent GetAgentComponent(Agent agent, Type componentType)
+        {
+            var components = (MBList<AgentComponent>)_components.GetValue(agent);
+            for (int index = 0; index < components.Count; ++index)
+            {
+                if (componentType.IsAssignableFrom(components[index].GetType()))
+                {
+                    return components[index]; 
+                }
+            }
+            return null;
+        }
+
+        public static void TryToSetPlayerFormationClass(FormationClass formationClass)
+        {
+            if (Mission.Current.IsNavalBattle)
+            {
+                var navalShipLogic = GetNavalShipsLogic(Mission.Current);
+                if (navalShipLogic == null)
+                    return;
+                var ship = GetShip(navalShipLogic, TeamSideEnum.PlayerTeam, formationClass);
+                if (ship == null)
+                    return;
+            }
+
+            MissionSharedLibrary.Utilities.Utility.SetPlayerFormationClass(formationClass);
+        }
+
+        public static PlayerShipController GetPlayerShipControllerInFreeCamera()
+        {
+            if (CommandBattleBehavior.CommandMode)
+                return PlayerShipController.AI;
+            return RTSCameraConfig.Get().PlayerShipControllerInFreeCamera;
+        }
+
+        private static MethodInfo _setIsFormationTargetingDisabled;
+
+        public static void RefreshOrderTargetDisabled()
+        {
+            if (!Mission.Current.IsNavalBattle)
+                return;
+            bool isDisabled = !Patch_NavalDLCHelpers.IsShipOrderAvailable();
+            var orderUIHandler = Mission.Current.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
+            if (orderUIHandler != null)
+            {
+                MissionFormationTargetSelectionHandler formationTargetSelectionHandler = (MissionFormationTargetSelectionHandler)AccessTools.Field("TaleWorlds.MountAndBlade.GauntletUI.GauntletOrderUIHandler:_formationTargetHandler").GetValue(orderUIHandler);
+                formationTargetSelectionHandler?.SetIsFormationTargetingDisabled(isDisabled);
+                var navalOrderUIHandlerType = AccessTools.TypeByName("MissionGauntletNavalOrderUIHandler");
+                if (navalOrderUIHandlerType != null && navalOrderUIHandlerType.IsAssignableFrom(orderUIHandler.GetType()))
+                {
+                    MissionView shipTargetHandler = (MissionView)AccessTools.Field("NavalDLC.GauntletUI.MissionViews.MissionGauntletNavalOrderUIHandler:_shipTargetHandler").GetValue(orderUIHandler);
+                    if (shipTargetHandler == null)
+                        return;
+                    _setIsFormationTargetingDisabled ??= AccessTools.Method("NavalDLC.View.MissionViews.NavalShipTargetSelectionHandler:SetIsFormationTargetingDisabled");
+                    _setIsFormationTargetingDisabled.Invoke(shipTargetHandler, new object[] { isDisabled });
+                }
             }
         }
     }

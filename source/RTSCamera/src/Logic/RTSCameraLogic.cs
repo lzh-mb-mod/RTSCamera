@@ -1,5 +1,6 @@
 ﻿using RTSCamera.Config;
 using RTSCamera.Logic.SubLogic;
+using RTSCamera.Patch.Naval.SubLogic;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
@@ -15,6 +16,7 @@ namespace RTSCamera.Logic
         public SwitchTeamLogic SwitchTeamLogic;
         public ControlTroopLogic ControlTroopLogic;
         public CampaignSkillLogic CampaignSkillLogic;
+        public NavalLogic NavalLogic;
         public static RTSCameraLogic Instance;
 
         public RTSCameraLogic()
@@ -27,6 +29,7 @@ namespace RTSCamera.Logic
             SwitchTeamLogic = new SwitchTeamLogic(this);
             ControlTroopLogic = new ControlTroopLogic(this);
             CampaignSkillLogic = new CampaignSkillLogic(this);
+            NavalLogic = new NavalLogic(this);
         }
 
         public override void OnCreated()
@@ -65,7 +68,8 @@ namespace RTSCamera.Logic
             FixScoreBoardAfterPlayerDeadLogic.OnRemoveBehaviour();
             MissionSpeedLogic.OnRemoveBehaviour();
             SwitchFreeCameraLogic.OnRemoveBehaviour();
-            
+            NavalLogic.OnRemoveBehaviour();
+
             Instance = null;
         }
 
@@ -74,6 +78,7 @@ namespace RTSCamera.Logic
             base.AfterStart();
             
             MissionSpeedLogic.AfterStart();
+            NavalLogic.AfterStart();
         }
 
         public override void AfterAddTeam(Team team)

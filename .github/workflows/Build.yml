@@ -62,6 +62,8 @@ jobs:
         run: |
           echo "RTSCAMERA_ARTIFACT_NAME=RTS Camera ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_version}}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           echo "COMMANDSYSTEM_ARTIFACT_NAME=Command System ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_version}}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "RTSCAMERA_SINGLE_ARTIFACT_NAME=RTS Camera Single ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_version}}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "COMMANDSYSTEM_SINGLE_ARTIFACT_NAME=Command System Single ${{steps.dotenv.outputs.mod_version}} for Bannerlord ${{steps.dotenv.outputs.game_version}}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       # additional .net core for md2html package.
       - name: Setup .NET Core 2.2.x
@@ -137,6 +139,20 @@ jobs:
           contains(github.ref, 'refs/tags/release-b') ||
           contains(github.ref, 'refs/tags/release-e')
 
+      - name: Zip RTS Camera Single for Vortex
+        run: Compress-Archive -Path .\source\package\net472\RTSCamera -DestinationPath "${{env.RTSCAMERA_SINGLE_ARTIFACT_NAME}}.zip";
+        if: >-
+          contains(github.ref, 'refs/tags/release-v') ||
+          contains(github.ref, 'refs/tags/release-b') ||
+          contains(github.ref, 'refs/tags/release-e')
+
+      - name: Zip Command System Single for Vortex
+        run: Compress-Archive -Path .\source\package\net472\RTSCamera.CommandSystem -DestinationPath "${{env.COMMANDSYSTEM_SINGLE_ARTIFACT_NAME}}.zip";
+        if: >-
+          contains(github.ref, 'refs/tags/release-v') ||
+          contains(github.ref, 'refs/tags/release-b') ||
+          contains(github.ref, 'refs/tags/release-e')
+
       - name: Create a Release
         id: create_release
         uses: ncipollo/release-action@v1.11.1
@@ -146,7 +162,7 @@ jobs:
           contains(github.ref, 'refs/tags/release-e')
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts:  ${{env.RTSCAMERA_ARTIFACT_NAME}}.zip
+          artifacts:  ${{env.RTSCAMERA_ARTIFACT_NAME}}.zip,${{env.RTSCAMERA_SINGLE_ARTIFACT_NAME}}.zip,${{env.COMMANDSYSTEM_SINGLE_ARTIFACT_NAME}}.zip
           name: Release ${{env.RTSCAMERA_ARTIFACT_NAME}} ${{steps.dotenv.outputs.game_branch}}
           tag: ${{ steps.tagName.outputs.tag }}
           artifactContentType: application/zip

@@ -164,7 +164,7 @@ namespace RTSCamera
             }
             if (IsHelmsmanInstalled)
             {
-                InformationManager.DisplayMessage(new InformationMessage("RTS Camera: Helmsman detected. Will disable soldier control command in RTS.", new Color(1, 0, 0)));
+                Utilities.Utility.PrintHelmsmanWarning();
             }
 
             Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;

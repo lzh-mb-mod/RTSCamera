@@ -65,6 +65,14 @@ namespace RTSCamera.Config
         Count
     }
 
+    public enum SteeringMode
+    {
+        None,
+        Soldier,
+        DelegateCommand,
+        Count
+    }
+
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
         protected static Version BinaryVersion => new Version(1, 8);
@@ -176,7 +184,9 @@ namespace RTSCamera.Config
 
         public PlayerShipController PlayerShipControllerInFreeCamera = PlayerShipController.AI;
 
-        public bool GivingShipOrdersInPlayerMode = true;
+        public bool SoldiersPilotShipInPlayerMode = true;
+
+        public SteeringMode SteeringModeWhenPlayerStopsPiloting = SteeringMode.None;
 
         public static void OnMenuClosed()
         {
@@ -220,7 +230,8 @@ namespace RTSCamera.Config
             FastForwardHideoutPrompted = other.FastForwardHideoutPrompted;
             FastForwardHideout = other.FastForwardHideout;
             PlayerShipControllerInFreeCamera = other.PlayerShipControllerInFreeCamera;
-            GivingShipOrdersInPlayerMode = other.GivingShipOrdersInPlayerMode;
+            SoldiersPilotShipInPlayerMode = other.SoldiersPilotShipInPlayerMode;
+            SteeringModeWhenPlayerStopsPiloting = other.SteeringModeWhenPlayerStopsPiloting;
         }
         [XmlIgnore]
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");

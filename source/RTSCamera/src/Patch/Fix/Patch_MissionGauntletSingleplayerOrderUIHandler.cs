@@ -6,6 +6,7 @@ using RTSCamera.Logic.SubLogic;
 using System;
 using System.Reflection;
 using TaleWorlds.Engine.GauntletUI;
+using TaleWorlds.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -274,7 +275,9 @@ namespace RTSCamera.Patch.Fix
         }
         private static void OnPreSwitchTeam()
         {
-            (_dataSource?.GetValue(_uiHandler) as MissionOrderVM)?.TryCloseToggleOrder();
+            var missionOrderVM = _dataSource?.GetValue(_uiHandler) as MissionOrderVM;
+            if (missionOrderVM != null)
+                Patch_MissionOrderVM.TryCloseToggleOrder(missionOrderVM);
             _isInSwitchTeamEvent = true;
             _uiHandler.OnMissionScreenFinalize();
             _isInSwitchTeamEvent = false;

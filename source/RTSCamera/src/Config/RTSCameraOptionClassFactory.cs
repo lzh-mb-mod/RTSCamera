@@ -208,7 +208,7 @@ namespace RTSCamera.Config
                                     rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)i;
                                     if (CommandBattleBehavior.CommandMode)
                                         return;
-                                    Utility.SetPlayerFormationClass((FormationClass)i);
+                                    Utilities.Utility.TryToSetPlayerFormationClass((FormationClass)i);
                                 }
                             }, () =>
                             {
@@ -260,7 +260,7 @@ namespace RTSCamera.Config
                                 rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = formationClass;
                                 if (CommandBattleBehavior.CommandMode)
                                     return;
-                                Utility.SetPlayerFormationClass(formationClass);
+                                Utilities.Utility.TryToSetPlayerFormationClass(formationClass); ;
                                 playerFormationOption.UpdateData(false);
                             }
                         }, () => (int)RTSCameraConfig.Get().AssignPlayerFormation, () => (int)AssignPlayerFormation.Count,
@@ -391,23 +391,43 @@ namespace RTSCamera.Config
                 {
                     var navalOptionCategory = new OptionCategory("Naval",
                         GameTexts.FindText("str_rts_camera_naval_options"));
-                    navalOptionCategory.AddOption(new SelectionOptionViewModel(
-                        GameTexts.FindText("str_rts_camera_player_ship_controller_in_free_camera"),
-                        GameTexts.FindText("str_rts_camera_player_ship_controller_in_free_camera_hint"),
-                        new SelectionOptionData(i =>
-                        {
-                            if (i < 0 || i >= (int)PlayerShipController.Count)
-                                return;
-                            RTSCameraConfig.Get().PlayerShipControllerInFreeCamera = (PlayerShipController)i;
-                        }, () =>
-                        {
-                            return (int)RTSCameraConfig.Get().PlayerShipControllerInFreeCamera;
-                        }, () => (int)AgentControllerType.Count, () => new[]
-                        {
-                            new SelectionItem(true, "str_rts_camera_controller_type", "none"),
-                            new SelectionItem(true, "str_rts_camera_controller_type", "AI"),
-                            new SelectionItem(true, "str_rts_camera_controller_type", "Player")
-                        }), true));
+                    if (!CommandBattleBehavior.CommandMode)
+                    {
+                        navalOptionCategory.AddOption(new SelectionOptionViewModel(
+                            GameTexts.FindText("str_rts_camera_player_ship_controller_in_free_camera"),
+                            GameTexts.FindText("str_rts_camera_player_ship_controller_in_free_camera_hint"),
+                            new SelectionOptionData(i =>
+                            {
+                                if (i < 0 || i >= (int)PlayerShipController.Count)
+                                    return;
+                                RTSCameraConfig.Get().PlayerShipControllerInFreeCamera = (PlayerShipController)i;
+                            }, () =>
+                            {
+                                return (int)RTSCameraConfig.Get().PlayerShipControllerInFreeCamera;
+                            }, () => (int)PlayerShipController.Count, () => new[]
+                            {
+                            new SelectionItem(true, "str_rts_camera_controller_type", PlayerShipController.None.ToString()),
+                            new SelectionItem(true, "str_rts_camera_controller_type", PlayerShipController.AI.ToString()),
+                            new SelectionItem(true, "str_rts_camera_controller_type", PlayerShipController.Player.ToString())
+                            }), true));
+                        navalOptionCategory.AddOption(new SelectionOptionViewModel(
+                            GameTexts.FindText("str_rts_camera_steering_mode_when_player_stops_piloting"),
+                            GameTexts.FindText("str_rts_camera_steering_mode_when_player_stops_piloting_hint"),
+                            new SelectionOptionData(i =>
+                            {
+                                if (i < 0 || i >= (int)SteeringMode.Count)
+                                    return;
+                                RTSCameraConfig.Get().SteeringModeWhenPlayerStopsPiloting = (SteeringMode)i;
+                            }, () =>
+                            {
+                                return (int)RTSCameraConfig.Get().SteeringModeWhenPlayerStopsPiloting;
+                            }, () => (int)SteeringMode.Count, () => new[]
+                            {
+                            new SelectionItem(true, "str_rts_camera_steering_mode", SteeringMode.None.ToString()),
+                            new SelectionItem(true, "str_rts_camera_steering_mode", SteeringMode.Soldier.ToString()),
+                            new SelectionItem(true, "str_rts_camera_steering_mode", SteeringMode.DelegateCommand.ToString())
+                            }), true));
+                    }
                     optionClass.AddOptionCategory(1, navalOptionCategory);
                 }
 

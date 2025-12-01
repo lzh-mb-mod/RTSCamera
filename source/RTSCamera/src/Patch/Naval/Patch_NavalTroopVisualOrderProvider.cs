@@ -40,7 +40,7 @@ namespace RTSCamera.Patch.Naval
         {
             if (Utilities.Utility.ShouldAddToggleShipOrderOrder())
             {
-                __result.Add(CreateSingleOrderSetFor(new NavalToggleShipOrderOrder("order_toggle_ai", GameTexts.FindText("rts_camera_ai_control_ship_on"), GameTexts.FindText("rts_camera_ai_control_ship_off"))));
+                __result.Add(CreateSingleOrderSetFor(new NavalToggleShipOrderOrder("order_toggle_ai", GameTexts.FindText("str_rts_camera_ai_control_ship_on"), GameTexts.FindText("str_rts_camera_ai_control_ship_off"))));
             }
         }
 

@@ -96,6 +96,7 @@
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
     <string id="RTSCamera_controlheroonly" text="Control Hero Only" />
     <string id="RTSCamera_controlheroonlyhint" text="Only consider hero troops when looking for target to control." />
+    <string id="RTSCamera_limitedtoheroonly" text="Control Hero Only is enabled. Only hero troops will be considered for control." />
     <string id="RTSCamera_ignoreretreatingtroops" text="Ignore Retreating Troops" />
 
     <string id="RTSCamera_miscellaneous_options" text="Miscellaneous Options" />
@@ -108,6 +109,12 @@
     <string id="RTSCamera_naval_options" text="War Sails Options" />
     <string id="RTSCamera_player_ship_controller_in_free_camera" text="Player Ship Controller in Free Camera" />
     <string id="RTSCamera_player_ship_controller_in_free_camera_hint" text="Player ship control mode in Free Camera. If set to none, player ship will not be controlled. If set to AI, AI will control player ship. If set to Player, you can still directly control your ship." />
+
+    <string id="RTSCamera_steering_mode_when_player_stops_piloting" text="Steering Mode When Player Stops Piloting" />
+    <string id="RTSCamera_steering_mode_when_player_stops_piloting_hint" text="When player stops piloting the ship, how the ship will be controlled. If set to None, the ship will stay uncontrolled. If set to Soldier, the ship will be piloted by soldier and receives your command. If set to Delegate Command, the ship will be piloted by soldier and receives ship command from AI." />
+    <string id="RTSCamera_steering_mode_none" text="None (Default)" />
+    <string id="RTSCamera_steering_mode_soldier" text="Soldier" />
+    <string id="RTSCamera_steering_mode_delegate_command" text="Delegate Command" />
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="Cheat Options" />
     <string id="RTSCamera_disabledeath" text="All Invulnerable" />
@@ -122,7 +129,7 @@
     <string id="RTSCamera_fastfowardenabled" text="Fast Forward Mode Enabled." />
     <string id="RTSCamera_normalmodeenabled" text="Normal Mode Enabled." />
 
-    <string id="RTSCamera_playeragentdead" text="Player agent is dead." />
+    <string id="RTSCamera_playeragentdead" text="Player agent is injured." />
     <string id="RTSCamera_switchtoplayer" text="Switch to player agent." />
     <string id="RTSCamera_switchtofreecamera" text="Switch to free camera." />
 

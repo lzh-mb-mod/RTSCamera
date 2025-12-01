@@ -1,4 +1,5 @@
-﻿using MissionSharedLibrary.Utilities;
+﻿using HarmonyLib;
+using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
@@ -8,8 +9,10 @@ using RTSCamera.Patch.TOR_fix;
 using RTSCamera.View;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
@@ -36,9 +39,11 @@ namespace RTSCamera.Logic.SubLogic
         private bool _shouldIgnoreNextOrderViewOpenEvent = false;
         private bool _switchToFreeCameraNextTick;
         private bool _switchToAgentNextTick;
+        private bool _tryToPilotShipNextTick;
+        private UsableMissionObject _shipControllerToPilot;
         private bool _skipSwitchingCameraOnOrderingFinished;
         private bool _skipClosingUIOnSwitchingCamera;
-        public bool ShouldKeepUIOpen = false;
+        public bool ShouldKeepOrderUIOpen = false;
         private List<FormationClass> _playerFormations;
         private float _updatePlayerFormationTime;
         private bool _hasShownOrderHint = false;
@@ -294,7 +299,7 @@ namespace RTSCamera.Logic.SubLogic
             }
             else
             {
-                ShouldKeepUIOpen = true;
+                ShouldKeepOrderUIOpen = true;
             }
         }
 
@@ -304,18 +309,30 @@ namespace RTSCamera.Logic.SubLogic
                 return;
             if (_switchToFreeCameraNextTick)
             {
+                _tryToPilotShipNextTick = false;
+                _shipControllerToPilot = null;
                 _switchToFreeCameraNextTick = false;
                 SwitchToFreeCamera();
             }
             else if (_switchToAgentNextTick)
             {
+                _tryToPilotShipNextTick = false;
+                _shipControllerToPilot = null;
                 _switchToAgentNextTick = false;
                 SwitchToAgent();
             }
             else if (_openOrderUINextTick)
             {
                 _openOrderUINextTick = false;
-                Utility.GetMissionOrderVM(Mission)?.OpenToggleOrder(false, false);
+                _shouldIgnoreNextOrderViewOpenEvent = true;
+                Patch_MissionOrderVM.OpenToggleOrder(Utility.GetMissionOrderVM(Mission), false, false);
+            }
+
+            if (_tryToPilotShipNextTick)
+            {
+                TryToContinuePilotShip(_shipControllerToPilot);
+                _tryToPilotShipNextTick = false;
+                _shipControllerToPilot = null;
             }
             if (_shouldIgnoreNextOrderViewOpenEvent)
             {
@@ -392,12 +409,12 @@ namespace RTSCamera.Logic.SubLogic
                         _hasShownOrderHint = true;
                     }
                     // Should keep UI open if we actively switch to free camera mode by pressing hotkey.
-                    ShouldKeepUIOpen = true;
+                    ShouldKeepOrderUIOpen = true;
                 }
                 else
                 {
                     _hasShownOrderHint = false;
-                    ShouldKeepUIOpen = false;
+                    ShouldKeepOrderUIOpen = false;
                 }
 
                 if (_config.OrderOnSwitchingCamera)
@@ -407,21 +424,22 @@ namespace RTSCamera.Logic.SubLogic
                     {
                         // If order UI is already shown when switch to free camera,
                         // we will not close it when switching to agent camera.
-                        if (dataSource.IsToggleOrderShown)
+                        if (dataSource.IsToggleOrderShown || _openOrderUINextTick)
                         {
                             _skipClosingUIOnSwitchingCamera = true;
                         }
                         else
                         {
                             _skipClosingUIOnSwitchingCamera = false;
-                            dataSource.OpenToggleOrder(false);
+                            Patch_MissionOrderVM.OpenToggleOrder(dataSource, false);
                         }
                     }
                     else
                     {
                         if (!_skipClosingUIOnSwitchingCamera)
                         {
-                            dataSource.TryCloseToggleOrder(true);
+                            SetOpenToggleUINextTick(false);
+                            Patch_MissionOrderVM.TryCloseToggleOrder(dataSource);
                         }
                         else
                         {
@@ -544,7 +562,7 @@ namespace RTSCamera.Logic.SubLogic
             if (Mission.MainAgent?.Formation?.FormationIndex == FormationClass.General && Mission.PlayerTeam?.BodyGuardFormation != null
                 && Mission.MainAgent?.Formation?.CountOfUnits == 1)
                 return;
-            Utility.SetPlayerFormationClass(formationToSet);
+            Utilities.Utility.TryToSetPlayerFormationClass(formationToSet);
         }
 
         private void OnMainAgentChanged(Agent oldAgent)
@@ -587,6 +605,8 @@ namespace RTSCamera.Logic.SubLogic
 
         private AgentControllerType GetPlayerControllerInFreeCamera(Mission mission)
         {
+            if (Mission.IsNavalBattle && mission?.Mode == MissionMode.Deployment)
+                return AgentControllerType.None;
             if (CommandBattleBehavior.CommandMode || mission?.Mode == MissionMode.Deployment)
                 return AgentControllerType.AI;
             return (AgentControllerType)_config.PlayerControllerInFreeCamera;
@@ -674,17 +694,23 @@ namespace RTSCamera.Logic.SubLogic
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(false);
             if (Mission.IsNavalBattle && Mission.MainAgent != null)
             {
-                if (!Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode)
+                var ship = Utilities.Utility.GetAgentSteppedShip(Mission.MainAgent);
+                if (ship == null)
+                    return;
+                // verify that it's the same ship
+                var shipControllerMachine = Utilities.Utility.GetShipControllerMachine(ship);
+                if (shipControllerMachine == null || shipControllerMachine.PilotStandingPoint != usableMissionObject)
+                    return;
+
+                var isShipAIControlled = (bool)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsAIControlled").GetValue(ship);
+                var shipFormation = Utilities.Utility.GetShipFormation(ship);
+                if (!(RTSCameraSubModule.IsHelmsmanInstalled && shipFormation.FormationIndex == FormationClass.Infantry))
                 {
-                    // Referencing MissionMainAgentInteractionComponent.FocusStateCheckTick
-                    if (usableMissionObject != null)
-                    {
-                        if (!Mission.MainAgent.IsUsingGameObject && Mission.MainAgent.IsAbleToUseMachine() && !(usableMissionObject is SpawnedItemEntity) && Mission.MainAgent.ObjectHasVacantPosition(usableMissionObject))
-                        {
-                            Mission.MainAgent.HandleStartUsingAction(usableMissionObject, -1);
-                        }
-                    }
+                    Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode = isShipAIControlled;
                 }
+
+                _tryToPilotShipNextTick = true;
+                _shipControllerToPilot = usableMissionObject;
                 if (Mission.IsOrderMenuOpen)
                 {
                     RefreshOrders();
@@ -697,7 +723,7 @@ namespace RTSCamera.Logic.SubLogic
             if (IsSpectatorCamera)
                 return;
             IsSpectatorCamera = true;
-            if (!Utility.IsPlayerDead() && Mission.Mode != MissionMode.Deployment)
+            if (!Utility.IsPlayerDead())
             {
                 UpdateMainAgentControllerInFreeCamera();
             }
@@ -715,16 +741,41 @@ namespace RTSCamera.Logic.SubLogic
             }
         }
 
-        private void RefreshOrders()
+        private void TryToContinuePilotShip(UsableMissionObject shipControllerMachineStandingPoint)
+        {
+            var ship = Utilities.Utility.GetAgentSteppedShip(Mission.MainAgent);
+            if (ship == null)
+                return;
+
+            // verify that it's the same ship
+            var shipControllerMachine = Utilities.Utility.GetShipControllerMachine(ship);
+            if (shipControllerMachine == null || shipControllerMachine.PilotStandingPoint != shipControllerMachineStandingPoint)
+                return;
+            var isShipAIControlled = (bool)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsAIControlled").GetValue(ship);
+            // if the ship is AI controlled, don't pilot the ship to avoid interrupting AI control.
+            if (!isShipAIControlled)
+            {
+                // Referencing MissionMainAgentInteractionComponent.FocusStateCheckTick
+                if (!Mission.MainAgent.IsUsingGameObject && Mission.MainAgent.IsAbleToUseMachine() && !(shipControllerMachineStandingPoint is SpawnedItemEntity) && Mission.MainAgent.ObjectHasVacantPosition(shipControllerMachineStandingPoint))
+                {
+                    Mission.MainAgent.HandleStartUsingAction(shipControllerMachineStandingPoint, -1);
+                }
+                if (Mission.IsOrderMenuOpen)
+                {
+                    RefreshOrders();
+                }
+            }
+        }
+
+        public void RefreshOrders()
         {
             var missionOrderVM = Utility.GetMissionOrderVM(Mission);
             if (missionOrderVM != null)
             {
+                _skipSwitchingCameraOnOrderingFinished = true;
                 // allow it to be actually closed.
-                Patch_MissionOrderVM.AllowClosingOrderUI = true;
-                missionOrderVM.TryCloseToggleOrder();
+                Patch_MissionOrderVM.TryCloseToggleOrder(missionOrderVM);
                 // avoid switching to free camera automatically when opening order UI.
-                _shouldIgnoreNextOrderViewOpenEvent = true;
                 SetOpenToggleUINextTick(true);
             }
         }

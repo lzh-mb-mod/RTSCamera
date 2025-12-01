@@ -54,19 +54,47 @@ namespace RTSCamera.Patch.Naval
             var isSpectatorCamera = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? false;
             if (isSpectatorCamera)
             {
-                var controller = RTSCameraConfig.Get().PlayerShipControllerInFreeCamera;
+                var controller = Utilities.Utility.GetPlayerShipControllerInFreeCamera();
                 _setController ??= AccessTools.Method("NavalDLC.Missions.Objects.MissionShip:SetController");
                 _setController.Invoke(__instance, new object[] { controller, true });
                 return false;
             }
             else
             {
-                if (Utilities.Utility.IsShipPilotByPlayer(__instance))
+                if (Agent.Main == null || Utilities.Utility.IsShipPilotByPlayer(__instance))
                 {
                     return true;
                 }
                 var shipFormation = Utilities.Utility.GetShipFormation(__instance);
 
+                var playerControlledShip = Utilities.Utility.GetPlayerControlledShip(Mission.Current);
+                // When player stops piloting the ship, and PlayerControlledShip is not updated yet because ship controller is not updated.
+                if (__instance == playerControlledShip)
+                {
+                    var steeringMode = RTSCameraConfig.Get().SteeringModeWhenPlayerStopsPiloting;
+
+                    if (steeringMode == SteeringMode.None)
+                    {
+                        if (ShouldAIControlPlayerShipInPlayerMode)
+                        {
+                            ShouldAIControlPlayerShipInPlayerMode = false;
+                            Utility.DisplayLocalizedText("str_rts_camera_soldiers_stop_controlling_ship");
+                        }
+                    }
+                    else if (!ShouldAIControlPlayerShipInPlayerMode && !(RTSCameraSubModule.IsHelmsmanInstalled && shipFormation.FormationIndex == FormationClass.Infantry))
+                    {
+                        ShouldAIControlPlayerShipInPlayerMode = true;
+                        Utility.DisplayLocalizedText("str_rts_camera_soldiers_start_controlling_ship");
+                    }
+                    if (steeringMode == SteeringMode.DelegateCommand)
+                    {
+                        shipFormation.SetControlledByAI(true);
+                    }
+                    //if (Mission.Current.IsOrderMenuOpen)
+                    //{
+                    //    RTSCameraLogic.Instance.SwitchFreeCameraLogic.RefreshOrders();
+                    //}
+                }
                 // When helmsman is installed, exclude infantry formation because helmsman will handle it.
                 if (ShouldAIControlPlayerShipInPlayerMode && !(RTSCameraSubModule.IsHelmsmanInstalled && shipFormation.FormationIndex == FormationClass.Infantry))
                 {

@@ -41,7 +41,6 @@ namespace RTSCamera.Patch.Naval
 
         public static bool Prefix_OnObjectUsed(object __instance, Agent userAgent, UsableMissionObject usedObject)
         {
-
             // The only change: the original condition is !userAgent.IsMainAgent || ...
             if (!(userAgent.IsPlayerControlled || userAgent.IsMainAgent && Mission.Current.Mode == TaleWorlds.Core.MissionMode.Deployment) || !(usedObject is StandingPoint standingPoint))
                 return false;

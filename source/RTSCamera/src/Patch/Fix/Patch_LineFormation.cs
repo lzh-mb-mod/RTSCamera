@@ -56,7 +56,5 @@ namespace RTSCamera.Patch.Fix
 
             return true;
         }
-
-        // need to patch OnFormationFrameChanged to avoid OrderController.actualWidths being removed when formation is positioned in narrow place.
     }
 }

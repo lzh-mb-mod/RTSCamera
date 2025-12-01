@@ -58,34 +58,39 @@ namespace RTSCamera.Patch.Naval
             MBReadOnlyList<Formation> selectedFormations = Mission.Current.PlayerTeam.PlayerOrderController.SelectedFormations;
             if (selectedFormations == null)
                 return true;
-            var isSpectatorCamera = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? false;
-            if (isSpectatorCamera && RTSCameraConfig.Get().PlayerShipControllerInFreeCamera == PlayerShipController.AI)
+            if (Agent.Main != null)
             {
-                // Enable ship order when in free camera and PlayerShipControllerInFreeCamera is set to AI.
-                return true;
-            }
-            else
-            {
-                if (Agent.Main != null)
+                var navalShipsLogic = Utilities.Utility.GetNavalShipsLogic(Mission.Current);
+                if (navalShipsLogic == null)
+                    return true;
+                for (int index = 0; index < selectedFormations.Count; ++index)
                 {
-                    var navalShipsLogic = Utilities.Utility.GetNavalShipsLogic(Mission.Current);
-                    if (navalShipsLogic == null)
-                        return true;
-                    for (int index = 0; index < selectedFormations.Count; ++index)
+                    var ship = Utilities.Utility.GetShip(navalShipsLogic, selectedFormations[index].Team.TeamSide, selectedFormations[index].FormationIndex);
+                    if (ship == null)
+                        return false;
+                    var shipFormation = (Formation)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:Formation").GetValue(ship);
+                    var isShipAIControlled = Utilities.Utility.IsShipAIControlled(ship);
+                    var isSpectatorCamera = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? false;
+                    if (isSpectatorCamera)
                     {
-                        var ship = Utilities.Utility.GetShip(navalShipsLogic, selectedFormations[index].Team.TeamSide, selectedFormations[index].FormationIndex);
-                        if (ship == null)
-                            return false;
-                        var shipFormation = (Formation)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:Formation").GetValue(ship);
-                        var isShipAIControlled = (bool)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsAIControlled").GetValue(ship);
-                        if (Agent.Main.Formation != null && Agent.Main.Formation == shipFormation && shipFormation.Team.IsPlayerTeam && !isShipAIControlled)
+                        if (Agent.Main.Formation != shipFormation)
                         {
-                            return false;
+                            // Enable ship order when in free camera and ship is controlled by AI.
+                            return true;
+                        }
+                        else
+                        {
+                            return Utilities.Utility.GetPlayerShipControllerInFreeCamera() == PlayerShipController.AI;
                         }
                     }
+                    else
+                    {
+                        if (Agent.Main.Formation != null && Agent.Main.Formation == shipFormation && shipFormation.Team.IsPlayerTeam && !isShipAIControlled)
+                            return false;
+                    }
                 }
-                return true;
             }
+            return true;
         }
 
         public static bool Prefix_IsPlayerCaptainOfFormationShip(Formation formation, ref bool __result)
@@ -109,7 +114,7 @@ namespace RTSCamera.Patch.Naval
             }
             var captain = (Agent)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:Captain").GetValue(ship);
             var shipFormation = (Formation)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:Formation").GetValue(ship);
-            var isShipAIControlled = (bool)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsAIControlled").GetValue(ship);
+            var isShipAIControlled = Utilities.Utility.IsShipAIControlled(ship);
             __result = !isShipAIControlled && (captain != null && agent == captain || agent.IsMainAgent && agent.Formation == shipFormation);
             return false;
         }

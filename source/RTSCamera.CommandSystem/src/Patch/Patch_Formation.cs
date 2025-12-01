@@ -3,6 +3,7 @@ using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Logic;
 using System;
 using System.Reflection;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using static TaleWorlds.MountAndBlade.ArrangementOrder;
 
@@ -179,17 +180,37 @@ namespace RTSCamera.CommandSystem.Patch
             return true;
         }
 
+        public static int ReapplyFormOrderExecutiionCount = 0;
+
         public static bool Prefix_ReapplyFormOrder(Formation __instance)
         {
-            FormOrder formOrder = __instance.FormOrder;
-            if (__instance.FormOrder.OrderEnum == FormOrder.FormOrderEnum.Custom &&
-                __instance.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Circle ||
-                __instance.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Square)
+            if (ReapplyFormOrderExecutiionCount < 3)
             {
+                ++ReapplyFormOrderExecutiionCount;
+            }
+            else
+            {
+                var assertMessage = $"RTS Command Warning: Detected that ReapplyFormOrder has been recursively call for 3 times. Skip execution to avoid issue. The current arrangement order is {__instance.ArrangementOrder.OrderType.ToString()}, UnitSpacing = {__instance.UnitSpacing}, FlankWith = {__instance.Arrangement.FlankWidth}, UnitCount = {__instance.Arrangement.UnitCount}";
+                Utility.DisplayMessage(assertMessage);
+                Debug.Print(assertMessage);
+                return false;
+            }
+            try
+            {
+                FormOrder formOrder = __instance.FormOrder;
+                if (__instance.FormOrder.OrderEnum == FormOrder.FormOrderEnum.Custom &&
+                    __instance.ArrangementOrder.OrderEnum != ArrangementOrder.ArrangementOrderEnum.Circle &&
+                    __instance.ArrangementOrder.OrderEnum != ArrangementOrder.ArrangementOrderEnum.Square)
+                {
+                    formOrder.CustomFlankWidth = __instance.Arrangement.FlankWidth;
+                }
                 __instance.SetFormOrder(formOrder, false);
                 return false;
             }
-            return true;
+            finally
+            {
+                --ReapplyFormOrderExecutiionCount;
+            }
         }
     }
 }

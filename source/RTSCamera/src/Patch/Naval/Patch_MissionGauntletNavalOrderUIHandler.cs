@@ -10,7 +10,6 @@ namespace RTSCamera.Patch.Naval
 {
     public class Patch_MissionGauntletNavalOrderUIHandler
     {
-        private static MethodInfo _setIsFormationTargetingDisabled;
         private static bool _patched;
         public static bool Patch(Harmony harmony)
         {
@@ -44,12 +43,7 @@ namespace RTSCamera.Patch.Naval
             // MissionOrderVM.OnTroopFormationSelected will close the order UI and open it again to refresh the available orders.
             // We should allow it to be closed so that orders will be refreshed. Or the advance visual orders may not be available when switching from agent view to rts view.
             Patch_MissionOrderVM.AllowClosingOrderUI = true;
-            bool isDisabled = !Patch_NavalDLCHelpers.IsShipOrderAvailable();
-            ____formationTargetHandler?.SetIsFormationTargetingDisabled(isDisabled);
-            if (____shipTargetHandler == null)
-                return false;
-            _setIsFormationTargetingDisabled ??= AccessTools.Method("NavalDLC.View.MissionViews.NavalShipTargetSelectionHandler:SetIsFormationTargetingDisabled");
-            _setIsFormationTargetingDisabled.Invoke(____shipTargetHandler, new object[] { isDisabled });
+            Utilities.Utility.RefreshOrderTargetDisabled();
             return false;
         }
     }

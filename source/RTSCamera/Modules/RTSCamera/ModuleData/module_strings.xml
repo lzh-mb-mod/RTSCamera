@@ -108,6 +108,12 @@
   <string id="str_rts_camera_player_ship_controller_in_free_camera" text="{=RTSCamera_player_ship_controller_in_free_camera}Player Ship Controller in Free Camera" />
   <string id="str_rts_camera_player_ship_controller_in_free_camera_hint" text="{=RTSCamera_player_ship_controller_in_free_camera_hint}Player ship control mode in Free Camera. If set to none, player ship will not be controlled. If set to AI, AI will control player ship. If set to Player, you can still directly control your ship." />
 
+  <string id="str_rts_camera_steering_mode_when_player_stops_piloting" text="{=RTSCamera_steering_mode_when_player_stops_piloting}Steering Mode When Player Stops Piloting" />
+  <string id="str_rts_camera_steering_mode_when_player_stops_piloting_hint" text="{=RTSCamera_steering_mode_when_player_stops_piloting_hint}When player stops piloting the ship, how the ship will be controlled. If set to None, the ship will stay uncontrolled. If set to Soldier, the ship will be piloted by soldier and receives your command. If set to Delegate Command, the ship will be piloted by soldier and receives ship command from AI." />
+  <string id="str_rts_camera_steering_mode.None" text="{=RTSCamera_steering_mode_none}None (Default)" />
+  <string id="str_rts_camera_steering_mode.Soldier" text="{=RTSCamera_steering_mode_soldier}Soldier" />
+  <string id="str_rts_camera_steering_mode.DelegateCommand" text="{=RTSCamera_steering_mode_delegate_command}Delegate Command" />
+
   <string id="str_rts_camera_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Cheat Options" />
   <string id="str_rts_camera_all_invulnerable" text="{=RTSCamera_disabledeath}All Invulnerable" />
   <string id="str_rts_camera_enable_all_invulnerable_hotkey" text="{=RTSCamera_enable_all_invulnerable_hotkey}Enable All Invulnerable Hotkey" />
@@ -121,7 +127,7 @@
   <string id="str_rts_camera_fast_forward_mode_enabled" text="{=RTSCamera_fastfowardenabled}Fast Forward Mode Enabled." />
   <string id="str_rts_camera_normal_mode_enabled" text="{=RTSCamera_normalmodeenabled}Normal Mode Enabled." />
 
-  <string id="str_rts_camera_player_dead" text="{=RTSCamera_playeragentdead}Player agent is dead." />
+  <string id="str_rts_camera_player_dead" text="{=RTSCamera_playeragentdead}Player agent is injured." />
   <string id="str_rts_camera_switch_to_player" text="{=RTSCamera_switchtoplayer}Switch to player agent." />
   <string id="str_rts_camera_switch_to_free_camera" text="{=RTSCamera_switchtofreecamera}Switch to free camera." />
 
@@ -142,8 +148,8 @@
   <string id="str_rts_camera_fast_forward_hideout_option.Always" text="{=RTSCamera_fast_forward_hideout_option_always}Always" />
   <string id="str_rts_camera_fast_forward_hideout_prompt" text="{=RTSCamera_fast_forward_hideout_prompt}Do you want to enable fast forward in hideout?" />
 
-  <string id="rts_camera_ai_control_ship_on" text="{=RTSCamera_ai_control_ship_on}Soldier Pilot On" />
-  <string id="rts_camera_ai_control_ship_off" text="{=RTSCamera_player_control_ship_off}Soldier Pilot Off" />
+  <string id="str_rts_camera_ai_control_ship_on" text="{=RTSCamera_ai_control_ship_on}Soldier Pilot On" />
+  <string id="str_rts_camera_ai_control_ship_off" text="{=RTSCamera_player_control_ship_off}Soldier Pilot Off" />
   <string id="str_rts_camera_soldiers_start_controlling_ship" text="{=RTSCamera_soldiers_start_controlling_ship}Soldier starts piloting your ship." />
   <string id="str_rts_camera_soldiers_stop_controlling_ship" text="{=RTSCamera_soldiers_stop_controlling_ship}Soldier stops piloting your ship." />
 

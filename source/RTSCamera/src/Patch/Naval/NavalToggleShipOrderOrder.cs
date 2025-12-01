@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.Config;
 using RTSCamera.Logic;
 using RTSCamera.Patch.Fix;
 using TaleWorlds.Localization;
@@ -65,8 +66,12 @@ namespace RTSCamera.Patch.Naval
                 Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode = true;
                 afterSetOrder.Invoke(orderController, new object[] { OrderType.AIControlOn });
                 Utility.DisplayLocalizedText("str_rts_camera_soldiers_start_controlling_ship");
+                if (RTSCameraConfig.Get().SteeringModeWhenPlayerStopsPiloting == SteeringMode.DelegateCommand)
+                {
+                    orderController.SetOrder(OrderType.AIControlOn);
+                }
             }
-            RTSCameraLogic.Instance.SwitchFreeCameraLogic.SetOpenToggleUINextTick(true);
+            RTSCameraLogic.Instance.SwitchFreeCameraLogic.RefreshOrders();
         }
 
         protected override string GetIconId()
