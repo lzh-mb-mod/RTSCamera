@@ -114,6 +114,8 @@
   <string id="str_rts_camera_steering_mode.Soldier" text="{=RTSCamera_steering_mode_soldier}Soldier" />
   <string id="str_rts_camera_steering_mode.DelegateCommand" text="{=RTSCamera_steering_mode_delegate_command}Delegate Command" />
 
+  <string id="str_rts_camera_ship_need_to_be_connected" text="{=RTSCamera_ship_need_to_be_connected}The ship need to connected to your ships to be captured." />
+
   <string id="str_rts_camera_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Cheat Options" />
   <string id="str_rts_camera_all_invulnerable" text="{=RTSCamera_disabledeath}All Invulnerable" />
   <string id="str_rts_camera_enable_all_invulnerable_hotkey" text="{=RTSCamera_enable_all_invulnerable_hotkey}Enable All Invulnerable Hotkey" />

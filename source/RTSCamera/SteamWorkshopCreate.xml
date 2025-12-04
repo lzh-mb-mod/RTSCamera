@@ -82,6 +82,8 @@ lzh, Norbivar"/>
       <Tag Value="v1.3.5" />
       <Tag Value="v1.3.6" />
       <Tag Value="v1.3.7" />
+      <Tag Value="v1.3.8" />
+      <Tag Value="v1.3.9" />
     </Tags>
     <Image Value="D:\develop\src\RTSCamera\RTS Camera preview.jpg"/>
     <!--  Determines the featured image displayed on Steam Workshop, a direct path to it must be inserted here (the image should be smaller than 1 MB)  -->

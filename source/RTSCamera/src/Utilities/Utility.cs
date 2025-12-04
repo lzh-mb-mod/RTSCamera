@@ -76,6 +76,10 @@ namespace RTSCamera.Utilities
                 {
                     controller.CustomLookDir = isSpectatorCamera ? agent.LookDirection : Vec3.Zero;
                     controller.Enable();
+                    if (agent.IsCameraAttachable())
+                    {
+                        controller.IsDisabled = false;
+                    }
                 }
                 else
                 {
@@ -301,6 +305,32 @@ namespace RTSCamera.Utilities
                     _setIsFormationTargetingDisabled.Invoke(shipTargetHandler, new object[] { isDisabled });
                 }
             }
+        }
+
+        private static PropertyInfo _shipOrder;
+
+        public static Object GetShipOrder(MissionObject ship)
+        {
+            _shipOrder ??= AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:ShipOrder");
+            return _shipOrder.GetValue(ship);
+        }
+
+        public enum ShipMovementOrderEnum
+        {
+            Stop = 0,
+            Move = 1,
+            Retreat = 2,
+            Follow = 3,
+            StaticOrderCount = 3,
+            Engage = 4,
+            Skirmish = 5,
+        }
+
+        private static PropertyInfo _movementOrderEnum;
+        public static ShipMovementOrderEnum GetShipMovementOrderEnum(Object shipOrder)
+        {
+            _movementOrderEnum ??= AccessTools.Property("NavalDLC.Missions.ShipOrder:MovementOrderEnum");
+            return (ShipMovementOrderEnum)_movementOrderEnum.GetValue(shipOrder);
         }
     }
 }

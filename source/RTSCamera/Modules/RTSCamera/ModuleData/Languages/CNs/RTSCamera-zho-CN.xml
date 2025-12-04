@@ -116,6 +116,8 @@
     <string id="RTSCamera_steering_mode_soldier" text="士兵" />
     <string id="RTSCamera_steering_mode_delegate_command" text="委派指挥" />
 
+    <string id="RTSCamera_ship_need_to_be_connected" text="The ship need to connected to your ships to be captured." />
+
     <string id="RTSCamera_unbalancedoptionsdescription" text="作弊选项" />
     <string id="RTSCamera_disabledeath" text="全员无敌" />
     <string id="RTSCamera_enable_all_invulnerable_hotkey" text="启用全员无敌的按键" />

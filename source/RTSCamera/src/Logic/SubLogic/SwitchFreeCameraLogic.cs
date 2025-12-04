@@ -505,6 +505,10 @@ namespace RTSCamera.Logic.SubLogic
             // OnMissionModeChange(Deployment) with Mission.Mode == Deployment
             if (oldMissionMode == MissionMode.Deployment && Mission.Mode == MissionMode.Battle)
             {
+                if (_config.DefaultToFreeCamera == DefaultToFreeCamera.Always || CommandBattleBehavior.CommandMode)
+                {
+                    UpdateMainAgentControllerInFreeCamera();
+                }
                 TrySetPlayerFormation(true);
             }
             //if (MissionState.Current?.MissionName == "HideoutBattle")
@@ -706,7 +710,7 @@ namespace RTSCamera.Logic.SubLogic
                 var shipFormation = Utilities.Utility.GetShipFormation(ship);
                 if (!(RTSCameraSubModule.IsHelmsmanInstalled && shipFormation.FormationIndex == FormationClass.Infantry))
                 {
-                    Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode = isShipAIControlled;
+                    Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode = isShipAIControlled && Utilities.Utility.GetShipMovementOrderEnum(Utilities.Utility.GetShipOrder(ship)) != Utilities.Utility.ShipMovementOrderEnum.Stop;
                 }
 
                 _tryToPilotShipNextTick = true;

@@ -124,6 +124,8 @@ namespace RTSCamera
                     _successPatch &= Patch_NavalShipVisualOrderProvider.Patch(_harmony);
                     _successPatch &= Patch_NavalTroopVisualOrderProvider.Patch(_harmony);
                     _successPatch &= Patch_ShipOrder.Patch(_harmony);
+                    _successPatch &= Patch_ShipControllerMachine.Patch(_harmony);
+                    _successPatch &= Patch_AgentNavalComponent.Patch(_harmony);
                 }
 
                 // Use Patch to add game menu
