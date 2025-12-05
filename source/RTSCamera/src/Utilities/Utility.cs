@@ -273,6 +273,9 @@ namespace RTSCamera.Utilities
                     return;
             }
 
+#if DEBUG
+            MissionSharedLibrary.Utilities.Utility.DisplayMessage($"Setting player formation to {formationClass}");
+#endif
             MissionSharedLibrary.Utilities.Utility.SetPlayerFormationClass(formationClass);
         }
 

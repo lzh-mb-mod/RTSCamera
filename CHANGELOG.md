@@ -1,5 +1,15 @@
 # Changelog
 
+## [v5.3.6] - 2025-12-05
+### Fixed
+- Fix crashes when starting battle and finishing deployment.
+
+- Fix crash when player loses connection to ship and try to capture a new ship.
+
+- Fix the issue that player is not AI controlled when default to free camera in battle.
+
+- Disable and Hide formation option in naval battle.
+
 ## [v5.3.5] - 2025-12-01
 ### Fixed
 - Fix the issue in the base game that player character cannot be teleported in deployment mode. Now during deployment stage player character can be teleported when controlled by AI in free camera mode.

@@ -94,6 +94,7 @@
     <string id="RTSCamera_control_ally_after_death_timing_prompt" text="你想启用“死后控制队友”吗？" />
     <string id="RTSCamera_prefer_unit_in_same_formation" text="优先控制同编队内的单位" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
+    <string id="RTSCamera_limited_to_player_party_only" text="只控制属于玩家部队的单位已启用。只会考虑玩家部队内的单位作为控制目标。" />
     <string id="RTSCamera_controlheroonly" text="只控制英雄单位" />
     <string id="RTSCamera_controlheroonlyhint" text="只考虑英雄单位作为控制目标。" />
     <string id="RTSCamera_limitedtoheroonly" text="只控制英雄单位已启用。只会考虑英雄单位作为控制目标。" />

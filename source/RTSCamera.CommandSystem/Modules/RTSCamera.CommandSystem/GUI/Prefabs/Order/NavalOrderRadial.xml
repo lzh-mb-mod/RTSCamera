@@ -47,7 +47,7 @@
 
             <Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsVisible="@HasAnyCascadingOrders">
               <Children>
-                <ListPanel DoNotAcceptEvents="true" DataSource="{OrderSets}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Bottom" MarginLeft="300" MarginBottom="80">
+                <ListPanel DoNotAcceptEvents="true" DataSource="{OrderSets}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginLeft="-290" MarginBottom="80">
                   <ItemTemplate>
                     <!-- <OrderSetRadial MarginLeft="20" MarginRight="20"/> -->
                     <OrderSetRadial MarginLeft="-50" MarginRight="-290"  MinWidth="300"/>

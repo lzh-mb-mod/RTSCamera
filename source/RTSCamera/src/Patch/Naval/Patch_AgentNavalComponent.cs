@@ -1,11 +1,7 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch.Naval
@@ -46,6 +42,11 @@ namespace RTSCamera.Patch.Naval
                 return false;
             if (___Agent.IsAIControlled)
                 return true;
+            // When player controlled, agent will not lose ship.
+            if (___Agent.IsPlayerControlled && ___Agent.Formation != null)
+            {
+                return true;
+            }
             if (!(____lastOffShipCheckTime + 5.0 <= ___Agent.Mission.CurrentTime && ___Agent.Mission.IsDeploymentFinished))
             {
                 return true;
