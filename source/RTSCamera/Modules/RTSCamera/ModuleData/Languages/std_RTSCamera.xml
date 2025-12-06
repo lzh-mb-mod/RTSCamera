@@ -213,7 +213,6 @@
   
     <string id="RTSCamera_focus_on_formation_usage" text="(New Feature) When command UI is open in free camera mode, you can press {KeyName} to stick camera to selected formation." />
     <string id="RTSCamera_control_troop_usage" text="After your character is killed in battle, you can press {KeyName} to follow one of your soldiers and press {KeyName} again to control it and continue fighting." />
-    <string id="RTSCamera_click_troop_card_usage" text="You can select your formations by clicking on troop cards." />
 
     <string id="RTSCamera_open_menu_hotkey_hint" text="open menu" />
     <string id="RTSCamera_switch_camera_hotkey_hint" text="toggle free Camera" />

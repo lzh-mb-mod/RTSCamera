@@ -112,6 +112,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public CircleFormationUnitSpacingPreference CircleFormationUnitSpacingPreference = CircleFormationUnitSpacingPreference.Tight;
 
+        public bool IsCommandOptionVisible = true;
+
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;
@@ -136,6 +138,7 @@ namespace RTSCamera.CommandSystem.Config
             OrderUIClickableExtension = other.OrderUIClickableExtension;
             FacingEnemyByDefault = other.FacingEnemyByDefault;
             CircleFormationUnitSpacingPreference = other.CircleFormationUnitSpacingPreference;
+            IsCommandOptionVisible = IsCommandOptionVisible;
         }
 
         public static void OnMenuClosed()

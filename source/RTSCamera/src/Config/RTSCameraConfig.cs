@@ -188,6 +188,16 @@ namespace RTSCamera.Config
 
         public SteeringMode SteeringModeWhenPlayerStopsPiloting = SteeringMode.None;
 
+        public bool IsCameraOptionVisible = true;
+
+        public bool IsControlOptionVisible = true;
+
+        public bool IsMiscellaneousOptionVisible = true;
+
+        public bool IsNavalOptionVisible = true;
+
+        public bool IsCheatOptionVisible = true;
+
         public static void OnMenuClosed()
         {
             Get().Serialize();
@@ -232,6 +242,11 @@ namespace RTSCamera.Config
             PlayerShipControllerInFreeCamera = other.PlayerShipControllerInFreeCamera;
             SoldiersPilotShipInPlayerMode = other.SoldiersPilotShipInPlayerMode;
             SteeringModeWhenPlayerStopsPiloting = other.SteeringModeWhenPlayerStopsPiloting;
+            IsCameraOptionVisible = other.IsCameraOptionVisible;
+            IsControlOptionVisible = other.IsControlOptionVisible;
+            IsMiscellaneousOptionVisible = other.IsMiscellaneousOptionVisible;
+            IsNavalOptionVisible = other.IsNavalOptionVisible;
+            IsCheatOptionVisible = other.IsCheatOptionVisible;
         }
         [XmlIgnore]
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, RTSCameraSubModule.ModuleId, nameof(RTSCameraConfig) + ".xml");

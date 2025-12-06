@@ -100,6 +100,7 @@
     <string id="RTSCameraCommandSystem_lock_formation_width_usage" text="按住{KeyName}在地面拖动时，编队的相对位置和宽度将会被锁定。" />
     <string id="RTSCameraCommandSystem_toggle_locking_usage" text="按住{KeyName}以开启/关闭整体行军。" />
     <string id="RTSCameraCommandSystem_target_only_usage" text="例如，可让你的弓箭手待在原地同时攻击指定的目标。" />
+    <string id="RTSCameraCommandSystem_click_troop_card_usage" text="可通过点击兵牌来选择部队。" />
 
     <string id="RTSCameraCommandSystem_add_order_to_queue" text="指令已添加到队列。" />
     <string id="RTSCameraCommandSystem_execute_order_in_queue" text="正在执行队列中的指令。" />

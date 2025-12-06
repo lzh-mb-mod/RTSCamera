@@ -13,6 +13,7 @@ using System;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.ModuleManager;
@@ -42,8 +43,6 @@ namespace RTSCamera.CommandSystem
                 TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
                     info.Id == "RealisticBattleAiModule") == null;
 
-            Module.CurrentModule.GlobalTextManager.LoadGameTexts();
-
             Utility.ShouldDisplayMessage = true;
             Initialize();
 
@@ -69,6 +68,15 @@ namespace RTSCamera.CommandSystem
             if (!ThirdInitialize())
                 return;
 
+            try
+            {
+                Module.CurrentModule.GlobalTextManager.LoadGameTexts();
+            }
+            catch (Exception e)
+            {
+                MBDebug.ConsolePrint(e.ToString());
+                InformationManager.DisplayMessage(new InformationMessage($"RTS Command: failed to load game texts: {e}"));
+            }
             Utilities.Utility.PrintOrderHint();
         }
 
@@ -121,7 +129,7 @@ namespace RTSCamera.CommandSystem
             _successPatch &= Patch_CircularFormation.Patch(_harmony);
             if (!_successPatch)
             {
-                InformationManager.DisplayMessage(new InformationMessage("RTS Camera Command System: patch failed"));
+                InformationManager.DisplayMessage(new InformationMessage("RTS Command: patch failed"));
             }
             return true;
         }

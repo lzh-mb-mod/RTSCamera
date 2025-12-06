@@ -35,6 +35,7 @@ namespace RTSCamera.CommandSystem.Usage
                         CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString()),
                     GameTexts.FindText("str_rts_camera_command_system_attack_specific_formation_alt_hint"),
                     GameTexts.FindText("str_rts_camera_command_system_target_only_usage"),
+                    GameTexts.FindText("str_rts_camera_command_system_click_troop_card_usage")
                 });
 
             return new UsageCategory(CategoryId, usageCategoryData);

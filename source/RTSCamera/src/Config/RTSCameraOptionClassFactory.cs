@@ -33,7 +33,8 @@ namespace RTSCamera.Config
                 var missionScreen = selectCharacterView.MissionScreen;
                 var menuManager = AMenuManager.Get();
 
-                var cameraOptionCategory = new OptionCategory("Camera", GameTexts.FindText("str_rts_camera_camera_options"));
+                var cameraOptionCategory = new OptionCategory("Camera", GameTexts.FindText("str_rts_camera_camera_options"),
+                    () => RTSCameraConfig.Get().IsCameraOptionVisible, (b) => RTSCameraConfig.Get().IsCameraOptionVisible = b);
                 cameraOptionCategory.AddOption(new ActionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_switch_free_camera"),
                     GameTexts.FindText("str_rts_camera_switch_free_camera_hint"),
@@ -135,7 +136,8 @@ namespace RTSCamera.Config
                 optionClass.AddOptionCategory(0, cameraOptionCategory);
 
                 var controlOptionCategory = new OptionCategory("Control",
-                    GameTexts.FindText("str_rts_camera_control_options"));
+                    GameTexts.FindText("str_rts_camera_control_options"),
+                    () => RTSCameraConfig.Get().IsControlOptionVisible, (b) => RTSCameraConfig.Get().IsControlOptionVisible = b);
                 controlOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_control_ally_after_death_timing"),
                     GameTexts.FindText("str_rts_camera_control_ally_after_death_timing_hint"),
@@ -314,7 +316,8 @@ namespace RTSCamera.Config
                 optionClass.AddOptionCategory(0, controlOptionCategory);
 
                 var miscellaneousOptionCategory = new OptionCategory("Miscellaneous",
-                    GameTexts.FindText("str_rts_camera_miscellaneous_options"));
+                    GameTexts.FindText("str_rts_camera_miscellaneous_options"),
+                    () => RTSCameraConfig.Get().IsMiscellaneousOptionVisible, (b) => RTSCameraConfig.Get().IsMiscellaneousOptionVisible = b);
                 miscellaneousOptionCategory.AddOption(new ActionOptionViewModel(GameTexts.FindText("str_rts_camera_toggle_pause"), GameTexts.FindText("str_rts_camera_toggle_pause_hint"),
                     () =>
                     {
@@ -393,7 +396,8 @@ namespace RTSCamera.Config
                 if (RTSCameraSubModule.IsNavalInstalled)
                 {
                     var navalOptionCategory = new OptionCategory("Naval",
-                        GameTexts.FindText("str_rts_camera_naval_options"));
+                        GameTexts.FindText("str_rts_camera_naval_options"),
+                        () => RTSCameraConfig.Get().IsNavalOptionVisible, (b) => RTSCameraConfig.Get().IsNavalOptionVisible = b);
                     if (!CommandBattleBehavior.CommandMode)
                     {
                         navalOptionCategory.AddOption(new SelectionOptionViewModel(
@@ -437,7 +441,8 @@ namespace RTSCamera.Config
                 if (NativeConfig.CheatMode)
                 {
                     var cheatOptionCategory = new OptionCategory("Cheat",
-                        GameTexts.FindText("str_rts_camera_unbalanced_options_description"));
+                        GameTexts.FindText("str_rts_camera_unbalanced_options_description"),
+                        () => RTSCameraConfig.Get().IsCheatOptionVisible, (b) => RTSCameraConfig.Get().IsCheatOptionVisible = b);
                     cheatOptionCategory.AddOption(new BoolOptionViewModel(
                         GameTexts.FindText("str_rts_camera_all_invulnerable"),
                         GameTexts.FindText("str_rts_camera_all_invulnerable_hint"),

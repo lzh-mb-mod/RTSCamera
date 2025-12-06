@@ -1,5 +1,14 @@
 # Changelog
 
+## [v5.3.7] - 2025-12-06
+### Fixed
+- Fix crash on startup when failing to loading game texts. This may happen when other mods have broken text files.
+
+- Fix the issue that in winter season, the target arrow and unit marker will be covered by snow.
+
+### Added
+- Support keeping options hidden in mod menu.
+
 ## [v5.3.6] - 2025-12-05
 ### Fixed
 - Fix crashes when starting battle and finishing deployment.

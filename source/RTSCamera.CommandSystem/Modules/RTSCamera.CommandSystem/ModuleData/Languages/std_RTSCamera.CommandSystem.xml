@@ -98,6 +98,7 @@
     <string id="RTSCameraCommandSystem_lock_formation_width_usage" text="Hold {KeyName} while dragging on the ground, formations relative positions and widths will be locked." />
     <string id="RTSCameraCommandSystem_toggle_locking_usage" text="Hold {KeyName} to toggle the locking behavior." />
     <string id="RTSCameraCommandSystem_target_only_usage" text="For example, let your archers focus shooting while holding position." />
+    <string id="RTSCameraCommandSystem_click_troop_card_usage" text="You can select your formations by clicking on troop cards." />
 
     <string id="RTSCameraCommandSystem_add_order_to_queue" text="Order is queued." />
     <string id="RTSCameraCommandSystem_execute_order_in_queue" text="Order in queue is being executed." />

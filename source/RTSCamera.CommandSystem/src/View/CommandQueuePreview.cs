@@ -840,10 +840,9 @@ namespace RTSCamera.CommandSystem.View
                 };
                 var headMesh = MetaMesh.GetCopy("rts_arrow_head");
                 var bodyMesh = MetaMesh.GetCopy("rts_arrow_body");
-                //var bodyMaterial = bodyMesh.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+                var bodyMaterial = bodyMesh.GetMeshAtIndex(0).GetMaterial().CreateCopy();
                 //bodyMaterial.SetAlphaBlendMode(Material.MBAlphaBlendMode.Factor);
                 //bodyMaterial.SetShader(Shader.GetFromResource("pbr_shading"));
-                //bodyMesh.SetMaterial(bodyMaterial);
                 newArrowEntity.ArrowHead.AddComponent(headMesh);
                 newArrowEntity.ArrowBody.AddComponent(bodyMesh);
                 newArrowEntity.ArrowHead.EntityFlags |= EntityFlags.NotAffectedBySeason;

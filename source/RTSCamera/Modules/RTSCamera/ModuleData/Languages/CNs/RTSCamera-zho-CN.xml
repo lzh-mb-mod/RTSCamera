@@ -213,7 +213,6 @@
   
     <string id="RTSCamera_focus_on_formation_usage" text="（新功能）自由视角下打开指挥界面后，按{KeyName}可让相机跟随选定的编队" />
     <string id="RTSCamera_control_troop_usage" text="玩家阵亡后后按{KeyName}可以让相机跟随一个士兵，然后再按一次{KeyName}控制该士兵继续战斗" />
-    <string id="RTSCamera_click_troop_card_usage" text="可通过点击兵牌来选择部队。" />
 
     <string id="RTSCamera_open_menu_hotkey_hint" text="打开菜单" />
     <string id="RTSCamera_switch_camera_hotkey_hint" text="切换自由视角" />

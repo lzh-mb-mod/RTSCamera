@@ -22,6 +22,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 using Module = TaleWorlds.MountAndBlade.Module;
@@ -55,7 +56,6 @@ namespace RTSCamera
                 IsHelmsmanInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
                     info.Id == "Helmsman") != null;
                 Utility.ShouldDisplayMessage = true;
-                Module.CurrentModule.GlobalTextManager.LoadGameTexts();
                 Initialize();
 
                 _successPatch = true;
@@ -167,6 +167,15 @@ namespace RTSCamera
             if (IsHelmsmanInstalled)
             {
                 Utilities.Utility.PrintHelmsmanWarning();
+            }
+            try
+            {
+                Module.CurrentModule.GlobalTextManager.LoadGameTexts();
+            }
+            catch (Exception e)
+            {
+                MBDebug.ConsolePrint(e.ToString());
+                InformationManager.DisplayMessage(new InformationMessage($"RTS Camera: failed to load game texts: {e}"));
             }
 
             Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;

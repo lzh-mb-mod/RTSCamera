@@ -8,7 +8,6 @@ using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Orders;
 using RTSCamera.CommandSystem.Patch;
-using RTSCamera.CommandSystem.View;
 using System;
 using System.Collections.Generic;
 using TaleWorlds.Core;
@@ -28,7 +27,8 @@ namespace RTSCamera.CommandSystem.Config
 
                 var optionClass = new OptionClass(CommandSystemSubModule.ModuleId,
                     GameTexts.FindText("str_rts_camera_command_system_option_class"), menuClassCollection);
-                var commandOptionCategory = new OptionCategory("Command", GameTexts.FindText("str_rts_camera_command_system_command_system_options"));
+                var commandOptionCategory = new OptionCategory("Command", GameTexts.FindText("str_rts_camera_command_system_command_system_options"),
+                    () => CommandSystemConfig.Get().IsCommandOptionVisible, (b) => CommandSystemConfig.Get().IsCommandOptionVisible = b);
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_click_to_select_formation"),
                     GameTexts.FindText("str_rts_camera_command_system_click_to_select_formation_hint").SetTextVariable("KeyName", CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString()),
