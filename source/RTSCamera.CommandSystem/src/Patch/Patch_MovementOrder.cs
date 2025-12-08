@@ -8,6 +8,7 @@ using System.Reflection;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.CommandSystem.Patch
 {
@@ -68,19 +69,21 @@ namespace RTSCamera.CommandSystem.Patch
             if (!CommandSystemConfig.Get().FixAdvaneOrderForThrowing)
                 return true;
 
+            if (f.IsAIControlled && !CommandSystemConfig.Get().ApplyAdvanceOrderFixForAI)
+                return true;
+
             if (__instance.OrderEnum != MovementOrder.MovementOrderEnum.Advance)
                 return true;
 
             if (Mission.Current.Mode == TaleWorlds.Core.MissionMode.Deployment)
                 return true;
 
-
             FormationQuerySystem querySystem = f.QuerySystem;
             FormationQuerySystem enemyQuerySystem = f.TargetFormation?.QuerySystem ?? f.CachedClosestEnemyFormation;
             WorldPosition positionAux;
 
 
-            if (querySystem.IsRangedFormation || querySystem.IsRangedCavalryFormation ||  querySystem.HasThrowingUnitRatio <= CommandSystemConfig.Get().JavelinThrowerRatioThreshold || f.FiringOrder.OrderType == OrderType.HoldFire)
+            if (querySystem.IsRangedFormation || querySystem.IsRangedCavalryFormation ||  querySystem.HasThrowingUnitRatio <= CommandSystemConfig.Get().ThrowerRatioThreshold || f.FiringOrder.OrderType == OrderType.HoldFire)
             {
                 return true;
             }
@@ -90,6 +93,10 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 return true;
             }
+
+            var missileRange = commandQuerySystem.AverageMissileRangeAdjusted;
+            if (missileRange < 1f)
+                return true;
             if (enemyQuerySystem == null)
             {
                 return true;
@@ -98,9 +105,15 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 positionAux = enemyQuerySystem.Formation.CachedMedianPosition;
             }
-
+            var distanceSquared = f.CurrentPosition.DistanceSquared(positionAux.AsVec2);
+            var ammoFactor = MathF.Pow(MathF.Max(commandQuerySystem.RatioOfRemainingAmmo - CommandSystemConfig.Get().RemainingAmmoRatioThreshold, 0f), 0.2f);
+            if (!CommandSystemConfig.Get().ShortenRangeBasedOnRemainingAmmo)
+            {
+                ammoFactor = 1f;
+            }
+            var distanceFactor = MathF.Pow(MathF.Clamp(distanceSquared / MathF.Max(missileRange * missileRange, 1f) * 1.5f, 0f, 1f), 0.1f);
             var vec2 = GetDirectionAux(__instance, f);
-            positionAux.SetVec2(positionAux.AsVec2 - vec2 * commandQuerySystem.AverageMissileRangeAdjusted);
+            positionAux.SetVec2(positionAux.AsVec2 - vec2 * missileRange * ammoFactor * distanceFactor);
 
             if (!____engageTargetPositionCache.IsValid)
                 ____engageTargetPositionCache = positionAux;

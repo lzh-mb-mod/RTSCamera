@@ -81,12 +81,17 @@
     <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons" text="Fix Advance Order for Throwing Weapons" />
     <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons_hint" text="When enabled, troops armed with throwing weapons will keep distance to the target and throw their weapons." />
 
+    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai" text="Apply Advance Order Fix for AI Formations" />
+    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai_hint" text="When enabled, AI formations will also apply the advance order fix for throwing weapons." />
+    
     <string id="RTSCameraCommandSystem_thrower_ratio_threshold" text="Thrower Ratio Threshold" />
     <string id="RTSCameraCommandSystem_thrower_ratio_threshold_hint" text="The minimum ratio of throwers in a formation to enable the advance order fix for throwing weapons." />
+
     <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold" text="Remaining Ammo Ratio Threshold" />
-    <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold_hint" text="The minimum remaining ammo ratio to consider a formation as having sufficient ammunition for throwing weapons." />
+    <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold_hint" text="The minimum remaining ammo ratio to make the formation keeping distance." />
 
-
+    <string id="RTSCameraCommandSystem_shorten_range_based_on_remaining_ammo" text="Shorten Range Based on Remaining Ammo" />
+    <string id="RTSCameraCommandSystem_shorten_range_based_on_remaining_ammo_hint" text="With less remaining ammo, formation will keep less distance." />
 
     <string id="RTSCameraCommandSystem_defensive_attack" text="focusing on enemy {TARGET_NAME}" />
 

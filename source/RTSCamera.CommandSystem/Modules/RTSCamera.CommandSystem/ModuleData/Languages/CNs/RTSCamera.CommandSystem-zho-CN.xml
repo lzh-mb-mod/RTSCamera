@@ -83,10 +83,17 @@
     <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons" text="修正投掷武器的开战指令" />
     <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons_hint" text="启用后，装备投掷武器的部队将在保持距离的同时向目标投掷武器。" />
 
+    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai" text="为AI编队应用开战指令修正" />
+    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai_hint" text="启用后，AI编队也将应用投掷武器的开战指令修正。" />
+
     <string id="RTSCameraCommandSystem_thrower_ratio_threshold" text="投掷兵比例阈值" />
     <string id="RTSCameraCommandSystem_thrower_ratio_threshold_hint" text="启用投掷武器开战指令修正所需的投掷兵在编队中的最低比例。" />
+
     <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold" text="剩余弹药比例阈值" />
-    <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold_hint" text="将编队视为拥有足够投掷武器弹药所需的最低剩余弹药比例。" />
+    <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold_hint" text="让编队保持距离所需的最低剩余弹药比例。" />
+
+    <string id="RTSCameraCommandSystem_shorten_range_based_on_remaining_ammo" text="根据剩余弹药缩短距离" />
+    <string id="RTSCameraCommandSystem_shorten_range_based_on_remaining_ammo_hint" text="剩余弹药越少，编队保持的距离越短。" />
 
     <string id="RTSCameraCommandSystem_defensive_attack" text="优先攻击敌军的{TARGET_NAME}" />
 

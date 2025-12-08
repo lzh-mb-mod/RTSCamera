@@ -81,11 +81,17 @@
   <string id="str_rts_camera_command_system_fix_advance_order_for_throwing_weapons" text="{=RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons}Fix Advance Order for Throwing Weapons" />
   <string id="str_rts_camera_command_system_fix_advance_order_for_throwing_weapons_hint" text="{=RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons_hint}When enabled, troops armed with throwing weapons will keep distance to the target and throw their weapons." />
 
-  <string id="str_rts_camera_command_system_javelin_thrower_ratio_threshold" text="{=RTSCameraCommandSystem_thrower_ratio_threshold}Thrower Ratio Threshold" />
-  <string id="str_rts_camera_command_system_javelin_thrower_ratio_threshold_hint" text="{=RTSCameraCommandSystem_thrower_ratio_threshold_hint}The minimum ratio of throwers in a formation to enable the advance order fix for throwing weapons." />
+  <string id="str_rts_camera_command_system_apply_advance_order_fix_for_ai" text="{=RTSCameraCommandSystem_apply_advance_order_fix_for_ai}Apply Advance Order Fix for AI Formations" />
+  <string id="str_rts_camera_command_system_apply_advance_order_fix_for_ai_hint" text="{=RTSCameraCommandSystem_apply_advance_order_fix_for_ai_hint}When enabled, AI formations will also apply the advance order fix for throwing weapons." />
+  
+  <string id="str_rts_camera_command_system_thrower_ratio_threshold" text="{=RTSCameraCommandSystem_thrower_ratio_threshold}Thrower Ratio Threshold" />
+  <string id="str_rts_camera_command_system_thrower_ratio_threshold_hint" text="{=RTSCameraCommandSystem_thrower_ratio_threshold_hint}The minimum ratio of throwers in a formation to enable the advance order fix for throwing weapons." />
 
   <string id="str_rts_camera_command_system_remaining_ammo_ratio_threshold" text="{=RTSCameraCommandSystem_remaining_ammo_ratio_threshold}Remaining Ammo Ratio Threshold" />
-  <string id="str_rts_camera_command_system_remaining_ammo_ratio_threshold_hint" text="{=RTSCameraCommandSystem_remaining_ammo_ratio_threshold_hint}The minimum remaining ammo ratio to consider a formation as having sufficient ammunition for throwing weapons." />
+  <string id="str_rts_camera_command_system_remaining_ammo_ratio_threshold_hint" text="{=RTSCameraCommandSystem_remaining_ammo_ratio_threshold_hint}The minimum remaining ammo ratio to make the formation keeping distance." />
+
+  <string id="str_rts_camera_command_system_shorten_range_based_on_remaining_ammo" text="{=RTSCameraCommandSystem_shorten_range_based_on_remaining_ammo}Shorten Range Based on Remaining Ammo" />
+  <string id="str_rts_camera_command_system_shorten_range_based_on_remaining_ammo_hint" text="{=RTSCameraCommandSystem_shorten_range_based_on_remaining_ammo_hint}With less remaining ammo, formation will keep less distance." />
 
   <string id="str_rts_camera_command_system_defensive_attack" text="{=RTSCameraCommandSystem_defensive_attack}focusing on enemy {TARGET_NAME}" />
 

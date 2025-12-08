@@ -215,12 +215,17 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_fix_advance_order_for_throwing_weapons_hint"),
                     () => CommandSystemConfig.Get().FixAdvaneOrderForThrowing,
                     b => CommandSystemConfig.Get().FixAdvaneOrderForThrowing = b));
+                advanceOrderOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_apply_advance_order_fix_for_ai"),
+                    GameTexts.FindText("str_rts_camera_command_system_apply_advance_order_fix_for_ai_hint"),
+                    () => CommandSystemConfig.Get().ApplyAdvanceOrderFixForAI,
+                    b => CommandSystemConfig.Get().ApplyAdvanceOrderFixForAI = b));
                 advanceOrderOptionCategory.AddOption(new NumericOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_javelin_thrower_ratio_threshold"),
-                    GameTexts.FindText("str_rts_camera_command_system_javelin_thrower_ratio_threshold_hint"),
-                    () => CommandSystemConfig.Get().JavelinThrowerRatioThreshold, f =>
+                    GameTexts.FindText("str_rts_camera_command_system_thrower_ratio_threshold"),
+                    GameTexts.FindText("str_rts_camera_command_system_thrower_ratio_threshold_hint"),
+                    () => CommandSystemConfig.Get().ThrowerRatioThreshold, f =>
                     {
-                        CommandSystemConfig.Get().JavelinThrowerRatioThreshold = f;
+                        CommandSystemConfig.Get().ThrowerRatioThreshold = f;
                     }, 0f, 1f, false, true));
                 advanceOrderOptionCategory.AddOption(new NumericOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_remaining_ammo_ratio_threshold"),
@@ -229,6 +234,11 @@ namespace RTSCamera.CommandSystem.Config
                     {
                         CommandSystemConfig.Get().RemainingAmmoRatioThreshold = f;
                     }, 0f, 1f, false, true));
+                advanceOrderOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_shorten_range_based_on_remaining_ammo"),
+                    GameTexts.FindText("str_rts_camera_command_system_shorten_range_based_on_remaining_ammo_hint"),
+                    () => CommandSystemConfig.Get().ShortenRangeBasedOnRemainingAmmo,
+                    b => CommandSystemConfig.Get().ShortenRangeBasedOnRemainingAmmo = b));
                 optionClass.AddOptionCategory(1, advanceOrderOptionCategory);
 
                 return optionClass;

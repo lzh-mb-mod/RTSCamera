@@ -114,9 +114,13 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool FixAdvaneOrderForThrowing = true;
 
-        public float JavelinThrowerRatioThreshold = 0.5f;
+        public bool ApplyAdvanceOrderFixForAI = false;
 
-        public float RemainingAmmoRatioThreshold = 0.3f;
+        public float ThrowerRatioThreshold = 0.5f;
+
+        public float RemainingAmmoRatioThreshold = 0.1f;
+
+        public bool ShortenRangeBasedOnRemainingAmmo = false;
 
         public bool IsCommandOptionVisible = true;
 
@@ -147,8 +151,10 @@ namespace RTSCamera.CommandSystem.Config
             FacingEnemyByDefault = other.FacingEnemyByDefault;
             CircleFormationUnitSpacingPreference = other.CircleFormationUnitSpacingPreference;
             FixAdvaneOrderForThrowing = other.FixAdvaneOrderForThrowing;
-            JavelinThrowerRatioThreshold = other.JavelinThrowerRatioThreshold;
+            ApplyAdvanceOrderFixForAI = other.ApplyAdvanceOrderFixForAI;
+            ThrowerRatioThreshold = other.ThrowerRatioThreshold;
             RemainingAmmoRatioThreshold = other.RemainingAmmoRatioThreshold;
+            ShortenRangeBasedOnRemainingAmmo = other.ShortenRangeBasedOnRemainingAmmo;
             IsCommandOptionVisible = other.IsCommandOptionVisible;
             IsAdvanceOrderOptionVisible = other.IsAdvanceOrderOptionVisible;
         }
