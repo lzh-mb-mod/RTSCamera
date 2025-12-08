@@ -176,6 +176,7 @@
     <string id="RTSCamera_camera_increase_camera_speed" text="提高相机速度" />
     <string id="RTSCamera_camera_decrease_camera_speed" text="降低相机速度" />
     <string id="RTSCamera_camera_reset_camera_speed" text="重置相机速度" />
+    <string id="RTSCamera_camera_move_by_mouse" text="通过鼠标移动相机" />
 
     <string id="RTSCamera_slowmotionkey_description" text="启用慢速模式。再按一次恢复。" />
     <string id="RTSCamera_fastforwardkey_description" text="切换快进模式" />
@@ -193,6 +194,7 @@
     <string id="RTSCamera_camera_increase_camera_speed_description" text="提高相机速度" />
     <string id="RTSCamera_camera_decrease_camera_speed_description" text="降低相机速度" />
     <string id="RTSCamera_camera_reset_camera_speed_description" text="重置相机速度" />
+    <string id="RTSCamera_camera_move_by_mouse_description" text="按住按键以通过鼠标移动相机" />
 
     <string id="RTSCamera_enemywipedout" text="敌人已被消灭。" />
     <string id="RTSCamera_switchtoenemyteam" text="已切换至敌军队伍。" />

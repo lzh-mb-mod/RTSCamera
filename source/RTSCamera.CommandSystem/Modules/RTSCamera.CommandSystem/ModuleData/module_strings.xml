@@ -2,7 +2,8 @@
 <strings>
   <string id="str_rts_camera_command_system_option_class" text="{=RTSCameraCommandSystem_option_class}Command System" />
 
-  <string id="str_rts_camera_command_system_command_system_options" text="{=RTSCameraCommandSystem_command_system_options}Command System" />
+  <string id="str_rts_camera_command_system_command_system_options" text="{=RTSCameraCommandSystem_command_system_options}Command System Options" />
+
   <string id="str_rts_camera_command_system_click_to_select_formation" text="{=RTSCameraCommandSystem_click_to_select_formation}Use mouse to select formation" />
   <string id="str_rts_camera_command_system_click_to_select_formation_hint" text="{=RTSCameraCommandSystem_click_to_select_formation_hint}You can directly select formation by pressing {KeyName} on them. Selected formation will be highlighted with outline." />
   <string id="str_rts_camera_command_system_attack_specific_formation" text="{=RTSCameraCommandSystem_attack_specific_formation}Enable Attack Specific Formation" />
@@ -74,6 +75,17 @@
 
   <string id="str_rts_camera_command_system_face_enemy_by_default" text="{=RTSCameraCommandSystem_face_enemy_by_default}Face Enemy By Default" />
   <string id="str_rts_camera_command_system_face_enemy_by_default_hint" text="{=RTSCameraCommandSystem_face_enemy_by_default_hint}Whether troops should face the enemy when battle starts." />
+
+  <string id="str_rts_camera_command_system_advance_order_options" text="{=RTSCameraCommandSystem_advance_order_options}Advance Order Options" />
+
+  <string id="str_rts_camera_command_system_fix_advance_order_for_throwing_weapons" text="{=RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons}Fix Advance Order for Throwing Weapons" />
+  <string id="str_rts_camera_command_system_fix_advance_order_for_throwing_weapons_hint" text="{=RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons_hint}When enabled, troops armed with throwing weapons will keep distance to the target and throw their weapons." />
+
+  <string id="str_rts_camera_command_system_javelin_thrower_ratio_threshold" text="{=RTSCameraCommandSystem_thrower_ratio_threshold}Thrower Ratio Threshold" />
+  <string id="str_rts_camera_command_system_javelin_thrower_ratio_threshold_hint" text="{=RTSCameraCommandSystem_thrower_ratio_threshold_hint}The minimum ratio of throwers in a formation to enable the advance order fix for throwing weapons." />
+
+  <string id="str_rts_camera_command_system_remaining_ammo_ratio_threshold" text="{=RTSCameraCommandSystem_remaining_ammo_ratio_threshold}Remaining Ammo Ratio Threshold" />
+  <string id="str_rts_camera_command_system_remaining_ammo_ratio_threshold_hint" text="{=RTSCameraCommandSystem_remaining_ammo_ratio_threshold_hint}The minimum remaining ammo ratio to consider a formation as having sufficient ammunition for throwing weapons." />
 
   <string id="str_rts_camera_command_system_defensive_attack" text="{=RTSCameraCommandSystem_defensive_attack}focusing on enemy {TARGET_NAME}" />
 

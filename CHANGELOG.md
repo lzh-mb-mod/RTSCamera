@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.3.8]
+### Fixed
+- Fix the issue that in ship battle, when soldier pilot ship on, current movement order is not highlighted in order UI.
+
+- Fix the issue that unit marker is still shown after being removed from formation in rare case.
+
+- Fix the issue that setting hotkey of openning menu to left mouse button or right mouse button making it impossible to open hotkey UI.
+
+### Improved
+- Improve the default formation width after changing formation arrangement.
+
+## Added
+- Apply fix to advance order for throwing formation.
+
 ## [v5.3.7] - 2025-12-06
 ### Fixed
 - Fix crash on startup when failing to loading game texts. This may happen when other mods have broken text files.

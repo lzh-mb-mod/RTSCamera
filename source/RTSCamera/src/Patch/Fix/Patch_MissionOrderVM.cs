@@ -147,6 +147,7 @@ namespace RTSCamera.Patch.Fix
                 TryCloseToggleOrder(__instance);
                 AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(__instance, displayedOrderMessageForLastOrder);
             }
+
             var orderTroopPlacer = Mission.Current.GetMissionBehavior<OrderTroopPlacer>();
             if (orderTroopPlacer != null)
             {
@@ -158,14 +159,23 @@ namespace RTSCamera.Patch.Fix
         public static void Postfix_OnTransferFinished(MissionOrderVM __instance)
         {
             // Keep orders UI open after transfer finished in free camera mode.
-            if (!__instance.IsToggleOrderShown && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
+            if (RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
             {
+                // Close and open again, to fix the issue that MissionGauntletSingleplayerOrderUIHandler.OnTransferFinished may disable it's scene layer.
+                // and cause Command System not highlighting the original formation.
+                Patch_MissionOrderVM.TryCloseToggleOrder(__instance);
                 Patch_MissionOrderVM.OpenToggleOrder(__instance, false);
             }
         }
 
         public static bool Prefix_TryCloseToggleOrder(MissionOrderVM __instance, bool applySelectedOrders, ref bool __result, MissionOrderCallbacks ____callbacks)
         {
+            // Since Bannerlord v1.3.x, there're several places that calls TryCloseToggleOrder:
+            // 1. MissionOrderTroopControllerVM.OrderController_OnTroopOrderIssued
+            // 2. GauntletOrderUIHandler.TickInput
+            // It's difficult to implement "Keep Order UI Open" in a way that open the UI after closed.
+            // So it's implemented in this way:
+            // Prevent the order UI from being closed in certain condition.
             if (__instance.IsToggleOrderShown)
             {
                 bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepOrderUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera;

@@ -560,12 +560,12 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             return (float)(GetMinimumFileCount(formation) - 1) * (formation.MinimumInterval + formation.UnitDiameter) + formation.UnitDiameter;
         }
-        public static float GetMaximumWidthOfLineFormation(Formation formation)
+        public static float GetMaximumWidthOfLineFormation(Formation formation, int unitSpacing)
         {
             float unitDiameter = formation.UnitDiameter;
             int countWithOverride = GetUnitCountWithOverride(formation);
             if (countWithOverride > 0)
-                unitDiameter += (countWithOverride - 1) * (formation.MaximumInterval + formation.UnitDiameter);
+                unitDiameter += (countWithOverride - 1) * (GetFormationInterval(formation, unitSpacing) + formation.UnitDiameter);
             return unitDiameter;
         }
 
@@ -580,7 +580,7 @@ namespace RTSCamera.CommandSystem.Utilities
 
         public static float GetMaximumWidthOfCircularFormation(Formation formation, int unitSpacing)
         {
-            return MathF.Max(0.0f, (float)GetUnitCountWithOverride(formation) * (formation.MaximumInterval + formation.UnitDiameter)) / MathF.PI;
+            return MathF.Max(0.0f, (float)GetUnitCountWithOverride(formation) * (GetFormationInterval(formation, unitSpacing) + formation.UnitDiameter)) / MathF.PI;
         }
 
         public static int GetMaximumRankCountOfCircularFormation(Formation formation, int unitCount, int unitSpacing)
@@ -857,6 +857,26 @@ namespace RTSCamera.CommandSystem.Utilities
             if (Mission.Current?.IsNavalBattle ?? false)
                 return false;
             return CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+        }
+
+        // Copied from MissionOrderTroopControllerVM.GetMaxAndCurrentAmmoOfAgent
+        public static void GetMaxAndCurrentAmmoOfAgent(Agent agent, out int currentAmmo, out int maxAmmo)
+        {
+            currentAmmo = 0;
+            maxAmmo = 0;
+            for (EquipmentIndex equipmentIndex = EquipmentIndex.WeaponItemBeginSlot; equipmentIndex < EquipmentIndex.ExtraWeaponSlot; ++equipmentIndex)
+            {
+                MissionWeapon missionWeapon = agent.Equipment[equipmentIndex];
+                if (!missionWeapon.IsEmpty)
+                {
+                    missionWeapon = agent.Equipment[equipmentIndex];
+                    if (missionWeapon.CurrentUsageItem.IsRangedWeapon)
+                    {
+                        currentAmmo = agent.Equipment.GetAmmoAmount(equipmentIndex);
+                        maxAmmo = agent.Equipment.GetMaxAmmo(equipmentIndex);
+                    }
+                }
+            }
         }
     }
 }

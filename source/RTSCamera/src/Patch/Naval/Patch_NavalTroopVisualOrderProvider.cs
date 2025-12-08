@@ -1,8 +1,10 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using System;
+using System.Linq;
 using System.Reflection;
 using TaleWorlds.Core;
+using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.VisualOrders.OrderSets;
@@ -38,9 +40,26 @@ namespace RTSCamera.Patch.Naval
 
         public static void Postfix_GetOrders(ref MBReadOnlyList<VisualOrderSet> __result)
         {
+            var newOrder = new NavalToggleShipOrderOrder("order_toggle_ai", GameTexts.FindText("str_rts_camera_ai_control_ship_on"), GameTexts.FindText("str_rts_camera_ai_control_ship_off"));
             if (Utilities.Utility.ShouldAddToggleShipOrderOrder())
             {
-                __result.Add(CreateSingleOrderSetFor(new NavalToggleShipOrderOrder("order_toggle_ai", GameTexts.FindText("str_rts_camera_ai_control_ship_on"), GameTexts.FindText("str_rts_camera_ai_control_ship_off"))));
+                if (Input.IsGamepadActive)
+                {
+                    //var orderSet = __result.Where(orderSet => orderSet.StringId == "troop_visual_orders").FirstOrDefault();
+                    //if (orderSet != null)
+                    //{
+                    //    orderSet.AddOrder(newOrder);
+                    //}
+                    var lastOrderIndex = __result.Count - 1;
+                    if (lastOrderIndex >= 0)
+                    {
+                        __result.Insert(lastOrderIndex, CreateSingleOrderSetFor(newOrder));
+                    }
+                }
+                else
+                {
+                    __result.Add(CreateSingleOrderSetFor(newOrder));
+                }
             }
         }
 

@@ -21,7 +21,7 @@ namespace RTSCamera.CommandSystem.Patch
                 Harmony.Patch(
                     typeof(MovementOrder).GetMethod("GetSubstituteOrder",
                         BindingFlags.Instance | BindingFlags.Public),
-                    prefix: new HarmonyMethod(typeof(Patch_MovementOrder).GetMethod("GetSubstituteOrder_Prefix",
+                    prefix: new HarmonyMethod(typeof(Patch_MovementOrder).GetMethod(nameof(Patch_MovementOrder.Prefix_GetSubstituteOrder),
                         BindingFlags.Static | BindingFlags.Public), Priority.First));
             }
             catch (Exception e)

@@ -1,9 +1,9 @@
 ﻿using MissionLibrary.Event;
 using MissionSharedLibrary.Utilities;
-using RTSCamera.CommandSystem.AgentComponents;
 using RTSCamera.CommandSystem.Config;
 using RTSCameraAgentComponent;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,6 +13,7 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.CommandSystem.Logic.SubLogic
 {
@@ -47,7 +48,9 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private readonly List<Formation> _enemyAsTargetFormations = new List<Formation>();
         private readonly List<Formation> _allyAsTargetFormations = new List<Formation>();
         private readonly List<Formation> _allySelectedFormations = new List<Formation>();
-        private readonly List<Formation> _temporarilyUpdatedFormations = new List<Formation>();
+        private readonly Stack<Agent> _agentsWithEmptyFormations = new Stack<Agent>();
+        private readonly List<List<bool>> _isFormationDirty = new List<List<bool>>();
+
         private OrderController PlayerOrderController => Mission.Current.PlayerTeam?.PlayerOrderController;
         private Formation _mouseOverFormation;
         private MissionGauntletSingleplayerOrderUIHandler _orderUiHandler;
@@ -99,10 +102,20 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _enemyAsTargetFormations.Clear();
             _allyAsTargetFormations.Clear();
             _allySelectedFormations.Clear();
-            _temporarilyUpdatedFormations.Clear();
+            _isFormationDirty.Clear();
+            _agentsWithEmptyFormations.Clear();
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
             Mission.Current.Teams.OnPlayerTeamChanged -= Mission_OnPlayerTeamChanged;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
+            foreach (var team in Mission.Current.Teams)
+            {
+                foreach (var formation in team.FormationsIncludingSpecialAndEmpty)
+                {
+                    formation.OnUnitAdded -= OnUnitAdded;
+                    formation.OnUnitRemoved -= OnUnitRemoved;
+                }
+            }
+
         }
 
         private void OnToggleFreeCamera(bool freeCamera)
@@ -141,27 +154,30 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                 bool noAction = _actionQueue.IsEmpty();
                 while (!_actionQueue.IsEmpty())
                     _actionQueue.Dequeue()?.Invoke();
+                
 
-                var list = _temporarilyUpdatedFormations.GroupBy(formation => formation).Select(grouping => grouping.Key).ToList();
-                var additionalFormationToUpdate = list.FirstOrDefault();
-
-                if (!noAction)
+                while (_agentsWithEmptyFormations.Count > 0)
                 {
-                    foreach (var group in _enemyAsTargetFormations.Concat(_allyAsTargetFormations)
-                             .Concat(_allySelectedFormations).GroupBy(formation => formation))
+                    var agent = _agentsWithEmptyFormations.Pop();
+                    if (agent.Formation != null && IsFormationDirty(agent.Formation))
+                        continue;
+                    UpdateAgentColor(agent);
+                }
+                var teamCount = MathF.Min(Mission.Current.Teams.Count, _isFormationDirty.Count);
+                for (var teamIndex = 0; teamIndex < teamCount; ++teamIndex)
+                {
+                    var team = Mission.Current.Teams[teamIndex];
+                    for (var formationIndex = 0; formationIndex < team.FormationsIncludingSpecialAndEmpty.Count; ++formationIndex)
                     {
-                        if (group.Key != additionalFormationToUpdate && group.Key != null)
+                        var formation = team.FormationsIncludingSpecialAndEmpty[formationIndex];
+                        if (_isFormationDirty[teamIndex][formationIndex])
                         {
-                            UpdateFormationColor(group.Key);
+                            _isFormationDirty[teamIndex][formationIndex] = false;
+                            UpdateFormationColor(team.FormationsIncludingSpecialAndEmpty[formationIndex]);
                         }
                     }
                 }
 
-                if (additionalFormationToUpdate != null)
-                {
-                    _temporarilyUpdatedFormations.RemoveAll(f => f == additionalFormationToUpdate);
-                    UpdateFormationColor(additionalFormationToUpdate);
-                }
             }
             catch (Exception e)
             {
@@ -169,20 +185,96 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             }
         }
 
+        private bool IsFormationDirty(Formation formation)
+        {
+            if (formation.Team.TeamIndex < _isFormationDirty.Count)
+                return false;
+            return _isFormationDirty[formation.Team.TeamIndex][formation.Index];
+        }
+
+        private void SetFormationDirty(Formation formation, bool isFormationDirty)
+        {
+            if (formation.Team.TeamIndex >= _isFormationDirty.Count)
+                return;
+            _isFormationDirty[formation.Team.TeamIndex][formation.Index] = isFormationDirty;
+        }
+
         public void AfterAddTeam(Team team)
         {
+            if (team.TeamIndex >= _isFormationDirty.Count)
+            {
+                for (int i = _isFormationDirty.Count; i <= team.TeamIndex; i++)
+                {
+                    var list = new List<bool>();
+                    for (int j = 0; j < team.FormationsIncludingSpecialAndEmpty.Count; j++)
+                    {
+                        list.Add(false);
+                    }
+                    _isFormationDirty.Add(list);
+                }
+            }
             team.OnOrderIssued += OnOrderIssued;
             team.OnFormationsChanged += OnFormationsChanged;
             team.PlayerOrderController.OnSelectedFormationsChanged += OrderController_OnSelectedFormationsChanged;
-            //foreach (var formation in team.FormationsIncludingSpecialAndEmpty)
-            //{
-            //    formation.OnUnitCountChanged += Formation_OnUnitCountChanged;
-            //}
+            foreach (var formation in team.FormationsIncludingSpecialAndEmpty)
+            {
+                formation.OnUnitAdded += OnUnitAdded;
+                formation.OnUnitRemoved += OnUnitRemoved;
+            }
+        }
+
+        private void OnUnitAdded(Formation formation, Agent agent)
+        {
+            SetAgentColorAccordingToFormation(agent);
+            SetFormationDirty(formation, true);
+            if (_agentsWithEmptyFormations.Count > 0 && _agentsWithEmptyFormations.Peek() == agent)
+            {
+                _agentsWithEmptyFormations.Pop();
+            }
+        }
+
+        // TODO: what if the order UI is closed in last tick, and agent is removed in this tick?
+        // Selected formations will be updated in this tick and will not refresh the removed agent.
+        // So the agent will keep the highlight until it is assigned to another formation or the formation is highlighted again.
+        // Should we handle this edge case for all removed agent?
+        private void OnUnitRemoved(Formation formation, Agent agent)
+        {
+            if (agent.State != AgentState.Active || Mission.Current.IsMissionEnding || !Mission.Current.IsDeploymentFinished)
+                return;
+            ClearAgentHighlight(agent);
+            _agentsWithEmptyFormations.Push(agent);
+        }
+
+        private bool IsFormationHighlighted(Formation formation)
+        {
+            var highlightedFormations = _enemyAsTargetFormations.Concat(_allyAsTargetFormations).Concat(_allySelectedFormations);
+            if (_mouseOverFormation != null)
+                highlightedFormations.Append(_mouseOverFormation);
+            return highlightedFormations.GroupBy(formation => formation).Select(g => g.Key).Contains(formation);
         }
 
         public void OnAgentBuild(Agent agent, Banner banner)
         {
-            if (agent.Formation != null)
+            SetAgentColorAccordingToFormation(agent);
+            if (agent.Formation != null && IsFormationHighlighted(agent.Formation))
+            {
+                UpdateAgentColor(agent);
+            }
+        }
+
+        public void OnAgentFleeing(Agent affectedAgent)
+        {
+            SetAgentColorAccordingToFormation(affectedAgent);
+            UpdateAgentColor(affectedAgent);
+        }
+
+        private void SetAgentColorAccordingToFormation(Agent agent)
+        {
+            if (agent.Formation == null)
+            {
+                ClearAgentHighlight(agent);
+            }
+            else if (agent.Formation != null)
             {
                 bool isEnemy = Utility.IsEnemy(agent.Formation);
                 if (agent.Formation == _mouseOverFormation)
@@ -200,12 +292,6 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                         SetAgentAsTargetColor(agent, false);
                 }
             }
-        }
-
-        public void OnAgentFleeing(Agent affectedAgent)
-        {
-            ClearAgentHighlight(affectedAgent);
-            UpdateAgentColor(affectedAgent);
         }
 
         public void MouseOver(Formation formation)
@@ -289,6 +375,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _mouseOverFormation = null;
 
             ClearFormationAllHighlight(formation);
+            _allySelectedFormations.Remove(formation);
             SetFocusColor();
             MouseOver(mouseOverFormation);
         }
@@ -520,7 +607,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _actionQueue.Enqueue(() =>
             {
                 formation.ApplyActionOnEachUnit(agent => SetAgentMouseOverColor(agent, isEnemy));
-                _temporarilyUpdatedFormations.Add(formation);
+                SetFormationDirty(formation, true);
             });
         }
 
@@ -533,6 +620,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _actionQueue.Enqueue(() =>
             {
                 formation.ApplyActionOnEachUnit(agent => SetAgentAsTargetColor(agent, isEnemy));
+                SetFormationDirty(formation, true);
             });
         }
 
@@ -544,6 +632,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                 _actionQueue.Enqueue(() =>
                 {
                     formation.ApplyActionOnEachUnit(agent => SetAgentSelectedColor(agent, isEnemy));
+                    SetFormationDirty(formation, true);
                 });
             }
         }
@@ -611,7 +700,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _actionQueue.Enqueue(() =>
             {
                 ClearTargetOrSelectedFormationColor(formation);
-                _temporarilyUpdatedFormations.Add(formation);
+                SetFormationDirty(formation, true);
             });
         }
 
@@ -620,7 +709,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _actionQueue.Enqueue(() =>
             {
                 formation.ApplyActionOnEachUnit(agent =>SetAgentColor(agent, (int)level, null, true, false));
-                _temporarilyUpdatedFormations.Add(formation);
+                SetFormationDirty(formation, true);
             });
         }
 
@@ -629,7 +718,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _actionQueue.Enqueue(() =>
             {
                 formation.ApplyActionOnEachUnit(ClearAgentHighlight);
-                _temporarilyUpdatedFormations.Add(formation);
+                SetFormationDirty(formation, true);
             });
         }
     }

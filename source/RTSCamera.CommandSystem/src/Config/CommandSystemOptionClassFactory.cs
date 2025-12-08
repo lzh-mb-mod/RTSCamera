@@ -44,8 +44,6 @@ namespace RTSCamera.CommandSystem.Config
                     () => CommandSystemConfig.Get().AttackSpecificFormation, b =>
                     {
                         CommandSystemConfig.Get().AttackSpecificFormation = b;
-                        if (b)
-                            PatchChargeToFormation.Patch();
                     }));
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_after_enemy_formation_eliminated"),
@@ -179,7 +177,7 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default"),
                     GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default_hint"),
                     () => CommandSystemConfig.Get().FacingEnemyByDefault,
-                    b => CommandSystemConfig.Get().FacingEnemyByDefault =  b));
+                    b => CommandSystemConfig.Get().FacingEnemyByDefault = b));
                 //commandOptionCategory.AddOption(new NumericOptionViewModel(
                 //    new TaleWorlds.Localization.TextObject("r"), null,
                 //    () => CommandQueuePreview.r, f =>
@@ -208,6 +206,30 @@ namespace RTSCamera.CommandSystem.Config
                 //        CommandQueuePreview.a = f;
                 //    }, 0, 1, false, true));
                 optionClass.AddOptionCategory(0, commandOptionCategory);
+
+
+                var advanceOrderOptionCategory = new OptionCategory("AdvanceOrder", GameTexts.FindText("str_rts_camera_command_system_advance_order_options"),
+                    () => CommandSystemConfig.Get().IsAdvanceOrderOptionVisible, (b) => CommandSystemConfig.Get().IsAdvanceOrderOptionVisible = b);
+                advanceOrderOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_fix_advance_order_for_throwing_weapons"),
+                    GameTexts.FindText("str_rts_camera_command_system_fix_advance_order_for_throwing_weapons_hint"),
+                    () => CommandSystemConfig.Get().FixAdvaneOrderForThrowing,
+                    b => CommandSystemConfig.Get().FixAdvaneOrderForThrowing = b));
+                advanceOrderOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_javelin_thrower_ratio_threshold"),
+                    GameTexts.FindText("str_rts_camera_command_system_javelin_thrower_ratio_threshold_hint"),
+                    () => CommandSystemConfig.Get().JavelinThrowerRatioThreshold, f =>
+                    {
+                        CommandSystemConfig.Get().JavelinThrowerRatioThreshold = f;
+                    }, 0f, 1f, false, true));
+                advanceOrderOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_remaining_ammo_ratio_threshold"),
+                    GameTexts.FindText("str_rts_camera_command_system_remaining_ammo_ratio_threshold_hint"),
+                    () => CommandSystemConfig.Get().RemainingAmmoRatioThreshold, f =>
+                    {
+                        CommandSystemConfig.Get().RemainingAmmoRatioThreshold = f;
+                    }, 0f, 1f, false, true));
+                optionClass.AddOptionCategory(1, advanceOrderOptionCategory);
 
                 return optionClass;
             }, CommandSystemSubModule.ModuleId, new Version(1, 0, 0));

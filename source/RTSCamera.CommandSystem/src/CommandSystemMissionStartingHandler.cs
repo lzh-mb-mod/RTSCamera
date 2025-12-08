@@ -26,14 +26,9 @@ namespace RTSCamera.CommandSystem
                 MissionStartingManager.AddMissionBehavior(entranceView, MissionBehavior);
             }
         }
-
         public override void OnPreMissionTick(MissionView entranceView, float dt)
         {
-            var config = CommandSystemConfig.Get();
-            if (config.AttackSpecificFormation)
-            {
-                PatchChargeToFormation.Patch();
-            }
+            PatchChargeToFormation.Patch();
         }
     }
 }

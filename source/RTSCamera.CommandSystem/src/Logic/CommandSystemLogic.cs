@@ -16,6 +16,7 @@ namespace RTSCamera.CommandSystem.Logic
         public readonly FormationColorSubLogicV2 OutlineColorSubLogic;
         public readonly FormationColorSubLogicV2 GroundMarkerColorSubLogic;
 
+
         public CommandSystemLogic()
         {
             OutlineColorSubLogic = new FormationColorSubLogicV2(

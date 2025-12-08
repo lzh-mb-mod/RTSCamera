@@ -179,6 +179,7 @@
   <string id="str_key_name.RTSCameraHotKey_IncreaseCameraSpeed" text="{=RTSCamera_camera_increase_camera_speed}Increase Camera speed" />
   <string id="str_key_name.RTSCameraHotKey_DecreaseCameraSpeed" text="{=RTSCamera_camera_decrease_camera_speed}Decrease Camera speed" />
   <string id="str_key_name.RTSCameraHotKey_ResetCameraSpeed" text="{=RTSCamera_camera_reset_camera_speed}Reset Camera speed" />
+  <string id="str_key_name.RTSCameraHotKey_CameraMoveByMouse" text="{=RTSCamera_camera_move_by_mouse}Move Camera By Mouse." />
 
 
   <!-- same as str_rts_camera_toggle_pause_hint -->
@@ -205,6 +206,7 @@
   <string id="str_key_description.RTSCameraHotKey_IncreaseCameraSpeed" text="{=RTSCamera_camera_increase_camera_speed_description}Increase Camera speed" />
   <string id="str_key_description.RTSCameraHotKey_DecreaseCameraSpeed" text="{=RTSCamera_camera_decrease_camera_speed_description}Decrease Camera speed" />
   <string id="str_key_description.RTSCameraHotKey_ResetCameraSpeed" text="{=RTSCamera_camera_reset_camera_speed_description}Reset Camera speed" />
+  <string id="str_key_description.RTSCameraHotKey_CameraMoveByMouse" text="{=RTSCamera_camera_move_by_mouse_description}Hold to Move Camera By Mouse." />
 
   <string id="str_rts_camera_enemy_wiped_out" text="{=RTSCamera_enemywipedout}Enemy has been wiped out." />
   <string id="str_rts_camera_switch_to_enemy_team" text="{=RTSCamera_switchtoenemyteam}Switched to the enemy team." />

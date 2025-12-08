@@ -112,7 +112,15 @@ namespace RTSCamera.CommandSystem.Config
 
         public CircleFormationUnitSpacingPreference CircleFormationUnitSpacingPreference = CircleFormationUnitSpacingPreference.Tight;
 
+        public bool FixAdvaneOrderForThrowing = true;
+
+        public float JavelinThrowerRatioThreshold = 0.5f;
+
+        public float RemainingAmmoRatioThreshold = 0.3f;
+
         public bool IsCommandOptionVisible = true;
+
+        public bool IsAdvanceOrderOptionVisible = true;
 
         protected override void CopyFrom(CommandSystemConfig other)
         {
@@ -138,7 +146,11 @@ namespace RTSCamera.CommandSystem.Config
             OrderUIClickableExtension = other.OrderUIClickableExtension;
             FacingEnemyByDefault = other.FacingEnemyByDefault;
             CircleFormationUnitSpacingPreference = other.CircleFormationUnitSpacingPreference;
-            IsCommandOptionVisible = IsCommandOptionVisible;
+            FixAdvaneOrderForThrowing = other.FixAdvaneOrderForThrowing;
+            JavelinThrowerRatioThreshold = other.JavelinThrowerRatioThreshold;
+            RemainingAmmoRatioThreshold = other.RemainingAmmoRatioThreshold;
+            IsCommandOptionVisible = other.IsCommandOptionVisible;
+            IsAdvanceOrderOptionVisible = other.IsAdvanceOrderOptionVisible;
         }
 
         public static void OnMenuClosed()

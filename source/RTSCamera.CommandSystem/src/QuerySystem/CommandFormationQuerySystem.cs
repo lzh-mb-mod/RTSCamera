@@ -18,6 +18,10 @@ namespace RTSCamera.CommandSystem.QuerySystem
         private readonly QueryData<Vec2> _virtualWeightedAverageFacingTargetEnemyPosition;
         private readonly QueryData<bool> _areAgentsNearTargetPositions;
         private readonly QueryData<bool> _coolDownToEvaluateAgentsDistanceToTarget;
+        private readonly QueryData<float> _averageMissileRangeAdjusted;
+        private readonly QueryData<float> _ratioOfAgentsHavingAmmo;
+        private readonly QueryData<float> _ratioOfRemainingAmmoQuery;
+        private float _ratioOfRemainingAmmo = 0;
 
         public Formation ClosestEnemyFormation
         {
@@ -41,6 +45,12 @@ namespace RTSCamera.CommandSystem.QuerySystem
         public bool AreAgentsNearTargetPositions => _areAgentsNearTargetPositions.Value;
 
         public bool CoolDownToEvaluateAgentsDistanceToTarget => _coolDownToEvaluateAgentsDistanceToTarget.Value;
+
+        public float AverageMissileRangeAdjusted => _averageMissileRangeAdjusted.Value;
+
+        public float RatioOfAgentsHavingAmmo => _ratioOfAgentsHavingAmmo.Value;
+
+        public float RatioOfRemainingAmmo => _ratioOfRemainingAmmoQuery.Value;
 
         public bool HasCurrentMovementOrderCompleted
         {
@@ -152,7 +162,50 @@ namespace RTSCamera.CommandSystem.QuerySystem
                 return true;
             }, 0.5f);
             _coolDownToEvaluateAgentsDistanceToTarget = new QueryData<bool>(() => false, 0.31f + MBRandom.RandomFloat * 0.1f);
+            _averageMissileRangeAdjusted = new QueryData<float>(() =>
+            {
+                if (formation.CountOfUnits == 0)
+                    return 0f;
+                float sum = 0f;
+                int count = 0;
+                formation.ApplyActionOnEachUnit(agent =>
+                {
+                    if (agent.MissileRangeAdjusted > 0)
+                    {
+                        sum += agent.MissileRangeAdjusted;
+                        count++;
+                    }
+                });
+                if (count == 0)
+                    return 0f;
+                return sum / (float)count;
+            }, 5f);
+            _ratioOfAgentsHavingAmmo = new QueryData<float>(() =>
+            {
+                if (formation.CountOfUnits == 0)
+                    return 0f;
+                int countHavingAmmo = 0;
+                int totalCurrentAmmo = 0;
+                int totalMaxAmmo = 0;
+                formation.ApplyActionOnEachUnit(agent =>
+                {
+                    Utilities.Utility.GetMaxAndCurrentAmmoOfAgent(agent, out var currentAmmo, out var maxAmmo);
+                    totalCurrentAmmo += currentAmmo;
+                    totalMaxAmmo += maxAmmo;
+                    if (maxAmmo > 0 && currentAmmo > 0)
+                    {
+                        countHavingAmmo++;
+                    }
+                });
+                _ratioOfRemainingAmmo = totalCurrentAmmo / (float)totalMaxAmmo;
+                return (float)countHavingAmmo / (float)formation.CountOfUnits;
+            }, 5f);
+            _ratioOfRemainingAmmoQuery = new QueryData<float>(() => _ratioOfRemainingAmmo, 5f);
+            _ratioOfRemainingAmmoQuery.SetSyncGroup(new IQueryData[] { _ratioOfAgentsHavingAmmo });
         }
+
+
+
         public void ExpireAllQueries()
         {
             _closestEnemyFormation?.Expire();
@@ -161,7 +214,11 @@ namespace RTSCamera.CommandSystem.QuerySystem
             _weightedAverageFacingTargetEnemyPosition?.Expire();
             _areAgentsNearTargetPositions.Expire();
             _coolDownToEvaluateAgentsDistanceToTarget.SetValue(true, Mission.Current.CurrentTime);
+            _averageMissileRangeAdjusted.Expire();
+            _ratioOfAgentsHavingAmmo.Expire();
+            _ratioOfRemainingAmmoQuery.Expire();
             NeedToUpdateTargetPositionDistance = true;
+            _ratioOfRemainingAmmo = 0;
         }
 
         private static Vec2 WeightedAverageFormationPosition(Formation targetFormation, Vec2 basePoint)

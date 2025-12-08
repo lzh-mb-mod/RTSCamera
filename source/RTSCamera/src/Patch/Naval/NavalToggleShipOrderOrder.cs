@@ -2,7 +2,9 @@
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Logic;
+using RTSCamera.Logic.SubLogic;
 using RTSCamera.Patch.Fix;
+using TaleWorlds.InputSystem;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
@@ -71,7 +73,8 @@ namespace RTSCamera.Patch.Naval
                     orderController.SetOrder(OrderType.AIControlOn);
                 }
             }
-            RTSCameraLogic.Instance.SwitchFreeCameraLogic.RefreshOrders();
+            if (!Input.IsGamepadActive && !(RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? false))
+                RTSCameraLogic.Instance?.SwitchFreeCameraLogic.RefreshOrders();
         }
 
         protected override string GetIconId()

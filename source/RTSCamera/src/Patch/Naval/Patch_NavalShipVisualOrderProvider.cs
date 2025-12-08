@@ -6,7 +6,6 @@ using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
-using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.VisualOrders.OrderSets;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
 
@@ -45,14 +44,19 @@ namespace RTSCamera.Patch.Naval
             {
                 if (Input.IsGamepadActive)
                 {
-                    var movementOrderSet = __result.Where(orderSet => orderSet.StringId == "order_type_movement").FirstOrDefault();
-                    if (movementOrderSet != null)
+                    //var movementOrderSet = __result.Where(orderSet => orderSet.StringId == "order_type_movement").FirstOrDefault();
+                    //if (movementOrderSet != null)
+                    //{
+                    //    var stopOrderIndex = movementOrderSet.Orders.FindIndex(order => order.StringId == "order_movement_stop");
+                    //    if (stopOrderIndex != -1)
+                    //    {
+                    //        movementOrderSet.Orders[stopOrderIndex] = newOrder;
+                    //    }
+                    //}
+                    var lastOrderIndex = __result.Count - 1;
+                    if (lastOrderIndex >= 0)
                     {
-                        var stopOrderIndex = movementOrderSet.Orders.FindIndex(order => order.StringId == "order_movement_stop");
-                        if (stopOrderIndex != -1)
-                        {
-                            movementOrderSet.Orders[stopOrderIndex] = newOrder;
-                        }
+                        __result.Insert(lastOrderIndex, CreateSingleOrderSetFor(newOrder));
                     }
                 }
                 else
@@ -60,7 +64,7 @@ namespace RTSCamera.Patch.Naval
                     var stopOrderIndex = __result.FindIndex(orderSet => orderSet.StringId == "order_movement_stop");
                     if (stopOrderIndex != -1)
                     {
-                        __result[stopOrderIndex] = CreateSingleOrderSetFor(newOrder );
+                        __result[stopOrderIndex] = CreateSingleOrderSetFor(newOrder);
 
                     }
                 }

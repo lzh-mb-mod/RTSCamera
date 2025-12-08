@@ -2791,16 +2791,17 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static float GetFormationMaximumWidthOfArrangementOrder(Formation formation, ArrangementOrder.ArrangementOrderEnum arrangementOrder)
         {
+            var unitSpacing = ArrangementOrder.GetUnitSpacingOf(arrangementOrder);
             switch (arrangementOrder)
             {
                 case ArrangementOrder.ArrangementOrderEnum.Square:
                     return Utilities.Utility.GetMaximumWidthOfSquareFormation(formation);
                 case ArrangementOrder.ArrangementOrderEnum.Circle:
-                    return Utilities.Utility.GetMaximumWidthOfCircularFormation(formation, GetFormationVirtualUnitSpacing(formation) ?? formation.UnitSpacing);
+                    return Utilities.Utility.GetMaximumWidthOfCircularFormation(formation, unitSpacing);
                 case ArrangementOrder.ArrangementOrderEnum.Column:
-                    return Utilities.Utility.GetMaximumWidthOfColumnFormation(formation, GetFormationVirtualUnitSpacing(formation) ?? formation.UnitSpacing);
+                    return Utilities.Utility.GetMaximumWidthOfColumnFormation(formation, unitSpacing);
                 default:
-                    return Utilities.Utility.GetMaximumWidthOfLineFormation(formation);
+                    return Utilities.Utility.GetMaximumWidthOfLineFormation(formation, unitSpacing);
             }
         }
 

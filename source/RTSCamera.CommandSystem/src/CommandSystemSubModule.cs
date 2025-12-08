@@ -127,6 +127,8 @@ namespace RTSCamera.CommandSystem
 
             // solid circle formation
             _successPatch &= Patch_CircularFormation.Patch(_harmony);
+
+            _successPatch &= Patch_MovementOrder.Patch(_harmony);
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Command: patch failed"));

@@ -176,6 +176,7 @@
     <string id="RTSCamera_camera_increase_camera_speed" text="Increase Camera speed" />
     <string id="RTSCamera_camera_decrease_camera_speed" text="Decrease Camera speed" />
     <string id="RTSCamera_camera_reset_camera_speed" text="Reset Camera speed" />
+    <string id="RTSCamera_camera_move_by_mouse" text="Move Camera By Mouse." />
 
     <string id="RTSCamera_slowmotionkey_description" text="Enable slow motion mode. Press again to recover." />
     <string id="RTSCamera_fastforwardkey_description" text="Toggle Fast Forward" />
@@ -193,6 +194,7 @@
     <string id="RTSCamera_camera_increase_camera_speed_description" text="Increase Camera speed" />
     <string id="RTSCamera_camera_decrease_camera_speed_description" text="Decrease Camera speed" />
     <string id="RTSCamera_camera_reset_camera_speed_description" text="Reset Camera speed" />
+    <string id="RTSCamera_camera_move_by_mouse_description" text="Hold to Move Camera By Mouse." />
 
     <string id="RTSCamera_enemywipedout" text="Enemy has been wiped out." />
     <string id="RTSCamera_switchtoenemyteam" text="Switched to the enemy team." />

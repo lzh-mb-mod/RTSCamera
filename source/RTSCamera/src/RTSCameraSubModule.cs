@@ -22,7 +22,6 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
-using TaleWorlds.Localization;
 using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 using Module = TaleWorlds.MountAndBlade.Module;
@@ -126,6 +125,7 @@ namespace RTSCamera
                     _successPatch &= Patch_ShipOrder.Patch(_harmony);
                     _successPatch &= Patch_ShipControllerMachine.Patch(_harmony);
                     _successPatch &= Patch_AgentNavalComponent.Patch(_harmony);
+                    _successPatch &= Patch_NavalMovementOrder.Patch(_harmony);
                 }
 
                 // Use Patch to add game menu
