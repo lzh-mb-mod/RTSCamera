@@ -36,7 +36,6 @@ namespace RTSCamera.Usage
                         RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop ).ToSequenceString()),
                     GameTexts.FindText("str_rts_camera_control_troop_usage").SetTextVariable("KeyName",
                         RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop ).ToSequenceString()),
-                    GameTexts.FindText("str_rts_camera_click_troop_card_usage"),
                 });
 
             return new UsageCategory(CategoryId, usageCategoryData);

@@ -358,6 +358,12 @@ namespace RTSCamera.Logic.SubLogic
                 _switchToFreeCameraNextTick = false;
                 SwitchToFreeCamera();
             }
+            if (_tryToPilotShipNextTick)
+            {
+                TryToContinuePilotShip(_shipControllerToPilot);
+                _tryToPilotShipNextTick = false;
+                _shipControllerToPilot = null;
+            }
             else if (_switchToAgentNextTick)
             {
                 _tryToPilotShipNextTick = false;
@@ -373,12 +379,6 @@ namespace RTSCamera.Logic.SubLogic
                 Patch_MissionOrderVM.OpenToggleOrder(Utility.GetMissionOrderVM(Mission), false, false);
             }
 
-            if (_tryToPilotShipNextTick)
-            {
-                TryToContinuePilotShip(_shipControllerToPilot);
-                _tryToPilotShipNextTick = false;
-                _shipControllerToPilot = null;
-            }
             if (_shouldIgnoreNextOrderViewOpenEvent)
             {
                 _shouldIgnoreNextOrderViewOpenEvent = false;

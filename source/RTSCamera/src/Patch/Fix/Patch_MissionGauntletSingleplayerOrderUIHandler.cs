@@ -256,6 +256,7 @@ namespace RTSCamera.Patch.Fix
             UpdateDragData(__instance, ____dataSource, ____orderTroopPlacer);
             UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer, ref ____isTransferEnabled);
             UpdateOrderUIVisibility(__instance, ____dataSource, ____gauntletLayer);
+            Patch_MissionOrderVM.TickAllowClosingOrderUI();
             //return true;
         }
 

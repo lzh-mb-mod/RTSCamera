@@ -30,6 +30,9 @@
     <string id="RTSCameraCommandSystem_troop_highlight_rts_mode" text="部队高亮样式（RTS模式）" />
     <string id="RTSCameraCommandSystem_troop_highlight_rts_mode_hint" text="RTS模式下的部队高亮样式。" />
 
+    <string id="RTSCameraCommandSystem_highlight_troops_when_showing_indicators" text="显示指引标记时高亮部队" />
+    <string id="RTSCameraCommandSystem_highlight_troops_when_showing_indicators_hint" text="启用后，显示编队指示器时部队将被高亮显示。" />
+
     <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode" text="移动目标样式（角色模式）" />
     <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode_hint" text="角色模式下的移动目标样式。" />
     <string id="RTSCameraCommandSystem_highlight_style_original" text="原始" />

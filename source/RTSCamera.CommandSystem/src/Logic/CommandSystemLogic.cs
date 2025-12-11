@@ -7,6 +7,7 @@ using RTSCamera.CommandSystem.QuerySystem;
 using RTSCameraAgentComponent;
 using System.Collections.Generic;
 using TaleWorlds.Core;
+using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Logic
@@ -16,7 +17,7 @@ namespace RTSCamera.CommandSystem.Logic
         private CommandSystemConfig _config = CommandSystemConfig.Get();
         public readonly FormationColorSubLogicV2 OutlineColorSubLogic;
         public readonly FormationColorSubLogicV2 GroundMarkerColorSubLogic;
-
+        private bool _isShowIndicatorsDown = false;
 
         public CommandSystemLogic()
         {
@@ -160,6 +161,27 @@ namespace RTSCamera.CommandSystem.Logic
 
             OutlineColorSubLogic.OnPreDisplayMissionTick(dt);
             GroundMarkerColorSubLogic.OnPreDisplayMissionTick(dt);
+
+            var combatHotKeyCategory = HotKeyManager.GetCategory("CombatHotKeyCategory");
+            combatHotKeyCategory?.GetGameKey(GenericGameKeyContext.ShowIndicators);
+            if (Mission.InputManager.IsGameKeyDown(GenericGameKeyContext.ShowIndicators))
+            {
+                if (!_isShowIndicatorsDown)
+                {
+                    _isShowIndicatorsDown = true;
+                    OutlineColorSubLogic.OnShowIndicatorKeyDownUpdate(_isShowIndicatorsDown);
+                    GroundMarkerColorSubLogic.OnShowIndicatorKeyDownUpdate(_isShowIndicatorsDown);
+                }
+            }
+            else
+            {
+                if (_isShowIndicatorsDown)
+                {
+                    _isShowIndicatorsDown = false;
+                    OutlineColorSubLogic.OnShowIndicatorKeyDownUpdate(_isShowIndicatorsDown);
+                    GroundMarkerColorSubLogic.OnShowIndicatorKeyDownUpdate(_isShowIndicatorsDown);
+                }
+            }
         }
 
         public override void OnDeploymentFinished()

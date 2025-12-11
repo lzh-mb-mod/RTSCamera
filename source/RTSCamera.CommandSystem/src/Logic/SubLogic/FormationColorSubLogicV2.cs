@@ -56,11 +56,15 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private MissionGauntletSingleplayerOrderUIHandler _orderUiHandler;
         private readonly CommandSystemConfig _config = CommandSystemConfig.Get();
 
+        private bool _isShowIndicatorDown;
+
         private bool _isOrderShown;
         private bool _isFreeCamera;
         //private bool HighlightEnabled => (_config.SelectedFormationHighlightMode >= ShowMode.FreeCameraOnly || _config.TargetFormationHighlightMode >= ShowMode.FreeCameraOnly) && _isOrderShown && _config.ShouldHighlightWithOutline();
         private bool HighlightEnabledForSelectedFormation => _isOrderShown && (!_isFreeCamera && HighlightEnabledInCharacterMode() || (_isFreeCamera && HighlightEnabledInRtsMode()));
         private bool HighlightEnabledForTargetFormation => _isOrderShown && (!_isFreeCamera && HighlightEnabledInCharacterMode() || (_isFreeCamera && HighlightEnabledInRtsMode()));
+
+        private bool ShouldForceHightlightFormation => _isShowIndicatorDown && (!_isFreeCamera && HighlightEnabledInCharacterMode() && _config.HighlightTroopsWhenShowingIndicators == ShowMode.Always || (_isFreeCamera && HighlightEnabledInRtsMode() && _config.HighlightTroopsWhenShowingIndicators >= ShowMode.FreeCameraOnly));
 
         private bool ShouldHighlightFormation => _isOrderShown && (!_isFreeCamera && HighlightEnabledInCharacterMode() || (_isFreeCamera && HighlightEnabledInRtsMode()));
         private bool ShouldMouseOverFormation => _isOrderShown && MouseOverEnabled();
@@ -118,10 +122,51 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         }
 
+        public void OnShowIndicatorKeyDownUpdate(bool isShowIndicatorDown)
+        {
+            _isShowIndicatorDown = isShowIndicatorDown;
+            if (ShouldForceHightlightFormation)
+            {
+                HighlightAllFormations();
+            }
+            else
+            {
+                if (ShouldHighlightFormation)
+                {
+                    SetFocusColor();
+                }
+                else
+                {
+                    ClearAllySelectedColor();
+                    ClearEnemyFocusColor();
+                    ClearAllyAsTargetColor();
+                }
+            }
+        }
+
+        private void HighlightAllFormations()
+        {
+            foreach (var team in Mission.Current.Teams)
+            {
+                foreach (var formation in team.FormationsIncludingSpecialAndEmpty)
+                {
+                    bool isEnemy = Utility.IsEnemy(formation);
+                    if (isEnemy)
+                    {
+                        SetFormationAsTargetColor(formation, isEnemy);
+                    }
+                    else
+                    {
+                        SetFormationSelectedColor(formation, isEnemy);
+                    }
+                }
+            }
+        }
+
         private void OnToggleFreeCamera(bool freeCamera)
         {
             _isFreeCamera = freeCamera;
-            if (_isOrderShown)
+            if (_isOrderShown && !ShouldForceHightlightFormation)
             {
                 bool shouldHighlight = _isFreeCamera && HighlightEnabledInRtsMode() || !_isFreeCamera && HighlightEnabledInCharacterMode();
                 if (shouldHighlight)
@@ -250,7 +295,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             var highlightedFormations = _enemyAsTargetFormations.Concat(_allyAsTargetFormations).Concat(_allySelectedFormations);
             if (_mouseOverFormation != null)
                 highlightedFormations.Append(_mouseOverFormation);
-            return highlightedFormations.GroupBy(formation => formation).Select(g => g.Key).Contains(formation);
+            return highlightedFormations.GroupBy(formation => formation).Select(g => g.Key).Contains(formation) || ShouldForceHightlightFormation;
         }
 
         public void OnAgentBuild(Agent agent, Banner banner)
@@ -281,12 +326,12 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                     SetAgentMouseOverColor(agent, isEnemy);
                 if (isEnemy)
                 {
-                    if (_enemyAsTargetFormations.Contains(agent.Formation))
+                    if (_enemyAsTargetFormations.Contains(agent.Formation) || ShouldForceHightlightFormation)
                         SetAgentAsTargetColor(agent, true);
                 }
                 else
                 {
-                    if (_allySelectedFormations.Contains(agent.Formation))
+                    if (_allySelectedFormations.Contains(agent.Formation) || ShouldForceHightlightFormation)
                         SetAgentSelectedColor(agent, false);
                     if (_allyAsTargetFormations.Contains(agent.Formation))
                         SetAgentAsTargetColor(agent, false);
@@ -311,7 +356,6 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         public void SetEnableColorForSelectedFormation(bool enable)
         {
-            _config.ClickToSelectFormation = enable;
             if (ShouldHighlightFormation)
             {
                 SetFocusColor();
@@ -325,6 +369,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private void OnToggleOrderViewEvent(MissionPlayerToggledOrderViewEvent e)
         {
             _isOrderShown = e.IsOrderEnabled;
+            if (ShouldForceHightlightFormation)
+                return;
             if (ShouldHighlightFormation)
             {
                 SetFocusColor();
@@ -337,7 +383,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         public void OnMovementOrderChanged(Formation formation)
         {
-            if (!HighlightEnabledForTargetFormation)
+            if (!HighlightEnabledForTargetFormation && !ShouldForceHightlightFormation)
             {
                 return;
             }
@@ -351,7 +397,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         public void OnMovementOrderChanged(IEnumerable<Formation> appliedFormations)
         {
-            if (!HighlightEnabledForTargetFormation)
+            if (!HighlightEnabledForTargetFormation && !ShouldForceHightlightFormation)
                 return;
             if (!_allySelectedFormations.Intersect(appliedFormations).IsEmpty())
             {
@@ -369,8 +415,14 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         private void OnFormationsChanged(Team team, Formation formation)
         {
-            if (!ShouldHighlightFormation)
+            if (!ShouldHighlightFormation && !ShouldForceHightlightFormation)
                 return;
+
+            if (ShouldForceHightlightFormation)
+            {
+                HighlightAllFormations();
+                return;
+            }
             var mouseOverFormation = _mouseOverFormation;
             _mouseOverFormation = null;
 
@@ -394,7 +446,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         private void OrderController_OnSelectedFormationsChanged()
         {
-            if (!ShouldHighlightFormation)
+            if (!ShouldHighlightFormation || ShouldForceHightlightFormation)
                 return;
             SetFocusColor();
             if (_orderUiHandler == null)
@@ -409,8 +461,9 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         private void Mission_OnPlayerTeamChanged(Team arg1, Team arg2)
         {
-            if (!ShouldHighlightFormation)
+            if (!ShouldHighlightFormation && !ShouldForceHightlightFormation)
                 return;
+            _isShowIndicatorDown = false;
             UpdateColor();
         }
 

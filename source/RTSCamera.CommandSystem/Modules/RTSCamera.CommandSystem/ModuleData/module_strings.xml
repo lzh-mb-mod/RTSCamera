@@ -23,6 +23,12 @@
   <string id="str_rts_camera_command_system_troop_highlight_rts_mode" text="{=RTSCameraCommandSystem_troop_highlight_rts_mode}Troop Highlight (RTS Mode)" />
   <string id="str_rts_camera_command_system_troop_highlight_rts_mode_hint" text="{=RTSCameraCommandSystem_troop_highlight_rts_mode_hint}Troop highlight style in RTS mode." />
 
+  <string id="str_rts_camera_command_system_highlight_troops_when_showing_indicators" text="{=RTSCameraCommandSystem_highlight_troops_when_showing_indicators}Highlight Troops When Showing Indicators" />
+  <string id="str_rts_camera_command_system_highlight_troops_when_showing_indicators_hint" text="{=RTSCameraCommandSystem_highlight_troops_when_showing_indicators_hint}When enabled, troops will be highlighted when showing formation indicators." />
+  <string id="str_rts_camera_command_system_highlight_troops_when_showing_indicators_option.Never" text="{=RTSCameraCommandSystem_highlight_mode_never}Never" />
+  <string id="str_rts_camera_command_system_highlight_troops_when_showing_indicators_option.FreeCameraOnly" text="{=RTSCameraCommandSystem_highlight_mode_free_camera_only}Free Camera Only" />
+  <string id="str_rts_camera_command_system_highlight_troops_when_showing_indicators_option.Always" text="{=RTSCameraCommandSystem_highlight_mode_always}Always" />
+
   <string id="str_rts_camera_command_system_movement_target_highlight_character_mode" text="{=RTSCameraCommandSystem_movement_target_highlight_character_mode}Movement Target Style (Character Mode)" />
   <string id="str_rts_camera_command_system_movement_target_highlight_character_mode_hint" text="{=RTSCameraCommandSystem_movement_target_highlight_character_mode_hint}Movement target style in character mode." />
   <string id="str_rts_camera_command_system_movement_target_highlight_style_option.Original" text="{=RTSCameraCommandSystem_highlight_style_original}Original" />

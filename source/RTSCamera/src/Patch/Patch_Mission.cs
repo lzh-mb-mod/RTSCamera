@@ -4,6 +4,7 @@ using RTSCamera.Config;
 using RTSCamera.Logic;
 using System;
 using System.Reflection;
+using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
@@ -58,7 +59,7 @@ namespace RTSCamera.Patch
         }
         public static bool Prefix_UpdateSceneTimeSpeed(Mission __instance)
         {
-            if (RTSCameraConfig.Get().SlowMotionMode && __instance.IsDeploymentFinished && !__instance.IsFastForward)
+            if (RTSCameraConfig.Get().SlowMotionMode && __instance.Mode != MissionMode.Deployment && !__instance.IsFastForward)
             {
                 __instance.Scene.TimeSpeed = RTSCameraConfig.Get().SlowMotionFactor;
                 return false;

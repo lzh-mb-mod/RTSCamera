@@ -173,8 +173,9 @@ namespace RTSCamera.Patch.Fix
             // 1. MissionOrderTroopControllerVM.OrderController_OnTroopOrderIssued
             // 2. GauntletOrderUIHandler.TickInput
             // It's difficult to implement "Keep Order UI Open" by opening the UI after being closed.
+            // and there's performance issue.
             // So it's implemented in this way:
-            // Prevent the order UI from being closed in certain condition.
+            // Prevent the order UI from being closed in certain condition, and only close once when needed.
             if (__instance.IsToggleOrderShown)
             {
                 bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepOrderUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera;
@@ -205,13 +206,19 @@ namespace RTSCamera.Patch.Fix
 
         public static bool TryCloseToggleOrder(MissionOrderVM __instance, bool applySelectedOrders = false)
         {
-            Patch_MissionOrderVM.AllowClosingOrderUI = true;
             return __instance?.TryCloseToggleOrder(applySelectedOrders) ?? false;
         }
 
         public static void OpenToggleOrder(MissionOrderVM __instance, bool fromHold, bool displayMessage = true)
         {
             __instance?.OpenToggleOrder(fromHold, displayMessage);
+        }
+
+
+        // Called every tick so that the order UI can be closed only once per tick.
+        public static void TickAllowClosingOrderUI()
+        {
+            Patch_MissionOrderVM.AllowClosingOrderUI = true;
         }
     }
 }

@@ -1,10 +1,21 @@
 # Changelog
 
+## [v5.3.10] - 2025-12-11
+### Added
+- Troops in formations are highlighted when pressing alt.
+
+### Fixed
+- Fix time speed option.
+
+- Fix the issue that background of game option becomes transparent after binding hotkey in the mod.
+
+- Fix performance issue when giving orders.
+
 ## [v5.3.9] - 2025-12-11
 ### Fixed
-- Fix startup crash on Linux system.
+- Fix startup crash on some environment.
 
-- Fix crash in Naval battle on Linux System.
+- Fix crash in Naval battle on some environment.
 
 - Fix performance issue when giving orders.
 

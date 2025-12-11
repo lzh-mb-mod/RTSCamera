@@ -77,6 +77,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public TroopHighlightStyle TroopHighlightStyleInRTSMode = TroopHighlightStyle.GroundMarker;
 
+        public ShowMode HighlightTroopsWhenShowingIndicators = ShowMode.Always;
+
         public MovementTargetHighlightStyle MovementTargetHighlightStyleInCharacterMode = MovementTargetHighlightStyle.NewModelOnly;
 
         public MovementTargetHighlightStyle MovementTargetHighlightStyleInRTSMode = MovementTargetHighlightStyle.AlwaysVisible;

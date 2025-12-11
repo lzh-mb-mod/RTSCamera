@@ -75,6 +75,16 @@ namespace RTSCamera.CommandSystem.Config
                             new SelectionItem(true, "str_rts_camera_command_system_troop_highlight_option", nameof(TroopHighlightStyle.GroundMarker))
                         }), false));
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_troops_when_showing_indicators"),
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_troops_when_showing_indicators_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().HighlightTroopsWhenShowingIndicators = (ShowMode)i,
+                    () => (int)CommandSystemConfig.Get().HighlightTroopsWhenShowingIndicators, () => (int)ShowMode.Count, () => new List<SelectionItem>
+                    {
+                        new SelectionItem(true, "str_rts_camera_command_system_highlight_troops_when_showing_indicators_option", nameof(ShowMode.Never)),
+                        new SelectionItem(true, "str_rts_camera_command_system_highlight_troops_when_showing_indicators_option", nameof(ShowMode.FreeCameraOnly)),
+                        new SelectionItem(true, "str_rts_camera_command_system_highlight_troops_when_showing_indicators_option", nameof(ShowMode.Always))
+                    }), false));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_character_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_character_mode_hint"),
                     new SelectionOptionData(i => CommandSystemConfig.Get().MovementTargetHighlightStyleInCharacterMode = (MovementTargetHighlightStyle)i,

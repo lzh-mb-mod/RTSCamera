@@ -28,6 +28,9 @@
     <string id="RTSCameraCommandSystem_troop_highlight_rts_mode" text="Troop Highlight (RTS Mode)" />
     <string id="RTSCameraCommandSystem_troop_highlight_rts_mode_hint" text="Troop highlight style in RTS mode." />
 
+    <string id="RTSCameraCommandSystem_highlight_troops_when_showing_indicators" text="Highlight Troops When Showing Indicators" />
+    <string id="RTSCameraCommandSystem_highlight_troops_when_showing_indicators_hint" text="When enabled, troops will be highlighted when showing formation indicators." />
+
     <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode" text="Movement Target Style (Character Mode)" />
     <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode_hint" text="Movement target style in character mode." />
     <string id="RTSCameraCommandSystem_highlight_style_original" text="Original" />

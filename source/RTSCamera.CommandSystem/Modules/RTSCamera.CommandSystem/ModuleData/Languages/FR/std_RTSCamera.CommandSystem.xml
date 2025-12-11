@@ -27,6 +27,9 @@
     <string id="RTSCameraCommandSystem_troop_highlight_rts_mode" text="Surlignage des troupes (Mode RTS)" />
     <string id="RTSCameraCommandSystem_troop_highlight_rts_mode_hint" text="Style de surlignage des troupes en mode RTS." />
 
+    <string id="RTSCameraCommandSystem_highlight_troops_when_showing_indicators" text="Surligner les troupes lors de l’affichage des indicateurs" />
+    <string id="RTSCameraCommandSystem_highlight_troops_when_showing_indicators_hint" text="Lorsque activé, les troupes seront surlignées lors de l’affichage des indicateurs de formation." />
+
     <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode" text="Style de cible de mouvement (Mode personnage)" />
     <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode_hint" text="Style de la cible de mouvement en mode personnage." />
     <string id="RTSCameraCommandSystem_highlight_style_original" text="Original" />
@@ -74,6 +77,22 @@
 
     <string id="RTSCameraCommandSystem_face_enemy_by_default" text="Faire face à l’ennemi par défaut" />
     <string id="RTSCameraCommandSystem_face_enemy_by_default_hint" text="Indique si les troupes doivent faire face à l’ennemi au début de la bataille." />
+
+    <string id="RTSCameraCommandSystem_advance_order_options" text="Options d’ordre d’avance" />
+
+    <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons" text="Corriger l’ordre d’avance pour les armes de jet" />
+    <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons_hint" text="Lorsque cette option est activée, les troupes armées d’armes de jet garderont leurs distances par rapport à la cible et lanceront leurs armes." />
+
+    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai" text="Appliquer la correction de l’ordre d’avance pour les formations IA" />
+    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai_hint" text="Lorsque cette option est activée, les formations IA appliqueront également la correction de l’ordre d’avance pour les armes de jet." />
+    
+    <string id="RTSCameraCommandSystem_thrower_ratio_threshold" text="Seuil de ratio de lanceurs" />
+    <string id="RTSCameraCommandSystem_thrower_ratio_threshold_hint" text="Le ratio minimum de lanceurs dans une formation pour activer la correction de l’ordre d’avance pour les armes de jet." />
+    <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold" text="Seuil de ratio de munitions restantes" />
+    <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold_hint" text="Le ratio minimum de munitions restantes pour que la formation garde ses distances." />
+
+    <string id="RTSCameraCommandSystem_shorten_range_based_on_remaining_ammo" text="Raccourcir la distance en fonction des munitions restantes" />
+    <string id="RTSCameraCommandSystem_shorten_range_based_on_remaining_ammo_hint" text="Avec moins de munitions restantes, la formation gardera moins de distance." />
 
     <string id="RTSCameraCommandSystem_defensive_attack" text="se concentre sur l’ennemi {TARGET_NAME}" />
 
