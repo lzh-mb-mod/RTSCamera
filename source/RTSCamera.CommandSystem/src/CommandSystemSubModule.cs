@@ -74,7 +74,7 @@ namespace RTSCamera.CommandSystem
             }
             catch (Exception e)
             {
-                MBDebug.ConsolePrint(e.ToString());
+                MBDebug.Print(e.ToString());
                 InformationManager.DisplayMessage(new InformationMessage($"RTS Command: failed to load game texts: {e}"));
             }
             Utilities.Utility.PrintOrderHint();
@@ -128,7 +128,6 @@ namespace RTSCamera.CommandSystem
             // solid circle formation
             _successPatch &= Patch_CircularFormation.Patch(_harmony);
 
-            _successPatch &= Patch_MovementOrder.Patch(_harmony);
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Command: patch failed"));

@@ -28,7 +28,6 @@ namespace RTSCamera.CommandSystem
         }
         public override void OnPreMissionTick(MissionView entranceView, float dt)
         {
-            PatchChargeToFormation.Patch();
         }
     }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="Français" />
+  </tags>
+  <strings>
+    <string id="MissionLibrary_config_key" text="Touche de configuration" />
+    <string id="MissionLibrary_open_menu_hint" text="Appuyez sur {KeyName} en bataille pour ouvrir le menu." />
+    <string id="MissionLibrary_config_key_hint" text="Raccourci de configuration." />
+    <string id="MissionLibrary_general_game_key" text="Raccourci général" />
+    <string id="MissionLibrary_openmenukey" text="Ouvrir le menu" />
+    <string id="MissionLibrary_openmenukey_description" text="Ouvrir ou fermer le menu." />
+
+    <string id="MissionLibrary_show_usage" text="Afficher l’aide" />
+    <string id="MissionLibrary_show_usage_hint" text="Afficher l’aide à propos de ce mod." />
+    <string id="MissionLibrary_usages" text="Aide" />
+
+    <string id="MissionLibrary_game_key_or" text=" ou " />
+
+    <string id="MissionLibrary_configincompatible" text="Configuration incompatible. Réinitialisation de la configuration." />
+    <string id="MissionLibrary_hotkey_config_incompatible" text="Raccourci incompatible. Réinitialisation aux valeurs par défaut." />
+
+    <string id="MissionLibrary_hotkey_add_shortcut" text="Ajouter un raccourci" />
+    <string id="MissionLibrary_hotkey_remove_shortcut" text="Supprimer un raccourci" />
+    <string id="MissionLibrary_hotkey_add_key" text="Étendre la combinaison de touches" />
+    <string id="MissionLibrary_hotkey_remove_key" text="Réduire la combinaison de touches" />
+  </strings>
+</base>

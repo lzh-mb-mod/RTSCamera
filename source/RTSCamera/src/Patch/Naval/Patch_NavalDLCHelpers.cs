@@ -4,6 +4,7 @@ using RTSCamera.Config;
 using RTSCamera.Logic;
 using System;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -33,6 +34,7 @@ namespace RTSCamera.Patch.Naval
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 
@@ -50,6 +52,7 @@ namespace RTSCamera.Patch.Naval
                 return true;
 
             __result = IsShipOrderAvailable();
+            Utilities.Utility.SetOrderTargetDisabled(!__result);
             return false;
         }
 

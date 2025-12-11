@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="Français" />
+  </tags>
+  <strings>
+    <string id="RTSCamera_option_class" text="Caméra RTS" />
+
+    <string id="RTSCamera_command_battle" text="(Caméra RTS) Commander la bataille." />
+    <string id="RTSCamera_cannot_control_agent_in_command_mode" text="Impossible de contrôler les unités en mode commande uniquement." />
+    <string id="RTSCamera_command_mode_tool_tip" text="Vous êtes blessé. Vous pouvez encore commander vos troupes, mais vous ne pouvez plus participer directement au combat." />
+
+    <string id="RTSCamera_switch_camera_hint" text="Appuyez sur {KeyName} en bataille pour activer/désactiver la caméra libre." />
+
+    <string id="RTSCamera_switch_free_camera_hint" text="Basculer entre la caméra libre et la caméra du joueur." />
+    <string id="RTSCamera_use_free_camera_by_default_hint" text="Activer automatiquement la caméra libre en entrant en bataille." />
+    <string id="RTSCamera_raised_height_hint" text="Hauteur supplémentaire de la caméra après le passage en caméra libre." />
+    <string id="RTSCamera_limit_camera_distance_hint" text="Limiter la distance de la caméra en fonction des compétences Tactique et Éclaireur." />
+    <string id="RTSCamera_toggle_pause_hint" text="Mettre le jeu en pause ou reprendre." />
+    <string id="RTSCamera_slow_motion_hint" text="Activer ou non le mode ralenti (pour ajuster la vitesse du temps)." />
+    <string id="RTSCamera_slow_motion_factor_hint" text="Facteur de la vitesse du temps." />
+    <string id="RTSCamera_player_controller_in_free_camera_hint" text="Mode de contrôle du joueur en caméra libre. Sur Aucun : le personnage joueur n’est pas contrôlé. Sur IA : l’IA contrôle le personnage joueur. Sur Joueur : vous pouvez toujours contrôler directement votre personnage." />
+    <string id="RTSCamera_player_formation_hint" text="Assigner le joueur à la formation sélectionnée." />
+    <string id="RTSCamera_watch_another_hero_hint" text="Observer le héros que vous avez sélectionné." />
+    <string id="RTSCamera_select_character_hint" text="Sélectionnez un personnage avec la souris, puis vous pourrez centrer la caméra sur lui ou le contrôler." />
+    <string id="RTSCamera_prefer_unit_in_same_formation_hint" text="Privilégier le contrôle des unités de la même formation que le joueur lors de la recherche d’une cible à contrôler." />
+    <string id="RTSCamera_control_troops_in_player_party_only_hint" text="Ne considérer que les troupes du groupe du joueur lors de la recherche d’une cible à contrôler." />
+    <string id="RTSCamera_ignore_retreating_troops_hint" text="Ne pas tenir compte des troupes en déroute lors de la recherche d’une cible à contrôler." />
+    <string id="RTSCamera_constant_speed_hint" text="La vitesse de déplacement de la caméra n’est pas affectée par la hauteur." />
+    <string id="RTSCamera_camera_height_follows_terrain_hint" text="La hauteur de la caméra suit le relief, sauf lorsqu’elle se trouve dans ou au‑dessus d’un objet de scène (mur, maison, rocher…)." />
+    <string id="RTSCamera_ignore_terrain_hint" text="La caméra ne sera pas bloquée par le terrain ni les bâtiments lorsque cette option est activée." />
+    <string id="RTSCamera_ignore_boundaries_hint" text="La caméra ne sera pas limitée par les frontières lorsque cette option est activée." />
+    <string id="RTSCamera_display_message_hint" text="Afficher ou non les messages de ce mod." />
+    <string id="RTSCamera_toggle_ui_hint" text="Afficher/masquer le HUD du jeu, pour la capture vidéo." />
+    <string id="RTSCamera_disable_death_hint" text="Toutes les unités deviennent invulnérables, pour la capture vidéo." />
+    <string id="RTSCamera_switch_team_hint" text="Changer l’équipe du joueur, pour la capture vidéo." />
+
+    <string id="RTSCamera_createdefaultconfig" text="Créer la configuration par défaut" />
+    <string id="RTSCamera_foundoldconfig" text="Ancien fichier de configuration trouvé :" />
+    <string id="RTSCamera_deleteoldconfig" text="Supprimer l’ancien fichier de configuration." />
+    <string id="RTSCamera_renameoldconfig" text="Renommer l’ancien fichier de configuration vers le nouveau nom..." />
+
+    <string id="RTSCamera_controltroop" text="Contrôle : {ControlledTroopName}." />
+    <string id="RTSCamera_notrooptocontrol" text="Aucune troupe alliée à contrôler." />
+    <string id="RTSCamera_deathdisabled" text="Invulnérabilité totale activée." />
+    <string id="RTSCamera_deathenabled" text="Invulnérabilité totale désactivée." />
+
+    <string id="RTSCamera_savedconfig" text="Configuration enregistrée avec succès." />
+    <string id="RTSCamera_saveconfigfailed" text="Échec de l’enregistrement de la configuration." />
+    <string id="RTSCamera_exceptioncaught" text="Exception interceptée :" />
+    <string id="RTSCamera_loadedconfig" text="Configuration chargée avec succès." />
+    <string id="RTSCamera_loadconfigfailed" text="Échec du chargement de la configuration." />
+
+    <string id="RTSCamera_camera_options" text="Options de caméra" />
+    <string id="RTSCamera_default_to_free_camera" text="Caméra libre par défaut" />
+    <string id="RTSCamera_default_to_free_camera_hint" text="Quand utiliser la caméra libre par défaut." />
+    <string id="RTSCamera_default_to_free_camera_option_never" text="Jamais" />
+    <string id="RTSCamera_default_to_free_camera_option_deployment_stage" text="Phase de déploiement" />
+    <string id="RTSCamera_controller_default_to_free_camera_option_always" text="Toujours" />
+    <string id="RTSCamera_switchfreecamera" text="Basculer en caméra libre" />
+    <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="Hauteur de caméra relevée" />
+    <string id="RTSCamera_limit_camera_distance" text="Limiter la distance de caméra" />
+    <string id="RTSCamera_camera_distance_limit" text="Limite de distance de caméra" />
+    <string id="RTSCamera_constantspeed" text="Vitesse de caméra constante" />
+    <string id="RTSCamera_camera_height_follows_terrain" text="Hauteur de caméra suivant le relief" />
+    <string id="RTSCamera_ignore_terrain" text="Ignorer le terrain" />
+    <string id="RTSCamera_ignore_boundaries" text="Ignorer les frontières" />
+    <string id="RTSCamera_follow_facing_direction" text="Suivre la direction de visée" />
+    <string id="RTSCamera_follow_facing_direction_hint" text="Au retour de la caméra, indiquer si elle doit se tourner pour suivre la direction de visée du personnage." />
+    <string id="RTSCamera_follow_facing_direction_option_never" text="Jamais" />
+    <string id="RTSCamera_follow_facing_direction_option_control_new_unit_only" text="Uniquement en contrôlant une nouvelle unité (recommandé)" />
+    <string id="RTSCamera_follow_facing_direction_option_always" text="Toujours" />
+
+    <string id="RTSCamera_control_options" text="Options de contrôle" />
+    <string id="RTSCamera_player_controller_in_free_camera" text="Contrôle du joueur en caméra libre" />
+    <string id="RTSCamera_controller_type_none" text="Aucun" />
+    <string id="RTSCamera_controller_type_AI" text="IA (recommandé)" />
+    <string id="RTSCamera_controller_type_player" text="Joueur" />
+    <string id="RTSCamera_playerformation" text="Formation du joueur" />
+    <string id="RTSCamera_player_formation_unset" text="Non défini" />
+    <string id="RTSCamera_assign_player_formation" text="Affectation de la formation du joueur" />
+    <string id="RTSCamera_assign_player_formation_hint" text="À quelle formation ajouter le joueur pendant la phase de déploiement." />
+    <string id="RTSCamera_assign_player_formation_default_or_general_formation" text="Formation par défaut ou générale" />
+    <string id="RTSCamera_assign_player_formation_default" text="Toujours formation par défaut" />
+    <string id="RTSCamera_assign_player_formation_overwrite" text="Formation définie dans l’option ci‑dessus" />
+    <string id="RTSCamera_watchanotherhero" text="Observer un autre héros" />
+    <string id="RTSCamera_select_character" text="Sélectionner un personnage" />
+    <string id="RTSCamera_control_ally_after_death_timing" text="Quand contrôler un allié après la mort" />
+    <string id="RTSCamera_control_ally_after_death_timing_hint" text="À quel moment contrôler automatiquement un de vos alliés après votre mort." />
+    <string id="RTSCamera_control_ally_after_death_timing_option_never" text="Jamais" />
+    <string id="RTSCamera_control_ally_after_death_timing_option_free_camera" text="Caméra libre" />
+    <string id="RTSCamera_control_ally_after_death_timing_option_always" text="Toujours (recommandé)" />
+    <string id="RTSCamera_control_ally_after_death_timing_prompt" text="Voulez-vous activer « Contrôler une troupe après la mort » ?" />
+    <string id="RTSCamera_prefer_unit_in_same_formation" text="Privilégier les unités de la même formation" />
+    <string id="RTSCamera_controltroopsinplayerpartyonly" text="Contrôler uniquement les troupes du groupe du joueur" />
+    <string id="RTSCamera_limited_to_player_party_only" text="L’option « Contrôler uniquement les troupes du groupe du joueur » est activée. Seules les troupes de votre groupe seront considérées pour le contrôle." />
+    <string id="RTSCamera_controlheroonly" text="Contrôler uniquement les héros" />
+    <string id="RTSCamera_controlheroonlyhint" text="Ne considérer que les héros lors de la recherche d’une cible à contrôler." />
+    <string id="RTSCamera_limitedtoheroonly" text="L’option « Contrôler uniquement les héros » est activée. Seuls les héros seront considérés pour le contrôle." />
+    <string id="RTSCamera_ignoreretreatingtroops" text="Ignorer les troupes en déroute" />
+
+    <string id="RTSCamera_miscellaneous_options" text="Options diverses" />
+    <string id="RTSCamera_togglepause" text="Mettre en pause" />
+    <string id="RTSCamera_slowmotionmode" text="Mode ralenti" />
+    <string id="RTSCamera_slowmotionfactor" text="Facteur de ralenti" />
+    <string id="RTSCamera_slowmotiononrtsview" text="Ralenti en caméra libre" />
+    <string id="RTSCamera_slowmotiononrtsviewhint" text="Activer automatiquement le mode ralenti en caméra libre." />
+
+    <string id="RTSCamera_naval_options" text="Options War Sails" />
+    <string id="RTSCamera_player_ship_controller_in_free_camera" text="Contrôle du navire du joueur en caméra libre" />
+    <string id="RTSCamera_player_ship_controller_in_free_camera_hint" text="Mode de contrôle du navire du joueur en caméra libre. Sur Aucun : le navire n’est pas contrôlé. Sur IA : l’IA pilote le navire du joueur. Sur Joueur : vous pouvez toujours piloter directement votre navire." />
+
+    <string id="RTSCamera_steering_mode_when_player_stops_piloting" text="Mode de pilotage quand le joueur cesse de piloter" />
+    <string id="RTSCamera_steering_mode_when_player_stops_piloting_hint" text="Quand le joueur cesse de piloter le navire, comment celui‑ci sera contrôlé. Sur Aucun : le navire reste sans pilote. Sur Soldat : un soldat pilotera le navire et recevra vos ordres. Sur Déléguer la commande : un soldat pilotera le navire et recevra les ordres de navire de l’IA." />
+    <string id="RTSCamera_steering_mode_none" text="Aucun (par défaut)" />
+    <string id="RTSCamera_steering_mode_soldier" text="Soldat" />
+    <string id="RTSCamera_steering_mode_delegate_command" text="Déléguer la commande" />
+
+    <string id="RTSCamera_ship_need_to_be_connected" text="Le navire doit être relié aux vôtres pour pouvoir être capturé." />
+
+    <string id="RTSCamera_unbalancedoptionsdescription" text="Options de triche" />
+    <string id="RTSCamera_disabledeath" text="Invulnérabilité totale" />
+    <string id="RTSCamera_enable_all_invulnerable_hotkey" text="Raccourci Invulnérabilité totale" />
+    <string id="RTSCamera_switchteam" text="Changer d’équipe" />
+    <string id="RTSCamera_enable_switch_team_hotkey" text="Raccourci Changer d’équipe" />
+
+    <string id="RTSCamera_missionpaused" text="Mission en pause." />
+    <string id="RTSCamera_missioncontinue" text="Mission reprise." />
+
+    <string id="RTSCamera_slowmotionenabled" text="Mode ralenti activé." />
+    <string id="RTSCamera_normalmodeenabled" text="Mode normal activé." />
+    
+    <string id="RTSCamera_fastforwardenabled" text="Mode avance rapide activé." />
+    <string id="RTSCamera_fastforwarddisabled" text="Mode avance rapide désactivé." />
+
+    <string id="RTSCamera_playeragentdead" text="L’agent joueur est blessé." />
+    <string id="RTSCamera_switchtoplayer" text="Revenir à l’agent joueur." />
+    <string id="RTSCamera_switchtofreecamera" text="Passer en caméra libre." />
+
+    <string id="RTSCamera_displaymodmessage" text="Afficher les messages du mod" />
+    <string id="RTSCamera_toggleui" text="Afficher/masquer le HUD" />
+    <string id="RTSCamera_switchcameraonordering" text="Changer de caméra lors des ordres" />
+    <string id="RTSCamera_switchcameraonorderinghint" text="Passer automatiquement en caméra libre lors de la transmission d’ordres, puis revenir à la caméra du joueur une fois terminé." />
+    <string id="RTSCamera_orderonswitchingcamera" text="Ordres lors du changement de caméra" />
+    <string id="RTSCamera_orderonswitchingcamerahint" text="Ouvrir automatiquement l’interface d’ordres lors du passage en caméra libre, puis la fermer au retour à la caméra du joueur." />
+    <string id="RTSCamera_keep_order_ui_open_in_free_camera" text="Garder l’interface d’ordres ouverte en caméra libre" />
+    <string id="RTSCamera_keep_order_ui_open_in_free_camera_hint" text="Garder l’interface d’ordres ouverte en caméra libre." />
+    <string id="RTSCamera_show_hotkey_hint" text="Afficher les indications de touches" />
+    <string id="RTSCamera_show_hotkey_hint_hint" text="Afficher les indications de touches en mode caméra libre." />
+    <string id="RTSCamera_fast_forward_hideout" text="Avance rapide en repaire" />
+    <string id="RTSCamera_fast_forward_hideout_hint" text="Activer automatiquement l’avance rapide dans les repaires et laisser l’IA contrôler le joueur." />
+    <string id="RTSCamera_fast_forward_hideout_option_never" text="Jamais" />
+    <string id="RTSCamera_fast_forward_hideout_option_until_boss_fight" text="Jusqu’au combat de boss" />
+    <string id="RTSCamera_fast_forward_hideout_option_always" text="Toujours" />
+    <string id="RTSCamera_fast_forward_hideout_prompt" text="Voulez-vous activer l’avance rapide dans les repaires ?" />
+
+    <string id="RTSCamera_ai_control_ship_on" text="Pilote soldat activé" />
+    <string id="RTSCamera_player_control_ship_off" text="Pilote soldat désactivé" />
+    <string id="RTSCamera_soldiers_start_controlling_ship" text="Un soldat commence à piloter votre navire." />
+    <string id="RTSCamera_soldiers_stop_controlling_ship" text="Le soldat cesse de piloter votre navire." />
+
+    <string id="RTSCamera_hotkeycategory" text="Raccourcis Caméra RTS" />
+    <string id="RTSCamera_pausekey" text="Pause" />
+    <string id="RTSCamera_slowmotionkey" text="Ralenti" />
+    <string id="RTSCamera_fastforwardkey" text="Avance rapide" />
+    <string id="RTSCamera_freecamerakey" text="Caméra libre" />
+    <string id="RTSCamera_disabledeathkey" text="Invulnérabilité totale" />
+    <string id="RTSCamera_controltroopkey" text="Centrer/Contrôler une troupe" />
+    <string id="RTSCamera_camera_move_forward" text="Caméra vers l’avant" />
+    <string id="RTSCamera_camera_move_backward" text="Caméra vers l’arrière" />
+    <string id="RTSCamera_camera_move_left" text="Caméra vers la gauche" />
+    <string id="RTSCamera_camera_move_right" text="Caméra vers la droite" />
+    <string id="RTSCamera_camera_move_up" text="Caméra vers le haut" />
+    <string id="RTSCamera_camera_move_down" text="Caméra vers le bas" />
+    <string id="RTSCamera_camera_increase_camera_limit" text="Augmenter la limite de distance de caméra" />
+    <string id="RTSCamera_camera_decrease_camera_limit" text="Réduire la limite de distance de caméra" />
+    <string id="RTSCamera_camera_increase_camera_speed" text="Augmenter la vitesse de la caméra" />
+    <string id="RTSCamera_camera_decrease_camera_speed" text="Réduire la vitesse de la caméra" />
+    <string id="RTSCamera_camera_reset_camera_speed" text="Réinitialiser la vitesse de la caméra" />
+
+    <string id="RTSCamera_slowmotionkey_description" text="Activer le mode ralenti. Appuyez à nouveau pour revenir à la normale." />
+    <string id="RTSCamera_fastforwardkey_description" text="Activer/désactiver l’avance rapide." />
+    <string id="RTSCamera_disable_death_description" text="Toutes les unités ne peuvent pas mourir, pour la capture vidéo. Le mode triche doit être activé et le raccourci doit être activé dans le menu." />
+    <string id="RTSCamera_controltroopkey_description" text="Centrer la caméra sur un personnage ou une formation sélectionnée. Contrôler le personnage ciblé." />
+    <string id="RTSCamera_switchteam_description" text="Changer l’équipe du joueur, pour la capture vidéo. Le mode triche doit être activé et le raccourci doit être activé dans le menu." />
+    <string id="RTSCamera_camera_move_forward_description" text="Déplacer la caméra vers l’avant." />
+    <string id="RTSCamera_camera_move_backward_description" text="Déplacer la caméra vers l’arrière." />
+    <string id="RTSCamera_camera_move_left_description" text="Déplacer la caméra vers la gauche." />
+    <string id="RTSCamera_camera_move_right_description" text="Déplacer la caméra vers la droite." />
+    <string id="RTSCamera_camera_move_up_description" text="Déplacer la caméra vers le haut." />
+    <string id="RTSCamera_camera_move_down_description" text="Déplacer la caméra vers le bas." />
+    <string id="RTSCamera_camera_increase_camera_limit_description" text="Augmenter la limite de distance de caméra." />
+    <string id="RTSCamera_camera_decrease_camera_limit_description" text="Réduire la limite de distance de caméra." />
+    <string id="RTSCamera_camera_increase_camera_speed_description" text="Augmenter la vitesse de la caméra." />
+    <string id="RTSCamera_camera_decrease_camera_speed_description" text="Réduire la vitesse de la caméra." />
+    <string id="RTSCamera_camera_reset_camera_speed_description" text="Réinitialiser la vitesse de la caméra." />
+
+    <string id="RTSCamera_enemywipedout" text="L’ennemi a été entièrement anéanti." />
+    <string id="RTSCamera_switchtoenemyteam" text="Vous avez rejoint l’équipe ennemie." />
+
+    <string id="RTSCamera_select_character_view_hint" text="Veuillez sélectionner un personnage avec un clic gauche. Puis appuyez sur {KeyName} pour vous verrouiller sur lui, et appuyez encore pour le contrôler." />
+    <string id="RTSCamera_control_troop_hint" text="Vous pouvez appuyer sur {KeyName} pour contrôler l’un de vos compagnons." />
+    <string id="RTSCamera_control_current_agent_hint" text="Appuyez sur {KeyName} pour contrôler ce personnage." />
+    <string id="RTSCamera_focus_on_formation_hint" text="Appuyez sur {KeyName} pour centrer la caméra sur la formation sélectionnée." />
+
+    <string id="RTSCamera_tactics_skill_effect_description" text="Limite de caméra RTS par Tactique : +{a0} m" />
+    <string id="RTSCamera_scouting_skill_effect_description" text="Limite de caméra RTS par Éclaireur : +{a0} %" />
+
+    <string id="RTSCamera_base_distance" text="Distance de base" />
+    <string id="RTSCamera_out_of_campaign" text="Hors campagne" />
+    <string id="RTSCamera_no_main_hero" text="Le héros principal n’existe pas." />
+
+    <string id="RTSCamera_cheat_mode_required" text="Activez le mode triche pour désactiver cette option." />
+  
+    <string id="RTSCamera_focus_on_formation_usage" text="(Nouveau) Lorsque l’interface de commande est ouverte en mode caméra libre, vous pouvez appuyer sur {KeyName} pour coller la caméra à la formation sélectionnée." />
+    <string id="RTSCamera_control_troop_usage" text="Après la mort de votre personnage en bataille, vous pouvez appuyer sur {KeyName} pour suivre l’un de vos soldats, puis appuyer à nouveau sur {KeyName} pour le contrôler et continuer à combattre." />
+
+    <string id="RTSCamera_open_menu_hotkey_hint" text="ouvrir le menu" />
+    <string id="RTSCamera_switch_camera_hotkey_hint" text="activer/désactiver la caméra libre" />
+    <string id="RTSCamera_control_troop_hotkey_hint" text="verrouiller sur un agent/une formation ; contrôler l’agent" />
+    <string id="RTSCamera_select_character_hotkey_hint" text="mode sélection de personnage" />
+    <string id="RTSCamera_move_camera_hotkey_hint" text="Déplacer la caméra" />
+  </strings>
+</base>

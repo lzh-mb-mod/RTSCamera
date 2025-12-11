@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade.View.VisualOrders.OrderSets;
@@ -31,6 +32,7 @@ namespace RTSCamera.Patch.Naval
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData id="Français" name="Français" subtitle_extension="fr" supported_iso="fr,fre,fra,fr-fr,fr-ca,fr-be,fr-ch" under_development="false">
+  <LanguageFile xml_path="FR/std_MissionLibrary.xml" />
+  <LanguageFile xml_path="FR/std_RTSCamera.CommandSystem.xml" />
+</LanguageData>

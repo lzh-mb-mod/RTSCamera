@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch.TOR_fix
@@ -37,6 +38,7 @@ namespace RTSCamera.Patch.TOR_fix
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 

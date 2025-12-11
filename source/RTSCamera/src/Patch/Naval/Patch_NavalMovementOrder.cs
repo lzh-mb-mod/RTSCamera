@@ -3,6 +3,7 @@ using MissionSharedLibrary.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
@@ -30,6 +31,7 @@ namespace RTSCamera.Patch.Naval
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 

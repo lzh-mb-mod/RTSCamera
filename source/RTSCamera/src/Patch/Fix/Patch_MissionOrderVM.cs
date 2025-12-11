@@ -2,12 +2,10 @@
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Logic;
-using RTSCamera.Patch.Naval;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using TaleWorlds.GauntletUI;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
@@ -65,6 +63,7 @@ namespace RTSCamera.Patch.Fix
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
         }
@@ -173,7 +172,7 @@ namespace RTSCamera.Patch.Fix
             // Since Bannerlord v1.3.x, there're several places that calls TryCloseToggleOrder:
             // 1. MissionOrderTroopControllerVM.OrderController_OnTroopOrderIssued
             // 2. GauntletOrderUIHandler.TickInput
-            // It's difficult to implement "Keep Order UI Open" in a way that open the UI after closed.
+            // It's difficult to implement "Keep Order UI Open" by opening the UI after being closed.
             // So it's implemented in this way:
             // Prevent the order UI from being closed in certain condition.
             if (__instance.IsToggleOrderShown)
@@ -213,7 +212,6 @@ namespace RTSCamera.Patch.Fix
         public static void OpenToggleOrder(MissionOrderVM __instance, bool fromHold, bool displayMessage = true)
         {
             __instance?.OpenToggleOrder(fromHold, displayMessage);
-            Utilities.Utility.RefreshOrderTargetDisabled();
         }
     }
 }

@@ -3,6 +3,7 @@ using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using System;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using MathF = TaleWorlds.Library.MathF;
@@ -33,6 +34,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
             return true;

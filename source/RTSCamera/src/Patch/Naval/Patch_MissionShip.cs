@@ -6,6 +6,7 @@ using RTSCamera.Logic;
 using System;
 using System.Reflection;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch.Naval
@@ -36,6 +37,7 @@ namespace RTSCamera.Patch.Naval
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 
@@ -56,7 +58,8 @@ namespace RTSCamera.Patch.Naval
             {
                 var controller = Utilities.Utility.GetPlayerShipControllerInFreeCamera();
                 _setController ??= AccessTools.Method("NavalDLC.Missions.Objects.MissionShip:SetController");
-                _setController.Invoke(__instance, new object[] { controller, true });
+                // convert to int to avoid exception on Linux proton.
+                _setController.Invoke(__instance, new object[] { (int)controller, true });
                 return false;
             }
             else
@@ -99,7 +102,8 @@ namespace RTSCamera.Patch.Naval
                 if (ShouldAIControlPlayerShipInPlayerMode && !(RTSCameraSubModule.IsHelmsmanInstalled && shipFormation.FormationIndex == FormationClass.Infantry))
                 {
                     _setController ??= AccessTools.Method("NavalDLC.Missions.Objects.MissionShip:SetController");
-                    _setController.Invoke(__instance, new object[] { PlayerShipController.AI, true });
+                    // convert to int to avoid exception on Linux proton.
+                    _setController.Invoke(__instance, new object[] { (int)PlayerShipController.AI, true });
                     return false;
                 }
                 return true;

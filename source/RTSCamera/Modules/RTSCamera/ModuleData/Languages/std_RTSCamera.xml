@@ -129,8 +129,10 @@
     <string id="RTSCamera_missioncontinue" text="Mission continued." />
 
     <string id="RTSCamera_slowmotionenabled" text="Slow Motion Mode Enabled." />
-    <string id="RTSCamera_fastfowardenabled" text="Fast Forward Mode Enabled." />
     <string id="RTSCamera_normalmodeenabled" text="Normal Mode Enabled." />
+
+    <string id="RTSCamera_fastforwardenabled" text="Fast Forward Mode Enabled." />
+    <string id="RTSCamera_fastforwarddisabled" text="Fast Forward Mode Disabled." />
 
     <string id="RTSCamera_playeragentdead" text="Player agent is injured." />
     <string id="RTSCamera_switchtoplayer" text="Switch to player agent." />

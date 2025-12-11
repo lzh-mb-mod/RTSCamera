@@ -31,6 +31,7 @@ namespace RTSCamera.Patch.Naval
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 

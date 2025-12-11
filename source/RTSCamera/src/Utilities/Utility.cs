@@ -287,21 +287,25 @@ namespace RTSCamera.Utilities
         }
 
         private static MethodInfo _setIsFormationTargetingDisabled;
+        private static FieldInfo _formationTargetHandler;
+        private static Type _navalOrderUIHandlerType;
+        private static FieldInfo _shipTargetHandler;
 
-        public static void RefreshOrderTargetDisabled()
+        public static void SetOrderTargetDisabled(bool isDisabled)
         {
             if (!Mission.Current.IsNavalBattle)
                 return;
-            bool isDisabled = !Patch_NavalDLCHelpers.IsShipOrderAvailable();
             var orderUIHandler = Mission.Current.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
             if (orderUIHandler != null)
             {
-                MissionFormationTargetSelectionHandler formationTargetSelectionHandler = (MissionFormationTargetSelectionHandler)AccessTools.Field("TaleWorlds.MountAndBlade.GauntletUI.GauntletOrderUIHandler:_formationTargetHandler").GetValue(orderUIHandler);
+                _formationTargetHandler ??= AccessTools.Field("TaleWorlds.MountAndBlade.GauntletUI.GauntletOrderUIHandler:_formationTargetHandler");
+                MissionFormationTargetSelectionHandler formationTargetSelectionHandler = (MissionFormationTargetSelectionHandler)_formationTargetHandler.GetValue(orderUIHandler);
                 formationTargetSelectionHandler?.SetIsFormationTargetingDisabled(isDisabled);
-                var navalOrderUIHandlerType = AccessTools.TypeByName("MissionGauntletNavalOrderUIHandler");
-                if (navalOrderUIHandlerType != null && navalOrderUIHandlerType.IsAssignableFrom(orderUIHandler.GetType()))
+                _navalOrderUIHandlerType ??= AccessTools.TypeByName("MissionGauntletNavalOrderUIHandler");
+                if (_navalOrderUIHandlerType != null && _navalOrderUIHandlerType.IsAssignableFrom(orderUIHandler.GetType()))
                 {
-                    MissionView shipTargetHandler = (MissionView)AccessTools.Field("NavalDLC.GauntletUI.MissionViews.MissionGauntletNavalOrderUIHandler:_shipTargetHandler").GetValue(orderUIHandler);
+                    _shipTargetHandler ??= AccessTools.Field("NavalDLC.GauntletUI.MissionViews.MissionGauntletNavalOrderUIHandler:_shipTargetHandler");
+                    MissionView shipTargetHandler = (MissionView)_shipTargetHandler.GetValue(orderUIHandler);
                     if (shipTargetHandler == null)
                         return;
                     _setIsFormationTargetingDisabled ??= AccessTools.Method("NavalDLC.View.MissionViews.NavalShipTargetSelectionHandler:SetIsFormationTargetingDisabled");

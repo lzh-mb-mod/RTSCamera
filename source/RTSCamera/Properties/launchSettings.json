@@ -7,7 +7,7 @@
       "commandName": "Executable",
       "executablePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Mount & Blade II Bannerlord\\bin\\Win64_Shipping_Client\\TaleWorlds.MountAndBlade.Launcher.exe",
       "workingDirectory": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Mount & Blade II Bannerlord\\bin\\Win64_Shipping_Client",
-      "nativeDebugging": false
+      "nativeDebugging": true
     }
   }
 }

@@ -4,6 +4,7 @@ using RTSCamera.Config;
 using RTSCamera.Logic;
 using System;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch
@@ -22,8 +23,8 @@ namespace RTSCamera.Patch
                 harmony.Patch(
                     typeof(Mission).GetMethod("UpdateSceneTimeSpeed",
                         BindingFlags.Instance | BindingFlags.NonPublic),
-                    postfix: new HarmonyMethod(typeof(Patch_Mission).GetMethod(
-                        nameof(Postfix_UpdateSceneTimeSpeed), BindingFlags.Static | BindingFlags.Public)));
+                    prefix: new HarmonyMethod(typeof(Patch_Mission).GetMethod(
+                        nameof(Prefix_UpdateSceneTimeSpeed), BindingFlags.Static | BindingFlags.Public)));
                 // recover player formation from general formation
                 harmony.Patch(
                     typeof(Mission).GetMethod("OnTeamDeployed",
@@ -49,15 +50,21 @@ namespace RTSCamera.Patch
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 
             return true;
         }
-        public static void Postfix_UpdateSceneTimeSpeed(Mission __instance)
+        public static bool Prefix_UpdateSceneTimeSpeed(Mission __instance)
         {
-            if (RTSCameraConfig.Get().SlowMotionMode)
+            if (RTSCameraConfig.Get().SlowMotionMode && __instance.IsDeploymentFinished && !__instance.IsFastForward)
+            {
                 __instance.Scene.TimeSpeed = RTSCameraConfig.Get().SlowMotionFactor;
+                return false;
+            }
+
+            return true;
         }
 
         public static void Prefix_OnTeamDeployed(Team team)

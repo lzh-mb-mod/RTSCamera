@@ -191,7 +191,7 @@ namespace RTSCamera.Config
                             return RTSCameraConfig.Get().PlayerControllerInFreeCamera;
                         }, () => (int)AgentControllerType.Count, () => new[]
                         {
-                            new SelectionItem(true, "str_rts_camera_controller_type", "none"),
+                            new SelectionItem(true, "str_rts_camera_controller_type", "None"),
                             new SelectionItem(true, "str_rts_camera_controller_type", "AI"),
                             new SelectionItem(true, "str_rts_camera_controller_type", "Player")
                         }), true));
@@ -393,7 +393,7 @@ namespace RTSCamera.Config
                 //        }), true));
                 optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
 
-                if (RTSCameraSubModule.IsNavalInstalled)
+                if (Mission.Current.IsNavalBattle)
                 {
                     var navalOptionCategory = new OptionCategory("Naval",
                         GameTexts.FindText("str_rts_camera_naval_options"),

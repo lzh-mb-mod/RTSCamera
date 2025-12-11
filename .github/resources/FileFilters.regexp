@@ -1,4 +1,5 @@
 regex:bin/Win64_Shipping_Client/(?<=/)[^/]*TaleWorlds.+
+regex:Modules/Native/bin/Win64_Shipping_Client/(?<=/)[^/]+dll
 regex:Modules/CustomBattle/bin/Win64_Shipping_Client/(?<=/)[^/]+dll
 regex:Modules/SandBox/bin/Win64_Shipping_Client/(?<=/)[^/]+dll
 regex:Modules/SandBoxCore/bin/Win64_Shipping_Client/(?<=/)[^/]+dll

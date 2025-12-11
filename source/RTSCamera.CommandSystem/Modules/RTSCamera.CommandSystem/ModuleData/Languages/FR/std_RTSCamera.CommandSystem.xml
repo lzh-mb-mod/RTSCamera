@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="Français" />
+  </tags>
+  <strings>
+    <string id="RTSCameraCommandSystem_option_class" text="Système de commandement" />
+
+    <string id="RTSCameraCommandSystem_command_system_options" text="Système de commandement" />
+    <string id="RTSCameraCommandSystem_click_to_select_formation" text="Clic du milieu pour sélectionner une formation" />
+    <string id="RTSCameraCommandSystem_click_to_select_formation_hint" text="Vous pouvez sélectionner directement une formation en appuyant sur {KeyName} dessus. La formation sélectionnée sera mise en surbrillance avec un contour." />
+    <string id="RTSCameraCommandSystem_attack_specific_formation" text="Activer l’attaque d’une formation spécifique" />
+    <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="Vous pouvez donner un ordre d’attaque ciblée en appuyant sur {KeyName} sur une formation ennemie." />
+    <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="(Nouveau) Maintenez Alt en même temps pour conserver l’ordre de mouvement précédent." />
+    <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="Après l’élimination de la formation ennemie" />
+    <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="Comportement lorsque la formation ennemie attaquée est éliminée." />
+    <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="Charge" />
+    <string id="RTSCameraCommandSystem_after_charge_behavior_hold" text="Tenir la position" />
+ 
+    <string id="RTSCameraCommandSystem_troop_highlight_character_mode" text="Surlignage des troupes (Mode personnage)" />
+    <string id="RTSCameraCommandSystem_troop_highlight_character_mode_hint" text="Style de surlignage des troupes en mode personnage." />
+    <string id="RTSCameraCommandSystem_troop_highlight_option_no" text="Aucun" />
+    <string id="RTSCameraCommandSystem_troop_highlight_option_outline" text="Contour" />
+    <string id="RTSCameraCommandSystem_troop_highlight_option_ground_marker" text="Marqueur au sol" />
+
+    <string id="RTSCameraCommandSystem_troop_highlight_rts_mode" text="Surlignage des troupes (Mode RTS)" />
+    <string id="RTSCameraCommandSystem_troop_highlight_rts_mode_hint" text="Style de surlignage des troupes en mode RTS." />
+
+    <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode" text="Style de cible de mouvement (Mode personnage)" />
+    <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode_hint" text="Style de la cible de mouvement en mode personnage." />
+    <string id="RTSCameraCommandSystem_highlight_style_original" text="Original" />
+    <string id="RTSCameraCommandSystem_highlight_style_new_model_only" text="Nouveau modèle uniquement" />
+    <string id="RTSCameraCommandSystem_highlight_style_always_visible" text="Toujours visible" />
+
+    <string id="RTSCameraCommandSystem_movement_target_highlight_rts_mode" text="Style de cible de mouvement (Mode RTS)" />
+    <string id="RTSCameraCommandSystem_movement_target_highlight_rts_mode_hint" text="Style de la cible de mouvement en mode RTS." />
+
+    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode" text="Quand afficher le drapeau d’ordre" />
+    <string id="RTSCameraCommandSystem_command_queue_flag_show_mode_hint" text="Les cibles de commande dans la file d’ordres seront marquées par des drapeaux." />
+    <string id="RTSCameraCommandSystem_highlight_mode_never" text="Jamais" />
+    <string id="RTSCameraCommandSystem_highlight_mode_free_camera_only" text="Caméra libre uniquement" />
+    <string id="RTSCameraCommandSystem_highlight_mode_night_or_free_camera" text="De nuit ou en caméra libre" />
+    <string id="RTSCameraCommandSystem_highlight_mode_always" text="Toujours" />
+
+    <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode" text="Quand afficher les flèches d’ordre" />
+    <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode_hint" text="Les cibles de commande dans la file d’ordres seront reliées par des flèches." />
+
+    <string id="RTSCameraCommandSystem_command_queue_formation_shape_show_mode" text="Quand afficher le cadre de formation" />
+    <string id="RTSCameraCommandSystem_command_queue_formation_shape_show_mode_hint" text="Le cadre de formation sera affiché sur la cible de mouvement." />
+
+    <string id="RTSCameraCommandSystem_formation_lock_condition" text="Quand verrouiller plusieurs formations" />
+    <string id="RTSCameraCommandSystem_formation_lock_condition_hint" text="Les positions et directions relatives des formations resteront inchangées." />
+    <string id="RTSCameraCommandSystem_formation_lock_condition_option_never" text="Jamais" />
+    <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_pressed" text="Quand la touche est enfoncée" />
+    <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed" text="Quand la touche n’est pas enfoncée" />
+
+    <string id="RTSCameraCommandSystem_hollow_square_formation" text="Activer la formation en carré creux" />
+    <string id="RTSCameraCommandSystem_hollow_square_formation_hint" text="Activer ou non la formation en carré creux pour le joueur." />
+
+    <string id="RTSCameraCommandSystem_square_formation_corner_Fix" text="Correction des angles de formation en carré" />
+    <string id="RTSCameraCommandSystem_square_formation_corner_Fix_hint" text="Lorsque cette option est activée, les soldats placés aux angles d’une formation en carré feront face vers la diagonale de la formation, ce qui assure une meilleure couverture défensive et un aspect plus naturel." />
+
+    <string id="RTSCameraCommandSystem_circle_formation_preference" text="Préférence de formation en cercle" />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_hint" text="Privilégier une formation en cercle serré ou en cercle lâche." />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_option_tight" text="Formation en cercle serré" />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_option_loose" text="Formation en cercle lâche" />
+
+    <string id="RTSCamera_order_ui_clickable" text="Interface d’ordres cliquable" />
+    <string id="RTSCamera_order_ui_clickable_hint" text="Rendre les cartes de troupes cliquables. Redémarrez le jeu pour prendre effet." />
+
+    <string id="RTSCameraCommandSystem_order_ui_clickable_extension" text="Extension de l’interface d’ordres cliquable" />
+    <string id="RTSCameraCommandSystem_order_ui_clickable_extension_hint" text="Permet de sélectionner une cible de commande pour les ordres de face/avance en maintenant {KeyName} enfoncée tout en donnant vos ordres, puis en cliquant sur la cible." />
+
+    <string id="RTSCameraCommandSystem_face_enemy_by_default" text="Faire face à l’ennemi par défaut" />
+    <string id="RTSCameraCommandSystem_face_enemy_by_default_hint" text="Indique si les troupes doivent faire face à l’ennemi au début de la bataille." />
+
+    <string id="RTSCameraCommandSystem_defensive_attack" text="se concentre sur l’ennemi {TARGET_NAME}" />
+
+    <string id="RTSCameraCommandSystem_hotkeycategory" text="Raccourcis Système de commandement" />
+    <string id="RTSCameraCommandSystem_select_formation" text="Sélectionner une formation" />
+    <string id="RTSCameraCommandSystem_select_formation_hint" text="Sélectionner votre formation ou ordonner à vos formations sélectionnées d’attaquer une formation ennemie." />
+    <string id="RTSCameraCommandSystem_keep_movement_order" text="Conserver l’ordre de mouvement" />
+    <string id="RTSCameraCommandSystem_keep_movement_order_hint" text="Appuyez pour attaquer la formation ennemie tout en conservant l’ordre de mouvement précédent." />
+    <string id="RTSCameraCommandSystem_formation_lock_movement" text="Basculer le verrouillage de formation" />
+    <string id="RTSCameraCommandSystem_formation_lock_movement_hint" text="Maintenir pour basculer le comportement de verrouillage de formation." />
+    <string id="RTSCameraCommandSystem_select_target_for_command" text="Sélectionner une cible pour l’ordre" />
+    <string id="RTSCameraCommandSystem_select_target_for_command_hint" text="Maintenir pendant un ordre d’avance/de face pour sélectionner une cible." />
+    <string id="RTSCameraCommandSystem_command_queue" text="File d’ordres" />
+    <string id="RTSCameraCommandSystem_command_queue_hint" text="Ajouter un ordre à la file. Les troupes exécuteront les ordres de la file un par un." />
+    <string id="RTSCameraCommandSystem_command_keep_formation_width" text="Conserver la largeur de formation" />
+    <string id="RTSCameraCommandSystem_keep_formation_width_hint" text="Maintenir pour conserver la largeur de formation en la faisant glisser ; permet aussi de sélectionner plusieurs formations." />
+
+    <string id="RTSCameraCommandSystem_tactic_level_required" text="Votre niveau de Tactique doit être au moins de {level}" />
+
+    <string id="RTSCameraCommandSystem_order_queue_usage" text="Maintenez {KeyName} et donnez des ordres pour les ajouter à la file. Vos troupes les exécuteront un par un." />
+    <string id="RTSCameraCommandSystem_lock_formation_usage" text="Si vous déplacez/pivotez plusieurs formations en même temps, leurs positions et directions relatives seront verrouillées." />
+    <string id="RTSCameraCommandSystem_lock_formation_width_usage" text="Maintenez {KeyName} en faisant glisser sur le sol pour verrouiller les positions relatives et la largeur des formations." />
+    <string id="RTSCameraCommandSystem_toggle_locking_usage" text="Maintenez {KeyName} pour basculer le comportement de verrouillage." />
+    <string id="RTSCameraCommandSystem_target_only_usage" text="Par exemple, laissez vos archers se concentrer sur le tir tout en tenant leur position." />
+    <string id="RTSCameraCommandSystem_click_troop_card_usage" text="Vous pouvez sélectionner vos formations en cliquant sur les cartes de troupes." />
+
+    <string id="RTSCameraCommandSystem_add_order_to_queue" text="L’ordre a été ajouté à la file." />
+    <string id="RTSCameraCommandSystem_execute_order_in_queue" text="Un ordre de la file est en cours d’exécution." />
+
+    <string id="RTSCameraCommandSystem_follow_entity" text="Suivre la cible" />
+    <string id="RTSCameraCommandSystem_attack_entity" text="Attaquer la cible" />
+    <string id="RTSCameraCommandSystem_point_defense" text="Cible à défendre" />
+  </strings>
+</base>

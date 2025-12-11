@@ -46,17 +46,17 @@ namespace RTSCamera
         {
             base.OnSubModuleLoad();
 
+            IsCommandSystemInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
+                info.Id == "RTSCamera.CommandSystem") != null;
+            IsNavalInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
+                info.Id == "NavalDLC") != null;
+            IsHelmsmanInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
+                info.Id == "Helmsman") != null;
+            Utility.ShouldDisplayMessage = true;
+            Initialize();
+
             try
             {
-                IsCommandSystemInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                    info.Id == "RTSCamera.CommandSystem") != null;
-                IsNavalInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                    info.Id == "NavalDLC") != null;
-                IsHelmsmanInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                    info.Id == "Helmsman") != null;
-                Utility.ShouldDisplayMessage = true;
-                Initialize();
-
                 _successPatch = true;
 
                 //_harmony.Patch(
@@ -73,14 +73,8 @@ namespace RTSCamera
                 //            .Prefix_CheckIfConversationAgentIsEscortingTheMainAgent),
                 //        BindingFlags.Static | BindingFlags.Public)));
 
-                _harmony.Patch(
-                    typeof(PassageUsePoint).GetMethod(nameof(PassageUsePoint.IsDisabledForAgent),
-                        BindingFlags.Instance | BindingFlags.Public),
-                    new HarmonyMethod(typeof(Patch_PassageUsePoint).GetMethod(
-                        nameof(Patch_PassageUsePoint.IsDisabledForAgent_Prefix),
-                        BindingFlags.Static | BindingFlags.Public)));
-
                 // below checked
+                _successPatch &= Patch_PassageUsePoint.Patch(_harmony);
                 _successPatch &= Patch_OrderOfBattleVM.Patch(_harmony);
                 _successPatch &= Patch_DeploymentMissionController.Patch(_harmony);
                 _successPatch &= Patch_LadderQueueManager.Patch(_harmony);
@@ -89,7 +83,6 @@ namespace RTSCamera
                 _successPatch &= Patch_OrderTroopPlacer.Patch(_harmony);
                 _successPatch &= Patch_RangedSiegeWeaponView.Patch(_harmony);
                 _successPatch &= Patch_ArenaPracticeFightMissionController.Patch(_harmony);
-                _successPatch &= Patch_TeamAIComponent.Patch(_harmony);
                 _successPatch &= Patch_MissionAgentLabelView.Patch(_harmony);
                 _successPatch &= Patch_MissionBoundaryCrossingHandler.Patch(_harmony);
                 //_successPatch &= Patch_MissionFormationMarkerVM.Patch(_harmony);
@@ -111,6 +104,7 @@ namespace RTSCamera
                 _successPatch &= Patch_OrderFlag.Patch(_harmony);
                 _successPatch &= Patch_SandboxBattleBannerBearsModel.Patch(_harmony);
                 _successPatch &= Patch_OrderItemBaseVM.Patch(_harmony);
+                _successPatch &= Patch_BattleEndLogic.Patch(_harmony);
                 // naval dlc
                 if (IsNavalInstalled)
                 {
@@ -134,7 +128,7 @@ namespace RTSCamera
             catch (Exception e)
             {
                 _successPatch = false;
-                MBDebug.ConsolePrint(e.ToString());
+                MBDebug.Print(e.ToString());
             }
         }
 
@@ -174,7 +168,7 @@ namespace RTSCamera
             }
             catch (Exception e)
             {
-                MBDebug.ConsolePrint(e.ToString());
+                MBDebug.Print(e.ToString());
                 InformationManager.DisplayMessage(new InformationMessage($"RTS Camera: failed to load game texts: {e}"));
             }
 

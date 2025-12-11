@@ -15,10 +15,11 @@ namespace RTSCamera.CommandSystem.Patch
     //[HarmonyLib.HarmonyPatch(typeof(MovementOrder), "Tick")]
     public class Patch_MovementOrder
     {
+        private static readonly Harmony Harmony = new Harmony("RTSCommandPatchMovementOrder");
 
         private static bool _patched;
 
-        public static bool Patch(Harmony harmony)
+        public static bool Patch()
         {
             try
             {
@@ -26,25 +27,36 @@ namespace RTSCamera.CommandSystem.Patch
                     return false;
                 _patched = true;
 
+                // Have to be patched after Mission.Current is not null or call to Patch will throw null reference exception on Linux platform.
+                // because that constructor of MovementOrder uses Mission.Current
+                // patch behavior after charge to formation
+                Harmony.Patch(
+                    typeof(MovementOrder).GetMethod("GetSubstituteOrder",
+                        BindingFlags.Instance | BindingFlags.Public),
+                    prefix: new HarmonyMethod(typeof(Patch_MovementOrder).GetMethod(nameof(Patch_MovementOrder.Prefix_GetSubstituteOrder),
+                        BindingFlags.Static | BindingFlags.Public), Priority.First));
                 // patch advance order for throwing formation
-                harmony.Patch(
+                Harmony.Patch(
                     typeof(MovementOrder).GetMethod("GetPositionAux",
                     BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_MovementOrder).GetMethod(nameof(Prefix_GetPositionAux),
                         BindingFlags.Static | BindingFlags.Public)));
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                MBDebug.Print(e.ToString());
                 Utility.DisplayMessage(e.ToString());
                 return false;
             }
-            return true;
         }
 
         public static bool Prefix_GetSubstituteOrder(MovementOrder __instance, ref MovementOrder __result,
             Formation formation)
         {
+            if (Mission.Current.IsNavalBattle)
+                return true;
             if (__instance.OrderType == OrderType.ChargeWithTarget && formation.TargetFormation != null && CommandSystemConfig.Get().AttackSpecificFormation &&
                 !CommandSystemSubModule.IsRealisticBattleModuleInstalled && !formation.IsAIControlled)
             {
@@ -66,7 +78,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_GetPositionAux(MovementOrder __instance, Formation f, WorldPosition.WorldPositionEnforcedCache worldPositionEnforcedCache, ref WorldPosition __result, ref WorldPosition ____engageTargetPositionCache, ref float ____engageTargetPositionOffset)
         {
-            if (!CommandSystemConfig.Get().FixAdvaneOrderForThrowing)
+            if (!CommandSystemConfig.Get().FixAdvaneOrderForThrowing || Mission.Current.IsNavalBattle)
                 return true;
 
             if (f.IsAIControlled && !CommandSystemConfig.Get().ApplyAdvanceOrderFixForAI)

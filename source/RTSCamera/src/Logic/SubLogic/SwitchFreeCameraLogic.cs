@@ -793,17 +793,14 @@ namespace RTSCamera.Logic.SubLogic
 
         public void RefreshOrders()
         {
-            if (Mission.IsOrderMenuOpen)
+            var missionOrderVM = Utility.GetMissionOrderVM(Mission);
+            if (missionOrderVM != null)
             {
-                var missionOrderVM = Utility.GetMissionOrderVM(Mission);
-                if (missionOrderVM != null)
-                {
-                    _skipSwitchingCameraOnOrderingFinished = true;
-                    // allow it to be actually closed.
-                    Patch_MissionOrderVM.TryCloseToggleOrder(missionOrderVM);
-                    _shouldIgnoreNextOrderViewOpenEvent = true;
-                    SetOpenToggleUINextTick(true);
-                }
+                _skipSwitchingCameraOnOrderingFinished = true;
+                // allow it to be actually closed.
+                Patch_MissionOrderVM.TryCloseToggleOrder(missionOrderVM);
+                _shouldIgnoreNextOrderViewOpenEvent = true;
+                SetOpenToggleUINextTick(true);
             }
         }
 

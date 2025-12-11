@@ -129,8 +129,10 @@
     <string id="RTSCamera_missioncontinue" text="关卡继续。" />
 
     <string id="RTSCamera_slowmotionenabled" text="启用变速模式。" />
-    <string id="RTSCamera_fastfowardenabled" text="启用快速模式。" />
     <string id="RTSCamera_normalmodeenabled" text="启用正常速度。" />
+
+    <string id="RTSCamera_fastforwardenabled" text="启用快速模式。" />
+    <string id="RTSCamera_fastforwarddisabled" text="禁用快速模式。" />
 
     <string id="RTSCamera_playeragentdead" text="玩家控制的角色已受伤。" />
     <string id="RTSCamera_switchtoplayer" text="切换到玩家角色。" />

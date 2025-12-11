@@ -1,6 +1,23 @@
 # Changelog
 
-## [v5.3.8]
+## [v5.3.9] - 2025-12-11
+### Fixed
+- Fix startup crash on Linux system.
+
+- Fix crash in Naval battle on Linux System.
+
+- Fix performance issue when giving orders.
+
+- Fix compatibility with Torch mod in Command Battle mode.
+
+- Fix possible crash when time speed and fast forward both enabled.
+
+- Disable mod menu popup in conversation.
+
+## Added
+- Add French translation.
+
+## [v5.3.8] - 2025-12-08
 ### Fixed
 - Fix the issue that in ship battle, when soldier pilot ship on, current movement order is not highlighted in order UI.
 

@@ -71,7 +71,7 @@
 
   <string id="str_rts_camera_control_options" text="{=RTSCamera_control_options}Control Options" />
   <string id="str_rts_camera_player_controller_in_free_camera" text="{=RTSCamera_player_controller_in_free_camera}Player Controller in Free Camera" />
-  <string id="str_rts_camera_controller_type.none" text="{=RTSCamera_controller_type_none}None" />
+  <string id="str_rts_camera_controller_type.None" text="{=RTSCamera_controller_type_none}None" />
   <string id="str_rts_camera_controller_type.AI" text="{=RTSCamera_controller_type_AI}AI (Recommended)" />
   <string id="str_rts_camera_controller_type.Player" text="{=RTSCamera_controller_type_player}Player" />
   <string id="str_rts_camera_player_formation" text="{=RTSCamera_playerformation}Player Formation" />
@@ -126,8 +126,10 @@
   <string id="str_rts_camera_mission_continued" text="{=RTSCamera_missioncontinue}Mission continued." />
 
   <string id="str_rts_camera_slow_motion_enabled" text="{=RTSCamera_slowmotionenabled}Slow Motion Mode Enabled." />
-  <string id="str_rts_camera_fast_forward_mode_enabled" text="{=RTSCamera_fastfowardenabled}Fast Forward Mode Enabled." />
   <string id="str_rts_camera_normal_mode_enabled" text="{=RTSCamera_normalmodeenabled}Normal Mode Enabled." />
+
+  <string id="str_rts_camera_fast_forward_enabled" text="{=RTSCamera_fastforwardenabled}Fast Forward Mode Enabled." />
+  <string id="str_rts_camera_fast_forward_disabled" text="{=RTSCamera_fastforwarddisabled}Fast Forward Mode Disabled." />
 
   <string id="str_rts_camera_player_dead" text="{=RTSCamera_playeragentdead}Player agent is injured." />
   <string id="str_rts_camera_switch_to_player" text="{=RTSCamera_switchtoplayer}Switch to player agent." />

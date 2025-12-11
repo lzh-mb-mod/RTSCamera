@@ -64,7 +64,9 @@ namespace RTSCamera.CommandSystem.Patch
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
         }

@@ -4,6 +4,7 @@ using RTSCamera.Config;
 using RTSCamera.Logic;
 using System;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.GauntletUI.BaseTypes;
 using TaleWorlds.MountAndBlade.GauntletUI.Widgets.Scoreboard;
 
@@ -30,6 +31,7 @@ namespace RTSCamera.Patch
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 

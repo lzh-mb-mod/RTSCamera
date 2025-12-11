@@ -5,6 +5,7 @@ using RTSCamera.Logic;
 using SandBox.Missions.MissionLogics.Hideout;
 using System;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch
@@ -30,6 +31,7 @@ namespace RTSCamera.Patch
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 
