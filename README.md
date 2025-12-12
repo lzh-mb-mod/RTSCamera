@@ -17,13 +17,13 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Control one of your soldiers and continue fighting/commanding after player character is injured in battle.
 
-  - **New:** Allows automatic fast forward in hideout.
+  - Time speed control in battle.
 
 - Command System
 
   - Reworked the command system in the base game.
 
-  - **New:** Allows to add order to queue to let troops execute orders one by one. For example, move along a given path and then shooting/charging.
+  - **New:** Allows to give a series of orders and let your troops execute them one by one. For example, move along a given path and then shooting/charging.
 
   - **New:** When giving orders to multiple formations:
 
@@ -35,11 +35,11 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Issue focus charge command by clicking middle button on enemy units.
 
+  - Select your troops by clicking middle button on units.
+
   - **New:** Set attack target without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
   - Facing to enemy order now has an optional enemy formation target.
-
-  - Select your troops by clicking middle button on units.
 
   - Movement target becomes more visible.
 

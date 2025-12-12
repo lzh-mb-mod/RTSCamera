@@ -36,12 +36,7 @@ namespace RTSCamera.CommandSystem
             base.OnSubModuleLoad();
 
             // If RBM is loaded, disable the ChargeToFormation feature for infantry to not break RBM frontline behavior
-            IsRealisticBattleModuleInstalled =
-                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                    info.Id == "RBM") != null
-                &&
-                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                    info.Id == "RealisticBattleAiModule") == null;
+            IsRealisticBattleModuleInstalled = Utility.IsModuleInstalled("RBM") && Utility.IsModuleInstalled("RealisticBattleAiModule");
 
             Utility.ShouldDisplayMessage = true;
             Initialize();

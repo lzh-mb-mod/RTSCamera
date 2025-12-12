@@ -1,5 +1,15 @@
 # Changelog
 
+## [v5.3.11] - 2025-12-13
+### Fixed
+- Fix startup crash when there're other mods failing to load.
+
+- Fix the issue that background of game option in campaign becomes transparent after exiting a scene.
+
+- Fix the issue that clicking middle mouse button on the enemy formation or giving facing order using mouse button may close order UI in rts camera mode.
+
+- Fix the issue that banner bearer is never highlighted.
+
 ## [v5.3.10] - 2025-12-11
 ### Added
 - Troops in formations are highlighted when pressing alt.

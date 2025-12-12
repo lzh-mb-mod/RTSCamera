@@ -238,11 +238,11 @@ namespace RTSCamera.Utilities
             var shipControllerMachine = GetShipControllerMachine(playerShip);
             if (shipControllerMachine.PilotAgent != null && shipControllerMachine.PilotAgent.IsAIControlled && shipControllerMachine.PilotAgent != captain)
             {
-                shipControllerMachine.PilotAgent.StopUsingGameObject(flags: Agent.StopUsingGameObjectFlags.AutoAttachAfterStoppingUsingGameObject | Agent.StopUsingGameObjectFlags.DoNotWieldWeaponAfterStoppingUsingGameObject);
+                shipControllerMachine.PilotAgent.StopUsingGameObjectMT(flags: Agent.StopUsingGameObjectFlags.AutoAttachAfterStoppingUsingGameObject | Agent.StopUsingGameObjectFlags.DoNotWieldWeaponAfterStoppingUsingGameObject);
             }
             if (shipControllerMachine.PilotStandingPoint.MovingAgent != null && shipControllerMachine.PilotStandingPoint.MovingAgent.IsAIControlled && shipControllerMachine.PilotStandingPoint.MovingAgent != captain)
             {
-                shipControllerMachine.PilotStandingPoint.MovingAgent.StopUsingGameObject(flags: Agent.StopUsingGameObjectFlags.AutoAttachAfterStoppingUsingGameObject | Agent.StopUsingGameObjectFlags.DoNotWieldWeaponAfterStoppingUsingGameObject);
+                shipControllerMachine.PilotStandingPoint.MovingAgent.StopUsingGameObjectMT(flags: Agent.StopUsingGameObjectFlags.AutoAttachAfterStoppingUsingGameObject | Agent.StopUsingGameObjectFlags.DoNotWieldWeaponAfterStoppingUsingGameObject);
             }
         }
 

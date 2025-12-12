@@ -12,7 +12,7 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Logic
 {
-    public class CommandSystemLogic : MissionLogic
+    public class CommandSystemLogic : MissionLogic, IMissionListener
     {
         private CommandSystemConfig _config = CommandSystemConfig.Get();
         public readonly FormationColorSubLogicV2 OutlineColorSubLogic;
@@ -145,6 +145,7 @@ namespace RTSCamera.CommandSystem.Logic
         {
             base.AfterStart();
 
+            Mission.AddListener(this);
             CommandQueueLogic.AfterStart();
         }
 
@@ -225,6 +226,35 @@ namespace RTSCamera.CommandSystem.Logic
 
             OutlineColorSubLogic.OnAgentFleeing(affectedAgent);
             GroundMarkerColorSubLogic.OnAgentFleeing(affectedAgent);
+        }
+
+        public void OnEquipItemsFromSpawnEquipmentBegin(Agent agent, Agent.CreationType creationType)
+        {
+            // called before first equipment
+        }
+
+        public void OnEquipItemsFromSpawnEquipment(Agent agent, Agent.CreationType creationType)
+        {
+            // called after first equipment, and after refreshing equipment such as bearing banner
+            agent.GetComponent<CommandSystemAgentComponent>()?.Refresh();
+        }
+
+        void IMissionListener.OnEndMission()
+        {
+            Mission.RemoveListener(this);
+        }
+
+        public void OnConversationCharacterChanged()
+        {
+        }
+
+        public void OnResetMission()
+        {
+
+        }
+
+        public void OnDeploymentPlanMade(Team team, bool isFirstPlan)
+        {
         }
     }
 }

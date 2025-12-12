@@ -366,9 +366,14 @@ namespace RTSCamera.CommandSystem.Patch
                             // only pending order for formations that should be locked.
                             orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
                             dataSource.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, __instance.MissionScreen.GetOrderFlagPosition(), false));
+                            var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
+                            var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_toggle_facing");
+                            if (orderItem != null)
+                            {
+                                missionOrderVM.OnOrderExecuted(orderItem);
+                            }
                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
-                        RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
                         dataSource.SelectedOrderSet?.ExecuteDeSelect();
                         break;
                     }

@@ -46,12 +46,9 @@ namespace RTSCamera
         {
             base.OnSubModuleLoad();
 
-            IsCommandSystemInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                info.Id == "RTSCamera.CommandSystem") != null;
-            IsNavalInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                info.Id == "NavalDLC") != null;
-            IsHelmsmanInstalled = TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                info.Id == "Helmsman") != null;
+            IsCommandSystemInstalled = Utility.IsModuleInstalled("RTSCamera.CommandSystem");
+            IsNavalInstalled = Utility.IsModuleInstalled("NavalDLC");
+            IsHelmsmanInstalled = Utility.IsModuleInstalled("Helmsman");
             Utility.ShouldDisplayMessage = true;
             Initialize();
 

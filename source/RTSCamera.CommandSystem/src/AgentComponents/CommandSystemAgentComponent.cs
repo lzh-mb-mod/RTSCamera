@@ -1,4 +1,5 @@
-﻿using RTSCamera.CommandSystem.QuerySystem;
+﻿using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.QuerySystem;
 using RTSCameraAgentComponent;
 using System;
 using TaleWorlds.Core;
@@ -32,9 +33,9 @@ namespace RTSCamera.CommandSystem.AgentComponents
         public float DistanceSquaredToTargetPosition = 0;
         private Timer _cachedDistanceUpdateTimer;
         private MetaMesh _mesh;
-        private static Material _material;
-        private static Material _defaultMaterial;
-        private bool _materialCleared;
+        //private static Material _material;
+        //private static Material _defaultMaterial;
+        //private bool _materialCleared;
         public CommandSystemAgentComponent(Agent agent) : base(agent)
         {
             for (int i = 0; i < _colors.Length; ++i)
@@ -44,11 +45,17 @@ namespace RTSCamera.CommandSystem.AgentComponents
             _cachedDistanceUpdateTimer = new Timer(agent.Mission.CurrentTime, 0.2f + MBRandom.RandomFloat * 0.1f);
         }
 
-        public override void Initialize()
+        public void Refresh()
         {
-            base.Initialize();
-
-            //InitializeAux();
+            if (_mesh != null)
+            {
+                // called from Agent.UpdateSpawnEquipmentAndRefreshVisuals
+                // the mesh has been cleared.
+#if DEBUG
+                Utility.DisplayMessage($"agent mesh refreshed");
+#endif
+            }
+            InitializeAux();
         }
 
         private void InitializeAux()
@@ -59,37 +66,38 @@ namespace RTSCamera.CommandSystem.AgentComponents
             }
 
             _mesh = MetaMesh.GetCopy("rts_unit_marker");
-            if (_material == null)
-            {
-                _material = _mesh.GetMeshAtIndex(0).GetMaterial().CreateCopy();
-            }
+            //if (_material == null)
+            //{
+            //    _material = _mesh.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+            //}
 
+            //ClearMaterial();
+            UpdateMeshFrame(Agent.HasMount);
+            Agent.AgentVisuals.GetEntity().AddMultiMesh(_mesh);
             _mesh.SetFactor1(InvisibleColor);
             _mesh.SetContourColor(InvisibleColor);
             _mesh.SetContourState(false);
-            ClearMaterial();
-            UpdateMeshFrame(Agent.HasMount);
-            Agent.AgentVisuals.GetEntity().AddMultiMesh(_mesh);
-            Agent.AgentVisuals.LazyUpdateAgentRendererData();
+            _mesh.SetVisibilityMask(0);
+            //Agent.AgentVisuals.LazyUpdateAgentRendererData();
         }
 
-        private void ClearMaterial()
-        {
-            if (_defaultMaterial == null)
-            {
-                _defaultMaterial = Material.GetFromResource("default_empty");
-            }
-            _mesh.SetMaterial(_defaultMaterial);
-            _materialCleared = true;
-        }
+        //private void ClearMaterial()
+        //{
+        //    if (_defaultMaterial == null)
+        //    {
+        //        _defaultMaterial = Material.GetFromResource("default_empty");
+        //    }
+        //    _mesh.SetMaterial(_defaultMaterial);
+        //    _materialCleared = true;
+        //}
         
-        private void RecoverMaterial()
-        {
-            _mesh.SetMaterial(_material);
-            _materialCleared = false;
-            Agent.SetRenderCheckEnabled(true);
-            Agent.AgentVisuals.SetVisible(true);
-        }
+        //private void RecoverMaterial()
+        //{
+        //    _mesh.SetMaterial(_material);
+        //    _materialCleared = false;
+        //    Agent.SetRenderCheckEnabled(true);
+        //    Agent.AgentVisuals.SetVisible(true);
+        //}
 
         public void SetColor(int level, uint? color, bool alwaysVisible, bool updateInstantly)
         {
@@ -158,6 +166,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
                 _mesh.SetFactor1(InvisibleColor);
                 _mesh.SetContourColor(InvisibleColor);
                 _mesh.SetContourState(false);
+                _mesh.SetVisibilityMask(0);
             }
             catch (Exception e)
             {
@@ -264,14 +273,15 @@ namespace RTSCamera.CommandSystem.AgentComponents
         {
             try
             {
-                if (_materialCleared)
-                {
-                    RecoverMaterial();
-                }
+                //if (_materialCleared)
+                //{
+                //    RecoverMaterial();
+                //}
                 var color = CurrentColor.HasValue ? CurrentColor.Value : InvisibleColor;
                 _mesh.SetFactor1(color);
                 _mesh.SetContourColor(color);
                 _mesh.SetContourState(CurrentAlwaysVisible);
+                _mesh.SetVisibilityMask(VisibilityMaskFlags.Final);
             }
             catch (Exception e)
             {

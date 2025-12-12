@@ -2132,7 +2132,7 @@ namespace RTSCamera.CommandSystem.Patch
             if (arrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle || arrangementOrder == ArrangementOrder.ArrangementOrderEnum.Square)
                 return f.Direction;
             var targetFormation = GetVirtualFacingEnemyTargetFormation(f);
-            if (targetFormation != null)
+            if (targetFormation != null && targetFormation.CountOfUnits > 0)
             {
                 return Patch_FacingOrder.GetVirtualDirectionFacingToEnemyFormation(f, targetFormation);
             }

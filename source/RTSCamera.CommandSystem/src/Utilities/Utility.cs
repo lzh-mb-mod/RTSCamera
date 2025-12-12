@@ -258,7 +258,6 @@ namespace RTSCamera.CommandSystem.Utilities
 
         public static void ChargeToFormation(OrderController playerController, Formation targetFormation)
         {
-            var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
             //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
             var queueOrder = Utilities.Utility.ShouldQueueCommand();
             if (!queueOrder)
@@ -292,6 +291,14 @@ namespace RTSCamera.CommandSystem.Utilities
                 // In current game version, set ChargeWithTarget has no effect except voice and gesture
                 // so movement order will not be changed here
                 playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
+                // Call OnOrderExecuted because OrderController will not do it for OrderType.ChargeWithTarget
+                // This is required to keep MissionOrderVM open in rts mode.
+                var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
+                var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_movement_charge");
+                if (orderItem != null)
+                {
+                    missionOrderVM.OnOrderExecuted(orderItem);
+                }
             }
             //AfterSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
 
