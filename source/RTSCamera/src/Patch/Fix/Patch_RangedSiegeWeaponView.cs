@@ -4,11 +4,8 @@ using System;
 using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
-using TaleWorlds.InputSystem;
-using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.SiegeWeapon;
-using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.Patch.Fix
 {

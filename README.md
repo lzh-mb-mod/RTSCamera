@@ -23,6 +23,8 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Reworked the command system in the base game.
 
+  - Troops with throwing weapons will correctly keep distance under advance order.
+
   - **New:** Allows to give a series of orders and let your troops execute them one by one. For example, move along a given path and then shooting/charging.
 
   - **New:** When giving orders to multiple formations:

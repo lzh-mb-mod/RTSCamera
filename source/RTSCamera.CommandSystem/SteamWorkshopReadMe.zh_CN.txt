@@ -1,9 +1,11 @@
-RTS Command (全名 RTS Camera Command System)
+RTS Command for v1.3.x (兼容战帆DLC)
+(全名 RTS Camera Command System)
 
 
 主要功能：
 重做了游戏中的指挥系统。
 高亮指令目标以在远处时也能看见。
+带投掷武器的部队在开战指令下会保持正确的距离。
 可下达一系列指令，并让你的部队挨个执行这些指令。例如，可让部队沿给定路径移动，然后开始射击或冲锋。
 若你同时移动/旋转多个编队，他们的相对位置和方向会锁定。
 修复了游戏本体中的编队宽度和单位间距的问题。
@@ -14,7 +16,7 @@ RTS Command (全名 RTS Camera Command System)
 
 
 推荐：
-RTS Camera：RTS系列的另一mod，提供指挥时切换到自由视角的功能：https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
+RTS Camera：RTS mod的另一部分，提供指挥时切换到自由视角的功能：https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
 
 
 前置依赖：
@@ -40,6 +42,7 @@ v1.3.4-v1.3.10: https://steamcommunity.com/sharedfiles/filedetails/?id=359669328
 若你同时移动/旋转多个编队，他们的相对位置和方向会锁定。
     - 当你在地面拖动部队时，按住`Ctrl`可锁定编队宽度和相对位置。
     - 按住`Alt`可禁用锁定，回退到游戏默认行为。
+点击敌方编队同时按住`Alt`键，可在下达集中攻击指令的同时维持原有的移动指令不变。
 指挥时对着敌方士兵按下鼠标中键可让你的编队攻击该士兵所在的编队。
 对着己方士兵按下鼠标中键可选择该编队。
 被集中攻击的敌方编队会用红色轮廓标出。
@@ -70,5 +73,5 @@ L             - 打开配置菜单
 
 链接：
 Nexusmods: https://www.nexusmods.com/mountandblade2bannerlord/mods/355
-中文站: https://bbs.mountblade.com.cn/thread-2061243-1-1.html
+中文站下载区: https://bbs.mountblade.com.cn/download_2000.html
 源代码：https://github.com/lzh-mb-mod/RTSCamera

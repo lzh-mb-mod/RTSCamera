@@ -1,4 +1,4 @@
-RTS Camera
+RTS Camera for v1.3.x (War Sail DLC Compatible)
 
 
 Main features:
@@ -8,7 +8,7 @@ Main features:
 
 
 Recommended:
-RTS Command: another part of RTS series, for commanding better. https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285
+RTS Command: another part of the RTS mod, for commanding better. https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285
 
 
 War Sails DLC related:

@@ -1,9 +1,11 @@
-RTS Command (full name RTS Camera Command System)
+RTS Command for v1.3.x (War Sail DLC Compatible)
+(full name RTS Camera Command System)
 
 
 Main features:
 Reworked the command system in the base game.
 Order target is highlighted to be visible from far distance.
+Troops with throwing weapons will correctly keep distance under advance order.
 Allows to give a series of orders and let your troops execute them one by one. For example, move along a given path and then shooting/charging.
 If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
 Fix issues in the base game about formation width and unit spacing.
@@ -15,7 +17,7 @@ Replace square formation with hollow square formation for player.
 
 
 Recommend:
-RTS Camera: another part of RTS series, for free camera view when giving orders: https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
+RTS Camera: another part of the RTS mod, for free camera view when giving orders: https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
 
 
 Dependency:
@@ -41,6 +43,7 @@ Hold Shift and give orders to add orders to queue. Your troops will execute them
 When you move/turn multiple formations together, relative positions/directions will be locked.
     - Hold `Ctrl` while dragging on the ground, formations' widths will also be locked.
     - Hold `Alt` to disable the locking behavior and revert to behavior in the base game.
+Hold `Alt` while clicking the enemy formation to target the enemy without interrupting previous movement orders.
 Click middle mouse button on the enemy formation to make your formation attack it.
 Click middle mouse button on your formation to select it.
 The attacked enemy formation will be highlighted with red outline when you open command panel.

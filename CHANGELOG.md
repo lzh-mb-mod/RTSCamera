@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.3.12] - 2025-12-13
+### Fixed
+- Fix potential crash at the end of siege.
+
 ## [v5.3.11] - 2025-12-13
 ### Fixed
 - Fix startup crash when there're other mods failing to load.
