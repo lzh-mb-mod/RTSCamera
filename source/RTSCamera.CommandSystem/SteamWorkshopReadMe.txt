@@ -6,6 +6,7 @@ Main features:
 Reworked the command system in the base game.
 Order target is highlighted to be visible from far distance.
 Troops with throwing weapons will correctly keep distance under advance order.
+Square and Circle formations are improved.
 Allows to give a series of orders and let your troops execute them one by one. For example, move along a given path and then shooting/charging.
 If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
 Fix issues in the base game about formation width and unit spacing.
@@ -61,6 +62,15 @@ Click mouse middle button  -  Select/Attack formation.
 Hold Alt + Click mouse middle button - Attack enemy formation without interrupting previous movement orders
 L                          -    Open the config menu.
 All the hotkeys can be changed in config menu.
+
+
+More Details:
+Improved square and circle formation:
+  - When switching between square/cicle formation and other formations, the unit count in the outside rank is kept the same as the unit count of the first rank of line/sheild wall/loose formation if possible.
+    This allows soldiers to form formations more quickly and avoids them crowding together.
+  - In the base game when the unit count in square formation is square number, the center unit is not correctly placed. This is fixed in this mod.
+  - Player can use hollow square formation. Not enabled for AI.
+  - When formation is switched to circle formation, the circle formation will be tighter. This can be changed in option.
 
 
 Troubleshooting

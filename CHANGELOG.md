@@ -1,17 +1,19 @@
 # Changelog
 
 ## [v5.3.12] - 2025-12-15
-
 ### Improved
 - The unit's ground marker can be seen below.
 
 - Improve square formation when unit count is square number.
 
-- Improve unit position in square and circle formtion.
+- Improve unit position in square and circle formation.
 
 - Improve performance when movement orders are shown.
+
 ### Fixed
 - Fix potential crash at the end of siege.
+
+- Fix order issue in sea battle when option "Switch Camera on Ordering" is turned on.
 
 ## [v5.3.11] - 2025-12-13
 ### Fixed
