@@ -124,6 +124,9 @@ namespace RTSCamera.Patch.Fix
             //return false;
         }
 
+        private static PropertyInfo _displayOrderMessageForLastOrder = AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder");
+        private static MethodInfo _Reset_OrderTrropPlacer = typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public static void Postfix_OnOrderExecuted(MissionOrderVM __instance, OrderItemVM orderItem)
         {
             // Close UI if needed
@@ -137,21 +140,20 @@ namespace RTSCamera.Patch.Fix
                     var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
                     TryCloseToggleOrder(__instance);
                     Patch_MissionOrderVM.OpenToggleOrder(__instance, false);
-                    AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(__instance, displayedOrderMessageForLastOrder);
+                    _displayOrderMessageForLastOrder.SetValue(__instance, displayedOrderMessageForLastOrder);
                 }
             }
             else
             {
                 var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
                 TryCloseToggleOrder(__instance);
-                AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(__instance, displayedOrderMessageForLastOrder);
+                _displayOrderMessageForLastOrder.SetValue(__instance, displayedOrderMessageForLastOrder);
             }
 
             var orderTroopPlacer = Mission.Current.GetMissionBehavior<OrderTroopPlacer>();
             if (orderTroopPlacer != null)
             {
-                typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(orderTroopPlacer, null);
+                _Reset_OrderTrropPlacer.Invoke(orderTroopPlacer, null);
             }
         }
 

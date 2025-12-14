@@ -93,8 +93,8 @@ namespace RTSCamera.Patch.Naval
 
         public static bool ShouldAIPilotPlayerShip(MissionObject ownerShip)
         {
-            var isShipAIControlled = (bool)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsAIControlled").GetValue(ownerShip);
-            var isPlayerShip =  (bool)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsPlayerShip").GetValue(ownerShip);
+            var isShipAIControlled = Utilities.Utility.IsShipAIControlled(ownerShip);
+            var isPlayerShip = Utilities.Utility.IsPlayerShip(ownerShip);
             return isPlayerShip && isShipAIControlled;
         }
     }

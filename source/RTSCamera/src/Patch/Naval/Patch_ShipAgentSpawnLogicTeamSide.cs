@@ -38,45 +38,56 @@ namespace RTSCamera.Patch.Naval
             return true;
         }
 
+        private static PropertyInfo _teamSide;
+        private static MethodInfo _findTroopOrigin;
+        private static MethodInfo _getShipAssignment;
+        private static PropertyInfo _missionShip;
+        private static MethodInfo _addReservedTroopToShip;
+        private static MethodInfo _assignTroops;
+        private static MethodInfo _initializeReinforcementTimers;
+        private static MethodInfo _checkSpawnNextBatch;
+        private static MethodInfo _getActiveHeroesOfShip;
+        private static MethodInfo _assignCaptainToShipForDeploymentMode;
+
         public static bool Prefix_AllocateAndDeployInitialTroopsOfPlayerTeam(Object __instance, MissionLogic ____agentsLogic, MissionLogic ____shipsLogic)
         {
             if (!CommandBattleBehavior.CommandMode)
                 return true;
-            var teamSideProperty = AccessTools.Property(__instance.GetType(), "TeamSide");
-            var findTroopOriginMethod = AccessTools.Method(____agentsLogic.GetType(), "FindTroopOrigin");
+            _teamSide ??= AccessTools.Property(__instance.GetType(), "TeamSide");
+            _findTroopOrigin ??= AccessTools.Method(____agentsLogic.GetType(), "FindTroopOrigin");
 
-            var teamSide = (TeamSideEnum)teamSideProperty.GetValue(__instance);
+            var teamSide = (TeamSideEnum)_teamSide.GetValue(__instance);
             // if player character doesn't exists, find a hero under player's command, else find any troop under player's command
-            IAgentOriginBase troopOrigin = (IAgentOriginBase)findTroopOriginMethod.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin.Troop.IsPlayerCharacter) });
+            IAgentOriginBase troopOrigin = (IAgentOriginBase)_findTroopOrigin.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin.Troop.IsPlayerCharacter) });
             if (troopOrigin == null)
             {
-                troopOrigin = (IAgentOriginBase)findTroopOriginMethod.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin.IsUnderPlayersCommand && origin.Troop.IsHero ) });
+                troopOrigin = (IAgentOriginBase)_findTroopOrigin.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin.IsUnderPlayersCommand && origin.Troop.IsHero ) });
                 if (troopOrigin == null)
                 {
-                    troopOrigin = (IAgentOriginBase)findTroopOriginMethod.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin.IsUnderPlayersCommand) });
+                    troopOrigin = (IAgentOriginBase)_findTroopOrigin.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin.IsUnderPlayersCommand) });
                 }
             }
 
-            var getShipAssignmentMethod = AccessTools.Method(____shipsLogic.GetType(), "GetShipAssignment");
-            var shipAssignment = getShipAssignmentMethod.Invoke(____shipsLogic, new object[] { TeamSideEnum.PlayerTeam, FormationClass.Infantry });
+            _getShipAssignment ??= AccessTools.Method(____shipsLogic.GetType(), "GetShipAssignment");
+            var shipAssignment = _getShipAssignment.Invoke(____shipsLogic, new object[] { TeamSideEnum.PlayerTeam, FormationClass.Infantry });
 
-            var missionShipProperty = AccessTools.Property(shipAssignment.GetType(), "MissionShip");
-            var missionShip = (MissionObject)missionShipProperty.GetValue(shipAssignment);
+            _missionShip ??= AccessTools.Property(shipAssignment.GetType(), "MissionShip");
+            var missionShip = (MissionObject)_missionShip.GetValue(shipAssignment);
 
-            var addReservedTroopToShipMethod = AccessTools.Method(____agentsLogic.GetType(), "AddReservedTroopToShip");
-            addReservedTroopToShipMethod.Invoke(____agentsLogic, new object[] { troopOrigin, missionShip });
-            
-            var assignTroops = AccessTools.Method(____agentsLogic.GetType(), "AssignTroops");
-            assignTroops.Invoke(____agentsLogic, new object[] { teamSide, false });
+            _addReservedTroopToShip ??= AccessTools.Method(____agentsLogic.GetType(), "AddReservedTroopToShip");
+            _addReservedTroopToShip.Invoke(____agentsLogic, new object[] { troopOrigin, missionShip });
 
-            var initializeReinforcementTimersMethod = AccessTools.Method(____agentsLogic.GetType(), "InitializeReinforcementTimers");
-            initializeReinforcementTimersMethod.Invoke(____agentsLogic, new object[] { teamSide, true, true });
+            _assignTroops ??= AccessTools.Method(____agentsLogic.GetType(), "AssignTroops");
+            _assignTroops.Invoke(____agentsLogic, new object[] { teamSide, false });
 
-            var checkSpawnNextBatchMethod = AccessTools.Method(__instance.GetType(), "CheckSpawnNextBatch");
-            checkSpawnNextBatchMethod.Invoke(__instance, null);
+            _initializeReinforcementTimers ??= AccessTools.Method(____agentsLogic.GetType(), "InitializeReinforcementTimers");
+            _initializeReinforcementTimers.Invoke(____agentsLogic, new object[] { teamSide, true, true });
 
-            var getActiveHeroesOfShipMethod = AccessTools.Method(____agentsLogic.GetType(), "GetActiveHeroesOfShip");
-            var activeHeroesOfShip = getActiveHeroesOfShipMethod.Invoke(____agentsLogic, new object[] { missionShip }) as IEnumerable<Agent>;
+            _checkSpawnNextBatch ??= AccessTools.Method(__instance.GetType(), "CheckSpawnNextBatch");
+            _checkSpawnNextBatch.Invoke(__instance, null);
+
+            _getActiveHeroesOfShip ??= AccessTools.Method(____agentsLogic.GetType(), "GetActiveHeroesOfShip");
+            var activeHeroesOfShip = _getActiveHeroesOfShip.Invoke(____agentsLogic, new object[] { missionShip }) as IEnumerable<Agent>;
 
             Agent agent1 = activeHeroesOfShip.FirstOrDefault(agent => agent.IsPlayerTroop);
             // if no player troop, get any hero
@@ -85,13 +96,12 @@ namespace RTSCamera.Patch.Naval
                 agent1 = activeHeroesOfShip.FirstOrDefault(agent => agent.IsHero);
             }
 
-            var formationProperty = AccessTools.Property(missionShip.GetType(), "Formation");
-            var formation = formationProperty.GetValue(missionShip) as Formation;
+            var formation = Utilities.Utility.GetShipFormation(missionShip);
             if (formation.Captain == agent1)
                 return false;
 
-            var assignCaptainToShipForDeploymentModeMethod = AccessTools.Method(____agentsLogic.GetType(), "AssignCaptainToShipForDeploymentMode");
-            assignCaptainToShipForDeploymentModeMethod.Invoke(____agentsLogic, new object[] { agent1, missionShip, missionShip });
+            _assignCaptainToShipForDeploymentMode ??= AccessTools.Method(____agentsLogic.GetType(), "AssignCaptainToShipForDeploymentMode");
+            _assignCaptainToShipForDeploymentMode.Invoke(____agentsLogic, new object[] { agent1, missionShip, missionShip });
             return false;
         }
 

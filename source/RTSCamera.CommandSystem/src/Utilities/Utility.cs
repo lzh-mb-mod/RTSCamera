@@ -366,7 +366,7 @@ namespace RTSCamera.CommandSystem.Utilities
                         }
                     case OrderType.Advance:
                         {
-                            return Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPositionEnforcedCache.NavMeshVec3, formationChange.TargetFormation);
+                            return Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPositionEnforcedCache.None, formationChange.TargetFormation);
                         }
                     case OrderType.FollowEntity:
                         {
@@ -385,7 +385,7 @@ namespace RTSCamera.CommandSystem.Utilities
                         }
                     case OrderType.FallBack:
                         {
-                            return Patch_OrderController.GetFallbackOrderPosition(formation, WorldPositionEnforcedCache.NavMeshVec3, formationChange.TargetFormation);
+                            return Patch_OrderController.GetFallbackOrderPosition(formation, WorldPositionEnforcedCache.None, formationChange.TargetFormation);
                         }
                 }
             }
@@ -563,6 +563,37 @@ namespace RTSCamera.CommandSystem.Utilities
             return formation.CalculateHasSignificantNumberOfMounted && !(formation.RidingOrder == RidingOrder.RidingOrderDismount) ? Formation.CavalryDistance(unitSpacing) : Formation.InfantryDistance(unitSpacing);
         }
 
+        public static float GetFormationMaximumWidthOfArrangementOrder(Formation formation, ArrangementOrder.ArrangementOrderEnum arrangementOrder)
+        {
+            var unitSpacing = ArrangementOrder.GetUnitSpacingOf(arrangementOrder);
+            switch (arrangementOrder)
+            {
+                case ArrangementOrder.ArrangementOrderEnum.Square:
+                    return Utilities.Utility.GetMaximumWidthOfSquareFormation(formation);
+                case ArrangementOrder.ArrangementOrderEnum.Circle:
+                    return Utilities.Utility.GetMaximumWidthOfCircularFormation(formation, unitSpacing);
+                case ArrangementOrder.ArrangementOrderEnum.Column:
+                    return Utilities.Utility.GetMaximumWidthOfColumnFormation(formation, unitSpacing);
+                default:
+                    return Utilities.Utility.GetMaximumWidthOfLineFormation(formation, unitSpacing);
+            }
+        }
+
+        public static float GetFormationMinimumWidthOfArrangementOrder(Formation formation, ArrangementOrder.ArrangementOrderEnum arrangementOrder, int unitSpacing)
+        {
+            switch (arrangementOrder)
+            {
+                case ArrangementOrder.ArrangementOrderEnum.Square:
+                    return Utilities.Utility.GetMinimumWidthOfSquareFormation(formation);
+                case ArrangementOrder.ArrangementOrderEnum.Circle:
+                    return Utilities.Utility.GetMinimumWidthOfCircularFormation(formation, unitSpacing);
+                case ArrangementOrder.ArrangementOrderEnum.Column:
+                    return Utilities.Utility.GetMinimumWidthOfColumnFormation(formation, unitSpacing);
+                default:
+                    return Utilities.Utility.GetMinimumWidthOfLineFormation(formation);
+            }
+        }
+
         public static float GetMinimumWidthOfLineFormation(Formation formation)
         {
             return (float)(GetMinimumFileCount(formation) - 1) * (formation.MinimumInterval + formation.UnitDiameter) + formation.UnitDiameter;
@@ -697,9 +728,15 @@ namespace RTSCamera.CommandSystem.Utilities
             rankCount = MathF.Min(GetMaximumRankCountOfSquareFormation(countWithOverride, out int _), rankCount);
             double f = (double)countWithOverride / (4.0 * (double)rankCount) + (double)rankCount;
             int sideFromRankCount = MathF.Ceiling((float)f);
-            int num = MathF.Round((float)f);
-            if (num < sideFromRankCount && (num * num == countWithOverride || rankCount == 1))
-                sideFromRankCount = num;
+            // replaces Mathf.Round(f)
+            // for example, if untiCount = 42, and rankCount = 1,
+            // f = 11.5
+            // Mathf.Round(f) would be 12.
+            var floor = MathF.Floor(f);
+            //int num = f - floor > 0.5f ? floor + 1 : floor;
+            //int num = MathF.Round(f);
+            if (floor < sideFromRankCount && (floor * floor == countWithOverride || rankCount == 1 && countWithOverride > 10))
+                sideFromRankCount = floor;
             if (sideFromRankCount == 0)
                 sideFromRankCount = 1;
             return sideFromRankCount;
@@ -753,6 +790,25 @@ namespace RTSCamera.CommandSystem.Utilities
             // flankwidth = (4 * (width - unitdiameter) / (interval + unitdiameter) - 1) * (interval + unitdiameter) + unitdiameter
             // flankwidth = 4 * (width - unitdiameter) - interval
             return (flankWidth + GetFormationInterval(formation, unitSpacing)) / 4f + formation.UnitDiameter;
+        }
+
+        public static float ConvertFromWidthToFlankWidthOfCircularFormation(
+            Formation formation,
+            int unitSpacing,
+            float width)
+        {
+            // For circle formation, Arrangement.FlankWidth = Circumference - interval
+            // Circumference = FormOrder.FlankWidth * PI
+            // Width = FormOrder.FlankWidth
+            return width * MathF.PI - GetFormationInterval(formation, unitSpacing);
+        }
+
+        public static float ConvertFromFlankWidthToWidthOfCircularFormation(
+            Formation formation,
+            int unitSpacing,
+            float flankWidth)
+        {
+            return  (flankWidth + GetFormationInterval(formation, unitSpacing)) / MathF.PI;
         }
 
         public static int GetFileCountFromWidth(Formation formation, float flankWidth, int unitSpacing)

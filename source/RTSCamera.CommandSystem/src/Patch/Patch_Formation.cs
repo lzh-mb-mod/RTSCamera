@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
+using Microsoft.VisualBasic;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Logic;
 using System;
 using System.Reflection;
@@ -7,6 +9,7 @@ using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using static TaleWorlds.MountAndBlade.ArrangementOrder;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.CommandSystem.Patch
 {
@@ -43,17 +46,24 @@ namespace RTSCamera.CommandSystem.Patch
                 var maximumIntervalIndex = Array.IndexOf(maximumIntervalMap.InterfaceMethods, maximumIntervalInterfaceMethod);
                 var maximumIntervalTargetMethod = maximumIntervalMap.TargetMethods[maximumIntervalIndex];
                 harmony.Patch(minimumDistanceTargetMethod,
-                    prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
-                        nameof(Prefix_MinimumDistance), BindingFlags.Static | BindingFlags.Public)));
+                   prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
+                       nameof(Prefix_MinimumDistance), BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(maximumDistanceTargetMethod,
-                    prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
-                        nameof(Prefix_MaximumDistance), BindingFlags.Static | BindingFlags.Public)));
+                   prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
+                       nameof(Prefix_MaximumDistance), BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(minimumIntervalTargetMethod,
-                    prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
-                        nameof(Prefix_MinimumInterval), BindingFlags.Static | BindingFlags.Public)));
+                   prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
+                       nameof(Prefix_MinimumInterval), BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(maximumIntervalTargetMethod,
+                   prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
+                       nameof(Prefix_MaximumInterval), BindingFlags.Static | BindingFlags.Public)));
+
+                harmony.Patch(typeof(Formation).GetMethod("CalculateDesiredWidth", BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
-                        nameof(Prefix_MaximumInterval), BindingFlags.Static | BindingFlags.Public)));
+                        nameof(Prefix_CalculateDesiredWidth), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(typeof(Formation).GetMethod(nameof(Formation.SetFormOrder), BindingFlags.Instance | BindingFlags.Public),
+                    prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
+                        nameof(Prefix_SetFormOrder), BindingFlags.Static | BindingFlags.Public)));
 
 
                 //harmony.Patch(
@@ -213,6 +223,107 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 --ReapplyFormOrderExecutiionCount;
             }
+        }
+
+        public static bool Prefix_CalculateDesiredWidth(Formation __instance, ref float __result, int ____desiredFileCount)
+        {
+            // original code:
+            // 
+            //private float CalculateDesiredWidth()
+            //{
+            //    return (float)(this._desiredFileCount - 1) * (this.UnitDiameter + this.Interval) + this.UnitDiameter;
+            //}
+            // and the place to call it:
+            // 
+            //public void SetArrangementOrder(ArrangementOrder order)
+            //{
+            //    if (order.OrderType != this.ArrangementOrder.OrderType)
+            //    {
+            //        this.ArrangementOrder.OnCancel(this);
+            //        int defensivenessChange = ArrangementOrder.GetArrangementOrderDefensivenessChange(this.ArrangementOrder.OrderEnum, order.OrderEnum);
+            //        if (defensivenessChange != 0 && MovementOrder.GetMovementOrderDefensiveness(this._movementOrder.OrderEnum) != 0)
+            //        {
+            //            this._formationOrderDefensivenessFactor += defensivenessChange;
+            //            this.UpdateAgentDrivenPropertiesBasedOnOrderDefensiveness();
+            //        }
+            //        this.ArrangementOrder = order;
+            //        this.ArrangementOrder.OnApply(this);
+            //        Action<Formation, ArrangementOrder.ArrangementOrderEnum> arrangementOrderApplied = this.OnAfterArrangementOrderApplied;
+            //        if (arrangementOrderApplied != null)
+            //            arrangementOrderApplied(this, this.ArrangementOrder.OrderEnum);
+            //        if (this.FormOrder.OrderEnum == FormOrder.FormOrderEnum.Custom && order.OrderEnum != ArrangementOrder.ArrangementOrderEnum.Column)
+            //            this.SetFormOrder(FormOrder.FormOrderCustom(this.CalculateDesiredWidth()), false);
+            //        this.QuerySystem.Expire();
+            //    }
+            //    else
+            //        this.ArrangementOrder.SoftUpdate(this);
+            //}
+
+            // This is incorrect because:
+            // FormOrder.CustomFlankWidth is treated as "Width" instead of "FlankWidth" in FormOrder.OnApplyToArrangement and almost elsewhere, especially for circle and square formation.
+            // The original code of CalculateDesiredWidth only returns "FlankWidth".
+            // We should return "Width" instead.
+            var flankWidth = Utilities.Utility.GetFlankWidthFromFileCount(__instance, ____desiredFileCount, __instance.UnitSpacing);
+
+            if (__instance.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Circle)
+            {
+                flankWidth = Utilities.Utility.ConvertFromFlankWidthToWidthOfCircularFormation(__instance, __instance.UnitSpacing, flankWidth);
+            }
+            else if (__instance.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Square)
+            {
+                if (CommandSystemConfig.Get().HollowSquare)
+                {
+                    flankWidth = Utilities.Utility.ConvertFromFlankWidthToWidthOfSquareFormation(__instance, __instance.UnitSpacing, flankWidth);
+                }
+                else
+                {
+                    flankWidth = MathF.Min(Utilities.Utility.GetMinimumWidthOfSquareFormation(__instance), flankWidth);
+                }
+            }
+            __result = MathF.Clamp(flankWidth,
+                Utilities.Utility.GetFormationMinimumWidthOfArrangementOrder(__instance, __instance.ArrangementOrder.OrderEnum, __instance.UnitSpacing),
+                Utilities.Utility.GetFormationMaximumWidthOfArrangementOrder(__instance, __instance.ArrangementOrder.OrderEnum));
+            return false;
+
+        }
+
+        private static PropertyInfo _FormOrder;
+
+        public static bool Prefix_SetFormOrder(Formation __instance, FormOrder order, bool updateDesiredFileCount, ref int ____desiredFileCount)
+        {
+            // original code:
+            //public void SetFormOrder(FormOrder order, bool updateDesiredFileCount = true)
+            //{
+            //    if (order.OrderEnum == FormOrder.FormOrderEnum.Custom & updateDesiredFileCount)
+            //        this._desiredFileCount = (int)(((double)order.CustomFlankWidth - (double)this.UnitDiameter) / ((double)this.UnitDiameter + (double)this.Interval)) + 1;
+            //    this.FormOrder = order;
+            //    this.FormOrder.OnApply(this);
+            //    this.QuerySystem.Expire();
+            //}
+
+            // This is incorrect because:
+            // FormOrder.CustomFlankWidth is treated as "Width" instead of "FlankWidth" in FormOrder.OnApplyToArrangement and almost elsewhere, especially for circle and square formation.
+            // We should compute flank width and then update _desiredFileCount from it.
+
+            if (order.OrderEnum == FormOrder.FormOrderEnum.Custom & updateDesiredFileCount)
+            {
+                var width = order.CustomFlankWidth;
+                var flankWidth = width;
+                if (__instance.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Circle)
+                {
+                    flankWidth = Utilities.Utility.ConvertFromWidthToFlankWidthOfCircularFormation(__instance, __instance.UnitSpacing, flankWidth);
+                }
+                else if (__instance.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Square)
+                {
+                    flankWidth = Utilities.Utility.ConvertFromWidthToFlankWidthOfSquareFormation(__instance, __instance.UnitSpacing, flankWidth);
+                }
+                ____desiredFileCount = Utilities.Utility.GetFileCountFromWidth(__instance, flankWidth, __instance.UnitSpacing);
+            }
+            _FormOrder ??= AccessTools.Property(typeof(Formation), nameof(Formation.FormOrder));
+            _FormOrder.SetValue(__instance, order);
+            __instance.FormOrder.OnApply(__instance);
+            __instance.QuerySystem.Expire();
+            return false;
         }
     }
 }

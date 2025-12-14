@@ -573,7 +573,7 @@ namespace RTSCamera.CommandSystem.View
                         {
                             targetFormation = formation.TargetFormation;
                         }
-                        var targetPosition = Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPosition.WorldPositionEnforcedCache.NavMeshVec3, targetFormation);
+                        var targetPosition = Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPosition.WorldPositionEnforcedCache.None, targetFormation);
                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
                         break;
                     }
@@ -583,7 +583,7 @@ namespace RTSCamera.CommandSystem.View
                         {
                             targetFormation = formation.TargetFormation;
                         }
-                        var targetPosition = Patch_OrderController.GetFallbackOrderPosition(formation, WorldPosition.WorldPositionEnforcedCache.NavMeshVec3, targetFormation);
+                        var targetPosition = Patch_OrderController.GetFallbackOrderPosition(formation, WorldPosition.WorldPositionEnforcedCache.None, targetFormation);
                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
                         break;
                     }

@@ -9,7 +9,9 @@ using RTSCamera.Patch.TOR_fix;
 using RTSCamera.View;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Naval;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -130,7 +132,7 @@ namespace RTSCamera.Logic.SubLogic
                     }
                     else
                     {
-                        if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
+                        if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode && !Mission.IsNavalBattle)
                         {
                             _skipSwitchingCameraOnOrderingFinished = false;
                             SwitchToFreeCamera();
@@ -690,6 +692,8 @@ namespace RTSCamera.Logic.SubLogic
             }
         }
 
+        private static PropertyInfo _isShipAIControlled = AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsAIControlled");
+
         private void SwitchToAgent()
         {
             if (!IsSpectatorCamera)
@@ -724,7 +728,7 @@ namespace RTSCamera.Logic.SubLogic
                 var shipControllerMachine = Utilities.Utility.GetShipControllerMachine(ship);
                 if (shipControllerMachine != null && shipControllerMachine.PilotStandingPoint == usableMissionObject)
                 {
-                    var isShipAIControlled = (bool)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsAIControlled").GetValue(ship);
+                    var isShipAIControlled = (bool)_isShipAIControlled.GetValue(ship);
                     var shipFormation = Utilities.Utility.GetShipFormation(ship);
                     if (!(RTSCameraSubModule.IsHelmsmanInstalled && shipFormation.FormationIndex == FormationClass.Infantry))
                     {

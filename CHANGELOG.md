@@ -1,6 +1,15 @@
 # Changelog
 
-## [v5.3.12] - 2025-12-13
+## [v5.3.12] - 2025-12-15
+
+### Improved
+- The unit's ground marker can be seen below.
+
+- Improve square formation when unit count is square number.
+
+- Improve unit position in square and circle formtion.
+
+- Improve performance when movement orders are shown.
 ### Fixed
 - Fix potential crash at the end of siege.
 

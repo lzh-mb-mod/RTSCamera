@@ -59,14 +59,17 @@ namespace RTSCamera.CommandSystem.Patch
             return true;
         }
 
+        private static PropertyInfo _formOrder = AccessTools.Property(typeof(Formation), "FormOrder");
+        private static PropertyInfo _unitSpacing = AccessTools.Property(typeof(Formation), "UnitSpacing");
+
         public static bool Prefix_OnApply(ArrangementOrder __instance, Formation formation)
         {
             var previousUnitSpacing = formation.UnitSpacing;
             var newUnitSpacing = __instance.GetUnitSpacing();
             if (Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(formation) && formation.Arrangement.GetType() != Utilities.Utility.GetTypeOfArrangement(__instance.OrderEnum, Utilities.Utility.ShouldEnableHollowSquareFormationFor(formation)))
             {
-                AccessTools.Property(typeof(Formation), "FormOrder").SetValue(formation, FormOrder.FormOrderCustom(Patch_OrderController.GetFormationVirtualWidth(formation) ?? formation.Width));
-                AccessTools.Property(typeof(Formation), "UnitSpacing").SetValue(formation, Patch_OrderController.GetFormationVirtualUnitSpacing(formation) ?? newUnitSpacing);
+                _formOrder.SetValue(formation, FormOrder.FormOrderCustom(Patch_OrderController.GetFormationVirtualWidth(formation) ?? formation.Width));
+                _unitSpacing.SetValue(formation, Patch_OrderController.GetFormationVirtualUnitSpacing(formation) ?? newUnitSpacing);
             }
             else
             {

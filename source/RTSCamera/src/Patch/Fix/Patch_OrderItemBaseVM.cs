@@ -11,6 +11,7 @@ namespace RTSCamera.Patch.Fix
     public class Patch_OrderItemBaseVM
     {
         private static bool _patched;
+        private static PropertyInfo _displayOrderMessageForLastOrder = AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder");
 
         public static bool Patch(Harmony harmony)
         {
@@ -42,7 +43,7 @@ namespace RTSCamera.Patch.Fix
         public static void Prefix_ExecuteAction()
         {
             var missionOrderVM = Utility.GetMissionOrderVM(Mission.Current);
-            AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(missionOrderVM, false);
+            _displayOrderMessageForLastOrder.SetValue(missionOrderVM, false);
         }
 
     }

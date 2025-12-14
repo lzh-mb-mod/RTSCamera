@@ -558,7 +558,7 @@ namespace RTSCamera.CommandSystem.Logic
         {
             if (GameNetwork.IsClientOrReplay || formation.GetReadonlyMovementOrderReference().OrderEnum != MovementOrder.MovementOrderEnum.Stop)
                 return;
-            WorldPosition orderWorldPosition = formation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.NavMeshVec3);
+            WorldPosition orderWorldPosition = formation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.None);
             if (!orderWorldPosition.IsValid)
                 return;
             formation.SetMovementOrder(MovementOrder.MovementOrderMove(orderWorldPosition));
@@ -721,6 +721,21 @@ namespace RTSCamera.CommandSystem.Logic
                 }
                 // calls OrderOfBattleFormationItemVM.RefreshMarkerWorldPosition
                 Mission.Current.GetMissionBehavior<OrderTroopPlacer>()?.OnUnitDeployed?.Invoke();
+            }
+        }
+
+        public static void OnFormationUnitsCleared(Formation formation)
+        {
+            if (formation.Team != null && formation.Team.IsPlayerTeam)
+            {
+                CurrentFormationChanges.SetChanges(new List<KeyValuePair<Formation, FormationChange>>
+                {
+                    new KeyValuePair<Formation, FormationChange>(formation, new FormationChange())
+                });
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(new List<KeyValuePair<Formation, FormationChange>>
+                {
+                    new KeyValuePair<Formation, FormationChange>(formation, new FormationChange())
+                });
             }
         }
     }

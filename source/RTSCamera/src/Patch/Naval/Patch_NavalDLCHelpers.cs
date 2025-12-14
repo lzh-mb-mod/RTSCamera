@@ -71,7 +71,7 @@ namespace RTSCamera.Patch.Naval
                     var ship = Utilities.Utility.GetShip(navalShipsLogic, selectedFormations[index].Team.TeamSide, selectedFormations[index].FormationIndex);
                     if (ship == null)
                         return false;
-                    var shipFormation = (Formation)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:Formation").GetValue(ship);
+                    var shipFormation = Utilities.Utility.GetShipFormation(ship);
                     var isShipAIControlled = Utilities.Utility.IsShipAIControlled(ship);
                     var isSpectatorCamera = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? false;
                     if (isSpectatorCamera)
@@ -101,6 +101,8 @@ namespace RTSCamera.Patch.Naval
             return Prefix_IsAgentCaptainOfFormationShip(Agent.Main, formation, ref __result);
         }
 
+        private static PropertyInfo _captain;
+
         public static bool Prefix_IsAgentCaptainOfFormationShip(Agent agent, Formation formation, ref bool __result)
         {
             var navalShipLogic = Utilities.Utility.GetNavalShipsLogic(Mission.Current);
@@ -115,8 +117,9 @@ namespace RTSCamera.Patch.Naval
                 __result = false;
                 return false;
             }
-            var captain = (Agent)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:Captain").GetValue(ship);
-            var shipFormation = (Formation)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:Formation").GetValue(ship);
+            _captain ??= AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:Captain");
+            var captain = (Agent)_captain.GetValue(ship);
+            var shipFormation = Utilities.Utility.GetShipFormation(ship);
             var isShipAIControlled = Utilities.Utility.IsShipAIControlled(ship);
             __result = !isShipAIControlled && (captain != null && agent == captain || agent.IsMainAgent && agent.Formation == shipFormation);
             return false;

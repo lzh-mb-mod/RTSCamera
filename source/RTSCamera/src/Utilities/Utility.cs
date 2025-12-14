@@ -211,14 +211,28 @@ namespace RTSCamera.Utilities
             Player,
         }
 
+        private static PropertyInfo _isAIControlled;
+
         public static bool IsShipAIControlled(MissionObject ship)
         {
-            return (bool)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsAIControlled").GetValue(ship);
+            _isAIControlled ??= AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsAIControlled");
+            return (bool)_isAIControlled.GetValue(ship);
         }
+
+        private static PropertyInfo _isPlayerControlled;
 
         public static bool IsShipPlayerControlled(MissionObject ship)
         {
-            return (bool)AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsPlayerControlled").GetValue(ship);
+            _isPlayerControlled ??= AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsPlayerControlled");
+            return (bool)_isPlayerControlled.GetValue(ship);
+        }
+
+        private static PropertyInfo _isPlayerShip;
+
+        public static bool IsPlayerShip(MissionObject ship)
+        {
+            _isPlayerShip ??= AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsPlayerShip");
+            return (bool)_isPlayerShip.GetValue(ship);
         }
 
         public static MissionObject GetAgentSteppedShip(Agent agent)

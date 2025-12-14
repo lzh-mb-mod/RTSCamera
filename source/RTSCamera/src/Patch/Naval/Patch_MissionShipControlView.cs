@@ -9,7 +9,7 @@ namespace RTSCamera.Patch.Naval
 {
     public class Patch_MissionShipControlView
     {
-        private static Type _shipControllerMachineType = AccessTools.TypeByName("ShipControllerMachine");
+        private static Type _shipControllerMachineType;
         private static PropertyInfo _controllerMachineProperty;
         private static PropertyInfo _rangedSiegeWeaponProperty;
         private static PropertyInfo _attachedShipProperty;
@@ -46,6 +46,7 @@ namespace RTSCamera.Patch.Naval
             if (!(userAgent.IsPlayerControlled || userAgent.IsMainAgent && Mission.Current.Mode == TaleWorlds.Core.MissionMode.Deployment) || !(usedObject is StandingPoint standingPoint))
                 return false;
             var usableMachine = GetUsableMachineFromPoint(standingPoint);
+            _shipControllerMachineType ??= AccessTools.TypeByName("ShipControllerMachine");
             if (!_shipControllerMachineType.IsAssignableFrom(usableMachine.GetType()))
                 return false;
             _attachedShipProperty ??= AccessTools.Property("NavalDLC.Missions.Objects.UsableMachines.ShipControllerMachine:AttachedShip");

@@ -21,7 +21,6 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View.MissionViews;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
-using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 using CursorState = TaleWorlds.MountAndBlade.View.MissionViews.Order.OrderTroopPlacer.CursorState;
 
 namespace RTSCamera.CommandSystem.Patch
@@ -791,17 +790,20 @@ namespace RTSCamera.CommandSystem.Patch
             }
             else if (__instance.IsDrawingForced)
             {
-                //Utilities.DisplayMessage("drawing forced");
-                Reset(ref ____isMouseDown, ref ____formationDrawingMode, ref ____formationDrawingStartingPosition,
+                if (___formationDrawTimer.Check(MBCommon.GetApplicationTime()))
+                {
+                    //Utilities.DisplayMessage("drawing forced");
+                    Reset(ref ____isMouseDown, ref ____formationDrawingMode, ref ____formationDrawingStartingPosition,
                     ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
                     ref ____mouseOverFormation, ref _clickedFormation);
-                ____formationDrawingMode = true;
-                BeginFormationDraggingOrClicking(__instance, ref ____deltaMousePosition,
-                    ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
-                    ref ____formationDrawingStartingTime);
-                //HandleMousePressed();
+                    ____formationDrawingMode = true;
+                    BeginFormationDraggingOrClicking(__instance, ref ____deltaMousePosition,
+                        ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
+                        ref ____formationDrawingStartingTime);
+                    //HandleMousePressed();
 
-                __instance.UpdateFormationDrawing(false);
+                    __instance.UpdateFormationDrawing(false);
+                }
             }
             else if (__instance.IsDrawingFacing || ____wasDrawingFacing)
             {

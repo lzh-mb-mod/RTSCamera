@@ -13,7 +13,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Smoothly toggle free camera mode at any time in a battle.
 
-  - **New:** Stick camera to selected formation.
+  - Stick camera to selected formation.
 
   - Control one of your soldiers and continue fighting/commanding after player character is injured in battle.
 
@@ -25,21 +25,23 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Troops with throwing weapons will correctly keep distance under advance order.
 
-  - **New:** Allows to give a series of orders and let your troops execute them one by one. For example, move along a given path and then shooting/charging.
+  - Allows to give a series of orders and let your troops execute them one by one. For example, move along a given path and then shooting/charging.
 
-  - **New:** When giving orders to multiple formations:
+  - When giving orders to multiple formations:
 
     - Relative positions/directions of selected formations are locked in moving order and turning order.
 
     - Layout between selected formations are improved when player drags on the ground.
 
-  - **New:** Fix issues related with formation width and unit spacing in the base game.
+  - Square and Circle formations are improved.
+
+  - Fix issues related with formation width and unit spacing in the base game.
 
   - Issue focus charge command by clicking middle button on enemy units.
 
   - Select your troops by clicking middle button on units.
 
-  - **New:** Set attack target without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
+  - Set attack target without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
   - Facing to enemy order now has an optional enemy formation target.
 
@@ -52,7 +54,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 - RTS Camera
   - You can press `F10` to toggle free camera.
 
-  - **New:** In free camera mode, while command UI is open, you can press `E` to stick camera to selected formation.
+  - In free camera mode, while command UI is open, you can press `E` to stick camera to selected formation.
   
   - After your character is killed in battle, you can press `E` to follow one of your soldiers and press `E` again to control it and continue fighting.
 
@@ -60,9 +62,9 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
 - Command System
 
-  - **New:** Hold `Shift` and give orders to add orders to queue. Your troops will execute them one by one.
+  - Hold `Shift` and give orders to add orders to queue. Your troops will execute them one by one.
 
-  - **New:** If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
+  - If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
 
     - If you give move order by dragging on the ground, formations will be placed better than they are in the base game.
 
@@ -72,7 +74,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - You can make your formation charge to the enemy formation by clicking middle mouse button on enemy units.
 
-    - **New:** Hold `Alt` while clicking to target the enemy without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
+    - Hold `Alt` while clicking to target the enemy without interrupting previous movement orders. For example, **let your archers focus shooting while holding position**.
 
   - You can select your formations by clicking middle mouse button on soldiers.
   
@@ -108,7 +110,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - You can enable `Switch Camera on Ordering` option, to always give orders in free camera.
 
-  - **New:** When command UI is open in free camera mode, you can press `E` to stick camera to selected formation.
+  - When command UI is open in free camera mode, you can press `E` to stick camera to selected formation.
 
   - You can enable `Slow Motion On RTS view", to turn on slow motion in free camera. 
 
@@ -155,7 +157,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 - Click on castle gate won't attack the enemy formation behind the gate, which is an issue in the base game.
 
 ### Command System
-- **New** Hold `Shift` when giving orders to add the order to queue. Your troops will execute orders in queue one by one.
+- Hold `Shift` when giving orders to add the order to queue. Your troops will execute orders in queue one by one.
 
   - Order queue will be cleared if you give new orders without holding `Shift`.
 
@@ -163,7 +165,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - In free camera mode, movement paths will be marked using arrows.
 
-- **New:** If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
+- If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
 
   - If you give move order by dragging on the ground, formations will be placed better than they are in the base game.
 
@@ -171,7 +173,19 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - If you don't want the locking behavior described above, hold `Alt` and the behavior will be reverted to original.
 
-- **New:** Fixed the following issues in the base game:
+- Improved square and circle formation:
+
+  - When switching between square/cicle formation and other formations, the unit count in the outside rank is kept the same as the unit count of the first rank of line/sheild wall/loose formation if possible.
+
+    This allows soldiers to form formations more quickly and avoids them crowding together.
+
+  - In the base game when the unit count in square formation is square number, the center unit is not correctly placed. This is fixed in RTS.
+
+  - Player can use hollow square formation. Not enabled for AI.
+
+  - When formation is switched to circle formation, the circle formation will be tighter. This can be changed in option.
+
+- Fixed the following issues in the base game (at least exists in v1.2.12):
 
   - Issue: If you switch to circle formation and back to line formation, formation width becomes much longer as it should be.
 
@@ -189,7 +203,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - The target enemy formation that your selected troops are charging to will be highlighted with red color when you open command panel.
 
-- **New:** Hold `Alt` while clicking to target the enemy without interrupting previous movement orders.
+- Hold `Alt` while clicking to target the enemy without interrupting previous movement orders.
 
   - For archers they can shoot target enemy while holding positions.
 
@@ -206,8 +220,6 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 - Your formation targeted by the enemy formation will be highlighted with dark blue color when you open command panel.
 
 - Movement orders will be shown under troop cards.
-
-- Player can use hollow square formation. Not enabled for AI.
 
 - Fix direction of units on the corner of square formation.
 

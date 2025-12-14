@@ -111,14 +111,6 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
             Mission.Current.Teams.OnPlayerTeamChanged -= Mission_OnPlayerTeamChanged;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
-            foreach (var team in Mission.Current.Teams)
-            {
-                foreach (var formation in team.FormationsIncludingSpecialAndEmpty)
-                {
-                    formation.OnUnitAdded -= OnUnitAdded;
-                    formation.OnUnitRemoved -= OnUnitRemoved;
-                }
-            }
 
         }
 
@@ -261,14 +253,9 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             team.OnOrderIssued += OnOrderIssued;
             team.OnFormationsChanged += OnFormationsChanged;
             team.PlayerOrderController.OnSelectedFormationsChanged += OrderController_OnSelectedFormationsChanged;
-            foreach (var formation in team.FormationsIncludingSpecialAndEmpty)
-            {
-                formation.OnUnitAdded += OnUnitAdded;
-                formation.OnUnitRemoved += OnUnitRemoved;
-            }
         }
 
-        private void OnUnitAdded(Formation formation, Agent agent)
+        public void OnUnitAdded(Formation formation, Agent agent)
         {
             SetAgentColorAccordingToFormation(agent);
             SetFormationDirty(formation, true);
@@ -282,7 +269,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         // Selected formations will be updated in this tick and will not refresh the removed agent.
         // So the agent will keep the highlight until it is assigned to another formation or the formation is highlighted again.
         // Should we handle this edge case for all removed agent?
-        private void OnUnitRemoved(Formation formation, Agent agent)
+        public void OnUnitRemoved(Formation formation, Agent agent)
         {
             if (agent.State != AgentState.Active || Mission.Current.IsMissionEnding || !Mission.Current.IsDeploymentFinished)
                 return;

@@ -46,7 +46,7 @@ namespace RTSCamera.Patch.Naval
                 return true;
             }
 
-            _globalFrame = AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:GlobalFrame");
+            _globalFrame ??= AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:GlobalFrame");
             Vec3 origin = ((MatrixFrame)_globalFrame.GetValue(ship)).origin;
             float num = origin.AsVec2.Distance(cameraPosition.AsVec2);
             if ((double)num >= 1000.0)

@@ -4,6 +4,7 @@ using RTSCamera.Config;
 using RTSCamera.Logic;
 using RTSCamera.Logic.SubLogic;
 using RTSCamera.Patch.Fix;
+using System.Reflection;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
@@ -50,15 +51,16 @@ namespace RTSCamera.Patch.Naval
             return null;
         }
 
+        private static MethodInfo _afterSetOrder = AccessTools.Method("TaleWorlds.MountAndBlade.OrderController:AfterSetOrder");
+
         public override void ExecuteOrder(
           OrderController orderController,
           VisualOrderExecutionParameters executionParameters)
         {
-            var afterSetOrder = AccessTools.Method("TaleWorlds.MountAndBlade.OrderController:AfterSetOrder");
             if (GetActiveState(orderController) == OrderState.Active)
             {
                 Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode = false;
-                afterSetOrder.Invoke(orderController, new object[] { OrderType.AIControlOff });
+                _afterSetOrder.Invoke(orderController, new object[] { OrderType.AIControlOff });
                 Utility.DisplayLocalizedText("str_rts_camera_soldiers_stop_controlling_ship");
                 orderController.SetOrder(OrderType.StandYourGround);
                 Utilities.Utility.CancelAIPilotPlayerShip(Mission.Current);
@@ -66,7 +68,7 @@ namespace RTSCamera.Patch.Naval
             else
             {
                 Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode = true;
-                afterSetOrder.Invoke(orderController, new object[] { OrderType.AIControlOn });
+                _afterSetOrder.Invoke(orderController, new object[] { OrderType.AIControlOn });
                 Utility.DisplayLocalizedText("str_rts_camera_soldiers_start_controlling_ship");
                 if (RTSCameraConfig.Get().SteeringModeWhenPlayerStopsPiloting == SteeringMode.DelegateCommand)
                 {

@@ -12,6 +12,7 @@ namespace RTSCamera.CommandSystem.Patch
     public class Patch_OrderTroopPlacer
     {
         private static bool _patched;
+        private static PropertyInfo _displayedOrderMessageForLastOrder = AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder");
         public static bool Patch(Harmony harmony)
         {
             try
@@ -43,7 +44,7 @@ namespace RTSCamera.CommandSystem.Patch
                 ____formationDrawingStartingTime = 0;
                 var missionOrderVM = Utility.GetMissionOrderVM(Mission.Current);
                 // Fix the issue that movement order message may not be shown in free camera, when order UI is kept open.
-                AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder").SetValue(missionOrderVM, false);
+                _displayedOrderMessageForLastOrder.SetValue(missionOrderVM, false);
             }
             return true;
         }

@@ -133,6 +133,16 @@ namespace RTSCamera.CommandSystem.Logic
 
         public override void OnRemoveBehavior()
         {
+            foreach (var team in Mission.Current.Teams)
+            {
+                if (team.FormationsIncludingSpecialAndEmpty == null)
+                    continue;
+                foreach (var formation in team.FormationsIncludingSpecialAndEmpty)
+                {
+                    formation.OnUnitAdded -= OnUnitAdded;
+                    formation.OnUnitRemoved -= OnUnitRemoved;
+                }
+            }
             OutlineColorSubLogic.OnRemoveBehaviour();
             GroundMarkerColorSubLogic.OnRemoveBehaviour();
             Patch_OrderTroopPlacer.OnRemoveBehavior();
@@ -205,6 +215,29 @@ namespace RTSCamera.CommandSystem.Logic
         {
             OutlineColorSubLogic.AfterAddTeam(team);
             GroundMarkerColorSubLogic.AfterAddTeam(team);
+            if (team.FormationsIncludingSpecialAndEmpty == null)
+                return;
+            foreach (var formation in team.FormationsIncludingSpecialAndEmpty)
+            {
+                formation.OnUnitAdded += OnUnitAdded;
+                formation.OnUnitRemoved += OnUnitRemoved;
+            }
+        }
+
+        private void OnUnitAdded(Formation formation, Agent agent)
+        {
+            OutlineColorSubLogic.OnUnitAdded(formation, agent);
+            GroundMarkerColorSubLogic.OnUnitAdded(formation, agent);
+        }
+
+        private void OnUnitRemoved(Formation formation, Agent agent)
+        {
+            OutlineColorSubLogic.OnUnitRemoved(formation, agent);
+            GroundMarkerColorSubLogic.OnUnitRemoved(formation, agent);
+            if (formation.CountOfUnits == 0)
+            {
+                CommandQueueLogic.OnFormationUnitsCleared(formation);
+            }
         }
 
         public override void OnAgentCreated(Agent agent)

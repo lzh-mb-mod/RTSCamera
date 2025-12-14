@@ -561,6 +561,8 @@ namespace RTSCamera.CommandSystem.Patch
             return true;
         }
 
+        private static MethodInfo _updateOrderShortcuts = AccessTools.Method(typeof(MissionOrderVM), "UpdateOrderShortcuts");
+
         public static bool Prefix_PopulateOrderSets(MissionOrderVM __instance, bool ____isMultiplayer)
         {
             if (Mission.Current.IsNavalBattle)
@@ -570,7 +572,7 @@ namespace RTSCamera.CommandSystem.Patch
             MBReadOnlyList<VisualOrderSet> orders = VisualOrderFactory.GetOrders();
             for (int index = 0; index < orders.Count; ++index)
                 __instance.OrderSets.Add(new RTSCommandOrderSetVM(__instance.OrderController, orders[index]));
-            AccessTools.Method(typeof(MissionOrderVM), "UpdateOrderShortcuts")?.Invoke(__instance, Array.Empty<object>());
+            _updateOrderShortcuts.Invoke(__instance, Array.Empty<object>());
             if (!____isMultiplayer)
                 return false;
             __instance.UpdateCanUseShortcuts(true);
