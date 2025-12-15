@@ -76,6 +76,12 @@ L             - 打开配置菜单
 如果进游戏以后显示"text with id xxxxx does't exist":
     如果你启用了权力的游戏，请在启动器中把RTS Camera, RTS Camera Command System移到权游之前。至少在目前的权游6.2版本，它里面的文件有bug，导致后续所有mod都不能正确加载字符串。
 
+如果游戏启动时崩溃，请检查下面列出的事项：
+1. 检查Modules文件夹，确保没有RTSCamera或者RTSCamera.CommandSystem。如果你使用创意工坊的mod，Modules文件夹不应有同一mod。
+2. 如果你使用了下面任何一个mod，请确保它们都更新到最新了
+- BattleMiniMap战斗小地图
+- ImprovedCombatAI改进的战斗AI
+- CinematicCamera电影镜头
 
 问题反馈和建议
 可直接留言或发邮件到lizhenhuan1019@outlook.com

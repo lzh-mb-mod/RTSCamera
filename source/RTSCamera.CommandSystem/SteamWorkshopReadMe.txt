@@ -77,6 +77,12 @@ Troubleshooting
 If there're a lot of "text with id xxxxx doesn't exist":
     If you enabled Realm of Thrones, please move RTS Camera and Command System above it. As version 6.2 of Realm of Thrones, there's a bug in its file that causes all the mods below it cannot load text correctly.
 
+If crash on startup, please check the following:
+1. Check Modules folder and make sure there's no RTSCamera or RTSCamera.CommandSystem. If you use mods from Steam workshop then your Modules folder should be clean.
+2. If you are using any of the following mods from me, please make sure they are updated:
+- BattleMiniMap
+- ImprovedCombatAI
+- CinematicCamera
 
 Feedback or suggestion
 Feel free to comment below or send email to lizhenhuan1019@outlook.com
