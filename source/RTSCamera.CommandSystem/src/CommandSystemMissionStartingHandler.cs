@@ -1,8 +1,6 @@
 ﻿using MissionLibrary.Controller;
 using MissionSharedLibrary.Controller;
-using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Logic;
-using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.View;
 using System.Collections.Generic;
 using TaleWorlds.MountAndBlade;
@@ -29,11 +27,6 @@ namespace RTSCamera.CommandSystem
 
         public override void OnPreMissionTick(MissionView entranceView, float dt)
         {
-            var config = CommandSystemConfig.Get();
-            if (config.AttackSpecificFormation)
-            {
-                PatchChargeToFormation.Patch();
-            }
         }
     }
 }

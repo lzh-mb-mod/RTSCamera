@@ -111,6 +111,8 @@ namespace RTSCamera.CommandSystem.Logic
         {
             base.OnBehaviorInitialize();
 
+
+            Patch_MovementOrder.Patch();
             OutlineColorSubLogic.OnBehaviourInitialize();
             GroundMarkerColorSubLogic.OnBehaviourInitialize();
             Patch_OrderTroopPlacer.OnBehaviorInitialize();

@@ -43,8 +43,6 @@ namespace RTSCamera.CommandSystem.Config
                     () => CommandSystemConfig.Get().AttackSpecificFormation, b =>
                     {
                         CommandSystemConfig.Get().AttackSpecificFormation = b;
-                        if (b)
-                            PatchChargeToFormation.Patch();
                     }));
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_after_enemy_formation_eliminated"),
