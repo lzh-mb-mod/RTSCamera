@@ -55,9 +55,6 @@ All the hotkeys can be changed in config menu.
 
 
 Troubleshooting
-If there're a lot of "text with id xxxxx doesn't exist":
-    If you enabled Realm of Thrones, please move RTS Camera and Command System above it. As version 6.2 of Realm of Thrones, there's a bug in its file that causes all the mods below it cannot load text correctly.
-
 If crash on startup, please check the following:
 1. Check Modules folder and make sure there's no RTSCamera or RTSCamera.CommandSystem. If you use mods from Steam workshop then your Modules folder should be clean.
 2. If you are using any of the following mods from me, please make sure they are updated:
@@ -65,6 +62,12 @@ If crash on startup, please check the following:
 - ImprovedCombatAI
 - CinematicCamera
 
+
+Mod Compatibility
+Known performance issue with Retinues v1.2.14.21. You can set option "Player Formation Assignment" in RTS Camera to "Default Or General Formation" and reload the battle to avoid the performance issue.
+Crash in The Old Realms is FIXED in v5.1.7.
+If you use Realm of Thrones, please move RTS Camera above Realm of Thrones, or "text with id xxxxx does't exist" will show up.
+Helmsman: You don't need it if you use RTS Camera. In RTS Camera you can use F5 to toggle soldier piloting, exactly the same as Helmsman, and you will get better integration with camera related features. However, if you still use Helmsman, RTS Camera will not add F5 command for the first ship to avoid conflict and weird behavior.
 
 Feedback or suggestion
 Feel free to comment below or send email to lizhenhuan1019@outlook.com

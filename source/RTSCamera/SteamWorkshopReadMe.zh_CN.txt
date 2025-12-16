@@ -56,9 +56,6 @@ L  -    打开配置菜单
 
 
 问题排查
-如果进游戏以后显示"text with id xxxxx does't exist":
-如果你启用了权力的游戏，请在启动器中把RTS Camera, RTS Camera Command System移到权游之前。至少在目前的权游6.2版本，它里面的文件有bug，导致后续所有mod都不能正确加载字符串。
-
 如果游戏启动时崩溃，请检查下面列出的事项：
 1. 检查Modules文件夹，确保没有RTSCamera或者RTSCamera.CommandSystem。如果你使用创意工坊的mod，Modules文件夹不应有同一mod。
 2. 如果你使用了下面任何一个mod，请确保它们都更新到最新了
@@ -66,6 +63,12 @@ L  -    打开配置菜单
 - ImprovedCombatAI改进的战斗AI
 - CinematicCamera电影镜头
 
+
+Mod兼容性
+和Retinues v1.2.14.21一起使用有已知的性能问题。你可以把选项“玩家编队分配方式”设置为“默认或将领编队”然后重新进入战斗，来避免性能问题。
+在The Old Realms中的崩溃在v5.1.7中修复。
+权游mod中若出现"text with id xxxxx does't exist"，请在启动器中将RTS Camera移至权游上方。
+Helmsman舵手：如果你用RTS Camera，你不需要使用Helmsman舵手。RTS Camera提供和舵手一样的功能。
 
 问题反馈和建议
 可直接留言或发邮件到lizhenhuan1019@outlook.com

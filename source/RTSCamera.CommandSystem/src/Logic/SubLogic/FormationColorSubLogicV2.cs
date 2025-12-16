@@ -296,6 +296,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         public void OnAgentFleeing(Agent affectedAgent)
         {
+            if (!affectedAgent.IsHuman)
+                return;
             SetAgentColorAccordingToFormation(affectedAgent);
             UpdateAgentColor(affectedAgent);
         }
