@@ -46,6 +46,7 @@ namespace RTSCamera.Logic.SubLogic
         private bool _isSwitchCameraKeyPressedLastTick = false;
         private bool _shouldShowFastForwardInHideoutPromptInThisMission = false;
         public bool FastForwardHideoutNextTick = false;
+        private bool _isPlayerTeamSetupCompleted = false;
 
         public Mission Mission => _logic.Mission;
 
@@ -210,24 +211,6 @@ namespace RTSCamera.Logic.SubLogic
                 // TODO: Redundant with Patch_MissionOrderDeploymentControllerVM.Prefix_ExecuteDeployAll
                 if (team == Mission.PlayerTeam)
                 {
-                    //if (CommandBattleBehavior.CommandMode && Mission.MainAgent == null)
-                    //{
-                    //    // Force control agent, setting controller to Player, to avoid the issue that,
-                    //    // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
-                    //    // DeploymentMissionController.FinishDeployment set controller of main agent to Player.
-                    //    Utility.PlayerControlAgent(_controlTroopLogic.GetAgentToControl());
-                    //    if (Mission.MainAgent != null)
-                    //    {
-                    //        Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
-                    //        if (Mission.PlayerTeam.IsPlayerGeneral)
-                    //        {
-                    //            Utility.SetPlayerAsCommander(true);
-                    //            Mission.MainAgent?.SetCanLeadFormationsRemotely(true);
-                    //            Mission.PlayerTeam.GeneralAgent = Mission.MainAgent;
-                    //        }
-                    //        team.PlayerOrderController?.SelectAllFormations();
-                    //    }
-                    //}
                     if (CommandBattleBehavior.CommandMode || _config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
                     {
                         // switch to free camera during deployment stage
@@ -235,10 +218,12 @@ namespace RTSCamera.Logic.SubLogic
                     }
                     if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
                     {
+                        // Player is not assigned to general formation yet because player needs to deploy with order of battle.
                         if (Mission.MainAgent?.Formation != null)
                             CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
                     }
-                    if (_config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
+                    _isPlayerTeamSetupCompleted = true;
+                    if (!CommandBattleBehavior.CommandMode && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
                     {
                         // Set player formation when team is deployed.
                         TrySetPlayerFormation();
@@ -502,7 +487,9 @@ namespace RTSCamera.Logic.SubLogic
         private void TrySetPlayerFormation(bool isDeploymentFinishing = false)
         {
             bool isDeployment = isDeploymentFinishing || Mission.Mode == MissionMode.Deployment;
-            if (!isDeployment)
+            // Do not set to General Formation if player team is not set up completed.
+            // Because if the general formation has units before AI selecting formation to lead, AI may select General formation in OrderOfBattleVM and cause crash.
+            if (!_isPlayerTeamSetupCompleted || !isDeployment)
                 return;
             if (Mission.MainAgent?.Formation?.FormationIndex == null)
                 return;
@@ -517,6 +504,18 @@ namespace RTSCamera.Logic.SubLogic
             if (!CommandBattleBehavior.CommandMode && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
             {
                 formationToSet = _config.PlayerFormation;
+            }
+
+            if (formationToSet == FormationClass.Bodyguard)
+                return;
+
+
+            bool isPlayerGeneral = Mission.PlayerTeam?.IsPlayerGeneral ?? false;
+            // Do not set to General Formation if player is not general.
+            // Because if the general formation has units before AI selecting formation to lead, AI may select General formation in OrderOfBattleVM and cause crash.
+            if (formationToSet == FormationClass.General && !isPlayerGeneral)
+            {
+                return;
             }
 
             // If has bodyguard formation and the general formation only contains player, we do not remove player from General formation to avoid the bodyguard formation being charging alone.

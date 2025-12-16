@@ -9,12 +9,10 @@ using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.Usage;
 using System;
-using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
-using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem
@@ -33,18 +31,20 @@ namespace RTSCamera.CommandSystem
             base.OnSubModuleLoad();
 
             // If RBM is loaded, disable the ChargeToFormation feature for infantry to not break RBM frontline behavior
-            IsRealisticBattleModuleInstalled =
-                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                    info.Id == "RBM") != null
-                &&
-                TaleWorlds.Engine.Utilities.GetModulesNames().Select(ModuleHelper.GetModuleInfo).FirstOrDefault(info =>
-                    info.Id == "RealisticBattleAiModule") == null;
-
-            Module.CurrentModule.GlobalTextManager.LoadGameTexts();
+            IsRealisticBattleModuleInstalled = Utility.IsModuleInstalled("RBM");
 
             Utility.ShouldDisplayMessage = true;
             Initialize();
 
+            try
+            {
+                Module.CurrentModule.GlobalTextManager.LoadGameTexts();
+            }
+            catch
+            {
+                Console.WriteLine("Failed to load global texts for Command System");
+                Debug.Print("Failed to load global texts for Command System");
+            }
             if (!UIConfig.DoNotUseGeneratedPrefabs && CommandSystemConfig.Get().OrderUIClickable)
             {
                 UIConfig.DoNotUseGeneratedPrefabs = true;

@@ -1,5 +1,21 @@
 # Changelog
 
+## [v5.1.16] - 2025-12-16
+### Fixed
+- Fix startup crash when there're other mods failing to load.
+
+- Fix crash on startup when failing to loading game texts. This may happen when other mods have broken text files.
+
+- Fix crashes when starting battle and finishing deployment.
+
+## [v5.1.15] - 2025-10-31
+### Fixed
+- Fix crash when giving charging to formation order in rts view.
+
+- Fix units to control when player is injured in battle.
+
+- Remove shaders which may cause startup issue.
+
 ## [v5.1.14] - 2025-09-22
 ### Changed
 - Camera will not lock to other units automatically when the unit that camera is locking to is killed.

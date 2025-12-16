@@ -50,7 +50,7 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_after_enemy_formation_eliminated"),
                     GameTexts.FindText("str_rts_camera_command_system_after_enemy_formation_eliminated_hint"),
                     new SelectionOptionData(i => CommandSystemConfig.Get().BehaviorAfterCharge = (BehaviorAfterCharge)i,
-                        () => (int)CommandSystemConfig.Get().BehaviorAfterCharge, 2, new List<SelectionItem>
+                        () => (int)CommandSystemConfig.Get().BehaviorAfterCharge, () => 2, () => new List<SelectionItem>
                         {
                             new SelectionItem(true, "str_rts_camera_command_system_after_charge_behavior", "charge"),
                             new SelectionItem(true, "str_rts_camera_command_system_after_charge_behavior", "hold")
@@ -59,7 +59,7 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_troop_highlight_character_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_troop_highlight_character_mode_hint"),
                     new SelectionOptionData(i => CommandSystemConfig.Get().TroopHighlightStyleInCharacterMode = (TroopHighlightStyle)i,
-                        () => (int)CommandSystemConfig.Get().TroopHighlightStyleInCharacterMode, (int)TroopHighlightStyle.Count, new List<SelectionItem>
+                        () => (int)CommandSystemConfig.Get().TroopHighlightStyleInCharacterMode, () => (int)TroopHighlightStyle.Count, () => new List<SelectionItem>
                         {
                             new SelectionItem(true, "str_rts_camera_command_system_troop_highlight_option", nameof(TroopHighlightStyle.No)),
                             new SelectionItem(true, "str_rts_camera_command_system_troop_highlight_option", nameof(TroopHighlightStyle.Outline)),
@@ -69,7 +69,7 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_troop_highlight_rts_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_troop_highlight_rts_mode_hint"),
                     new SelectionOptionData(i => CommandSystemConfig.Get().TroopHighlightStyleInRTSMode = (TroopHighlightStyle)i,
-                        () => (int)CommandSystemConfig.Get().TroopHighlightStyleInRTSMode, (int)TroopHighlightStyle.Count, new List<SelectionItem>
+                        () => (int)CommandSystemConfig.Get().TroopHighlightStyleInRTSMode, () => (int)TroopHighlightStyle.Count, () => new List<SelectionItem>
                         {
                             new SelectionItem(true, "str_rts_camera_command_system_troop_highlight_option", nameof(TroopHighlightStyle.No)),
                             new SelectionItem(true, "str_rts_camera_command_system_troop_highlight_option", nameof(TroopHighlightStyle.Outline)),
@@ -79,7 +79,7 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_character_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_character_mode_hint"),
                     new SelectionOptionData(i => CommandSystemConfig.Get().MovementTargetHighlightStyleInCharacterMode = (MovementTargetHighlightStyle)i,
-                        () => (int)CommandSystemConfig.Get().MovementTargetHighlightStyleInCharacterMode, (int)MovementTargetHighlightStyle.Count, new List<SelectionItem>
+                        () => (int)CommandSystemConfig.Get().MovementTargetHighlightStyleInCharacterMode, () => (int)MovementTargetHighlightStyle.Count, () => new List<SelectionItem>
                         {
                             new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.Original)),
                             new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.NewModelOnly)),
@@ -89,7 +89,7 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_rts_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_rts_mode_hint"),
                     new SelectionOptionData(i => CommandSystemConfig.Get().MovementTargetHighlightStyleInRTSMode = (MovementTargetHighlightStyle)i,
-                        () => (int)CommandSystemConfig.Get().MovementTargetHighlightStyleInRTSMode, (int)MovementTargetHighlightStyle.Count, new List<SelectionItem>
+                        () => (int)CommandSystemConfig.Get().MovementTargetHighlightStyleInRTSMode, () => (int)MovementTargetHighlightStyle.Count, () => new List<SelectionItem>
                         {
                             new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.Original)),
                             new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.NewModelOnly)),
@@ -99,7 +99,7 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_command_queue_flag_show_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_command_queue_flag_show_mode_hint"),
                     new SelectionOptionData(i => CommandSystemConfig.Get().CommandQueueFlagShowMode = (ShowMode)i,
-                        () => (int)CommandSystemConfig.Get().CommandQueueFlagShowMode, (int)ShowMode.Count, new List<SelectionItem>
+                        () => (int)CommandSystemConfig.Get().CommandQueueFlagShowMode, () => (int)ShowMode.Count, () => new List<SelectionItem>
                         {
                             new SelectionItem(true, "str_rts_camera_command_system_command_queue_flag_show_mode_option", nameof(ShowMode.Never)),
                             new SelectionItem(true, "str_rts_camera_command_system_command_queue_flag_show_mode_option", nameof(ShowMode.FreeCameraOnly)),
@@ -109,7 +109,7 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_command_queue_arrow_show_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_command_queue_arrow_show_mode_hint"),
                     new SelectionOptionData(i => CommandSystemConfig.Get().CommandQueueArrowShowMode = (ShowMode)i,
-                        () => (int)CommandSystemConfig.Get().CommandQueueArrowShowMode, (int)ShowMode.Count, new List<SelectionItem>
+                        () => (int)CommandSystemConfig.Get().CommandQueueArrowShowMode, () => (int)ShowMode.Count, () => new List<SelectionItem>
                         {
                             new SelectionItem(true, "str_rts_camera_command_system_command_queue_arrow_show_mode_option", nameof(ShowMode.Never)),
                             new SelectionItem(true, "str_rts_camera_command_system_command_queue_arrow_show_mode_option", nameof(ShowMode.FreeCameraOnly)),
@@ -119,7 +119,7 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_command_queue_formation_shape_show_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_command_queue_formation_shape_show_mode_hint"),
                     new SelectionOptionData(i => CommandSystemConfig.Get().CommandQueueFormationShapeShowMode = (ShowMode)i,
-                        () => (int)CommandSystemConfig.Get().CommandQueueFormationShapeShowMode, (int)ShowMode.Count, new List<SelectionItem>
+                        () => (int)CommandSystemConfig.Get().CommandQueueFormationShapeShowMode, () => (int)ShowMode.Count, () => new List<SelectionItem>
                         {
                             new SelectionItem(true, "str_rts_camera_command_system_command_queue_formation_shape_show_mode_option", nameof(ShowMode.Never)),
                             new SelectionItem(true, "str_rts_camera_command_system_command_queue_formation_shape_show_mode_option", nameof(ShowMode.FreeCameraOnly)),
@@ -129,7 +129,7 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_formation_lock_condition"),
                     GameTexts.FindText("str_rts_camera_command_system_formation_lock_condition_hint"),
                     new SelectionOptionData(i => CommandSystemConfig.Get().FormationLockCondition = (FormationLockCondition)i,
-                        () => (int)CommandSystemConfig.Get().FormationLockCondition, (int)FormationLockCondition.Count, new List<SelectionItem>
+                        () => (int)CommandSystemConfig.Get().FormationLockCondition, () => (int)FormationLockCondition.Count, () => new List<SelectionItem>
                         {
                             new SelectionItem(true, "str_rts_camera_command_system_formation_lock_condition_option", "Never"),
                             new SelectionItem(true, "str_rts_camera_command_system_formation_lock_condition_option", "WhenPressed"),
@@ -153,7 +153,7 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_circle_formation_preference"),
                     GameTexts.FindText("str_rts_camera_command_system_circle_formation_preference_hint"),
                     new SelectionOptionData(i => CommandSystemConfig.Get().CircleFormationUnitSpacingPreference = (CircleFormationUnitSpacingPreference)i,
-                        () => (int)CommandSystemConfig.Get().CircleFormationUnitSpacingPreference, (int)CircleFormationUnitSpacingPreference.Count, new List<SelectionItem>
+                        () => (int)CommandSystemConfig.Get().CircleFormationUnitSpacingPreference, () => (int)CircleFormationUnitSpacingPreference.Count, () => new List<SelectionItem>
                         {
                             new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Tight"),
                             new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Loose")

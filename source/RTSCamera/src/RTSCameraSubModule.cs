@@ -40,12 +40,21 @@ namespace RTSCamera
         {
             base.OnSubModuleLoad();
 
+            Utility.ShouldDisplayMessage = true;
+            Initialize();
+
+
             try
             {
-                Utility.ShouldDisplayMessage = true;
                 Module.CurrentModule.GlobalTextManager.LoadGameTexts();
-                Initialize();
-
+            }
+            catch
+            {
+                Console.WriteLine("Failed to load global texts for Command System");
+                Debug.Print("Failed to load global texts for Command System");
+            }
+            try
+            {
                 _successPatch = true;
 
                 //_harmony.Patch(
