@@ -59,7 +59,8 @@ namespace RTSCamera.Patch
         }
         public static bool Prefix_UpdateSceneTimeSpeed(Mission __instance)
         {
-            if (RTSCameraConfig.Get().SlowMotionMode && __instance.Mode != MissionMode.Deployment && !__instance.IsFastForward)
+            // don't change timespeed in cut scene.
+            if (RTSCameraConfig.Get().SlowMotionMode && __instance.Mode != MissionMode.Deployment && !__instance.IsFastForward && __instance.Mode != MissionMode.CutScene)
             {
                 __instance.Scene.TimeSpeed = RTSCameraConfig.Get().SlowMotionFactor;
                 return false;
