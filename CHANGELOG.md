@@ -1,5 +1,11 @@
 # Changelog
 
+## [v5.3.13]
+### Fixed
+- Fix the issue that RTS cannot be selected in BLSE launcher if game version is earlier than v1.3.10.
+
+- Add hideout fastforward option back.
+
 ## [v5.3.12] - 2025-12-15
 ### Improved
 - The unit's ground marker can be seen below.

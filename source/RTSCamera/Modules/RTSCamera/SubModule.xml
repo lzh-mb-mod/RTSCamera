@@ -2,16 +2,29 @@
 <Module>
   <Name value="RTS Camera"/>
   <Id value="RTSCamera"/>
-  <Version value="v5.3.12"/>
+  <Version value="v5.3.13"/>
   <SingleplayerModule value="true"/>
   <MultiplayerModule value="false"/>
   <DependedModules>
-    <DependedModule Id="Native" DependentVersion="v1.3.10" />
-    <DependedModule Id="SandBoxCore" DependentVersion="v1.3.10" />
-    <DependedModule Id="Sandbox" DependentVersion="v1.3.10" />
-    <DependedModule Id="CustomBattle" DependentVersion="v1.3.10"/>
-    <DependedModule Id="StoryMode" DependentVersion="v1.3.10" />
+    <DependedModule Id="Native" DependentVersion="v1.3.12" />
+    <DependedModule Id="SandBoxCore" DependentVersion="v1.3.12" />
+    <DependedModule Id="Sandbox" DependentVersion="v1.3.12" />
+    <DependedModule Id="CustomBattle" DependentVersion="v1.3.12"/>
+    <DependedModule Id="StoryMode" DependentVersion="v1.3.12" />
   </DependedModules>
+  <DependedModuleMetadatas>
+    <!-- order: [ "LoadBeforeThis", "LoadAfterThis" ] -->
+    <!-- optional: [ "true", "false" ] -->
+    <!-- version: [ "e1.0.0.0", "e1.*", "e1.0.*", "e1.0.0.*" ] -->
+    <!-- incompatible: [ "true", "false" ] -->
+    <DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" />
+
+    <DependedModuleMetadata id="Native" order="LoadBeforeThis" version="v1.3.*" />
+    <DependedModuleMetadata id="SandBoxCore" order="LoadBeforeThis" version="v1.3.*" />
+    <DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" version="v1.3.*" />
+    <DependedModuleMetadata id="StoryMode" order="LoadBeforeThis" version="v1.3.*" />
+    <DependedModuleMetadata id="CustomBattle" order="LoadBeforeThis" version="v1.3.*" />
+  </DependedModuleMetadatas>
   <SubModules>
     <SubModule>
       <Name value="RTSCameraSubModule"/>

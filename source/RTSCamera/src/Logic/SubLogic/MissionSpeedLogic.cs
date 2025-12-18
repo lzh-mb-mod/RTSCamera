@@ -59,6 +59,11 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnMissionTick(float dt)
         {
+            if (Mission.Mode == TaleWorlds.Core.MissionMode.CutScene)
+            {
+                return;
+            }
+
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.Pause).IsKeyPressedInOrder())
             {
                 if (Mission.IsFastForward)

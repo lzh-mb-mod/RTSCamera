@@ -52,7 +52,10 @@ namespace RTSCamera.Logic.SubLogic
         public bool FastForwardHideoutNextTick = false;
         private bool _openOrderUINextTick = false;
         private bool _refreshOrdersNextTick = false;
-        
+        private bool _isHideoutBattle => MissionState.Current?.MissionName == "HideoutBattle";
+        private bool _isHideoutAmbush => MissionState.Current?.MissionName == "HideoutAmbushMission";
+
+
         private bool _isPlayerTeamSetupCompleted = false;
 
         public Mission Mission => _logic.Mission;
@@ -295,14 +298,14 @@ namespace RTSCamera.Logic.SubLogic
                         // switch to free camera during deployment stage
                         _switchToFreeCameraNextTick = true;
                     }
-                    if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
+                    if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && !_isHideoutBattle && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
                     {
                         // Player is not assigned to general formation yet because player needs to deploy with order of battle.
                         if (Mission.MainAgent?.Formation != null)
                             RecordCurrentPlayerFormation(Mission.MainAgent.Formation.FormationIndex);
                     }
                     _isPlayerTeamSetupCompleted = true;
-                    if (!CommandBattleBehavior.CommandMode && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
+                    if (!CommandBattleBehavior.CommandMode && !_isHideoutBattle && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
                     {
                         // Set player formation when team is deployed.
                         TrySetPlayerFormation();
@@ -321,7 +324,7 @@ namespace RTSCamera.Logic.SubLogic
             try
             {
                 // When player joins as reinforcement, at this point the player is already added to general formation
-                if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
+                if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && !_isHideoutBattle && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
                 {
                     if (Mission.MainAgent?.Formation != null)
                         RecordCurrentPlayerFormation(Mission.MainAgent.Formation.FormationIndex);
@@ -531,34 +534,38 @@ namespace RTSCamera.Logic.SubLogic
                 {
                     UpdateMainAgentControllerInFreeCamera();
                 }
-                TrySetPlayerFormation(true);
+                if (!_isHideoutBattle)
+                    TrySetPlayerFormation(true);
             }
-            //if (MissionState.Current?.MissionName == "HideoutBattle")
-            //{
-            //    if (oldMissionMode == MissionMode.Battle && Mission.Mode == MissionMode.Stealth)
-            //    {
-            //        if (!_config.FastForwardHideoutPrompted)
-            //        {
-            //            _config.FastForwardHideoutPrompted = true;
-            //            if (_config.FastForwardHideout == FastForwardHideout.Never)
-            //            {
-            //                _shouldShowFastForwardInHideoutPromptInThisMission = true;
-            //            }
-            //        }
-            //        if (_config.FastForwardHideout >= FastForwardHideout.UntilBossFight)
-            //            FastForwardHideoutNextTick = true;
-            //    }
-            //    if (oldMissionMode == MissionMode.Stealth && (Mission.Mode == MissionMode.CutScene || Mission.Mode == MissionMode.Conversation))
-            //    {
-            //        // do not fast forward in conversation.
-            //        Mission.SetFastForwardingFromUI(false);
-            //        _logic.MissionSpeedLogic.SetSlowMotionMode(false);
-            //        if (IsSpectatorCamera)
-            //        {
-            //            SwitchToAgent();
-            //        }
-            //    }
-            //}
+            if (_isHideoutBattle)
+            {
+                if (oldMissionMode == MissionMode.Battle && Mission.Mode == MissionMode.Stealth)
+                {
+                    if (!_config.FastForwardHideoutPrompted)
+                    {
+                        _config.FastForwardHideoutPrompted = true;
+                        if (_config.FastForwardHideout == FastForwardHideout.Never)
+                        {
+                            _shouldShowFastForwardInHideoutPromptInThisMission = true;
+                        }
+                    }
+                    if (_config.FastForwardHideout >= FastForwardHideout.UntilBossFight)
+                        FastForwardHideoutNextTick = true;
+                }
+            }
+            if (_isHideoutBattle || _isHideoutAmbush)
+            {
+                if (oldMissionMode == MissionMode.Stealth && (Mission.Mode == MissionMode.CutScene || Mission.Mode == MissionMode.Conversation))
+                {
+                    // do not fast forward in conversation.
+                    Mission.SetFastForwardingFromUI(false);
+                    _logic.MissionSpeedLogic.SetSlowMotionMode(false);
+                    if (IsSpectatorCamera)
+                    {
+                        SwitchToAgent();
+                    }
+                }
+            }
         }
         public void OnAgentControllerChanged(Agent agent)
         {

@@ -372,25 +372,25 @@ namespace RTSCamera.Config
                     GameTexts.FindText("str_rts_camera_show_hotkey_hint_hint"),
                     () => RTSCameraConfig.Get().ShowHotKeyHint,
                     b => RTSCameraConfig.Get().ShowHotKeyHint = b));
-                //miscellaneousOptionCategory.AddOption(new SelectionOptionViewModel(
-                //    GameTexts.FindText("str_rts_camera_fast_forward_hideout"),
-                //    GameTexts.FindText("str_rts_camera_fast_forward_hideout_hint"),
-                //    new SelectionOptionData(i =>
-                //    {
-                //        if (i < 0 || i >= (int)FastForwardHideout.Count)
-                //        {
-                //            return;
-                //        }
+                miscellaneousOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_fast_forward_hideout"),
+                    GameTexts.FindText("str_rts_camera_fast_forward_hideout_hint"),
+                    new SelectionOptionData(i =>
+                    {
+                        if (i < 0 || i >= (int)FastForwardHideout.Count)
+                        {
+                            return;
+                        }
 
-                //        var config = RTSCameraConfig.Get();
-                //        config.FastForwardHideout = (FastForwardHideout)i;
-                //    }, () => (int)RTSCameraConfig.Get().FastForwardHideout, (int)FastForwardHideout.Count,
-                //        new[]
-                //        {
-                //            new SelectionItem(true, "str_rts_camera_fast_forward_hideout_option", "Never"),
-                //            new SelectionItem(true, "str_rts_camera_fast_forward_hideout_option", "UntilBossFight"),
-                //            new SelectionItem(true, "str_rts_camera_fast_forward_hideout_option", "Always")
-                //        }), true));
+                        var config = RTSCameraConfig.Get();
+                        config.FastForwardHideout = (FastForwardHideout)i;
+                    }, () => (int)RTSCameraConfig.Get().FastForwardHideout, () => (int)FastForwardHideout.Count,
+                        () => new[]
+                        {
+                            new SelectionItem(true, "str_rts_camera_fast_forward_hideout_option", "Never"),
+                            new SelectionItem(true, "str_rts_camera_fast_forward_hideout_option", "UntilBossFight"),
+                            new SelectionItem(true, "str_rts_camera_fast_forward_hideout_option", "Always")
+                        }), true));
                 optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
 
                 if (Mission.Current.IsNavalBattle)
