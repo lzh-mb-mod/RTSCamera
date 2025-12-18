@@ -4,7 +4,7 @@ RTS Camera for v1.3.x (War Sail DLC Compatible)
 Main features:
 - Smoothly toggle free camera mode at any time in a battle.
 - Control one of your soldiers and continue fighting/commanding after player character is injured in battle.
-- Time speed control in battle.
+- Time speed control in battle. Automatic fast forward in hideout battle.
 
 
 Recommended:

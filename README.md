@@ -17,7 +17,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Control one of your soldiers and continue fighting/commanding after player character is injured in battle.
 
-  - Time speed control in battle.
+  - Time speed control in battle. Automatic fast forward in hideout battle.
 
 - Command System
 
