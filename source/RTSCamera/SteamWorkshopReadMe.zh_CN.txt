@@ -65,7 +65,7 @@ L  -    打开配置菜单
 
 
 Mod兼容性
-和Retinues v1.2.14.21一起使用有已知的性能问题。你可以把选项“玩家编队分配方式”设置为“默认或将领编队”然后重新进入战斗，来避免性能问题。
+和Retinues v1.3.14.21一起使用有已知的性能问题。你可以把选项“玩家编队分配方式”设置为“默认或将领编队”然后重新进入战斗，来避免性能问题。
 在The Old Realms中的崩溃在v5.1.7中修复。
 权游mod中若出现"text with id xxxxx does't exist"，请在启动器中将RTS Camera移至权游上方。
 Helmsman舵手：如果你用RTS Camera，你不需要使用Helmsman舵手。RTS Camera提供和舵手一样的功能。

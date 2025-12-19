@@ -64,7 +64,7 @@ If crash on startup, please check the following:
 
 
 Mod Compatibility
-Known performance issue with Retinues v1.2.14.21. You can set option "Player Formation Assignment" in RTS Camera to "Default Or General Formation" and reload the battle to avoid the performance issue.
+Known performance issue with Retinues v1.3.14.21. You can set option "Player Formation Assignment" in RTS Camera to "Default Or General Formation" and reload the battle to avoid the performance issue.
 Crash in The Old Realms is FIXED in v5.1.7.
 If you use Realm of Thrones, please move RTS Camera above Realm of Thrones, or "text with id xxxxx does't exist" will show up.
 Helmsman: You don't need it if you use RTS Camera. In RTS Camera you can use F5 to toggle soldier piloting, exactly the same as Helmsman, and you will get better integration with camera related features. However, if you still use Helmsman, RTS Camera will not add F5 command for the first ship to avoid conflict and weird behavior.
