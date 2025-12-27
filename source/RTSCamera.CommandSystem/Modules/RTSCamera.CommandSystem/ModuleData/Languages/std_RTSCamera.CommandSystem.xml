@@ -59,6 +59,10 @@
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_pressed" text="When key is pressed" />
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed" text="When key is not pressed" />
 
+    <string id="RTSCameraCommandSystem_sync_locked_formation_speed" text="Sync Locked Formation Speed" />
+    <string id="RTSCameraCommandSystem_sync_locked_formation_speed_hint" text="When enabled, locked formations will adjust movement speed to arrive at the target simultaneously." />
+    <string id="RTSCameraCommandSystem_sync_locked_formation_speed_message" text="Adjust movement speed." />
+
     <string id="RTSCameraCommandSystem_hollow_square_formation" text="Enable Hollow Square Formation" />
     <string id="RTSCameraCommandSystem_hollow_square_formation_hint" text="Whether to enable hollow square formation for player." />
 

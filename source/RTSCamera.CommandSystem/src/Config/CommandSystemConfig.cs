@@ -100,6 +100,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public FormationLockCondition FormationLockCondition = FormationLockCondition.WhenNotPressed;
 
+        public bool ShouldSyncFormationSpeed = true;
+
         public bool HasHintDisplayed = false;
 
         public bool HollowSquare = true;
@@ -145,6 +147,7 @@ namespace RTSCamera.CommandSystem.Config
             CommandQueueArrowShowMode = other.CommandQueueArrowShowMode;
             CommandQueueFormationShapeShowMode = other.CommandQueueFormationShapeShowMode;
             FormationLockCondition = other.FormationLockCondition;
+            ShouldSyncFormationSpeed = other.ShouldSyncFormationSpeed;
             HasHintDisplayed = other.HasHintDisplayed;
             HollowSquare = other.HollowSquare;
             SquareFormationCornerFix = other.SquareFormationCornerFix;

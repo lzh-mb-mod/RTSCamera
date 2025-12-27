@@ -1,13 +1,11 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.Logic;
 using System;
 using System.Reflection;
 using TaleWorlds.Engine;
-using TaleWorlds.Library;
-using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.ViewModelCollection.HUD.FormationMarker;
-using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.Patch.Fix
 {
@@ -22,13 +20,12 @@ namespace RTSCamera.Patch.Fix
                     return false;
                 _patched = true;
 
-                // no need to patch anymore since the issue is fixed in v1.3.2.
-                //harmony.Patch(
-                //    typeof(MissionGauntletFormationMarker).GetMethod("UpdateMarkerPositions",
-                //        BindingFlags.Instance | BindingFlags.NonPublic),
-                //    prefix: new HarmonyMethod(
-                //        typeof(Patch_MissionGauntletFormationMarker).GetMethod(nameof(Prefix_UpdateMarkerPositions),
-                //            BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(MissionGauntletFormationMarker).GetMethod("UpdateMarkerPositions",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    postfix: new HarmonyMethod(
+                        typeof(Patch_MissionGauntletFormationMarker).GetMethod(nameof(Postfix_UpdateMarkerPositions),
+                            BindingFlags.Static | BindingFlags.Public)));
 
             }
             catch (Exception e)
@@ -41,85 +38,20 @@ namespace RTSCamera.Patch.Fix
 
             return true;
         }
-        //public static bool Prefix_UpdateMarkerPositions(MissionGauntletFormationMarker __instance, bool isFirstFrame, MissionFormationMarkerVM ____dataSource, Vec3 ____heightOffset)
-        //{
-        //    Agent main = Agent.Main;
-        //    // run original method if main agent is controlled by player
-        //    if (main != null && main.IsPlayerControlled)
-        //        return true;
-        //    for (int index = 0; index < ____dataSource.Targets.Count; ++index)
-        //    {
-        //        MissionFormationMarkerTargetVM target = ____dataSource.Targets[index];
-        //        float screenX = 0.0f;
-        //        float screenY = 0.0f;
-        //        float w = 0.0f;
-        //        WorldPosition cachedMedianPosition = target.Formation.CachedMedianPosition;
-        //        if (cachedMedianPosition.IsValid)
-        //        {
-        //            double screen = (double)MBWindowManager.WorldToScreen(__instance.MissionScreen.CombatCamera, cachedMedianPosition.GetGroundVec3() + ____heightOffset, ref screenX, ref screenY, ref w);
-        //            if (!MathF.IsValidValue(w) || !MathF.IsValidValue(screenX) || !MathF.IsValidValue(screenY))
-        //            {
-        //                screenX = -10000f;
-        //                screenY = -10000f;
-        //                w = -1f;
-        //            }
-        //            target.WSign = (double)w < 0.0 ? -1 : 1;
-        //        }
-        //        if (!target.IsTargetingAFormation && (!cachedMedianPosition.IsValid || !MathF.IsValidValue(w) || (double)w < 0.0 || !MathF.IsValidValue(screenX) || !MathF.IsValidValue(screenY)))
-        //        {
-        //            screenX = -10000f;
-        //            screenY = -10000f;
-        //            w = 0.0f;
-        //        }
-        //        target.ScreenPosition = !isFirstFrame ? Vec2.Lerp(target.ScreenPosition, new Vec2(screenX, screenY), 0.9f) : new Vec2(screenX, screenY);
-        //        target.Distance = __instance.MissionScreen.CombatCamera.Position.Distance(cachedMedianPosition.GetGroundVec3());
-        //    }
-        //    for (int index = 0; index < ____dataSource.Targets.Count; ++index)
-        //    {
-        //        MissionFormationMarkerTargetVM target = ____dataSource.Targets[index];
-        //        float screenX = 0.0f;
-        //        float screenY = 0.0f;
-        //        float w = 0.0f;
-        //        WorldPosition cachedMedianPosition = target.Formation.CachedMedianPosition;
-        //        cachedMedianPosition.SetVec2(target.Formation.CachedAveragePosition);
-        //        if (cachedMedianPosition.IsValid)
-        //        {
-        //            double screen = (double)MBWindowManager.WorldToScreen(__instance.MissionScreen.CombatCamera, cachedMedianPosition.GetGroundVec3() + ____heightOffset, ref screenX, ref screenY, ref w);
-        //            if (!TaleWorlds.Library.MathF.IsValidValue(w) || !TaleWorlds.Library.MathF.IsValidValue(screenX) || !TaleWorlds.Library.MathF.IsValidValue(screenY))
-        //            {
-        //                screenX = -10000f;
-        //                screenY = -10000f;
-        //                w = -1f;
-        //            }
-        //            target.WSign = (double)w < 0.0 ? -1 : 1;
-        //        }
-        //        if (!target.IsTargetingAFormation && (!cachedMedianPosition.IsValid || !TaleWorlds.Library.MathF.IsValidValue(w) || (double)w < 0.0 || !TaleWorlds.Library.MathF.IsValidValue(screenX) || !TaleWorlds.Library.MathF.IsValidValue(screenY)))
-        //        {
-        //            screenX = -10000f;
-        //            screenY = -10000f;
-        //            w = 0.0f;
-        //        }
-        //        target.ScreenPosition = !isFirstFrame ? Vec2.Lerp(target.ScreenPosition, new Vec2(screenX, screenY), 0.9f) : new Vec2(screenX, screenY);
-        //        if (____dataSource.IsDistanceRelevant)
-        //        {
-        //            MissionFormationMarkerTargetVM formationMarkerTargetVm = target;
-        //            Vec3 position;
-        //            double num;
-        //            // Here is the only change: set distance to combat camera when main agent is not controlled by player
-        //            if (main == null || !main.IsActive() || !main.IsPlayerControlled)
-        //            {
-        //                position = __instance.MissionScreen.CombatCamera.Position;
-        //                num = (double)position.Distance(cachedMedianPosition.GetGroundVec3());
-        //            }
-        //            else
-        //            {
-        //                position = Agent.Main.Position;
-        //                num = (double)position.Distance(cachedMedianPosition.GetGroundVec3());
-        //            }
-        //            formationMarkerTargetVm.Distance = (float)num;
-        //        }
-        //    }
-        //    return false;
-        //}
+        public static void Postfix_UpdateMarkerPositions(MissionGauntletFormationMarker __instance, MissionFormationMarkerVM ____dataSource)
+        {
+            // DistanceText is set to distance to player character.
+            // We need to set it to distance to camera when in spectator mode.
+            if (!RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? true)
+                return;
+            for (int index = 0; index < ____dataSource.Targets.Count; ++index)
+            {
+                MissionFormationMarkerTargetVM target = ____dataSource.Targets[index];
+                if (!string.IsNullOrEmpty(target.DistanceText))
+                {
+                    target.DistanceText = ((int)target.Distance).ToString();
+                }
+            }
+        }
     }
 }

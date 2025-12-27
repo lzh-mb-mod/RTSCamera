@@ -47,7 +47,8 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             var selectedFormations = orderController.SelectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
             var orderToAdd = new OrderInQueue
             {
-                SelectedFormations = selectedFormations
+                SelectedFormations = selectedFormations,
+                ShouldAdjustFormationSpeed = Utilities.Utility.ShouldLockFormation()
             };
 
             orderToAdd.OrderType = IsFacingEnemy(GetActiveState(orderController)) ? OrderType.LookAtDirection : OrderType.LookAtEnemy;

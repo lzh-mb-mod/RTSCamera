@@ -131,6 +131,20 @@ namespace RTSCamera.CommandSystem.Utilities
             MissionSharedLibrary.Utilities.Utility.DisplayLocalizedText("str_rts_camera_command_system_add_order_to_queue", null, MessageColor);
         }
 
+        public static void DisplayAdjustFormationSpeedMessage(IEnumerable<Formation> formations)
+        {
+            List<TextObject> formationNameList = new List<TextObject>();
+            foreach (var formation in formations)
+                formationNameList.Add(GameTexts.FindText("str_troop_group_name", ((int)formation.PhysicalClass).ToString()));
+            if (!formationNameList.IsEmpty())
+            {
+                TextObject textObject = new TextObject("{=ApD0xQXT}{STR1}: {STR2}");
+                textObject.SetTextVariable("STR1", GameTexts.GameTextHelper.MergeTextObjectsWithComma(formationNameList, false));
+                textObject.SetTextVariable("STR2", GameTexts.FindText("str_rts_camera_command_system_sync_locked_formation_speed_message"));
+                MissionSharedLibrary.Utilities.Utility.DisplayMessage(textObject.ToString(), MessageColor);
+            }
+        }
+
         public static void DisplayExecuteOrderMessage(IEnumerable<Formation> selectedFormations, OrderInQueue order)
         {
             MissionSharedLibrary.Utilities.Utility.DisplayLocalizedText("str_rts_camera_command_system_execute_order_in_queue", null, MessageColor);

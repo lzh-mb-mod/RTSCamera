@@ -61,6 +61,11 @@
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_pressed" text="当按键按下时" />
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed" text="当按键未按下时" />
 
+    <string id="RTSCameraCommandSystem_sync_locked_formation_speed" text="整体行军速度一致" />
+    <string id="RTSCameraCommandSystem_sync_locked_formation_speed_hint" text="启用后，整体行军的编队在移动指令下会调整移动速度以同时到达目标。" />
+    <string id="RTSCameraCommandSystem_sync_locked_formation_speed_message" text="调整移动速度。" />
+    <string id="RTSCameraCommandSystem_sync_locked_formation_speed_option_enable" text="为移动指令下的整体行军添加速度同步选项。整体行军的编队会调整移动速度以同时到达目标。" />
+
     <string id="RTSCameraCommandSystem_hollow_square_formation" text="启用空心方阵" />
     <string id="RTSCameraCommandSystem_hollow_square_formation_hint" text="是否为玩家启用空心方阵。" />
 

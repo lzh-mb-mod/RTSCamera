@@ -82,7 +82,6 @@ namespace RTSCamera
                 _successPatch &= Patch_ArenaPracticeFightMissionController.Patch(_harmony);
                 _successPatch &= Patch_MissionAgentLabelView.Patch(_harmony);
                 _successPatch &= Patch_MissionBoundaryCrossingHandler.Patch(_harmony);
-                //_successPatch &= Patch_MissionFormationMarkerVM.Patch(_harmony);
                 _successPatch &= Patch_MissionGauntletFormationMarker.Patch(_harmony);
                 _successPatch &= Patch_MissionOrderVM.Patch(_harmony);
                 _successPatch &= Patch_MissionOrderTroopControllerVM.Patch(_harmony);
@@ -117,6 +116,7 @@ namespace RTSCamera
                     _successPatch &= Patch_ShipControllerMachine.Patch(_harmony);
                     _successPatch &= Patch_AgentNavalComponent.Patch(_harmony);
                     _successPatch &= Patch_NavalMovementOrder.Patch(_harmony);
+                    _successPatch &= Patch_MissionGauntletNavalShipMarker.Patch(_harmony);
                 }
 
                 // Use Patch to add game menu

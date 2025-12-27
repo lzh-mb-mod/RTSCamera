@@ -42,6 +42,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                 orderToAdd.OrderType = OrderType.MoveToLineSegment;
                 orderToAdd.PositionBegin = worldPosition;
                 orderToAdd.PositionEnd = worldPosition;
+                orderToAdd.ShouldAdjustFormationSpeed = Utilities.Utility.ShouldLockFormation();
                 if (!queueCommand)
                 {
                     Patch_OrderController.SimulateNewOrderWithPositionAndDirection(selectedFormations, orderController.simulationFormations, worldPosition, worldPosition, true, out var simulationAgentFrames, false, out _, out var isLineShort, true, true);

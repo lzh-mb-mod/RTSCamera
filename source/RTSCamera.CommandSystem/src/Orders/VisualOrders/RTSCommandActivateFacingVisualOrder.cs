@@ -1,10 +1,7 @@
-﻿using MissionSharedLibrary.Utilities;
-using RTSCamera.CommandSystem.Config;
+﻿using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
-using System;
 using System.Linq;
-using TaleWorlds.Engine;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
@@ -42,7 +39,8 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             var selectedFormations = orderController.SelectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
             var orderToAdd = new OrderInQueue
             {
-                SelectedFormations = selectedFormations
+                SelectedFormations = selectedFormations,
+                ShouldAdjustFormationSpeed = Utilities.Utility.ShouldLockFormation()
             };
 
             orderToAdd.OrderType = _orderType;

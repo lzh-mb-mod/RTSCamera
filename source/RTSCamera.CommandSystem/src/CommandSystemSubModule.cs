@@ -123,6 +123,9 @@ namespace RTSCamera.CommandSystem
             // solid circle formation
             _successPatch &= Patch_CircularFormation.Patch(_harmony);
 
+            // limit locked formation speed.
+            _successPatch &= Patch_HumanAIComponent.Patch(_harmony);
+
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Command: patch failed"));

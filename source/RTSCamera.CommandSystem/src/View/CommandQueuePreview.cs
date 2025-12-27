@@ -417,7 +417,7 @@ namespace RTSCamera.CommandSystem.View
             if (CommandQueueLogic.PendingOrders.TryGetValue(formation, out var pendingOrder))
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(new List<Formation> { formation }));
-                var pendingOrderPreviewData = CollectOrderPreviewData(pendingOrder, formation, false, true);
+                var pendingOrderPreviewData = CollectOrderPreviewData(pendingOrder.Order, formation, false, true);
                 if (pendingOrderPreviewData != null)
                 {
                     result.OrderList.Add(pendingOrderPreviewData);

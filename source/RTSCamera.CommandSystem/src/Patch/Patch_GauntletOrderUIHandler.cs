@@ -227,6 +227,7 @@ namespace RTSCamera.CommandSystem.Patch
                             {
                                 orderToAdd.OrderType = OrderType.LookAtEnemy;
                                 orderToAdd.TargetFormation = focusedFormationCache[0];
+                                orderToAdd.ShouldAdjustFormationSpeed = Utilities.Utility.ShouldLockFormation();
                                 Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations, focusedFormationCache[0]);
                                 if (!queueCommand)
                                 {
@@ -355,6 +356,7 @@ namespace RTSCamera.CommandSystem.Patch
                 case MissionOrderVM.CursorStates.Face:
                     {
                         orderToAdd.OrderType = OrderType.LookAtDirection;
+                        orderToAdd.ShouldAdjustFormationSpeed = Utilities.Utility.ShouldLockFormation();
                         RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
                         if (queueCommand)
                         {

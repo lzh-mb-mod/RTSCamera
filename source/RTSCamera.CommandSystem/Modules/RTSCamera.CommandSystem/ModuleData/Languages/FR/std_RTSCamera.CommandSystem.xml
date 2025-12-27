@@ -58,6 +58,10 @@
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_pressed" text="Quand la touche est enfoncée" />
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed" text="Quand la touche n’est pas enfoncée" />
 
+    <string id="RTSCameraCommandSystem_sync_locked_formation_speed" text="Synchroniser la vitesse de formation verrouillée" />
+    <string id="RTSCameraCommandSystem_sync_locked_formation_speed_hint" text="Lorsque activé, les formations verrouillées ajusteront leur vitesse de déplacement pour arriver simultanément à la cible." />
+    <string id="RTSCameraCommandSystem_sync_locked_formation_speed_message" text="Ajustement de la vitesse de déplacement." />
+
     <string id="RTSCameraCommandSystem_hollow_square_formation" text="Activer la formation en carré creux" />
     <string id="RTSCameraCommandSystem_hollow_square_formation_hint" text="Activer ou non la formation en carré creux pour le joueur." />
 

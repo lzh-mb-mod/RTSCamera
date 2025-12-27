@@ -937,6 +937,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 return true;
             }
+            bool shouldLimitFormationSpeedToLowest = Utilities.Utility.ShouldLockFormation();
             if (giveOrder)
             {
                 if (!queueCommand)
@@ -952,6 +953,8 @@ namespace RTSCamera.CommandSystem.Patch
                         IsLineShort = isLineShort,
                         PositionBegin = formationRealStartingPosition,
                         PositionEnd = formationRealEndingPosition,
+                        VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations),
+                        ShouldAdjustFormationSpeed = shouldLimitFormationSpeedToLowest
                     });
                 }
                 else
@@ -964,7 +967,8 @@ namespace RTSCamera.CommandSystem.Patch
                         ActualFormationChanges = formationChanges,
                         PositionBegin = formationRealStartingPosition,
                         PositionEnd = formationRealEndingPosition,
-                        VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations)
+                        VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations),
+                        ShouldAdjustFormationSpeed = shouldLimitFormationSpeedToLowest
                     });
                 }
             }

@@ -710,8 +710,6 @@ namespace RTSCamera.Logic.SubLogic
             }
         }
 
-        private static PropertyInfo _isShipAIControlled = AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:IsAIControlled");
-
         private void SwitchToAgent()
         {
             if (!IsSpectatorCamera)
@@ -746,7 +744,7 @@ namespace RTSCamera.Logic.SubLogic
                 var shipControllerMachine = Utilities.Utility.GetShipControllerMachine(ship);
                 if (shipControllerMachine != null && shipControllerMachine.PilotStandingPoint == usableMissionObject)
                 {
-                    var isShipAIControlled = (bool)_isShipAIControlled.GetValue(ship);
+                    var isShipAIControlled = Utilities.Utility.IsShipAIControlled(ship);
                     var shipFormation = Utilities.Utility.GetShipFormation(ship);
                     if (!(RTSCameraSubModule.IsHelmsmanInstalled && shipFormation.FormationIndex == FormationClass.Infantry))
                     {

@@ -33,7 +33,7 @@
     <DotNetCliToolReference Include="dotnet-md2html" Version="1.0.0.1-preview1" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Lib.Harmony" Version="2.3.6">
+    <PackageReference Include="Lib.Harmony" Version="2.4.2">
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

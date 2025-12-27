@@ -145,6 +145,11 @@ namespace RTSCamera.CommandSystem.Config
                             new SelectionItem(true, "str_rts_camera_command_system_formation_lock_condition_option", "WhenNotPressed")
                         }), false));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_sync_locked_formation_speed"),
+                    GameTexts.FindText("str_rts_camera_command_system_sync_locked_formation_speed_hint"),
+                    () => CommandSystemConfig.Get().ShouldSyncFormationSpeed,
+                    b => CommandSystemConfig.Get().ShouldSyncFormationSpeed = b));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_hollow_square_formation"),
                     GameTexts.FindText("str_rts_camera_command_system_hollow_square_formation_hint"),
                     () => CommandSystemConfig.Get().HollowSquare, b =>

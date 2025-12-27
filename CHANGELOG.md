@@ -1,6 +1,15 @@
 # Changelog
 
-## [v5.3.13]
+## [v5.3.14] - 2025-12-28
+### Fixed
+- Fix the crash when war sail DLC is absent.
+
+- Fix distance shown in RTS mode.
+
+### Added
+- Add an option to sync speed of locked formations under movement order. Locked formations will adjust movement speed to arrive at the target simultaneously.
+
+## [v5.3.13] - 2025-12-18
 ### Fixed
 - Fix the issue that RTS cannot be selected in BLSE launcher if game version is earlier than v1.3.11.
 

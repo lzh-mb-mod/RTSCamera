@@ -175,7 +175,7 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
 - Improved square and circle formation:
 
-  - When switching between square/cicle formation and other formations, the unit count in the outside rank is kept the same as the unit count of the first rank of line/sheild wall/loose formation if possible.
+  - When switching between square/circle formation and other formations, the unit count in the outside rank is kept the same as the unit count of the first rank of line/shield wall/loose formation if possible.
 
     This allows soldiers to form formations more quickly and avoids them crowding together.
 

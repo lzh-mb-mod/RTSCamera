@@ -1,4 +1,6 @@
-﻿using MissionSharedLibrary.Utilities;
+﻿using Microsoft.VisualBasic;
+using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.CommandSystem.View;
@@ -10,6 +12,7 @@ using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.CommandSystem.Logic
 {
@@ -52,6 +55,62 @@ namespace RTSCamera.CommandSystem.Logic
         public List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)> ActualFormationChanges { get; set; } = new List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)>();
 
         public Dictionary<Formation, FormationChange> VirtualFormationChanges { get; set; } = new Dictionary<Formation, FormationChange>();
+
+        public bool ShouldAdjustFormationSpeed { get; set; } = false;
+    }
+
+    public class PendingOrder
+    {
+        public OrderInQueue Order { get; set; }
+
+        public Dictionary<Formation, float> FormationSpeedLimits { get; set; } = new Dictionary<Formation, float>();
+
+        public PendingOrder(OrderInQueue order)
+        {
+            Order = order;
+        }
+
+        public void UpdateMovementSpeed()
+        {
+            FormationSpeedLimits.Clear();
+            if (!Order.ShouldAdjustFormationSpeed)
+                return;
+            Dictionary<Formation, float> targetDistances = new Dictionary<Formation, float>();
+            Dictionary<Formation, float> originalDuration = new Dictionary<Formation, float>();
+            var longestOriginalDuration = float.MinValue;
+            foreach (var formation in Order.SelectedFormations)
+            {
+                if (formation.CountOfUnits == 0)
+                    continue;
+                if (!CommandQueueLogic.PendingOrders.TryGetValue(formation, out var otherOrder))
+                    continue;
+                if (this != otherOrder || CommandQueueLogic.IsMovementOrderCompleted(formation))
+                    continue;
+                if (!Order.VirtualFormationChanges.TryGetValue(formation, out var formationChange))
+                    continue;
+
+                var targetPosition = formationChange.WorldPosition;
+
+                if (!targetPosition.HasValue || !targetPosition.Value.IsValid)
+                    continue;
+
+                var targetDistance = targetPosition.Value.AsVec2.Distance(formation.CurrentPosition);
+                if (targetDistance < 5f)
+                    continue;
+                targetDistances[formation] = targetPosition.Value.AsVec2.Distance(formation.CurrentPosition);
+                var duration = targetDistances[formation] / MathF.Max(0.1f, formation.CachedMovementSpeed);
+                originalDuration[formation] = duration;
+                if (duration > longestOriginalDuration)
+                {
+                    longestOriginalDuration = duration;
+                }
+            }
+            foreach (var pair in targetDistances)
+            {
+                var speedLimit = pair.Value / longestOriginalDuration;
+                FormationSpeedLimits[pair.Key] = speedLimit;
+            }
+        }
     }
 
     public static class CommandQueueLogic
@@ -59,7 +118,7 @@ namespace RTSCamera.CommandSystem.Logic
         public static List<OrderInQueue> OrderQueue = new List<OrderInQueue>();
         // Orders that formation is pending on.
         // Formation will continue when all the selected formations complete the order.
-        public static Dictionary<Formation, OrderInQueue> PendingOrders = new Dictionary<Formation, OrderInQueue>();
+        public static Dictionary<Formation, PendingOrder> PendingOrders = new Dictionary<Formation, PendingOrder>();
         public static Dictionary<Formation, bool> ShouldSkipCurrentOrders = new Dictionary<Formation, bool>();
 
         // virtual positions of last executed order.
@@ -70,7 +129,7 @@ namespace RTSCamera.CommandSystem.Logic
         public static void OnBehaviorInitialize()
         {
             OrderQueue = new List<OrderInQueue>();
-            PendingOrders = new Dictionary<Formation, OrderInQueue>();
+            PendingOrders = new Dictionary<Formation, PendingOrder>();
             ShouldSkipCurrentOrders = new Dictionary<Formation, bool>();
             CurrentFormationChanges = new FormationChanges();
             LatestOrderInQueueChanges = new FormationChanges();
@@ -315,7 +374,8 @@ namespace RTSCamera.CommandSystem.Logic
         {
             if (PendingOrders.TryGetValue(formation, out var order))
             {
-                foreach (var otherFormation in order.SelectedFormations)
+                order.UpdateMovementSpeed();
+                foreach (var otherFormation in order.Order.SelectedFormations)
                 {
                     if (otherFormation != formation)
                     {
@@ -346,7 +406,7 @@ namespace RTSCamera.CommandSystem.Logic
                 }
 
                 // All formations in the order completed the order.
-                foreach (var otherFormation in order.SelectedFormations)
+                foreach (var otherFormation in order.Order.SelectedFormations)
                 {
                     if (PendingOrders.TryGetValue(otherFormation, out var otherOrder))
                     {
@@ -643,9 +703,15 @@ namespace RTSCamera.CommandSystem.Logic
             if (CanBePended(order))
             {
                 CancelPendingOrder(formations);
+                var pendingOrder = new PendingOrder(order);
                 foreach (var formation in formations)
                 {
-                    FormationPendingOrder(formation, order);
+                    FormationPendingOrder(formation, pendingOrder);
+                }
+                pendingOrder.UpdateMovementSpeed();
+                if (pendingOrder.Order.ShouldAdjustFormationSpeed && CommandSystemConfig.Get().ShouldSyncFormationSpeed && pendingOrder.FormationSpeedLimits.Count > 1)
+                {
+                    Utilities.Utility.DisplayAdjustFormationSpeedMessage(pendingOrder.FormationSpeedLimits.Keys);
                 }
             }
             else
@@ -663,13 +729,13 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 if (PendingOrders.TryGetValue(formation, out var order))
                 {
-                    order.SelectedFormations.Remove(formation);
-                };
+                    order.Order.SelectedFormations.Remove(formation);
+                }
                 PendingOrders.Remove(formation);
             }
         }
 
-        private static void FormationPendingOrder(Formation formation, OrderInQueue order)
+        private static void FormationPendingOrder(Formation formation, PendingOrder order)
         {
             PendingOrders[formation] = order;
             CommandQuerySystem.GetQueryForFormation(formation).ExpireAllQueries();
