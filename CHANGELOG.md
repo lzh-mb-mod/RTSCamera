@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.3.15] - 2025-12-28
+### Fixed
+- Fix crash with game version lower than v1.3.12, caused by distance fix in RTS mode.
+
 ## [v5.3.14] - 2025-12-28
 ### Fixed
 - Fix the crash when war sail DLC is absent.

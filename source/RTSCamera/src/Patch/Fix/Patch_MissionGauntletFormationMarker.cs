@@ -12,6 +12,9 @@ namespace RTSCamera.Patch.Fix
      public class Patch_MissionGauntletFormationMarker
     {
         private static bool _patched;
+        // use reflection to keep compatible with v1.3.11 and before.
+        private static PropertyInfo _distanceText = typeof(MissionFormationMarkerTargetVM).GetProperty("DistanceText",
+                    BindingFlags.Instance | BindingFlags.Public);
         public static bool Patch(Harmony harmony)
         {
             try
@@ -47,9 +50,14 @@ namespace RTSCamera.Patch.Fix
             for (int index = 0; index < ____dataSource.Targets.Count; ++index)
             {
                 MissionFormationMarkerTargetVM target = ____dataSource.Targets[index];
-                if (!string.IsNullOrEmpty(target.DistanceText))
+                if (_distanceText == null)
                 {
-                    target.DistanceText = ((int)target.Distance).ToString();
+                    return;
+                }
+                var distanceText = _distanceText.GetValue(target) as string;
+                if (!string.IsNullOrEmpty(distanceText))
+                {
+                    _distanceText.SetValue(target, ((int)target.Distance).ToString());
                 }
             }
         }

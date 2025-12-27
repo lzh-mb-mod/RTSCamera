@@ -50,6 +50,8 @@ namespace RTSCamera.Patch.Fix
             _shipMarkers ??= AccessTools.Property(____dataSource.GetType(), "ShipMarkers");
             _distanceText ??= AccessTools.Property("NavalDLC.ViewModelCollection.HUD.ShipMarker.NavalShipMarkerItemVM:DistanceText");
             _distance ??= AccessTools.Property("NavalDLC.ViewModelCollection.HUD.ShipMarker.NavalShipMarkerItemVM:Distance");
+            if (_distanceText == null)
+                return;
             var shipMarkers = (IMBBindingList)_shipMarkers.GetValue(____dataSource);
             for (int index = 0; index < shipMarkers.Count; ++index)
             {
