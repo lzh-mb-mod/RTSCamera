@@ -703,24 +703,31 @@ namespace RTSCamera.CommandSystem.Patch
                 {
                     formationDirection = GetColumnFormationNewDirection(formation, oldOrderPosition, formationPositionVec2);
                 }
-                else if (GetFormationVirtualFacingOrder(formation) == OrderType.LookAtEnemy)
-                {
-                    // set formation virtual position to preview position to allows previewing the facing direction
-                    var formationPositionToRecover = GetFormationVirtualPosition(formation);
-                    LivePreviewFormationChanges.UpdateFormationChange(formation, formationPosition, null, null, null);
-                    var targetFormation = GetVirtualFacingEnemyTargetFormation(formation);
-                    if (targetFormation != null && targetFormation.CountOfUnits == 0)
-                    {
-                        LivePreviewFormationChanges.ClearFacingOrderTarget(formation);
-                    }
-                    formationDirection = GetFormationVirtualDirectionIncludingFacingEnemy(formation);
-
-                    // recover previous position after getting the direction.
-                    LivePreviewFormationChanges.UpdateFormationChange(formation, formationPositionToRecover, null, null, null);
-                }
                 else
                 {
-                    formationDirection = GetFormationVirtualDirectionIncludingFacingEnemy(formation);
+                    if (GetFormationVirtualFacingOrder(formation) == OrderType.LookAtEnemy)
+                    {
+                        var targetFormation = GetVirtualFacingEnemyTargetFormation(formation);
+                        if (targetFormation != null && targetFormation.CountOfUnits == 0)
+                        {
+                            LivePreviewFormationChanges.ClearFacingOrderTarget(formation);
+                        }
+                    }
+                    var previousDirection = formation.Direction;
+                    if (Utilities.Utility.ShouldQueueCommand())
+                    {
+                        previousDirection = GetFormationVirtualDirectionIncludingFacingEnemyAccordingToPositionAndDirection(
+                            formation,
+                            GetFormationVirtualPositionVec2(formation),
+                            GetFormationVirtualDirection(formation)
+                        );
+                    }
+                    // use preview position/direction to allows previewing the facing direction
+                    formationDirection = GetFormationVirtualDirectionIncludingFacingEnemyAccordingToPositionAndDirection(
+                        formation,
+                        formationPositionVec2,
+                        previousDirection
+                    );
                 }
                 GetFormationLineBeginEnd(formation, formationPosition, out var begin, out var end);
                 Vec2 vec = end.AsVec2 - begin.AsVec2;
@@ -1885,11 +1892,11 @@ namespace RTSCamera.CommandSystem.Patch
             return hasFormation && LivePreviewFormationChanges.VirtualChanges[formation].Direciton != null ? LivePreviewFormationChanges.VirtualChanges[formation].Direciton.Value : formation.Direction;
         }
 
-        public static Vec2 GetFormationVirtualDirectionIncludingFacingEnemy(Formation formation)
+        public static Vec2 GetFormationVirtualDirectionIncludingFacingEnemyAccordingToPositionAndDirection(Formation formation, Vec2 virtualFormationPositionVec2, Vec2 virtualFormationDirection)
         {
             if (GetFormationVirtualFacingOrder(formation) == OrderType.LookAtEnemy)
             {
-                return GetVirtualDirectionOfFacingEnemy(formation);
+                return GetVirtualDirectionOfFacingEnemyAccordingToPostitionAndDirection(formation, virtualFormationPositionVec2, virtualFormationDirection);
             }
             return GetFormationVirtualDirection(formation);
         }
@@ -2127,7 +2134,7 @@ namespace RTSCamera.CommandSystem.Patch
             return averagePosition;
         }
 
-        public static Vec2 GetVirtualDirectionOfFacingEnemy(Formation f)
+        public static Vec2 GetVirtualDirectionOfFacingEnemyAccordingToPostitionAndDirection(Formation f, Vec2 virtualFormationPositionVec2, Vec2 virtualFormationDirection)
         {
             var targetAgent = GetFormationVirtualTargetAgent(f);
             if (f.PhysicalClass.IsMounted() && targetAgent != null)
@@ -2145,7 +2152,7 @@ namespace RTSCamera.CommandSystem.Patch
                 return Patch_FacingOrder.GetVirtualDirectionFacingToEnemyFormation(f, targetFormation);
             }
             var averageEnemyPosition = CommandQuerySystem.GetQueryForFormation(f).VirtualWeightedAverageEnemyPosition;
-            return Patch_FacingOrder.GetDirectionFacingToEnemy(f, GetFormationVirtualPositionVec2(f), GetFormationVirtualDirection(f), averageEnemyPosition);
+            return Patch_FacingOrder.GetDirectionFacingToEnemy(f, virtualFormationPositionVec2, virtualFormationDirection, averageEnemyPosition);
         }
 
         public static WorldPosition GetFollowOrderPosition(Formation f, Agent targetAgent)
@@ -2289,7 +2296,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 var oldArrangementOrder = GetFormationVirtualArrangementOrder(formation);
                 Vec2 positionVec2 = GetFormationVirtualPositionVec2(formation);
-                Vec2 direction = GetFormationVirtualDirectionIncludingFacingEnemy(formation);
+                Vec2 direction = GetFormationVirtualDirectionIncludingFacingEnemyAccordingToPositionAndDirection(formation, positionVec2, GetFormationVirtualDirection(formation));
                 var unitSpacing = GetFormationVirtualUnitSpacing(formation) ?? GetActualOrCurrentUnitSpacing(formation);
                 var maxNewUnitSpacing = ArrangementOrder.GetUnitSpacingOf(newArrangementOrder);
                 float width = GetFormationVirtualWidth(formation) ?? formation.Width;

@@ -45,23 +45,17 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                 orderToAdd.ShouldAdjustFormationSpeed = Utilities.Utility.ShouldLockFormation();
                 if (!queueCommand)
                 {
-                    Patch_OrderController.SimulateNewOrderWithPositionAndDirection(selectedFormations, orderController.simulationFormations, worldPosition, worldPosition, true, out var simulationAgentFrames, false, out _, out var isLineShort, true, true);
-                    orderToAdd.IsLineShort = isLineShort;
+                    orderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegment, worldPosition, worldPosition);
+                    orderToAdd.IsLineShort = false;
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                    CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
                 }
                 else
                 {
                     OrderController.SimulateNewOrderWithPositionAndDirection(selectedFormations, orderController.simulationFormations, worldPosition, worldPosition, out var formationChanges, out var isLineShort, true);
                     orderToAdd.IsLineShort = isLineShort;
                     orderToAdd.ActualFormationChanges = formationChanges;
-                }
-                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                if (!queueCommand)
-                {
-                    CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
-                    orderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegment, worldPosition, worldPosition);
-                }
-                else
-                {
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                     CommandQueueLogic.AddOrderToQueue(orderToAdd);
                 }
             }

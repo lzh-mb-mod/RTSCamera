@@ -48,6 +48,15 @@ namespace RTSCamera.CommandSystem.Patch
             typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_dataSource),
                 BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly PropertyInfo _activeCursorState = typeof(OrderTroopPlacer).GetProperty("ActiveCursorState", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly MethodInfo _cursorState = typeof(OrderTroopPlacer).GetMethod("GetCursorState", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _handleMouseDown = typeof(OrderTroopPlacer).GetMethod("HandleMouseDown", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _handleMouseUp = typeof(OrderTroopPlacer).GetMethod("HandleMouseUp", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _updateFormationDrawingForFacingOrder = typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawingForFacingOrder", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _updateFormationDrawingForFormingOrder = typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawingForFormingOrder", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _updateFormationDrawingForDestination = typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawingForDestination", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _getGroundVec3 = typeof(OrderTroopPlacer).GetMethod("GetGroundedVec3", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _addOrderPositionEntity = typeof(OrderTroopPlacer).GetMethod("AddOrderPositionEntity", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _reset = typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static bool _isInitialized = false;
         private static CurrentCursorState _currentCursorState = CurrentCursorState.Invisible;
@@ -216,8 +225,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static CurrentCursorState GetCursorState()
         {
-            typeof(OrderTroopPlacer).GetMethod("GetCursorState", BindingFlags.Instance | BindingFlags.NonPublic)
-                .Invoke(_orderTroopPlacer, new object[] { });
+            _cursorState.Invoke(_orderTroopPlacer, new object[] { });
             return _currentCursorState;
         }
         private static Vec2 GetScreenPoint(OrderTroopPlacer __instance, ref Vec2 ____deltaMousePosition)
@@ -720,8 +728,7 @@ namespace RTSCamera.CommandSystem.Patch
 
 
             _activeCursorState.SetValue(__instance,
-                (CursorState)typeof(OrderTroopPlacer).GetMethod("GetCursorState", BindingFlags.Instance | BindingFlags.NonPublic)
-                .Invoke(_orderTroopPlacer, new object[] { }));
+                (CursorState)_cursorState.Invoke(_orderTroopPlacer, new object[] { }));
             if (!__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.Any())
                 return false;
             ____isDrawnThisFrame = false;
@@ -744,8 +751,7 @@ namespace RTSCamera.CommandSystem.Patch
             if (isLeftButtonPressed)
             {
                 ____isMouseDown = true;
-                typeof(OrderTroopPlacer).GetMethod("HandleMouseDown", BindingFlags.Instance | BindingFlags.NonPublic)
-                    ?.Invoke(__instance, new object[] { });
+                _handleMouseDown?.Invoke(__instance, new object[] { });
             }
             if (isSelectFormationKeyPressed)
             {
@@ -766,8 +772,7 @@ namespace RTSCamera.CommandSystem.Patch
                 // Formation.GetOrderPositionOfUnit is wrong in the next tick after movement order is issued.
                 // we skip updating from the wrong position for 1 tick.
                 _skipDrawingForDestinationForOneTick = true;
-                typeof(OrderTroopPlacer).GetMethod("HandleMouseUp", BindingFlags.Instance | BindingFlags.NonPublic)
-                    ?.Invoke(__instance, new object[] { });
+                _handleMouseUp?.Invoke(__instance, new object[] { });
             }
             else if (____isMouseDown && isSelectFormationKeyDown)
             {
@@ -813,9 +818,7 @@ namespace RTSCamera.CommandSystem.Patch
                         ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
                         ref ____mouseOverFormation, ref _clickedFormation);
 
-                    typeof(OrderTroopPlacer)
-                        .GetMethod("UpdateFormationDrawingForFacingOrder", BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Invoke(__instance, new object[] { false });
+                    _updateFormationDrawingForFacingOrder.Invoke(__instance, new object[] { false });
                 }
             }
             else if (__instance.IsDrawingForming || ____wasDrawingForming)
@@ -826,9 +829,7 @@ namespace RTSCamera.CommandSystem.Patch
                         ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
                         ref ____mouseOverFormation, ref _clickedFormation);
 
-                    typeof(OrderTroopPlacer)
-                        .GetMethod("UpdateFormationDrawingForFormingOrder", BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Invoke(__instance, new object[] { false });
+                    _updateFormationDrawingForFormingOrder.Invoke(__instance, new object[] { false });
                 }
             }
             else if (____wasDrawingForced)
@@ -843,9 +844,7 @@ namespace RTSCamera.CommandSystem.Patch
             }
             else
             {
-                typeof(OrderTroopPlacer)
-                    .GetMethod("UpdateFormationDrawingForDestination", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(__instance, new object[] { false });
+                _updateFormationDrawingForDestination.Invoke(__instance, new object[] { false });
             }
 
             UpdateMouseOverFormation(____mouseOverFormation);
@@ -973,17 +972,23 @@ namespace RTSCamera.CommandSystem.Patch
                 }
             }
             int entityIndex = 0;
-            var getGroundedVec3Method = __instance.GetType().GetMethod("GetGroundedVec3", BindingFlags.Instance | BindingFlags.NonPublic);
             foreach (WorldPosition worldPosition in simulationAgentFrames)
             {
-                typeof(OrderTroopPlacer).GetMethod("AddOrderPositionEntity", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(__instance,
+                _addOrderPositionEntity.Invoke(__instance,
                     new object[]
                     {
-                        entityIndex, getGroundedVec3Method.Invoke(__instance, new object[]{ worldPosition }), giveOrder, -1f
+                        entityIndex, GetGroundedVec3(__instance.Mission, worldPosition), giveOrder, -1f
                     });
                 ++entityIndex;
             }
             return false;
+        }
+        private static Vec3 GetGroundedVec3(Mission mission, WorldPosition worldPosition)
+        {
+            if (!mission.IsNavalBattle)
+                return worldPosition.GetGroundVec3();
+            Vec2 asVec2 = worldPosition.AsVec2;
+            return new Vec3(asVec2.X, asVec2.Y, mission.Scene.GetWaterLevelAtPosition(asVec2, true, true));
         }
 
         public static bool Prefix_UpdateFormationDrawingForFacingOrder(OrderTroopPlacer __instance,
@@ -1012,7 +1017,7 @@ namespace RTSCamera.CommandSystem.Patch
         {
             if (_orderTroopPlacer == null)
                 return;
-            typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(_orderTroopPlacer, new object[] { });
+            _reset.Invoke(_orderTroopPlacer, new object[] { });
         }
     }
 }

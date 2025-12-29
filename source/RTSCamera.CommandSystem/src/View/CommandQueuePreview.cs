@@ -626,7 +626,11 @@ namespace RTSCamera.CommandSystem.View
                                 {
                                     if (order.VirtualFormationChanges.TryGetValue(formation, out var formationChange))
                                     {
-                                        var direction = virtualFacingDirection ? Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation) :
+                                        var direction = virtualFacingDirection ?
+                                            Patch_OrderController.GetVirtualDirectionOfFacingEnemyAccordingToPostitionAndDirection(
+                                                formation,
+                                                Patch_OrderController.GetFormationVirtualAveragePositionVec2(formation),
+                                                Patch_OrderController.GetFormationVirtualDirection(formation)) :
                                             formation.FacingOrder.GetDirection(formation, formation.GetReadonlyMovementOrderReference()._targetAgent);
                                         // formation position can only be set after getting the direction because position will affect result of facing enemy direction.
                                         if (order.TargetFormation != null)
@@ -723,7 +727,20 @@ namespace RTSCamera.CommandSystem.View
             switch (facingOrder)
             {
                 case OrderType.LookAtEnemy:
-                    var direction = virtualFacingDirection ? Patch_OrderController.GetVirtualDirectionOfFacingEnemy(formation) :
+                    var previousDirection = Patch_OrderController.GetFormationVirtualDirection(formation);
+                    if (Utilities.Utility.ShouldQueueCommand())
+                    {
+                        previousDirection = Patch_OrderController.GetFormationVirtualDirectionIncludingFacingEnemyAccordingToPositionAndDirection(
+                            formation,
+                            Patch_OrderController.GetFormationVirtualPositionVec2(formation),
+                            Patch_OrderController.GetFormationVirtualDirection(formation)
+                        );
+                    }
+                    var direction = virtualFacingDirection ?
+                        Patch_OrderController.GetVirtualDirectionOfFacingEnemyAccordingToPostitionAndDirection(
+                            formation,
+                            Patch_OrderController.GetFormationVirtualAveragePositionVec2(formation),
+                            previousDirection) :
                         formation.FacingOrder.GetDirection(formation, formation.GetReadonlyMovementOrderReference()._targetAgent);
                     Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
                     break;

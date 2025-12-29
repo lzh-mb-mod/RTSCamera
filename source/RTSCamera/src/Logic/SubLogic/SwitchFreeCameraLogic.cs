@@ -355,6 +355,12 @@ namespace RTSCamera.Logic.SubLogic
                 _switchToAgentNextTick = true;
                 // If not deployment is required, we need to set _switchToFreeCameraNextTick to false to prevent camera set to free mode.
                 _switchToFreeCameraNextTick = false;
+
+                if (!IsSpectatorCamera && Mission.IsDeploymentFinished && Mission.MainAgent != null)
+                {
+                    // If manually turned off free camera mode in deployment mode, we should enable player controller here.
+                    Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, false, AgentControllerType.Player, true);
+                }
             }
             else
             {

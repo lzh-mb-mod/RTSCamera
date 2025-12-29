@@ -1,5 +1,12 @@
 # Changelog
 
+## [v5.3.16]
+### Fixed
+- Fix the issue that player character cannot be controlled after deployment if free camera is turned off in deployment stage.
+
+### Improved
+- Slightly improved performance of movement order.
+
 ## [v5.3.15] - 2025-12-28
 ### Fixed
 - Fix crash with game version lower than v1.3.12, caused by distance fix in RTS mode.
