@@ -1113,11 +1113,10 @@ namespace RTSCamera.CommandSystem.Patch
             foreach (Formation formation in formations)
             {
                 float formationWidth = num;
-                formationWidth = MathF.Min(Utilities.Utility.ShouldKeepFormationWidth() ? GetActualOrCurrentWidth(formation) : formationWidth, GetFormationVirtualMaximumWidth(formation));
+                formationWidth = MathF.Min(formationWidth, GetFormationVirtualMaximumWidth(formation));
                 WorldPosition formationPosition = formationLineBegin;
                 var formationPositionVec2 = (formationLineEnd.AsVec2 + formationLineBegin.AsVec2) * 0.5f - formationDirection * num3;
                 formationPosition.SetVec2(formationPositionVec2);
-
 
                 if (isSimulatingFormationChanges)
                 {

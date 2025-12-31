@@ -1,4 +1,5 @@
 ﻿using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCameraAgentComponent;
 using System;
@@ -36,6 +37,8 @@ namespace RTSCamera.CommandSystem.AgentComponents
         private static Material _material;
         //private static Material _defaultMaterial;
         //private bool _materialCleared;
+
+        private AgentAIInputHandler _agentAIInputHandler = new AgentAIInputHandler();
         public CommandSystemAgentComponent(Agent agent) : base(agent)
         {
             for (int i = 0; i < _colors.Length; ++i)
@@ -56,6 +59,13 @@ namespace RTSCamera.CommandSystem.AgentComponents
             }
 #endif
             InitializeAux();
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            Agent.SetHasOnAiInputSetCallback(true);
         }
 
         private void InitializeAux()
@@ -335,11 +345,6 @@ namespace RTSCamera.CommandSystem.AgentComponents
             _mesh.Frame = frame;
         }
 
-        public override void OnAIInputSet(ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)
-        {
-            base.OnAIInputSet(ref eventFlag, ref movementFlag, ref inputVector);
-        }
-
         public override void OnTick(float dt)
         {
             base.OnTick(dt);
@@ -390,6 +395,32 @@ namespace RTSCamera.CommandSystem.AgentComponents
             {
                 DistanceSquaredToTargetPosition = 0;
             }
+        }
+
+        public bool IsVolleyEnabled()
+        {
+            return _agentAIInputHandler.IsVolleyEnabled;
+        }
+
+        public void SetVolleyEnabled(bool enabled)
+        {
+            _agentAIInputHandler.SetVolleyEnabled(Agent, enabled);
+            if (enabled)
+            {
+                Agent.SetHasOnAiInputSetCallback(enabled);
+            }
+        }
+
+        public void ShootUnderVolley()
+        {
+            _agentAIInputHandler.ShootUnderVolley(Agent);
+        }
+
+        public override void OnAIInputSet(ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)
+        {
+            base.OnAIInputSet(ref eventFlag, ref movementFlag, ref inputVector);
+
+            _agentAIInputHandler.OnAIInputSet(Agent, ref eventFlag, ref movementFlag, ref inputVector);
         }
     }
 }
