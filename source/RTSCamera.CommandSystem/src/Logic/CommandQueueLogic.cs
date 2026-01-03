@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.AgentComponents;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
@@ -20,7 +21,10 @@ namespace RTSCamera.CommandSystem.Logic
     {
         Original,
         FollowMainAgent,
-        SetTargetFormation
+        SetTargetFormation,
+        EnableVolley,
+        DisableVolley,
+        VolleyFire
     }
     public class OrderInQueue
     {
@@ -126,6 +130,8 @@ namespace RTSCamera.CommandSystem.Logic
         public static FormationChanges LatestOrderInQueueChanges = new FormationChanges();
         private static int TicksToSkip = 0;
 
+        public static Dictionary<Formation, bool> FormationVolleyEnabled = new Dictionary<Formation, bool>();
+
         public static void OnBehaviorInitialize()
         {
             OrderQueue = new List<OrderInQueue>();
@@ -133,6 +139,7 @@ namespace RTSCamera.CommandSystem.Logic
             ShouldSkipCurrentOrders = new Dictionary<Formation, bool>();
             CurrentFormationChanges = new FormationChanges();
             LatestOrderInQueueChanges = new FormationChanges();
+            FormationVolleyEnabled = new Dictionary<Formation, bool>();
         }
 
         public static void OnRemoveBehavior()
@@ -142,6 +149,7 @@ namespace RTSCamera.CommandSystem.Logic
             ShouldSkipCurrentOrders = null;
             CurrentFormationChanges = null;
             LatestOrderInQueueChanges = null;
+            FormationVolleyEnabled = null;
 
             var orderController = Mission.Current?.PlayerTeam?.PlayerOrderController;
             if (orderController != null)
@@ -567,11 +575,13 @@ namespace RTSCamera.CommandSystem.Logic
                                 break;
                             case OrderType.FireAtWill:
                                 formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
+                                SetFormationVolleyEnabled(formation, false);
                                 TryPendingOrder(new List<Formation> { formation }, order);
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
                             case OrderType.HoldFire:
                                 formation.SetFiringOrder(FiringOrder.FiringOrderHoldYourFire);
+                                SetFormationVolleyEnabled(formation, false);
                                 TryPendingOrder(new List<Formation> { formation }, order);
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
@@ -611,6 +621,28 @@ namespace RTSCamera.CommandSystem.Logic
                     break;
                 case CustomOrderType.SetTargetFormation:
                     formation.SetTargetFormation(order.TargetFormation);
+                    break;
+                case CustomOrderType.EnableVolley:
+                    SetFormationVolleyEnabled(formation, true);
+                    formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
+                    Utilities.Utility.DisplayVolleyEnabledMessage(new List<Formation> { formation }, true);
+                    TryPendingOrder(new List<Formation> { formation }, order);
+                    CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+                    break;
+                case CustomOrderType.DisableVolley:
+                    SetFormationVolleyEnabled(formation, false);
+                    formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
+                    Utilities.Utility.DisplayVolleyEnabledMessage(new List<Formation> { formation }, false);
+                    TryPendingOrder(new List<Formation> { formation }, order);
+                    CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+                    break;
+                case CustomOrderType.VolleyFire:
+                    formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
+                    SetFormationVolleyEnabled(formation, true);
+                    FormationVolleyFire(formation);
+                    Utilities.Utility.DisplayVolleyFireMessage(new List<Formation> { formation });
+                    TryPendingOrder(new List<Formation> { formation }, order);
+                    CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                     break;
             }
         }
@@ -803,6 +835,44 @@ namespace RTSCamera.CommandSystem.Logic
                     new KeyValuePair<Formation, FormationChange>(formation, new FormationChange())
                 });
             }
+        }
+
+        public static void SetFormationVolleyEnabled(Formation formation, bool enable)
+        {
+            FormationVolleyEnabled[formation] = enable;
+            formation.ApplyActionOnEachUnit(agent =>
+            {
+                var component = agent.GetComponent<CommandSystemAgentComponent>();
+                if (component != null)
+                {
+                    component.SetVolleyEnabled(enable);
+                }
+            });
+        }
+
+        public static bool IsFormationVolleyEnabled(Formation formation)
+        {
+            if (!FormationVolleyEnabled.TryGetValue(formation, out var enabled))
+            {
+                return false;
+            }
+            return enabled;
+        }
+
+        public static void FormationVolleyFire(Formation formation)
+        {
+            formation.ApplyActionOnEachUnit(agent =>
+            {
+                var component = agent.GetComponent<CommandSystemAgentComponent>();
+                if (component != null)
+                {
+                    bool isVolleyEnabled = component.IsVolleyEnabled();
+                    if (isVolleyEnabled)
+                    {
+                        component.ShootUnderVolley();
+                    }
+                }
+            });
         }
     }
 }

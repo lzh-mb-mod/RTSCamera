@@ -134,5 +134,9 @@
     <string id="RTSCameraCommandSystem_follow_entity" text="跟随目标" />
     <string id="RTSCameraCommandSystem_attack_entity" text="攻击目标" />
     <string id="RTSCameraCommandSystem_point_defense" text="防守目标" />
+
+    <string id="RTSCameraCommandSystem_volley_enabled" text="齐射开启" />
+    <string id="RTSCameraCommandSystem_volley_disabled" text="齐射关闭" />
+    <string id="RTSCameraCommandSystem_volley_fire" text="齐射开火" />
   </strings>
 </base>

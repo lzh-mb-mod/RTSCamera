@@ -1,16 +1,9 @@
-﻿using MissionSharedLibrary.Utilities;
-using RTSCamera.CommandSystem.Config;
+﻿using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.Engine;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Screens;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
 
 namespace RTSCamera.CommandSystem.Orders.VisualOrders
@@ -107,7 +100,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
 
         protected override bool? OnGetFormationHasOrder(Formation formation)
         {
-            return Utilities.Utility.DoesFormationHaveOrderType(formation, _orderType);
+            return Utilities.Utility.DoesFormationHasOrderType(formation, _orderType);
         }
     }
 }

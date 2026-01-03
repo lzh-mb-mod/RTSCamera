@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using NetworkMessages.FromClient;
-using RTSCamera.CommandSystem.Config;
+﻿using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Orders.VisualOrders;
@@ -15,7 +13,6 @@ using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI;
-using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 using static TaleWorlds.Engine.WorldPosition;
 using static TaleWorlds.MountAndBlade.ArrangementOrder;
@@ -96,6 +93,40 @@ namespace RTSCamera.CommandSystem.Utilities
             MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString(), MessageColor);
         }
 
+        public static void DisplayVolleyEnabledMessage(IEnumerable<Formation> selectedFormations, bool enabled)
+        {
+            var formationNames = new List<TextObject>();
+            foreach (var formation in selectedFormations)
+            {
+                formationNames.Add(GameTexts.FindText("str_formation_class_string", formation.PhysicalClass.GetName()));
+            }
+            if (!formationNames.IsEmpty())
+            {
+                var message = new TextObject("{=ApD0xQXT}{STR1}: {STR2}");
+                message.SetTextVariable("STR1", GameTexts.GameTextHelper.MergeTextObjectsWithComma(formationNames, false));
+                message.SetTextVariable("STR2",
+                    enabled ? GameTexts.FindText("str_rts_camera_command_system_volley_enabled") : GameTexts.FindText("str_rts_camera_command_system_volley_disabled"));
+                InformationManager.DisplayMessage(new InformationMessage(message.ToString()));
+            }
+        }
+
+        public static void DisplayVolleyFireMessage(IEnumerable<Formation> selectedFormations)
+        {
+            var formationNames = new List<TextObject>();
+            foreach (var formation in selectedFormations)
+            {
+                formationNames.Add(GameTexts.FindText("str_formation_class_string", formation.PhysicalClass.GetName()));
+            }
+            if (!formationNames.IsEmpty())
+            {
+                var message = new TextObject("{=ApD0xQXT}{STR1}: {STR2}");
+                message.SetTextVariable("STR1", GameTexts.GameTextHelper.MergeTextObjectsWithComma(formationNames, false));
+                message.SetTextVariable("STR2", GameTexts.FindText("str_rts_camera_command_system_volley_fire"));
+                InformationManager.DisplayMessage(new InformationMessage(message.ToString()));
+            }
+        }
+
+
         public static bool ShouldChargeToFormation(Agent agent)
         {
             return agent.Formation != null && agent.Formation.GetReadonlyMovementOrderReference().OrderType == OrderType.ChargeWithTarget &&
@@ -109,6 +140,11 @@ namespace RTSCamera.CommandSystem.Utilities
         public static MethodInfo BeforeSetOrder = typeof(OrderController).GetMethod("BeforeSetOrder", BindingFlags.NonPublic | BindingFlags.Instance);
         public static MethodInfo AfterSetOrder = typeof(OrderController).GetMethod("AfterSetOrder", BindingFlags.NonPublic | BindingFlags.Instance);
 
+
+        public static void CallAfterSetOrder(OrderController orderController, OrderType orderType)
+        {
+            AfterSetOrder?.Invoke(orderController, new object[] { orderType });
+        }
         public static void DisplayFocusAttackMessage(IEnumerable<Formation> formations, Formation target)
         {
             List<TextObject> formationNameList = new List<TextObject>();
@@ -892,7 +928,7 @@ namespace RTSCamera.CommandSystem.Utilities
             }
             return Vec3.Invalid;
         }
-        public static bool DoesFormationHaveOrderType(Formation formation, OrderType type)
+        public static bool DoesFormationHasOrderType(Formation formation, OrderType type)
         {
             MovementOrder readonlyMovementOrderReference = formation.GetReadonlyMovementOrderReference();
             switch (type)
@@ -926,6 +962,22 @@ namespace RTSCamera.CommandSystem.Utilities
 
                     return true;
             }
+        }
+
+        public static bool DoesFormationHasVolleyOrder(Formation formation)
+        {
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
+            if (queueCommand)
+            {
+                if (CommandQueueLogic.LatestOrderInQueueChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
+                {
+                    if (formationChange.VolleyEnabledOrder != null)
+                    {
+                        return formationChange.VolleyEnabledOrder.Value;
+                    }
+                }
+            }
+            return CommandQueueLogic.IsFormationVolleyEnabled(formation);
         }
 
         public static bool ShouldQueueCommand()

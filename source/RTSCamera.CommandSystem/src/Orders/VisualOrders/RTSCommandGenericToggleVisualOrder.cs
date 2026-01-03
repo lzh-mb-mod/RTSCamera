@@ -1,4 +1,5 @@
-﻿using RTSCamera.CommandSystem.Logic;
+﻿using Microsoft.VisualBasic;
+using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using System.Linq;
 using TaleWorlds.Localization;
@@ -78,6 +79,10 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             };
             orderToAdd.OrderType = GetActiveState(orderController) == OrderState.Active ? NegativeOrder : PositiveOrder;
             Patch_OrderController.LivePreviewFormationChanges.SetToggleOrder(orderToAdd.OrderType, selectedFormations);
+            if (orderToAdd.OrderType == OrderType.FireAtWill || orderToAdd.OrderType == OrderType.HoldFire)
+            {
+                Patch_OrderController.LivePreviewFormationChanges.SetVolleyEnabledOrder(false, selectedFormations);
+            }
             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
 
             if (queueCommand)
@@ -88,12 +93,19 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             {
                 CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
                 orderController.SetOrder(orderToAdd.OrderType);
+                if (orderToAdd.OrderType == OrderType.FireAtWill || orderToAdd.OrderType == OrderType.HoldFire)
+                {
+                    foreach (var formation in orderController.SelectedFormations)
+                    {
+                        CommandQueueLogic.SetFormationVolleyEnabled(formation, false);
+                    }
+                }
             }
         }
 
         protected override bool? OnGetFormationHasOrder(Formation formation)
         {
-            return Utilities.Utility.DoesFormationHaveOrderType(formation, PositiveOrder);
+            return Utilities.Utility.DoesFormationHasOrderType(formation, PositiveOrder);
         }
 
         protected override string GetIconId()

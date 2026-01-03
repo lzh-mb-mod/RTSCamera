@@ -129,5 +129,9 @@
     <string id="RTSCameraCommandSystem_follow_entity" text="Suivre la cible" />
     <string id="RTSCameraCommandSystem_attack_entity" text="Attaquer la cible" />
     <string id="RTSCameraCommandSystem_point_defense" text="Cible à défendre" />
+
+    <string id="RTSCameraCommandSystem_volley_enabled" text="Volée activée" />
+    <string id="RTSCameraCommandSystem_volley_disabled" text="Volley désactivé" />
+    <string id="RTSCameraCommandSystem_volley_fire" text="Tir de volée" />
   </strings>
 </base>

@@ -26,6 +26,7 @@ namespace RTSCamera.CommandSystem.Logic
         public OrderType? RidingOrderType;
         public OrderType? AIControlOrderType;
         public ArrangementOrderEnum? ArrangementOrder;
+        public bool? VolleyEnabledOrder;
         public float? PreviewWidth;
         public float? PreviewDepth;
     }
@@ -54,6 +55,7 @@ namespace RTSCamera.CommandSystem.Logic
                 change.FiringOrderType = pair.Value.FiringOrderType;
                 change.RidingOrderType = pair.Value.RidingOrderType;
                 change.ArrangementOrder = pair.Value.ArrangementOrder;
+                change.VolleyEnabledOrder = pair.Value.VolleyEnabledOrder;
                 change.PreviewWidth = pair.Value.PreviewWidth;
                 change.PreviewDepth = pair.Value.PreviewDepth;
                 VirtualChanges[pair.Key] = change;
@@ -253,9 +255,35 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     change = new FormationChange();
                 }
-                // Clear cached chagned because AI may change orders.
+                // Clear cached change because AI may change orders.
                 //var change = new FormationChange();
                 change.AIControlOrderType = orderType;
+                VirtualChanges[formation] = change;
+            }
+        }
+
+        public void SetVolleyEnabledOrder(bool enabled, IEnumerable<Formation> formations)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    change = new FormationChange();
+                }
+                change.VolleyEnabledOrder = enabled;
+                VirtualChanges[formation] = change;
+            }
+        }
+
+        public void ClearVolleyEnabledOrder(IEnumerable<Formation> formations)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    return;
+                }
+                change.VolleyEnabledOrder = null;
                 VirtualChanges[formation] = change;
             }
         }

@@ -422,5 +422,12 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
             _agentAIInputHandler.OnAIInputSet(Agent, ref eventFlag, ref movementFlag, ref inputVector);
         }
+
+        public override void OnFormationSet()
+        {
+            base.OnFormationSet();
+
+            _agentAIInputHandler.OnFormationSet(Agent);
+        }
     }
 }

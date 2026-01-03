@@ -58,6 +58,9 @@ namespace RTSCamera.CommandSystem.Orders
                 genericVisualOrderSet3.AddOrder(order6);
             if (order7 != null)
                 genericVisualOrderSet3.AddOrder(order7);
+
+            genericVisualOrderSet3.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_toggle_volley"));
+            genericVisualOrderSet3.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));
             genericVisualOrderSet3.AddOrder(new ReturnVisualOrder());
             defaultOrders.Add(genericVisualOrderSet1);
             defaultOrders.Add(genericVisualOrderSet2);
@@ -93,6 +96,8 @@ namespace RTSCamera.CommandSystem.Orders
             RTSCommandSingleVisualOrder order2 = new RTSCommandSingleVisualOrder("order_toggle_facing_active", new TextObject("{=u8j8nN5U}Face Enemy"), OrderType.LookAtEnemy, true, false);
             genericVisualOrderSet2.AddOrder(order1);
             genericVisualOrderSet2.AddOrder(order2);
+            genericVisualOrderSet2.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_toggle_volley"));
+            genericVisualOrderSet2.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));
             GenericVisualOrderSet genericVisualOrderSet3 = new GenericVisualOrderSet("order_type_form", new TextObject("{=iBk2wbn3}Form"), true, true);
             RTSCommandArrangementVisualOrder order3 = new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Line, "order_form_line");
             RTSCommandArrangementVisualOrder order4 = new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.ShieldWall, "order_form_close");

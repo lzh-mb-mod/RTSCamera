@@ -194,35 +194,6 @@ namespace RTSCamera.CommandSystem.Logic
                 }
             }
 
-#if DEBUG
-            if (Input.IsKeyPressed(InputKey.B))
-            {
-                foreach (var agent in Mission.Current.PlayerTeam.ActiveAgents)
-                {
-                    var component = agent.GetComponent<CommandSystemAgentComponent>();
-                    if (component != null)
-                    {
-                        bool isVolleyEnabled = component.IsVolleyEnabled();
-                        component.SetVolleyEnabled(!isVolleyEnabled);
-                    }
-                }
-            }
-            if (Input.IsKeyPressed(InputKey.H))
-            {
-                foreach (var agent in Mission.Current.PlayerTeam.ActiveAgents)
-                {
-                    var component = agent.GetComponent<CommandSystemAgentComponent>();
-                    if (component != null)
-                    {
-                        bool isVolleyEnabled = component.IsVolleyEnabled();
-                        if (isVolleyEnabled)
-                        {
-                            component.ShootUnderVolley();
-                        }
-                    }
-                }
-            }
-#endif
         }
 
         public override void OnDeploymentFinished()
