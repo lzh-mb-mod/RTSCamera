@@ -1,10 +1,15 @@
 # Changelog
 
 ## [v5.3.16]
+### Added
+- Add volley order.
+
 ### Fixed
 - Fix the issue that player character cannot be controlled after deployment if free camera is turned off in deployment stage.
 
 - Fix the issue that trying to control a unit who is picking up items and then switch to free camera, the unit AI will be stuck in picking up state.
+
+- Fix the issue that when multiple formations are given orders in command queue, they will not consume orders correctly.
 
 ### Improved
 - Slightly improved performance of movement order.

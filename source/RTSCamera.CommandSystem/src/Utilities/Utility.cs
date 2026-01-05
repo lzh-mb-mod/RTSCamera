@@ -264,6 +264,12 @@ namespace RTSCamera.CommandSystem.Utilities
                     var orderMessage = GameTexts.FindText("str_rts_camera_command_system_defensive_attack");
                     orderMessage.SetTextVariable("TARGET_NAME", GameTexts.FindText("str_troop_group_name", ((int)order.TargetFormation.PhysicalClass).ToString()));
                     return orderMessage;
+                case CustomOrderType.EnableVolley:
+                    return GameTexts.FindText("str_rts_camera_command_system_volley_enabled");
+                case CustomOrderType.DisableVolley:
+                    return GameTexts.FindText("str_rts_camera_command_system_volley_disabled");
+                case CustomOrderType.VolleyFire:
+                    return GameTexts.FindText("str_rts_camera_command_system_volley_fire");
             }
             return GameTexts.FindText(stringId, variation);
         }
@@ -303,6 +309,17 @@ namespace RTSCamera.CommandSystem.Utilities
                 //playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
                 Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.OnMovementOrderChanged(playerController.SelectedFormations);
                 DisplayFocusAttackMessage(playerController.SelectedFormations, order.TargetFormation);
+
+                Utilities.Utility.CallAfterSetOrder(playerController, OrderType.ChargeWithTarget);
+                CommandQueueLogic.OnCustomOrderIssued(order, playerController);
+            }
+            // Call OnOrderExecuted because OrderController will not do it for OrderType.ChargeWithTarget
+            // This is required to keep MissionOrderVM open in rts mode and close it in player mode.
+            var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
+            var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_movement_charge");
+            if (orderItem != null)
+            {
+                missionOrderVM.OnOrderExecuted(orderItem);
             }
         }
 
@@ -341,19 +358,16 @@ namespace RTSCamera.CommandSystem.Utilities
                 // In current game version, set ChargeWithTarget has no effect except voice and gesture
                 // so movement order will not be changed here
                 playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
-                // Call OnOrderExecuted because OrderController will not do it for OrderType.ChargeWithTarget
-                // This is required to keep MissionOrderVM open in rts mode.
-                var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
-                var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_movement_charge");
-                if (orderItem != null)
-                {
-                    missionOrderVM.OnOrderExecuted(orderItem);
-                }
             }
-            //AfterSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
 
-            //DisplayChargeToFormationMessage(playerController.SelectedFormations,
-            //    targetFormation);
+            // Call OnOrderExecuted because OrderController will not do it for OrderType.ChargeWithTarget
+            // This is required to keep MissionOrderVM open in rts mode and close it in player mode.
+            var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
+            var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_movement_charge");
+            if (orderItem != null)
+            {
+                missionOrderVM.OnOrderExecuted(orderItem);
+            }
         }
 
         public static bool ShouldLockFormation()

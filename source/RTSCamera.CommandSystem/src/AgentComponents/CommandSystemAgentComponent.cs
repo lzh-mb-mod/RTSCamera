@@ -429,5 +429,18 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
             _agentAIInputHandler.OnFormationSet(Agent);
         }
+
+        public override void OnHit(Agent affectorAgent, int damage, in MissionWeapon affectorWeapon, in Blow b, in AttackCollisionData collisionData)
+        {
+            base.OnHit(affectorAgent, damage, affectorWeapon, b, collisionData);
+
+            _agentAIInputHandler.OnHit(Agent, affectorAgent, damage, affectorWeapon, b, collisionData);
+
+        }
+
+        public void OnControllerChanged(AgentControllerType oldController)
+        {
+            _agentAIInputHandler.OnControllerChanged(Agent, oldController);
+        }
     }
 }

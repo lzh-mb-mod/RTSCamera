@@ -18,6 +18,7 @@ namespace RTSCamera.CommandSystem.Logic
         public readonly FormationColorSubLogicV2 OutlineColorSubLogic;
         public readonly FormationColorSubLogicV2 GroundMarkerColorSubLogic;
         private bool _isShowIndicatorsDown = false;
+        private bool _followAttack = false;
 
         public CommandSystemLogic()
         {
@@ -194,6 +195,60 @@ namespace RTSCamera.CommandSystem.Logic
                 }
             }
 
+            //if (Input.IsKeyPressed(InputKey.B))
+            //{
+            //    _followAttack = !_followAttack;
+            //}
+            //if (_followAttack)
+            //{
+            //    var lookDirection = Mission.MainAgent.LookDirection;
+            //    foreach (var agent in Mission.PlayerTeam.ActiveAgents)
+            //    {
+            //        if (!agent.IsMainAgent)
+            //        {
+            //            //agent.Controller = AgentControllerType.None;
+            //            //agent.SetScriptedFlags(Agent.AIScriptedFrameFlags.None);
+            //            var pos = Mission.MainAgent.GetWorldPosition();
+            //            pos.SetVec2(pos.AsVec2 + lookDirection.AsVec2.Normalized() * 2);
+            //            var target = pos.GetGroundVec3();
+            //            target += lookDirection * 3;
+            //            target.z += 3f;
+            //            var direction = target - agent.Position;
+            //            agent.SetTargetPositionAndDirection(pos.AsVec2, direction);
+            //            agent.SetAutomaticTargetSelection(false);
+            //            //agent.SetAgentFlags(agent.GetAgentFlags() & ~AgentFlag.CanAttack);
+            //            //agent.SetScriptedFlags(agent.GetScriptedFlags() | Agent.AIScriptedFrameFlags.NoAttack);
+            //            //var pos = agent.GetWorldPosition();
+            //            //agent.AIStateFlags |= Agent.AIStateFlag.UseObjectMoving;
+            //            //agent.IsLookDirectionLocked = true;
+            //            //agent.SetScriptedPosition(ref pos, false);
+            //            agent.SetLookToPointOfInterest(target);
+            //            //agent.SetIsAIPaused(true);
+            //            //agent.Controller = AgentControllerType.None;
+            //            //agent.IsLookDirectionLocked = true;
+            //            //agent.LookDirection = direction;
+            //            //agent.IsLookDirectionLocked = true;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    foreach (var agent in Mission.PlayerTeam.ActiveAgents)
+            //    {
+            //        if (!agent.IsMainAgent)
+            //        {
+            //            agent.SetIsAIPaused(false);
+            //            agent.DisableScriptedMovement();
+            //            agent.ClearTargetFrame();
+            //            agent.SetScriptedFlags(agent.GetScriptedFlags() & ~Agent.AIScriptedFrameFlags.NoAttack);
+            //            agent.DisableLookToPointOfInterest();
+            //            agent.SetAutomaticTargetSelection(true);
+            //            agent.AIStateFlags &= ~Agent.AIStateFlag.UseObjectMoving;
+            //            agent.Controller = AgentControllerType.AI;
+            //        }
+            //    }
+
+            //}
         }
 
         public override void OnDeploymentFinished()
@@ -289,6 +344,13 @@ namespace RTSCamera.CommandSystem.Logic
 
         public void OnDeploymentPlanMade(Team team, bool isFirstPlan)
         {
+        }
+
+        protected override void OnAgentControllerChanged(Agent agent, AgentControllerType oldController)
+        {
+            base.OnAgentControllerChanged(agent, oldController);
+
+            agent.GetComponent<CommandSystemAgentComponent>()?.OnControllerChanged(oldController);
         }
     }
 }

@@ -1,0 +1,16 @@
+<prefabs>
+	<game_entity name="rts_decal_white_prefab" old_prefab_name="">
+		<transform position="0.000, 0.000, 0.000" rotation_euler="0.000, 0.000, 0.000"/>
+		<components>
+			<decal_component material="rts_decal_white"/>
+		</components>
+	</game_entity>
+	<game_entity name="rts_decal_white_prefab_2" old_prefab_name="">
+		<transform position="0.000, 0.000, 0.000" rotation_euler="0.000, 0.000, 0.000"/>
+		<components>
+			<meta_mesh_component name="decal_mesh">
+				<mesh name="decal_mesh" material="rts_decal_white"/>
+			</meta_mesh_component>
+		</components>
+	</game_entity>
+</prefabs>

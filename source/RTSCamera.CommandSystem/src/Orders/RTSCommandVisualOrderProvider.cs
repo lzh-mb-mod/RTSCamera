@@ -1,4 +1,5 @@
 ﻿using RTSCamera.CommandSystem.Orders.VisualOrders;
+using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -117,6 +118,7 @@ namespace RTSCamera.CommandSystem.Orders
             RTSCommandGenericToggleVisualOrder order6 = new RTSCommandGenericToggleVisualOrder("order_toggle_mount", OrderType.Mount, OrderType.Dismount);
             RTSCommandGenericToggleVisualOrder order7 = GameNetwork.IsMultiplayer ? null : new RTSCommandGenericToggleVisualOrder("order_toggle_ai", OrderType.AIControlOn, OrderType.AIControlOff);
             TransferTroopsVisualOrder order8 = GameNetwork.IsMultiplayer ? null : new TransferTroopsVisualOrder();
+
             if (!Input.IsGamepadActive)
             {
                 legacyOrders.Add(new SingleVisualOrderSet(order5));
@@ -125,6 +127,14 @@ namespace RTSCamera.CommandSystem.Orders
                     legacyOrders.Add(new SingleVisualOrderSet(order7));
                 if (order8 != null)
                     legacyOrders.Add(new SingleVisualOrderSet(order8));
+            }
+            GenericVisualOrderSet volleyVisualOrderSet = new GenericVisualOrderSet("order_type_volley", GameTexts.FindText("str_rts_camera_command_system_volley_order"), false, false);
+            volleyVisualOrderSet.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_toggle_volley"));
+            volleyVisualOrderSet.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));
+            volleyVisualOrderSet.AddOrder(new ReturnVisualOrder());
+            legacyOrders.Add(volleyVisualOrderSet);
+            if (!Input.IsGamepadActive)
+            {
                 legacyOrders.Add(new SingleVisualOrderSet(new ReturnVisualOrder()));
             }
             return legacyOrders;

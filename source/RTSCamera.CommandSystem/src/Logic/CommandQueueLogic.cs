@@ -61,28 +61,17 @@ namespace RTSCamera.CommandSystem.Logic
         public Dictionary<Formation, FormationChange> VirtualFormationChanges { get; set; } = new Dictionary<Formation, FormationChange>();
 
         public bool ShouldAdjustFormationSpeed { get; set; } = false;
-    }
-
-    public class PendingOrder
-    {
-        public OrderInQueue Order { get; set; }
 
         public Dictionary<Formation, float> FormationSpeedLimits { get; set; } = new Dictionary<Formation, float>();
-
-        public PendingOrder(OrderInQueue order)
-        {
-            Order = order;
-        }
-
         public void UpdateMovementSpeed()
         {
             FormationSpeedLimits.Clear();
-            if (!Order.ShouldAdjustFormationSpeed)
+            if (!ShouldAdjustFormationSpeed)
                 return;
             Dictionary<Formation, float> targetDistances = new Dictionary<Formation, float>();
             Dictionary<Formation, float> originalDuration = new Dictionary<Formation, float>();
             var longestOriginalDuration = float.MinValue;
-            foreach (var formation in Order.SelectedFormations)
+            foreach (var formation in SelectedFormations)
             {
                 if (formation.CountOfUnits == 0)
                     continue;
@@ -90,7 +79,7 @@ namespace RTSCamera.CommandSystem.Logic
                     continue;
                 if (this != otherOrder || CommandQueueLogic.IsMovementOrderCompleted(formation))
                     continue;
-                if (!Order.VirtualFormationChanges.TryGetValue(formation, out var formationChange))
+                if (!VirtualFormationChanges.TryGetValue(formation, out var formationChange))
                     continue;
 
                 var targetPosition = formationChange.WorldPosition;
@@ -122,7 +111,7 @@ namespace RTSCamera.CommandSystem.Logic
         public static List<OrderInQueue> OrderQueue = new List<OrderInQueue>();
         // Orders that formation is pending on.
         // Formation will continue when all the selected formations complete the order.
-        public static Dictionary<Formation, PendingOrder> PendingOrders = new Dictionary<Formation, PendingOrder>();
+        public static Dictionary<Formation, OrderInQueue> PendingOrders = new Dictionary<Formation, OrderInQueue>();
         public static Dictionary<Formation, bool> ShouldSkipCurrentOrders = new Dictionary<Formation, bool>();
 
         // virtual positions of last executed order.
@@ -135,7 +124,7 @@ namespace RTSCamera.CommandSystem.Logic
         public static void OnBehaviorInitialize()
         {
             OrderQueue = new List<OrderInQueue>();
-            PendingOrders = new Dictionary<Formation, PendingOrder>();
+            PendingOrders = new Dictionary<Formation, OrderInQueue>();
             ShouldSkipCurrentOrders = new Dictionary<Formation, bool>();
             CurrentFormationChanges = new FormationChanges();
             LatestOrderInQueueChanges = new FormationChanges();
@@ -242,6 +231,7 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.Use:
                 case OrderType.AttackEntity:
                 case OrderType.PointDefence:
+                    return true;
                 case OrderType.ArrangementLine:
                 case OrderType.ArrangementCloseOrder:
                 case OrderType.ArrangementLoose:
@@ -257,33 +247,44 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.CohesionHigh:
                 case OrderType.CohesionMedium:
                 case OrderType.CohesionLow:
-                case OrderType.None:
+                case OrderType.AIControlOff:
+                case OrderType.Transfer:
                 case OrderType.HoldFire:
                 case OrderType.FireAtWill:
                 case OrderType.RideFree:
                 case OrderType.Mount:
                 case OrderType.Dismount:
-                    return true;
-                case OrderType.AIControlOff:
-                case OrderType.Transfer:
+                case OrderType.None:
                 default:
                     return false;
             }
         }
 
-        //public static bool ShouldClearQueueAndPendingOrder(OrderInQueue order)
-        //{
-        //    switch (order.CustomOrderType)
-        //    {
-        //        case CustomOrderType.Original:
-        //            return ShouldClearQueueAndPendingOrder(order.OrderType);
-        //        case CustomOrderType.FollowMainAgent:
-        //            return true;
-        //        case CustomOrderType.SetTargetFormation:
-        //        default:
-        //            return false;
-        //    }
-        //}
+        public static bool ShouldCustomOrderClearQueue(OrderInQueue order)
+        {
+            switch (order.CustomOrderType)
+            {
+                case CustomOrderType.SetTargetFormation:
+                case CustomOrderType.EnableVolley:
+                case CustomOrderType.DisableVolley:
+                    return true;
+                case CustomOrderType.VolleyFire:
+                    {
+                        foreach (var formation in order.SelectedFormations)
+                        {
+                            if (formation.FiringOrder == FiringOrder.FiringOrderHoldYourFire || !IsFormationVolleyEnabled(formation))
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                default:
+                    Utility.DisplayMessage("Error: unexpected order type");
+                    break;
+            }
+            return false;
+        }
 
         private static void OnOrderIssued(OrderType orderType, MBReadOnlyList<Formation> appliedFormations, OrderController orderController, params object[] delegateParams)
         {
@@ -298,6 +299,23 @@ namespace RTSCamera.CommandSystem.Logic
                 if (GetNextOrderForFormation(formation) == null)
                 {
                     LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(appliedFormations));
+                }
+            }
+        }
+
+        public static void OnCustomOrderIssued(OrderInQueue order, OrderController orderController)
+        {
+            CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(order.SelectedFormations));
+            if (ShouldCustomOrderClearQueue(order))
+            {
+                ClearOrderInQueue(order.SelectedFormations);
+            }
+
+            foreach (var formation in order.SelectedFormations)
+            {
+                if (GetNextOrderForFormation(formation) == null)
+                {
+                    LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(order.SelectedFormations));
                 }
             }
         }
@@ -383,7 +401,7 @@ namespace RTSCamera.CommandSystem.Logic
             if (PendingOrders.TryGetValue(formation, out var order))
             {
                 order.UpdateMovementSpeed();
-                foreach (var otherFormation in order.Order.SelectedFormations)
+                foreach (var otherFormation in order.SelectedFormations)
                 {
                     if (otherFormation != formation)
                     {
@@ -414,7 +432,7 @@ namespace RTSCamera.CommandSystem.Logic
                 }
 
                 // All formations in the order completed the order.
-                foreach (var otherFormation in order.Order.SelectedFormations)
+                foreach (var otherFormation in order.SelectedFormations)
                 {
                     if (PendingOrders.TryGetValue(otherFormation, out var otherOrder))
                     {
@@ -625,14 +643,12 @@ namespace RTSCamera.CommandSystem.Logic
                 case CustomOrderType.EnableVolley:
                     SetFormationVolleyEnabled(formation, true);
                     formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
-                    Utilities.Utility.DisplayVolleyEnabledMessage(new List<Formation> { formation }, true);
                     TryPendingOrder(new List<Formation> { formation }, order);
                     CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                     break;
                 case CustomOrderType.DisableVolley:
                     SetFormationVolleyEnabled(formation, false);
                     formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
-                    Utilities.Utility.DisplayVolleyEnabledMessage(new List<Formation> { formation }, false);
                     TryPendingOrder(new List<Formation> { formation }, order);
                     CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                     break;
@@ -640,7 +656,6 @@ namespace RTSCamera.CommandSystem.Logic
                     formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
                     SetFormationVolleyEnabled(formation, true);
                     FormationVolleyFire(formation);
-                    Utilities.Utility.DisplayVolleyFireMessage(new List<Formation> { formation });
                     TryPendingOrder(new List<Formation> { formation }, order);
                     CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                     break;
@@ -735,15 +750,14 @@ namespace RTSCamera.CommandSystem.Logic
             if (CanBePended(order))
             {
                 CancelPendingOrder(formations);
-                var pendingOrder = new PendingOrder(order);
                 foreach (var formation in formations)
                 {
-                    FormationPendingOrder(formation, pendingOrder);
+                    FormationPendingOrder(formation, order);
                 }
-                pendingOrder.UpdateMovementSpeed();
-                if (pendingOrder.Order.ShouldAdjustFormationSpeed && CommandSystemConfig.Get().ShouldSyncFormationSpeed && pendingOrder.FormationSpeedLimits.Count > 1)
+                order.UpdateMovementSpeed();
+                if (order.ShouldAdjustFormationSpeed && CommandSystemConfig.Get().ShouldSyncFormationSpeed && order.FormationSpeedLimits.Count > 1)
                 {
-                    Utilities.Utility.DisplayAdjustFormationSpeedMessage(pendingOrder.FormationSpeedLimits.Keys);
+                    Utilities.Utility.DisplayAdjustFormationSpeedMessage(order.FormationSpeedLimits.Keys);
                 }
             }
             else
@@ -761,13 +775,13 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 if (PendingOrders.TryGetValue(formation, out var order))
                 {
-                    order.Order.SelectedFormations.Remove(formation);
+                    order.SelectedFormations.Remove(formation);
                 }
                 PendingOrders.Remove(formation);
             }
         }
 
-        private static void FormationPendingOrder(Formation formation, PendingOrder order)
+        private static void FormationPendingOrder(Formation formation, OrderInQueue order)
         {
             PendingOrders[formation] = order;
             CommandQuerySystem.GetQueryForFormation(formation).ExpireAllQueries();

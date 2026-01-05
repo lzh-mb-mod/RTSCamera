@@ -135,6 +135,7 @@
   <string id="str_rts_camera_command_system_attack_entity" text="{=RTSCameraCommandSystem_attack_entity}Attack Entity" />
   <string id="str_rts_camera_command_system_point_defense" text="{=RTSCameraCommandSystem_point_defense}Defense Target" />
 
+  <string id="str_rts_camera_command_system_volley_order" text="{=RTSCameraCommandSystem_volley_order}Volley" />
   <string id="str_rts_camera_command_system_volley_enabled" text="{=RTSCameraCommandSystem_volley_enabled}Volley Enabled" />
   <string id="str_rts_camera_command_system_volley_disabled" text="{=RTSCameraCommandSystem_volley_disabled}Volley Disabled" />
   <string id="str_rts_camera_command_system_volley_fire" text="{=RTSCameraCommandSystem_volley_fire}Volley Fire" />

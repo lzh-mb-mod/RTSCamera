@@ -54,7 +54,7 @@ namespace RTSCamera.CommandSystem.Patch
             if (!CommandQueueLogic.PendingOrders.TryGetValue(___Agent.Formation, out var pendingOrder))
                 return true;
 
-            if (!pendingOrder.Order.ShouldAdjustFormationSpeed || pendingOrder.FormationSpeedLimits.Count <= 1 || !pendingOrder.FormationSpeedLimits.ContainsKey(___Agent.Formation))
+            if (!pendingOrder.ShouldAdjustFormationSpeed || pendingOrder.FormationSpeedLimits.Count <= 1 || !pendingOrder.FormationSpeedLimits.ContainsKey(___Agent.Formation))
                 return true;
 
             Agent mountAgent = ___Agent.MountAgent;

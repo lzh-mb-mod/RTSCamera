@@ -42,6 +42,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                     CommandQueueLogic.FormationVolleyFire(formation);
                 }
                 Utilities.Utility.CallAfterSetOrder(orderController, OrderType.FireAtWill);
+                CommandQueueLogic.OnCustomOrderIssued(orderToAdd, orderController);
                 CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
             }
         }

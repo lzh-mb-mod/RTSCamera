@@ -132,6 +132,7 @@
     <string id="RTSCameraCommandSystem_attack_entity" text="Attack Entity" />
     <string id="RTSCameraCommandSystem_point_defense" text="Defense Target" />
 
+    <string id="RTSCameraCommandSystem_volley_order" text="Volley" />
     <string id="RTSCameraCommandSystem_volley_enabled" text="Volley Enabled" />
     <string id="RTSCameraCommandSystem_volley_disabled" text="Volley Disabled" />
     <string id="RTSCameraCommandSystem_volley_fire" text="Volley Fire" />

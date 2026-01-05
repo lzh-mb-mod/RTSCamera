@@ -1,4 +1,5 @@
 ﻿using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -22,6 +23,12 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private VolleyStatus _volleyStatus;
 
         private bool _volleySuspended = false;
+        private MatrixFrame _agentFrame;
+        private WorldPosition _aiMoveDestination;
+        private bool _isMovingToDestination;
+        private bool _isAIAtMoveDestination;
+        private bool _isTargetOutOfRange = false;
+        private bool _isTargetNearby = false;
         private Timer _cancelAttackeBeforeWaitingForOrder = new Timer(-1, -1, false);
         private Timer _prepareForShootingTimer = new Timer(-1, -1, false);
         private Timer _forceDrawingTimer = new Timer(-1, -1, false);
@@ -29,12 +36,6 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private Timer _allowMovingTimer = new Timer(-1, -1, false);
         private Timer _drawingTheBowUnderShootingOrderTimer = new Timer(-1, -1, false);
         private Timer _standBeforeWaitingForOrderTimer = new Timer(-1, -1, false);
-        private int _prepareForShootingTick;
-        private int _forceDrawingTick;
-        private int _waitingForLookingForTargetTick;
-        private int _allowMovingTick;
-        private int _drawingTheBowUnderShootingOrderTick;
-        private int _standBeforeWaitingForOrderTick;
         public static bool ForceShootingEnabled = false;
         public void SetVolleyEnabled(Agent agent, bool enabled)
         {
@@ -49,9 +50,29 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             else
             {
                 _volleySuspended = false;
-                SetCanAttack(agent, true);
-                SetWaitingBehavior(agent);
+                OnVolleyDisabled(agent);
             }
+        }
+
+        private void OnVolleyEnabled(Agent agent)
+        {
+            if (!agent.HasMount)
+            {
+                SetCanAttack(agent, false);
+            }
+            SetWaitingBehavior(agent);
+        }
+
+        private void OnVolleyDisabled(Agent agent)
+        {
+            SetCanAttack(agent, true);
+            SetNoVolleyBehavior(agent);
+        }
+
+        private void OnShootingEnabled(Agent agent)
+        {
+            SetCanAttack(agent, true);
+            SetShootingBehavior(agent);
         }
 
         public void ShootUnderVolley(Agent agent)
@@ -89,17 +110,59 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             }
         }
 
+        public void OnHit(Agent affectedAgent, Agent affectorAgent, int damage, in MissionWeapon affectorWeapon, in Blow b, in AttackCollisionData collisionData)
+        {
+            if (IsVolleyEnabled && !_volleySuspended)
+            {
+                switch (_volleyStatus)
+                {
+                    case VolleyStatus.DrawingTheBowUnderShootingOrder:
+                        _allowMovingTimer.Reset(Mission.Current.CurrentTime, 0.6f);
+                        _waitingForLookingForTargetTimer.Reset(Mission.Current.CurrentTime, 3f);
+                        _volleyStatus = VolleyStatus.WaitingForLookingForTarget;
+                        break;
+                }
+            }
+        }
+
+        public void OnControllerChanged(Agent agent, AgentControllerType oldController)
+        {
+            bool newVolleyEnabled = false;
+            if (agent.Controller == AgentControllerType.AI && agent.Formation != null)
+            {
+                newVolleyEnabled = CommandQueueLogic.IsFormationVolleyEnabled(agent.Formation);
+            }
+            if (newVolleyEnabled != IsVolleyEnabled)
+            {
+                SetVolleyEnabled(agent, newVolleyEnabled);
+            }
+        }
+
         private static void SetCanAttack(Agent agent, bool canAttack)
         {
             if (canAttack)
             {
-
                 agent.SetAgentFlags(agent.GetAgentFlags() | AgentFlag.CanAttack);
             }
             else
             {
                 agent.SetAgentFlags(agent.GetAgentFlags() & ~AgentFlag.CanAttack);
             }
+        }
+
+        private void SetNoVolleyBehavior(Agent agent)
+        {
+            //SetCanAttack(agent, false);
+            if (agent.Formation != null)
+            {
+                agent.RefreshBehaviorValues(agent.Formation.GetReadonlyMovementOrderReference().OrderEnum, agent.Formation.ArrangementOrder.OrderEnum);
+            }
+            else
+            {
+                agent.SetBehaviorValueSet(HumanAIComponent.BehaviorValueSet.Default);
+            }
+            agent.HumanAIComponent?.SyncBehaviorParamsIfNecessary();
+            agent.ForceAiBehaviorSelection();
         }
 
         private void SetWaitingBehavior(Agent agent)
@@ -113,7 +176,10 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             {
                 agent.SetBehaviorValueSet(HumanAIComponent.BehaviorValueSet.Default);
             }
-            //agent.HumanAIComponent?.SyncBehaviorParamsIfNecessary();
+            agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.Ranged, 0, 7f, 0, 20f, 0);
+            agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.RangedHorseback, 0, 15f, 0, 30f, 0);
+            agent.HumanAIComponent?.SyncBehaviorParamsIfNecessary();
+            agent.ForceAiBehaviorSelection();
         }
 
         private void SetShootingBehavior(Agent agent)
@@ -144,7 +210,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.Melee, 0f, 7f, 0f, 20f, 0f);
             agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.Ranged, 1f, 7f, 1f, 20f, 1f);
             agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.ChargeHorseback, 0f, 25f, 0f, 30f, 0f);
-            agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.RangedHorseback, 0f, 15f, 1f, 30f, 1f);
+            agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.RangedHorseback, 0.7f, 15f, 0.7f, 30f, 0.7f);
             agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.AttackEntityMelee, 0f, 12f, 0f, 30f, 0f);
             agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.AttackEntityRanged, 1f, 12f, 1f, 30f, 1f);
 
@@ -176,24 +242,28 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             //agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.RangedHorseback, 2f, 15f, 6.5f, 30f, 5.5f);
             //agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.AttackEntityMelee, 5f, 12f, 7.5f, 30f, 4f);
             //agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.AttackEntityRanged, 5.5f, 12f, 8f, 30f, 4.5f);
-            //agent.HumanAIComponent?.SyncBehaviorParamsIfNecessary();
+
+            agent.HumanAIComponent?.SyncBehaviorParamsIfNecessary();
+            agent.ForceAiBehaviorSelection();
         }
 
 
         public void OnAIInputSet(Agent agent, ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)
         {
-            if (IsVolleyEnabled)
+            if (IsVolleyEnabled && agent.IsAIControlled)
             {
+                UpdateAITarget(agent);
                 var wieldedWeapon = agent.WieldedWeapon;
                 if (agent.Formation != null && (agent.Formation.GetMovementState() == MovementOrder.MovementStateEnum.Charge || agent.Formation.FiringOrder == FiringOrder.FiringOrderHoldYourFire) ||
-                    !wieldedWeapon.IsEmpty && wieldedWeapon.CurrentUsageItem.IsMeleeWeapon ||
-                    !agent.HasAnyRangedWeaponCached)
+                    !wieldedWeapon.IsEmpty && !wieldedWeapon.CurrentUsageItem.IsRangedWeapon ||
+                    !agent.HasAnyRangedWeaponCached ||
+                    agent.IsDetachedFromFormation || agent.IsUsingGameObject || agent.AIMoveToGameObjectIsEnabled() ||
+                    _isTargetNearby)
                 {
                     if (!_volleySuspended)
                     {
                         _volleySuspended = true;
-                        SetCanAttack(agent, true);
-                        SetWaitingBehavior(agent);
+                        OnVolleyDisabled(agent);
                         if (_volleyStatus != VolleyStatus.PrepareForShooting)
                         {
                             _volleyStatus = VolleyStatus.WaitingForOrder;
@@ -206,11 +276,14 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                     if (_volleySuspended)
                     {
                         _volleySuspended = false;
+                        OnVolleyEnabled(agent);
                     }
                 }
                 if (!wieldedWeapon.IsEmpty && wieldedWeapon.CurrentUsageItem.IsRangedWeapon)
                 {
+                    UpdateAIDestination(agent, inputVector);
                     var currentTime = Mission.Current.CurrentTime;
+                    var targetVisibilityState = agent.GetLastTargetVisibilityState();
                     switch (_volleyStatus)
                     {
                         case VolleyStatus.CancelAttackBeforeWaitingForOrder:
@@ -218,13 +291,12 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             {
                                 break;
                             }
-                            if (IsAttacking(movementFlag))
+                            if (IsAttacking(movementFlag) && !agent.WieldedWeapon.IsReloading)
                             {
                                 SetCancelAttack(ref movementFlag);
                             }
                             _volleyStatus = VolleyStatus.WaitingForOrder;
-                            SetCanAttack(agent, false);
-                            SetWaitingBehavior(agent);
+                            OnVolleyEnabled(agent);
                             break;
                         case VolleyStatus.WaitingForOrder:
                             if (IsAttacking(movementFlag) && !agent.WieldedWeapon.IsReloading)
@@ -234,6 +306,11 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             }
                             else
                             {
+                                if (agent.WieldedWeapon.IsReloading)
+                                {
+                                    _volleyStatus = VolleyStatus.Reloading;
+                                    OnShootingEnabled(agent);
+                                }
                                 //movementFlag |= Agent.MovementControlFlag.DefendDown;
                             }
                             break;
@@ -242,8 +319,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             {
                                 SetCancelAttack(ref movementFlag);
                                 _volleyStatus = VolleyStatus.WaitingForOrder;
-                                SetWaitingBehavior(agent);
-                                SetCanAttack(agent, false);
+                                OnVolleyEnabled(agent);
                             }
                             break;
                         case VolleyStatus.PrepareForShooting:
@@ -253,8 +329,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                                 break;
                             }
                             //SetStand(agent, ref inputVector);
-                            SetCanAttack(agent, true);
-                            SetShootingBehavior(agent);
+                            OnShootingEnabled(agent);
                             if (ForceShootingEnabled)
                             {
                                 _volleyStatus = VolleyStatus.ForceDrawing;
@@ -271,7 +346,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             }
                             break;
                         case VolleyStatus.ForceDrawing:
-                            SetStand(agent, ref inputVector);
+                            SetStand(agent, ref inputVector); 
                             if (IsAttacking(movementFlag))
                             {
                                 //_drawingTheBowUnderShootingOrderTick = 360;
@@ -292,32 +367,33 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             break;
                         case VolleyStatus.WaitingForLookingForTarget:
                             //SetStand(agent, ref inputVector);
-                            //if (_allowMovingTick <= 0)
                             if (_allowMovingTimer.Check(currentTime))
                             {
                                 SetStand(agent, ref inputVector);
                             }
-                            else
-                            {
-                                //--_allowMovingTick;
-                            }
                             if (IsAttacking(movementFlag))
                             {
-                                //_drawingTheBowUnderShootingOrderTick = 720;
                                 _drawingTheBowUnderShootingOrderTimer.Reset(currentTime, agent.HasMount ? 15f : 7.2f);
                                 _volleyStatus = VolleyStatus.DrawingTheBowUnderShootingOrder;
                                 break;
                             }
-                            //if (--_waitingForLookingForTargetTick <= 0)
+
+                            if (agent.WieldedWeapon.IsReloading)
+                            {
+                                _volleyStatus = VolleyStatus.Reloading;
+                                SetWaitingBehavior(agent);
+                                break;
+                            }
+
                             if (_waitingForLookingForTargetTimer.Check(currentTime))
                             {
-                                //SetCancelAttack(ref movementFlag);
+                                if (ForceShootingEnabled && !agent.WieldedWeapon.IsReloading)
+                                {
+                                    SetCancelAttack(ref movementFlag);
+                                }
 
                                 _volleyStatus = VolleyStatus.StandBeforeWaitingForOrder;
-                                //_standBeforeWaitingForOrderTick = 0;
-                                //SetCanAttack(agent, false);
-                                //SetWaitingBehavior(agent);
-                                _standBeforeWaitingForOrderTimer.Reset(currentTime, 0.5f);
+                                _standBeforeWaitingForOrderTimer.Reset(currentTime, 0f);
                                 break;
                             }
                             if (ForceShootingEnabled)
@@ -328,11 +404,27 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             break;
                         case VolleyStatus.DrawingTheBowUnderShootingOrder:
                             SetStand(agent, ref inputVector);
+                            if (IsCancelAttack(movementFlag))
+                            {
+                                _volleyStatus = VolleyStatus.WaitingForLookingForTarget;
+                                //_allowMovingTick = 60;
+                                _allowMovingTimer.Reset(currentTime, 0.6f);
+                                //_waitingForLookingForTargetTick = 360;
+                                _waitingForLookingForTargetTimer.Reset(currentTime, 2f);
+                            }
                             if (!IsAttacking(movementFlag))
                             {
                                 _volleyStatus = VolleyStatus.StandBeforeWaitingForOrder;
                                 //_standBeforeWaitingForOrderTick = 60;
-                                _standBeforeWaitingForOrderTimer.Reset(currentTime, 0.5f);
+                                _standBeforeWaitingForOrderTimer.Reset(currentTime, 2f);
+                                SetWaitingBehavior(agent);
+                                break;
+                            }
+                            // TODO: attacking and reloading?
+                            if (agent.WieldedWeapon.IsReloading)
+                            {
+                                SetCancelAttack(ref movementFlag);
+                                _volleyStatus = VolleyStatus.Reloading;
                                 SetWaitingBehavior(agent);
                                 break;
                             }
@@ -341,25 +433,24 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             {
                                 SetCancelAttack(ref movementFlag);
                                 _volleyStatus = VolleyStatus.StandBeforeWaitingForOrder;
-                                _standBeforeWaitingForOrderTimer.Reset(currentTime, 0.6f);
+                                _standBeforeWaitingForOrderTimer.Reset(currentTime, 0f);
                                 SetWaitingBehavior(agent);
                                 break;
                             }
                             break;
                         case VolleyStatus.StandBeforeWaitingForOrder:
                             SetStand(agent, ref inputVector);
-                            //if (agent.WieldedWeapon.IsReloading)
-                            //{
-                            //    _volleyStatus = VolleyStatus.Reloading;
-                            //    SetWaitingbehavior(agent);
-                            //    break;
-                            //}
                             //SetCancelAttack(ref movementFlag);
                             //SetAttack(ref movementFlag, false);
                             //if (--_standBeforeWaitingForOrderTick <= 0)
-                            if (!_standBeforeWaitingForOrderTimer.Check(currentTime))
+                            SetAttack(ref movementFlag, false);
+                            // for throwing (consumable) weapon, it takes time to throw.
+                            if (!_standBeforeWaitingForOrderTimer.Check(currentTime) && (_isTargetOutOfRange || (!agent.WieldedWeapon.IsEmpty && !agent.WieldedWeapon.IsReloading && agent.WieldedWeapon.CurrentUsageItem.IsConsumable)))
+                            {
                                 break;
-                            if (agent.WieldedWeapon.IsReloading)
+                            }
+                            // for throwing weapon, after thrown, the wielded weapon will become empty.
+                            if (agent.WieldedWeapon.IsReloading || agent.WieldedWeapon.IsEmpty)
                             {
                                 _volleyStatus = VolleyStatus.Reloading;
                                 SetWaitingBehavior(agent);
@@ -367,15 +458,14 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             }
 
                             _volleyStatus = VolleyStatus.WaitingForOrder;
-                            SetCanAttack(agent, false);
-                            SetWaitingBehavior(agent);
+                            OnVolleyEnabled(agent);
                             break;
                         case VolleyStatus.Reloading:
+                            SetAttack(ref movementFlag, false);
                             if (!agent.WieldedWeapon.IsReloading)
                             {
                                 _volleyStatus = VolleyStatus.WaitingForOrder;
-                                SetCanAttack(agent, false);
-                                SetWaitingBehavior(agent);
+                                OnVolleyEnabled(agent);
                             }
                             //SetStand(agent, ref inputVector);
                             break;
@@ -401,16 +491,76 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             }
         }
 
+        private static bool IsCancelAttack(Agent.MovementControlFlag movementFlag)
+        {
+            return (movementFlag & Agent.MovementControlFlag.DefendDown) != Agent.MovementControlFlag.None;
+        }
+
         private static void SetCancelAttack(ref Agent.MovementControlFlag movementFlag)
         {
             movementFlag |= Agent.MovementControlFlag.DefendDown;
         }
 
-        private static void SetStand(Agent agent, ref Vec2 inputVector)
+        private void SetStand(Agent agent, ref Vec2 inputVector)
         {
             if (agent.HasMount)
                 return;
-            inputVector = Vec2.Zero;
+            if (_isTargetOutOfRange && !_isAIAtMoveDestination && !_isMovingToDestination)
+            {
+                inputVector = Vec2.Zero;
+            }
         }
+
+        private void UpdateAIDestination(Agent agent, Vec2 inputVector)
+        {
+            _aiMoveDestination = agent.GetAIMoveDestination();
+            _isAIAtMoveDestination = IsAIAtMoveDestination(agent);
+            if (agent.Formation == null)
+            {
+                _isMovingToDestination = true;
+                return;
+            }
+            var formationPosition = agent.Formation.GetOrderPositionOfUnit(agent);
+            if (!formationPosition.IsValid)
+            {
+                _isMovingToDestination = true;
+                return;
+            }
+            _agentFrame = agent.AgentVisuals.GetFrame();
+            if (inputVector.LengthSquared < 0.1 || _isAIAtMoveDestination)
+            {
+                _isMovingToDestination = false;
+            }
+            else
+            {
+                var movementVector = _agentFrame.rotation.TransformToParent(inputVector.ToVec3(0)).NormalizedCopy();
+                var cos = Vec3.DotProduct(movementVector, (formationPosition.GetGroundVec3() - agent.Position).NormalizedCopy());
+                _isMovingToDestination = cos > 0.2;
+            }
+        }
+
+        private void UpdateAITarget(Agent agent)
+        {
+            var targetAgent = agent.GetTargetAgent() ?? agent.ImmediateEnemy;
+            if (targetAgent == null)
+            {
+                _isTargetOutOfRange = true;
+                _isTargetNearby = false;
+                return;
+            }
+
+            var distanceSquared = targetAgent.Position.DistanceSquared(agent.Position);
+            var range = agent.GetMissileRangeWithHeightDifferenceAux(targetAgent.Position.z);
+
+            _isTargetOutOfRange = distanceSquared > range * range;
+            _isTargetNearby = distanceSquared < 25;
+        }
+
+        private bool IsAIAtMoveDestination(Agent agent)
+        {
+            float moveStartTolerance = agent.GetAIMoveStartTolerance();
+            return (double)_aiMoveDestination.AsVec2.DistanceSquared(agent.Position.AsVec2) <= (double)moveStartTolerance * (double)moveStartTolerance;
+        }
+
     }
 }

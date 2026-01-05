@@ -85,12 +85,28 @@ namespace RTSCamera.CommandSystem.View
         public GameEntity LeftBackLine;
         public GameEntity RightBackLine;
 
-        private static Material _decalMaterial;
-        private static MetaMesh _lineMesh;
+        //private static Material _decalMaterial;
+        //private static MetaMesh _lineMesh;
+        private static GameEntity _cachedEntity;
 
         public static uint FormationShapeColor = new Color(0.7f, 1, 0.7f).ToUnsignedInteger();
 
-        public void Initialize()
+        public static void Initialize()
+        {
+            if (_cachedEntity == null)
+            {
+                _cachedEntity = GameEntity.Instantiate(Mission.Current.Scene, "rts_decal_white_prefab_2", false);
+            }
+        }
+
+        public static void Clear()
+        {
+            //_lineMesh = null;
+            //_decalMaterial = null;
+            _cachedEntity = null;
+        }
+
+        public void CreateEntities()
         {
             FrontLine = CreateLineEntity();
             LeftLine = CreateLineEntity();
@@ -99,33 +115,39 @@ namespace RTSCamera.CommandSystem.View
             RightBackLine = CreateLineEntity();
         }
 
-        public static void Clear()
-        {
-            _lineMesh = null;
-            _decalMaterial = null;
-        }
-
         private GameEntity CreateLineEntity()
         {
-            GameEntity result = GameEntity.CreateEmpty(Mission.Current.Scene);
+            //GameEntity result = GameEntity.CreateEmpty(Mission.Current.Scene);
+            var result = GameEntity.CopyFrom(Mission.Current.Scene, _cachedEntity);
 
-            if (_lineMesh == null)
+            //if (_lineMesh == null)
+            //{
+            //    _lineMesh = MetaMesh.GetCopy("decal_mesh");
+            //    _lineMesh.SetFactor1(FormationShapeColor);
+            //    //_lineMesh.SetContourColor(FormationShapeColor);
+            //    //_lineMesh.SetContourState(true);
+            //    if (_decalMaterial == null)
+            //    {
+            //        _decalMaterial = Material.GetFromResource("decal_white").CreateCopy();
+            //        _decalMaterial.Flags |= MaterialFlags.CullFrontFaces | MaterialFlags.NoModifyDepthBuffer;
+            //    }
+            //    _lineMesh.SetMaterial(_decalMaterial);
+            //}
+            //result.AddComponent(_lineMesh.CreateCopy());
+            //result.SetVisibilityExcludeParents(false);
+            result.SetMobility(GameEntity.Mobility.Dynamic);
+            var decal = result.GetComponentAtIndex(0, GameEntity.ComponentType.Decal) as Decal;
+            if (decal != null)
             {
-                _lineMesh = MetaMesh.GetCopy("decal_mesh");
-                _lineMesh.SetFactor1(FormationShapeColor);
-                //_lineMesh.SetContourColor(FormationShapeColor);
-                //_lineMesh.SetContourState(true);
-                if (_decalMaterial == null)
-                {
-                    _decalMaterial = Material.GetFromResource("decal_white").CreateCopy();
-                    _decalMaterial.Flags |= MaterialFlags.CullFrontFaces | MaterialFlags.NoModifyDepthBuffer;
-                }
-                _lineMesh.SetMaterial(_decalMaterial);
+                decal.SetIsVisible(true);
+                decal.SetFactor1Linear(4287064638U);
+                decal.CheckAndRegisterToDecalSet();
+                Mission.Current.Scene.AddDecalInstance(decal, "editor_set", true);
+            //decal.SetVectorArgument(1f, 1f, 0.0f, 0.0f);
             }
-            result.AddComponent(_lineMesh.CreateCopy());
-            result.SetVisibilityExcludeParents(false);
-            result.EntityFlags |= EntityFlags.NotAffectedBySeason;
-            result.EntityVisibilityFlags = EntityVisibilityFlags.NoShadow;
+
+            //result.EntityFlags |= EntityFlags.NotAffectedBySeason;
+            //result.EntityVisibilityFlags = EntityVisibilityFlags.NoShadow;
             return result;
         }
 
@@ -136,22 +158,22 @@ namespace RTSCamera.CommandSystem.View
             var rightBorder = 0.1f + rightSideOffset;
             var backBorder = 0f;
             var rightVec2 = direciton.RightVec();
-            var heightOffset = -1f;
+            var heightOffset = 1f;
             var frontMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (direciton * frontBorder + rightVec2 * (rightBorder - leftBorder) / 2).ToVec3(), rightVec2, width + leftBorder + rightBorder);
-            FrontLine.SetFrame(ref frontMatrix);
+            FrontLine.SetGlobalFrame(frontMatrix);
             FrontLine.SetVisibilityExcludeParents(true);
             var leftMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (rightVec2 * (-width / 2 - leftBorder) + direciton * (-depth + frontBorder - backBorder) / 2).ToVec3(), direciton, depth + frontBorder + backBorder);
-            LeftLine.SetFrame(ref leftMatrix);
+            LeftLine.SetGlobalFrame(leftMatrix);
             LeftLine.SetVisibilityExcludeParents(true);
             var rightMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (rightVec2 * (width / 2 + rightBorder) + direciton * (-depth + frontBorder - backBorder) / 2).ToVec3(), direciton, depth + frontBorder + backBorder);
-            RightLine.SetFrame(ref rightMatrix);
+            RightLine.SetGlobalFrame(rightMatrix);
             RightLine.SetVisibilityExcludeParents(true);
             float shortLength = MathF.Min(MathF.Clamp(width * 0.1f, 1f, 10f), depth * 0.3f);
             var leftBackmatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (direciton * (-depth - backBorder) + rightVec2 * ((shortLength - width) / 2 - leftBorder)).ToVec3(), rightVec2, shortLength);
-            LeftBackLine.SetFrame(ref leftBackmatrix);
+            LeftBackLine.SetGlobalFrame(leftBackmatrix);
             LeftBackLine.SetVisibilityExcludeParents(true);
             var rightBackMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (direciton * (-depth - backBorder) + rightVec2 * ((width - shortLength) / 2 + rightBorder)).ToVec3(), rightVec2, shortLength);
-            RightBackLine.SetFrame(ref rightBackMatrix);
+            RightBackLine.SetGlobalFrame(rightBackMatrix);
             RightBackLine.SetVisibilityExcludeParents(true);
         }
 
@@ -161,7 +183,7 @@ namespace RTSCamera.CommandSystem.View
             matrixFrame.origin = middlePosition;
             matrixFrame.rotation = Mat3.CreateMat3WithForward(lineDirection.ToVec3());
             //matrixFrame.Scale(new Vec3(10, length * 1.095424f, 1f));
-            matrixFrame.Scale(new Vec3(0.1f, length / 2f, -100f));
+            matrixFrame.Scale(new Vec3(0.1f, length / 2f, 100f));
             return matrixFrame;
         }
 
@@ -225,6 +247,7 @@ namespace RTSCamera.CommandSystem.View
             IsPreviewOutdated = true;
             _commandQueuePreviewData = new Dictionary<Formation, CommandQueueFormationPreviewData>();
             MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
+            FormationShapeEntity.Initialize();
         }
 
         public override void AfterStart()
@@ -417,7 +440,7 @@ namespace RTSCamera.CommandSystem.View
             if (CommandQueueLogic.PendingOrders.TryGetValue(formation, out var pendingOrder))
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(new List<Formation> { formation }));
-                var pendingOrderPreviewData = CollectOrderPreviewData(pendingOrder.Order, formation, false, true);
+                var pendingOrderPreviewData = CollectOrderPreviewData(pendingOrder, formation, false, true);
                 if (pendingOrderPreviewData != null)
                 {
                     result.OrderList.Add(pendingOrderPreviewData);
@@ -670,6 +693,10 @@ namespace RTSCamera.CommandSystem.View
                         UpdateFacingOrderForOtherOrder(facingOrder, formation, virtualFacingDirection);
                         return CollectOrderPreviewData(formation, false, OrderTargetType.Focus);
                     }
+                case CustomOrderType.EnableVolley:
+                case CustomOrderType.DisableVolley:
+                case CustomOrderType.VolleyFire:
+                    return null;
                 default:
                     UpdateFacingOrderForOtherOrder(facingOrder, formation, virtualFacingDirection);
                     break;
@@ -788,7 +815,7 @@ namespace RTSCamera.CommandSystem.View
             while (_formationShapeEntities.Count <= index)
             {
                 var entity = new FormationShapeEntity();
-                entity.Initialize();
+                entity.CreateEntities();
                 _formationShapeEntities.Add(entity);
             }
 
