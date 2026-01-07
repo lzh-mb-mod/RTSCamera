@@ -47,7 +47,8 @@ namespace RTSCamera.CommandSystem.Orders
             genericVisualOrderSet2.AddOrder(new ReturnVisualOrder());
             GenericVisualOrderSet genericVisualOrderSet3 = new GenericVisualOrderSet("order_type_toggle", new TextObject("{=0HTNYQz2}Toggle"), false, false);
             RTSCommandToggleFacingVisualOrder order3 = new RTSCommandToggleFacingVisualOrder("order_toggle_facing");
-            RTSCommandGenericToggleVisualOrder order4 = new RTSCommandGenericToggleVisualOrder("order_toggle_fire", OrderType.FireAtWill, OrderType.HoldFire);
+            var toggleVolleyVisualOrder = new RTSCommandToggleVolleyVisualOrder("order_toggle_volley");
+            RTSCommandToggleFireVisualOrder order4 = new RTSCommandToggleFireVisualOrder("order_toggle_fire", OrderType.FireAtWill, OrderType.HoldFire, toggleVolleyVisualOrder);
             RTSCommandGenericToggleVisualOrder order5 = new RTSCommandGenericToggleVisualOrder("order_toggle_mount", OrderType.Mount, OrderType.Dismount);
             RTSCommandGenericToggleVisualOrder order6 = GameNetwork.IsMultiplayer ? null : new RTSCommandGenericToggleVisualOrder("order_toggle_ai", OrderType.AIControlOn, OrderType.AIControlOff);
             TransferTroopsVisualOrder order7 = GameNetwork.IsMultiplayer ? null : new TransferTroopsVisualOrder();
@@ -60,7 +61,7 @@ namespace RTSCamera.CommandSystem.Orders
             if (order7 != null)
                 genericVisualOrderSet3.AddOrder(order7);
 
-            genericVisualOrderSet3.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_toggle_volley"));
+            genericVisualOrderSet3.AddOrder(toggleVolleyVisualOrder);
             genericVisualOrderSet3.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));
             genericVisualOrderSet3.AddOrder(new ReturnVisualOrder());
             defaultOrders.Add(genericVisualOrderSet1);
@@ -114,7 +115,8 @@ namespace RTSCamera.CommandSystem.Orders
             legacyOrders.Add(genericVisualOrderSet1);
             legacyOrders.Add(genericVisualOrderSet2);
             legacyOrders.Add(genericVisualOrderSet3);
-            RTSCommandGenericToggleVisualOrder order5 = new RTSCommandGenericToggleVisualOrder("order_toggle_fire", OrderType.FireAtWill, OrderType.HoldFire);
+            var toggleVolleyVisualOrder = new RTSCommandToggleVolleyVisualOrder("order_toggle_volley");
+            RTSCommandToggleFireVisualOrder order5 = new RTSCommandToggleFireVisualOrder("order_toggle_fire", OrderType.FireAtWill, OrderType.HoldFire, toggleVolleyVisualOrder);
             RTSCommandGenericToggleVisualOrder order6 = new RTSCommandGenericToggleVisualOrder("order_toggle_mount", OrderType.Mount, OrderType.Dismount);
             RTSCommandGenericToggleVisualOrder order7 = GameNetwork.IsMultiplayer ? null : new RTSCommandGenericToggleVisualOrder("order_toggle_ai", OrderType.AIControlOn, OrderType.AIControlOff);
             TransferTroopsVisualOrder order8 = GameNetwork.IsMultiplayer ? null : new TransferTroopsVisualOrder();
@@ -129,7 +131,7 @@ namespace RTSCamera.CommandSystem.Orders
                     legacyOrders.Add(new SingleVisualOrderSet(order8));
             }
             GenericVisualOrderSet volleyVisualOrderSet = new GenericVisualOrderSet("order_type_volley", GameTexts.FindText("str_rts_camera_command_system_volley_order"), false, false);
-            volleyVisualOrderSet.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_toggle_volley"));
+            volleyVisualOrderSet.AddOrder(toggleVolleyVisualOrder);
             volleyVisualOrderSet.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));
             volleyVisualOrderSet.AddOrder(new ReturnVisualOrder());
             legacyOrders.Add(volleyVisualOrderSet);

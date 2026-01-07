@@ -45,7 +45,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_GetDesiredSpeedInFormation(HumanAIComponent __instance, Agent ___Agent, ref float __result, bool isCharging)
         {
-            if (Mission.Current.IsNavalBattle || isCharging || !CommandSystemConfig.Get().ShouldSyncFormationSpeed)
+            if (Mission.Current.IsNavalBattle || isCharging || CommandSystemConfig.Get().FormationSpeedSyncMode == FormationSpeedSyncMode.Disabled)
                 return true;
             if (___Agent.Formation == null || ___Agent.Team == null || !___Agent.Team.IsPlayerTeam)
                 return true;
@@ -56,31 +56,32 @@ namespace RTSCamera.CommandSystem.Patch
 
             if (!pendingOrder.ShouldAdjustFormationSpeed || pendingOrder.FormationSpeedLimits.Count <= 1 || !pendingOrder.FormationSpeedLimits.ContainsKey(___Agent.Formation))
                 return true;
-
+            if (isCharging)
+                return true;
             Agent mountAgent = ___Agent.MountAgent;
             float num1 = mountAgent != null ? mountAgent.GetMaximumForwardUnlimitedSpeed() : ___Agent.GetMaximumForwardUnlimitedSpeed();
             bool flag = !isCharging;
             Vec3 vec3;
-            if (isCharging)
-            {
-                FormationQuerySystem closestEnemyFormation = ___Agent.Formation.CachedClosestEnemyFormation;
-                float num2 = float.MaxValue;
-                float num3 = 4f * num1 * num1;
-                if (closestEnemyFormation != null)
-                {
-                    num2 = ___Agent.Formation.CachedMedianPosition.AsVec2.DistanceSquared(closestEnemyFormation.Formation.CachedMedianPosition.AsVec2);
-                    if ((double)num2 <= (double)num3)
-                    {
-                        WorldPosition cachedMedianPosition = ___Agent.Formation.CachedMedianPosition;
-                        vec3 = cachedMedianPosition.GetNavMeshVec3MT();
-                        ref Vec3 local = ref vec3;
-                        cachedMedianPosition = closestEnemyFormation.Formation.CachedMedianPosition;
-                        Vec3 navMeshVec3Mt = cachedMedianPosition.GetNavMeshVec3MT();
-                        num2 = local.DistanceSquared(navMeshVec3Mt);
-                    }
-                }
-                flag = (double)num2 > (double)num3;
-            }
+            //if (isCharging)
+            //{
+            //    FormationQuerySystem closestEnemyFormation = ___Agent.Formation.CachedClosestEnemyFormation;
+            //    float num2 = float.MaxValue;
+            //    float num3 = 4f * num1 * num1;
+            //    if (closestEnemyFormation != null)
+            //    {
+            //        num2 = ___Agent.Formation.CachedMedianPosition.AsVec2.DistanceSquared(closestEnemyFormation.Formation.CachedMedianPosition.AsVec2);
+            //        if ((double)num2 <= (double)num3)
+            //        {
+            //            WorldPosition cachedMedianPosition = ___Agent.Formation.CachedMedianPosition;
+            //            vec3 = cachedMedianPosition.GetNavMeshVec3MT();
+            //            ref Vec3 local = ref vec3;
+            //            cachedMedianPosition = closestEnemyFormation.Formation.CachedMedianPosition;
+            //            Vec3 navMeshVec3Mt = cachedMedianPosition.GetNavMeshVec3MT();
+            //            num2 = local.DistanceSquared(navMeshVec3Mt);
+            //        }
+            //    }
+            //    flag = (double)num2 > (double)num3;
+            //}
             if (flag)
             {
                 Vec2 globalPositionOfUnit = ___Agent.Formation.GetCurrentGlobalPositionOfUnit(___Agent, true);

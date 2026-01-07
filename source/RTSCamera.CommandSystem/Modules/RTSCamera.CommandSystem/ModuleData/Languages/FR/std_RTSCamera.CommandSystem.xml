@@ -13,6 +13,10 @@
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="Activer l’attaque d’une formation spécifique" />
     <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="Vous pouvez donner un ordre d’attaque ciblée en appuyant sur {KeyName} sur une formation ennemie." />
     <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="(Nouveau) Maintenez Alt en même temps pour conserver l’ordre de mouvement précédent." />
+
+    <string id="RTSCameraCommandSystem_disable_native_attack" text="Désactiver l’attaque native" />
+    <string id="RTSCameraCommandSystem_disable_native_attack_hint" text="Désactivez l'attaque native, afin d'éviter que les attaques ne soient déclenchées accidentellement." />
+
     <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="Après l’élimination de la formation ennemie" />
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="Comportement lorsque la formation ennemie attaquée est éliminée." />
     <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="Charge" />
@@ -58,9 +62,13 @@
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_pressed" text="Quand la touche est enfoncée" />
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed" text="Quand la touche n’est pas enfoncée" />
 
-    <string id="RTSCameraCommandSystem_sync_locked_formation_speed" text="Synchroniser la vitesse de formation verrouillée" />
-    <string id="RTSCameraCommandSystem_sync_locked_formation_speed_hint" text="Lorsque activé, les formations verrouillées ajusteront leur vitesse de déplacement pour arriver simultanément à la cible." />
     <string id="RTSCameraCommandSystem_sync_locked_formation_speed_message" text="Ajustement de la vitesse de déplacement." />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode" text="Mode de synchronisation de la vitesse de formation" />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode_hint" text="Mode pour synchroniser la vitesse des formations lors du déplacement de plusieurs formations. Désactivé : ne pas synchroniser la vitesse des formations. Linéaire : synchroniser la vitesse des formations linéairement. Rattraper : synchroniser la vitesse des formations pour que la formation la plus lente rattrape les autres. Attendre le dernier : synchroniser la vitesse des formations pour attendre que la dernière formation arrive." />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode_option_disabled" text="Désactivé" />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode_option_linear" text="Linéaire" />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode_option_catch_up" text="Rattraper" />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode_option_wait_for_last_formation" text="Attendre le dernier (par défaut)" />
 
     <string id="RTSCameraCommandSystem_hollow_square_formation" text="Activer la formation en carré creux" />
     <string id="RTSCameraCommandSystem_hollow_square_formation_hint" text="Activer ou non la formation en carré creux pour le joueur." />
@@ -82,16 +90,19 @@
     <string id="RTSCameraCommandSystem_face_enemy_by_default" text="Faire face à l’ennemi par défaut" />
     <string id="RTSCameraCommandSystem_face_enemy_by_default_hint" text="Indique si les troupes doivent faire face à l’ennemi au début de la bataille." />
 
-    <string id="RTSCameraCommandSystem_advance_order_options" text="Options d’ordre d’avance" />
+    <string id="RTSCameraCommandSystem_mounted_units_interval_threshold" text="Seuil d'intervalle des unités montées" />
+    <string id="RTSCameraCommandSystem_mounted_units_interval_threshold_hint" text="Le seuil pour le ratio d'unités montées dans une formation pour garder la distance entre elles. Par défaut, c'est 0.1 dans le jeu vanilla." />
 
-    <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons" text="Corriger l’ordre d’avance pour les armes de jet" />
+    <string id="RTSCameraCommandSystem_advance_order_options" text="Options d’ordre d’engagement" />
+
+    <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons" text="Corriger l’ordre d’engagement pour les armes de jet" />
     <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons_hint" text="Lorsque cette option est activée, les troupes armées d’armes de jet garderont leurs distances par rapport à la cible et lanceront leurs armes." />
 
-    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai" text="Appliquer la correction de l’ordre d’avance pour les formations IA" />
-    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai_hint" text="Lorsque cette option est activée, les formations IA appliqueront également la correction de l’ordre d’avance pour les armes de jet." />
+    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai" text="Appliquer la correction de l’ordre d’engagement pour les formations IA" />
+    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai_hint" text="Lorsque cette option est activée, les formations IA appliqueront également la correction de l’ordre d’engagement pour les armes de jet." />
     
     <string id="RTSCameraCommandSystem_thrower_ratio_threshold" text="Seuil de ratio de lanceurs" />
-    <string id="RTSCameraCommandSystem_thrower_ratio_threshold_hint" text="Le ratio minimum de lanceurs dans une formation pour activer la correction de l’ordre d’avance pour les armes de jet." />
+    <string id="RTSCameraCommandSystem_thrower_ratio_threshold_hint" text="Le ratio minimum de lanceurs dans une formation pour activer la correction de l’ordre d’engagement pour les armes de jet." />
     <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold" text="Seuil de ratio de munitions restantes" />
     <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold_hint" text="Le ratio minimum de munitions restantes pour que la formation garde ses distances." />
 
@@ -108,7 +119,7 @@
     <string id="RTSCameraCommandSystem_formation_lock_movement" text="Basculer le verrouillage de formation" />
     <string id="RTSCameraCommandSystem_formation_lock_movement_hint" text="Maintenir pour basculer le comportement de verrouillage de formation." />
     <string id="RTSCameraCommandSystem_select_target_for_command" text="Sélectionner une cible pour l’ordre" />
-    <string id="RTSCameraCommandSystem_select_target_for_command_hint" text="Maintenir pendant un ordre d’avance/de face pour sélectionner une cible." />
+    <string id="RTSCameraCommandSystem_select_target_for_command_hint" text="Maintenir pendant un ordre d’engagement/de face pour sélectionner une cible." />
     <string id="RTSCameraCommandSystem_command_queue" text="File d’ordres" />
     <string id="RTSCameraCommandSystem_command_queue_hint" text="Ajouter un ordre à la file. Les troupes exécuteront les ordres de la file un par un." />
     <string id="RTSCameraCommandSystem_command_keep_formation_width" text="Conserver la largeur de formation" />

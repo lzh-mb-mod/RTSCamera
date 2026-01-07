@@ -64,7 +64,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
         protected override string GetIconId()
         {
             var iconId = "order_toggle_fire";
-            return _lastActiveState == OrderState.Active ? iconId + "_active" : iconId;
+            return iconId + "_active";
         }
     }
 }

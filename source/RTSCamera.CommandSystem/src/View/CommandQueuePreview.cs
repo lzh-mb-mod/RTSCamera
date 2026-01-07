@@ -84,6 +84,8 @@ namespace RTSCamera.CommandSystem.View
         public GameEntity RightLine;
         public GameEntity LeftBackLine;
         public GameEntity RightBackLine;
+        public static uint SelectedColor = new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger();
+        public static uint UnselectedColor = new Color(1f, 1f, 1f).ToUnsignedInteger();
 
         //private static Material _decalMaterial;
         //private static MetaMesh _lineMesh;
@@ -140,7 +142,6 @@ namespace RTSCamera.CommandSystem.View
             if (decal != null)
             {
                 decal.SetIsVisible(true);
-                decal.SetFactor1Linear(4287064638U);
                 decal.CheckAndRegisterToDecalSet();
                 Mission.Current.Scene.AddDecalInstance(decal, "editor_set", true);
             //decal.SetVectorArgument(1f, 1f, 0.0f, 0.0f);
@@ -151,8 +152,10 @@ namespace RTSCamera.CommandSystem.View
             return result;
         }
 
-        public void Update(Vec3 orderPosition, Vec2 direciton, float width, float depth, float rightSideOffset)
+        public void Update(Vec3 orderPosition, Vec2 direciton, float width, float depth, float rightSideOffset, bool isSelected)
         {
+            if (!isSelected)
+                return;
             var frontBorder = 0.5f;
             var leftBorder = 0.1f;
             var rightBorder = 0.1f + rightSideOffset;
@@ -162,19 +165,25 @@ namespace RTSCamera.CommandSystem.View
             var frontMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (direciton * frontBorder + rightVec2 * (rightBorder - leftBorder) / 2).ToVec3(), rightVec2, width + leftBorder + rightBorder);
             FrontLine.SetGlobalFrame(frontMatrix);
             FrontLine.SetVisibilityExcludeParents(true);
+            // TODO: alpha not working
+            FrontLine.SetAlpha(isSelected ? -1f : 0.2f);
             var leftMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (rightVec2 * (-width / 2 - leftBorder) + direciton * (-depth + frontBorder - backBorder) / 2).ToVec3(), direciton, depth + frontBorder + backBorder);
             LeftLine.SetGlobalFrame(leftMatrix);
             LeftLine.SetVisibilityExcludeParents(true);
+            LeftLine.SetAlpha(isSelected ? -1f : 0.2f);
             var rightMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (rightVec2 * (width / 2 + rightBorder) + direciton * (-depth + frontBorder - backBorder) / 2).ToVec3(), direciton, depth + frontBorder + backBorder);
             RightLine.SetGlobalFrame(rightMatrix);
             RightLine.SetVisibilityExcludeParents(true);
+            RightLine.SetAlpha(isSelected ? -1f : 0.2f);
             float shortLength = MathF.Min(MathF.Clamp(width * 0.1f, 1f, 10f), depth * 0.3f);
             var leftBackmatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (direciton * (-depth - backBorder) + rightVec2 * ((shortLength - width) / 2 - leftBorder)).ToVec3(), rightVec2, shortLength);
             LeftBackLine.SetGlobalFrame(leftBackmatrix);
             LeftBackLine.SetVisibilityExcludeParents(true);
+            LeftBackLine.SetAlpha(isSelected ? -1f : 0.2f);
             var rightBackMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (direciton * (-depth - backBorder) + rightVec2 * ((width - shortLength) / 2 + rightBorder)).ToVec3(), rightVec2, shortLength);
             RightBackLine.SetGlobalFrame(rightBackMatrix);
             RightBackLine.SetVisibilityExcludeParents(true);
+            RightBackLine.SetAlpha(isSelected ? -1f : 0.2f);
         }
 
         private MatrixFrame GetMatrixFrame(Vec3 middlePosition, Vec2 lineDirection, float length)
@@ -202,6 +211,7 @@ namespace RTSCamera.CommandSystem.View
         public Formation Formation;
         public OrderPreviewData PendingOrder;
         public List<OrderPreviewData> OrderList = new List<OrderPreviewData>();
+        public bool IsSelected;
     }
 
 
@@ -338,12 +348,13 @@ namespace RTSCamera.CommandSystem.View
             {
                 _commandQueuePreviewData.Clear();
                 //IsPreviewOutdated = false;
-                var selectedFormations = Mission.PlayerTeam.PlayerOrderController.SelectedFormations;
+                var selectedFormations = Mission.PlayerTeam.FormationsIncludingEmpty;
                 foreach (var formation in selectedFormations)
                 {
                     if (formation.CountOfUnits == 0)
                         continue;
-                    var commandQueuePreviewData = CollectCommandQueuePreviewData(formation);
+                    bool isSelected = Mission.PlayerTeam.PlayerOrderController.SelectedFormations.Contains(formation);
+                    var commandQueuePreviewData = CollectCommandQueuePreviewData(formation, isSelected);
                     _commandQueuePreviewData[formation] = commandQueuePreviewData;
                 }
             }
@@ -392,12 +403,12 @@ namespace RTSCamera.CommandSystem.View
                     if (order.Width != null && order.Depth != null &&
                         (_config.CommandQueueFormationShapeShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueFormationShapeShowMode == ShowMode.FreeCameraOnly))
                     {
-                        AddFormationShape(formationShapeIndex, arrowEnd, order.Direction, order.Width.Value, order.Depth.Value, order.RightSideOffset ?? 0);
+                        AddFormationShape(formationShapeIndex, arrowEnd, order.Direction, order.Width.Value, order.Depth.Value, order.RightSideOffset ?? 0, previewData.IsSelected);
                         ++formationShapeIndex;
                     }
                     if (_config.CommandQueueFlagShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueFlagShowMode == ShowMode.FreeCameraOnly)
                     {
-                        AddOrderPositionFlag(orderFlagIndex, arrowEnd, order.Direction, -1f);
+                        AddOrderPositionFlag(orderFlagIndex, arrowEnd, order.Direction, previewData.IsSelected ? -1 : 0.2f);
                         ++orderFlagIndex;
                     }
                     if (arrowStart.IsValid && arrowEnd.IsValid && (_config.CommandQueueArrowShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueArrowShowMode == ShowMode.FreeCameraOnly))
@@ -407,7 +418,7 @@ namespace RTSCamera.CommandSystem.View
                         if (length > 5)
                         {
                             var gap = MathF.Clamp(length * 0.1f, 1f, 10f);
-                            AddArrow(arrowIndex, arrowStart + vec * gap, arrowEnd - vec * gap, /*MathF.Max(a - orderRank * 0.05f, minA)*/-1f, order.OrderTargetType);
+                            AddArrow(arrowIndex, arrowStart + vec * gap, arrowEnd - vec * gap, /*MathF.Max(a - orderRank * 0.05f, minA)*/previewData.IsSelected ? -1f : 0.3f, order.OrderTargetType);
                             ++arrowIndex;
                         }
                     }
@@ -418,10 +429,11 @@ namespace RTSCamera.CommandSystem.View
             }
         }
 
-        private CommandQueueFormationPreviewData CollectCommandQueuePreviewData(Formation formation)
+        private CommandQueueFormationPreviewData CollectCommandQueuePreviewData(Formation formation, bool isSelected)
         {
             var result = new CommandQueueFormationPreviewData();
             result.Formation = formation;
+            result.IsSelected = isSelected;
 
             // clear saved moving target
             Patch_OrderController.ClearFormationLivePositionForPreview(formation);
@@ -810,7 +822,7 @@ namespace RTSCamera.CommandSystem.View
                 agentPositionEntity.FadeIn();
         }
 
-        private void AddFormationShape(int index, Vec3 orderPosition, Vec2 direciton, float width, float depth, float rightSideOffset)
+        private void AddFormationShape(int index, Vec3 orderPosition, Vec2 direciton, float width, float depth, float rightSideOffset, bool isSelected)
         {
             while (_formationShapeEntities.Count <= index)
             {
@@ -821,7 +833,7 @@ namespace RTSCamera.CommandSystem.View
 
             var formationShapeEntity = _formationShapeEntities[index];
 
-            formationShapeEntity.Update(orderPosition, direciton, width, depth, rightSideOffset);
+            formationShapeEntity.Update(orderPosition, direciton, width, depth, rightSideOffset, isSelected);
         }
 
         private void AddOrderPositionFlag(int index, Vec3 groundPosition, Vec2 direction, float alpha)
@@ -927,8 +939,8 @@ namespace RTSCamera.CommandSystem.View
             {
                 arrowEntity.ArrowHead.SetVisibilityExcludeParents(true);
                 arrowEntity.ArrowBody.SetVisibilityExcludeParents(true);
-                //arrowEntity.ArrowHead.SetAlpha(alpha);
-                //arrowEntity.ArrowBody.SetAlpha(alpha);
+                arrowEntity.ArrowHead.SetAlpha(alpha);
+                arrowEntity.ArrowBody.SetAlpha(alpha);
             }
             else
             {

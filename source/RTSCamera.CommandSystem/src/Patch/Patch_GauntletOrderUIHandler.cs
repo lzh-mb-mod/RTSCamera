@@ -204,8 +204,9 @@ namespace RTSCamera.CommandSystem.Patch
                         var focusedFormationCache = _focusedFormationsCache.GetValue(__instance) as MBReadOnlyList<Formation>;
                         if (focusedFormationCache != null && focusedFormationCache.Count > 0)
                         {
+                            bool shouldIgnore = CommandSystemConfig.Get().DisableNativeAttack && RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.None;
                             var orderTroopPlacer = _orderTroopPlacer.GetValue(__instance) as OrderTroopPlacer;
-                            if (orderTroopPlacer != null)
+                            if (orderTroopPlacer != null && !shouldIgnore)
                             {
                                 orderTroopPlacer.SuspendTroopPlacer = true;
                                 _targetFormationOrderGivenWithActionButton?.SetValue(__instance, true);
@@ -240,6 +241,11 @@ namespace RTSCamera.CommandSystem.Patch
                             }
                             else
                             {
+                                if (shouldIgnore)
+                                {
+                                    skipNativeOrder = true;
+                                    return null;
+                                }
                                 bool keepMovementOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.KeepMovementOrder).IsKeyDownInOrder(__instance.Input);
                                 if (keepMovementOrder)
                                 {

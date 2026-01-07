@@ -14,6 +14,10 @@
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="Enable Attack Specific Formation" />
     <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="You can give focus attack order by pressing {KeyName} on enemy formation." />
     <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="(New Feature) Press alt at the same time to keep previous movement order." />
+
+    <string id="RTSCameraCommandSystem_disable_native_attack" text="Disable Native Attack" />
+    <string id="RTSCameraCommandSystem_disable_native_attack_hint" text="Disable native attack, to avoid attacks being triggered accidentally." />
+
     <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="After enemy formation eliminated" />
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="Behavior when the attacked enemy formation is eliminated." />
     <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="Charge" />
@@ -59,9 +63,13 @@
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_pressed" text="When key is pressed" />
     <string id="RTSCameraCommandSystem_formation_lock_condition_option_when_not_pressed" text="When key is not pressed" />
 
-    <string id="RTSCameraCommandSystem_sync_locked_formation_speed" text="Sync Locked Formation Speed" />
-    <string id="RTSCameraCommandSystem_sync_locked_formation_speed_hint" text="When enabled, locked formations will adjust movement speed to arrive at the target simultaneously." />
     <string id="RTSCameraCommandSystem_sync_locked_formation_speed_message" text="Adjust movement speed." />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode" text="Formation Speed Sync Mode" />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode_hint" text="Mode to sync formation speed when moving multiple formations. Disabled: Do not sync formation speed. Linear: Sync formation speed linearly. Catch Up: Sync formation speed to make the slowest formation catch up the others. Wait for Latest: Sync formation speed to wait for the last formation to arrive." />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode_option_disabled" text="Disabled" />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode_option_linear" text="Linear" />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode_option_catch_up" text="Catch Up" />
+    <string id="RTSCameraCommandSystem_formation_speed_sync_mode_option_wait_for_last_formation" text="Wait for Last Formation (Default)" />
 
     <string id="RTSCameraCommandSystem_hollow_square_formation" text="Enable Hollow Square Formation" />
     <string id="RTSCameraCommandSystem_hollow_square_formation_hint" text="Whether to enable hollow square formation for player." />
@@ -78,21 +86,24 @@
     <string id="RTSCamera_order_ui_clickable_hint" text="Make troop card clickable. Restart game to take effect." />
 
     <string id="RTSCameraCommandSystem_order_ui_clickable_extension" text="Order UI Clickable Extension" />
-    <string id="RTSCameraCommandSystem_order_ui_clickable_extension_hint" text="Allows to select command target for facing/advance order by holding {KeyName} while give orders, and then click the target." />
+    <string id="RTSCameraCommandSystem_order_ui_clickable_extension_hint" text="Allows to select command target for facing/engage order by holding {KeyName} while give orders, and then click the target." />
 
     <string id="RTSCameraCommandSystem_face_enemy_by_default" text="Face Enemy By Default" />
     <string id="RTSCameraCommandSystem_face_enemy_by_default_hint" text="Whether troops should face the enemy when battle starts." />
 
-    <string id="RTSCameraCommandSystem_advance_order_options" text="Advance Order Options" />
+    <string id="RTSCameraCommandSystem_mounted_units_interval_threshold" text="Mounted Units Interval Threshold" />
+    <string id="RTSCameraCommandSystem_mounted_units_interval_threshold_hint" text="The threshold for ratio of mounted units in a formation to keep distance from each other. Default is 0.1 in vanilla" />
 
-    <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons" text="Fix Advance Order for Throwing Weapons" />
+    <string id="RTSCameraCommandSystem_advance_order_options" text="Engage Order Options" />
+
+    <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons" text="Fix Engage Order for Throwing Weapons" />
     <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons_hint" text="When enabled, troops armed with throwing weapons will keep distance to the target and throw their weapons." />
 
-    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai" text="Apply Advance Order Fix for AI Formations" />
-    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai_hint" text="When enabled, AI formations will also apply the advance order fix for throwing weapons." />
-    
+    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai" text="Apply Engage Order Fix for AI Formations" />
+    <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai_hint" text="When enabled, AI formations will also apply the engage order fix for throwing weapons." />
+
     <string id="RTSCameraCommandSystem_thrower_ratio_threshold" text="Thrower Ratio Threshold" />
-    <string id="RTSCameraCommandSystem_thrower_ratio_threshold_hint" text="The minimum ratio of throwers in a formation to enable the advance order fix for throwing weapons." />
+    <string id="RTSCameraCommandSystem_thrower_ratio_threshold_hint" text="The minimum ratio of throwers in a formation to enable the engage order fix for throwing weapons." />
 
     <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold" text="Remaining Ammo Ratio Threshold" />
     <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold_hint" text="The minimum remaining ammo ratio to make the formation keeping distance." />

@@ -4,6 +4,12 @@
 ### Added
 - Add volley order.
 
+- Add an option for disable native attak;
+
+- Add an option for formation speeds sync behavior.
+
+- Add an option to adjust the threshold for ratio of mounted units in a formation to determine whether to increase spacing between units. In vanilla the threshold is 0.1.
+
 ### Fixed
 - Fix the issue that player character cannot be controlled after deployment if free camera is turned off in deployment stage.
 
