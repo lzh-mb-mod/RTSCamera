@@ -18,7 +18,7 @@ namespace RTSCamera.CommandSystem.Logic
         public readonly FormationColorSubLogicV2 OutlineColorSubLogic;
         public readonly FormationColorSubLogicV2 GroundMarkerColorSubLogic;
         private bool _isShowIndicatorsDown = false;
-        private bool _followAttack = false;
+        //private bool _followAttack = false;
 
         public CommandSystemLogic()
         {
