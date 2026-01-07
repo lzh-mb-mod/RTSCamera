@@ -176,7 +176,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             {
                 agent.SetBehaviorValueSet(HumanAIComponent.BehaviorValueSet.Default);
             }
-            agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.Ranged, 0, 7f, 0, 20f, 0);
+            agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.Ranged, 1, 7f, 1, 20f, 1);
             agent.SetAIBehaviorValues(HumanAIComponent.AISimpleBehaviorKind.RangedHorseback, 0, 15f, 0, 30f, 0);
             agent.HumanAIComponent?.SyncBehaviorParamsIfNecessary();
             agent.ForceAiBehaviorSelection();
@@ -415,7 +415,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             if (!IsAttacking(movementFlag))
                             {
                                 _volleyStatus = VolleyStatus.StandBeforeWaitingForOrder;
-                                //_standBeforeWaitingForOrderTick = 60;
+                                // It takes max to 2 seconds to throw.
                                 _standBeforeWaitingForOrderTimer.Reset(currentTime, 2f);
                                 SetWaitingBehavior(agent);
                                 break;
@@ -445,6 +445,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             //if (--_standBeforeWaitingForOrderTick <= 0)
                             SetAttack(ref movementFlag, false);
                             // for throwing (consumable) weapon, it takes time to throw.
+                            // After throwing we don't need to wait for timer.
                             if (!_standBeforeWaitingForOrderTimer.Check(currentTime) && (_isTargetOutOfRange || (!agent.WieldedWeapon.IsEmpty && !agent.WieldedWeapon.IsReloading && agent.WieldedWeapon.CurrentUsageItem.IsConsumable)))
                             {
                                 break;
@@ -461,7 +462,6 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             OnVolleyEnabled(agent);
                             break;
                         case VolleyStatus.Reloading:
-                            SetAttack(ref movementFlag, false);
                             if (!agent.WieldedWeapon.IsReloading)
                             {
                                 _volleyStatus = VolleyStatus.WaitingForOrder;
@@ -526,7 +526,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                 _isMovingToDestination = true;
                 return;
             }
-            _agentFrame = agent.AgentVisuals.GetFrame();
+            _agentFrame = agent.Frame;
             if (inputVector.LengthSquared < 0.1 || _isAIAtMoveDestination)
             {
                 _isMovingToDestination = false;

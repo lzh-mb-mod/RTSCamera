@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using MissionSharedLibrary.Utilities;
+﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.AgentComponents;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Patch;
@@ -7,6 +6,7 @@ using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.CommandSystem.View;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -69,8 +69,11 @@ namespace RTSCamera.CommandSystem.Logic
             if (!ShouldAdjustFormationSpeed)
                 return;
             Dictionary<Formation, float> targetDistances = new Dictionary<Formation, float>();
-            Dictionary<Formation, float> originalDuration = new Dictionary<Formation, float>();
-            var longestOriginalDuration = float.MinValue;
+            Dictionary<Formation, float> originalDurations = new Dictionary<Formation, float>();
+            var maxOriginalDuration = float.MinValue;
+            var distanceWithMaxDuration = float.MaxValue;
+            var maxDistance = float.MinValue;
+            var minDistance = float.MaxValue;
             foreach (var formation in SelectedFormations)
             {
                 if (formation.CountOfUnits == 0)
@@ -88,21 +91,104 @@ namespace RTSCamera.CommandSystem.Logic
                     continue;
 
                 var targetDistance = targetPosition.Value.AsVec2.Distance(formation.CurrentPosition);
-                if (targetDistance < 5f)
+                if (targetDistance < 3f)
                     continue;
-                targetDistances[formation] = targetPosition.Value.AsVec2.Distance(formation.CurrentPosition);
-                var duration = targetDistances[formation] / MathF.Max(0.1f, formation.CachedMovementSpeed);
-                originalDuration[formation] = duration;
-                if (duration > longestOriginalDuration)
+                if (targetDistance > maxDistance)
                 {
-                    longestOriginalDuration = duration;
+                    maxDistance = targetDistance;
+                }
+                if (targetDistance < minDistance)
+                {
+                    minDistance = targetDistance;
+                }
+                var originalSpeed = MathF.Max(0.1f, formation.CachedMovementSpeed);
+                targetDistances[formation] = targetDistance;
+                var duration = targetDistance / originalSpeed;
+                originalDurations[formation] = duration;
+                if (duration > maxOriginalDuration)
+                {
+                    maxOriginalDuration = duration;
+                    distanceWithMaxDuration = targetDistance;
                 }
             }
+
+            var range = 5f;
             foreach (var pair in targetDistances)
             {
-                var speedLimit = pair.Value / longestOriginalDuration;
+                var distance = pair.Value;
+                var linearSpeedLimit = distance / maxOriginalDuration;
+                var originalSpeed = MathF.Max(0.1f, pair.Key.CachedMovementSpeed);
+                var maxDistanceSpeed = GetMaxDistanceSpeed(targetDistances, pair.Value, minDistance, maxDistance, maxOriginalDuration, distanceWithMaxDuration, range);
+                var speedLimit = MathF.Lerp(maxDistanceSpeed, 0.1f, MathF.Clamp((maxDistance - distance) / range, 0f, 1f));
                 FormationSpeedLimits[pair.Key] = speedLimit;
             }
+            //var formationDistanceList = targetDistances.ToList();
+            //formationDistanceList.Sort((KeyValuePair<Formation, float> pair1, KeyValuePair<Formation, float> pair2) =>
+            //{
+            //    var diff = pair1.Value - pair2.Value;
+            //    // descending
+            //    return diff > 0 ? -1 : diff < 0 ? 1 : 0;
+            //});
+            //var maximumSpeed = float.MaxValue;
+            //var previousDistance = float.MaxValue;
+            //for (int i = 0; i < formationDistanceList.Count; ++i)
+            //{
+            //    var formation = formationDistanceList[i].Key;
+            //    var distance = formationDistanceList[i].Value;
+            //    var linearSpeedLimit = distance / maxOriginalDuration;
+            //    var originalSpeed = MathF.Max(0.1f, formation.CachedMovementSpeed);
+            //    var minimumSpeed = linearSpeedLimit > originalSpeed ? originalSpeed : (linearSpeedLimit / originalSpeed) * linearSpeedLimit;
+            //    if (i == 0)
+            //    { 
+            //        maximumSpeed = originalSpeed;
+            //        previousDistance = distance;
+            //    }
+            //    var speedLimit = MathF.Clamp(MathF.Lerp(linearSpeedLimit, originalSpeed, MathF.Min((distance - previousDistance) / (originalSpeed * 0.1f), 1f)), minimumSpeed, maximumSpeed);
+            //    FormationSpeedLimits[formation] = speedLimit;
+            //    maximumSpeed = linearSpeedLimit;
+            //    //FormationSpeedLimits[pair.Key] = MathF.Lerp(linearSpeedLimit, originalSpeed, MathF.Max(0f, (pair.Value - distanceWithLongestDuration) / MathF.Max(1f, distanceWithLongestDuration)));
+            //    //FormationSpeedLimits[pair.Key] = linearSpeedLimit;
+            //}
+
+            //foreach (var pair in targetDistances)
+            //{
+            //    var linearSpeedLimit = pair.Value / maxOriginalDuration;
+            //    var originalSpeed = MathF.Max(0.1f, pair.Key.CachedMovementSpeed);
+            //    // catch up and wait for the last formation to arrive at target
+            //    //FormationSpeedLimits[pair.Key] = MathF.Clamp(MathF.Lerp(linearSpeedLimit, originalSpeed, (pair.Value - distanceWithLongestDuration) / (originalSpeed * 2f)), 0.1f, originalSpeed);
+            //    // catch up and do not wait for slower formation
+            //    //FormationSpeedLimits[pair.Key] = MathF.Clamp(MathF.Lerp(linearSpeedLimit, originalSpeed, (pair.Value - distanceWithLongestDuration) / (originalSpeed * 2f)), linearSpeedLimit, originalSpeed);
+            //    //FormationSpeedLimits[pair.Key] = linearSpeedLimit;
+            //}
+        }
+
+        private float GetMaxDistanceSpeed(Dictionary<Formation, float> targetDistances, float distance, float minDistance, float maxDistance, float maxOriginalDuration, float distanceWithMaxDuration, float range)
+        {
+            var speedWeightSum = 0f;
+            var speedSum = 0f;
+            var minSpeedInRangeOfMaxDistance = float.MaxValue;
+            var distanceOfMinSpeedInRange = 0f;
+            foreach (var pair in targetDistances)
+            {
+                var formation = pair.Key;
+                var formationDistance = pair.Value;
+                var formationOriginalSpeed = formation.CachedMovementSpeed;
+                var diff = maxDistance - formationDistance;
+                if (diff < range)
+                {
+                    if (minSpeedInRangeOfMaxDistance > formationOriginalSpeed)
+                    {
+                        minSpeedInRangeOfMaxDistance = formationOriginalSpeed;
+                        distanceOfMinSpeedInRange = formationDistance;
+                    }
+                    var weight = 1 - diff / range;
+                    speedSum += weight * formationOriginalSpeed;
+                    speedWeightSum += weight;
+                }
+            }
+            var weightedAverageSpeed = speedSum / speedWeightSum;
+            var result = MathF.Lerp(minSpeedInRangeOfMaxDistance, weightedAverageSpeed, (maxDistance - distanceOfMinSpeedInRange) / range);
+            return result;
         }
     }
 

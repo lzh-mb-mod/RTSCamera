@@ -14,6 +14,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+using static RTSCamera.CommandSystem.Patch.Patch_OrderController;
 using MathF = TaleWorlds.Library.MathF;
 
 
@@ -26,7 +27,7 @@ namespace RTSCamera.CommandSystem.Patch
             public List<Formation> Formations = new List<Formation>();
             public float LeftMost = 0;
             public float RightMost = 0;
-            public float Width => RightMost - LeftMost;
+            public float Width;
             public float Center => (LeftMost + RightMost) * 0.5f;
             public float MinimumWidth = 0;
             public float MaximumWidth = 0;
@@ -882,6 +883,7 @@ namespace RTSCamera.CommandSystem.Patch
                 RightMost = GetRightFlankPosition(formationOrderPositionList[0].Key, formationOrderPositionList[0].Value, oldDragVec).DotProduct(oldDragVec),
                 MinimumWidth = GetFormationVirtualMinimumWidth(formationOrderPositionList[0].Key),
                 MaximumWidth = GetFormationVirtualMaximumWidth(formationOrderPositionList[0].Key),
+                Width = GetActualOrCurrentWidth(formationOrderPositionList[0].Key),
             };
             for (int i = 1; i < formationOrderPositionList.Count; ++i)
             {
@@ -895,6 +897,7 @@ namespace RTSCamera.CommandSystem.Patch
                     currentStack.MaximumWidth = MathF.Max(currentStack.MaximumWidth, GetFormationVirtualMaximumWidth(currentFormation));
                     currentStack.LeftMost = MathF.Min(currentStack.LeftMost, GetLeftFlankPosition(currentFormation, currentFormationOrderPosition, oldDragVec).DotProduct(oldDragVec));
                     currentStack.RightMost = MathF.Max(currentStack.RightMost, GetRightFlankPosition(currentFormation, currentFormationOrderPosition, oldDragVec).DotProduct(oldDragVec));
+                    currentStack.Width = MathF.Max(currentStack.Width, actualOrCurrentWidth);
                     currentStack.Formations.Add(currentFormation);
                 }
                 else
@@ -908,6 +911,7 @@ namespace RTSCamera.CommandSystem.Patch
                         Formations = new List<Formation> { currentFormation },
                         LeftMost = GetLeftFlankPosition(currentFormation, currentFormationOrderPosition, oldDragVec).DotProduct(oldDragVec),
                         RightMost = GetRightFlankPosition(currentFormation, currentFormationOrderPosition, oldDragVec).DotProduct(oldDragVec),
+                        Width = actualOrCurrentWidth,
                         MinimumWidth = GetFormationVirtualMinimumWidth(currentFormation),
                         MaximumWidth = GetFormationVirtualMaximumWidth(currentFormation),
                     };
@@ -916,6 +920,29 @@ namespace RTSCamera.CommandSystem.Patch
             oldOverallWidth += currentStack.Width;
             minOverallWidth += currentStack.MinimumWidth;
             stacksRecord.Add(currentStack);
+        }
+
+        private static List<float> GetExpectedWidths(List<StackRecord> stacksRecord, float availableWidth, float oldOverallWidth)
+        {
+            List<float> result = stacksRecord.Select(r => r.Width).ToList();
+            List<float> currentRatio = stacksRecord.Select(r => r.Width / MathF.Max(r.MaximumWidth, 0.1f)).ToList();
+            List<int> stackRecordIndexes = stacksRecord.Select((r, i) => i).ToList();
+            // ascending
+            stackRecordIndexes.Sort((i1, i2) =>
+            {
+                var diff = currentRatio[i1] - currentRatio[i2];
+                return diff > 0 ? -1 : (diff < 0 ? 1 : 0);
+            });
+            for (int i = 0; i < stackRecordIndexes.Count; ++i)
+            {
+                var index = stackRecordIndexes[i];
+                var oldWidth = stacksRecord[index].Width;
+                var newWidth = MathF.Min(oldWidth * availableWidth / oldOverallWidth, stacksRecord[index].MaximumWidth);
+                availableWidth -= newWidth;
+                oldOverallWidth -= oldWidth;
+                result[index] = newWidth;
+            }
+            return result;
         }
 
         private static void SimulateNewOrderWithKeepingRelativePositionsNotLineShortNotKeepingFormationWidth(
@@ -941,18 +968,22 @@ namespace RTSCamera.CommandSystem.Patch
             var dragVec = formationLineEnd.Value.AsVec2 - formationLineBegin.Value.AsVec2;
             float dragLength = dragVec.Length;
             dragVec.Normalize();
-            float availableWidthFromDragging = MathF.Max(0.0f, dragLength - (float)(formations.Count<Formation>() - shouldFormationBeStackedWithPreviousFormation.Count - 1) * 1.5f);
+            var distanceBetweenFormations = 1.5f;
+            float availableWidthFromDragging = MathF.Clamp(dragLength - (float)(formations.Count<Formation>() - shouldFormationBeStackedWithPreviousFormation.Count - 1) * distanceBetweenFormations, 0f, stacksRecord.Sum(r => r.MaximumWidth));
+
             bool isWidthApproximatelySame = availableWidthFromDragging.ApproximatelyEqualsTo(oldOverallWidth, 0.1f);
+            var newWidths = isWidthApproximatelySame ? stacksRecord.Select(r => r.Width).ToList() : GetExpectedWidths(stacksRecord, availableWidthFromDragging, oldOverallWidth);
 
             Vec2 newOverallDirection = new Vec2(-dragVec.y, dragVec.x).Normalized();
             // sort formation by position
 
             float offset = 0f;
             Vec2 previousOldPosition = Vec2.Invalid;
-            foreach (var stack in stacksRecord)
+            for (int i = 0; i < stacksRecord.Count; ++i)
             {
+                var stack = stacksRecord[i];
                 var formationsInStack = stack.Formations;
-                var newStackWidth = MathF.Min(isWidthApproximatelySame ? stack.Width : (stack.Width * availableWidthFromDragging / oldOverallWidth), stack.MaximumWidth);
+                var newStackWidth = newWidths[i];
                 // sort from front to rear
                 formationsInStack.Sort((f1, f2) =>
                 {
@@ -972,7 +1003,7 @@ namespace RTSCamera.CommandSystem.Patch
                     int unitSpacingReduction = 0;
                     var actualUnitSpacing = GetActualOrCurrentUnitSpacing(formation);
                     var actualOrCurrentWidth = GetActualOrCurrentWidth(formation);
-                    var newFormationWidth = MathF.Max(MathF.Min(isWidthApproximatelySame ? actualOrCurrentWidth : availableWidthFromDragging * (actualOrCurrentWidth / oldOverallWidth), GetFormationVirtualMaximumWidth(formation)), GetFormationVirtualMinimumWidth(formation));
+                    var newFormationWidth = MathF.Clamp(isWidthApproximatelySame ? actualOrCurrentWidth : newStackWidth / stacksRecord[i].Width * actualOrCurrentWidth, GetFormationVirtualMinimumWidth(formation), GetFormationVirtualMaximumWidth(formation));
                     Vec2 formationPositionVec2 = rotateVector(oldOrderPosition - averageOrderPosition, weightedAverageDirection, newOverallDirection) + clickedCenter.AsVec2;
                     if (startPoint == null)
                     {
@@ -1005,7 +1036,7 @@ namespace RTSCamera.CommandSystem.Patch
                     }
                     startPoint += simulatedFormationDepth + GetGapBetweenLinesOfFormation(formation, newUnitSpacing);
                 }
-                offset += newStackWidth + 1.5f;
+                offset += newStackWidth + distanceBetweenFormations;
 
             }
             //foreach (var pair in formationOrderPositionList)

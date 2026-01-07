@@ -1,11 +1,5 @@
 ﻿using RTSCamera.CommandSystem.Logic;
-using RTSCamera.CommandSystem.Orders;
 using RTSCamera.CommandSystem.Patch;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
@@ -45,9 +39,10 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             {
                 foreach (Formation formation in selectedFormations)
                 {
+                    formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
                     CommandQueueLogic.SetFormationVolleyEnabled(formation, volleyEnabled);
                 }
-                orderController.SetOrder(OrderType.FireAtWill);
+                Utilities.Utility.CallAfterSetOrder(orderController, volleyEnabled ? OrderType.HoldFire : OrderType.FireAtWill);
                 CommandQueueLogic.OnCustomOrderIssued(orderToAdd, orderController);
                 CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
 
