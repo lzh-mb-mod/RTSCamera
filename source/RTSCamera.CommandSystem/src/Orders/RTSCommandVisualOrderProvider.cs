@@ -24,7 +24,7 @@ namespace RTSCamera.CommandSystem.Orders
         private MBReadOnlyList<VisualOrderSet> GetDefaultOrders()
         {
             MBList<VisualOrderSet> defaultOrders = new MBList<VisualOrderSet>();
-            RTSCommandGenericVisualOrderSet genericVisualOrderSet1 = new RTSCommandGenericVisualOrderSet("order_type_movement", new TextObject("{=KiJd6Xik}Movement"), false, true);
+            RTSCommandGenericVisualOrderSet genericVisualOrderSet1 = new RTSCommandGenericVisualOrderSet("order_type_movement", new TextObject("{=KiJd6Xik}Movement"), false, true, null);
             genericVisualOrderSet1.AddOrder(new RTSCommandMoveVisualOrder("order_movement_move"));
             genericVisualOrderSet1.AddOrder(new RTSCommandFollowMeVisualOrder("order_movement_follow"));
             genericVisualOrderSet1.AddOrder(new RTSCommandChargeVisualOrder("order_movement_charge"));
@@ -84,7 +84,7 @@ namespace RTSCamera.CommandSystem.Orders
         private MBList<VisualOrderSet> GetLegacyOrders()
         {
             MBList<VisualOrderSet> legacyOrders = new MBList<VisualOrderSet>();
-            RTSCommandGenericVisualOrderSet genericVisualOrderSet1 = new RTSCommandGenericVisualOrderSet("order_type_movement", new TextObject("{=KiJd6Xik}Movement"), false, false);
+            RTSCommandGenericVisualOrderSet genericVisualOrderSet1 = new RTSCommandGenericVisualOrderSet("order_type_movement", new TextObject("{=KiJd6Xik}Movement"), false, false, null);
             genericVisualOrderSet1.AddOrder(new RTSCommandMoveVisualOrder("order_movement_move"));
             genericVisualOrderSet1.AddOrder(new RTSCommandFollowMeVisualOrder("order_movement_follow"));
             genericVisualOrderSet1.AddOrder(new RTSCommandChargeVisualOrder("order_movement_charge"));
@@ -93,7 +93,7 @@ namespace RTSCamera.CommandSystem.Orders
             genericVisualOrderSet1.AddOrder(new RTSCommandStopVisualOrder("order_movement_stop"));
             genericVisualOrderSet1.AddOrder(new RTSCommandRetreatVisualOrder("order_movement_retreat"));
             genericVisualOrderSet1.AddOrder(new ReturnVisualOrder());
-            RTSCommandGenericVisualOrderSet genericVisualOrderSet2 = new RTSCommandGenericVisualOrderSet("order_type_facing", new TextObject("{=psynaDsM}Facing"), false, false);
+            RTSCommandGenericVisualOrderSet genericVisualOrderSet2 = new RTSCommandGenericVisualOrderSet("order_type_facing", new TextObject("{=psynaDsM}Facing"), false, false, null);
             RTSCommandSingleVisualOrder order1 = new RTSCommandSingleVisualOrder("order_toggle_facing", new TextObject("{=MH9Pi3ao}Face Direction"), OrderType.LookAtDirection, false, true);
             RTSCommandSingleVisualOrder order2 = new RTSCommandSingleVisualOrder("order_toggle_facing_active", new TextObject("{=u8j8nN5U}Face Enemy"), OrderType.LookAtEnemy, true, false);
             genericVisualOrderSet2.AddOrder(order1);
@@ -130,7 +130,7 @@ namespace RTSCamera.CommandSystem.Orders
                 if (order8 != null)
                     legacyOrders.Add(new SingleVisualOrderSet(order8));
             }
-            GenericVisualOrderSet volleyVisualOrderSet = new GenericVisualOrderSet("order_type_volley", GameTexts.FindText("str_rts_camera_command_system_volley_order"), false, false);
+            RTSCommandGenericVisualOrderSet volleyVisualOrderSet = new RTSCommandGenericVisualOrderSet("order_type_volley", GameTexts.FindText("str_rts_camera_command_system_volley_order"), true, true, toggleVolleyVisualOrder);
             volleyVisualOrderSet.AddOrder(toggleVolleyVisualOrder);
             volleyVisualOrderSet.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));
             volleyVisualOrderSet.AddOrder(new ReturnVisualOrder());

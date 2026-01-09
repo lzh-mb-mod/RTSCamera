@@ -153,6 +153,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private void SetNoVolleyBehavior(Agent agent)
         {
             //SetCanAttack(agent, false);
+            if (!agent.IsAIControlled)
+                return;
             if (agent.Formation != null)
             {
                 agent.RefreshBehaviorValues(agent.Formation.GetReadonlyMovementOrderReference().OrderEnum, agent.Formation.ArrangementOrder.OrderEnum);
@@ -168,6 +170,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private void SetWaitingBehavior(Agent agent)
         {
             //SetCanAttack(agent, false);
+            if (!agent.IsAIControlled)
+                return;
             if (agent.Formation != null)
             {
                 agent.RefreshBehaviorValues(agent.Formation.GetReadonlyMovementOrderReference().OrderEnum, agent.Formation.ArrangementOrder.OrderEnum);
@@ -184,6 +188,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         private void SetShootingBehavior(Agent agent)
         {
+            if (!agent.IsAIControlled)
+                return;
             if (agent.Formation != null)
             {
                 //agent.RefreshBehaviorValues(agent.Formation.GetReadonlyMovementOrderReference().OrderEnum, agent.Formation.ArrangementOrder.OrderEnum);

@@ -647,6 +647,8 @@ namespace RTSCamera.Logic.SubLogic
             // For example, when DeploymentMissionController.FinishDeployment is called and MainAgent.Controller is set to Player.
             if (_switchToAgentNextTick)
                 return;
+            if (Mission.MainAgent == null)
+                return;
             AgentControllerType controllerType = GetPlayerControllerInFreeCamera(Mission);
             Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.MainAgent, controllerType);
             Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera, controllerType);

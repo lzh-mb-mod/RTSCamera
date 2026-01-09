@@ -1,10 +1,16 @@
 # Changelog
 
-## [v5.3.16]
+## [v5.3.17] - 2026-01-09
+### Fixed
+- Fix crash in tournament after a round, if watching the round and locking camera on a unit.
+
+- Fix crash in loading screen when trying to defending the castle in the last stand.
+
+## [v5.3.16] - 2026-01-08
 ### Added
 - Add volley order.
 
-- Add an option for disable native attak;
+- Add an option for disable native attack.
 
 - Add an option for formation speeds sync behavior.
 

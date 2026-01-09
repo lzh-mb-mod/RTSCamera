@@ -89,6 +89,13 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             {
                 CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
                 orderController.SetOrder(orderToAdd.OrderType);
+                if (orderToAdd.OrderType == OrderType.AIControlOn)
+                {
+                    foreach (var formation in orderController.SelectedFormations)
+                    {
+                        CommandQueueLogic.SetFormationVolleyEnabled(formation, false);
+                    }
+                }
             }
         }
 

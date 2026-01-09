@@ -41,15 +41,16 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                 SelectedFormations = selectedFormations
             };
 
+            bool shouldIgnoreTarget = CommandSystemConfig.Get().DisableNativeAttack;
             orderToAdd.OrderType = OrderType.Advance;
-            orderToAdd.TargetFormation = executionParameters.Formation;
+            orderToAdd.TargetFormation = shouldIgnoreTarget ? null : executionParameters.Formation;
             Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Advance, selectedFormations, orderToAdd.TargetFormation, null, null);
             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
 
             if (!queueCommand)
             {
                 CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
-                if (executionParameters.HasFormation)
+                if (executionParameters.HasFormation && !shouldIgnoreTarget)
                     orderController.SetOrderWithFormation(OrderType.Advance, executionParameters.Formation);
                 else
                     orderController.SetOrder(OrderType.Advance);

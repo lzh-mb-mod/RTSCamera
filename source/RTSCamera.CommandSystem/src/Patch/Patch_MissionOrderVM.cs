@@ -542,7 +542,7 @@ namespace RTSCamera.CommandSystem.Patch
          
         public static bool Prefix_CursorState(MissionOrderVM __instance, ref MissionOrderVM.CursorStates __result)
         {
-            if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.LookAtDirection && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
+            if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.LookAtDirection && Patch_OrderTroopPlacer.IsFreeCamera)
             {
                 __result = MissionOrderVM.CursorStates.Face;
                 Patch_OrderTroopPlacer.SetIsDrawingFacing(true);

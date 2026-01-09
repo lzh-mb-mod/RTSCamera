@@ -10,6 +10,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
         private readonly string _stringId;
         private readonly bool _useActiveOrderForIconId;
         private readonly bool _useActiveOrderForName;
+        private readonly VisualOrder _otherOrder;
 
         public override bool IsSoloOrder => false;
 
@@ -19,6 +20,10 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
         {
             get
             {
+                if (_otherOrder != null)
+                {
+                    return _otherOrder.IconId;
+                }
                 if (this._useActiveOrderForIconId)
                 {
                     for (int index = 0; index < this.Orders.Count; ++index)
@@ -33,6 +38,10 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
 
         public override TextObject GetName(OrderController orderController)
         {
+            if (_otherOrder != null)
+            {
+                return _otherOrder.GetName(orderController);
+            }
             if (this._useActiveOrderForName)
             {
                 for (int index = 0; index < this.Orders.Count; ++index)
@@ -48,12 +57,14 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
           string stringId,
           TextObject name,
           bool useActiveOrderForIconId,
-          bool useActiveOrderForName)
+          bool useActiveOrderForName,
+          VisualOrder otherOrder)
         {
             this._stringId = stringId;
             this._name = name;
             this._useActiveOrderForIconId = useActiveOrderForIconId;
             this._useActiveOrderForName = useActiveOrderForName;
+            _otherOrder = otherOrder;
         }
     }
 }

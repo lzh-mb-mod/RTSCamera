@@ -1,8 +1,6 @@
-﻿using Microsoft.VisualBasic;
-using RTSCamera.CommandSystem.Logic;
+﻿using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using System.Linq;
-using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;

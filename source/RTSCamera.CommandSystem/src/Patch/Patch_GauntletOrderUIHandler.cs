@@ -204,9 +204,10 @@ namespace RTSCamera.CommandSystem.Patch
                         var focusedFormationCache = _focusedFormationsCache.GetValue(__instance) as MBReadOnlyList<Formation>;
                         if (focusedFormationCache != null && focusedFormationCache.Count > 0)
                         {
+                            bool keepMovementOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.KeepMovementOrder).IsKeyDownInOrder(__instance.Input);
                             bool shouldIgnore = CommandSystemConfig.Get().DisableNativeAttack && RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.None;
                             var orderTroopPlacer = _orderTroopPlacer.GetValue(__instance) as OrderTroopPlacer;
-                            if (orderTroopPlacer != null && !shouldIgnore)
+                            if (orderTroopPlacer != null && (!shouldIgnore || keepMovementOrder))
                             {
                                 orderTroopPlacer.SuspendTroopPlacer = true;
                                 _targetFormationOrderGivenWithActionButton?.SetValue(__instance, true);
@@ -241,15 +242,14 @@ namespace RTSCamera.CommandSystem.Patch
                             }
                             else
                             {
-                                if (shouldIgnore)
-                                {
-                                    skipNativeOrder = true;
-                                    return null;
-                                }
-                                bool keepMovementOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.KeepMovementOrder).IsKeyDownInOrder(__instance.Input);
                                 if (keepMovementOrder)
                                 {
                                     Utilities.Utility.FocusOnFormation(dataSource.OrderController, focusedFormationCache[0]);
+                                    skipNativeOrder = true;
+                                    return null;
+                                }
+                                if (shouldIgnore)
+                                {
                                     skipNativeOrder = true;
                                     return null;
                                 }
@@ -448,7 +448,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static void UpdateOrderTroopPlacerDrawingFacing(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
         {
-            if (__instance.IsValidForTick && ____dataSource != null && ____gauntletLayer.IsActive && ____dataSource.IsToggleOrderShown && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension == true)
+            if (__instance.IsValidForTick && ____dataSource != null && ____gauntletLayer.IsActive && ____dataSource.IsToggleOrderShown && CommandSystemConfig.Get().OrderUIClickable)
             {
                 ____orderTroopPlacer.IsDrawingFacing = ____dataSource.SelectedOrderSet?.OrderIconId == "order_type_facing" || RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.LookAtDirection;
             }

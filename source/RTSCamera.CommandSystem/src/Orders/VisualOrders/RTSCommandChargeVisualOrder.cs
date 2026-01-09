@@ -1,4 +1,5 @@
-﻿using RTSCamera.CommandSystem.Logic;
+﻿using RTSCamera.CommandSystem.Config;
+using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using System.Linq;
 using TaleWorlds.Localization;
@@ -32,15 +33,16 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             {
                 SelectedFormations = selectedFormations
             };
+            bool shouldIgnoreTarget = CommandSystemConfig.Get().DisableNativeAttack;
             orderToAdd.OrderType = OrderType.Charge;
-            orderToAdd.TargetFormation = executionParameters.Formation;
+            orderToAdd.TargetFormation = shouldIgnoreTarget ? null : executionParameters.Formation;
             Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Charge, selectedFormations, orderToAdd.TargetFormation, null, null);
             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
 
             if (!queueCommand)
             {
                 CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
-                if (executionParameters.HasFormation)
+                if (executionParameters.HasFormation && !shouldIgnoreTarget)
                     orderController.SetOrderWithFormation(OrderType.Charge, executionParameters.Formation);
                 else
                     orderController.SetOrder(OrderType.Charge);

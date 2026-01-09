@@ -242,7 +242,8 @@ namespace RTSCamera.View
 
         private void LeaveFromAgentOnAgentRemoved()
         {
-            LockToAgent = false;
+            // Fix crash in tournament after watching a round and lock to an agent using "LockToAgent".
+            //LockToAgent = false;
             CameraPosition = MissionScreen.CombatCamera.Frame.origin;
             CameraBearing = MissionScreen.CameraBearing +
                 (float?)CameraSpecialCurrentAddedBearing?.GetValue(MissionScreen) ?? 0;
@@ -322,7 +323,9 @@ namespace RTSCamera.View
                     ICameraModeLogic;
             if (_freeCameraLogic?.IsSpectatorCamera ?? false)
             {
-                return LockToAgent ? SpectatorCameraTypes.LockToAnyAgent : SpectatorCameraTypes.Free;
+                //return LockToAgent ? SpectatorCameraTypes.LockToAnyAgent : SpectatorCameraTypes.Free;
+                // Fix crash in tournament after watching a round and lock to an agent using "LockToAgent".
+                return SpectatorCameraTypes.Free;
             }
             return otherCameraModeLogic?.GetMissionCameraLockMode(lockedToMainPlayer) ?? SpectatorCameraTypes.Invalid;
         }

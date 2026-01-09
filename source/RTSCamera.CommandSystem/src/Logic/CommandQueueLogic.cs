@@ -92,6 +92,11 @@ namespace RTSCamera.CommandSystem.Logic
                 if (!targetPosition.HasValue || !targetPosition.Value.IsValid)
                     continue;
 
+                Formation.FormationIntegrityDataGroup formationIntegrityData = formation.CachedFormationIntegrityData;
+                float num2 = formationIntegrityData.AverageMaxUnlimitedSpeedExcludeFarAgents * 3f;
+                if (formationIntegrityData.DeviationOfPositionsExcludeFarAgents > num2)
+                    return;
+
                 var targetDistance = targetPosition.Value.AsVec2.Distance(formation.CurrentPosition);
                 if (targetDistance < 3f)
                     continue;
@@ -114,6 +119,7 @@ namespace RTSCamera.CommandSystem.Logic
                 }
             }
 
+            var distanceError = 1f;
             switch (CommandSystemConfig.Get().FormationSpeedSyncMode)
             {
                 case FormationSpeedSyncMode.Linear:
@@ -122,7 +128,7 @@ namespace RTSCamera.CommandSystem.Logic
                         {
                             var linearSpeedLimit = pair.Value / maxOriginalDuration;
                             var originalSpeed = MathF.Max(0.1f, pair.Key.CachedMovementSpeed);
-                            FormationSpeedLimits[pair.Key] = linearSpeedLimit;
+                            FormationSpeedLimits[pair.Key] = MathF.Clamp(linearSpeedLimit, 0.1f, originalSpeed);
                         }
                         break;
                     }
@@ -133,20 +139,34 @@ namespace RTSCamera.CommandSystem.Logic
                             var linearSpeedLimit = MathF.Max(0.1f, pair.Value / maxOriginalDuration);
                             var originalSpeed = MathF.Max(0.1f, pair.Key.CachedMovementSpeed);
                             //catch up and do not wait for slower formation
-                            FormationSpeedLimits[pair.Key] = MathF.Clamp(MathF.Lerp(linearSpeedLimit, originalSpeed, (pair.Value - distanceWithMaxDuration) / (originalSpeed * 2f)), linearSpeedLimit, originalSpeed);
+                            FormationSpeedLimits[pair.Key] = MathF.Clamp(MathF.Lerp(linearSpeedLimit, originalSpeed, (pair.Value - distanceWithMaxDuration + distanceError) / (originalSpeed * 2f)), linearSpeedLimit, originalSpeed);
                         }
                         break;
                     }
                 case FormationSpeedSyncMode.WaitForLastFormation:
                     {
                         var range = 5f;
+                        //foreach (var pair in targetDistances)
+                        //{
+                        //    var distance = pair.Value;
+                        //    var linearSpeedLimit = distance / maxOriginalDuration;
+                        //    var originalSpeed = MathF.Max(0.1f, pair.Key.CachedMovementSpeed);
+                        //    var originalDuration = originalDurations[pair.Key];
+                        //    var maxDistanceSpeed = GetMaxDistanceSpeed(targetDistances, pair.Value, minDistance, maxDistance, maxOriginalDuration, distanceWithMaxDuration, range);
+                        //    var minSpeed = MathF.Lerp(linearSpeedLimit, 0.1f, MathF.Pow(MathF.Clamp((maxOriginalDuration - originalDuration) / durationThreshold, 0f, 1f), 10f));
+                        //    //var minSpeed = 0.1f;
+                        //    var speedLimit = MathF.Clamp(MathF.Lerp(maxDistanceSpeed, minSpeed, MathF.Clamp((maxDistance - distance) / range - 0.1f, 0f, 1f)), minSpeed, originalSpeed);
+                        //    FormationSpeedLimits[pair.Key] = speedLimit;
+                        //}
                         foreach (var pair in targetDistances)
                         {
                             var distance = pair.Value;
                             var linearSpeedLimit = distance / maxOriginalDuration;
                             var originalSpeed = MathF.Max(0.1f, pair.Key.CachedMovementSpeed);
-                            var maxDistanceSpeed = GetMaxDistanceSpeed(targetDistances, pair.Value, minDistance, maxDistance, maxOriginalDuration, distanceWithMaxDuration, range);
-                            var speedLimit = MathF.Lerp(maxDistanceSpeed, 0.1f, MathF.Clamp((maxDistance - distance) / range, 0f, 1f));
+                            var originalDuration = originalDurations[pair.Key];
+                            var maxDistanceSpeed = GetMaxDistanceSpeed2(targetDistances, pair.Value, minDistance, maxDistance, maxOriginalDuration, distanceWithMaxDuration, range);
+                            var minSpeed = 0.1f;
+                            var speedLimit = MathF.Clamp(MathF.Lerp(maxDistanceSpeed, minSpeed, MathF.Clamp((maxDistance - distance - distanceError) / range, 0f, 1f)), minSpeed, originalSpeed);
                             FormationSpeedLimits[pair.Key] = speedLimit;
                         }
                         break;
@@ -181,6 +201,28 @@ namespace RTSCamera.CommandSystem.Logic
             var weightedAverageSpeed = speedSum / speedWeightSum;
             var result = MathF.Lerp(minSpeedInRangeOfMaxDistance, weightedAverageSpeed, (maxDistance - distanceOfMinSpeedInRange) / range);
             return result;
+        }
+
+
+        private float GetMaxDistanceSpeed2(Dictionary<Formation, float> targetDistances, float distance, float minDistance, float maxDistance, float maxOriginalDuration, float distanceWithMaxDuration, float range)
+        {
+            var maxDurationInRange = float.MinValue;
+            foreach (var pair in targetDistances)
+            {
+                var formation = pair.Key;
+                var formationDistance = pair.Value;
+                var originalSpeed = MathF.Max(0.1f, formation.CachedMovementSpeed);
+                var diff = maxDistance - formationDistance;
+                if (diff < range)
+                {
+                    var duration = formationDistance / originalSpeed;
+                    if (maxDurationInRange < duration)
+                    {
+                        maxDurationInRange = duration;
+                    }
+                }
+            }
+            return maxDistance / maxDurationInRange;
         }
     }
 
