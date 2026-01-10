@@ -33,6 +33,8 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
     - Layout between selected formations are improved when player drags on the ground.
 
+  - Add volley order.
+
   - Square and Circle formations are improved.
 
   - Fix issues related with formation width and unit spacing in the base game.
