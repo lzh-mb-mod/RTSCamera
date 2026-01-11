@@ -111,11 +111,6 @@ namespace RTSCamera.CommandSystem.Patch
                         BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_OnMissionScreenTick),
                         BindingFlags.Static | BindingFlags.Public)));
-                harmony.Patch(
-                    typeof(OrderTroopPlacer).GetMethod("HideOrderPositionEntities",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
-                   prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Postfix_HideOrderPositionEntities),
-                    BindingFlags.Static | BindingFlags.Public)));
                 // For command queue
                 harmony.Patch(
                     typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawingForMovementOrder",
@@ -612,18 +607,6 @@ namespace RTSCamera.CommandSystem.Patch
             }
 
             return true;
-        }
-
-        public static void Postfix_HideOrderPositionEntities()
-        {
-            foreach (GameEntity orderPositionEntity in _newModelOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
-            {
-                orderPositionEntity.HideIfNotFadingOut();
-            }
-            foreach (GameEntity orderPositionEntity in _alwaysVisibleOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
-            {
-                orderPositionEntity.HideIfNotFadingOut();
-            }
         }
 
         private static void HandleSelectFormationKeyDown(OrderTroopPlacer __instance, ref Formation ____clickedFormation, ref Formation ____mouseOverFormation,

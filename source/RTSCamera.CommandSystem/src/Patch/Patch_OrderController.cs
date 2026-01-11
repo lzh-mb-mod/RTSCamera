@@ -2714,7 +2714,7 @@ namespace RTSCamera.CommandSystem.Patch
             unitDirection = new Vec2?();
             if (simulationFormation == null)
             {
-                if (_simulationFormationTemp.GetValue(null) == null|| (int)_simulationFormationUniqueIdentifier.GetValue(null) != index)
+                if (_simulationFormationTemp.GetValue(null) == null || (int)_simulationFormationUniqueIdentifier.GetValue(null) != index)
                     _simulationFormationTemp.SetValue(null, new Formation((Team)null, -1));
                 simulationFormation = (Formation)_simulationFormationTemp.GetValue(null);
             }
