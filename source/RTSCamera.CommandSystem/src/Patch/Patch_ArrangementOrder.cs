@@ -103,7 +103,7 @@ namespace RTSCamera.CommandSystem.Patch
                         }
                         break;
                 }
-                agent.RefreshBehaviorValues(formation.GetReadonlyMovementOrderReference().OrderEnum, orderEnum);
+                agent.RefreshBehaviorValues(movementOrder2, orderEnum);
             }));
             return false;
         }

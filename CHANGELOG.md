@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.3.18] - 2026-01-11
+### Improved
+- Improve performance when clicking on ground to move formations.
+
 ## [v5.3.17] - 2026-01-09
 ### Fixed
 - Fix crash in tournament after a round, if watching the round and locking camera on a unit.
