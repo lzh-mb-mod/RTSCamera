@@ -1,5 +1,39 @@
 # Changelog
 
+## [v5.1.17] - 2026-01-11
+### Added
+- Troops in formations are highlighted when pressing alt.
+
+- Add an option to sync speed of locked formations under movement order. Locked formations will adjust movement speed to arrive at the target simultaneously.
+
+- Add an option for disable native attack.
+
+- Add an option to adjust the threshold for ratio of mounted units in a formation to determine whether to increase spacing between units. In vanilla the threshold is 0.1.
+
+### Fixed
+- Fix the issue that unit marker is still shown after being removed from formation in rare case.
+
+- Fix the issue that setting hotkey of openning menu to left mouse button or right mouse button making it impossible to open hotkey UI.
+
+- Disable mod menu popup in conversation.
+
+- Fix possible crash when time speed and fast forward both enabled.
+
+- Fix the issue that banner bearer is never highlighted.
+
+- Fix potential crash at the end of siege.
+
+- Fix the issue that trying to control a unit who is picking up items and then switch to free camera, the unit AI will be stuck in picking up state.
+
+### Improved
+- Improve the default formation width after changing formation arrangement.
+
+- The unit's ground marker can be seen below.
+
+- Improve square formation when unit count is square number.
+
+- Improve unit position in square and circle formation.
+
 ## [v5.1.16] - 2025-12-16
 ### Fixed
 - Fix startup crash when there're other mods failing to load.

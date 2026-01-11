@@ -11,6 +11,7 @@ using RTSCamera.CommandSystem.Usage;
 using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -31,20 +32,11 @@ namespace RTSCamera.CommandSystem
             base.OnSubModuleLoad();
 
             // If RBM is loaded, disable the ChargeToFormation feature for infantry to not break RBM frontline behavior
-            IsRealisticBattleModuleInstalled = Utility.IsModuleInstalled("RBM");
+            IsRealisticBattleModuleInstalled = Utility.IsModuleInstalled("RBM") && Utility.IsModuleInstalled("RealisticBattleAiModule");
 
             Utility.ShouldDisplayMessage = true;
             Initialize();
 
-            try
-            {
-                Module.CurrentModule.GlobalTextManager.LoadGameTexts();
-            }
-            catch
-            {
-                Console.WriteLine("Failed to load global texts for Command System");
-                Debug.Print("Failed to load global texts for Command System");
-            }
             if (!UIConfig.DoNotUseGeneratedPrefabs && CommandSystemConfig.Get().OrderUIClickable)
             {
                 UIConfig.DoNotUseGeneratedPrefabs = true;
@@ -65,6 +57,15 @@ namespace RTSCamera.CommandSystem
             if (!SecondInitialize())
                 return;
 
+            try
+            {
+                Module.CurrentModule.GlobalTextManager.LoadGameTexts();
+            }
+            catch (Exception e)
+            {
+                MBDebug.Print(e.ToString());
+                InformationManager.DisplayMessage(new InformationMessage($"RTS Command: failed to load game texts: {e}"));
+            }
             Utilities.Utility.PrintOrderHint();
         }
 
@@ -114,9 +115,13 @@ namespace RTSCamera.CommandSystem
 
             // solid circle formation
             _successPatch &= Patch_CircularFormation.Patch(_harmony);
+
+            // limit locked formation speed.
+            _successPatch &= Patch_HumanAIComponent.Patch(_harmony);
+
             if (!_successPatch)
             {
-                InformationManager.DisplayMessage(new InformationMessage("RTS Camera Command System: patch failed"));
+                InformationManager.DisplayMessage(new InformationMessage("RTS Command: patch failed"));
             }
             return true;
         }

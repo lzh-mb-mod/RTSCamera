@@ -3,6 +3,7 @@ using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using System;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Patch
@@ -36,6 +37,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
             return true;
@@ -57,14 +59,17 @@ namespace RTSCamera.CommandSystem.Patch
             return true;
         }
 
+        private static FieldInfo _formOrder = AccessTools.Field(typeof(Formation), "_formOrder");
+        private static FieldInfo _unitSpacing = AccessTools.Field(typeof(Formation), "_unitSpacing");
+
         public static bool Prefix_OnApply(ArrangementOrder __instance, Formation formation)
         {
             var previousUnitSpacing = formation.UnitSpacing;
             var newUnitSpacing = __instance.GetUnitSpacing();
             if (Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(formation) && formation.Arrangement.GetType() != Utilities.Utility.GetTypeOfArrangement(__instance.OrderEnum, Utilities.Utility.ShouldEnableHollowSquareFormationFor(formation)))
             {
-                AccessTools.Field(typeof(Formation), "_formOrder").SetValue(formation, FormOrder.FormOrderCustom(Patch_OrderController.GetFormationVirtualWidth(formation) ?? formation.Width));
-                AccessTools.Field(typeof(Formation), "_unitSpacing").SetValue(formation, Patch_OrderController.GetFormationVirtualUnitSpacing(formation) ?? newUnitSpacing);
+                _formOrder.SetValue(formation, FormOrder.FormOrderCustom(Patch_OrderController.GetFormationVirtualWidth(formation) ?? formation.Width));
+                _unitSpacing.SetValue(formation, Patch_OrderController.GetFormationVirtualUnitSpacing(formation) ?? newUnitSpacing);
             }
             else
             {

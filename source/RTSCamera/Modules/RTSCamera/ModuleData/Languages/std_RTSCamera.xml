@@ -94,6 +94,10 @@
     <string id="RTSCamera_control_ally_after_death_timing_prompt" text="Do you want to enable 'Control Troop After Death'?" />
     <string id="RTSCamera_prefer_unit_in_same_formation" text="Prefer Units In Same Formation" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="Control Troops In Player Party Only" />
+    <string id="RTSCamera_limited_to_player_party_only" text="Control Troops In Player Party Only is enabled. Only troops in player party will be considered for control." />
+    <string id="RTSCamera_controlheroonly" text="Control Hero Only" />
+    <string id="RTSCamera_controlheroonlyhint" text="Only consider hero troops when looking for target to control." />
+    <string id="RTSCamera_limitedtoheroonly" text="Control Hero Only is enabled. Only hero troops will be considered for control." />
     <string id="RTSCamera_ignoreretreatingtroops" text="Ignore Retreating Troops" />
 
     <string id="RTSCamera_miscellaneous_options" text="Miscellaneous Options" />
@@ -113,10 +117,12 @@
     <string id="RTSCamera_missioncontinue" text="Mission continued." />
 
     <string id="RTSCamera_slowmotionenabled" text="Slow Motion Mode Enabled." />
-    <string id="RTSCamera_fastfowardenabled" text="Fast Forward Mode Enabled." />
     <string id="RTSCamera_normalmodeenabled" text="Normal Mode Enabled." />
 
-    <string id="RTSCamera_playeragentdead" text="Player agent is dead." />
+    <string id="RTSCamera_fastforwardenabled" text="Fast Forward Mode Enabled." />
+    <string id="RTSCamera_fastforwarddisabled" text="Fast Forward Mode Disabled." />
+
+    <string id="RTSCamera_playeragentdead" text="Player agent is injured." />
     <string id="RTSCamera_switchtoplayer" text="Switch to player agent." />
     <string id="RTSCamera_switchtofreecamera" text="Switch to free camera." />
 
@@ -155,6 +161,7 @@
     <string id="RTSCamera_camera_increase_camera_speed" text="Increase Camera speed" />
     <string id="RTSCamera_camera_decrease_camera_speed" text="Decrease Camera speed" />
     <string id="RTSCamera_camera_reset_camera_speed" text="Reset Camera speed" />
+    <string id="RTSCamera_camera_move_by_mouse" text="Move Camera By Mouse." />
 
     <string id="RTSCamera_slowmotionkey_description" text="Enable slow motion mode. Press again to recover." />
     <string id="RTSCamera_fastforwardkey_description" text="Toggle Fast Forward" />
@@ -172,6 +179,7 @@
     <string id="RTSCamera_camera_increase_camera_speed_description" text="Increase Camera speed" />
     <string id="RTSCamera_camera_decrease_camera_speed_description" text="Decrease Camera speed" />
     <string id="RTSCamera_camera_reset_camera_speed_description" text="Reset Camera speed" />
+    <string id="RTSCamera_camera_move_by_mouse_description" text="Hold to Move Camera By Mouse." />
 
     <string id="RTSCamera_enemywipedout" text="Enemy has been wiped out." />
     <string id="RTSCamera_switchtoenemyteam" text="Switched to the enemy team." />
@@ -192,7 +200,6 @@
   
     <string id="RTSCamera_focus_on_formation_usage" text="(New Feature) When command UI is open in free camera mode, you can press {KeyName} to stick camera to selected formation." />
     <string id="RTSCamera_control_troop_usage" text="After your character is killed in battle, you can press {KeyName} to follow one of your soldiers and press {KeyName} again to control it and continue fighting." />
-    <string id="RTSCamera_click_troop_card_usage" text="You can select your formations by clicking on troop cards." />
 
     <string id="RTSCamera_open_menu_hotkey_hint" text="open menu" />
     <string id="RTSCamera_switch_camera_hotkey_hint" text="toggle free Camera" />

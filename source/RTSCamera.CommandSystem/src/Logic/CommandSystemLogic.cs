@@ -6,15 +6,17 @@ using RTSCamera.CommandSystem.QuerySystem;
 using RTSCameraAgentComponent;
 using System.Collections.Generic;
 using TaleWorlds.Core;
+using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Logic
 {
-    public class CommandSystemLogic : MissionLogic
+    public class CommandSystemLogic : MissionLogic, IMissionListener
     {
         private CommandSystemConfig _config = CommandSystemConfig.Get();
         public readonly FormationColorSubLogicV2 OutlineColorSubLogic;
         public readonly FormationColorSubLogicV2 GroundMarkerColorSubLogic;
+        private bool _isShowIndicatorsDown = false;
 
         public CommandSystemLogic()
         {
@@ -130,6 +132,16 @@ namespace RTSCamera.CommandSystem.Logic
 
         public override void OnRemoveBehavior()
         {
+            foreach (var team in Mission.Current.Teams)
+            {
+                if (team.FormationsIncludingSpecialAndEmpty == null)
+                    continue;
+                foreach (var formation in team.FormationsIncludingSpecialAndEmpty)
+                {
+                    formation.OnUnitAdded -= OnUnitAdded;
+                    formation.OnUnitRemoved -= OnUnitRemoved;
+                }
+            }
             OutlineColorSubLogic.OnRemoveBehaviour();
             GroundMarkerColorSubLogic.OnRemoveBehaviour();
             Patch_OrderTroopPlacer.OnRemoveBehavior();
@@ -142,6 +154,7 @@ namespace RTSCamera.CommandSystem.Logic
         {
             base.AfterStart();
 
+            Mission.AddListener(this);
             CommandQueueLogic.AfterStart();
         }
 
@@ -158,6 +171,27 @@ namespace RTSCamera.CommandSystem.Logic
 
             OutlineColorSubLogic.OnPreDisplayMissionTick(dt);
             GroundMarkerColorSubLogic.OnPreDisplayMissionTick(dt);
+
+            var combatHotKeyCategory = HotKeyManager.GetCategory("CombatHotKeyCategory");
+            combatHotKeyCategory?.GetGameKey(GenericGameKeyContext.ShowIndicators);
+            if (Mission.InputManager.IsGameKeyDown(GenericGameKeyContext.ShowIndicators))
+            {
+                if (!_isShowIndicatorsDown)
+                {
+                    _isShowIndicatorsDown = true;
+                    OutlineColorSubLogic.OnShowIndicatorKeyDownUpdate(_isShowIndicatorsDown);
+                    GroundMarkerColorSubLogic.OnShowIndicatorKeyDownUpdate(_isShowIndicatorsDown);
+                }
+            }
+            else
+            {
+                if (_isShowIndicatorsDown)
+                {
+                    _isShowIndicatorsDown = false;
+                    OutlineColorSubLogic.OnShowIndicatorKeyDownUpdate(_isShowIndicatorsDown);
+                    GroundMarkerColorSubLogic.OnShowIndicatorKeyDownUpdate(_isShowIndicatorsDown);
+                }
+            }
         }
 
         public override void OnDeploymentFinished()
@@ -180,6 +214,29 @@ namespace RTSCamera.CommandSystem.Logic
         {
             OutlineColorSubLogic.AfterAddTeam(team);
             GroundMarkerColorSubLogic.AfterAddTeam(team);
+            if (team.FormationsIncludingSpecialAndEmpty == null)
+                return;
+            foreach (var formation in team.FormationsIncludingSpecialAndEmpty)
+            {
+                formation.OnUnitAdded += OnUnitAdded;
+                formation.OnUnitRemoved += OnUnitRemoved;
+            }
+        }
+
+        private void OnUnitAdded(Formation formation, Agent agent)
+        {
+            OutlineColorSubLogic.OnUnitAdded(formation, agent);
+            GroundMarkerColorSubLogic.OnUnitAdded(formation, agent);
+        }
+
+        private void OnUnitRemoved(Formation formation, Agent agent)
+        {
+            OutlineColorSubLogic.OnUnitRemoved(formation, agent);
+            GroundMarkerColorSubLogic.OnUnitRemoved(formation, agent);
+            if (formation.CountOfUnits == 0)
+            {
+                CommandQueueLogic.OnFormationUnitsCleared(formation);
+            }
         }
 
         public override void OnAgentCreated(Agent agent)
@@ -201,6 +258,35 @@ namespace RTSCamera.CommandSystem.Logic
 
             OutlineColorSubLogic.OnAgentFleeing(affectedAgent);
             GroundMarkerColorSubLogic.OnAgentFleeing(affectedAgent);
+        }
+
+        public void OnEquipItemsFromSpawnEquipmentBegin(Agent agent, Agent.CreationType creationType)
+        {
+            // called before first equipment
+        }
+
+        public void OnEquipItemsFromSpawnEquipment(Agent agent, Agent.CreationType creationType)
+        {
+            // called after first equipment, and after refreshing equipment such as bearing banner
+            agent.GetComponent<CommandSystemAgentComponent>()?.Refresh();
+        }
+
+        void IMissionListener.OnEndMission()
+        {
+            Mission.RemoveListener(this);
+        }
+
+        public void OnConversationCharacterChanged()
+        {
+        }
+
+        public void OnResetMission()
+        {
+
+        }
+
+        public void OnInitialDeploymentPlanMade(BattleSideEnum battleSide, bool isFirstPlan)
+        {
         }
     }
 }

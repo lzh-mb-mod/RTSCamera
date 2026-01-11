@@ -1,8 +1,9 @@
-﻿using MissionSharedLibrary.Utilities;
+﻿using Microsoft.VisualBasic;
+using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.CommandSystem.View;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.Core;
@@ -52,6 +53,170 @@ namespace RTSCamera.CommandSystem.Logic
         public List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)> ActualFormationChanges { get; set; } = new List<(Formation formation, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction)>();
 
         public Dictionary<Formation, FormationChange> VirtualFormationChanges { get; set; } = new Dictionary<Formation, FormationChange>();
+        public bool ShouldAdjustFormationSpeed { get; set; } = false;
+
+        public Dictionary<Formation, float> FormationSpeedLimits { get; set; } = new Dictionary<Formation, float>();
+        public void UpdateMovementSpeed()
+        {
+            FormationSpeedLimits.Clear();
+            if (!ShouldAdjustFormationSpeed)
+                return;
+            if (CommandSystemConfig.Get().FormationSpeedSyncMode == FormationSpeedSyncMode.Disabled)
+                return;
+            Dictionary<Formation, float> targetDistances = new Dictionary<Formation, float>();
+            Dictionary<Formation, float> originalDurations = new Dictionary<Formation, float>();
+            var maxOriginalDuration = float.MinValue;
+            var distanceWithMaxDuration = float.MaxValue;
+            var maxDistance = float.MinValue;
+            var minDistance = float.MaxValue;
+            foreach (var formation in SelectedFormations)
+            {
+                if (formation.CountOfUnits == 0)
+                    continue;
+                if (!CommandQueueLogic.PendingOrders.TryGetValue(formation, out var otherOrder))
+                    continue;
+                if (this != otherOrder || CommandQueueLogic.IsMovementOrderCompleted(formation))
+                    continue;
+                if (!VirtualFormationChanges.TryGetValue(formation, out var formationChange))
+                    continue;
+
+                var targetPosition = formationChange.WorldPosition;
+
+                if (!targetPosition.HasValue || !targetPosition.Value.IsValid)
+                    continue;
+
+                FormationQuerySystem.FormationIntegrityDataGroup formationIntegrityData = formation.QuerySystem.FormationIntegrityData;
+                float num2 = formationIntegrityData.AverageMaxUnlimitedSpeedExcludeFarAgents * 3f;
+                if (formationIntegrityData.DeviationOfPositionsExcludeFarAgents > num2)
+                    return;
+
+                var targetDistance = targetPosition.Value.AsVec2.Distance(formation.CurrentPosition);
+                if (targetDistance < 3f)
+                    continue;
+                if (targetDistance > maxDistance)
+                {
+                    maxDistance = targetDistance;
+                }
+                if (targetDistance < minDistance)
+                {
+                    minDistance = targetDistance;
+                }
+                var originalSpeed = MathF.Max(0.1f, formation.QuerySystem.MovementSpeed);
+                targetDistances[formation] = targetDistance;
+                var duration = targetDistance / originalSpeed;
+                originalDurations[formation] = duration;
+                if (duration > maxOriginalDuration)
+                {
+                    maxOriginalDuration = duration;
+                    distanceWithMaxDuration = targetDistance;
+                }
+            }
+
+            var distanceError = 1f;
+            switch (CommandSystemConfig.Get().FormationSpeedSyncMode)
+            {
+                case FormationSpeedSyncMode.Linear:
+                    {
+                        foreach (var pair in targetDistances)
+                        {
+                            var linearSpeedLimit = pair.Value / maxOriginalDuration;
+                            var originalSpeed = MathF.Max(0.1f, pair.Key.QuerySystem.MovementSpeed);
+                            FormationSpeedLimits[pair.Key] = MathF.Clamp(linearSpeedLimit, 0.1f, originalSpeed);
+                        }
+                        break;
+                    }
+                case FormationSpeedSyncMode.CatchUp:
+                    {
+                        foreach (var pair in targetDistances)
+                        {
+                            var linearSpeedLimit = MathF.Max(0.1f, pair.Value / maxOriginalDuration);
+                            var originalSpeed = MathF.Max(0.1f, pair.Key.QuerySystem.MovementSpeed);
+                            //catch up and do not wait for slower formation
+                            FormationSpeedLimits[pair.Key] = MathF.Clamp(MathF.Lerp(linearSpeedLimit, originalSpeed, (pair.Value - distanceWithMaxDuration + distanceError) / (originalSpeed * 2f)), linearSpeedLimit, originalSpeed);
+                        }
+                        break;
+                    }
+                case FormationSpeedSyncMode.WaitForLastFormation:
+                    {
+                        var range = 5f;
+                        //foreach (var pair in targetDistances)
+                        //{
+                        //    var distance = pair.Value;
+                        //    var linearSpeedLimit = distance / maxOriginalDuration;
+                        //    var originalSpeed = MathF.Max(0.1f, pair.Key.CachedMovementSpeed);
+                        //    var originalDuration = originalDurations[pair.Key];
+                        //    var maxDistanceSpeed = GetMaxDistanceSpeed(targetDistances, pair.Value, minDistance, maxDistance, maxOriginalDuration, distanceWithMaxDuration, range);
+                        //    var minSpeed = MathF.Lerp(linearSpeedLimit, 0.1f, MathF.Pow(MathF.Clamp((maxOriginalDuration - originalDuration) / durationThreshold, 0f, 1f), 10f));
+                        //    //var minSpeed = 0.1f;
+                        //    var speedLimit = MathF.Clamp(MathF.Lerp(maxDistanceSpeed, minSpeed, MathF.Clamp((maxDistance - distance) / range - 0.1f, 0f, 1f)), minSpeed, originalSpeed);
+                        //    FormationSpeedLimits[pair.Key] = speedLimit;
+                        //}
+                        foreach (var pair in targetDistances)
+                        {
+                            var distance = pair.Value;
+                            var linearSpeedLimit = distance / maxOriginalDuration;
+                            var originalSpeed = MathF.Max(0.1f, pair.Key.QuerySystem.MovementSpeed);
+                            var originalDuration = originalDurations[pair.Key];
+                            var maxDistanceSpeed = GetMaxDistanceSpeed2(targetDistances, pair.Value, minDistance, maxDistance, maxOriginalDuration, distanceWithMaxDuration, range);
+                            var minSpeed = 0.1f;
+                            var speedLimit = MathF.Clamp(MathF.Lerp(maxDistanceSpeed, minSpeed, MathF.Clamp((maxDistance - distance - distanceError) / range, 0f, 1f)), minSpeed, originalSpeed);
+                            FormationSpeedLimits[pair.Key] = speedLimit;
+                        }
+                        break;
+                    }
+            }
+        }
+
+        private float GetMaxDistanceSpeed(Dictionary<Formation, float> targetDistances, float distance, float minDistance, float maxDistance, float maxOriginalDuration, float distanceWithMaxDuration, float range)
+        {
+            var speedWeightSum = 0f;
+            var speedSum = 0f;
+            var minSpeedInRangeOfMaxDistance = float.MaxValue;
+            var distanceOfMinSpeedInRange = 0f;
+            foreach (var pair in targetDistances)
+            {
+                var formation = pair.Key;
+                var formationDistance = pair.Value;
+                var formationOriginalSpeed = formation.QuerySystem.MovementSpeed;
+                var diff = maxDistance - formationDistance;
+                if (diff < range)
+                {
+                    if (minSpeedInRangeOfMaxDistance > formationOriginalSpeed)
+                    {
+                        minSpeedInRangeOfMaxDistance = formationOriginalSpeed;
+                        distanceOfMinSpeedInRange = formationDistance;
+                    }
+                    var weight = 1 - diff / range;
+                    speedSum += weight * formationOriginalSpeed;
+                    speedWeightSum += weight;
+                }
+            }
+            var weightedAverageSpeed = speedSum / speedWeightSum;
+            var result = MathF.Lerp(minSpeedInRangeOfMaxDistance, weightedAverageSpeed, (maxDistance - distanceOfMinSpeedInRange) / range);
+            return result;
+        }
+
+
+        private float GetMaxDistanceSpeed2(Dictionary<Formation, float> targetDistances, float distance, float minDistance, float maxDistance, float maxOriginalDuration, float distanceWithMaxDuration, float range)
+        {
+            var maxDurationInRange = float.MinValue;
+            foreach (var pair in targetDistances)
+            {
+                var formation = pair.Key;
+                var formationDistance = pair.Value;
+                var originalSpeed = MathF.Max(0.1f, formation.QuerySystem.MovementSpeed);
+                var diff = maxDistance - formationDistance;
+                if (diff < range)
+                {
+                    var duration = formationDistance / originalSpeed;
+                    if (maxDurationInRange < duration)
+                    {
+                        maxDurationInRange = duration;
+                    }
+                }
+            }
+            return maxDistance / maxDurationInRange;
+        }
     }
 
     public static class CommandQueueLogic
@@ -177,6 +342,7 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.Use:
                 case OrderType.AttackEntity:
                 case OrderType.PointDefence:
+                    return true;
                 case OrderType.ArrangementLine:
                 case OrderType.ArrangementCloseOrder:
                 case OrderType.ArrangementLoose:
@@ -192,33 +358,48 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.CohesionHigh:
                 case OrderType.CohesionMedium:
                 case OrderType.CohesionLow:
-                case OrderType.None:
+                case OrderType.AIControlOff:
+                case OrderType.Transfer:
                 case OrderType.HoldFire:
                 case OrderType.FireAtWill:
                 case OrderType.RideFree:
                 case OrderType.Mount:
                 case OrderType.Dismount:
-                    return true;
-                case OrderType.AIControlOff:
-                case OrderType.Transfer:
+                case OrderType.None:
                 default:
                     return false;
             }
         }
 
-        //public static bool ShouldClearQueueAndPendingOrder(OrderInQueue order)
-        //{
-        //    switch (order.CustomOrderType)
-        //    {
-        //        case CustomOrderType.Original:
-        //            return ShouldClearQueueAndPendingOrder(order.OrderType);
-        //        case CustomOrderType.FollowMainAgent:
-        //            return true;
-        //        case CustomOrderType.SetTargetFormation:
-        //        default:
-        //            return false;
-        //    }
-        //}
+        public static bool ShouldCustomOrderClearQueue(OrderInQueue order)
+        {
+            switch (order.CustomOrderType)
+            {
+                case CustomOrderType.SetTargetFormation:
+                    return true;
+                default:
+                    Utility.DisplayMessage("Error: unexpected order type");
+                    break;
+            }
+            return false;
+        }
+
+        public static void OnCustomOrderIssued(OrderInQueue order, OrderController orderController)
+        {
+            CurrentFormationChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(order.SelectedFormations));
+            if (ShouldCustomOrderClearQueue(order))
+            {
+                ClearOrderInQueue(order.SelectedFormations);
+            }
+
+            foreach (var formation in order.SelectedFormations)
+            {
+                if (GetNextOrderForFormation(formation) == null)
+                {
+                    LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(order.SelectedFormations));
+                }
+            }
+        }
 
         private static void OnOrderIssued(OrderType orderType, MBReadOnlyList<Formation> appliedFormations, OrderController orderController, params object[] delegateParams)
         {
@@ -304,6 +485,10 @@ namespace RTSCamera.CommandSystem.Logic
                     // fallback is considered complete instantly.
                     return true;
             }
+            if (formation.ArrangementOrder.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Column)
+            {
+                return Utilities.Utility.GetColumnFormationCurrentPosition(formation).Distance(formation.OrderGroundPosition) < 5f;
+            }
             return !formation.OrderPositionIsValid || CommandQuerySystem.GetQueryForFormation(formation).HasCurrentMovementOrderCompleted;
         }
 
@@ -312,6 +497,7 @@ namespace RTSCamera.CommandSystem.Logic
 
             if (PendingOrders.TryGetValue(formation, out var order))
             {
+                order.UpdateMovementSpeed();
                 foreach (var otherFormation in order.SelectedFormations)
                 {
                     if (otherFormation != formation)
@@ -379,7 +565,7 @@ namespace RTSCamera.CommandSystem.Logic
                                     }
                                     if (order.IsLineShort)
                                     {
-                                        if (virtualFormationChange.Width != null && formation.Width != virtualFormationChange.Width)
+                                        if (virtualFormationChange.Width != null && formation.Width != virtualFormationChange.Width && formation.ArrangementOrder.OrderEnum != ArrangementOrder.ArrangementOrderEnum.Column)
                                         {
                                             formation.FormOrder = FormOrder.FormOrderCustom(virtualFormationChange.Width.Value);
                                         }
@@ -555,7 +741,7 @@ namespace RTSCamera.CommandSystem.Logic
         {
             if (GameNetwork.IsClientOrReplay || formation.GetReadonlyMovementOrderReference().OrderEnum != MovementOrder.MovementOrderEnum.Stop)
                 return;
-            WorldPosition orderWorldPosition = formation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.NavMeshVec3);
+            WorldPosition orderWorldPosition = formation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.None);
             if (!orderWorldPosition.IsValid)
                 return;
             formation.SetMovementOrder(MovementOrder.MovementOrderMove(orderWorldPosition));
@@ -641,6 +827,11 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     FormationPendingOrder(formation, order);
                 }
+                order.UpdateMovementSpeed();
+                if (order.ShouldAdjustFormationSpeed && CommandSystemConfig.Get().FormationSpeedSyncMode != FormationSpeedSyncMode.Disabled && order.FormationSpeedLimits.Count > 1)
+                {
+                    Utilities.Utility.DisplayAdjustFormationSpeedMessage(order.FormationSpeedLimits.Keys);
+                }
             }
             else
             {
@@ -658,7 +849,7 @@ namespace RTSCamera.CommandSystem.Logic
                 if (PendingOrders.TryGetValue(formation, out var order))
                 {
                     order.SelectedFormations.Remove(formation);
-                };
+                }
                 PendingOrders.Remove(formation);
             }
         }
@@ -689,27 +880,46 @@ namespace RTSCamera.CommandSystem.Logic
 
         public static void TryTeleportSelectedFormationInDeployment(OrderController orderController, IEnumerable<Formation> formations)
         {
+            // Copied from OrderController.AfterSetOrder
             if (Mission.Current.Mode == MissionMode.Deployment && orderController.FormationUpdateEnabledAfterSetOrder)
             {
                 // Fix the issue that in Deployment mode, after switching to loose formation, the units are not teleported to correct position.
                 foreach (Formation formation in formations)
                 {
-                    bool flag = false;
-                    if (formation.IsPlayerTroopInFormation)
+                    if (formation.CountOfUnits > 0 && (orderController == null || orderController.FormationUpdateEnabledAfterSetOrder))
                     {
-                        flag = formation.GetReadonlyMovementOrderReference().OrderEnum == MovementOrder.MovementOrderEnum.Follow;
+                        bool flag = false;
+                        if (formation.IsPlayerTroopInFormation)
+                        {
+                            flag = formation.GetReadonlyMovementOrderReference().OrderEnum == MovementOrder.MovementOrderEnum.Follow;
+                        }
+                        // update direction instantly in deployment mode
+                        var target = formation.GetReadonlyMovementOrderReference()._targetAgent;
+                        formation.SetPositioning(direction: formation.FacingOrder.GetDirection(formation, flag && target == Mission.Current.MainAgent ? null : target));
+                        formation.ApplyActionOnEachUnit(delegate (Agent agent)
+                        {
+                            agent.UpdateCachedAndFormationValues(updateOnlyMovement: false, arrangementChangeAllowed: false);
+                        }, flag ? Mission.Current.MainAgent : null);
+                        Mission.Current.SetRandomDecideTimeOfAgentsWithIndices(formation.CollectUnitIndices());
                     }
-                    // update direction instantly in deployment mode
-                    var target = formation.GetReadonlyMovementOrderReference()._targetAgent;
-                    formation.SetPositioning(direction: formation.FacingOrder.GetDirection(formation, flag && target == Mission.Current.MainAgent ? null : target));
-                    formation.ApplyActionOnEachUnit(delegate (Agent agent)
-                    {
-                        agent.UpdateCachedAndFormationValues(updateOnlyMovement: false, arrangementChangeAllowed: false);
-                    }, flag ? Mission.Current.MainAgent : null);
-                    Mission.Current.SetRandomDecideTimeOfAgentsWithIndices(formation.CollectUnitIndices());
                 }
                 // calls OrderOfBattleFormationItemVM.RefreshMarkerWorldPosition
                 Mission.Current.GetMissionBehavior<OrderTroopPlacer>()?.OnUnitDeployed?.Invoke();
+            }
+        }
+
+        public static void OnFormationUnitsCleared(Formation formation)
+        {
+            if (formation.Team != null && formation.Team.IsPlayerTeam)
+            {
+                CurrentFormationChanges.SetChanges(new List<KeyValuePair<Formation, FormationChange>>
+                {
+                    new KeyValuePair<Formation, FormationChange>(formation, new FormationChange())
+                });
+                Patch_OrderController.LivePreviewFormationChanges.SetChanges(new List<KeyValuePair<Formation, FormationChange>>
+                {
+                    new KeyValuePair<Formation, FormationChange>(formation, new FormationChange())
+                });
             }
         }
     }

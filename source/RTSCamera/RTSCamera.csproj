@@ -33,7 +33,7 @@
     <DotNetCliToolReference Include="dotnet-md2html" Version="1.0.0.1-preview1" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Lib.Harmony" Version="2.4.1">
+    <PackageReference Include="Lib.Harmony" Version="2.4.2">
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +90,6 @@
     </Reference>
     <Reference Include="TaleWorlds.GauntletUI.PrefabSystem">
       <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.GauntletUI.PrefabSystem.dll</HintPath>
-    </Reference>
-    <Reference Include="TaleWorlds.GauntletUI.TooltipExtensions">
-      <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.GauntletUI.TooltipExtensions.dll</HintPath>
     </Reference>
     <Reference Include="TaleWorlds.InputSystem">
       <HintPath>$(GamePath)bin\Win64_Shipping_Client\TaleWorlds.InputSystem.dll</HintPath>

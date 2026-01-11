@@ -103,13 +103,6 @@ namespace RTSCamera.Config
 
         public int PlayerControllerInFreeCamera = (int)Agent.ControllerType.AI;
 
-        public Agent.ControllerType GetPlayerControllerInFreeCamera(Mission mission)
-        {
-            if (CommandBattleBehavior.CommandMode || mission?.Mode == MissionMode.Deployment)
-                return Agent.ControllerType.AI;
-            return (Agent.ControllerType) PlayerControllerInFreeCamera;
-        }
-
         public FormationClass PlayerFormation = FormationClass.General;
 
         // deprecated
@@ -148,6 +141,8 @@ namespace RTSCamera.Config
         public bool PreferUnitsInSameFormation = true;
 
         public bool ControlTroopsInPlayerPartyOnly = false;
+
+        public bool ControlHeroOnly = false;
 
         public bool IgnoreRetreatingTroops = true;
 
@@ -201,6 +196,7 @@ namespace RTSCamera.Config
             IgnoreRetreatingTroops = other.IgnoreRetreatingTroops;
             PreferUnitsInSameFormation = other.PreferUnitsInSameFormation;
             ControlTroopsInPlayerPartyOnly = other.ControlTroopsInPlayerPartyOnly;
+            ControlHeroOnly = other.ControlHeroOnly;
             DisableDeathHotkeyEnabled = other.DisableDeathHotkeyEnabled;
             SwitchTeamHotkeyEnabled = other.SwitchTeamHotkeyEnabled;
             LimitCameraDistance = other.LimitCameraDistance;

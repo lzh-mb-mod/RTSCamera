@@ -3,6 +3,7 @@ using MissionSharedLibrary.Utilities;
 using RTSCamera.Logic;
 using System;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade.ViewModelCollection.HUD;
 
 namespace RTSCamera.Patch
@@ -37,6 +38,7 @@ namespace RTSCamera.Patch
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 

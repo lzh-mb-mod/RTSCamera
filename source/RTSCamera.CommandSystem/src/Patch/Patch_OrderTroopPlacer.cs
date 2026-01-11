@@ -37,6 +37,18 @@ namespace RTSCamera.CommandSystem.Patch
             typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_dataSource),
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
+        private static readonly PropertyInfo _activeCursorState = typeof(OrderTroopPlacer).GetProperty("ActiveCursorState", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly MethodInfo _cursorState = typeof(OrderTroopPlacer).GetMethod("GetCursorState", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _handleMouseDown = typeof(OrderTroopPlacer).GetMethod("HandleMouseDown", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _handleMouseUp = typeof(OrderTroopPlacer).GetMethod("HandleMouseUp", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _updateFormationDrawing = typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawing", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _updateFormationDrawingForFacingOrder = typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawingForFacingOrder", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _updateFormationDrawingForFormingOrder = typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawingForFormingOrder", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _updateFormationDrawingForDestination = typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawingForDestination", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _getGroundVec3 = typeof(OrderTroopPlacer).GetMethod("GetGroundedVec3", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _addOrderPositionEntity = typeof(OrderTroopPlacer).GetMethod("AddOrderPositionEntity", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _reset = typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic);
+
         private static CursorState _currentCursorState = CursorState.Invisible;
         private static UiQueryData<CursorState> _cachedCursorState;
         private static FormationColorSubLogicV2 _outlineView;
@@ -109,6 +121,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
         }
@@ -192,8 +205,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static CursorState GetCursorState()
         {
-            return (CursorState)typeof(OrderTroopPlacer).GetMethod("GetCursorState", BindingFlags.Instance | BindingFlags.NonPublic)
-                .Invoke(_orderTroopPlacer, new object[] { });
+            return (CursorState)_cursorState.Invoke(_orderTroopPlacer, new object[] { });
         }
         private static Vec2 GetScreenPoint(OrderTroopPlacer __instance, ref Vec2 ____deltaMousePosition)
         {
@@ -538,6 +550,10 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 orderPositionEntity.HideIfNotFadingOut();
             }
+            foreach (GameEntity orderPositionEntity in _alwaysVisibleOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
+            {
+                orderPositionEntity.HideIfNotFadingOut();
+            }
         }
 
         private static void HandleSelectFormationKeyDown(OrderTroopPlacer __instance, ref Formation ____clickedFormation, ref Formation ____mouseOverFormation,
@@ -661,8 +677,7 @@ namespace RTSCamera.CommandSystem.Patch
             if (isLeftButtonPressed)
             {
                 ____isMouseDown = true;
-                typeof(OrderTroopPlacer).GetMethod("HandleMouseDown", BindingFlags.Instance | BindingFlags.NonPublic)
-                    ?.Invoke(__instance, new object[] { });
+                _handleMouseDown?.Invoke(__instance, new object[] { });
             }
             if (isSelectFormationKeyPressed)
             {
@@ -683,8 +698,7 @@ namespace RTSCamera.CommandSystem.Patch
                 // Formation.GetOrderPositionOfUnit is wrong in the next tick after movement order is issued.
                 // we skip updating from the wrong position for 1 tick.
                 _skipDrawingForDestinationForOneTick = true;
-                typeof(OrderTroopPlacer).GetMethod("HandleMouseUp", BindingFlags.Instance | BindingFlags.NonPublic)
-                    ?.Invoke(__instance, new object[] { });
+                _handleMouseUp?.Invoke(__instance, new object[] { });
             }
             else if (____isMouseDown && isSelectFormationKeyDown)
             {
@@ -702,9 +716,7 @@ namespace RTSCamera.CommandSystem.Patch
                     !__instance.IsDrawingForming)
                 {
                     if (_currentCursorState == CursorState.Ground)
-                        typeof(OrderTroopPlacer)
-                            .GetMethod("UpdateFormationDrawing", BindingFlags.Instance | BindingFlags.NonPublic)
-                            .Invoke(__instance, new object[] { false });
+                        _updateFormationDrawing.Invoke(__instance, new object[] { false });
                 }
             }
             else if (__instance.IsDrawingForced)
@@ -718,9 +730,7 @@ namespace RTSCamera.CommandSystem.Patch
                     ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
                     ref ____formationDrawingStartingTime);
                 //HandleMousePressed();
-                typeof(OrderTroopPlacer)
-                    .GetMethod("UpdateFormationDrawing", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(__instance, new object[] { false });
+                _updateFormationDrawing.Invoke(__instance, new object[] { false });
             }
             else if (__instance.IsDrawingFacing || ____wasDrawingFacing)
             {
@@ -730,9 +740,7 @@ namespace RTSCamera.CommandSystem.Patch
                         ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
                         ref ____mouseOverFormation, ref ____clickedFormation);
 
-                    typeof(OrderTroopPlacer)
-                        .GetMethod("UpdateFormationDrawingForFacingOrder", BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Invoke(__instance, new object[] { false });
+                    _updateFormationDrawingForFacingOrder.Invoke(__instance, new object[] { false });
                 }
             }
             else if (__instance.IsDrawingForming || ____wasDrawingForming)
@@ -743,9 +751,7 @@ namespace RTSCamera.CommandSystem.Patch
                         ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
                         ref ____mouseOverFormation, ref ____clickedFormation);
 
-                    typeof(OrderTroopPlacer)
-                        .GetMethod("UpdateFormationDrawingForFormingOrder", BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Invoke(__instance, new object[] { false });
+                    _updateFormationDrawingForFormingOrder.Invoke(__instance, new object[] { false });
                 }
             }
             else if (____wasDrawingForced)
@@ -760,9 +766,7 @@ namespace RTSCamera.CommandSystem.Patch
             }
             else
             {
-                typeof(OrderTroopPlacer)
-                    .GetMethod("UpdateFormationDrawingForDestination", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(__instance, new object[] { false });
+                _updateFormationDrawingForDestination.Invoke(__instance, new object[] { false });
             }
 
             UpdateMouseOverFormation(____mouseOverFormation);
@@ -796,19 +800,19 @@ namespace RTSCamera.CommandSystem.Patch
             ____clickedFormation = (Formation)null;
         }
 
-        public static void SelectFormationFromUI(OrderTroopPlacer __instance, Formation ____clickedFormation)
-        {
-            var uiHandler = __instance.Mission.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
-            if (uiHandler == null)
-                return;
-            var dataSource = (MissionOrderVM)_dataSource.GetValue(uiHandler);
-            if (dataSource == null)
-            {
-                return;
-            }
+        //public static void SelectFormationFromUI(OrderTroopPlacer __instance, Formation ____clickedFormation)
+        //{
+        //    var uiHandler = __instance.Mission.GetMissionBehavior<MissionGauntletSingleplayerOrderUIHandler>();
+        //    if (uiHandler == null)
+        //        return;
+        //    var dataSource = (MissionOrderVM)_dataSource.GetValue(uiHandler);
+        //    if (dataSource == null)
+        //    {
+        //        return;
+        //    }
 
-            dataSource.OnSelect(____clickedFormation.Index);
-        }
+        //    dataSource.OnSelect(____clickedFormation.Index);
+        //}
 
         public static void SelectFormationFromController(OrderTroopPlacer __instance, OrderController ___PlayerOrderController, Formation ____clickedFormation)
         {
@@ -833,7 +837,7 @@ namespace RTSCamera.CommandSystem.Patch
             WorldPosition formationRealEndingPosition,
             bool isFormationLayoutVertical, ref bool ___isDrawnThisFrame, OrderController ___PlayerOrderController)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             if (!queueCommand)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
@@ -854,6 +858,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 return true;
             }
+            bool shouldLimitFormationSpeedToLowest = Utilities.Utility.ShouldLockFormation();
             if (giveOrder)
             {
                 if (!queueCommand)
@@ -869,6 +874,8 @@ namespace RTSCamera.CommandSystem.Patch
                         IsLineShort = isLineShort,
                         PositionBegin = formationRealStartingPosition,
                         PositionEnd = formationRealEndingPosition,
+                        VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations),
+                        ShouldAdjustFormationSpeed = shouldLimitFormationSpeedToLowest
                     });
                 }
                 else
@@ -881,14 +888,15 @@ namespace RTSCamera.CommandSystem.Patch
                         ActualFormationChanges = formationChanges,
                         PositionBegin = formationRealStartingPosition,
                         PositionEnd = formationRealEndingPosition,
-                        VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations)
+                        VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations),
+                        ShouldAdjustFormationSpeed = shouldLimitFormationSpeedToLowest
                     });
                 }
             }
             int entityIndex = 0;
             foreach (WorldPosition worldPosition in simulationAgentFrames)
             {
-                typeof(OrderTroopPlacer).GetMethod("AddOrderPositionEntity", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(__instance,
+                _addOrderPositionEntity.Invoke(__instance,
                     new object[]
                     {
                         entityIndex, worldPosition.GetGroundVec3(), giveOrder, -1f
@@ -899,9 +907,9 @@ namespace RTSCamera.CommandSystem.Patch
         }
 
         public static bool Prefix_UpdateFormationDrawingForFacingOrder(OrderTroopPlacer __instance,
-            bool giveOrder, ref bool ___isDrawnThisFrame, OrderController ___PlayerOrderController)
+            bool giveOrder, OrderController ___PlayerOrderController)
         {
-            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             if (!queueCommand)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(___PlayerOrderController.SelectedFormations));
@@ -913,11 +921,18 @@ namespace RTSCamera.CommandSystem.Patch
             return true;
         }
 
-        public static void SetIsDraingFacing(bool isDrawingFacing)
+        public static void SetIsDrawingFacing(bool isDrawingFacing)
         {
             if (_orderTroopPlacer == null)
                 return;
             _orderTroopPlacer.IsDrawingFacing = isDrawingFacing;
+        }
+
+        public static void Reset()
+        {
+            if (_orderTroopPlacer == null)
+                return;
+            _reset.Invoke(_orderTroopPlacer, new object[] { });
         }
     }
 }

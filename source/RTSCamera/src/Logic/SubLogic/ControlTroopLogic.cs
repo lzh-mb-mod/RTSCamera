@@ -78,7 +78,23 @@ namespace RTSCamera.Logic.SubLogic
 
         public bool ForceControlAgent()
         {
-            return ForceControlAgent(GetAgentToControl());
+            var agent = GetAgentToControl();
+            if (agent == null)
+            {
+                Utility.DisplayLocalizedText("str_rts_camera_no_troop_to_control");
+                return false;
+            }
+            if (_config.ControlTroopsInPlayerPartyOnly && !Utility.IsInPlayerParty(agent))
+            {
+                Utility.DisplayLocalizedText("str_rts_camera_limited_to_player_party_only");
+                return false;
+            }
+            if (_config.ControlHeroOnly && !agent.IsHero)
+            {
+                Utility.DisplayLocalizedText("str_rts_camera_limited_to_hero_only");
+                return false;
+            }
+            return ForceControlAgent(agent);
         }
 
         public bool ForceControlAgent(Agent agent)
@@ -167,7 +183,10 @@ namespace RTSCamera.Logic.SubLogic
             if (_flyCameraMissionView.MissionScreen?.LastFollowedAgent?.IsActive() ?? false)
             {
                 if ((!_switchFreeCameraLogic.IsSpectatorCamera || _flyCameraMissionView.LockToAgent) &&
-                    _flyCameraMissionView.MissionScreen.LastFollowedAgent.Team == Mission.PlayerTeam) return _flyCameraMissionView.MissionScreen?.LastFollowedAgent;
+                    _flyCameraMissionView.MissionScreen.LastFollowedAgent.Team == Mission.PlayerTeam)
+                {
+                    return _flyCameraMissionView.MissionScreen?.LastFollowedAgent;
+                }
             }
             else if (Mission.MainAgent?.IsActive() ?? false)
             {
@@ -178,17 +197,18 @@ namespace RTSCamera.Logic.SubLogic
                 return null;
 
             bool controlTroopsInPlayerPartyOnly = CommandBattleBehavior.CommandMode ? false : _config.ControlTroopsInPlayerPartyOnly;
-            return GetOtherAgentToControl(true, controlTroopsInPlayerPartyOnly) ??
-                   (RTSCameraConfig.Get().IgnoreRetreatingTroops && !_switchFreeCameraLogic.IsSpectatorCamera ? null : GetOtherAgentToControl(false, controlTroopsInPlayerPartyOnly));
+            bool controlHeroOnly = CommandBattleBehavior.CommandMode ? false : _config.ControlHeroOnly;
+            return GetOtherAgentToControl(true, controlTroopsInPlayerPartyOnly, controlHeroOnly) ??
+                   (RTSCameraConfig.Get().IgnoreRetreatingTroops && !_switchFreeCameraLogic.IsSpectatorCamera ? null : GetOtherAgentToControl(false, controlTroopsInPlayerPartyOnly, controlHeroOnly));
         }
 
-        private Agent GetOtherAgentToControl(bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly)
+        private Agent GetOtherAgentToControl(bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly, bool controlHeroOnly)
         {
             var cameraPosition = Mission.Scene.LastFinalRenderCameraPosition;
             if (_config.PreferUnitsInSameFormation)
             {
                 var firstPreference = AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation,
-                    cameraPosition, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly);
+                    cameraPosition, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly, controlHeroOnly);
                 if (firstPreference.agent != null)
                 {
                     return firstPreference.agent;
@@ -197,21 +217,21 @@ namespace RTSCamera.Logic.SubLogic
                 if (_switchFreeCameraLogic.CurrentPlayerFormation != _config.PlayerFormation)
                 {
                     var secondPreference = AgentPreferenceFromFormation((FormationClass)_config.PlayerFormation,
-                        cameraPosition, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly);
+                        cameraPosition, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly, controlHeroOnly);
                     if ((secondPreference.hero ?? secondPreference.agent) != null)
                     {
                         return secondPreference.hero ?? secondPreference.agent;
                     }
                 }
 
-                var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly);
+                var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly, controlHeroOnly);
                 return thirdPreference.hero ?? thirdPreference.agent;
             }
             else
             {
                 var firstPreference =
                     AgentPreferenceFromFormation(_switchFreeCameraLogic.CurrentPlayerFormation, cameraPosition,
-                        ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly);
+                        ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly, controlHeroOnly);
                 if (firstPreference.hero != null)
                     return firstPreference.hero;
 
@@ -219,35 +239,35 @@ namespace RTSCamera.Logic.SubLogic
                 {
                     var secondPreference =
                         AgentPreferenceFromFormation(_config.PlayerFormation, cameraPosition,
-                            ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly);
+                            ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly, controlHeroOnly);
                     if (secondPreference.hero != null)
                         return secondPreference.hero;
-                    var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly);
+                    var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly, controlHeroOnly);
                     return thirdPreference.hero ??
                            firstPreference.agent ?? secondPreference.agent ?? thirdPreference.agent;
                 }
                 else
                 {
-                    var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly);
+                    var thirdPreference = AgentPreferenceFromPlayerTeam(cameraPosition, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly, controlHeroOnly);
                     return thirdPreference.hero ??
                            firstPreference.agent ?? thirdPreference.agent;
                 }
             }
         }
 
-        private (Agent agent, Agent hero) AgentPreferenceFromPlayerTeam(Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly)
+        private (Agent agent, Agent hero) AgentPreferenceFromPlayerTeam(Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly, bool controlHeroOnly)
         {
             var preference = new ControlAgentPreference();
-            preference.UpdateAgentPreferenceFromTeam(Mission.PlayerTeam, position, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly);
+            preference.UpdateAgentPreferenceFromTeam(Mission.PlayerTeam, position, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly, controlHeroOnly);
             return (preference.BestAgent, preference.BestHero);
         }
 
 
         private (Agent agent, Agent hero) AgentPreferenceFromFormation(FormationClass formationClass,
-            Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly)
+            Vec3 position, bool ignoreRetreatingAgents, bool controlTroopsInPlayerPartyOnly, bool controlHeroOnly)
         {
             var preference = new ControlAgentPreference();
-            preference.UpdateAgentPreferenceFromFormation(formationClass, position, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly);
+            preference.UpdateAgentPreferenceFromFormation(formationClass, position, ignoreRetreatingAgents, controlTroopsInPlayerPartyOnly, controlHeroOnly);
             return (preference.BestAgent, preference.BestHero);
         }
 

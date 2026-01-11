@@ -125,7 +125,7 @@ namespace RTSCamera.Patch.Fix
         {
             // TODO: don't close the order ui and open it again.
             // Keep orders UI open after issuing an order in free camera mode.
-            if (!__instance.IsToggleOrderShown && !__instance.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
+            if (!__instance.IsToggleOrderShown && !__instance.TroopController.IsTransferActive && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && /*RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepOrderUIOpen == true &&*/ RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
             {
                 __instance.OpenToggleOrder(false);
             }

@@ -4,7 +4,10 @@ using RTSCamera.Config;
 using RTSCamera.Logic;
 using SandBox.Missions.MissionLogics;
 using System;
+using System.Linq;
 using System.Reflection;
+using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch
@@ -25,11 +28,17 @@ namespace RTSCamera.Patch
                         BindingFlags.Static | BindingFlags.Public),
                     postfix: new HarmonyMethod(typeof(Patch_HideoutMissionController).GetMethod(
                         nameof(Postfix_StartBossFightBattleMode), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(HideoutMissionController).GetMethod(nameof(HideoutMissionController.OnAgentRemoved),
+                        BindingFlags.Instance | BindingFlags.Public),
+                    postfix: new HarmonyMethod(typeof(Patch_HideoutMissionController).GetMethod(
+                        nameof(Postfix_OnAgentRemoved), BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 
@@ -45,6 +54,26 @@ namespace RTSCamera.Patch
             if (RTSCameraConfig.Get().FastForwardHideout == FastForwardHideout.Always)
             {
                 rtsCameraLogic.SwitchFreeCameraLogic.FastForwardHideoutNextTick = true;
+            }
+        }
+
+        public static void Postfix_OnAgentRemoved(
+            HideoutMissionController __instance,
+            Agent affectedAgent,
+            Agent affectorAgent,
+            AgentState agentState,
+            KillingBlow blow)
+        {
+            if (affectedAgent.IsMainAgent)
+            {
+                var formation = __instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.FirstOrDefault();
+                if (formation != null)
+                {
+                    if (formation.GetReadonlyMovementOrderReference().OrderEnum == MovementOrder.MovementOrderEnum.Retreat)
+                    {
+                        __instance.Mission.PlayerTeam.PlayerOrderController.SetOrder(OrderType.Charge);
+                    }
+                }
             }
         }
     }

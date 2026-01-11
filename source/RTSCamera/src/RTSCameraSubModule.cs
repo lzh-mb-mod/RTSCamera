@@ -32,6 +32,7 @@ namespace RTSCamera
 
         private readonly Harmony _harmony = new Harmony("RTSCameraPatch");
         private bool _successPatch;
+        public static bool IsCommandSystemInstalled = false;
 
         // random generated
         public const int MissionTimeSpeedRequestId = 936012602;
@@ -40,19 +41,10 @@ namespace RTSCamera
         {
             base.OnSubModuleLoad();
 
+            IsCommandSystemInstalled = Utility.IsModuleInstalled("RTSCamera.CommandSystem");
             Utility.ShouldDisplayMessage = true;
             Initialize();
 
-
-            try
-            {
-                Module.CurrentModule.GlobalTextManager.LoadGameTexts();
-            }
-            catch
-            {
-                Console.WriteLine("Failed to load global texts for Command System");
-                Debug.Print("Failed to load global texts for Command System");
-            }
             try
             {
                 _successPatch = true;
@@ -71,15 +63,9 @@ namespace RTSCamera
                 //            .Prefix_CheckIfConversationAgentIsEscortingTheMainAgent),
                 //        BindingFlags.Static | BindingFlags.Public)));
 
-                _harmony.Patch(
-                    typeof(PassageUsePoint).GetMethod(nameof(PassageUsePoint.IsDisabledForAgent),
-                        BindingFlags.Instance | BindingFlags.Public),
-                    new HarmonyMethod(typeof(Patch_PassageUsePoint).GetMethod(
-                        nameof(Patch_PassageUsePoint.IsDisabledForAgent_Prefix),
-                        BindingFlags.Static | BindingFlags.Public)));
-
                 // below checked
-                _successPatch &= Patch_OrderOfBattleVM.Patch();
+                _successPatch &= Patch_PassageUsePoint.Patch(_harmony);
+                _successPatch &= Patch_OrderOfBattleVM.Patch(_harmony);
                 _successPatch &= Patch_DeploymentMissionController.Patch(_harmony);
                 _successPatch &= Patch_LadderQueueManager.Patch(_harmony);
                 _successPatch &= Patch_MissionFormationTargetSelectionHandler.Patch(_harmony);
@@ -114,7 +100,7 @@ namespace RTSCamera
             catch (Exception e)
             {
                 _successPatch = false;
-                MBDebug.ConsolePrint(e.ToString());
+                MBDebug.Print(e.ToString());
             }
         }
 
@@ -143,6 +129,15 @@ namespace RTSCamera
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Camera: patch failed"));
+            }
+            try
+            {
+                Module.CurrentModule.GlobalTextManager.LoadGameTexts();
+            }
+            catch
+            {
+                Console.WriteLine("Failed to load global texts for Command System");
+                Debug.Print("Failed to load global texts for Command System");
             }
 
             Utility.ShouldDisplayMessage = RTSCameraConfig.Get().DisplayMessage;

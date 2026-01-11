@@ -2,6 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using System;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch.Fix
@@ -35,6 +36,7 @@ namespace RTSCamera.Patch.Fix
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 
@@ -46,7 +48,7 @@ namespace RTSCamera.Patch.Fix
             // or specificly, when there're 2 agents whose IsPlayerUnit is true in the same formation,
             // Arrangement_OnShapeChanged will recurse itself and cause stack overflow.
 
-            IFormationUnit lastUnit = (IFormationUnit)GetLastUnit?.Invoke(__instance, new object[] {});
+            IFormationUnit lastUnit = (IFormationUnit)GetLastUnit?.Invoke(__instance, new object[] { });
             if (lastUnit == null || unit == null || lastUnit == unit || lastUnit.IsPlayerUnit && unit.IsPlayerUnit)
             {
                 // If the last unit and the current unit are both player controlled,

@@ -14,6 +14,7 @@ using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
+using TaleWorlds.MountAndBlade.View.Screens;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 using static TaleWorlds.Engine.WorldPosition;
 using static TaleWorlds.MountAndBlade.ArrangementOrder;
@@ -71,7 +72,7 @@ namespace RTSCamera.CommandSystem.Utilities
                             nameof(BehaviorTacticalCharge))
                         .SetTextVariable("AI_SIDE", GameTexts.FindText("str_formation_ai_side_strings", targetFormation.AI.Side.ToString()))
                         // TODO: Verify PhysicalClass
-                        .SetTextVariable("CLASS", GameTexts.FindText("str_troop_group_name", ((int)targetFormation.PhysicalClass).ToString())));                
+                        .SetTextVariable("CLASS", GameTexts.FindText("str_troop_group_name", ((int)targetFormation.PhysicalClass).ToString())));
                 //MissionSharedLibrary.Utilities.Utility.DisplayMessage(message.ToString());
                 InformationManager.DisplayMessage(new InformationMessage(message.ToString()));
             }
@@ -107,6 +108,10 @@ namespace RTSCamera.CommandSystem.Utilities
         public static MethodInfo BeforeSetOrder = typeof(OrderController).GetMethod("BeforeSetOrder", BindingFlags.NonPublic | BindingFlags.Instance);
         public static MethodInfo AfterSetOrder = typeof(OrderController).GetMethod("AfterSetOrder", BindingFlags.NonPublic | BindingFlags.Instance);
 
+        public static void CallAfterSetOrder(OrderController orderController, OrderType orderType)
+        {
+            AfterSetOrder?.Invoke(orderController, new object[] { orderType });
+        }
         public static void DisplayFocusAttackMessage(IEnumerable<Formation> formations, Formation target)
         {
             List<TextObject> formationNameList = new List<TextObject>();
@@ -127,6 +132,20 @@ namespace RTSCamera.CommandSystem.Utilities
         public static void DisplayAddOrderToQueueMessage()
         {
             MissionSharedLibrary.Utilities.Utility.DisplayLocalizedText("str_rts_camera_command_system_add_order_to_queue", null, MessageColor);
+        }
+
+        public static void DisplayAdjustFormationSpeedMessage(IEnumerable<Formation> formations)
+        {
+            List<TextObject> formationNameList = new List<TextObject>();
+            foreach (var formation in formations)
+                formationNameList.Add(GameTexts.FindText("str_troop_group_name", ((int)formation.PhysicalClass).ToString()));
+            if (!formationNameList.IsEmpty())
+            {
+                TextObject textObject = new TextObject("{=ApD0xQXT}{STR1}: {STR2}");
+                textObject.SetTextVariable("STR1", GameTexts.GameTextHelper.MergeTextObjectsWithComma(formationNameList, false));
+                textObject.SetTextVariable("STR2", GameTexts.FindText("str_rts_camera_command_system_sync_locked_formation_speed_message"));
+                MissionSharedLibrary.Utilities.Utility.DisplayMessage(textObject.ToString(), MessageColor);
+            }
         }
 
         public static void DisplayExecuteOrderMessage(IEnumerable<Formation> selectedFormations, OrderInQueue order)
@@ -268,7 +287,7 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
             //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
-            var queueOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            var queueOrder = Utilities.Utility.ShouldQueueCommand();
             if (!queueOrder)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(playerController.SelectedFormations));
@@ -299,14 +318,16 @@ namespace RTSCamera.CommandSystem.Utilities
                 //playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
                 Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.OnMovementOrderChanged(playerController.SelectedFormations);
                 DisplayFocusAttackMessage(playerController.SelectedFormations, order.TargetFormation);
+
+                Utilities.Utility.CallAfterSetOrder(playerController, OrderType.ChargeWithTarget);
+                CommandQueueLogic.OnCustomOrderIssued(order, playerController);
             }
         }
 
         public static void ChargeToFormation(OrderController playerController, Formation targetFormation)
         {
-            var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
             //BeforeSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
-            var queueOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+            var queueOrder = Utilities.Utility.ShouldQueueCommand();
             if (!queueOrder)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(playerController.SelectedFormations));
@@ -339,10 +360,6 @@ namespace RTSCamera.CommandSystem.Utilities
                 // so movement order will not be changed here
                 playerController.SetOrderWithFormation(OrderType.ChargeWithTarget, targetFormation);
             }
-            //AfterSetOrder?.Invoke(playerController, new object[] { OrderType.ChargeWithTarget });
-
-            //DisplayChargeToFormationMessage(playerController.SelectedFormations,
-            //    targetFormation);
         }
 
         public static bool ShouldLockFormation()
@@ -400,12 +417,12 @@ namespace RTSCamera.CommandSystem.Utilities
                     case OrderType.ChargeWithTarget:
                         {
                             var missionScreen = MissionSharedLibrary.Utilities.Utility.GetMissionScreen();
-                            bool queueCommand = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+                            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
                             return queueCommand ? Patch_OrderController.GetFormationVirtualPosition(formation) : formation.QuerySystem.MedianPosition;
                         }
                     case OrderType.Advance:
                         {
-                            return Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPositionEnforcedCache.NavMeshVec3, formationChange.TargetFormation);
+                            return Patch_OrderController.GetAdvanceOrderPosition(formation, WorldPositionEnforcedCache.None, formationChange.TargetFormation);
                         }
                     case OrderType.FollowEntity:
                         {
@@ -424,7 +441,7 @@ namespace RTSCamera.CommandSystem.Utilities
                         }
                     case OrderType.FallBack:
                         {
-                            return Patch_OrderController.GetFallbackOrderPosition(formation, WorldPositionEnforcedCache.NavMeshVec3, formationChange.TargetFormation);
+                            return Patch_OrderController.GetFallbackOrderPosition(formation, WorldPositionEnforcedCache.None, formationChange.TargetFormation);
                         }
                 }
             }
@@ -530,40 +547,56 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             switch (arrangementOrder)
             {
-                case ArrangementOrder.ArrangementOrderEnum.Line:
-                    return ArrangementOrder.ArrangementOrderLine;
-                case ArrangementOrder.ArrangementOrderEnum.ShieldWall:
-                    return ArrangementOrder.ArrangementOrderShieldWall;
-                case ArrangementOrder.ArrangementOrderEnum.Loose:
-                    return ArrangementOrder.ArrangementOrderLoose;
-                case ArrangementOrder.ArrangementOrderEnum.Circle:
-                    return ArrangementOrder.ArrangementOrderCircle;
-                case ArrangementOrder.ArrangementOrderEnum.Square:
-                    return ArrangementOrder.ArrangementOrderSquare;
-                case ArrangementOrder.ArrangementOrderEnum.Skein:
-                    return ArrangementOrder.ArrangementOrderSkein;
-                case ArrangementOrder.ArrangementOrderEnum.Column:
-                    return ArrangementOrder.ArrangementOrderColumn;
-                case ArrangementOrder.ArrangementOrderEnum.Scatter:
-                    return ArrangementOrder.ArrangementOrderScatter;
+                case ArrangementOrderEnum.Line:
+                    return ArrangementOrderLine;
+                case ArrangementOrderEnum.ShieldWall:
+                    return ArrangementOrderShieldWall;
+                case ArrangementOrderEnum.Loose:
+                    return ArrangementOrderLoose;
+                case ArrangementOrderEnum.Circle:
+                    return ArrangementOrderCircle;
+                case ArrangementOrderEnum.Square:
+                    return ArrangementOrderSquare;
+                case ArrangementOrderEnum.Skein:
+                    return ArrangementOrderSkein;
+                case ArrangementOrderEnum.Column:
+                    return ArrangementOrderColumn;
+                case ArrangementOrderEnum.Scatter:
+                    return ArrangementOrderScatter;
             }
 
-            return ArrangementOrder.ArrangementOrderLine;
+            return ArrangementOrderLine;
         }
 
         public static OrderType ArrangementOrderEnumToOrderType(ArrangementOrder.ArrangementOrderEnum arrangementOrder)
         {
             return arrangementOrder switch
             {
-                ArrangementOrder.ArrangementOrderEnum.Line => OrderType.ArrangementLine,
-                ArrangementOrder.ArrangementOrderEnum.ShieldWall => OrderType.ArrangementCloseOrder,
-                ArrangementOrder.ArrangementOrderEnum.Loose => OrderType.ArrangementLoose,
-                ArrangementOrder.ArrangementOrderEnum.Circle => OrderType.ArrangementCircular,
-                ArrangementOrder.ArrangementOrderEnum.Square => OrderType.ArrangementSchiltron,
-                ArrangementOrder.ArrangementOrderEnum.Skein => OrderType.ArrangementVee,
-                ArrangementOrder.ArrangementOrderEnum.Column => OrderType.ArrangementColumn,
-                ArrangementOrder.ArrangementOrderEnum.Scatter => OrderType.ArrangementScatter,
+                ArrangementOrderEnum.Line => OrderType.ArrangementLine,
+                ArrangementOrderEnum.ShieldWall => OrderType.ArrangementCloseOrder,
+                ArrangementOrderEnum.Loose => OrderType.ArrangementLoose,
+                ArrangementOrderEnum.Circle => OrderType.ArrangementCircular,
+                ArrangementOrderEnum.Square => OrderType.ArrangementSchiltron,
+                ArrangementOrderEnum.Skein => OrderType.ArrangementVee,
+                ArrangementOrderEnum.Column => OrderType.ArrangementColumn,
+                ArrangementOrderEnum.Scatter => OrderType.ArrangementScatter,
                 _ => OrderType.None
+            };
+        }
+
+        public static ArrangementOrderEnum OrderTypeToArrangementOrderEnum(OrderType orderType)
+        {
+            return orderType switch
+            {
+                OrderType.ArrangementLine => ArrangementOrderEnum.Line,
+                OrderType.ArrangementCloseOrder => ArrangementOrderEnum.ShieldWall,
+                OrderType.ArrangementLoose => ArrangementOrderEnum.Loose,
+                OrderType.ArrangementCircular => ArrangementOrderEnum.Circle,
+                OrderType.ArrangementSchiltron => ArrangementOrderEnum.Square,
+                OrderType.ArrangementVee => ArrangementOrderEnum.Skein,
+                OrderType.ArrangementColumn => ArrangementOrderEnum.Column,
+                OrderType.ArrangementScatter => ArrangementOrderEnum.Scatter,
+                _ => ArrangementOrderEnum.Line
             };
         }
 
@@ -587,16 +620,47 @@ namespace RTSCamera.CommandSystem.Utilities
             return formation.CalculateHasSignificantNumberOfMounted && !(formation.RidingOrder == RidingOrder.RidingOrderDismount) ? Formation.CavalryDistance(unitSpacing) : Formation.InfantryDistance(unitSpacing);
         }
 
+        public static float GetFormationMaximumWidthOfArrangementOrder(Formation formation, ArrangementOrder.ArrangementOrderEnum arrangementOrder)
+        {
+            var unitSpacing = ArrangementOrder.GetUnitSpacingOf(arrangementOrder);
+            switch (arrangementOrder)
+            {
+                case ArrangementOrder.ArrangementOrderEnum.Square:
+                    return Utilities.Utility.GetMaximumWidthOfSquareFormation(formation);
+                case ArrangementOrder.ArrangementOrderEnum.Circle:
+                    return Utilities.Utility.GetMaximumWidthOfCircularFormation(formation, unitSpacing);
+                case ArrangementOrder.ArrangementOrderEnum.Column:
+                    return Utilities.Utility.GetMaximumWidthOfColumnFormation(formation, unitSpacing);
+                default:
+                    return Utilities.Utility.GetMaximumWidthOfLineFormation(formation, unitSpacing);
+            }
+        }
+
+        public static float GetFormationMinimumWidthOfArrangementOrder(Formation formation, ArrangementOrder.ArrangementOrderEnum arrangementOrder, int unitSpacing)
+        {
+            switch (arrangementOrder)
+            {
+                case ArrangementOrder.ArrangementOrderEnum.Square:
+                    return Utilities.Utility.GetMinimumWidthOfSquareFormation(formation);
+                case ArrangementOrder.ArrangementOrderEnum.Circle:
+                    return Utilities.Utility.GetMinimumWidthOfCircularFormation(formation, unitSpacing);
+                case ArrangementOrder.ArrangementOrderEnum.Column:
+                    return Utilities.Utility.GetMinimumWidthOfColumnFormation(formation, unitSpacing);
+                default:
+                    return Utilities.Utility.GetMinimumWidthOfLineFormation(formation);
+            }
+        }
+
         public static float GetMinimumWidthOfLineFormation(Formation formation)
         {
             return (float)(GetMinimumFileCount(formation) - 1) * (formation.MinimumInterval + formation.UnitDiameter) + formation.UnitDiameter;
         }
-        public static float GetMaximumWidthOfLineFormation(Formation formation)
+        public static float GetMaximumWidthOfLineFormation(Formation formation, int unitSpacing)
         {
             float unitDiameter = formation.UnitDiameter;
             int countWithOverride = GetUnitCountWithOverride(formation);
             if (countWithOverride > 0)
-                unitDiameter += (countWithOverride - 1) * (formation.MaximumInterval + formation.UnitDiameter);
+                unitDiameter += (countWithOverride - 1) * (GetFormationInterval(formation, unitSpacing) + formation.UnitDiameter);
             return unitDiameter;
         }
 
@@ -606,12 +670,12 @@ namespace RTSCamera.CommandSystem.Utilities
             int maximumRankCount = GetMaximumRankCountOfCircularFormation(formation, countWithOverride, unitSpacing);
             float radialInterval = formation.MinimumInterval + formation.UnitDiameter;
             float distanceInterval = formation.MinimumDistance + formation.UnitDiameter;
-            return GetCircumferenceAuxOfCircularFormation(countWithOverride, maximumRankCount, radialInterval, distanceInterval) / MathF.PI;
+            return (float)((double)(GetCircumferenceAuxOfCircularFormation(countWithOverride, maximumRankCount, radialInterval, distanceInterval)) / MathF.PI);
         }
 
         public static float GetMaximumWidthOfCircularFormation(Formation formation, int unitSpacing)
         {
-            return MathF.Max(0.0f, (float)GetUnitCountWithOverride(formation) * (formation.MaximumInterval + formation.UnitDiameter)) / MathF.PI;
+            return MathF.Max(0.0f, (float)(GetUnitCountWithOverride(formation) * (double)((GetFormationInterval(formation, unitSpacing) + formation.UnitDiameter)) / MathF.PI));
         }
 
         public static int GetMaximumRankCountOfCircularFormation(Formation formation, int unitCount, int unitSpacing)
@@ -721,9 +785,15 @@ namespace RTSCamera.CommandSystem.Utilities
             rankCount = MathF.Min(GetMaximumRankCountOfSquareFormation(countWithOverride, out int _), rankCount);
             double f = (double)countWithOverride / (4.0 * (double)rankCount) + (double)rankCount;
             int sideFromRankCount = MathF.Ceiling((float)f);
-            int num = MathF.Round((float)f);
-            if (num < sideFromRankCount && (num * num == countWithOverride || rankCount == 1))
-                sideFromRankCount = num;
+            // replaces Mathf.Round(f)
+            // for example, if untiCount = 42, and rankCount = 1,
+            // f = 11.5
+            // Mathf.Round(f) would be 12.
+            var floor = MathF.Floor(f);
+            //int num = f - floor > 0.5f ? floor + 1 : floor;
+            //int num = MathF.Round(f);
+            if (floor < sideFromRankCount && (floor * floor == countWithOverride || rankCount == 1 && countWithOverride > 10))
+                sideFromRankCount = floor;
             if (sideFromRankCount == 0)
                 sideFromRankCount = 1;
             return sideFromRankCount;
@@ -779,6 +849,25 @@ namespace RTSCamera.CommandSystem.Utilities
             return (flankWidth + GetFormationInterval(formation, unitSpacing)) / 4f + formation.UnitDiameter;
         }
 
+        public static float ConvertFromWidthToFlankWidthOfCircularFormation(
+            Formation formation,
+            int unitSpacing,
+            float width)
+        {
+            // For circle formation, Arrangement.FlankWidth = Circumference - interval
+            // Circumference = FormOrder.FlankWidth * PI
+            // Width = FormOrder.FlankWidth
+            return width * MathF.PI - GetFormationInterval(formation, unitSpacing);
+        }
+
+        public static float ConvertFromFlankWidthToWidthOfCircularFormation(
+            Formation formation,
+            int unitSpacing,
+            float flankWidth)
+        {
+            return 2f * (float)(((double)flankWidth + (double)GetFormationInterval(formation, unitSpacing)) / 6.2831854820251465);
+        }
+
         public static int GetFileCountFromWidth(Formation formation, float flankWidth, int unitSpacing)
         {
             // TODO the formation may be a column formation. MinimumFileCount is a property of LineFormation, so it may not be available.
@@ -794,6 +883,16 @@ namespace RTSCamera.CommandSystem.Utilities
         public static float GetFlankWidthFromFileCount(Formation formation, int fileCount, int unitSpacing)
         {
             return MathF.Max(0, fileCount - 1) * (GetFormationInterval(formation, unitSpacing) + formation.UnitDiameter) + formation.UnitDiameter;
+        }
+
+        public static float GetMinimumWidthOfColumnFormation(Formation formation, int unitSpacing)
+        {
+            return (MathF.Max(1, MathF.Ceiling(MathF.Sqrt((formation.Arrangement.UnitCount / ColumnFormation.ArrangementAspectRatio)))) - 1) * (formation.UnitDiameter + GetFormationInterval(formation, unitSpacing)) + formation.UnitDiameter;
+        }
+
+        public static float GetMaximumWidthOfColumnFormation(Formation formation, int unitSpacing)
+        {
+            return (float)(formation.Arrangement.UnitCount - 1) * (formation.UnitDiameter + GetFormationInterval(formation, unitSpacing)) + formation.UnitDiameter;
         }
 
         public static void UpdateActiveOrders()
@@ -828,6 +927,68 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             var team = formation?.Team;
             return !formation.IsAIControlled && team != null && team == Mission.Current.PlayerTeam && (team.IsPlayerGeneral || team.IsPlayerSergeant && formation.PlayerOwner == Agent.Main);
+        }
+
+        public static Vec3 GetColumnFormationCurrentPosition(Formation formation)
+        {
+            if (formation.Arrangement is ColumnFormation columnFormation && (columnFormation.GetUnit(GetColumnFormationVanguardFileIndex(columnFormation), 0) ?? columnFormation.Vanguard) is Agent { Position: var position })
+            {
+                return position;
+            }
+            return Vec3.Invalid;
+        }
+
+        private static FieldInfo _isExpandingFromRightSide = typeof(ColumnFormation).GetField("isExpandingFromRightSide", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static int GetColumnFormationVanguardFileIndex(ColumnFormation columnFormation)
+        {
+            var isExpandingFromRightSide = (bool)_isExpandingFromRightSide.GetValue(columnFormation);
+            return columnFormation.ColumnCount % 2 == 0 && isExpandingFromRightSide ? columnFormation.ColumnCount / 2 - 1 : columnFormation.ColumnCount / 2;
+        }
+
+        public static bool DoesFormationHasOrderType(Formation formation, OrderType type)
+        {
+            MovementOrder readonlyMovementOrderReference = formation.GetReadonlyMovementOrderReference();
+            switch (type)
+            {
+                case OrderType.FireAtWill:
+                case OrderType.HoldFire:
+                    return OrderController.GetActiveFiringOrderOf(formation) == type;
+                case OrderType.Mount:
+                case OrderType.Dismount:
+                    return OrderController.GetActiveRidingOrderOf(formation) == type;
+                case OrderType.AIControlOn:
+                case OrderType.AIControlOff:
+                    return OrderController.GetActiveAIControlOrderOf(formation) == type;
+                case OrderType.LookAtDirection:
+                case OrderType.LookAtEnemy:
+                    return OrderController.GetActiveFacingOrderOf(formation) == type;
+                case OrderType.ArrangementLine:
+                case OrderType.ArrangementLoose:
+                case OrderType.ArrangementScatter:
+                case OrderType.ArrangementVee:
+                case OrderType.ArrangementCloseOrder:
+                case OrderType.ArrangementCircular:
+                case OrderType.ArrangementSchiltron:
+                case OrderType.ArrangementColumn:
+                    return OrderController.GetActiveArrangementOrderOf(formation) == type;
+                default:
+                    if (readonlyMovementOrderReference.OrderType != type && formation.ArrangementOrder.OrderType != type && formation.FacingOrder.OrderType != type && formation.FiringOrder.OrderType != type && formation.FormOrder.OrderType != type)
+                    {
+                        return formation.RidingOrder.OrderType == type;
+                    }
+
+                    return true;
+            }
+        }
+
+        public static bool ShouldQueueCommand()
+        {
+            return CommandSystemGameKeyCategory.GetKey(GameKeyEnum.CommandQueue).IsKeyDownInOrder();
+        }
+
+        public static WorldPosition GetOrderFlagPosition(MissionScreen missionScreen)
+        {
+            return new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false);
         }
     }
 }

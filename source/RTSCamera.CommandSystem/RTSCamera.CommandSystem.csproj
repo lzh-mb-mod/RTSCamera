@@ -16,7 +16,7 @@
     <!--<BuildForWindowsStore>true</BuildForWindowsStore>
 	<EnableWindowsTargeting>true</EnableWindowsTargeting>-->
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-  </PropertyGroup> 
+  </PropertyGroup>
 
   <Import Project="$(MSBuildProjectDirectory)\*.props" />
   <Import Project="..\library\mission-library\source\MissionSharedLibrary\MissionSharedLibrary.projitems" Label="Shared" />

@@ -60,6 +60,15 @@ namespace RTSCamera.CommandSystem.Config
         Count
     }
 
+    public enum FormationSpeedSyncMode
+    {
+        Disabled,
+        Linear,
+        CatchUp,
+        WaitForLastFormation,
+        Count
+    }
+
     public class CommandSystemConfig : MissionConfigBase<CommandSystemConfig>
     {
         protected override XmlSerializer Serializer => new XmlSerializer(typeof(CommandSystemConfig));
@@ -71,11 +80,15 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool AttackSpecificFormation = true;
 
+        public bool DisableNativeAttack = false;
+
         public BehaviorAfterCharge BehaviorAfterCharge = !CommandSystemSubModule.IsRealisticBattleModuleInstalled ? BehaviorAfterCharge.Hold : BehaviorAfterCharge.Charge;
 
         public TroopHighlightStyle TroopHighlightStyleInCharacterMode = TroopHighlightStyle.GroundMarker;
 
         public TroopHighlightStyle TroopHighlightStyleInRTSMode = TroopHighlightStyle.GroundMarker;
+
+        public ShowMode HighlightTroopsWhenShowingIndicators = ShowMode.Always;
 
         public MovementTargetHighlightStyle MovementTargetHighlightStyleInCharacterMode = MovementTargetHighlightStyle.NewModelOnly;
 
@@ -98,6 +111,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public FormationLockCondition FormationLockCondition = FormationLockCondition.WhenNotPressed;
 
+        public FormationSpeedSyncMode FormationSpeedSyncMode = FormationSpeedSyncMode.WaitForLastFormation;
+
         public bool HasHintDisplayed = false;
 
         public bool HollowSquare = true;
@@ -112,11 +127,14 @@ namespace RTSCamera.CommandSystem.Config
 
         public CircleFormationUnitSpacingPreference CircleFormationUnitSpacingPreference = CircleFormationUnitSpacingPreference.Tight;
 
+        public float MountedUnitsIntervalThreshold = 0.1f;
+
         protected override void CopyFrom(CommandSystemConfig other)
         {
             ConfigVersion = other.ConfigVersion;
             ClickToSelectFormation = other.ClickToSelectFormation;
             AttackSpecificFormation = other.AttackSpecificFormation;
+            DisableNativeAttack = other.DisableNativeAttack;
             BehaviorAfterCharge = other.BehaviorAfterCharge;
             TroopHighlightStyleInCharacterMode = other.TroopHighlightStyleInCharacterMode;
             TroopHighlightStyleInRTSMode = other.TroopHighlightStyleInRTSMode;
@@ -129,6 +147,7 @@ namespace RTSCamera.CommandSystem.Config
             CommandQueueArrowShowMode = other.CommandQueueArrowShowMode;
             CommandQueueFormationShapeShowMode = other.CommandQueueFormationShapeShowMode;
             FormationLockCondition = other.FormationLockCondition;
+            FormationSpeedSyncMode = other.FormationSpeedSyncMode;
             HasHintDisplayed = other.HasHintDisplayed;
             HollowSquare = other.HollowSquare;
             SquareFormationCornerFix = other.SquareFormationCornerFix;
@@ -136,6 +155,7 @@ namespace RTSCamera.CommandSystem.Config
             OrderUIClickableExtension = other.OrderUIClickableExtension;
             FacingEnemyByDefault = other.FacingEnemyByDefault;
             CircleFormationUnitSpacingPreference = other.CircleFormationUnitSpacingPreference;
+            MountedUnitsIntervalThreshold = other.MountedUnitsIntervalThreshold;
         }
 
         public static void OnMenuClosed()

@@ -2,6 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using System;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
@@ -61,7 +62,9 @@ namespace RTSCamera.Patch.Fix
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
         }

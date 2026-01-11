@@ -71,7 +71,7 @@
 
   <string id="str_rts_camera_control_options" text="{=RTSCamera_control_options}Control Options" />
   <string id="str_rts_camera_player_controller_in_free_camera" text="{=RTSCamera_player_controller_in_free_camera}Player Controller in Free Camera" />
-  <string id="str_rts_camera_controller_type.none" text="{=RTSCamera_controller_type_none}None" />
+  <string id="str_rts_camera_controller_type.None" text="{=RTSCamera_controller_type_none}None" />
   <string id="str_rts_camera_controller_type.AI" text="{=RTSCamera_controller_type_AI}AI (Recommended)" />
   <string id="str_rts_camera_controller_type.Player" text="{=RTSCamera_controller_type_player}Player" />
   <string id="str_rts_camera_player_formation" text="{=RTSCamera_playerformation}Player Formation" />
@@ -91,6 +91,10 @@
   <string id="str_rts_camera_control_ally_after_death_timing_prompt" text="{=RTSCamera_control_ally_after_death_timing_prompt}Do you want to enable 'Control Troop After Death'?" />
   <string id="str_rts_camera_prefer_unit_in_same_formation" text="{=RTSCamera_prefer_unit_in_same_formation}Prefer Units In Same Formation" />
   <string id="str_rts_camera_control_troops_in_player_party_only" text="{=RTSCamera_controltroopsinplayerpartyonly}Control Troops In Player Party Only" />
+  <string id="str_rts_camera_limited_to_player_party_only" text="{=RTSCamera_limited_to_player_party_only}Control Troops In Player Party Only is enabled. Only troops in player party will be considered for control." />
+  <string id="str_rts_camera_control_hero_only" text="{=RTSCamera_controlheroonly}Control Hero Only" />
+  <string id="str_rts_camera_control_hero_only_hint" text="{=RTSCamera_controlheroonlyhint}Only consider hero troops when looking for target to control." />
+  <string id="str_rts_camera_limited_to_hero_only" text="{=RTSCamera_limitedtoheroonly}Control Hero Only is enabled. Only hero troops will be considered for control." />
   <string id="str_rts_camera_ignore_retreating_troops" text="{=RTSCamera_ignoreretreatingtroops}Ignore Retreating Troops" />
   <string id="str_rts_camera_slow_motion_on_rts_view" text="{=RTSCamera_slowmotiononrtsview}Slow Motion On RTS view" />
   <string id="str_rts_camera_slow_motion_on_rts_view_hint" text="{=RTSCamera_slowmotiononrtsviewhint}Automatically turn on Slow Motion mode On RTS view" />
@@ -110,10 +114,12 @@
   <string id="str_rts_camera_mission_continued" text="{=RTSCamera_missioncontinue}Mission continued." />
 
   <string id="str_rts_camera_slow_motion_enabled" text="{=RTSCamera_slowmotionenabled}Slow Motion Mode Enabled." />
-  <string id="str_rts_camera_fast_forward_mode_enabled" text="{=RTSCamera_fastfowardenabled}Fast Forward Mode Enabled." />
   <string id="str_rts_camera_normal_mode_enabled" text="{=RTSCamera_normalmodeenabled}Normal Mode Enabled." />
 
-  <string id="str_rts_camera_player_dead" text="{=RTSCamera_playeragentdead}Player agent is dead." />
+  <string id="str_rts_camera_fast_forward_enabled" text="{=RTSCamera_fastforwardenabled}Fast Forward Mode Enabled." />
+  <string id="str_rts_camera_fast_forward_disabled" text="{=RTSCamera_fastforwarddisabled}Fast Forward Mode Disabled." />
+
+  <string id="str_rts_camera_player_dead" text="{=RTSCamera_playeragentdead}Player agent is injured." />
   <string id="str_rts_camera_switch_to_player" text="{=RTSCamera_switchtoplayer}Switch to player agent." />
   <string id="str_rts_camera_switch_to_free_camera" text="{=RTSCamera_switchtofreecamera}Switch to free camera." />
 
@@ -159,6 +165,7 @@
   <string id="str_key_name.RTSCameraHotKey_IncreaseCameraSpeed" text="{=RTSCamera_camera_increase_camera_speed}Increase Camera speed" />
   <string id="str_key_name.RTSCameraHotKey_DecreaseCameraSpeed" text="{=RTSCamera_camera_decrease_camera_speed}Decrease Camera speed" />
   <string id="str_key_name.RTSCameraHotKey_ResetCameraSpeed" text="{=RTSCamera_camera_reset_camera_speed}Reset Camera speed" />
+  <string id="str_key_name.RTSCameraHotKey_CameraMoveByMouse" text="{=RTSCamera_camera_move_by_mouse}Move Camera By Mouse." />
 
 
   <!-- same as str_rts_camera_toggle_pause_hint -->
@@ -185,6 +192,7 @@
   <string id="str_key_description.RTSCameraHotKey_IncreaseCameraSpeed" text="{=RTSCamera_camera_increase_camera_speed_description}Increase Camera speed" />
   <string id="str_key_description.RTSCameraHotKey_DecreaseCameraSpeed" text="{=RTSCamera_camera_decrease_camera_speed_description}Decrease Camera speed" />
   <string id="str_key_description.RTSCameraHotKey_ResetCameraSpeed" text="{=RTSCamera_camera_reset_camera_speed_description}Reset Camera speed" />
+  <string id="str_key_description.RTSCameraHotKey_CameraMoveByMouse" text="{=RTSCamera_camera_move_by_mouse_description}Hold to Move Camera By Mouse." />
 
   <string id="str_rts_camera_enemy_wiped_out" text="{=RTSCamera_enemywipedout}Enemy has been wiped out." />
   <string id="str_rts_camera_switch_to_enemy_team" text="{=RTSCamera_switchtoenemyteam}Switched to the enemy team." />
@@ -205,7 +213,6 @@
 
   <string id="str_rts_camera_focus_on_formation_usage" text="{=RTSCamera_focus_on_formation_usage}(New Feature) When command UI is open in free camera mode, you can press {KeyName} to stick camera to selected formation." />
   <string id="str_rts_camera_control_troop_usage" text="{=RTSCamera_control_troop_usage}After your character is killed in battle, you can press {KeyName} to follow one of your soldiers and press {KeyName} again to control it and continue fighting." />
-  <string id="str_rts_camera_click_troop_card_usage" text="{=RTSCamera_click_troop_card_usage}You can select your formations by clicking on troop cards." />
 
   <string id="str_rts_camera_open_menu_hotkey_hint" text="{=RTSCamera_open_menu_hotkey_hint}open menu" />
   <string id="str_rts_camera_switch_camera_hotkey_hint" text="{=RTSCamera_switch_camera_hotkey_hint}toggle free Camera" />

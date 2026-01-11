@@ -94,6 +94,10 @@
     <string id="RTSCamera_control_ally_after_death_timing_prompt" text="你想启用“死后控制队友”吗？" />
     <string id="RTSCamera_prefer_unit_in_same_formation" text="优先控制同编队内的单位" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
+    <string id="RTSCamera_limited_to_player_party_only" text="只控制属于玩家部队的单位已启用。只会考虑玩家部队内的单位作为控制目标。" />
+    <string id="RTSCamera_controlheroonly" text="只控制英雄单位" />
+    <string id="RTSCamera_controlheroonlyhint" text="只考虑英雄单位作为控制目标。" />
+    <string id="RTSCamera_limitedtoheroonly" text="只控制英雄单位已启用。只会考虑英雄单位作为控制目标。" />
     <string id="RTSCamera_ignoreretreatingtroops" text="忽略正在撤退的单位" />
 
     <string id="RTSCamera_miscellaneous_options" text="杂项" />
@@ -113,10 +117,12 @@
     <string id="RTSCamera_missioncontinue" text="关卡继续。" />
 
     <string id="RTSCamera_slowmotionenabled" text="启用变速模式。" />
-    <string id="RTSCamera_fastfowardenabled" text="启用快速模式。" />
     <string id="RTSCamera_normalmodeenabled" text="启用正常速度。" />
 
-    <string id="RTSCamera_playeragentdead" text="玩家控制的角色已阵亡。" />
+    <string id="RTSCamera_fastforwardenabled" text="启用快速模式。" />
+    <string id="RTSCamera_fastforwarddisabled" text="禁用快速模式。" />
+
+    <string id="RTSCamera_playeragentdead" text="玩家控制的角色已受伤。" />
     <string id="RTSCamera_switchtoplayer" text="切换到玩家角色。" />
     <string id="RTSCamera_switchtofreecamera" text="切换到自由视角。" />
 
@@ -155,6 +161,7 @@
     <string id="RTSCamera_camera_increase_camera_speed" text="提高相机速度" />
     <string id="RTSCamera_camera_decrease_camera_speed" text="降低相机速度" />
     <string id="RTSCamera_camera_reset_camera_speed" text="重置相机速度" />
+    <string id="RTSCamera_camera_move_by_mouse" text="通过鼠标移动相机" />
 
     <string id="RTSCamera_slowmotionkey_description" text="启用慢速模式。再按一次恢复。" />
     <string id="RTSCamera_fastforwardkey_description" text="切换快进模式" />
@@ -172,6 +179,7 @@
     <string id="RTSCamera_camera_increase_camera_speed_description" text="提高相机速度" />
     <string id="RTSCamera_camera_decrease_camera_speed_description" text="降低相机速度" />
     <string id="RTSCamera_camera_reset_camera_speed_description" text="重置相机速度" />
+    <string id="RTSCamera_camera_move_by_mouse_description" text="按住按键以通过鼠标移动相机" />
 
     <string id="RTSCamera_enemywipedout" text="敌人已被消灭。" />
     <string id="RTSCamera_switchtoenemyteam" text="已切换至敌军队伍。" />
@@ -192,7 +200,6 @@
   
     <string id="RTSCamera_focus_on_formation_usage" text="（新功能）自由视角下打开指挥界面后，按{KeyName}可让相机跟随选定的编队" />
     <string id="RTSCamera_control_troop_usage" text="玩家阵亡后后按{KeyName}可以让相机跟随一个士兵，然后再按一次{KeyName}控制该士兵继续战斗" />
-    <string id="RTSCamera_click_troop_card_usage" text="可通过点击兵牌来选择部队。" />
 
     <string id="RTSCamera_open_menu_hotkey_hint" text="打开菜单" />
     <string id="RTSCamera_switch_camera_hotkey_hint" text="切换自由视角" />

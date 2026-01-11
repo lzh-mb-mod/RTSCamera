@@ -1,7 +1,10 @@
-﻿using RTSCamera.Config.HotKey;
+﻿using HarmonyLib;
+using RTSCamera.Config.HotKey;
 using RTSCamera.View;
 using SandBox.Missions.MissionLogics.Arena;
+using System;
 using System.Linq;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -14,7 +17,7 @@ namespace RTSCamera.Utilities
         public static void PrintUsageHint()
         {
             var keyName = RTSCameraGameKeyCategory.GetKey(GameKeyEnum.FreeCamera).ToSequenceString();
-            var hint = Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_switch_camera_hint").SetTextVariable("KeyName", keyName).ToString();
+            var hint = TaleWorlds.MountAndBlade.Module.CurrentModule.GlobalTextManager.FindText("str_rts_camera_switch_camera_hint").SetTextVariable("KeyName", keyName).ToString();
             MissionSharedLibrary.Utilities.Utility.DisplayMessage(hint);
         }
 
@@ -49,17 +52,21 @@ namespace RTSCamera.Utilities
             }
         }
 
-        public static void UpdateMainAgentControllerState(Agent agent, bool isSpectatorCamera, Agent.ControllerType playerControllerInFreeCamera)
+        public static void UpdateMainAgentControllerState(Agent agent, bool isSpectatorCamera, Agent.ControllerType playerControllerInFreeCamera, bool force = false)
         {
             var controller = Mission.Current.GetMissionBehavior<MissionMainAgentController>();
             if (controller != null)
             {
-                if (agent.Controller == Agent.ControllerType.Player &&
+                if ((agent.Controller == Agent.ControllerType.Player || force) &&
                     (!isSpectatorCamera ||
                      playerControllerInFreeCamera == Agent.ControllerType.Player))
                 {
                     controller.CustomLookDir = isSpectatorCamera ? agent.LookDirection : Vec3.Zero;
                     controller.Enable();
+                    if (agent.IsCameraAttachable())
+                    {
+                        controller.IsDisabled = false;
+                    }
                 }
                 else
                 {
@@ -105,5 +112,29 @@ namespace RTSCamera.Utilities
                 }
             }
         }
+
+        private static FieldInfo _components = AccessTools.Field("TaleWorlds.MountAndBlade.Agent:_components");
+
+        public static AgentComponent GetAgentComponent(Agent agent, Type componentType)
+        {
+            var components = (MBList<AgentComponent>)_components.GetValue(agent);
+            for (int index = 0; index < components.Count; ++index)
+            {
+                if (componentType.IsAssignableFrom(components[index].GetType()))
+                {
+                    return components[index];
+                }
+            }
+            return null;
+        }
+
+        public static void TryToSetPlayerFormationClass(FormationClass formationClass)
+        {
+#if DEBUG
+            MissionSharedLibrary.Utilities.Utility.DisplayMessage($"Setting player formation to {formationClass}");
+#endif
+            MissionSharedLibrary.Utilities.Utility.SetPlayerFormationClass(formationClass);
+        }
+
     }
 }

@@ -358,7 +358,7 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         if (orderToAdd.OrderType == OrderType.LookAtDirection)
                         {
-                            Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, missionScreen);
+                            Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, Utilities.Utility.GetOrderFlagPosition(missionScreen));
                         }
                         else
                         {
@@ -378,7 +378,7 @@ namespace RTSCamera.CommandSystem.Patch
                             Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, null);
                             // only pending order for formations that is not executing attacking/advance/fallback, etc.
                             orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
-                            __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false));
+                            __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, Utilities.Utility.GetOrderFlagPosition(missionScreen));
                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
                         else
@@ -470,14 +470,14 @@ namespace RTSCamera.CommandSystem.Patch
 
                     if (queueCommand)
                     {
-                        Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, missionScreen);
+                        Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, __instance.OrderController, Utilities.Utility.GetOrderFlagPosition(missionScreen));
                     }
                     else
                     {
                         Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, null);
                         // only pending order for formations that should be locked.
                         orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
-                        __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false));
+                        __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, Utilities.Utility.GetOrderFlagPosition(missionScreen));
                         orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         skipNativeOrder = true;
                         break;
@@ -540,7 +540,7 @@ namespace RTSCamera.CommandSystem.Patch
             if (OrderToSelectTarget == OrderSubType.ActivationFaceDirection && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickableExtension)
             {
                 __result = true;
-                Patch_OrderTroopPlacer.SetIsDraingFacing(true);
+                Patch_OrderTroopPlacer.SetIsDrawingFacing(true);
                 return false;
             }
             return true;

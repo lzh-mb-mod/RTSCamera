@@ -59,6 +59,11 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnMissionTick(float dt)
         {
+            if (Mission.Mode == TaleWorlds.Core.MissionMode.CutScene)
+            {
+                return;
+            }
+
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.Pause).IsKeyPressedInOrder())
             {
                 if (Mission.IsFastForward)
@@ -70,10 +75,6 @@ namespace RTSCamera.Logic.SubLogic
 
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SlowMotion).IsKeyPressedInOrder())
             {
-                if (Mission.IsFastForward)
-                {
-                    Mission.SetFastForwardingFromUI(false);
-                }
                 SetSlowMotionMode(!_config.SlowMotionMode);
             }
 
@@ -88,7 +89,14 @@ namespace RTSCamera.Logic.SubLogic
                 {
                     _fastForwardHotKeyCollDown = 10;
                     Mission.Current.SetFastForwardingFromUI(!Mission.Current.IsFastForward);
-                    _config.SlowMotionMode = false;
+                    if (Mission.Current.IsFastForward)
+                    {
+                        Utility.DisplayLocalizedText("str_rts_camera_fast_forward_enabled");
+                    }
+                    else
+                    {
+                        Utility.DisplayLocalizedText("str_rts_camera_fast_forward_disabled");
+                    }
                 }
             }
         }
@@ -108,6 +116,7 @@ namespace RTSCamera.Logic.SubLogic
             _config.SlowMotionMode = slowMotionMode;
             if (slowMotionMode)
             {
+                Mission.SetFastForwardingFromUI(false);
                 AddSlowMotionRequest();
             }
             else

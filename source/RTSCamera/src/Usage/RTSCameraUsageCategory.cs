@@ -1,13 +1,10 @@
 ﻿using MissionLibrary.Usage;
 using MissionSharedLibrary.HotKey;
 using MissionSharedLibrary.Usage;
-using MissionSharedLibrary.View.ViewModelCollection.Basic;
-using MissionSharedLibrary.View.ViewModelCollection.Usage;
 using RTSCamera.Config.HotKey;
 using System;
 using System.Collections.Generic;
 using TaleWorlds.Core;
-using TaleWorlds.Library;
 
 namespace RTSCamera.Usage
 {
@@ -36,7 +33,6 @@ namespace RTSCamera.Usage
                         RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop ).ToSequenceString()),
                     GameTexts.FindText("str_rts_camera_control_troop_usage").SetTextVariable("KeyName",
                         RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ControlTroop ).ToSequenceString()),
-                    GameTexts.FindText("str_rts_camera_click_troop_card_usage"),
                 });
 
             return new UsageCategory(CategoryId, usageCategoryData);

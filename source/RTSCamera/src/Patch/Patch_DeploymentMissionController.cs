@@ -2,7 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using System;
 using System.Reflection;
-using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch
@@ -27,6 +27,7 @@ namespace RTSCamera.Patch
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 
@@ -35,16 +36,16 @@ namespace RTSCamera.Patch
 
         public static void Postfix_FinishDeployment()
         {
-            if (Mission.Current?.PlayerTeam != null && Mission.Current.PlayerTeam.IsValid)
-            {
-                var generalFormation = Mission.Current.PlayerTeam.GetFormation(FormationClass.General);
-                if (generalFormation.AI.GetBehavior<BehaviorGeneral>() != null)
-                {
-                    TacticComponent.SetDefaultBehaviorWeights(generalFormation);
-                    generalFormation.AI.SetBehaviorWeight<BehaviorGeneral>(1f);
-                    generalFormation.SetControlledByAI(true);
-                }
-            }
+            // if (Mission.Current?.PlayerTeam != null && Mission.Current.PlayerTeam.IsValid)
+            // {
+            //     var generalFormation = Mission.Current.PlayerTeam.GetFormation(FormationClass.General);
+            //     if (generalFormation.AI.GetBehavior<BehaviorGeneral>() != null)
+            //     {
+            //         TacticComponent.SetDefaultBehaviorWeights(generalFormation);
+            //         generalFormation.AI.SetBehaviorWeight<BehaviorGeneral>(1f);
+            //         generalFormation.SetControlledByAI(true);
+            //     }
+            // }
         }
     }
 }

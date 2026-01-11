@@ -208,7 +208,7 @@ namespace RTSCamera.Config
                                     rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)i;
                                     if (CommandBattleBehavior.CommandMode)
                                         return;
-                                    Utility.SetPlayerFormationClass((FormationClass)i);
+                                    Utilities.Utility.TryToSetPlayerFormationClass((FormationClass)i);
                                 }
                             }, () =>
                             {
@@ -226,17 +226,17 @@ namespace RTSCamera.Config
                             },
                             () => (int)FormationClass.NumberOfRegularFormations, () => new[]
                             {
-                            new SelectionItem(true, "str_troop_group_name", "0"),
-                            new SelectionItem(true, "str_troop_group_name", "1"),
-                            new SelectionItem(true, "str_troop_group_name", "2"),
-                            new SelectionItem(true, "str_troop_group_name", "3"),
-                            new SelectionItem(true, "str_troop_group_name", "4"),
-                            new SelectionItem(true, "str_troop_group_name", "5"),
-                            new SelectionItem(true, "str_troop_group_name", "6"),
-                            new SelectionItem(true, "str_troop_group_name", "7"),
-                            new SelectionItem(true, "str_troop_group_name", "8"),
-                            new SelectionItem(true, "str_troop_group_name", "9"),
-                            new SelectionItem(true, "str_rts_camera_player_formation_unset")
+                                new SelectionItem(true, "str_troop_group_name", "0"),
+                                new SelectionItem(true, "str_troop_group_name", "1"),
+                                new SelectionItem(true, "str_troop_group_name", "2"),
+                                new SelectionItem(true, "str_troop_group_name", "3"),
+                                new SelectionItem(true, "str_troop_group_name", "4"),
+                                new SelectionItem(true, "str_troop_group_name", "5"),
+                                new SelectionItem(true, "str_troop_group_name", "6"),
+                                new SelectionItem(true, "str_troop_group_name", "7"),
+                                new SelectionItem(true, "str_troop_group_name", "8"),
+                                new SelectionItem(true, "str_troop_group_name", "9"),
+                                new SelectionItem(true, "str_rts_camera_player_formation_unset")
                             }), true, true);
                     controlOptionCategory.AddOption(playerFormationOption);
                     controlOptionCategory.AddOption(new SelectionOptionViewModel(
@@ -260,7 +260,7 @@ namespace RTSCamera.Config
                                 rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = formationClass;
                                 if (CommandBattleBehavior.CommandMode)
                                     return;
-                                Utility.SetPlayerFormationClass(formationClass);
+                                Utilities.Utility.TryToSetPlayerFormationClass(formationClass);
                                 playerFormationOption.UpdateData(false);
                             }
                         }, () => (int)RTSCameraConfig.Get().AssignPlayerFormation, () => (int)AssignPlayerFormation.Count,
@@ -298,6 +298,11 @@ namespace RTSCamera.Config
                     GameTexts.FindText("str_rts_camera_control_troops_in_player_party_only_hint"),
                     () => RTSCameraConfig.Get().ControlTroopsInPlayerPartyOnly,
                     b => RTSCameraConfig.Get().ControlTroopsInPlayerPartyOnly = b));
+                controlOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_control_hero_only"),
+                    GameTexts.FindText("str_rts_camera_control_hero_only_hint"),
+                    () => RTSCameraConfig.Get().ControlHeroOnly,
+                    b => RTSCameraConfig.Get().ControlHeroOnly = b));
                 controlOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_ignore_retreating_troops"),
                     GameTexts.FindText("str_rts_camera_ignore_retreating_troops_hint"),

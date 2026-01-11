@@ -7,10 +7,8 @@ using RTSCamera.View;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
-using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
@@ -39,7 +37,7 @@ namespace RTSCamera.Logic.SubLogic
         private bool _switchToAgentNextTick;
         private bool _skipSwitchingCameraOnOrderingFinished;
         private bool _skipClosingUIOnSwitchingCamera;
-        public bool ShouldKeepUIOpen = false;
+        public bool ShouldKeepOrderUIOpen = false;
         private List<FormationClass> _playerFormations;
         private float _updatePlayerFormationTime;
         private bool _hasShownOrderHint = false;
@@ -96,42 +94,42 @@ namespace RTSCamera.Logic.SubLogic
             bool showOrderHint = false;
             if (e.IsOrderEnabled)
             {
-                if (IsSpectatorCamera)
+                if (_shouldIgnoreNextOrderViewOpenEvent)
                 {
-                    if (_shouldIgnoreNextOrderViewOpenEvent)
+                    // To keep order UI open in free camera,
+                    // code is patched in a way that, if in free camera,
+                    // UI will be opened instantly after closed
+                    // This means that an event that UI is closed will be triggered
+                    // and following an event that UI is opened.
+                    // So we will wait for a tick if UI is closed,
+                    // and if a false positive UI open event is triggered during this tick,
+                    // we will not switch to agent camera, instead we will cancel the wait.
+                    if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
                     {
-                        // To keep order UI open in free camera,
-                        // code is patched in a way that, if in free camera,
-                        // UI will be opened instantly after closed
-                        // This means that an event that UI is closed will be triggered
-                        // and following an event that UI is opened.
-                        // So we will wait for a tick if UI is closed,
-                        // and if a false positive UI open event is triggered during this tick,
-                        // we will not switch to agent camera, instead we will cancel the wait.
-                        if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
-                        {
-                            _switchToAgentNextTick = false;
-                        }
-                        _shouldIgnoreNextOrderViewOpenEvent = false;
+                        _switchToAgentNextTick = false;
                     }
-                    else
+                    _shouldIgnoreNextOrderViewOpenEvent = false;
+                }
+                else
+                {
+                    if (IsSpectatorCamera)
                     {
                         showOrderHint = true;
-                        if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
+                        if (_config.SwitchCameraOnOrdering && !_config.OrderOnSwitchingCamera && !CommandBattleBehavior.CommandMode)
                         {
                             // The camera is already in free camera mode when ordering begins,
                             // so we skip switching camera to agent on ordering finished.
                             _skipSwitchingCameraOnOrderingFinished = true;
                         }
                     }
-                }
-                else
-                {
-                    if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
+                    else
                     {
-                        _skipSwitchingCameraOnOrderingFinished = false;
-                        SwitchToFreeCamera();
-                        showOrderHint = true;
+                        if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
+                        {
+                            _skipSwitchingCameraOnOrderingFinished = false;
+                            SwitchToFreeCamera();
+                            showOrderHint = true;
+                        }
                     }
                 }
             }
@@ -176,6 +174,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnEarlyTeamDeployed(Team team)
         {
+            // need to set main agent because GeneralsAndCaptainsAssignmentLogic.OnTeamDeployed assumes that main agent is not null.
             if (team == Mission.PlayerTeam)
             {
                 if (CommandBattleBehavior.CommandMode && Mission.MainAgent == null)
@@ -190,6 +189,7 @@ namespace RTSCamera.Logic.SubLogic
                         if (Mission.PlayerTeam.IsPlayerGeneral)
                         {
                             Utility.SetPlayerAsCommander(true);
+                            // set in GeneralsAndCaptainsAssignmentLogic.OnDeploymentFinished
                             Mission.MainAgent?.SetCanLeadFormationsRemotely(true);
                             Mission.PlayerTeam.GeneralAgent = Mission.MainAgent;
                         }
@@ -199,9 +199,59 @@ namespace RTSCamera.Logic.SubLogic
                 if (CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite)
                 {
                     if (Mission.MainAgent?.Formation != null)
-                        CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
+                        RecordCurrentPlayerFormation(Mission.MainAgent.Formation.FormationIndex);
                 }
             }
+        }
+
+        public void RecordCurrentPlayerFormation(FormationClass formationClass)
+        {
+#if DEBUG
+            if (formationClass != CurrentPlayerFormation)
+            {
+                Utility.DisplayMessage($"Current Player formation is {formationClass}");
+            }
+#endif
+            CurrentPlayerFormation = formationClass;
+        }
+
+        private void TrySetPlayerFormation(bool isDeploymentFinishing = false)
+        {
+            bool isDeployment = isDeploymentFinishing || Mission.Mode == MissionMode.Deployment;
+            // Do not set to General Formation if player team is not set up completed.
+            // Because if the general formation has units before AI selecting formation to lead, AI may select General formation in OrderOfBattleVM and cause crash.
+            if (!_isPlayerTeamSetupCompleted || !isDeployment)
+                return;
+            if (Mission.MainAgent?.Formation?.FormationIndex == null)
+                return;
+
+            var formationToSet = Mission.MainAgent.Formation.FormationIndex;
+            // When deployment finishes, the player formation needs to be reset from General formation if AssignPlayerFormation is set to Default.
+            // In watch mode, recover to previous formation instead of configured formation
+            if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation == AssignPlayerFormation.Default))
+            {
+                formationToSet = CurrentPlayerFormation;
+            }
+            if (!CommandBattleBehavior.CommandMode && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
+            {
+                formationToSet = _config.PlayerFormation;
+            }
+
+            if (formationToSet == FormationClass.Bodyguard)
+                return;
+
+            bool isPlayerGeneral = Mission.PlayerTeam?.IsPlayerGeneral ?? false;
+            // Do not set to General Formation if player is not general.
+            // Because if the general formation has units before AI selecting formation to lead, AI may select General formation in OrderOfBattleVM and cause crash.
+            if (formationToSet == FormationClass.General && !isPlayerGeneral)
+            {
+                return;
+            }
+            // If has bodyguard formation and the general formation only contains player, we do not remove player from General formation to avoid the bodyguard formation being charging alone.
+            if (Mission.MainAgent?.Formation?.FormationIndex == FormationClass.General && Mission.PlayerTeam?.BodyGuardFormation != null
+                && Mission.MainAgent?.Formation?.CountOfUnits == 1)
+                return;
+            Utilities.Utility.TryToSetPlayerFormationClass(formationToSet);
         }
 
         public void OnTeamDeployed(Team team)
@@ -216,14 +266,14 @@ namespace RTSCamera.Logic.SubLogic
                         // switch to free camera during deployment stage
                         _switchToFreeCameraNextTick = true;
                     }
-                    if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
+                    if (ShouldRecordPlayerFormation())
                     {
                         // Player is not assigned to general formation yet because player needs to deploy with order of battle.
                         if (Mission.MainAgent?.Formation != null)
-                            CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
+                            RecordCurrentPlayerFormation(Mission.MainAgent.Formation.FormationIndex);
                     }
                     _isPlayerTeamSetupCompleted = true;
-                    if (!CommandBattleBehavior.CommandMode && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
+                    if (!CommandBattleBehavior.CommandMode && !Utility.IsHideoutBattle() && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
                     {
                         // Set player formation when team is deployed.
                         TrySetPlayerFormation();
@@ -237,15 +287,27 @@ namespace RTSCamera.Logic.SubLogic
             }
         }
 
+        private bool ShouldRecordPlayerFormation()
+        {
+            try
+            {
+                return (CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && !Utility.IsHideoutBattle() && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle();
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public void OnEarlyDeploymentFinished()
         {
             try
             {
                 // When player joins as reinforcement, at this point the player is already added to general formation
-                if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite) && MissionGameModels.Current.BattleInitializationModel.CanPlayerSideDeployWithOrderOfBattle())
+                if (ShouldRecordPlayerFormation())
                 {
                     if (Mission.MainAgent?.Formation != null)
-                        CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
+                        RecordCurrentPlayerFormation(Mission.MainAgent.Formation.FormationIndex);
                 }
             }
             catch(Exception e)
@@ -263,10 +325,16 @@ namespace RTSCamera.Logic.SubLogic
                 _switchToAgentNextTick = true;
                 // If not deployment is required, we need to set _switchToFreeCameraNextTick to false to prevent camera set to free mode.
                 _switchToFreeCameraNextTick = false;
+
+                if (!IsSpectatorCamera && Mission.MainAgent != null)
+                {
+                    // If manually turned off free camera mode in deployment mode, we should enable player controller here.
+                    Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, false, Agent.ControllerType.Player, true);
+                }
             }
             else
             {
-                ShouldKeepUIOpen = true;
+                ShouldKeepOrderUIOpen = true;
             }
         }
 
@@ -274,10 +342,6 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (Mission.IsInPhotoMode)
                 return;
-            if (_shouldIgnoreNextOrderViewOpenEvent)
-            {
-                _shouldIgnoreNextOrderViewOpenEvent = false;
-            }
             if (_switchToFreeCameraNextTick)
             {
                 _switchToFreeCameraNextTick = false;
@@ -287,6 +351,11 @@ namespace RTSCamera.Logic.SubLogic
             {
                 _switchToAgentNextTick = false;
                 SwitchToAgent();
+            }
+
+            if (_shouldIgnoreNextOrderViewOpenEvent)
+            {
+                _shouldIgnoreNextOrderViewOpenEvent = false;
             }
 
             if (FastForwardHideoutNextTick)
@@ -302,7 +371,7 @@ namespace RTSCamera.Logic.SubLogic
                 Mission.MainAgent.Formation != null)
             {
                 _updatePlayerFormationTime = 0;
-                CurrentPlayerFormation = Mission.MainAgent.Formation.FormationIndex;
+                RecordCurrentPlayerFormation(Mission.MainAgent.Formation.FormationIndex);
             }
 
             // In fastforward mode, the key may be triggered in 2 ticks
@@ -359,12 +428,12 @@ namespace RTSCamera.Logic.SubLogic
                         _hasShownOrderHint = true;
                     }
                     // Should keep UI open if we actively switch to free camera mode by pressing hotkey.
-                    ShouldKeepUIOpen = true;
+                    ShouldKeepOrderUIOpen = true;
                 }
                 else
                 {
                     _hasShownOrderHint = false;
-                    ShouldKeepUIOpen = false;
+                    ShouldKeepOrderUIOpen = false;
                 }
 
                 if (_config.OrderOnSwitchingCamera)
@@ -399,42 +468,12 @@ namespace RTSCamera.Logic.SubLogic
             }
         }
 
-        public void OnAgentControllerChanged(Agent agent)
-        {
-            if (agent.Controller == Agent.ControllerType.Player || agent.Controller == Agent.ControllerType.None)
-            {
-                agent.SetMaximumSpeedLimit(-1, false);
-                agent.MountAgent?.SetMaximumSpeedLimit(-1, false);
-                if (agent.WalkMode)
-                {
-                    agent.EventControlFlags |= EventControlFlag.Run;
-                    // required to fix the issue that the agent may still walk after switching to player controller, after deployment.
-                    agent.EventControlFlags &= ~EventControlFlag.Walk;
-                }
-                //agent.StopRetreating();
-                TrySetPlayerFormation();
-
-                if (agent.Formation == null)
-                    return;
-                //CurrentPlayerFormation = agent.Formation.FormationIndex;
-            }
-            else if (agent == Mission.MainAgent)
-            {
-                //Utility.SetHasPlayerControlledTroop(agent.Formation, false);
-                //TrySetPlayerFormation();
-
-                //if (agent.Formation == null)
-                //    return;
-                //CurrentPlayerFormation = agent.Formation.FormationIndex;
-            }
-        }
-
         public void OnMissionModeChange(MissionMode oldMissionMode, bool atStart)
         {
             // Current call chain during battle start up is:
-            // OnMissionModeChange(StartUp) with Mission.Mode == Battle
-            // OnMissionModeChange(Battle) with Mission.Mode == Deployment
-            // OnMainAgentChanged triggered by `MainAgent.Controller = Controller.Player` in DeploymentMissionController
+            // OnMissionModeChange(StartUp) with Mission.Mode == Battle triggered by `MissionCombatantsLogic.AfterStart()`
+            // OnMissionModeChange(Battle) with Mission.Mode == Deployment triggered by `DeploymentHandler.AfterStart()`
+            // OnMainAgentChanged of DeploymentMissionController triggered by `MainAgent.Controller = Controller.Player` in DeploymentMissionController
             // followed by OnAgentControllerChanged
             // OnAgentControllerChanged triggered by `MainAgent.Controller = Controller.AI` in DeploymentMissionController
             // 
@@ -451,12 +490,17 @@ namespace RTSCamera.Logic.SubLogic
             // 
             // OnMainAgentChanged triggered by `MainAgent.Controller = Controller.Player` in DeploymentMissionController
             // followed by OnAgentControllerChanged
-            // OnMissionModeChange(Deployment) with Mission.Mode == Deployment
+            // OnMissionModeChange(Battle) with Mission.Mode == Deployment
             if (oldMissionMode == MissionMode.Deployment && Mission.Mode == MissionMode.Battle)
             {
-                TrySetPlayerFormation(true);
+                if (_config.DefaultToFreeCamera == DefaultToFreeCamera.Always || CommandBattleBehavior.CommandMode)
+                {
+                    UpdateMainAgentControllerInFreeCamera();
+                }
+                if (!Utility.IsHideoutBattle() && !Utility.IsHideoutAmbush())
+                    TrySetPlayerFormation(true);
             }
-            if (MissionState.Current?.MissionName == "HideoutBattle")
+            if (Utility.IsHideoutBattle())
             {
                 if (oldMissionMode == MissionMode.Battle && Mission.Mode == MissionMode.Stealth)
                 {
@@ -471,11 +515,15 @@ namespace RTSCamera.Logic.SubLogic
                     if (_config.FastForwardHideout >= FastForwardHideout.UntilBossFight)
                         FastForwardHideoutNextTick = true;
                 }
-                if (oldMissionMode == MissionMode.Stealth && (Mission.Mode == MissionMode.CutScene || Mission.Mode == MissionMode.Conversation))
+            }
+            if (Utility.IsHideoutBattle() || Utility.IsHideoutAmbush())
+            {
+                if (oldMissionMode == MissionMode.Stealth && (/*Mission.Mode == MissionMode.CutScene ||*/ Mission.Mode == MissionMode.Conversation))
                 {
                     // do not fast forward in conversation.
                     Mission.SetFastForwardingFromUI(false);
-                    _logic.MissionSpeedLogic.SetSlowMotionMode(false);
+                    // Do not disable slow motion because some player may use it along battle.
+                    //_logic.MissionSpeedLogic.SetSlowMotionMode(false);
                     if (IsSpectatorCamera)
                     {
                         SwitchToAgent();
@@ -484,45 +532,34 @@ namespace RTSCamera.Logic.SubLogic
             }
         }
 
-        private void TrySetPlayerFormation(bool isDeploymentFinishing = false)
+        public void OnAgentControllerChanged(Agent agent)
         {
-            bool isDeployment = isDeploymentFinishing || Mission.Mode == MissionMode.Deployment;
-            // Do not set to General Formation if player team is not set up completed.
-            // Because if the general formation has units before AI selecting formation to lead, AI may select General formation in OrderOfBattleVM and cause crash.
-            if (!_isPlayerTeamSetupCompleted || !isDeployment)
-                return;
-            if (Mission.MainAgent?.Formation?.FormationIndex == null)
-                return;
-
-            var formationToSet = Mission.MainAgent.Formation.FormationIndex;
-            // When deployment finishes, the player formation needs to be reset from General formation if AssignPlayerFormation is set to Default.
-            // In watch mode, recover to previous formation instead of configured formation
-            if ((CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation == AssignPlayerFormation.Default))
+            if (agent.Controller == Agent.ControllerType.Player || agent.Controller == Agent.ControllerType.None)
             {
-                formationToSet = CurrentPlayerFormation;
+                agent.SetMaximumSpeedLimit(-1, false);
+                agent.MountAgent?.SetMaximumSpeedLimit(-1, false);
+                if (agent.WalkMode)
+                {
+                    agent.EventControlFlags |= EventControlFlag.Run;
+                    // required to fix the issue that the agent may still walk after switching to player controller, after deployment.
+                    agent.EventControlFlags &= ~EventControlFlag.Walk;
+                }
+                //agent.StopRetreating();
+                //TrySetPlayerFormation();
+
+                if (agent.Formation == null)
+                    return;
+                //CurrentPlayerFormation = agent.Formation.FormationIndex;
             }
-            if (!CommandBattleBehavior.CommandMode && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
+            else if (agent == Mission.MainAgent)
             {
-                formationToSet = _config.PlayerFormation;
+                //Utility.SetHasPlayerControlledTroop(agent.Formation, false);
+                //TrySetPlayerFormation();
+
+                //if (agent.Formation == null)
+                //    return;
+                //CurrentPlayerFormation = agent.Formation.FormationIndex;
             }
-
-            if (formationToSet == FormationClass.Bodyguard)
-                return;
-
-
-            bool isPlayerGeneral = Mission.PlayerTeam?.IsPlayerGeneral ?? false;
-            // Do not set to General Formation if player is not general.
-            // Because if the general formation has units before AI selecting formation to lead, AI may select General formation in OrderOfBattleVM and cause crash.
-            if (formationToSet == FormationClass.General && !isPlayerGeneral)
-            {
-                return;
-            }
-
-            // If has bodyguard formation and the general formation only contains player, we do not remove player from General formation to avoid the bodyguard formation being charging alone.
-            if (Mission.MainAgent?.Formation?.FormationIndex == FormationClass.General && Mission.PlayerTeam?.BodyGuardFormation != null
-                && Mission.MainAgent?.Formation?.CountOfUnits == 1)
-                return;
-            Utility.SetPlayerFormationClass(formationToSet);
         }
 
         private void OnMainAgentChanged(object sender, PropertyChangedEventArgs e)
@@ -554,9 +591,24 @@ namespace RTSCamera.Logic.SubLogic
 
         private void UpdateMainAgentControllerInFreeCamera()
         {
-            Agent.ControllerType controllerType = _config.GetPlayerControllerInFreeCamera(Mission);
+            // Avoid update if switch to agent next tick.
+            // For example, when DeploymentMissionController.FinishDeployment is called and MainAgent.Controller is set to Player.
+            if (_switchToAgentNextTick)
+                return;
+            if (Mission.MainAgent == null)
+                return;
+            Agent.ControllerType controllerType = GetPlayerControllerInFreeCamera(Mission);
             Utilities.Utility.UpdateMainAgentControllerInFreeCamera(Mission.MainAgent, controllerType);
             Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera, controllerType);
+        }
+
+        private ControllerType GetPlayerControllerInFreeCamera(Mission mission)
+        {
+            if (mission?.Mode == MissionMode.Deployment)
+                return ControllerType.None;
+            if (CommandBattleBehavior.CommandMode || mission?.Mode == MissionMode.Deployment)
+                return ControllerType.AI;
+            return (ControllerType)_config.PlayerControllerInFreeCamera;
         }
 
         public void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
@@ -633,7 +685,7 @@ namespace RTSCamera.Logic.SubLogic
             if (Mission.MainAgent != null && Mission.Mode != MissionMode.Deployment)
             {
                 Utilities.Utility.UpdateMainAgentControllerState(Mission.MainAgent, IsSpectatorCamera,
-                    _config.GetPlayerControllerInFreeCamera(Mission.Current));
+                    GetPlayerControllerInFreeCamera(Mission.Current));
             }
 
             MissionLibrary.Event.MissionEvent.OnToggleFreeCamera(false);
@@ -644,11 +696,12 @@ namespace RTSCamera.Logic.SubLogic
             if (IsSpectatorCamera)
                 return;
             IsSpectatorCamera = true;
-            if (!Utility.IsPlayerDead() && Mission.Mode != MissionMode.Deployment)
+            if (!Utility.IsPlayerDead())
             {
                 UpdateMainAgentControllerInFreeCamera();
             }
-            else if (_config.TimingOfControlAllyAfterDeath >= ControlAllyAfterDeathTiming.FreeCamera)
+            // When main agent is null and player press E to lock to agent, we should not set the main agent to allow pressing E again to show inquiry and control the locked agent.
+            else if (_config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.Always || _config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.FreeCamera && Mission?.GetMissionBehavior<FlyCameraMissionView>()?.LockToAgent != true)
             {
                 _controlTroopLogic.SetMainAgent();
             }

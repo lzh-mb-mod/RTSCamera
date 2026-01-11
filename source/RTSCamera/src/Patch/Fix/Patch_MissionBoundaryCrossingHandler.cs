@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Logic;
-using SandBox.Missions.MissionLogics.Arena;
 using System;
 using System.Reflection;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch.Fix
@@ -27,7 +27,7 @@ namespace RTSCamera.Patch.Fix
                     typeof(MissionBoundaryCrossingHandler).GetMethod("TickForMainAgent",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(
-                        typeof(Patch_MissionBoundaryCrossingHandler).GetMethod(nameof(Prefix_TickForMainAgent_Prefix),
+                        typeof(Patch_MissionBoundaryCrossingHandler).GetMethod(nameof(Prefix_TickForMainAgent),
                             BindingFlags.Static | BindingFlags.Public)));
 
             }
@@ -35,23 +35,28 @@ namespace RTSCamera.Patch.Fix
             {
                 Console.WriteLine(e);
                 Utility.DisplayMessage(e.ToString());
+                MBDebug.Print(e.ToString());
                 return false;
             }
 
             return true;
         }
 
-        public static bool Prefix_TickForMainAgent_Prefix(MissionBoundaryCrossingHandler __instance, MissionTimer ____mainAgentLeaveTimer)
+        public static bool Prefix_TickForMainAgent(MissionBoundaryCrossingHandler __instance, MissionTimer ____mainAgentLeaveTimer)
         {
             // Ignore boundary crossing event if in free camera.
-            HandleAgentStateChange?.Invoke(__instance, new object[]
+            if (__instance.Mission.GetMissionBehavior<RTSCameraLogic>()?.SwitchFreeCameraLogic.IsSpectatorCamera == true)
             {
-                Agent.Main,
-                Agent.Main.Controller == Agent.ControllerType.Player &&
-                !__instance.Mission.IsPositionInsideBoundaries(Agent.Main.Position.AsVec2) && __instance.Mission.GetMissionBehavior<RTSCameraLogic>()?.SwitchFreeCameraLogic.IsSpectatorCamera != true,
-                ____mainAgentLeaveTimer != null, ____mainAgentLeaveTimer
-            });
-            return false;
+                HandleAgentStateChange?.Invoke(__instance, new object[]
+                    {
+                        Agent.Main,
+                        false,
+                        ____mainAgentLeaveTimer != null,
+                        ____mainAgentLeaveTimer
+                    });
+                return false;
+            }
+            return true;
         }
     }
 }

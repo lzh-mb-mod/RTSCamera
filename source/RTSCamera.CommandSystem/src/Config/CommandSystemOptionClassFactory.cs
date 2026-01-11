@@ -44,6 +44,13 @@ namespace RTSCamera.CommandSystem.Config
                     {
                         CommandSystemConfig.Get().AttackSpecificFormation = b;
                     }));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_disable_native_attack"),
+                    GameTexts.FindText("str_rts_camera_command_system_disable_native_attack_hint").SetTextVariable("KeyName", CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation).ToSequenceString()),
+                    () => CommandSystemConfig.Get().DisableNativeAttack, b =>
+                    {
+                        CommandSystemConfig.Get().DisableNativeAttack = b;
+                    }));
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_after_enemy_formation_eliminated"),
                     GameTexts.FindText("str_rts_camera_command_system_after_enemy_formation_eliminated_hint"),
@@ -73,6 +80,16 @@ namespace RTSCamera.CommandSystem.Config
                             new SelectionItem(true, "str_rts_camera_command_system_troop_highlight_option", nameof(TroopHighlightStyle.Outline)),
                             new SelectionItem(true, "str_rts_camera_command_system_troop_highlight_option", nameof(TroopHighlightStyle.GroundMarker))
                         }), false));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_troops_when_showing_indicators"),
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_troops_when_showing_indicators_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().HighlightTroopsWhenShowingIndicators = (ShowMode)i,
+                    () => (int)CommandSystemConfig.Get().HighlightTroopsWhenShowingIndicators, () => (int)ShowMode.Count, () => new List<SelectionItem>
+                    {
+                        new SelectionItem(true, "str_rts_camera_command_system_highlight_troops_when_showing_indicators_option", nameof(ShowMode.Never)),
+                        new SelectionItem(true, "str_rts_camera_command_system_highlight_troops_when_showing_indicators_option", nameof(ShowMode.FreeCameraOnly)),
+                        new SelectionItem(true, "str_rts_camera_command_system_highlight_troops_when_showing_indicators_option", nameof(ShowMode.Always))
+                    }), false));
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_character_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_character_mode_hint"),
@@ -133,6 +150,18 @@ namespace RTSCamera.CommandSystem.Config
                             new SelectionItem(true, "str_rts_camera_command_system_formation_lock_condition_option", "WhenPressed"),
                             new SelectionItem(true, "str_rts_camera_command_system_formation_lock_condition_option", "WhenNotPressed")
                         }), false));
+                commandOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_formation_speed_sync_mode"),
+                    GameTexts.FindText("str_rts_camera_command_system_formation_speed_sync_mode_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().FormationSpeedSyncMode = (FormationSpeedSyncMode)i,
+                    () => (int)CommandSystemConfig.Get().FormationSpeedSyncMode, () => (int)FormationSpeedSyncMode.Count,
+                    () => new List<SelectionItem>
+                    {
+                        new SelectionItem(true, "str_rts_camera_command_system_formation_speed_sync_mode_option", nameof(FormationSpeedSyncMode.Disabled)),
+                        new SelectionItem(true, "str_rts_camera_command_system_formation_speed_sync_mode_option", nameof(FormationSpeedSyncMode.Linear)),
+                        new SelectionItem(true, "str_rts_camera_command_system_formation_speed_sync_mode_option", nameof(FormationSpeedSyncMode.CatchUp)),
+                        new SelectionItem(true, "str_rts_camera_command_system_formation_speed_sync_mode_option", nameof(FormationSpeedSyncMode.WaitForLastFormation)),
+                    }), false));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_hollow_square_formation"),
                     GameTexts.FindText("str_rts_camera_command_system_hollow_square_formation_hint"),
@@ -176,7 +205,12 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default"),
                     GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default_hint"),
                     () => CommandSystemConfig.Get().FacingEnemyByDefault,
-                    b => CommandSystemConfig.Get().FacingEnemyByDefault =  b));
+                    b => CommandSystemConfig.Get().FacingEnemyByDefault = b));
+                commandOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_mounted_units_interval_threshold"),
+                    GameTexts.FindText("str_rts_camera_command_system_mounted_units_interval_threshold_hint"),
+                    () => CommandSystemConfig.Get().MountedUnitsIntervalThreshold,
+                    f => CommandSystemConfig.Get().MountedUnitsIntervalThreshold = f, 0.01f, 0.5f, false, true));
                 //commandOptionCategory.AddOption(new NumericOptionViewModel(
                 //    new TaleWorlds.Localization.TextObject("r"), null,
                 //    () => CommandQueuePreview.r, f =>
