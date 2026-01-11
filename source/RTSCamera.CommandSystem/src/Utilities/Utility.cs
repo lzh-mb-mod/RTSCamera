@@ -677,12 +677,12 @@ namespace RTSCamera.CommandSystem.Utilities
             int maximumRankCount = GetMaximumRankCountOfCircularFormation(formation, countWithOverride, unitSpacing);
             float radialInterval = formation.MinimumInterval + formation.UnitDiameter;
             float distanceInterval = formation.MinimumDistance + formation.UnitDiameter;
-            return GetCircumferenceAuxOfCircularFormation(countWithOverride, maximumRankCount, radialInterval, distanceInterval) / MathF.PI;
+            return (float)((double)(GetCircumferenceAuxOfCircularFormation(countWithOverride, maximumRankCount, radialInterval, distanceInterval)) / MathF.PI);
         }
 
         public static float GetMaximumWidthOfCircularFormation(Formation formation, int unitSpacing)
         {
-            return MathF.Max(0.0f, (float)GetUnitCountWithOverride(formation) * (GetFormationInterval(formation, unitSpacing) + formation.UnitDiameter)) / MathF.PI;
+            return MathF.Max(0.0f, (float)(GetUnitCountWithOverride(formation) * (double)((GetFormationInterval(formation, unitSpacing) + formation.UnitDiameter)) / MathF.PI));
         }
 
         public static int GetMaximumRankCountOfCircularFormation(Formation formation, int unitCount, int unitSpacing)
@@ -872,7 +872,7 @@ namespace RTSCamera.CommandSystem.Utilities
             int unitSpacing,
             float flankWidth)
         {
-            return  (flankWidth + GetFormationInterval(formation, unitSpacing)) / MathF.PI;
+            return 2f * (float)(((double)flankWidth + (double)GetFormationInterval(formation, unitSpacing)) / 6.2831854820251465);
         }
 
         public static int GetFileCountFromWidth(Formation formation, float flankWidth, int unitSpacing)

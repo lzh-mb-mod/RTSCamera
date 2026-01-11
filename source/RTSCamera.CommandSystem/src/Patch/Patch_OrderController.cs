@@ -2560,7 +2560,7 @@ namespace RTSCamera.CommandSystem.Patch
             int unitIndex = formation.CountOfUnitsWithoutDetachedOnes - 1;
             newFormationWidth = formationWidth;
 
-            var oldWidth = GetFormationVirtualWidth(formation) ?? formation.Width;
+            var oldWidth = formationWidth;
             if (unitIndex >= 0)
             {
                 if (CommandSystemConfig.Get().CircleFormationUnitSpacingPreference == CircleFormationUnitSpacingPreference.Tight && arrangementOrder == ArrangementOrder.ArrangementOrderEnum.Circle)
@@ -2810,7 +2810,6 @@ namespace RTSCamera.CommandSystem.Patch
             }
         label_3:
             newWidth = simulationFormation.Width;
-            // add a small number to resolve the issue that the movement target marker may disappear during dragging.
             if (newArrangementOrder != null && expectedNewWidth != null && expectedNewUnitSpacing != null)
             {
                 if ((double)expectedNewWidth < newWidth && expectedNewUnitSpacing > 0)
@@ -2818,6 +2817,7 @@ namespace RTSCamera.CommandSystem.Patch
             }
             else
             {
+                // add a small number to resolve the issue that the movement target marker may disappear during dragging.
                 if ((double)width + 0.363f < (double)newWidth && unitSpacing > 0)
                     return;
             }
