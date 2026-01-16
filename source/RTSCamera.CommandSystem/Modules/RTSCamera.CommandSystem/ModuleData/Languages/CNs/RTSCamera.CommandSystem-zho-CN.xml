@@ -146,8 +146,26 @@
     <string id="RTSCameraCommandSystem_point_defense" text="防守目标" />
 
     <string id="RTSCameraCommandSystem_volley_order" text="齐射" />
-    <string id="RTSCameraCommandSystem_volley_enabled" text="齐射开启" />
+    <string id="RTSCameraCommandSystem_auto_volley" text="自动齐射" />
+    <string id="RTSCameraCommandSystem_auto_volley_off" text="自动齐射关闭" />
+    <string id="RTSCameraCommandSystem_manual_volley" text="听令齐射" />
+    <string id="RTSCameraCommandSystem_manual_volley_off" text="听令齐射关闭" />
     <string id="RTSCameraCommandSystem_volley_disabled" text="齐射关闭" />
     <string id="RTSCameraCommandSystem_volley_fire" text="齐射开火" />
+
+    <string id="RTSCameraCommandSystem_volley_order_options" text="齐射指令选项" />
+
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode" text="预瞄准模式" />
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_hint" text="如果启用预瞄准，部队将瞄准目标而不开火。" />
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_option_in_auto_volley" text="在自动齐射中" />
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_option_both_auto_and_manual_volley" text="自动齐射与听令齐射" />
+    <string id="RTSCameraCommandSystem_ready_ratio_in_auto_volley" text="自动齐射中的准备比例" />
+    <string id="RTSCameraCommandSystem_ready_ratio_in_auto_volley_hint" text="自动齐射模式下，在开火前做好准备的部队的最低比例。" />
+    <string id="RTSCameraCommandSystem_max_aiming_time" text="最大瞄准时间" />
+    <string id="RTSCameraCommandSystem_max_aiming_time_hint" text="在自动齐射模式下，部队被认为用于瞄准的最长时间。" />
+    <string id="RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type" text="非投掷武器 按武器类型自动齐射" />
+    <string id="RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type_hint" text="启用后，装备非投掷武器的部队将按武器类型进行自动齐射。" />
+    <string id="RTSCameraCommandSystem_auto_volley_by_thrown_weapon_type" text="投掷武器 按武器类型自动齐射" />
+    <string id="RTSCameraCommandSystem_auto_volley_by_thrown_weapon_type_hint" text="启用后，装备投掷武器的部队将按武器类型进行自动齐射。" />
   </strings>
 </base>

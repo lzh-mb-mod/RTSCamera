@@ -705,7 +705,7 @@ namespace RTSCamera.CommandSystem.View
                         UpdateFacingOrderForOtherOrder(facingOrder, formation, virtualFacingDirection);
                         return CollectOrderPreviewData(formation, false, OrderTargetType.Focus);
                     }
-                case CustomOrderType.EnableVolley:
+                case CustomOrderType.ManualVolley:
                 case CustomOrderType.DisableVolley:
                 case CustomOrderType.VolleyFire:
                     return null;

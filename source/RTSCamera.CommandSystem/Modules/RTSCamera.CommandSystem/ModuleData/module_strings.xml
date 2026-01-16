@@ -145,9 +145,27 @@
   <string id="str_rts_camera_command_system_follow_entity" text="{=RTSCameraCommandSystem_follow_entity}Follow Entity" />
   <string id="str_rts_camera_command_system_attack_entity" text="{=RTSCameraCommandSystem_attack_entity}Attack Entity" />
   <string id="str_rts_camera_command_system_point_defense" text="{=RTSCameraCommandSystem_point_defense}Defense Target" />
-
+  
   <string id="str_rts_camera_command_system_volley_order" text="{=RTSCameraCommandSystem_volley_order}Volley" />
-  <string id="str_rts_camera_command_system_volley_enabled" text="{=RTSCameraCommandSystem_volley_enabled}Volley Enabled" />
+  <string id="str_rts_camera_command_system_auto_volley" text="{=RTSCameraCommandSystem_auto_volley}Auto Volley" />
+  <string id="str_rts_camera_command_system_auto_volley_off" text="{=RTSCameraCommandSystem_auto_volley_off}Auto Volley Off" />
+  <string id="str_rts_camera_command_system_manual_volley" text="{=RTSCameraCommandSystem_manual_volley}Volley on Command" />
+  <string id="str_rts_camera_command_system_manual_volley_off" text="{=RTSCameraCommandSystem_manual_volley_off}Volley on Command Off" />
   <string id="str_rts_camera_command_system_volley_disabled" text="{=RTSCameraCommandSystem_volley_disabled}Volley Disabled" />
   <string id="str_rts_camera_command_system_volley_fire" text="{=RTSCameraCommandSystem_volley_fire}Volley Fire" />
+
+  <string id="str_rts_camera_command_system_volley_order_options" text="{=RTSCameraCommandSystem_volley_order_options}Volley Order Options" />
+
+  <string id="str_rts_camera_command_system_volley_pre_aiming_mode" text="{=RTSCameraCommandSystem_volley_pre_aiming_mode}Pre-Aiming Mode" />
+  <string id="str_rts_camera_command_system_volley_pre_aiming_mode_hint" text="{=RTSCameraCommandSystem_volley_pre_aiming_mode_hint}If pre-aiming is enabled, troops will aim at the target without firing." />
+  <string id="str_rts_camera_command_system_volley_pre_aiming_mode_option.InAutoVolley" text="{=RTSCameraCommandSystem_volley_pre_aiming_mode_option_in_auto_volley}In Auto Volley" />
+  <string id="str_rts_camera_command_system_volley_pre_aiming_mode_option.BothAutoAndManualVolley" text="{=RTSCameraCommandSystem_volley_pre_aiming_mode_option_both_auto_and_manual_volley}Both Auto And Manual Volley" />
+  <string id="str_rts_camera_command_system_ready_ratio_in_auto_volley" text="{=RTSCameraCommandSystem_ready_ratio_in_auto_volley}Ready Ratio in Auto Volley" />
+  <string id="str_rts_camera_command_system_ready_ratio_in_auto_volley_hint" text="{=RTSCameraCommandSystem_ready_ratio_in_auto_volley_hint}The minimum ratio of troops ready to fire before firing in Auto Volley mode." />
+  <string id="str_rts_camera_command_system_max_aiming_time" text="{=RTSCameraCommandSystem_max_aiming_time}Max Aiming Time" />
+  <string id="str_rts_camera_command_system_max_aiming_time_hint" text="{=RTSCameraCommandSystem_max_aiming_time_hint}The maximum time troops is considered to spend aiming in Auto Volley mode." />
+  <string id="str_rts_camera_command_system_auto_volley_by_nonthrown_weapon_type" text="{=RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type}Auto Volley by Weapon Type for Non-Thrown Weapons" />
+  <string id="str_rts_camera_command_system_auto_volley_by_nonthrown_weapon_type_hint" text="{=RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type_hint}When enabled, troops with non-thrown weapons will auto volley by weapon type." />
+  <string id="str_rts_camera_command_system_auto_volley_by_thrown_weapon_type" text="{=RTSCameraCommandSystem_auto_volley_by_thrown_weapon_type}Auto Volley by Weapon Type for Thrown Weapons" />
+  <string id="str_rts_camera_command_system_auto_volley_by_thrown_weapon_type_hint" text="{=RTSCameraCommandSystem_auto_volley_by_thrown_weapon_type_hint}When enabled, troops with thrown weapons will auto volley by weapon type." />
 </strings>

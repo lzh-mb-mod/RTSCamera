@@ -69,6 +69,13 @@ namespace RTSCamera.CommandSystem.Config
         Count
     }
 
+    public enum VolleyPreAimingMode
+    {
+        InAutoVolley,
+        BothAutoAndManualVolley,
+        Count
+    }
+
     public class CommandSystemConfig : MissionConfigBase<CommandSystemConfig>
     {
         protected override XmlSerializer Serializer => new XmlSerializer(typeof(CommandSystemConfig));
@@ -139,9 +146,21 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool ShortenRangeBasedOnRemainingAmmo = false;
 
+        public VolleyPreAimingMode VolleyPreAimingMode = VolleyPreAimingMode.BothAutoAndManualVolley;
+
+        public float ReadyRatioInAutoVolley = 0.8f;
+
+        public float MaxAimingTime = 1.5f;
+
+        public bool AutoVolleyByWeaponTypeForNonThrown = true;
+
+        public bool AutoVolleyByWeaponTypeForThrown = true;
+
         public bool IsCommandOptionVisible = true;
 
         public bool IsAdvanceOrderOptionVisible = true;
+
+        public bool IsVolleyOrderOptionVisible = true;
 
         protected override void CopyFrom(CommandSystemConfig other)
         {
@@ -175,8 +194,14 @@ namespace RTSCamera.CommandSystem.Config
             ThrowerRatioThreshold = other.ThrowerRatioThreshold;
             RemainingAmmoRatioThreshold = other.RemainingAmmoRatioThreshold;
             ShortenRangeBasedOnRemainingAmmo = other.ShortenRangeBasedOnRemainingAmmo;
+            VolleyPreAimingMode = other.VolleyPreAimingMode;
+            ReadyRatioInAutoVolley = other.ReadyRatioInAutoVolley;
+            MaxAimingTime = other.MaxAimingTime;
+            AutoVolleyByWeaponTypeForNonThrown = other.AutoVolleyByWeaponTypeForNonThrown;
+            AutoVolleyByWeaponTypeForThrown = other.AutoVolleyByWeaponTypeForThrown;
             IsCommandOptionVisible = other.IsCommandOptionVisible;
             IsAdvanceOrderOptionVisible = other.IsAdvanceOrderOptionVisible;
+            IsVolleyOrderOptionVisible = other.IsVolleyOrderOptionVisible;
         }
 
         public static void OnMenuClosed()

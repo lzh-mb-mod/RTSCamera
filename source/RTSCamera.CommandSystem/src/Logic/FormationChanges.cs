@@ -26,7 +26,7 @@ namespace RTSCamera.CommandSystem.Logic
         public OrderType? RidingOrderType;
         public OrderType? AIControlOrderType;
         public ArrangementOrderEnum? ArrangementOrder;
-        public bool? VolleyEnabledOrder;
+        public VolleyMode? VolleyMode;
         public float? PreviewWidth;
         public float? PreviewDepth;
     }
@@ -55,7 +55,7 @@ namespace RTSCamera.CommandSystem.Logic
                 change.FiringOrderType = pair.Value.FiringOrderType;
                 change.RidingOrderType = pair.Value.RidingOrderType;
                 change.ArrangementOrder = pair.Value.ArrangementOrder;
-                change.VolleyEnabledOrder = pair.Value.VolleyEnabledOrder;
+                change.VolleyMode = pair.Value.VolleyMode;
                 change.PreviewWidth = pair.Value.PreviewWidth;
                 change.PreviewDepth = pair.Value.PreviewDepth;
                 VirtualChanges[pair.Key] = change;
@@ -262,7 +262,7 @@ namespace RTSCamera.CommandSystem.Logic
             }
         }
 
-        public void SetVolleyEnabledOrder(bool enabled, IEnumerable<Formation> formations)
+        public void SetVolleyMode(VolleyMode volleyMode, IEnumerable<Formation> formations)
         {
             foreach (var formation in formations)
             {
@@ -270,7 +270,7 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     change = new FormationChange();
                 }
-                change.VolleyEnabledOrder = enabled;
+                change.VolleyMode = volleyMode;
                 VirtualChanges[formation] = change;
             }
         }
@@ -283,7 +283,7 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     return;
                 }
-                change.VolleyEnabledOrder = null;
+                change.VolleyMode = null;
                 VirtualChanges[formation] = change;
             }
         }

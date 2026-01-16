@@ -142,8 +142,26 @@
     <string id="RTSCameraCommandSystem_point_defense" text="Cible à défendre" />
 
     <string id="RTSCameraCommandSystem_volley_order" text="Volée" />
-    <string id="RTSCameraCommandSystem_volley_enabled" text="Volée activée" />
+    <string id="RTSCameraCommandSystem_auto_volley" text="Volée automatique" />
+    <string id="RTSCameraCommandSystem_auto_volley_off" text="Volée automatique désactivée" />
+    <string id="RTSCameraCommandSystem_manual_volley" text="Volée sur commande" />
+    <string id="RTSCameraCommandSystem_manual_volley_off" text="Volée sur commande désactivée" />
     <string id="RTSCameraCommandSystem_volley_disabled" text="volée désactivée" />
     <string id="RTSCameraCommandSystem_volley_fire" text="Tir de volée" />
+
+    <string id="RTSCameraCommandSystem_volley_order_options" text="Options d'ordre de volée" />
+
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode" text="Mode de pré-visée" />
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_hint" text="Si le mode de pré-visée est activé, les troupes viseront la cible sans tirer." />
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_option_in_auto_volley" text="En volée automatique" />
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_option_both_auto_and_manual_volley" text="Volée automatique et sur commande" />
+    <string id="RTSCameraCommandSystem_ready_ratio_in_auto_volley" text="Ratio prêt en volée automatique" />
+    <string id="RTSCameraCommandSystem_ready_ratio_in_auto_volley_hint" text="Le ratio minimum de troupes prêtes à tirer avant de tirer en mode volée automatique." />
+    <string id="RTSCameraCommandSystem_max_aiming_time" text="Durée maximale de visée" />
+    <string id="RTSCameraCommandSystem_max_aiming_time_hint" text="La durée maximale que les troupes sont censées passer à viser en mode volée automatique." />
+    <string id="RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type" text="Volée automatique par type d'arme pour armes non-jetables" />
+    <string id="RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type_hint" text="Lorsque activé, les troupes avec des armes non-jetables feront une volée automatique par type d'arme." />
+    <string id="RTSCameraCommandSystem_auto_volley_by_thrown_weapon_type" text="Volée automatique par type d'arme pour armes jetables" />
+    <string id="RTSCameraCommandSystem_auto_volley_by_thrown_weapon_type_hint" text="Lorsque activé, les troupes avec des armes jetables feront une volée automatique par type d'arme." />
   </strings>
 </base>

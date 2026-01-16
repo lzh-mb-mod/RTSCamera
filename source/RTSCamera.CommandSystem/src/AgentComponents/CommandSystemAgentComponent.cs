@@ -1,4 +1,5 @@
 ﻿using MissionSharedLibrary.Utilities;
+using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCameraAgentComponent;
@@ -397,23 +398,62 @@ namespace RTSCamera.CommandSystem.AgentComponents
             }
         }
 
-        public bool IsVolleyEnabled()
+        public VolleyMode GetVolleyMode()
         {
-            return _agentAIInputHandler.IsVolleyEnabled;
+            return _agentAIInputHandler.VolleyMode;
         }
 
-        public void SetVolleyEnabled(bool enabled)
+        public void SetVolleyMode(VolleyMode volleyMode)
         {
-            _agentAIInputHandler.SetVolleyEnabled(Agent, enabled);
-            if (enabled)
+            _agentAIInputHandler.SetVolleyMode(Agent, volleyMode);
+            if (volleyMode != VolleyMode.Disabled)
             {
-                Agent.SetHasOnAiInputSetCallback(enabled);
+                Agent.SetHasOnAiInputSetCallback(true);
             }
         }
 
-        public void ShootUnderVolley()
+        public bool ShootUnderVolley()
         {
-            _agentAIInputHandler.ShootUnderVolley(Agent);
+            return _agentAIInputHandler.ShootUnderVolley(Agent);
+        }
+
+        public bool IsVolleySuspended()
+        {
+            return _agentAIInputHandler.IsVolleySuspended;
+        }
+
+        public bool IsCandidateForNextFireAutoVolley()
+        {
+            return _agentAIInputHandler.IsCandidateForNextFireInAutoVolley(Agent);
+        }
+
+        public WeaponClass GetCurrentlyUsingWeaponClass()
+        {
+            if (Agent.WieldedWeapon.IsEmpty)
+            {
+                return WeaponClass.Undefined;
+            }
+            else
+            {
+                return Agent.WieldedWeapon.CurrentUsageItem.WeaponClass;
+            }
+        }
+
+        public bool IsUsingThrownWeapon()
+        {
+            if (Agent.WieldedWeapon.IsEmpty)
+            {
+                return false;
+            }
+            else
+            {
+                return Agent.WieldedWeapon.CurrentUsageItem.IsConsumable;
+            }
+        }
+
+        public bool IsReadyForNextFire()
+        {
+            return _agentAIInputHandler.IsReadyForNextFire(Agent);
         }
 
         public override void OnAIInputSet(ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)

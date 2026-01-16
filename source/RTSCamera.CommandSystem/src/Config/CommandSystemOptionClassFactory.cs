@@ -242,7 +242,8 @@ namespace RTSCamera.CommandSystem.Config
                 optionClass.AddOptionCategory(0, commandOptionCategory);
 
 
-                var advanceOrderOptionCategory = new OptionCategory("AdvanceOrder", GameTexts.FindText("str_rts_camera_command_system_advance_order_options"),
+                var advanceOrderOptionCategory = new OptionCategory("AdvanceOrder",
+                    GameTexts.FindText("str_rts_camera_command_system_advance_order_options"),
                     () => CommandSystemConfig.Get().IsAdvanceOrderOptionVisible, (b) => CommandSystemConfig.Get().IsAdvanceOrderOptionVisible = b);
                 advanceOrderOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_fix_advance_order_for_throwing_weapons"),
@@ -274,6 +275,42 @@ namespace RTSCamera.CommandSystem.Config
                     () => CommandSystemConfig.Get().ShortenRangeBasedOnRemainingAmmo,
                     b => CommandSystemConfig.Get().ShortenRangeBasedOnRemainingAmmo = b));
                 optionClass.AddOptionCategory(1, advanceOrderOptionCategory);
+
+                var volleyOptionCategory = new OptionCategory("VolleyOrder",
+                    GameTexts.FindText("str_rts_camera_command_system_volley_order_options"),
+                    () => CommandSystemConfig.Get().IsVolleyOrderOptionVisible, (b) => CommandSystemConfig.Get().IsVolleyOrderOptionVisible = b);
+                volleyOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_volley_pre_aiming_mode"),
+                    GameTexts.FindText("str_rts_camera_command_system_volley_pre_aiming_mode_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().VolleyPreAimingMode = (VolleyPreAimingMode)i,
+                        () => (int)CommandSystemConfig.Get().VolleyPreAimingMode, () => (int)VolleyPreAimingMode.Count, () => new List<SelectionItem>
+                        {
+                            new SelectionItem(true, "str_rts_camera_command_system_volley_pre_aiming_mode_option", nameof(VolleyPreAimingMode.InAutoVolley)),
+                            new SelectionItem(true, "str_rts_camera_command_system_volley_pre_aiming_mode_option", nameof(VolleyPreAimingMode.BothAutoAndManualVolley))
+                        }), false));
+                volleyOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_ready_ratio_in_auto_volley"),
+                    GameTexts.FindText("str_rts_camera_command_system_ready_ratio_in_auto_volley_hint"),
+                    () => CommandSystemConfig.Get().ReadyRatioInAutoVolley,
+                    f => CommandSystemConfig.Get().ReadyRatioInAutoVolley = f,
+                    0.1f, 1.0f, false, true));
+                volleyOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_max_aiming_time"),
+                    GameTexts.FindText("str_rts_camera_command_system_max_aiming_time_hint"),
+                    () => CommandSystemConfig.Get().MaxAimingTime,
+                    f => CommandSystemConfig.Get().MaxAimingTime = f,
+                    0.1f, 10f, false, true));
+                volleyOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_auto_volley_by_nonthrown_weapon_type"),
+                    GameTexts.FindText("str_rts_camera_command_system_auto_volley_by_nonthrown_weapon_type_hint"),
+                    () => CommandSystemConfig.Get().AutoVolleyByWeaponTypeForNonThrown,
+                    b => CommandSystemConfig.Get().AutoVolleyByWeaponTypeForNonThrown = b));
+                volleyOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_auto_volley_by_thrown_weapon_type"),
+                    GameTexts.FindText("str_rts_camera_command_system_auto_volley_by_thrown_weapon_type_hint"),
+                    () => CommandSystemConfig.Get().AutoVolleyByWeaponTypeForNonThrown,
+                    b => CommandSystemConfig.Get().AutoVolleyByWeaponTypeForNonThrown = b));
+                optionClass.AddOptionCategory(1, volleyOptionCategory);
 
                 return optionClass;
             }, CommandSystemSubModule.ModuleId, new Version(1, 0, 0));

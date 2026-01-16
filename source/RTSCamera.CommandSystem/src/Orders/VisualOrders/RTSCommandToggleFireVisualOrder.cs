@@ -23,7 +23,8 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
         }
         private readonly TextObject _positiveOrderName;
         private readonly TextObject _negativeOrderName;
-        private readonly RTSCommandToggleVolleyVisualOrder _toggleVolleyVisualOrder;
+        private readonly RTSCommandToggleVolleyVisualOrder _autoVolleyVisualOrder;
+        private readonly RTSCommandToggleVolleyVisualOrder _manualVolleyVisualOrder;
 
         public OrderType PositiveOrder { get; }
 
@@ -33,14 +34,16 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             string stringId,
             OrderType positiveOrder,
             OrderType negativeOrder,
-            RTSCommandToggleVolleyVisualOrder toggleVolleyVisualOrder)
+            RTSCommandToggleVolleyVisualOrder autoVolleyVisualOrder,
+            RTSCommandToggleVolleyVisualOrder manualVolleyVisualOrder)
             : base(stringId)
         {
             PositiveOrder = positiveOrder;
             NegativeOrder = negativeOrder;
             _positiveOrderName = GetName(positiveOrder);
             _negativeOrderName = GetName(negativeOrder);
-            _toggleVolleyVisualOrder = toggleVolleyVisualOrder;
+            _autoVolleyVisualOrder = autoVolleyVisualOrder;
+            _manualVolleyVisualOrder = manualVolleyVisualOrder;
         }
 
         public override TextObject GetName(OrderController orderController)
@@ -49,11 +52,19 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             {
                 case OrderState.PartiallyActive:
                 case OrderState.Active:
-                    switch (_toggleVolleyVisualOrder.GetActiveState(orderController))
+                    switch (_autoVolleyVisualOrder.LastActiveState)
                     {
                         case OrderState.PartiallyActive:
                         case OrderState.Active:
-                            return _toggleVolleyVisualOrder.GetName(orderController);
+                            return _autoVolleyVisualOrder.GetName(orderController);
+                        default:
+                            switch (_manualVolleyVisualOrder.LastActiveState)
+                            {
+                                case OrderState.PartiallyActive:
+                                case OrderState.Active:
+                                    return _manualVolleyVisualOrder.GetName(orderController);
+                            }
+                            break;
                     }
                     return _positiveOrderName;
                 default:
@@ -75,7 +86,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             };
             orderToAdd.OrderType = GetActiveState(orderController) == OrderState.Active ? NegativeOrder : PositiveOrder;
             Patch_OrderController.LivePreviewFormationChanges.SetToggleOrder(orderToAdd.OrderType, selectedFormations);
-            Patch_OrderController.LivePreviewFormationChanges.SetVolleyEnabledOrder(false, selectedFormations);
+            Patch_OrderController.LivePreviewFormationChanges.SetVolleyMode(VolleyMode.Disabled, selectedFormations);
             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
 
             if (queueCommand)
@@ -88,7 +99,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                 orderController.SetOrder(orderToAdd.OrderType);
                 foreach (var formation in orderController.SelectedFormations)
                 {
-                    CommandQueueLogic.SetFormationVolleyEnabled(formation, false);
+                    CommandQueueLogic.SetFormationVolleyMode(formation, VolleyMode.Disabled);
                 }
             }
         }
@@ -101,7 +112,11 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
         protected override string GetIconId()
         {
             string iconId = base.GetIconId();
-            return _lastActiveState == OrderState.Active ? _toggleVolleyVisualOrder.IconId : iconId;
+            if (_lastActiveState != OrderState.Active || _manualVolleyVisualOrder.LastActiveState == OrderState.Active)
+            {
+                return iconId;
+            }
+            return iconId + "_active";
         }
     }
 }

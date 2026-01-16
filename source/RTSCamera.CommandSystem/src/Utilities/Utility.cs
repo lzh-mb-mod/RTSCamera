@@ -264,7 +264,7 @@ namespace RTSCamera.CommandSystem.Utilities
                     var orderMessage = GameTexts.FindText("str_rts_camera_command_system_defensive_attack");
                     orderMessage.SetTextVariable("TARGET_NAME", GameTexts.FindText("str_troop_group_name", ((int)order.TargetFormation.PhysicalClass).ToString()));
                     return orderMessage;
-                case CustomOrderType.EnableVolley:
+                case CustomOrderType.ManualVolley:
                     return GameTexts.FindText("str_rts_camera_command_system_volley_enabled");
                 case CustomOrderType.DisableVolley:
                     return GameTexts.FindText("str_rts_camera_command_system_volley_disabled");
@@ -978,20 +978,17 @@ namespace RTSCamera.CommandSystem.Utilities
             }
         }
 
-        public static bool DoesFormationHasVolleyOrder(Formation formation)
+        public static bool DoesFormationHasVolleyOrder(Formation formation, VolleyMode volleyMode)
         {
             bool queueCommand = Utilities.Utility.ShouldQueueCommand();
             if (queueCommand)
             {
                 if (CommandQueueLogic.LatestOrderInQueueChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
                 {
-                    if (formationChange.VolleyEnabledOrder != null)
-                    {
-                        return formationChange.VolleyEnabledOrder.Value;
-                    }
+                    return formationChange.VolleyMode == null ? volleyMode == VolleyMode.Disabled : formationChange.VolleyMode == volleyMode;
                 }
             }
-            return CommandQueueLogic.IsFormationVolleyEnabled(formation);
+            return CommandQueueLogic.GetFormationVolleyMode(formation) == volleyMode;
         }
 
         public static bool ShouldQueueCommand()

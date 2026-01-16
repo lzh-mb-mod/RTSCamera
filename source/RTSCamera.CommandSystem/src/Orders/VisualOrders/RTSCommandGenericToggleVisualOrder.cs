@@ -93,7 +93,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                 {
                     foreach (var formation in orderController.SelectedFormations)
                     {
-                        CommandQueueLogic.SetFormationVolleyEnabled(formation, false);
+                        CommandQueueLogic.SetFormationVolleyMode(formation, VolleyMode.Disabled);
                     }
                 }
             }

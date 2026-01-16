@@ -144,8 +144,26 @@
     <string id="RTSCameraCommandSystem_point_defense" text="Defense Target" />
 
     <string id="RTSCameraCommandSystem_volley_order" text="Volley" />
-    <string id="RTSCameraCommandSystem_volley_enabled" text="Volley Enabled" />
+    <string id="RTSCameraCommandSystem_auto_volley" text="Auto Volley" />
+    <string id="RTSCameraCommandSystem_auto_volley_off" text="Auto Volley Off" />
+    <string id="RTSCameraCommandSystem_manual_volley" text="Volley on Command" />
+    <string id="RTSCameraCommandSystem_manual_volley_off" text="Volley on Command Off" />
     <string id="RTSCameraCommandSystem_volley_disabled" text="Volley Disabled" />
     <string id="RTSCameraCommandSystem_volley_fire" text="Volley Fire" />
+
+    <string id="RTSCameraCommandSystem_volley_order_options" text="Volley Order Options" />
+
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode" text="Pre-Aiming Mode" />
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_hint" text="If pre-aiming is enabled, troops will aim at the target without firing." />
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_option_in_auto_volley" text="In Auto Volley" />
+    <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_option_both_auto_and_manual_volley" text="Both Auto And Manual Volley" />
+    <string id="RTSCameraCommandSystem_ready_ratio_in_auto_volley" text="Ready Ratio in Auto Volley" />
+    <string id="RTSCameraCommandSystem_ready_ratio_in_auto_volley_hint" text="The minimum ratio of troops ready to fire before firing in Auto Volley mode." />
+    <string id="RTSCameraCommandSystem_max_aiming_time" text="Max Aiming Time" />
+    <string id="RTSCameraCommandSystem_max_aiming_time_hint" text="The maximum time troops is considered to spend aiming in Auto Volley mode." />
+    <string id="RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type" text="Auto Volley by Weapon Type for Non-Thrown Weapons" />
+    <string id="RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type_hint" text="When enabled, troops with non-thrown weapons will auto volley by weapon type." />
+    <string id="RTSCameraCommandSystem_auto_volley_by_thrown_weapon_type" text="Auto Volley by Weapon Type for Thrown Weapons" />
+    <string id="RTSCameraCommandSystem_auto_volley_by_thrown_weapon_type_hint" text="When enabled, troops with thrown weapons will auto volley by weapon type." />
   </strings>
 </base>

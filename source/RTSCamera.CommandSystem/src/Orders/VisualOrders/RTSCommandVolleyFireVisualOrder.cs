@@ -26,7 +26,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             };
             orderToAdd.CustomOrderType = CustomOrderType.VolleyFire;
             Patch_OrderController.LivePreviewFormationChanges.SetFiringOrder(OrderType.FireAtWill, selectedFormations);
-            Patch_OrderController.LivePreviewFormationChanges.SetVolleyEnabledOrder(true, selectedFormations);
+            Patch_OrderController.LivePreviewFormationChanges.SetVolleyMode(VolleyMode.Manual, selectedFormations);
             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
 
             if (queueCommand)
@@ -38,7 +38,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                 foreach (Formation formation in selectedFormations)
                 {
                     formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
-                    CommandQueueLogic.SetFormationVolleyEnabled(formation, true);
+                    CommandQueueLogic.SetFormationVolleyMode(formation, VolleyMode.Manual);
                     CommandQueueLogic.FormationVolleyFire(formation);
                 }
                 Utilities.Utility.CallAfterSetOrder(orderController, OrderType.FireAtWill);

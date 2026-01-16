@@ -6,7 +6,6 @@ using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.CommandSystem.View;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -22,10 +21,26 @@ namespace RTSCamera.CommandSystem.Logic
         Original,
         FollowMainAgent,
         SetTargetFormation,
-        EnableVolley,
+        AutoVolley,
+        ManualVolley,
         DisableVolley,
         VolleyFire
     }
+
+    public enum VolleyMode
+    {
+        Disabled,
+        Auto,
+        Manual
+    }
+
+    public class VolleyByWeaponClassRecord
+    {
+        public List<Agent> AgentList = new List<Agent>();
+        public int CandidateCount = 0;
+        public int ReadyCount = 0;
+    }
+
     public class OrderInQueue
     {
         private List<Formation> _selectedFormation;
@@ -239,7 +254,7 @@ namespace RTSCamera.CommandSystem.Logic
         public static FormationChanges LatestOrderInQueueChanges = new FormationChanges();
         private static int TicksToSkip = 0;
 
-        public static Dictionary<Formation, bool> FormationVolleyEnabled = new Dictionary<Formation, bool>();
+        public static Dictionary<Formation, VolleyMode> FormationVolleyMode = new Dictionary<Formation, VolleyMode>();
 
         public static void OnBehaviorInitialize()
         {
@@ -248,7 +263,7 @@ namespace RTSCamera.CommandSystem.Logic
             ShouldSkipCurrentOrders = new Dictionary<Formation, bool>();
             CurrentFormationChanges = new FormationChanges();
             LatestOrderInQueueChanges = new FormationChanges();
-            FormationVolleyEnabled = new Dictionary<Formation, bool>();
+            FormationVolleyMode = new Dictionary<Formation, VolleyMode>();
         }
 
         public static void OnRemoveBehavior()
@@ -258,7 +273,7 @@ namespace RTSCamera.CommandSystem.Logic
             ShouldSkipCurrentOrders = null;
             CurrentFormationChanges = null;
             LatestOrderInQueueChanges = null;
-            FormationVolleyEnabled = null;
+            FormationVolleyMode = null;
 
             var orderController = Mission.Current?.PlayerTeam?.PlayerOrderController;
             if (orderController != null)
@@ -385,14 +400,15 @@ namespace RTSCamera.CommandSystem.Logic
             switch (order.CustomOrderType)
             {
                 case CustomOrderType.SetTargetFormation:
-                case CustomOrderType.EnableVolley:
+                case CustomOrderType.AutoVolley:
+                case CustomOrderType.ManualVolley:
                 case CustomOrderType.DisableVolley:
                     return true;
                 case CustomOrderType.VolleyFire:
                     {
                         foreach (var formation in order.SelectedFormations)
                         {
-                            if (formation.FiringOrder == FiringOrder.FiringOrderHoldYourFire || !IsFormationVolleyEnabled(formation))
+                            if (formation.FiringOrder == FiringOrder.FiringOrderHoldYourFire || GetFormationVolleyMode(formation) != VolleyMode.Manual)
                             {
                                 return true;
                             }
@@ -470,6 +486,8 @@ namespace RTSCamera.CommandSystem.Logic
             // Disabled for naval battle for now.
             if (Mission.Current.IsNavalBattle)
                 return;
+
+            TickVolley(formation);
             if (TicksToSkip > 0)
             {
                 TicksToSkip--;
@@ -713,13 +731,13 @@ namespace RTSCamera.CommandSystem.Logic
                                 break;
                             case OrderType.FireAtWill:
                                 formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
-                                SetFormationVolleyEnabled(formation, false);
+                                SetFormationVolleyMode(formation, VolleyMode.Disabled);
                                 TryPendingOrder(new List<Formation> { formation }, order);
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
                             case OrderType.HoldFire:
                                 formation.SetFiringOrder(FiringOrder.FiringOrderHoldYourFire);
-                                SetFormationVolleyEnabled(formation, false);
+                                SetFormationVolleyMode(formation, VolleyMode.Disabled);
                                 TryPendingOrder(new List<Formation> { formation }, order);
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
@@ -760,21 +778,27 @@ namespace RTSCamera.CommandSystem.Logic
                 case CustomOrderType.SetTargetFormation:
                     formation.SetTargetFormation(order.TargetFormation);
                     break;
-                case CustomOrderType.EnableVolley:
-                    SetFormationVolleyEnabled(formation, true);
+                case CustomOrderType.AutoVolley:
+                    SetFormationVolleyMode(formation, VolleyMode.Auto);
+                    formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
+                    TryPendingOrder(new List<Formation> { formation }, order);
+                    CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+                    break;
+                case CustomOrderType.ManualVolley:
+                    SetFormationVolleyMode(formation, VolleyMode.Manual);
                     formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
                     TryPendingOrder(new List<Formation> { formation }, order);
                     CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                     break;
                 case CustomOrderType.DisableVolley:
-                    SetFormationVolleyEnabled(formation, false);
+                    SetFormationVolleyMode(formation, VolleyMode.Disabled);
                     formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
                     TryPendingOrder(new List<Formation> { formation }, order);
                     CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                     break;
                 case CustomOrderType.VolleyFire:
                     formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
-                    SetFormationVolleyEnabled(formation, true);
+                    SetFormationVolleyMode(formation, VolleyMode.Manual);
                     FormationVolleyFire(formation);
                     TryPendingOrder(new List<Formation> { formation }, order);
                     CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
@@ -971,26 +995,26 @@ namespace RTSCamera.CommandSystem.Logic
             }
         }
 
-        public static void SetFormationVolleyEnabled(Formation formation, bool enable)
+        public static void SetFormationVolleyMode(Formation formation, VolleyMode volleyMode)
         {
-            FormationVolleyEnabled[formation] = enable;
+            FormationVolleyMode[formation] = volleyMode;
             formation.ApplyActionOnEachUnit(agent =>
             {
                 var component = agent.GetComponent<CommandSystemAgentComponent>();
                 if (component != null)
                 {
-                    component.SetVolleyEnabled(enable);
+                    component.SetVolleyMode(volleyMode);
                 }
             });
         }
 
-        public static bool IsFormationVolleyEnabled(Formation formation)
+        public static VolleyMode GetFormationVolleyMode(Formation formation)
         {
-            if (!FormationVolleyEnabled.TryGetValue(formation, out var enabled))
+            if (!FormationVolleyMode.TryGetValue(formation, out var volleyMode))
             {
-                return false;
+                return VolleyMode.Disabled;
             }
-            return enabled;
+            return volleyMode;
         }
 
         public static void FormationVolleyFire(Formation formation)
@@ -1000,13 +1024,95 @@ namespace RTSCamera.CommandSystem.Logic
                 var component = agent.GetComponent<CommandSystemAgentComponent>();
                 if (component != null)
                 {
-                    bool isVolleyEnabled = component.IsVolleyEnabled();
-                    if (isVolleyEnabled)
+                    component.ShootUnderVolley();
+                }
+            });
+        }
+
+        public static void AgentListVolleyFire(List<Agent> agentList)
+        {
+            foreach (var agent in agentList)
+            {
+                var component = agent.GetComponent<CommandSystemAgentComponent>();
+                if (component != null)
+                {
+                    component.ShootUnderVolley();
+                }
+            }
+        }
+
+        private static void TickVolley(Formation formation)
+        {
+            var volleyMode = GetFormationVolleyMode(formation);
+            if (volleyMode != VolleyMode.Auto)
+            {
+                return;
+            }
+
+            VolleyByWeaponClassRecord globalRecord = new VolleyByWeaponClassRecord();
+            bool volleyNonThrownWeaponByWeaponClass = CommandSystemConfig.Get().AutoVolleyByWeaponTypeForNonThrown;
+            bool volleyThrownWeaponByWeaponClass = CommandSystemConfig.Get().AutoVolleyByWeaponTypeForThrown;
+            Dictionary<WeaponClass, VolleyByWeaponClassRecord> weaponClassRecords = new Dictionary<WeaponClass, VolleyByWeaponClassRecord>();
+            formation.ApplyActionOnEachAttachedUnit(agent =>
+            {
+                if (!agent.IsAIControlled)
+                    return;
+                var component = agent.GetComponent<CommandSystemAgentComponent>();
+                if (component != null)
+                {
+                    var weaponClass = component.GetCurrentlyUsingWeaponClass();
+                    bool volleyByWeaponClass = component.IsUsingThrownWeapon() ? volleyThrownWeaponByWeaponClass : volleyNonThrownWeaponByWeaponClass;
+                    if (weaponClass != WeaponClass.Undefined &&
+                        volleyByWeaponClass)
                     {
-                        component.ShootUnderVolley();
+                        if (!weaponClassRecords.ContainsKey(weaponClass))
+                        {
+                            weaponClassRecords[weaponClass] = new VolleyByWeaponClassRecord();
+                        }
+                        CollectAgentToRecord(weaponClassRecords[weaponClass], agent, component);
+                    }
+                    else
+                    {
+                        CollectAgentToRecord(globalRecord, agent, component);
                     }
                 }
             });
+            foreach (var pair in weaponClassRecords)
+            {
+                VolleyForVolleyRecord(pair.Key, pair.Value);
+            }
+            VolleyForVolleyRecord(WeaponClass.Undefined, globalRecord);
+        }
+
+        private static void CollectAgentToRecord(VolleyByWeaponClassRecord record, Agent agent, CommandSystemAgentComponent component)
+        {
+            record.AgentList.Add(agent);
+            if (!component.IsCandidateForNextFireAutoVolley())
+            {
+                return;
+            }
+            ++record.CandidateCount;
+            if (component.IsReadyForNextFire())
+            {
+                ++record.ReadyCount;
+            }
+        }
+
+        private static void VolleyForVolleyRecord(WeaponClass weaponClass, VolleyByWeaponClassRecord record)
+        {
+            int candidateCount = record.CandidateCount;
+            int readyCount = record.ReadyCount;
+            if (candidateCount == 0)
+            {
+                return;
+            }
+            if ((float)readyCount / candidateCount >= CommandSystemConfig.Get().ReadyRatioInAutoVolley)
+            {
+#if DEBUG
+                Utility.DisplayMessage($"auto fire for weapon class {weaponClass} with candidate={candidateCount}, ready={readyCount}");
+#endif
+                AgentListVolleyFire(record.AgentList);
+            }
         }
     }
 }

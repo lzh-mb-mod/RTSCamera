@@ -30,7 +30,6 @@ namespace RTSCamera.CommandSystem.Patch
                     prefix: new HarmonyMethod(
                         typeof(Patch_HumanAIComponent).GetMethod(nameof(Prefix_GetDesiredSpeedInFormation),
                             BindingFlags.Static | BindingFlags.Public)));
-
             }
             catch (Exception e)
             {
