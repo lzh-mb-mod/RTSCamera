@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using RTSCamera.CommandSystem.AgentComponents;
 using RTSCamera.CommandSystem.Config;
+using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic.SubLogic;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
@@ -193,6 +194,19 @@ namespace RTSCamera.CommandSystem.Logic
                     OutlineColorSubLogic.OnShowIndicatorKeyDownUpdate(_isShowIndicatorsDown);
                     GroundMarkerColorSubLogic.OnShowIndicatorKeyDownUpdate(_isShowIndicatorsDown);
                 }
+            }
+
+            if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.AutoVolley).IsKeyPressed())
+            {
+                Utilities.Utility.ExecuteAutoVolley();
+            }
+            else if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.ManualVolley).IsKeyPressed())
+            {
+                Utilities.Utility.ExecuteManualVolley();
+            }
+            else if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.VolleyFire).IsKeyPressed())
+            {
+                Utilities.Utility.ExecuteVolleyFire();
             }
 
             //if (Input.IsKeyPressed(InputKey.B))

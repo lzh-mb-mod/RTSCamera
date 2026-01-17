@@ -47,8 +47,8 @@ namespace RTSCamera.CommandSystem.Orders
             genericVisualOrderSet2.AddOrder(new ReturnVisualOrder());
             GenericVisualOrderSet genericVisualOrderSet3 = new GenericVisualOrderSet("order_type_toggle", new TextObject("{=0HTNYQz2}Toggle"), false, false);
             RTSCommandToggleFacingVisualOrder order3 = new RTSCommandToggleFacingVisualOrder("order_toggle_facing");
-            var autoVolleyVisualOrder = new RTSCommandToggleVolleyVisualOrder("order_toggle_volley", GameTexts.FindText("str_rts_camera_command_system_auto_volley"), GameTexts.FindText("str_rts_camera_command_system_auto_volley_off"), Logic.VolleyMode.Auto);
-            var manualVolleyVisualOrder = new RTSCommandToggleVolleyVisualOrder("order_toggle_volley", GameTexts.FindText("str_rts_camera_command_system_manual_volley"), GameTexts.FindText("str_rts_camera_command_system_manual_volley_off"), Logic.VolleyMode.Manual);
+            var autoVolleyVisualOrder = new RTSCommandToggleVolleyVisualOrder("order_auto_volley", GameTexts.FindText("str_rts_camera_command_system_auto_volley"), GameTexts.FindText("str_rts_camera_command_system_auto_volley_off"), Logic.VolleyMode.Auto);
+            var manualVolleyVisualOrder = new RTSCommandToggleVolleyVisualOrder("order_manual_volley", GameTexts.FindText("str_rts_camera_command_system_manual_volley"), GameTexts.FindText("str_rts_camera_command_system_manual_volley_off"), Logic.VolleyMode.Manual);
             RTSCommandToggleFireVisualOrder order4 = new RTSCommandToggleFireVisualOrder("order_toggle_fire", OrderType.FireAtWill, OrderType.HoldFire, autoVolleyVisualOrder, manualVolleyVisualOrder);
             RTSCommandGenericToggleVisualOrder order5 = new RTSCommandGenericToggleVisualOrder("order_toggle_mount", OrderType.Mount, OrderType.Dismount);
             RTSCommandGenericToggleVisualOrder order6 = GameNetwork.IsMultiplayer ? null : new RTSCommandGenericToggleVisualOrder("order_toggle_ai", OrderType.AIControlOn, OrderType.AIControlOff);
@@ -100,8 +100,8 @@ namespace RTSCamera.CommandSystem.Orders
             RTSCommandSingleVisualOrder order2 = new RTSCommandSingleVisualOrder("order_toggle_facing_active", new TextObject("{=u8j8nN5U}Face Enemy"), OrderType.LookAtEnemy, true, false);
             genericVisualOrderSet2.AddOrder(order1);
             genericVisualOrderSet2.AddOrder(order2);
-            var autoVolleyVisualOrder = new RTSCommandToggleVolleyVisualOrder("order_toggle_volley", GameTexts.FindText("str_rts_camera_command_system_auto_volley"), GameTexts.FindText("str_rts_camera_command_system_auto_volley_off"), Logic.VolleyMode.Auto);
-            var manualVolleyVisualOrder = new RTSCommandToggleVolleyVisualOrder("order_toggle_volley", GameTexts.FindText("str_rts_camera_command_system_manual_volley"), GameTexts.FindText("str_rts_camera_command_system_manual_volley_off"), Logic.VolleyMode.Manual);
+            var autoVolleyVisualOrder = new RTSCommandToggleVolleyVisualOrder("order_auto_volley", GameTexts.FindText("str_rts_camera_command_system_auto_volley"), GameTexts.FindText("str_rts_camera_command_system_auto_volley_off"), Logic.VolleyMode.Auto);
+            var manualVolleyVisualOrder = new RTSCommandToggleVolleyVisualOrder("order_manual_volley", GameTexts.FindText("str_rts_camera_command_system_manual_volley"), GameTexts.FindText("str_rts_camera_command_system_manual_volley_off"), Logic.VolleyMode.Manual);
             GenericVisualOrderSet genericVisualOrderSet3 = new GenericVisualOrderSet("order_type_form", new TextObject("{=iBk2wbn3}Form"), true, true);
             RTSCommandArrangementVisualOrder order3 = new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.Line, "order_form_line");
             RTSCommandArrangementVisualOrder order4 = new RTSCommandArrangementVisualOrder(ArrangementOrder.ArrangementOrderEnum.ShieldWall, "order_form_close");
@@ -131,7 +131,7 @@ namespace RTSCamera.CommandSystem.Orders
                 if (order8 != null)
                     legacyOrders.Add(new SingleVisualOrderSet(order8));
             }
-            RTSCommandGenericVisualOrderSet volleyVisualOrderSet = new RTSCommandGenericVisualOrderSet("order_type_volley", GameTexts.FindText("str_rts_camera_command_system_volley_order"), true, true, null);
+            RTSCommandGenericVisualOrderSet volleyVisualOrderSet = new RTSCommandGenericVisualOrderSet("order_type_volley", GameTexts.FindText("str_rts_camera_command_system_volley_order"), true, true, autoVolleyVisualOrder);
             volleyVisualOrderSet.AddOrder(autoVolleyVisualOrder);
             volleyVisualOrderSet.AddOrder(manualVolleyVisualOrder);
             volleyVisualOrderSet.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));

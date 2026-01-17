@@ -16,6 +16,9 @@ namespace RTSCamera.CommandSystem.Config.HotKey
         SelectTargetForCommand,
         CommandQueue,
         KeepFormationWidth,
+        AutoVolley,
+        ManualVolley,
+        VolleyFire,
         NumberOfGameKeyEnums
     }
     public class CommandSystemGameKeyCategory
@@ -116,6 +119,36 @@ namespace RTSCamera.CommandSystem.Config.HotKey
                         new List<InputKey>()
                         {
                             InputKey.RightControl
+                        })
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.AutoVolley,
+                nameof(GameKeyEnum.AutoVolley),
+                CategoryId, new List<GameKeySequenceAlternative>()
+                {
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.H
+                        })
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.ManualVolley,
+                nameof(GameKeyEnum.ManualVolley),
+                CategoryId, new List<GameKeySequenceAlternative>()
+                {
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.J
+                        })
+                }));
+            result.AddGameKeySequence(new GameKeySequence((int)GameKeyEnum.VolleyFire,
+                nameof(GameKeyEnum.VolleyFire),
+                CategoryId, new List<GameKeySequenceAlternative>()
+                {
+                    new GameKeySequenceAlternative(
+                        new List<InputKey>()
+                        {
+                            InputKey.K
                         })
                 }));
             return result;

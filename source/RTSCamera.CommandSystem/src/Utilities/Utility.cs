@@ -14,6 +14,7 @@ using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
+using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
 using static TaleWorlds.Engine.WorldPosition;
 using static TaleWorlds.MountAndBlade.ArrangementOrder;
 using MathF = TaleWorlds.Library.MathF;
@@ -1016,6 +1017,36 @@ namespace RTSCamera.CommandSystem.Utilities
                         maxAmmo = agent.Equipment.GetMaxAmmo(equipmentIndex);
                     }
                 }
+            }
+        }
+
+        public static void ExecuteAutoVolley()
+        {
+            var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
+            var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_auto_volley");
+            if (orderItem != null)
+            {
+                orderItem.ExecuteAction(new VisualOrderExecutionParameters(Agent.Main, null, null));
+            }
+        }
+
+        public static void ExecuteManualVolley()
+        {
+            var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
+            var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_manual_volley");
+            if (orderItem != null)
+            {
+                orderItem.ExecuteAction(new VisualOrderExecutionParameters(Agent.Main, null, null));
+            }
+        }
+
+        public static void ExecuteVolleyFire()
+        {
+            var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
+            var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_volley_fire");
+            if (orderItem != null)
+            {
+                orderItem.ExecuteAction(new VisualOrderExecutionParameters(Agent.Main, null, null));
             }
         }
     }

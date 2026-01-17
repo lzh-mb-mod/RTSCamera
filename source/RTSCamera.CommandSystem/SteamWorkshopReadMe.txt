@@ -52,6 +52,10 @@ The attacked enemy formation will be highlighted with red outline when you open 
 Your attacked formation will be highlighted with dark blue outline when you open command panel.
 Your selected formation will be highlighted with green outline when you open command panel.
 
+Auto Volley: Press `F3 F6` (if using legacy order layout, `F8 F1`) or `H`. Soldiers will aim and wait for others and fire when most soldiers are ready.
+Manual Volley: Press `F3 F7` (if using legacy order layout, `F8 F2`) or `J`. Soldiers will aim and wait for your orders to fire.
+Volley Fire: Press `F3 F8` (if using legacy order layout, `F8 F3`) or `K`. Let soldiers in manual volley to fire.
+
 Press L to open config menu during battles.
 
 

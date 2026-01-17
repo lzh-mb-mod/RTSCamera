@@ -1,5 +1,14 @@
 # Changelog
 
+## [v5.3.19] - 2026-01-17
+### Added
+- Add auto volley order and related options.
+
+- Hero list in mod menu will be sorted by order in player party member roster.
+
+### Fixed
+- Fix possible out of bound issue.
+
 ## [v5.3.18] - 2026-01-11
 ### Improved
 - Improve performance when clicking on ground to move formations.

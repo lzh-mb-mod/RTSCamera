@@ -35,6 +35,12 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Add volley order.
 
+    - Auto Volley: soldiers will aim and wait for others and fire when most soldiers are ready.
+
+    - Manual Volley: soldiers will aim and wait for your orders to fire.
+
+    - Volley Fire: Let soldiers in manual volley to fire.
+
   - Square and Circle formations are improved.
 
   - Fix issues related with formation width and unit spacing in the base game.
@@ -83,6 +89,12 @@ This mod is composed of 2 parts, RTS Camera and Command System.
   - You can select your formations by clicking on troop cards and give orders by clicking on order buttons.
 
     - Hold `Alt` to show the mouse.
+
+  - Auto Volley: Press `F3 F6` (if using legacy order layout, `F8 F1`) or `H`.
+
+  - Manual Volley: Press `F3 F7` (if using legacy order layout, `F8 F2`) or `J`.
+
+  - Volley Fire: Press `F3 F8` (if using legacy order layout, `F8 F3`) or `K`.
 
 - For more features, you can read `Details` below or press `L` to open mod menu.
 
@@ -257,6 +269,12 @@ Command System:
 - `Left Shift` or `Right Shift`: Add command to queue.
 
 - `Left Ctrl` or `Right Ctrl`: Keep formation width when dragging.
+
+- `H`: Auto volley.
+
+- `J`: Manual volley.
+
+- `K`: Volley fire.
 
 There're more hotkeys configurable but are disabled by default. You can configure them by pressing L and click Config Key on the top.
 
