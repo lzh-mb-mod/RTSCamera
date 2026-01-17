@@ -20,10 +20,6 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
         {
             get
             {
-                if (_otherOrder != null)
-                {
-                    return _otherOrder.IconId;
-                }
                 if (this._useActiveOrderForIconId)
                 {
                     for (int index = 0; index < this.Orders.Count; ++index)
@@ -32,16 +28,16 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                             return this.Orders[index].IconId;
                     }
                 }
+                if (_otherOrder != null)
+                {
+                    return _otherOrder.IconId;
+                }
                 return this._stringId;
             }
         }
 
         public override TextObject GetName(OrderController orderController)
         {
-            if (_otherOrder != null)
-            {
-                return _otherOrder.GetName(orderController);
-            }
             if (this._useActiveOrderForName)
             {
                 for (int index = 0; index < this.Orders.Count; ++index)
@@ -49,6 +45,10 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                     if (this.Orders[index].GetActiveState(orderController) == OrderState.Active)
                         return this.Orders[index].GetName(orderController);
                 }
+            }
+            if (_otherOrder != null)
+            {
+                return _otherOrder.GetName(orderController);
             }
             return this._name;
         }
