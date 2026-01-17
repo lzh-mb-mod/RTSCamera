@@ -1,5 +1,14 @@
 # Changelog
 
+## [v5.1.18] - 2026-01-17
+### Added
+- Hero list in mod menu will be sorted by order in player party member roster.
+
+### Fixed
+- Fix possible out of bound issue.
+
+- Fix the issue that order UI is shifted to left on wide screen.
+
 ## [v5.1.17] - 2026-01-11
 ### Added
 - Troops in formations are highlighted when pressing alt.

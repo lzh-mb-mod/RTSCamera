@@ -5,7 +5,6 @@ RTS Command for v1.2.12
 Main features:
 Reworked the command system in the base game.
 Order target is highlighted to be visible from far distance.
-Add volley order.
 Troops with throwing weapons will correctly keep distance under engage order.
 Square and Circle formations are improved.
 Allows to give a series of orders and let your troops execute them one by one. For example, move along a given path and then shooting/charging.

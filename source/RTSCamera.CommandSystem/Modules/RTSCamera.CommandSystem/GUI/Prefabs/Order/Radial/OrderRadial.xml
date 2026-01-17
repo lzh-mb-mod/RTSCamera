@@ -44,11 +44,13 @@
                   </Children>
                 </OrderReturnButtonWidget> -->
                 <!--Order Sets-->
-                <ListPanel DoNotAcceptEvents="true" DataSource="{OrderSets}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginLeft="300" MarginBottom="20">
-                  <ItemTemplate>
-                    <OrderSetRadial MarginLeft="-50" MarginRight="-290"  MinWidth="300"/>
-                  </ItemTemplate>
-                </ListPanel>
+              </Children>
+            </ListPanel>
+            <ListPanel DoNotAcceptEvents="true" DataSource="{OrderSets}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginLeft="-290" MarginBottom="80">
+              <ItemTemplate>
+                <OrderSetRadial MarginLeft="-50" MarginRight="-290"  MinWidth="300"/>
+              </ItemTemplate>
+            </ListPanel>
                 
                 <!--Exit Button Visual-->
                 <!-- <OrderReturnButtonWidget Command.Click="OnEscape" DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="62" SuggestedHeight="62" Brush="Order.Item.Background" VerticalAlignment="Bottom" IconWidget="Icon" InputVisualParent="InputVisualParent" OrderIconID="Return" IsDeployment="@IsDeployment" CanUseShortcuts="@CanUseShortcuts" IsHolding="@IsHolding" IsAnyOrderSetActive="@IsAnyOrderSetActive">
@@ -67,8 +69,6 @@
                   </Children>
                 </OrderReturnButtonWidget> -->
                 
-              </Children>
-            </ListPanel>
             <!-- <ListPanel DoNotAcceptEvents="true" DataSource="{OrderSets}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="-350">
               <ItemTemplate>
                 <OrderSetItemRadial MarginLeft="170" MarginRight="-485" />
