@@ -160,7 +160,7 @@
     <string id="RTSCameraCommandSystem_ready_ratio_in_auto_volley" text="Ready Ratio in Auto Volley" />
     <string id="RTSCameraCommandSystem_ready_ratio_in_auto_volley_hint" text="The minimum ratio of troops ready to fire before firing in Auto Volley mode." />
     <string id="RTSCameraCommandSystem_max_aiming_time" text="Max Aiming Time" />
-    <string id="RTSCameraCommandSystem_max_aiming_time_hint" text="The maximum time troops is considered to spend aiming in Auto Volley mode." />
+    <string id="RTSCameraCommandSystem_max_aiming_time_hint" text="The maximum time troops is considered to spend aiming in Auto Volley mode. The default is 1.5 seconds." />
     <string id="RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type" text="Auto Volley by Weapon Type for Non-Thrown Weapons" />
     <string id="RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type_hint" text="When enabled, troops with non-thrown weapons will auto volley by weapon type." />
     <string id="RTSCameraCommandSystem_auto_volley_by_thrown_weapon_type" text="Auto Volley by Weapon Type for Thrown Weapons" />

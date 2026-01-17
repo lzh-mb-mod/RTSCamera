@@ -158,7 +158,7 @@
     <string id="RTSCameraCommandSystem_ready_ratio_in_auto_volley" text="Ratio prêt en volée automatique" />
     <string id="RTSCameraCommandSystem_ready_ratio_in_auto_volley_hint" text="Le ratio minimum de troupes prêtes à tirer avant de tirer en mode volée automatique." />
     <string id="RTSCameraCommandSystem_max_aiming_time" text="Durée maximale de visée" />
-    <string id="RTSCameraCommandSystem_max_aiming_time_hint" text="La durée maximale que les troupes sont censées passer à viser en mode volée automatique." />
+    <string id="RTSCameraCommandSystem_max_aiming_time_hint" text="La durée maximale que les troupes sont censées passer à viser en mode volée automatique. La valeur par défaut est 1,5 secondes." />
     <string id="RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type" text="Volée automatique par type d'arme pour armes non-jetables" />
     <string id="RTSCameraCommandSystem_auto_volley_by_nonthrown_weapon_type_hint" text="Lorsque activé, les troupes avec des armes non-jetables feront une volée automatique par type d'arme." />
     <string id="RTSCameraCommandSystem_auto_volley_by_thrown_weapon_type" text="Volée automatique par type d'arme pour armes jetables" />

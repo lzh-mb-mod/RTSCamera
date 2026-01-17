@@ -154,7 +154,7 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool AutoVolleyByWeaponTypeForNonThrown = true;
 
-        public bool AutoVolleyByWeaponTypeForThrown = true;
+        public bool AutoVolleyByWeaponTypeForThrown = false;
 
         public bool IsCommandOptionVisible = true;
 

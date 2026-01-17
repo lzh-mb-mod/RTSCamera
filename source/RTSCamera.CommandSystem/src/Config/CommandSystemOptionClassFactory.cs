@@ -308,8 +308,8 @@ namespace RTSCamera.CommandSystem.Config
                 volleyOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_auto_volley_by_thrown_weapon_type"),
                     GameTexts.FindText("str_rts_camera_command_system_auto_volley_by_thrown_weapon_type_hint"),
-                    () => CommandSystemConfig.Get().AutoVolleyByWeaponTypeForNonThrown,
-                    b => CommandSystemConfig.Get().AutoVolleyByWeaponTypeForNonThrown = b));
+                    () => CommandSystemConfig.Get().AutoVolleyByWeaponTypeForThrown,
+                    b => CommandSystemConfig.Get().AutoVolleyByWeaponTypeForThrown = b));
                 optionClass.AddOptionCategory(1, volleyOptionCategory);
 
                 return optionClass;

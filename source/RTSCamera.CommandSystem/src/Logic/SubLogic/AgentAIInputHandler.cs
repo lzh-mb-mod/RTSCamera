@@ -3,7 +3,6 @@ using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using static TaleWorlds.MountAndBlade.MovementOrder;
 
 namespace RTSCamera.CommandSystem.Logic.SubLogic
 {
@@ -30,8 +29,6 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         private bool _cancelAttackOnVolleyDisabled = false;
         public bool IsVolleySuspended { get; private set; } = false;
-        private bool _isCandidateForNextFireInAutoVolley  = false;
-        private bool _isAvailableForNextFireInAutoVolley = false;
         private MatrixFrame _agentFrame;
         private WorldPosition _aiMoveDestination;
         private WorldPosition _formationPosition;
@@ -41,15 +38,11 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private bool _isTargetAgentOutOfRange = false;
         private bool _isTargetAgentNearby = false;
         private float _minAimingError = float.MaxValue;
-        private float _maxAimingError = float.MinValue;
-        private bool _encouteredFirstMinimumValue = false;
-        private bool _encounteredFirstMaximumValue;
         private bool _tryAimingTimeoutInAutoVolley = false;
         private bool _aimTimeout = false;
         private bool _shouldResetAutoVolleyTimer = false;
         private Timer _cancelAttackeBeforeWaitingForOrder = new Timer(-1, -1, false);
         private Timer _autoVolleyAimingTimer = new Timer(-1, -1, false);
-        private Timer _tryAimingWhileWaitingForOrderTimer = new Timer(-1, -1, false);
         private Timer _aimWhileWaitingForOrderTimer = new Timer(-1, -1, false);
         private Timer _prepareForShootingTimer = new Timer(-1, -1, false);
         private Timer _forceDrawingTimer = new Timer(-1, -1, false);
@@ -83,8 +76,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             }
             if (VolleyMode == VolleyMode.Manual)
             {
-                _cancelAttackeBeforeWaitingForOrder.Reset(Mission.Current.CurrentTime, MBRandom.RandomFloat * 0.6f);
-                _volleyStatus = VolleyStatus.CancelAttackBeforeWaitingForOrder;
+                TransitToState(VolleyStatus.CancelAttackBeforeWaitingForOrder, agent);
             }
             else if (VolleyMode == VolleyMode.Auto)
             {
@@ -125,45 +117,23 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                     case VolleyStatus.StandAfterShooted:
                     case VolleyStatus.StandAfterCancelShooting:
                     case VolleyStatus.Reloading:
-                        _volleyStatus = VolleyStatus.PrepareForShooting;
-                        if (VolleyMode == VolleyMode.Auto)
-                        {
-                            _prepareForShootingTimer.Reset(Mission.Current.CurrentTime, 0);
-                        }
-                        else
-                        {
-                            _prepareForShootingTimer.Reset(Mission.Current.CurrentTime, MBRandom.RandomFloat * 0.6f);
-                        }
-                        _isCandidateForNextFireInAutoVolley = false;
-                        _isAvailableForNextFireInAutoVolley = false;
-                        //_prepareForShootingTick = (int)(MBRandom.RandomFloat * 60);
+                        TransitToState(VolleyStatus.PrepareForShooting, agent);
                         break;
                     case VolleyStatus.TryAimingWhileWaitingForOrder:
                         _waitingForLookingForTargetTimer.Reset(Mission.Current.CurrentTime, 2f);
-                        _isCandidateForNextFireInAutoVolley = false;
-                        _isAvailableForNextFireInAutoVolley = false;
-                        _volleyStatus = VolleyStatus.WaitingForLookingForTarget;
+                        TransitToState(VolleyStatus.WaitingForLookingForTarget, agent);
                         break;
                     case VolleyStatus.AimWhileWaitingForOrder:
                     case VolleyStatus.AimingDoneWhileWaitingForOrder:
-                        _drawingTheBowUnderShootingOrderTimer.Reset(Mission.Current.CurrentTime, agent.HasMount ? 15f : 7.5f);
-                        _isCandidateForNextFireInAutoVolley = true;
-                        _isAvailableForNextFireInAutoVolley = false;
-                        _volleyStatus = VolleyStatus.DrawingTheBowUnderShootingOrder;
+                        TransitToState(VolleyStatus.DrawingTheBowUnderShootingOrder, agent);
                         break;
                     case VolleyStatus.WaitingForLookingForTarget:
                         _waitingForLookingForTargetTimer.Reset(Mission.Current.CurrentTime, 1f);
-                        _isCandidateForNextFireInAutoVolley = true;
-                        _isAvailableForNextFireInAutoVolley = false;
                         break;
                     case VolleyStatus.DrawingTheBowUnderShootingOrder:
                         _drawingTheBowUnderShootingOrderTimer.Reset(Mission.Current.CurrentTime, 4f);
-                        _isCandidateForNextFireInAutoVolley = true;
-                        _isAvailableForNextFireInAutoVolley = false;
                         break;
                     default:
-                        _isCandidateForNextFireInAutoVolley = false;
-                        _isAvailableForNextFireInAutoVolley = false;
                         return false;
                 }
                 return true;
@@ -195,12 +165,12 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                         //_aimTimeout = false;
                         //_autoVolleyAimingTimer.Reset(Mission.Current.CurrentTime, CommandSystemConfig.Get().MaxAimingTime);
                         //_tryAimingWhileWaitingForOrderTimer.Reset(Mission.Current.CurrentTime, 2f);
-                        _volleyStatus = VolleyStatus.TryAimingWhileWaitingForOrder;
+                        TransitToState(VolleyStatus.TryAimingWhileWaitingForOrder, affectedAgent);
                         break;
                     case VolleyStatus.DrawingTheBowUnderShootingOrder:
                         _allowMovingTimer.Reset(Mission.Current.CurrentTime, 0.6f);
                         _waitingForLookingForTargetTimer.Reset(Mission.Current.CurrentTime, 3f);
-                        _volleyStatus = VolleyStatus.WaitingForLookingForTarget;
+                        TransitToState(VolleyStatus.WaitingForLookingForTarget, affectedAgent);
                         break;
                 }
             }
@@ -413,6 +383,58 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             //agent.ForceAiBehaviorSelection();
         }
 
+        private void TransitToState(VolleyStatus newStatus, Agent agent)
+        {
+            switch (newStatus)
+            {
+                case VolleyStatus.CancelAttackBeforeWaitingForOrder:
+                    _cancelAttackeBeforeWaitingForOrder.Reset(Mission.Current.CurrentTime, MBRandom.RandomFloat * 0.6f);
+                    break;
+                case VolleyStatus.Reloading:
+                    break;
+                case VolleyStatus.WaitingForOrder:
+                    OnVolleyWait(agent);
+                    break;
+                case VolleyStatus.TryAimingWhileWaitingForOrder:
+                    break;
+                case VolleyStatus.AimWhileWaitingForOrder:
+                    _minAimingError = float.MaxValue;
+                    _aimWhileWaitingForOrderTimer.Reset(Mission.Current.CurrentTime, CommandSystemConfig.Get().MaxAimingTime);
+                    _aimTimeout = false;
+                    break;
+                case VolleyStatus.AimingDoneWhileWaitingForOrder:
+                    _minAimingError = agent.CurrentAimingError;
+                    break;
+                case VolleyStatus.PrepareForShooting:
+                    if (VolleyMode == VolleyMode.Auto)
+                    {
+                        _prepareForShootingTimer.Reset(Mission.Current.CurrentTime, 0);
+                    }
+                    else
+                    {
+                        _prepareForShootingTimer.Reset(Mission.Current.CurrentTime, MBRandom.RandomFloat * 0.6f);
+                    }
+                    break;
+                case VolleyStatus.ForceDrawing:
+                    break;
+                case VolleyStatus.WaitingForLookingForTarget:
+                    break;
+                case VolleyStatus.DrawingTheBowUnderShootingOrder:
+                    _drawingTheBowUnderShootingOrderTimer.Reset(Mission.Current.CurrentTime, agent.HasMount ? 15f : 7.5f);
+                    break;
+                case VolleyStatus.StandAfterShooted:
+                    // Wait for atmost 2 seconds for thrown weapon to throw.
+                    _standAfterShootedTimer.Reset(Mission.Current.CurrentTime, 2f);
+                    SetWaitingBehavior(agent);
+                    break;
+                case VolleyStatus.StandAfterCancelShooting:
+                    _standAfterCancelShootingTimer.Reset(Mission.Current.CurrentTime, 0f);
+                    SetWaitingBehavior(agent);
+                    break;
+            }
+            _volleyStatus = newStatus;
+        }
+
 
         public void OnAIInputSet(Agent agent, ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)
         {
@@ -464,14 +486,13 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             {
                                 break;
                             }
-                            _volleyStatus = VolleyStatus.WaitingForOrder;
-                            OnVolleyWait(agent);
+                            TransitToState(VolleyStatus.WaitingForOrder, agent);
                             break;
                         case VolleyStatus.WaitingForOrder:
                             if (agent.WieldedWeapon.IsReloading)
                             {
-                                _volleyStatus = VolleyStatus.Reloading;
                                 OnShootingEnabled(agent);
+                                TransitToState(VolleyStatus.Reloading, agent);
                                 break;
                             }
                             if (IsPreAimingEnabled(agent))
@@ -479,7 +500,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                                 OnShootingEnabled(agent);
                                 if (IsAttacking(movementFlag))
                                 {
-                                    GoToAimingWhileWaitingForOrderState(agent, currentTime);
+                                    TransitToState(VolleyStatus.AimWhileWaitingForOrder, agent);
                                     break;
                                 }
                                 _tryAimingTimeoutInAutoVolley = false;
@@ -488,8 +509,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                                     _autoVolleyAimingTimer.Reset(currentTime, CommandSystemConfig.Get().MaxAimingTime);
                                     _shouldResetAutoVolleyTimer = false;
                                 }
-                                //_tryAimingWhileWaitingForOrderTimer.Reset(currentTime, 2f);
-                                _volleyStatus = VolleyStatus.TryAimingWhileWaitingForOrder;
+                                TransitToState(VolleyStatus.TryAimingWhileWaitingForOrder, agent);
                                 break;
                             }
                             else
@@ -507,7 +527,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             {
                                 if (IsAttacking(movementFlag))
                                 {
-                                    GoToAimingWhileWaitingForOrderState(agent, currentTime);
+                                    TransitToState(VolleyStatus.AimWhileWaitingForOrder, agent);
                                     break;
                                 }
 
@@ -525,10 +545,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                                     SetCancelAttack(ref movementFlag);
                                 }
                                 OnVolleyWait(agent);
-                                _isCandidateForNextFireInAutoVolley = false;
-                                _isAvailableForNextFireInAutoVolley = false;
                                 _shouldResetAutoVolleyTimer = true;
-                                _volleyStatus = VolleyStatus.WaitingForOrder;
+                                TransitToState(VolleyStatus.WaitingForOrder, agent);
                             }
                             break;
                         case VolleyStatus.AimWhileWaitingForOrder:
@@ -537,23 +555,17 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                                 bool isAttackCancelled = IsCancelAttack(movementFlag);
                                 if (isAttackCancelled)
                                 {
-                                    _isCandidateForNextFireInAutoVolley = false;
-                                    _isAvailableForNextFireInAutoVolley = false;
-                                    //_tryAimingTimeoutInAutoVolley = false;
                                     // attack may be cancelled because of friend in way, etc.
-                                    //_autoVolleyAimingTimer.Reset(currentTime, CommandSystemConfig.Get().MaxAimingTime);
-                                    //_tryAimingWhileWaitingForOrderTimer.Reset(currentTime, 2f);
-                                    _volleyStatus = VolleyStatus.TryAimingWhileWaitingForOrder;
+                                    TransitToState(VolleyStatus.TryAimingWhileWaitingForOrder, agent);
                                     break;
                                 }
                                 // Keep Aiming
                                 if (!IsAttacking(movementFlag))
                                 {
-                                    _isAvailableForNextFireInAutoVolley = true;
                                     SetAttack(ref movementFlag, true);
                                     var aimingError = agent.CurrentAimingError;
                                     _minAimingError = aimingError;
-                                    _volleyStatus = VolleyStatus.AimingDoneWhileWaitingForOrder;
+                                    TransitToState(VolleyStatus.AimingDoneWhileWaitingForOrder, agent);
                                     break;
                                 }
                                 else
@@ -569,11 +581,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             {
                                 // Aiming Disabled
                                 SetCancelAttack(ref movementFlag);
-                                OnVolleyWait(agent);
-                                _isCandidateForNextFireInAutoVolley = false;
-                                _isAvailableForNextFireInAutoVolley = false;
                                 _shouldResetAutoVolleyTimer = true;
-                                _volleyStatus = VolleyStatus.WaitingForOrder;
+                                TransitToState(VolleyStatus.WaitingForOrder, agent);
                             }
                             break;
                         case VolleyStatus.AimingDoneWhileWaitingForOrder:
@@ -599,13 +608,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                                 }
                                 if (isAttackCancelled)
                                 {
-                                    _isCandidateForNextFireInAutoVolley = false;
-                                    _isAvailableForNextFireInAutoVolley = false;
                                     // attack may be cancelled because of friend in way, etc.
-                                    //_tryAimingTimeoutInAutoVolley = false;
-                                    //_autoVolleyAimingTimer.Reset(currentTime, CommandSystemConfig.Get().MaxAimingTime);
-                                    //_tryAimingWhileWaitingForOrderTimer.Reset(currentTime, 2f);
-                                    _volleyStatus = VolleyStatus.TryAimingWhileWaitingForOrder;
+                                    TransitToState(VolleyStatus.TryAimingWhileWaitingForOrder, agent);
                                     break;
                                 }
                             }
@@ -613,11 +617,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             {
                                 // Aiming Disabled
                                 SetCancelAttack(ref movementFlag);
-                                OnVolleyWait(agent);
-                                _isCandidateForNextFireInAutoVolley = false;
-                                _isAvailableForNextFireInAutoVolley = false;
                                 _shouldResetAutoVolleyTimer = true;
-                                _volleyStatus = VolleyStatus.WaitingForOrder;
+                                TransitToState(VolleyStatus.WaitingForOrder, agent);
                                 break;
                             }
                             break;
@@ -632,36 +633,30 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             if (ForceShootingEnabled)
                             {
                                 _volleyStatus = VolleyStatus.ForceDrawing;
-                                //_forceDrawingTick = 60;
                                 _forceDrawingTimer.Reset(currentTime, 0.0f);
                             }
                             else
                             {
-                                _isCandidateForNextFireInAutoVolley = true;
-                                _isAvailableForNextFireInAutoVolley = false;
-                                _volleyStatus = VolleyStatus.WaitingForLookingForTarget;
-                                //_allowMovingTick = 100;
                                 _allowMovingTimer.Reset(currentTime, 0.6f);
-                                //_waitingForLookingForTargetTick = 360;
                                 _waitingForLookingForTargetTimer.Reset(currentTime, 3f);
+                                TransitToState(VolleyStatus.WaitingForLookingForTarget, agent);
+                                break;
                             }
                             break;
                         case VolleyStatus.ForceDrawing:
                             SetStand(agent, ref inputVector); 
                             if (IsAttacking(movementFlag))
                             {
-                                //_drawingTheBowUnderShootingOrderTick = 360;
+                                TransitToState(VolleyStatus.DrawingTheBowUnderShootingOrder, agent);
                                 _drawingTheBowUnderShootingOrderTimer.Reset(currentTime, 3.6f);
-                                _volleyStatus = VolleyStatus.DrawingTheBowUnderShootingOrder;
+                                break;
                             }
                             //if (--_forceDrawingTick <= 0)
                             if (_forceDrawingTimer.Check(currentTime))
                             {
-                                _volleyStatus = VolleyStatus.WaitingForLookingForTarget;
-                                //_allowMovingTick = 60;
                                 _allowMovingTimer.Reset(currentTime, 0.6f);
-                                //_waitingForLookingForTargetTick = 360;
                                 _waitingForLookingForTargetTimer.Reset(currentTime, 1f);
+                                TransitToState(VolleyStatus.WaitingForLookingForTarget, agent);
                                 break;
                             }
                             SetAttack(ref movementFlag, true);
@@ -679,10 +674,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             }
                             if (IsAttacking(movementFlag))
                             {
-                                _drawingTheBowUnderShootingOrderTimer.Reset(currentTime, agent.HasMount ? 15f : 7.2f);
-                                _isCandidateForNextFireInAutoVolley = true;
-                                _isAvailableForNextFireInAutoVolley = false;
-                                _volleyStatus = VolleyStatus.DrawingTheBowUnderShootingOrder;
+                                TransitToState(VolleyStatus.DrawingTheBowUnderShootingOrder, agent);
                                 break;
                             }
 
@@ -700,19 +692,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                                     SetCancelAttack(ref movementFlag);
                                 }
 
-                                _isCandidateForNextFireInAutoVolley = false;
-                                _isAvailableForNextFireInAutoVolley = false;
-                                _volleyStatus = VolleyStatus.StandAfterCancelShooting;
-                                _standAfterCancelShootingTimer.Reset(currentTime, 0f);
+                                TransitToState(VolleyStatus.StandAfterCancelShooting, agent);
                                 break;
-                            }
-                            else
-                            {
-
-                                if (_waitingForLookingForTargetTimer.ElapsedTime() > 2)
-                                {
-                                    _isCandidateForNextFireInAutoVolley = false;
-                                }
                             }
                             if (ForceShootingEnabled)
                             {
@@ -724,45 +705,30 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             SetStand(agent, ref inputVector);
                             if (IsCancelAttack(movementFlag))
                             {
-                                _isCandidateForNextFireInAutoVolley = false;
-                                _isAvailableForNextFireInAutoVolley = false;
-                                _volleyStatus = VolleyStatus.WaitingForLookingForTarget;
-                                //_allowMovingTick = 60;
                                 _allowMovingTimer.Reset(currentTime, 0.6f);
-                                //_waitingForLookingForTargetTick = 360;
                                 _waitingForLookingForTargetTimer.Reset(currentTime, 2f);
+                                TransitToState(VolleyStatus.WaitingForLookingForTarget, agent);
                                 break;
                             }
                             if (!IsAttacking(movementFlag))
                             {
-                                _volleyStatus = VolleyStatus.StandAfterShooted;
-                                // It takes max to 2 seconds to throw.
-                                _standAfterShootedTimer.Reset(currentTime, 2f);
-                                SetWaitingBehavior(agent);
+                                TransitToState(VolleyStatus.StandAfterShooted, agent);
                                 break;
                             }
                             // TODO: attacking and reloading?
                             if (agent.WieldedWeapon.IsReloading)
                             {
                                 SetCancelAttack(ref movementFlag);
-                                _volleyStatus = VolleyStatus.Reloading;
                                 SetWaitingBehavior(agent);
+                                TransitToState(VolleyStatus.Reloading, agent);
                                 break;
                             }
                             //if (--_drawingTheBowUnderShootingOrderTick <= 0)
                             if (_drawingTheBowUnderShootingOrderTimer.Check(currentTime))
                             {
                                 SetCancelAttack(ref movementFlag);
-                                _isCandidateForNextFireInAutoVolley = false;
-                                _isAvailableForNextFireInAutoVolley = false;
-                                _volleyStatus = VolleyStatus.StandAfterCancelShooting;
-                                _standAfterCancelShootingTimer.Reset(currentTime, 0f);
-                                SetWaitingBehavior(agent);
+                                TransitToState(VolleyStatus.StandAfterCancelShooting, agent);
                                 break;
-                            }
-                            if (_drawingTheBowUnderShootingOrderTimer.ElapsedTime() > 3)
-                            {
-                                _isCandidateForNextFireInAutoVolley = false;
                             }
                             break;
                         case VolleyStatus.StandAfterShooted:
@@ -774,8 +740,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             // for throwing weapon, after thrown, the wielded weapon will become empty.
                             if (agent.WieldedWeapon.IsReloading || agent.WieldedWeapon.IsEmpty)
                             {
-                                _volleyStatus = VolleyStatus.Reloading;
                                 SetWaitingBehavior(agent);
+                                TransitToState(VolleyStatus.Reloading, agent);
                                 break;
                             }
                             // for throwing (consumable) weapon, it takes time to throw.
@@ -785,10 +751,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                             }
 
                             // TODO: out of ammo?
-                            _isCandidateForNextFireInAutoVolley = false;
-                            _isAvailableForNextFireInAutoVolley = false;
-                            _volleyStatus = VolleyStatus.WaitingForOrder;
-                            OnVolleyWait(agent);
+                            TransitToState(VolleyStatus.WaitingForOrder, agent);
                             break;
                         case VolleyStatus.StandAfterCancelShooting:
                             SetStand(agent, ref inputVector);
@@ -798,14 +761,12 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                                 break;
                             }
 
-                            _volleyStatus = VolleyStatus.WaitingForOrder;
-                            OnVolleyWait(agent);
+                            TransitToState(VolleyStatus.WaitingForOrder, agent);
                             break;
                         case VolleyStatus.Reloading:
                             if (!agent.WieldedWeapon.IsReloading && !agent.WieldedWeapon.IsEmpty)
                             {
-                                _volleyStatus = VolleyStatus.WaitingForOrder;
-                                OnVolleyWait(agent);
+                                TransitToState(VolleyStatus.WaitingForOrder, agent);
                             }
                             //SetStand(agent, ref inputVector);
                             break;
@@ -817,19 +778,6 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                 _cancelAttackOnVolleyDisabled = false;
                 SetCancelAttack(ref movementFlag);
             }
-        }
-
-        private void GoToAimingWhileWaitingForOrderState(Agent agent, float currentTime)
-        {
-            _minAimingError = float.MaxValue;
-            _maxAimingError = float.MinValue;
-            _encouteredFirstMinimumValue = false;
-            _encounteredFirstMaximumValue = false;
-            _isCandidateForNextFireInAutoVolley = true;
-            _isAvailableForNextFireInAutoVolley = false;
-            _aimWhileWaitingForOrderTimer.Reset(currentTime, CommandSystemConfig.Get().MaxAimingTime);
-            _aimTimeout = false;
-            _volleyStatus = VolleyStatus.AimWhileWaitingForOrder;
         }
 
         private static bool IsHoldingThrownWeapon(Agent agent)
@@ -933,6 +881,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             switch (_volleyStatus)
             {
                 case VolleyStatus.AimWhileWaitingForOrder:
+                case VolleyStatus.AimingDoneWhileWaitingForOrder:
                 case VolleyStatus.DrawingTheBowUnderShootingOrder:
                 case VolleyStatus.ForceDrawing:
                     return true;
