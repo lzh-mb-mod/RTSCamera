@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.3.20] - 2026-01-18
+### Fixed
+- Fix crash caused by auto volley hotkey in non-battle mission.
+
 ## [v5.3.19] - 2026-01-17
 ### Added
 - Add auto volley order and related options.

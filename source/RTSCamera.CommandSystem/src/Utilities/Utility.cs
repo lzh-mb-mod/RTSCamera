@@ -1023,6 +1023,8 @@ namespace RTSCamera.CommandSystem.Utilities
         public static void ExecuteAutoVolley()
         {
             var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
+            if (missionOrderVM == null)
+                return;
             var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_auto_volley");
             if (orderItem != null)
             {
@@ -1033,6 +1035,8 @@ namespace RTSCamera.CommandSystem.Utilities
         public static void ExecuteManualVolley()
         {
             var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
+            if (missionOrderVM == null)
+                return;
             var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_manual_volley");
             if (orderItem != null)
             {
@@ -1043,6 +1047,8 @@ namespace RTSCamera.CommandSystem.Utilities
         public static void ExecuteVolleyFire()
         {
             var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
+            if (missionOrderVM == null)
+                return;
             var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_volley_fire");
             if (orderItem != null)
             {
