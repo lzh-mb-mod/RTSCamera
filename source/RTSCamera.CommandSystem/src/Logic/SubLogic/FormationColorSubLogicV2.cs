@@ -204,7 +204,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                 for (var teamIndex = 0; teamIndex < teamCount; ++teamIndex)
                 {
                     var team = Mission.Current.Teams[teamIndex];
-                    for (var formationIndex = 0; formationIndex < team.FormationsIncludingSpecialAndEmpty.Count; ++formationIndex)
+                    var formationCount = MathF.Min(team.FormationsIncludingSpecialAndEmpty.Count, _isFormationDirty[teamIndex].Count);
+                    for (var formationIndex = 0; formationIndex < formationCount; ++formationIndex)
                     {
                         var formation = team.FormationsIncludingSpecialAndEmpty[formationIndex];
                         if (_isFormationDirty[teamIndex][formationIndex])
@@ -243,7 +244,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                 for (int i = _isFormationDirty.Count; i <= team.TeamIndex; i++)
                 {
                     var list = new List<bool>();
-                    for (int j = 0; j < team.FormationsIncludingSpecialAndEmpty.Count; j++)
+                    for (int j = 0; j < (int)FormationClass.NumberOfAllFormations; j++)
                     {
                         list.Add(false);
                     }
