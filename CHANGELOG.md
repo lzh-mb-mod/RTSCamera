@@ -1,5 +1,17 @@
 # Changelog
 
+## [v5.3.21] - 2026-01-18
+### Added
+- Add hint text when giving orders to use siege weapons.
+
+### Improved
+- After clicking on siege weapon to stop using it, prevent formation from automatically using it again.
+
+### Fixed
+- Fix missing volley hotkey text.
+
+- Fix the issue that order UI is always closed when clicking on siege weapons in RTS view.
+
 ## [v5.3.20] - 2026-01-18
 ### Fixed
 - Fix crash caused by auto volley hotkey in non-battle mission.

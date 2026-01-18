@@ -137,9 +137,11 @@
     <string id="RTSCameraCommandSystem_add_order_to_queue" text="L’ordre a été ajouté à la file." />
     <string id="RTSCameraCommandSystem_execute_order_in_queue" text="Un ordre de la file est en cours d’exécution." />
 
-    <string id="RTSCameraCommandSystem_follow_entity" text="Suivre la cible" />
-    <string id="RTSCameraCommandSystem_attack_entity" text="Attaquer la cible" />
-    <string id="RTSCameraCommandSystem_point_defense" text="Cible à défendre" />
+    <string id="RTSCameraCommandSystem_follow_entity" text="Suivre" />
+    <string id="RTSCameraCommandSystem_use_entity" text="Commencer à utiliser" />
+    <string id="RTSCameraCommandSystem_stop_use_entity" text="Arrêter d'utiliser" />
+    <string id="RTSCameraCommandSystem_attack_entity" text="Attaquer" />
+    <string id="RTSCameraCommandSystem_point_defense" text="Défense" />
 
     <string id="RTSCameraCommandSystem_volley_order" text="Volée" />
     <string id="RTSCameraCommandSystem_auto_volley" text="Volée automatique" />

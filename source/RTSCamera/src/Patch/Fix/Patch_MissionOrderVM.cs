@@ -127,7 +127,7 @@ namespace RTSCamera.Patch.Fix
         private static PropertyInfo _displayOrderMessageForLastOrder = AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder");
         private static MethodInfo _Reset_OrderTrropPlacer = typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic);
 
-        public static void Postfix_OnOrderExecuted(MissionOrderVM __instance, OrderItemVM orderItem)
+        public static void UpdateOrderUIOnOrderExecuted(MissionOrderVM __instance)
         {
             // Close UI if needed
             bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true &&
@@ -155,6 +155,11 @@ namespace RTSCamera.Patch.Fix
             {
                 _Reset_OrderTrropPlacer.Invoke(orderTroopPlacer, null);
             }
+        }
+
+        public static void Postfix_OnOrderExecuted(MissionOrderVM __instance, OrderItemVM orderItem)
+        {
+            UpdateOrderUIOnOrderExecuted(__instance);
         }
 
         public static void Postfix_OnTransferFinished(MissionOrderVM __instance)

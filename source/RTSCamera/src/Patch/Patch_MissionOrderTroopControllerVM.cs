@@ -2,6 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Logic;
+using RTSCamera.Patch.Fix;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -27,11 +28,11 @@ namespace RTSCamera.Patch
                 //        BindingFlags.NonPublic | BindingFlags.Instance),
                 //    new HarmonyMethod(typeof(Patch_MissionOrderTroopControllerVM).GetMethod(
                 //        nameof(Prefix_OrderController_OnTroopOrderIssued), BindingFlags.Static | BindingFlags.Public)));
-                //harmony.Patch(
-                //    typeof(MissionOrderTroopControllerVM).GetMethod("OrderController_OnTroopOrderIssued",
-                //        BindingFlags.NonPublic | BindingFlags.Instance),
-                //    postfix: new HarmonyMethod(typeof(Patch_MissionOrderTroopControllerVM).GetMethod(
-                //        nameof(Postfix_OrderController_OnTroopOrderIssued), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(MissionOrderTroopControllerVM).GetMethod("OrderController_OnTroopOrderIssued",
+                        BindingFlags.NonPublic | BindingFlags.Instance),
+                    postfix: new HarmonyMethod(typeof(Patch_MissionOrderTroopControllerVM).GetMethod(
+                        nameof(Postfix_OrderController_OnTroopOrderIssued), BindingFlags.Static | BindingFlags.Public)));
                 return true;
             }
             catch (Exception e)
@@ -71,18 +72,15 @@ namespace RTSCamera.Patch
         //}
 
 
-        // implemented in Patch_MissionGauntletSingleplayerOrderUIHandler.UpdateOrderUIVisibility
-        //public static void Postfix_OrderController_OnTroopOrderIssued(
-        //    MissionOrderTroopControllerVM __instance,
-        //    OrderType orderType,
-        //    IEnumerable<Formation> appliedFormations,
-        //    OrderController orderController,
-        //    MissionOrderVM ___MissionOrder)
-        //{
-        //    if (!___MissionOrder.IsToggleOrderShown && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera)
-        //    {
-        //        //___MissionOrder.OpenToggleOrder(false);
-        //    }
-        //}
+        public static void Postfix_OrderController_OnTroopOrderIssued(
+            MissionOrderTroopControllerVM __instance,
+            OrderType orderType,
+            IEnumerable<Formation> appliedFormations,
+            OrderController orderController,
+            MissionOrderVM ___MissionOrder)
+        {
+            // For orders that don't have a order UI, we need to call UpdateOrderUIOnOrderExecuted so that the order UI will be correctly kept open in RTS view.
+            Patch_MissionOrderVM.UpdateOrderUIOnOrderExecuted(___MissionOrder);
+        }
     }
 }

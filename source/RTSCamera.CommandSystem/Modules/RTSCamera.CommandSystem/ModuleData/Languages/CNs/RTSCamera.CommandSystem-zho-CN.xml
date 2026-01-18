@@ -141,9 +141,11 @@
     <string id="RTSCameraCommandSystem_add_order_to_queue" text="指令已添加到队列。" />
     <string id="RTSCameraCommandSystem_execute_order_in_queue" text="正在执行队列中的指令。" />
 
-    <string id="RTSCameraCommandSystem_follow_entity" text="跟随目标" />
-    <string id="RTSCameraCommandSystem_attack_entity" text="攻击目标" />
-    <string id="RTSCameraCommandSystem_point_defense" text="防守目标" />
+    <string id="RTSCameraCommandSystem_follow_entity" text="跟随" />
+    <string id="RTSCameraCommandSystem_use_entity" text="开始使用" />
+    <string id="RTSCameraCommandSystem_stop_use_entity" text="停止使用" />
+    <string id="RTSCameraCommandSystem_attack_entity" text="攻击" />
+    <string id="RTSCameraCommandSystem_point_defense" text="防守" />
 
     <string id="RTSCameraCommandSystem_volley_order" text="齐射" />
     <string id="RTSCameraCommandSystem_auto_volley" text="自动齐射" />

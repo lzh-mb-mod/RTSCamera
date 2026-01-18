@@ -148,9 +148,11 @@
   <string id="str_rts_camera_command_system_add_order_to_queue" text="{=RTSCameraCommandSystem_add_order_to_queue}Order is queued." />
   <string id="str_rts_camera_command_system_execute_order_in_queue" text="{=RTSCameraCommandSystem_execute_order_in_queue}Order in queue is being executed." />
 
-  <string id="str_rts_camera_command_system_follow_entity" text="{=RTSCameraCommandSystem_follow_entity}Follow Entity" />
-  <string id="str_rts_camera_command_system_attack_entity" text="{=RTSCameraCommandSystem_attack_entity}Attack Entity" />
-  <string id="str_rts_camera_command_system_point_defense" text="{=RTSCameraCommandSystem_point_defense}Defense Target" />
+  <string id="str_rts_camera_command_system_follow_entity" text="{=RTSCameraCommandSystem_follow_entity}Follow" />
+  <string id="str_rts_camera_command_system_use_entity" text="{=RTSCameraCommandSystem_use_entity}Start Using" />
+  <string id="str_rts_camera_command_system_stop_use_entity" text="{=RTSCameraCommandSystem_stop_use_entity}Stop Using" />
+  <string id="str_rts_camera_command_system_attack_entity" text="{=RTSCameraCommandSystem_attack_entity}Attack" />
+  <string id="str_rts_camera_command_system_point_defense" text="{=RTSCameraCommandSystem_point_defense}Defense" />
   
   <string id="str_rts_camera_command_system_volley_order" text="{=RTSCameraCommandSystem_volley_order}Volley" />
   <string id="str_rts_camera_command_system_auto_volley" text="{=RTSCameraCommandSystem_auto_volley}Auto Volley" />
