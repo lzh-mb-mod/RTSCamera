@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualBasic;
-using MissionSharedLibrary.Utilities;
+﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCamera.CommandSystem.View;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.Core;
@@ -11,6 +11,7 @@ using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace RTSCamera.CommandSystem.Logic
 {
@@ -18,8 +19,10 @@ namespace RTSCamera.CommandSystem.Logic
     {
         Original,
         FollowMainAgent,
-        SetTargetFormation
+        SetTargetFormation,
+        StopUsing,
     }
+
     public class OrderInQueue
     {
         private List<Formation> _selectedFormation;
@@ -45,6 +48,8 @@ namespace RTSCamera.CommandSystem.Logic
         public Agent TargetAgent { get; set; }
 
         public IOrderable TargetEntity { get; set; }
+
+        public bool IsStopUsing { get; set; }
 
         public bool IsLineShort { get; set; }
 
@@ -286,7 +291,6 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.LookAtEnemy:
                 case OrderType.LookAtDirection:
                 case OrderType.AIControlOn:
-                case OrderType.Use:
                 case OrderType.AttackEntity:
                 case OrderType.PointDefence:
                 case OrderType.ArrangementLine:
@@ -311,6 +315,7 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.Mount:
                 case OrderType.Dismount:
                     return true;
+                case OrderType.Use:
                 case OrderType.AIControlOff:
                 case OrderType.Transfer:
                 default:
@@ -339,10 +344,10 @@ namespace RTSCamera.CommandSystem.Logic
                 case OrderType.LookAtDirection:
                 case OrderType.LookAtEnemy:
                 case OrderType.AIControlOn:
-                case OrderType.Use:
                 case OrderType.AttackEntity:
                 case OrderType.PointDefence:
                     return true;
+                case OrderType.Use:
                 case OrderType.ArrangementLine:
                 case OrderType.ArrangementCloseOrder:
                 case OrderType.ArrangementLoose:
@@ -377,6 +382,8 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 case CustomOrderType.SetTargetFormation:
                     return true;
+                case CustomOrderType.StopUsing:
+                    return false;
                 default:
                     Utility.DisplayMessage("Error: unexpected order type");
                     break;
@@ -445,25 +452,32 @@ namespace RTSCamera.CommandSystem.Logic
 
         public static void UpdateFormation(Formation formation)
         {
-            if (TicksToSkip > 0)
+            try
             {
-                TicksToSkip--;
-                return;
+                if (TicksToSkip > 0)
+                {
+                    TicksToSkip--;
+                    return;
+                }
+                var facingTarget = Patch_OrderController.GetFacingEnemyTargetFormation(formation);
+                if (facingTarget != null && facingTarget.CountOfUnits == 0)
+                {
+                    Patch_OrderController.SetFacingEnemyTargetFormation(formation, null);
+                }
+                var order = GetNextOrderForFormation(formation);
+                bool isApplicable = formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
+                bool isPendingOrderCompleted = IsPendingOrderCompleted(formation);
+                while (TicksToSkip <= 0 && order != null &&
+                    (!isApplicable || isPendingOrderCompleted))
+                {
+                    ExecuteOrderForFormation(order, formation);
+                    OnOrderExecutedForFormation(order, formation);
+                    order = GetNextOrderForFormation(formation);
+                }
             }
-            var facingTarget = Patch_OrderController.GetFacingEnemyTargetFormation(formation);
-            if (facingTarget != null &&facingTarget.CountOfUnits == 0)
+            catch (Exception e)
             {
-                Patch_OrderController.SetFacingEnemyTargetFormation(formation, null);
-            }
-            var order = GetNextOrderForFormation(formation);
-            bool isApplicable = formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
-            bool isPendingOrderCompleted = IsPendingOrderCompleted(formation);
-            while (TicksToSkip <= 0 && order != null &&
-                (!isApplicable || isPendingOrderCompleted))
-            {
-                ExecuteOrderForFormation(order, formation);
-                OnOrderExecutedForFormation(order, formation);
-                order = GetNextOrderForFormation(formation);
+                Utility.DisplayMessageForced(e.ToString());
             }
         }
 
@@ -637,14 +651,61 @@ namespace RTSCamera.CommandSystem.Logic
                                 break;
                             case OrderType.FollowEntity:
                                 {
-                                    GameEntity waitEntity = (order.TargetEntity as UsableMachine).WaitEntity;
-                                    Vec2 direction = waitEntity.GetGlobalFrame().rotation.f.AsVec2.Normalized();
-                                    formation.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
-                                    formation.SetMovementOrder(MovementOrder.MovementOrderFollowEntity(waitEntity));
+                                    var usable = order.TargetEntity as UsableMachine;
+                                    if (order.IsStopUsing)
+                                    {
+                                        //formation.SetMovementOrder(MovementOrder.MovementOrderStop);
+                                        formation.StopUsingMachine(usable, true);
+                                        var siegeWeapon = usable as SiegeWeapon;
+                                        if (siegeWeapon != null)
+                                        {
+                                            siegeWeapon.SetForcedUse(false);
+                                        }
+                                        TryPendingOrder(new List<Formation> { formation }, order);
+                                        CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        var siegeWeapon = usable as SiegeWeapon;
+                                        if (siegeWeapon != null)
+                                        {
+                                            siegeWeapon.SetForcedUse(true);
+                                        }
+                                        GameEntity waitEntity = usable.WaitEntity;
+                                        Vec2 direction = waitEntity.GetGlobalFrame().rotation.f.AsVec2.Normalized();
+                                        formation.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
+                                        formation.SetMovementOrder(MovementOrder.MovementOrderFollowEntity(waitEntity));
+                                        TryPendingOrder(new List<Formation> { formation }, order);
+                                        CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+                                        break;
+                                    }
+                                }
+                            case OrderType.Use:
+                                {
+                                    var usable = order.TargetEntity as UsableMachine;
+                                    if (order.IsStopUsing)
+                                    {
+                                        formation.StopUsingMachine(usable, true);
+                                        var siegeWeapon = usable as SiegeWeapon;
+                                        if (siegeWeapon != null)
+                                        {
+                                            siegeWeapon.SetForcedUse(false);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        formation.StartUsingMachine(usable, true);
+                                        var siegeWeapon = usable as SiegeWeapon;
+                                        if (siegeWeapon != null)
+                                        {
+                                            siegeWeapon.SetForcedUse(true);
+                                        }
+                                    }
                                     TryPendingOrder(new List<Formation> { formation }, order);
                                     CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
-                                    break;
                                 }
+                                break;
                             case OrderType.AttackEntity:
                                 var missionObject = order.TargetEntity as MissionObject;
                                 var gameEntity = missionObject.GameEntity;
@@ -735,6 +796,20 @@ namespace RTSCamera.CommandSystem.Logic
                 case CustomOrderType.SetTargetFormation:
                     formation.SetTargetFormation(order.TargetFormation);
                     break;
+                case CustomOrderType.StopUsing:
+                    {
+                        var usable = order.TargetEntity as UsableMachine;
+                        formation.StopUsingMachine(usable, true);
+                        var siegeWeapon = usable as SiegeWeapon;
+                        if (siegeWeapon != null)
+                        {
+                            siegeWeapon.SetForcedUse(false);
+                        }
+                        TryPendingOrder(new List<Formation> { formation }, order);
+                        CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+                    }
+                    break;
+
             }
         }
         private static void TryCancelStopOrder(Formation formation)
@@ -767,9 +842,13 @@ namespace RTSCamera.CommandSystem.Logic
 
         private static void OnOrderExecutedForFormation(OrderInQueue order, Formation formation)
         {
-            Utilities.Utility.DisplayExecuteOrderMessage(new List<Formation> { formation }, order);
-            var orderController = Mission.Current.PlayerTeam.PlayerOrderController;
-            TryTeleportSelectedFormationInDeployment(orderController, new List<Formation> { formation });
+
+            if (RelatedWithPlayerUI(formation))
+            {
+                Utilities.Utility.DisplayExecuteOrderMessageInQueue(new List<Formation> { formation }, order);
+                var orderController = Mission.Current.PlayerTeam.PlayerOrderController;
+                TryTeleportSelectedFormationInDeployment(orderController, new List<Formation> { formation });
+            }
             order.RemainingFormations.Remove(formation);
             if (order.RemainingFormations.Count == 0)
             {
@@ -779,10 +858,19 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(new List<Formation> { formation }));
             }
-            CommandQueuePreview.IsPreviewOutdated = true;
-            Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.OnMovementOrderChanged(formation);
 
-            Utilities.Utility.UpdateActiveOrders();
+            if (RelatedWithPlayerUI(formation))
+            {
+                CommandQueuePreview.IsPreviewOutdated = true;
+                Mission.Current?.GetMissionBehavior<CommandSystemLogic>()?.OnMovementOrderChanged(formation);
+
+                Utilities.Utility.UpdateActiveOrders();
+            }
+        }
+
+        public static bool RelatedWithPlayerUI(Formation formation)
+        {
+            return formation.Team?.IsPlayerTeam ?? false;
         }
 
         public static bool CanBePended(OrderInQueue order)

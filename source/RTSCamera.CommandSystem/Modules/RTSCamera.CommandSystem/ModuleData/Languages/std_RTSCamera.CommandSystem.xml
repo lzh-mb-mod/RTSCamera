@@ -139,8 +139,10 @@
     <string id="RTSCameraCommandSystem_add_order_to_queue" text="Order is queued." />
     <string id="RTSCameraCommandSystem_execute_order_in_queue" text="Order in queue is being executed." />
 
-    <string id="RTSCameraCommandSystem_follow_entity" text="Follow Entity" />
-    <string id="RTSCameraCommandSystem_attack_entity" text="Attack Entity" />
-    <string id="RTSCameraCommandSystem_point_defense" text="Defense Target" />
+    <string id="RTSCameraCommandSystem_follow_entity" text="Follow" />
+    <string id="RTSCameraCommandSystem_use_entity" text="Start Using" />
+    <string id="RTSCameraCommandSystem_stop_use_entity" text="Stop Using" />
+    <string id="RTSCameraCommandSystem_attack_entity" text="Attack" />
+    <string id="RTSCameraCommandSystem_point_defense" text="Defense" />
   </strings>
 </base>

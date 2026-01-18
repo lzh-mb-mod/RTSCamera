@@ -4,6 +4,7 @@ using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.DotNet;
@@ -22,6 +23,8 @@ namespace RTSCamera.CommandSystem.View
         Focus,
         Attack,
         Facing,
+        Use,
+        StopUsing,
         Count
     }
     public class OrderPreviewData
@@ -532,6 +535,7 @@ namespace RTSCamera.CommandSystem.View
                 case OrderType.Dismount:
                 case OrderType.AIControlOn:
                 case OrderType.AIControlOff:
+                case OrderType.Use:
                     {
                         return false;
                     }
@@ -580,6 +584,18 @@ namespace RTSCamera.CommandSystem.View
                         var targetPosition = Patch_OrderController.GetFollowOrderPosition(formation, targetAgent);
                         var direction = Patch_OrderController.GetFormationVirtualDirectionWhenFollowingAgent(formation, targetAgent);
                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, direction, null, null);
+                        break;
+                    }
+                case OrderType.Use:
+                    {
+                        if (targetEntity == null)
+                            return false;
+                        var usable = targetEntity as UsableMachine;
+                        if (usable == null)
+                            return false;
+                        WorldPosition targetPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, usable.GameEntity.GlobalPosition, hasValidZ: false);
+                        targetPosition.SetVec2(targetPosition.AsVec2);
+                        Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
                         break;
                     }
                 case OrderType.FollowEntity:
@@ -728,13 +744,31 @@ namespace RTSCamera.CommandSystem.View
                         UpdateFacingOrderForOtherOrder(facingOrder, formation, virtualFacingDirection);
                         return CollectOrderPreviewData(formation, false, OrderTargetType.Focus);
                     }
+                case CustomOrderType.StopUsing:
                 default:
                     UpdateFacingOrderForOtherOrder(facingOrder, formation, virtualFacingDirection);
                     break;
             }
             UpdateMovingOrderTarget(formation, order.OrderType, order.PositionBegin, order.TargetFormation, order.TargetAgent, order.TargetEntity, isPendingOrder);
-            Patch_OrderController.SaveFormationLivePositionForPreview(formation, Patch_OrderController.GetFormationVirtualMedianPosition(formation));
-            return CollectOrderPreviewData(formation, ShouldIncludeFormationShape(order.OrderType), GetOrderTargetType(order.OrderType));
+            var orderTargetType = GetOrderTargetType(order);
+            if (orderTargetType == OrderTargetType.Attack || orderTargetType == OrderTargetType.Move)
+            {
+                Patch_OrderController.SaveFormationLivePositionForPreview(formation, Patch_OrderController.GetFormationVirtualMedianPosition(formation));
+            }
+            return CollectOrderPreviewData(formation, ShouldIncludeFormationShape(order.OrderType), orderTargetType);
+        }
+
+        private OrderTargetType GetOrderTargetType(OrderInQueue order)
+        {
+            switch (order.OrderType)
+            {
+                case OrderType.FollowEntity:
+                    return order.IsStopUsing ? OrderTargetType.StopUsing : OrderTargetType.Move;
+                case OrderType.Use:
+                    return order.IsStopUsing ? OrderTargetType.StopUsing : OrderTargetType.Use;
+                default:
+                    return GetOrderTargetType(order.OrderType);
+            }
         }
 
         private OrderTargetType GetOrderTargetType(OrderType orderType)
@@ -749,8 +783,11 @@ namespace RTSCamera.CommandSystem.View
                 case OrderType.MoveToLineSegmentWithHorizontalLayout:
                 case OrderType.Move:
                 case OrderType.FollowMe:
+                    return OrderTargetType.Move;
                 case OrderType.FollowEntity:
                     return OrderTargetType.Move;
+                case OrderType.Use:
+                    return OrderTargetType.Use;
                 case OrderType.PointDefence:
                 case OrderType.LookAtDirection:
                 case OrderType.LookAtEnemy:

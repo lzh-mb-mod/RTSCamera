@@ -139,8 +139,9 @@ namespace RTSCamera.CommandSystem.QuerySystem
                     float threshold = (float)formation.CountOfUnitsWithoutDetachedOnes / 2;
                     formation.ApplyActionOnEachAttachedUnit((agent) =>
                     {
+                        var speed = agent.GetMaximumSpeedLimit();
                         var distanceSquared = agent.GetComponent<CommandSystemAgentComponent>()?.DistanceSquaredToTargetPosition ?? 0;
-                        var score = MathF.Pow(MathF.E, -distanceSquared/7f);
+                        var score = MathF.Pow(MathF.E, -distanceSquared / (speed * speed) * 9);
                         scoreSum += score;
                     });
                     if (scoreSum > threshold)

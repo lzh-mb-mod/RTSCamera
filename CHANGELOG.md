@@ -1,5 +1,15 @@
 # Changelog
 
+## [v5.1.19] - 2026-01-19
+### Added
+- Add hint text when giving orders to use siege weapons.
+
+### Improved
+- After clicking on siege weapon to stop using it, prevent formation from automatically using it again.
+
+### Fixed
+- Fix the issue that order UI is always closed when clicking on siege weapons in RTS view.
+
 ## [v5.1.18] - 2026-01-17
 ### Added
 - Hero list in mod menu will be sorted by order in player party member roster.

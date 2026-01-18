@@ -148,9 +148,23 @@ namespace RTSCamera.CommandSystem.Utilities
             }
         }
 
-        public static void DisplayExecuteOrderMessage(IEnumerable<Formation> selectedFormations, OrderInQueue order)
+        public static void DisplayExecuteOrderMessageInQueue(IEnumerable<Formation> selectedFormations, OrderInQueue order)
         {
             MissionSharedLibrary.Utilities.Utility.DisplayLocalizedText("str_rts_camera_command_system_execute_order_in_queue", null, MessageColor);
+            List<TextObject> formationNameList = new List<TextObject>();
+            foreach (var formation in selectedFormations)
+                formationNameList.Add(GameTexts.FindText("str_troop_group_name", ((int)formation.PhysicalClass).ToString()));
+            if (!formationNameList.IsEmpty())
+            {
+                TextObject textObject = new TextObject("{=ApD0xQXT}{STR1}: {STR2}");
+                textObject.SetTextVariable("STR1", GameTexts.GameTextHelper.MergeTextObjectsWithComma(formationNameList, false));
+                textObject.SetTextVariable("STR2", GetOrderString(order));
+                MissionSharedLibrary.Utilities.Utility.DisplayMessage(textObject.ToString(), MessageColor);
+            }
+        }
+
+        public static void DisplayExecuteOrderMessage(IEnumerable<Formation> selectedFormations, OrderInQueue order)
+        {
             List<TextObject> formationNameList = new List<TextObject>();
             foreach (var formation in selectedFormations)
                 formationNameList.Add(GameTexts.FindText("str_troop_group_name", ((int)formation.PhysicalClass).ToString()));
@@ -198,14 +212,33 @@ namespace RTSCamera.CommandSystem.Utilities
                                 variation = nameof(OrderSubType.FollowMe);
                                 break;
                             case OrderType.FollowEntity:
-                                stringId = "str_rts_camera_command_system_follow_entity";
-                                break;
+                                {
+                                    stringId = order.IsStopUsing ? "str_rts_camera_command_system_stop_use_entity" : "str_rts_camera_command_system_follow_entity";
+                                    var text = GameTexts.FindText(stringId, variation);
+                                    text = AppendEntityName(text, order.TargetEntity);
+                                    return text;
+                                }
+                            case OrderType.Use:
+                                {
+                                    stringId = order.IsStopUsing ? "str_rts_camera_command_system_stop_use_entity" : "str_rts_camera_command_system_use_entity";
+                                    var text = GameTexts.FindText(stringId, variation);
+                                    text = AppendEntityName(text, order.TargetEntity);
+                                    return text;
+                                }
                             case OrderType.AttackEntity:
-                                stringId = "str_rts_camera_command_system_attack_entity";
-                                break;
+                                {
+                                    stringId = "str_rts_camera_command_system_attack_entity";
+                                    var text = GameTexts.FindText(stringId, variation);
+                                    text = AppendEntityName(text, order.TargetEntity);
+                                    return text;
+                                }
                             case OrderType.PointDefence:
-                                stringId = "str_rts_camera_command_system_point_defense";
-                                break;
+                                {
+                                    stringId = "str_rts_camera_command_system_point_defense";
+                                    var text = GameTexts.FindText(stringId, variation);
+                                    text = AppendEntityName(text, order.TargetEntity);
+                                    return text;
+                                }
                             case OrderType.Advance:
                                 variation = nameof(OrderSubType.Advance);
                                 break;
@@ -279,8 +312,29 @@ namespace RTSCamera.CommandSystem.Utilities
                     var orderMessage = GameTexts.FindText("str_rts_camera_command_system_defensive_attack");
                     orderMessage.SetTextVariable("TARGET_NAME", GameTexts.FindText("str_troop_group_name", ((int)order.TargetFormation.PhysicalClass).ToString()));
                     return orderMessage;
+                case CustomOrderType.StopUsing:
+                    {
+                        stringId = "str_rts_camera_command_system_stop_use_entity";
+                        var text = GameTexts.FindText(stringId, variation);
+                        text = AppendEntityName(text, order.TargetEntity);
+                        return text;
+                    }
             }
             return GameTexts.FindText(stringId, variation);
+        }
+
+        private static TextObject AppendEntityName(TextObject prefix, IOrderable orderable)
+        {
+            if (orderable != null)
+            {
+                var usable = orderable as UsableMachine;
+                if (usable == null)
+                {
+                    return prefix;
+                }
+                prefix = new TextObject(prefix.ToString() + " " + usable.GetDescriptionText(usable.GameEntity));
+            }
+            return prefix;
         }
 
         public static void FocusOnFormation(OrderController playerController, Formation targetFormation)
@@ -311,6 +365,7 @@ namespace RTSCamera.CommandSystem.Utilities
             {
                 foreach (Formation selectedFormation in playerController.SelectedFormations)
                 {
+                    selectedFormation.SetControlledByAI(false);
                     selectedFormation.SetTargetFormation(targetFormation);
                 }
                 // In current game version, set ChargeWithTarget has no effect except voice and gesture
@@ -352,6 +407,7 @@ namespace RTSCamera.CommandSystem.Utilities
             {
                 foreach (Formation selectedFormation in playerController.SelectedFormations)
                 {
+                    Utilities.Utility.CallAfterSetOrder(playerController, OrderType.ChargeWithTarget);
                     selectedFormation.SetMovementOrder(MovementOrder.MovementOrderChargeToTarget(targetFormation));
                     selectedFormation.SetTargetFormation(targetFormation);
                 }

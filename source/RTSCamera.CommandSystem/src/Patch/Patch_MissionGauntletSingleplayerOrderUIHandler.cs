@@ -37,6 +37,8 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static bool _patched;
 
+        private static List<Action> _callbackList = new List<Action>();
+
         public static bool Patch(Harmony harmony)
         {
             try
@@ -66,6 +68,16 @@ namespace RTSCamera.CommandSystem.Patch
                 MBDebug.Print(e.ToString());
                 return false;
             }
+        }
+
+        public static void OnBehaviorInitialize()
+        {
+            _callbackList = new List<Action>();
+        }
+
+        public static void OnRemoveBehavior()
+        {
+            _callbackList = null;
         }
 
         public static IEnumerable<CodeInstruction> Transpile_TickInput(IEnumerable<CodeInstruction> instructions)
@@ -305,32 +317,98 @@ namespace RTSCamera.CommandSystem.Patch
                                         {
                                             orderToAdd.OrderType = OrderType.FollowEntity;
                                             orderToAdd.TargetEntity = focusedOrderableObject;
-                                            Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FollowEntity, selectedFormations, null, null, focusedOrderableObject);
-                                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                                            break;
+                                            var usable = focusedOrderableObject as UsableMachine;
+                                            bool shouldFollowEntity = false;
+                                            if (usable == null)
+                                            {
+                                                shouldFollowEntity = true;
+                                            }
+                                            else
+                                            {
+                                                IEnumerable<Formation> source = selectedFormations.Where(new Func<Formation, bool>(usable.IsUsedByFormation));
+                                                shouldFollowEntity = source.IsEmpty();
+                                            }
+                                            if (shouldFollowEntity)
+                                            {
+                                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FollowEntity, selectedFormations, null, null, focusedOrderableObject);
+                                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                                if (!queueCommand)
+                                                {
+                                                    var siegeWeapon = usable as SiegeWeapon;
+                                                    if (siegeWeapon != null)
+                                                    {
+                                                        siegeWeapon.SetForcedUse(true);
+                                                    }
+                                                }
+                                                Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                orderToAdd.CustomOrderType = CustomOrderType.StopUsing;
+                                                orderToAdd.OrderType = OrderType.Use;
+                                                orderToAdd.IsStopUsing = true;
+                                                if (!queueCommand)
+                                                {
+                                                    // native order will follow entity.
+                                                    skipNativeOrder = true;
+                                                    var siegeWeapon = usable as SiegeWeapon;
+                                                    if (siegeWeapon != null)
+                                                    {
+                                                        siegeWeapon.SetForcedUse(false);
+                                                    }
+                                                    foreach (var formation in selectedFormations)
+                                                    {
+                                                        formation.SetControlledByAI(false);
+                                                        formation.StopUsingMachine(usable, true);
+                                                    }
+                                                    Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.StandYourGround);
+                                                    CommandQueueLogic.OnCustomOrderIssued(orderToAdd, dataSource.OrderController);
+                                                }
+                                                Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
+                                                break;
+                                            }
                                         }
                                     case OrderType.Use:
                                         {
                                             var usable = focusedOrderableObject as UsableMachine;
                                             IEnumerable<Formation> source = selectedFormations.Where(new Func<Formation, bool>(usable.IsUsedByFormation));
+                                            orderToAdd.OrderType = OrderType.Use;
+                                            orderToAdd.TargetEntity = usable;
                                             if (source.IsEmpty())
                                             {
-                                                foreach (Formation formation in selectedFormations)
-                                                    formation.StartUsingMachine(usable, true);
-                                                if (!usable.HasWaitFrame)
-                                                    // will not be added to queue because orderToAdd.OrderType is OrderType.None.
-                                                    break;
-                                                orderToAdd.OrderType = OrderType.FollowEntity;
-                                                orderToAdd.TargetEntity = usable;
-                                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FollowEntity, selectedFormations, null, null, focusedOrderableObject);
-                                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                                if (usable.HasWaitFrame)
+                                                {
+                                                    orderToAdd.OrderType = OrderType.FollowEntity;
+                                                    Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FollowEntity, selectedFormations, null, null, focusedOrderableObject);
+                                                }
+                                                if (!queueCommand)
+                                                {
+                                                    var siegeWeapon = usable as SiegeWeapon;
+                                                    if (siegeWeapon != null)
+                                                    {
+                                                        siegeWeapon.SetForcedUse(true);
+                                                    }
+                                                }
                                             }
                                             else
                                             {
-                                                foreach (Formation formation in source)
-                                                    formation.StopUsingMachine(usable, true);
-                                                // will not be added to queue because orderToAdd.OrderType is OrderType.None.
+                                                orderToAdd.CustomOrderType = CustomOrderType.StopUsing;
+                                                orderToAdd.OrderType = OrderType.Use;
+                                                orderToAdd.IsStopUsing = true;
+                                                if (!queueCommand)
+                                                {
+                                                    var siegeWeapon = usable as SiegeWeapon;
+                                                    if (siegeWeapon != null)
+                                                    {
+                                                        siegeWeapon.SetForcedUse(false);
+                                                    }
+                                                    Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.StandYourGround);
+                                                }
                                             }
+                                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+
+                                            Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
                                             break;
                                         }
                                     case OrderType.AttackEntity:
@@ -339,6 +417,7 @@ namespace RTSCamera.CommandSystem.Patch
                                             orderToAdd.TargetEntity = focusedOrderableObject;
                                             Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.AttackEntity, selectedFormations, null, null, focusedOrderableObject);
                                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                            Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
                                             break;
                                         }
                                     case OrderType.PointDefence:
@@ -347,6 +426,7 @@ namespace RTSCamera.CommandSystem.Patch
                                             orderToAdd.TargetEntity = focusedOrderableObject;
                                             Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.PointDefence, selectedFormations, null, null, focusedOrderableObject);
                                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                            Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
                                             break;
                                         }
                                 }
@@ -377,7 +457,7 @@ namespace RTSCamera.CommandSystem.Patch
                 case MissionOrderVM.CursorState.Form:
                     return null;
             }
-            if (!queueCommand && !(orderToAdd.CustomOrderType == CustomOrderType.Original && orderToAdd.OrderType == OrderType.None))
+            if (!queueCommand)
             {
                 CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
                 return null;
@@ -387,6 +467,7 @@ namespace RTSCamera.CommandSystem.Patch
         public static void Postfix_OnMissionScreenTick(MissionGauntletSingleplayerOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
         {
             UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer);
+            UpdateCallbackList();
             //return true;
         }
 
@@ -420,6 +501,24 @@ namespace RTSCamera.CommandSystem.Patch
             //        __instance.MissionScreen.SetOrderFlagVisibility(orderFlagVisibility);
             //    }
             //}
+        }
+
+        private static void SetSiegeWeaponForceUseNextTick(SiegeWeapon siegeWeapon, bool forceUse)
+        {
+            _callbackList.Add(() =>
+            {
+                siegeWeapon.SetForcedUse(forceUse);
+            });
+        }
+
+        private static void UpdateCallbackList()
+        {
+            if (_callbackList.Count == 0)
+                return;
+
+            var next = _callbackList[_callbackList.Count - 1];
+            _callbackList.RemoveAt(_callbackList.Count - 1);
+            next();
         }
     }
 }

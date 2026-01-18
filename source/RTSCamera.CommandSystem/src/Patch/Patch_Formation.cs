@@ -183,7 +183,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_Tick(Formation __instance, float dt)
         {
-            if (__instance.Team == null || !__instance.Team.IsPlayerTeam || __instance.IsAIControlled)
+            if (__instance.Team == null)
             {
                 return true;
             }
