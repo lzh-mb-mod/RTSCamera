@@ -18,7 +18,7 @@
     <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="(新功能) 若同时按下Alt则不会打断移动指令。" />
 
     <string id="RTSCameraCommandSystem_disable_native_attack" text="禁用原生攻击" />
-    <string id="RTSCameraCommandSystem_disable_native_attack_hint" text="禁用原生攻击，以避免意外触发攻击。" />
+    <string id="RTSCameraCommandSystem_disable_native_attack_hint" text="通过单击编队图标禁用原生攻击，以避免意外触发攻击。" />
 
     <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="消灭敌方编队后" />
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="消灭指定的敌方编队后下一步的行为" />

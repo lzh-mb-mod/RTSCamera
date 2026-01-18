@@ -144,7 +144,7 @@ namespace RTSCamera.Logic.SubLogic
             }
             else
             {
-                if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
+                if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode && !Mission.IsNavalBattle)
                 {
                     if (!_skipSwitchingCameraOnOrderingFinished)
                     {

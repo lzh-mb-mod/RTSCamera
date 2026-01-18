@@ -64,8 +64,11 @@ Shift                      -  Hold to add order to queue when giving orders.
 Ctrl                       -  Hold to lock formation widths while dragging on the ground.
 Alt                        -  Hold to cancel formation locking during movement or turning.
 Click mouse middle button  -  Select/Attack formation.
+H                          -  Auto volley.
+J                          -  Manual volley.
+K                          -  Volley fire.
 Hold Alt + Click mouse middle button - Attack enemy formation without interrupting previous movement orders
-L                          -    Open the config menu.
+L                          -  Open the config menu.
 All the hotkeys can be changed in config menu.
 
 

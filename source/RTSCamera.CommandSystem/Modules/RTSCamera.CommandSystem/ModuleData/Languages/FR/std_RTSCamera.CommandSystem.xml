@@ -15,7 +15,7 @@
     <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="(Nouveau) Maintenez Alt en même temps pour conserver l’ordre de mouvement précédent." />
 
     <string id="RTSCameraCommandSystem_disable_native_attack" text="Désactiver l’attaque native" />
-    <string id="RTSCameraCommandSystem_disable_native_attack_hint" text="Désactivez l'attaque native, afin d'éviter que les attaques ne soient déclenchées accidentellement." />
+    <string id="RTSCameraCommandSystem_disable_native_attack_hint" text="Désactivez l'attaque native en cliquant sur l'icône de la formation, afin d'éviter que les attaques ne soient déclenchées accidentellement." />
 
     <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="Après l’élimination de la formation ennemie" />
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="Comportement lorsque la formation ennemie attaquée est éliminée." />

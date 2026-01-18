@@ -2,8 +2,6 @@
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Logic;
-using RTSCamera.Logic.SubLogic;
-using RTSCamera.Patch.Fix;
 using System.Reflection;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Localization;

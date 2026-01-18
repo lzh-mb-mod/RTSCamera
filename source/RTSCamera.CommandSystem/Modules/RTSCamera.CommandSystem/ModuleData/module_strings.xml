@@ -129,6 +129,12 @@
   <string id="str_key_description.RTSCameraCommandSystemHotKey_CommandQueue" text="{=RTSCameraCommandSystem_command_queue_hint}Add command to queue. Troops will execute commands in queue one by one." />
   <string id="str_key_name.RTSCameraCommandSystemHotKey_KeepFormationWidth" text="{=RTSCameraCommandSystem_command_keep_formation_width}Keep formation width" />
   <string id="str_key_description.RTSCameraCommandSystemHotKey_KeepFormationWidth" text="{=RTSCameraCommandSystem_keep_formation_width_hint}Hold to keep formation width while dragging formation; Select more formations." />
+  <string id="str_key_name.RTSCameraCommandSystemHotKey_AutoVolley" text="{=RTSCameraCommandSystem_auto_volley}Auto Volley" />
+  <string id="str_key_description.RTSCameraCommandSystemHotKey_AutoVolley" text="{=RTSCameraCommandSystem_auto_volley_hint}Toggle Auto Volley mode for selected ranged formations." />
+  <string id="str_key_name.RTSCameraCommandSystemHotKey_ManualVolley" text="{=RTSCameraCommandSystem_manual_volley}Manual Volley" />
+  <string id="str_key_description.RTSCameraCommandSystemHotKey_ManualVolley" text="{=RTSCameraCommandSystem_manual_volley_hint}Toggle Manual Volley mode for selected ranged formations." />
+  <string id="str_key_name.RTSCameraCommandSystemHotKey_VolleyFire" text="{=RTSCameraCommandSystem_volley_fire}Volley Fire" />
+  <string id="str_key_description.RTSCameraCommandSystemHotKey_VolleyFire" text="{=RTSCameraCommandSystem_volley_fire_hint}Volley Fire for selected ranged formations." />
 
   <string id="str_rts_camera_command_system_tactic_level_required" text="{=RTSCameraCommandSystem_tactic_level_required}You tactic level should be at least {level}" />
 

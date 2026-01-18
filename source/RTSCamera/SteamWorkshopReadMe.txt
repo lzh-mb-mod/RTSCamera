@@ -22,7 +22,7 @@ Do not require any of ButterLib/MCM/UIExtenderEx.
 
 
 Compatibility:
-Compatible with v1.3.4-v1.3.10 and War Sail DLC. For other versions:
+Compatible with v1.3.4-v1.3.13 and War Sail DLC. For other versions:
 v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991660
 v1.3.4-v1.3.10: https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
 

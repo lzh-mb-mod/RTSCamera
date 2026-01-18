@@ -16,7 +16,7 @@
     <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="(New Feature) Press alt at the same time to keep previous movement order." />
 
     <string id="RTSCameraCommandSystem_disable_native_attack" text="Disable Native Attack" />
-    <string id="RTSCameraCommandSystem_disable_native_attack_hint" text="Disable native attack, to avoid attacks being triggered accidentally." />
+    <string id="RTSCameraCommandSystem_disable_native_attack_hint" text="Disable native attack by clicking on formation icon, to avoid attacks being triggered accidentally." />
 
     <string id="RTSCameraCommandSystem_after_enemy_eliminated" text="After enemy formation eliminated" />
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="Behavior when the attacked enemy formation is eliminated." />

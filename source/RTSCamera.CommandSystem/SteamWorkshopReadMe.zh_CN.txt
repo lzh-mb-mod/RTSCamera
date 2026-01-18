@@ -27,7 +27,7 @@ RTS Camera：RTS mod的另一部分，提供指挥时切换到自由视角的功
 
 
 兼容性：
-与游戏本体v1.3.4-v1.3.10兼容，并兼容战帆DLC。其它版本：
+与游戏本体v1.3.4-v1.3.13兼容，并兼容战帆DLC。其它版本：
 v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991827
 v1.3.4-v1.3.10: https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285
 
@@ -64,6 +64,9 @@ Alt + 鼠标中键 - 攻击敌人同时维持原有移动指令
 左Alt或右Alt - 攻击敌方编队时保持移动指令；切换编队锁定行为。
 左Shift或右Shift - 将指令添加到队列。
 左Ctrl或右Ctrl - 拖动时保持编队宽度不变。
+H             -  自动齐射。
+J             -  手动齐射。
+K             -  齐射开火
 L             - 打开配置菜单
 所有快捷键均可在配置菜单中设置。
 

@@ -23,7 +23,7 @@ RTS Command：RTS mod的另一部分，提供更好的指挥系统。
 
 
 兼容性：
-与游戏本体v1.3.4-v1.3.10兼容，并兼容战帆DLC。其它版本：
+与游戏本体v1.3.4-v1.3.13兼容，并兼容战帆DLC。其它版本：
 v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991660
 v1.3.4-v1.3.10: https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
 

@@ -24,22 +24,22 @@ namespace RTSCamera.Patch.Naval.SubLogic
 
         public void AfterStart()
         {
-            if (Mission.Current.IsNavalBattle)
-            {
-                _navalShipLogic = Utilities.Utility.GetNavalShipsLogic(Mission.Current);
-                var eventInfo = _navalShipLogic.GetType().GetEvent("ShipControllerChanged");
-                _handler = Delegate.CreateDelegate(eventInfo.EventHandlerType, this, typeof(NavalLogic).GetMethod(nameof(OnShipControllerChanged), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance));
-                eventInfo.AddEventHandler(_navalShipLogic, _handler);
-            }
+            //if (Mission.Current.IsNavalBattle)
+            //{
+            //    _navalShipLogic = Utilities.Utility.GetNavalShipsLogic(Mission.Current);
+            //    var eventInfo = _navalShipLogic.GetType().GetEvent("ShipControllerChanged");
+            //    _handler = Delegate.CreateDelegate(eventInfo.EventHandlerType, this, typeof(NavalLogic).GetMethod(nameof(OnShipControllerChanged), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance));
+            //    eventInfo.AddEventHandler(_navalShipLogic, _handler);
+            //}
         }
 
         public void OnRemoveBehaviour()
         {
-            if (Mission.Current.IsNavalBattle)
-            {
-                var eventInfo = _navalShipLogic.GetType().GetEvent("ShipControllerChanged");
-                eventInfo.RemoveEventHandler(_navalShipLogic, _handler);
-            }
+            //if (Mission.Current.IsNavalBattle)
+            //{
+            //    var eventInfo = _navalShipLogic.GetType().GetEvent("ShipControllerChanged");
+            //    eventInfo.RemoveEventHandler(_navalShipLogic, _handler);
+            //}
         }
 
         public void OnShipControllerChanged(MissionObject ship)
