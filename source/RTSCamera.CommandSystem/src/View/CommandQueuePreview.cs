@@ -284,7 +284,10 @@ namespace RTSCamera.CommandSystem.View
 
             _orderTroopPlacer = null;
             _agentPositionEntities = null;
+            _orderPositionFlagEntities = null;
             _arrowEntities = null;
+            _commandQueuePreviewData = null;
+            _formationShapeEntities = null;
             _commandQueuePreviewData = null;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             FormationShapeEntity.Clear();

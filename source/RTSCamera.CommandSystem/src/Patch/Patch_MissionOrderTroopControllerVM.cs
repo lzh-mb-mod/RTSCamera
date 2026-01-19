@@ -29,7 +29,7 @@ namespace RTSCamera.CommandSystem.Patch
                 harmony.Patch(
                     typeof(MissionOrderTroopControllerVM).GetMethod("OrderController_OnTroopOrderIssued",
                         BindingFlags.NonPublic | BindingFlags.Instance),
-                    new HarmonyMethod(typeof(Patch_MissionOrderTroopControllerVM).GetMethod(
+                    prefix: new HarmonyMethod(typeof(Patch_MissionOrderTroopControllerVM).GetMethod(
                         nameof(Prefix_OrderController_OnTroopOrderIssued), BindingFlags.Static | BindingFlags.Public)));
                 //harmony.Patch(
                 //    typeof(MissionOrderTroopControllerVM).GetMethod("SetTroopActiveOrders",
@@ -48,13 +48,12 @@ namespace RTSCamera.CommandSystem.Patch
         }
 
         // hide facing order
-        public static bool Prefix_OrderController_OnTroopOrderIssued(MissionOrderTroopControllerVM __instance,
+        public static void Prefix_OrderController_OnTroopOrderIssued(MissionOrderTroopControllerVM __instance,
             OrderType orderType,
             IEnumerable<Formation> appliedFormations,
             OrderController orderController)
         {
             DisableSelectTargetMode();
-            return true;
         }
 
         //public static void CloseFacingOrderSet(MissionOrderVM missionOrderVM)
