@@ -100,7 +100,7 @@ namespace RTSCamera.CommandSystem.Logic
                     continue;
                 if (!CommandQueueLogic.PendingOrders.TryGetValue(formation, out var otherOrder))
                     continue;
-                if (this != otherOrder || CommandQueueLogic.IsMovementOrderCompleted(formation))
+                if (this != otherOrder || CommandQueueLogic.IsMovementOrderCompleted(formation, this))
                     continue;
                 if (!VirtualFormationChanges.TryGetValue(formation, out var formationChange))
                     continue;
@@ -521,7 +521,7 @@ namespace RTSCamera.CommandSystem.Logic
             }
         }
 
-        public static bool IsMovementOrderCompleted(Formation formation)
+        public static bool IsMovementOrderCompleted(Formation formation, OrderInQueue order)
         {
             if (formation.CountOfUnits == 0)
                 return true;
@@ -533,7 +533,17 @@ namespace RTSCamera.CommandSystem.Logic
                 case MovementOrder.MovementOrderEnum.Follow:
                 case MovementOrder.MovementOrderEnum.AttackEntity:
                 case MovementOrder.MovementOrderEnum.FollowEntity:
-                    return !formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
+                    if (order == null)
+                    {
+                        return !formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
+                    }
+                    else
+                    {
+                        var usable = order.TargetEntity as UsableMachine;
+                        if (usable == null)
+                            return !formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
+                        return usable.IsDestroyed;
+                    }
                 case MovementOrder.MovementOrderEnum.FallBack:
                     // fallback is considered complete instantly.
                     return true;
@@ -564,7 +574,7 @@ namespace RTSCamera.CommandSystem.Logic
                             }
                             else
                             {
-                                if (!IsMovementOrderCompleted(otherFormation))
+                                if (!IsMovementOrderCompleted(otherFormation, order))
                                 {
                                     return false;
                                 }
@@ -573,7 +583,7 @@ namespace RTSCamera.CommandSystem.Logic
                     }
                     if (otherFormation == formation)
                     {
-                        if (!IsMovementOrderCompleted(formation))
+                        if (!IsMovementOrderCompleted(formation, order))
                         {
                             return false;
                         }
@@ -594,7 +604,7 @@ namespace RTSCamera.CommandSystem.Logic
                 ShouldSkipCurrentOrders[formation] = false;
                 return true;
             }
-            return IsMovementOrderCompleted(formation);
+            return IsMovementOrderCompleted(formation, order);
         }
 
         public static void ExecuteOrderForFormation(OrderInQueue order, Formation formation)
@@ -690,6 +700,10 @@ namespace RTSCamera.CommandSystem.Logic
                             case OrderType.FollowEntity:
                                 {
                                     var usable = order.TargetEntity as UsableMachine;
+                                    if (usable.IsDestroyed)
+                                    {
+                                        break;
+                                    }
                                     if (order.IsStopUsing)
                                     {
                                         //formation.SetMovementOrder(MovementOrder.MovementOrderStop);
@@ -722,6 +736,10 @@ namespace RTSCamera.CommandSystem.Logic
                             case OrderType.Use:
                                 {
                                     var usable = order.TargetEntity as UsableMachine;
+                                    if (usable.IsDestroyed)
+                                    {
+                                        break;
+                                    }
                                     if (order.IsStopUsing)
                                     {
                                         formation.StopUsingMachine(usable, true);

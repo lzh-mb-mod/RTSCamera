@@ -317,10 +317,19 @@ namespace RTSCamera.CommandSystem.Utilities
 
         private static TextObject AppendEntityName(TextObject prefix, IOrderable orderable)
         {
-            if (orderable != null)
+            try
             {
-                var missionObject = orderable as MissionObject;
-                prefix = new TextObject(prefix.ToString() + " " + missionObject.HitObjectName);
+                if (orderable != null)
+                {
+                    var usable = orderable as UsableMachine;
+                    if (usable == null)
+                        return prefix;
+                    prefix = new TextObject(prefix.ToString() + " " + usable.GetDescriptionText(usable.GameEntity));
+                }
+            }
+            catch (Exception e)
+            {
+                MissionSharedLibrary.Utilities.Utility.DisplayMessage(e.ToString());
             }
             return prefix;
         }
