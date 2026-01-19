@@ -116,13 +116,13 @@ namespace RTSCamera.CommandSystem.Logic
         {
             base.OnBehaviorInitialize();
 
-
             Patch_MovementOrder.Patch();
             OutlineColorSubLogic.OnBehaviourInitialize();
             GroundMarkerColorSubLogic.OnBehaviourInitialize();
             Patch_OrderTroopPlacer.OnBehaviorInitialize();
             CommandQueueLogic.OnBehaviorInitialize();
             CommandQuerySystem.OnBehaviorInitialize();
+            Patch_GauntletOrderUIHandler.OnBehaviorInitialize();
 
             var config = CommandSystemConfig.Get();
             if (!config.HasHintDisplayed)
@@ -151,6 +151,7 @@ namespace RTSCamera.CommandSystem.Logic
             Patch_OrderController.OnRemoveBehavior();
             CommandQueueLogic.OnRemoveBehavior();
             CommandQuerySystem.OnRemoveBehavior();
+            Patch_GauntletOrderUIHandler.OnRemoveBehavior();
         }
 
         public override void AfterStart()
