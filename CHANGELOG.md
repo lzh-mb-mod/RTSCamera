@@ -1,5 +1,11 @@
 # Changelog
 
+## [v5.1.20] - 2026-01-19
+### Fixed
+- Fix incorrect hint text when stop using siege weapon.
+
+- Skip using that siege weapon order in command queue when the siege weapon is destroyed.
+
 ## [v5.1.19] - 2026-01-19
 ### Added
 - Add hint text when giving orders to use siege weapons.
