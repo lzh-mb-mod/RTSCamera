@@ -47,14 +47,15 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
         public void Refresh()
         {
-#if DEBUG
             if (_mesh != null)
             {
+#if DEBUG
                 // called from Agent.UpdateSpawnEquipmentAndRefreshVisuals
                 // the mesh has been cleared.
                 Utility.DisplayMessage($"agent mesh refreshed");
-            }
 #endif
+                Agent?.AgentVisuals?.GetEntity()?.RemoveComponent(_mesh);
+            }
             InitializeAux();
         }
 
@@ -308,6 +309,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
             }
             ClearColor();
             Agent?.AgentVisuals?.GetEntity()?.RemoveComponent(_mesh);
+            _mesh = null;
         }
 
         public void SetContourState(bool alwaysVisible)
