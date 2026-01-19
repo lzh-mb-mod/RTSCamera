@@ -593,6 +593,8 @@ namespace RTSCamera.CommandSystem.View
                         var usable = targetEntity as UsableMachine;
                         if (usable == null)
                             return false;
+                        if (usable.IsDestroyed)
+                            return false;
                         WorldPosition targetPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, usable.GameEntity.GlobalPosition, hasValidZ: false);
                         targetPosition.SetVec2(targetPosition.AsVec2);
                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, targetPosition, null, null, null);
@@ -602,7 +604,12 @@ namespace RTSCamera.CommandSystem.View
                     {
                         if (targetEntity == null)
                             return false;
-                        var waitEntity = (targetEntity as UsableMachine)?.WaitEntity;
+                        var usable = (targetEntity as UsableMachine);
+                        if (usable == null)
+                            return false;
+                        if (usable.IsDestroyed)
+                            return false;
+                        var waitEntity = usable.WaitEntity;
                         if (isPendingOrder)
                         {
                             waitEntity = formation.GetReadonlyMovementOrderReference().TargetEntity;
@@ -626,6 +633,8 @@ namespace RTSCamera.CommandSystem.View
                         {
                             gameEntity = formation.GetReadonlyMovementOrderReference().TargetEntity;
                         }
+                        if (gameEntity == null)
+                            return false;
                         WorldPosition position = Patch_OrderController.GetAttackEntityWaitPosition(formation, gameEntity);
                         Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, position, null, null, null);
                         break;

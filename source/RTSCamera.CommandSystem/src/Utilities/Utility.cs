@@ -487,13 +487,22 @@ namespace RTSCamera.CommandSystem.Utilities
                         }
                     case OrderType.FollowEntity:
                         {
-                            var waitEntity = (formationChange.TargetEntity as UsableMachine).WaitEntity;
+                            var usable = formationChange.TargetEntity as UsableMachine;
+                            if (usable == null)
+                                return null;
+                            var waitEntity = usable.WaitEntity;
+                            if (waitEntity == null)
+                                return null;
                             return Patch_OrderController.GetFollowEntityOrderPosition(formation, waitEntity);
                         }
                     case OrderType.AttackEntity:
                         {
                             var missionObject = formationChange.TargetEntity as MissionObject;
+                            if (missionObject == null)
+                                return null;
                             var gameEntity = missionObject.GameEntity;
+                            if (gameEntity == null)
+                                return null;
                             return Patch_OrderController.GetAttackEntityWaitPosition(formation, gameEntity);
                         }
                     case OrderType.FollowMe:
