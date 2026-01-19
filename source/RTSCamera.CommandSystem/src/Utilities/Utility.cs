@@ -304,6 +304,13 @@ namespace RTSCamera.CommandSystem.Utilities
                     return GameTexts.FindText("str_rts_camera_command_system_volley_disabled");
                 case CustomOrderType.VolleyFire:
                     return GameTexts.FindText("str_rts_camera_command_system_volley_fire");
+                case CustomOrderType.StopUsing:
+                    {
+                        stringId = "str_rts_camera_command_system_stop_use_entity";
+                        var text = GameTexts.FindText(stringId, variation);
+                        text = AppendEntityName(text, order.TargetEntity);
+                        return text;
+                    }
             }
             return GameTexts.FindText(stringId, variation);
         }
