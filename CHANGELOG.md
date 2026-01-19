@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.3.23] - 2026-01-19
+### Fixed
+- Fix crash when attacked siege weapon is destroyed
+
 ## [v5.3.22] - 2026-01-19
 ### Fixed
 - Fix incorrect hint text when stop using siege weapon.
