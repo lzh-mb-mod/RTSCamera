@@ -6,6 +6,8 @@
 
 - Fix the issue that when player character likes to ride horse when controlled by AI.
 
+- Fix the issue that Command System may create too much materials and make the game unstable.
+
 ## [v5.3.22] - 2026-01-19
 ### Fixed
 - Fix incorrect hint text when stop using siege weapon.
