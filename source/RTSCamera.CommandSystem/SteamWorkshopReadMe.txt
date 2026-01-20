@@ -6,6 +6,7 @@ Main features:
 Reworked the command system in the base game.
 Order target is highlighted to be visible from far distance.
 Troops with throwing weapons will correctly keep distance under engage order.
+In siege battle you can click on siege weapons to make your troops stop using it.
 Square and Circle formations are improved.
 Allows to give a series of orders and let your troops execute them one by one. For example, move along a given path and then shooting/charging.
 If you move/turn multiple formations at the same time, their relative positions/directions will be locked.

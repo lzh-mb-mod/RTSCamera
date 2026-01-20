@@ -31,6 +31,8 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
     - Layout between selected formations are improved when player drags on the ground.
 
+  - In siege battle you can click on siege weapons to make your troops stop using it.
+
   - Square and Circle formations are improved.
 
   - Fix issues related with formation width and unit spacing in the base game.
