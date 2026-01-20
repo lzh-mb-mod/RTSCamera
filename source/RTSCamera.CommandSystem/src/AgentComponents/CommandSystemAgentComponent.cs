@@ -78,8 +78,11 @@ namespace RTSCamera.CommandSystem.AgentComponents
             }
 
             _mesh = MetaMesh.GetCopy("rts_unit_marker");
-            _material = _mesh.GetMeshAtIndex(0).GetMaterial().CreateCopy();
-            _material.Flags |= MaterialFlags.TwoSided;
+            if (_material == null)
+            {
+                _material = _mesh.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+                _material.Flags |= MaterialFlags.TwoSided;
+            }
             _mesh.SetMaterial(_material);
             //ClearMaterial();
             UpdateMeshFrame(Agent.HasMount);

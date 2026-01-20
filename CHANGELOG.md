@@ -1,8 +1,10 @@
 # Changelog
 
-## [v5.3.23] - 2026-01-19
+## [v5.3.23] - 2026-01-20
 ### Fixed
-- Fix crash when attacked siege weapon is destroyed
+- Fix crash when attacked siege weapon is destroyed.
+
+- Fix the issue that when player character likes to ride horse when controlled by AI.
 
 ## [v5.3.22] - 2026-01-19
 ### Fixed
