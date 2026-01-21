@@ -133,6 +133,8 @@ namespace RTSCamera.CommandSystem.QuerySystem
             }, 0.5f);
             _areAgentsNearTargetPositions = new QueryData<bool>(() =>
             {
+                if (formation.CountOfUnitsWithoutDetachedOnes == ((formation.IsPlayerTroopInFormation || formation.HasPlayerControlledTroop) ? 1 : 0))
+                    return true;
                 if (formation.CountOfUnitsWithoutDetachedOnes > 0)
                 {
                     float scoreSum = 0f;

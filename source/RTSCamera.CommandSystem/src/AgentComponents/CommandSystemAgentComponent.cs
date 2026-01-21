@@ -55,8 +55,16 @@ namespace RTSCamera.CommandSystem.AgentComponents
                 Utility.DisplayMessage($"agent mesh refreshed");
 #endif
                 Agent?.AgentVisuals?.GetEntity()?.RemoveComponent(_mesh);
+                InitializeAux();
             }
-            InitializeAux();
+        }
+
+        private void TryInitialize()
+        {
+            if (_mesh == null)
+            {
+                InitializeAux();
+            }
         }
 
         public override void Initialize()
@@ -87,7 +95,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
             _mesh.SetContourColor(InvisibleColor);
             _mesh.SetContourState(false);
             _mesh.SetVisibilityMask(0);
-            //Agent.AgentVisuals.LazyUpdateAgentRendererData();
+            Agent.AgentVisuals.LazyUpdateAgentRendererData();
         }
 
         //private void ClearMaterial()
@@ -110,10 +118,6 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
         public void SetColor(int level, uint? color, bool alwaysVisible, bool updateInstantly)
         {
-            if (_mesh == null)
-            {
-                InitializeAux();
-            }
             if (SetColorWithoutUpdate(level, color, alwaysVisible))
             {
                 _currentLevel = color.HasValue ? level : EffectiveLevel(level - 1);
@@ -290,6 +294,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
                 //{
                 //    RecoverMaterial();
                 //}
+                TryInitialize();
                 var color = CurrentColor.HasValue ? CurrentColor.Value : InvisibleColor;
                 _mesh.SetFactor1(color);
                 _mesh.SetContourColor(color);
@@ -317,10 +322,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
         public void SetContourState(bool alwaysVisible)
         {
-            if (_mesh == null)
-            {
-                InitializeAux();
-            }
+            TryInitialize();
             if (_mesh == null)
             {
                 return;

@@ -330,6 +330,19 @@ namespace RTSCamera.CommandSystem.Patch
                                             }
                                             if (shouldFollowEntity)
                                             {
+                                                if (usable != null)
+                                                {
+                                                    var waitEntity = usable.WaitEntity;
+                                                    if (waitEntity != null)
+                                                    {
+                                                        var direction = waitEntity.GetGlobalFrame().rotation.f.AsVec2.Normalized();
+                                                        Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtDirection, selectedFormations);
+                                                        foreach (var formation in selectedFormations)
+                                                        {
+                                                            Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
+                                                        }
+                                                    }
+                                                }
                                                 Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FollowEntity, selectedFormations, null, null, focusedOrderableObject);
                                                 orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                                                 if (!queueCommand)
@@ -380,6 +393,16 @@ namespace RTSCamera.CommandSystem.Patch
                                                 if (usable.HasWaitFrame)
                                                 {
                                                     orderToAdd.OrderType = OrderType.FollowEntity;
+                                                    var waitEntity = usable.WaitEntity;
+                                                    if (waitEntity != null)
+                                                    {
+                                                        var direction = waitEntity.GetGlobalFrame().rotation.f.AsVec2.Normalized();
+                                                        Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtDirection, selectedFormations);
+                                                        foreach (var formation in selectedFormations)
+                                                        {
+                                                            Patch_OrderController.LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
+                                                        }
+                                                    }
                                                     Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.FollowEntity, selectedFormations, null, null, focusedOrderableObject);
                                                 }
                                                 if (!queueCommand)
