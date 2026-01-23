@@ -319,6 +319,7 @@ namespace RTSCamera.CommandSystem.View
             _commandQueuePreviewData = null;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             FormationShapeEntity.Clear();
+
             if (Mission.PlayerTeam?.PlayerOrderController == null)
                 return;
 

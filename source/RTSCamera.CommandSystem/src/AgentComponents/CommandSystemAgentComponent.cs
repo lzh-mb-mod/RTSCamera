@@ -42,7 +42,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
             {
                 _colors[i] = new Highlight(null, false);
             }
-            _cachedDistanceUpdateTimer = new Timer(agent.Mission.CurrentTime, 0.2f + MBRandom.RandomFloat * 0.1f);
+            _cachedDistanceUpdateTimer = new Timer(agent.Mission.CurrentTime, 0.2f + MBRandom.RandomFloat * 0.2f);
         }
 
         public void Refresh()
@@ -55,16 +55,8 @@ namespace RTSCamera.CommandSystem.AgentComponents
                 Utility.DisplayMessage($"agent mesh refreshed");
 #endif
                 Agent?.AgentVisuals?.GetEntity()?.RemoveComponent(_mesh);
-                InitializeAux();
             }
-        }
-
-        private void TryInitialize()
-        {
-            if (_mesh == null)
-            {
-                InitializeAux();
-            }
+            InitializeAux();
         }
 
         public override void Initialize()
@@ -118,6 +110,10 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
         public void SetColor(int level, uint? color, bool alwaysVisible, bool updateInstantly)
         {
+            if (_mesh == null)
+            {
+                InitializeAux();
+            }
             if (SetColorWithoutUpdate(level, color, alwaysVisible))
             {
                 _currentLevel = color.HasValue ? level : EffectiveLevel(level - 1);
@@ -294,7 +290,6 @@ namespace RTSCamera.CommandSystem.AgentComponents
                 //{
                 //    RecoverMaterial();
                 //}
-                TryInitialize();
                 var color = CurrentColor.HasValue ? CurrentColor.Value : InvisibleColor;
                 _mesh.SetFactor1(color);
                 _mesh.SetContourColor(color);
@@ -322,7 +317,10 @@ namespace RTSCamera.CommandSystem.AgentComponents
 
         public void SetContourState(bool alwaysVisible)
         {
-            TryInitialize();
+            if (_mesh == null)
+            {
+                InitializeAux();
+            }
             if (_mesh == null)
             {
                 return;
@@ -377,27 +375,27 @@ namespace RTSCamera.CommandSystem.AgentComponents
             {
                 var orderPosition = worldPosition.GetGroundVec3();
                 var agentPosition = Agent.Position;
-                var pos2SecsLater = agentPosition + Agent.Velocity * 2f;
-                var vec1 = pos2SecsLater - agentPosition;
+                //var pos2SecsLater = agentPosition + Agent.Velocity * 2f;
+                //var vec1 = pos2SecsLater - agentPosition;
                 var vec2 = orderPosition - agentPosition;
-                if (vec1.LengthSquared < 0.1f)
-                {
+                //if (vec1.LengthSquared < 0.1f)
+                //{
+                //    DistanceSquaredToTargetPosition = vec2.LengthSquared;
+                //    return;
+                //}
+                //var t = Vec3.DotProduct(vec1, vec2) / vec1.LengthSquared;
+                //if (t < 0)
+                //{
                     DistanceSquaredToTargetPosition = vec2.LengthSquared;
-                    return;
-                }
-                var t = Vec3.DotProduct(vec1, vec2) / vec1.LengthSquared;
-                if (t < 0)
-                {
-                    DistanceSquaredToTargetPosition = vec2.LengthSquared;
-                }
-                else if (t > 1)
-                {
-                    DistanceSquaredToTargetPosition = orderPosition.DistanceSquared(pos2SecsLater);
-                }
-                else
-                {
-                    DistanceSquaredToTargetPosition = orderPosition.DistanceSquared(agentPosition + t * vec1);
-                }
+                //}
+                //else if (t > 1)
+                //{
+                //    DistanceSquaredToTargetPosition = orderPosition.DistanceSquared(pos2SecsLater);
+                //}
+                //else
+                //{
+                //    DistanceSquaredToTargetPosition = orderPosition.DistanceSquared(agentPosition + t * vec1);
+                //}
             }
             else
             {

@@ -61,9 +61,23 @@ namespace RTSCamera.CommandSystem.Logic
         public bool ShouldAdjustFormationSpeed { get; set; } = false;
 
         public Dictionary<Formation, float> FormationSpeedLimits { get; set; } = new Dictionary<Formation, float>();
+
+        public Dictionary<Formation, Vec2> FormationExpectedPositions { get; set; } = new Dictionary<Formation, Vec2>();
+        public Dictionary<Formation, float> FormationTargetDistances { get; set; } = new Dictionary<Formation, float>();
+
+        public float MaxDuration { get; set; } = 1f;
+
+        public float DistanceWithMaxDuration { get; set; } = 0;
+
+        public float MinSpeed { get; set; } = 0;
         public void UpdateMovementSpeed()
         {
             FormationSpeedLimits.Clear();
+            FormationExpectedPositions.Clear();
+            FormationTargetDistances.Clear();
+            MaxDuration = 1f;
+            DistanceWithMaxDuration = 0;
+            MinSpeed = float.MaxValue;
             if (!ShouldAdjustFormationSpeed)
                 return;
             if (CommandSystemConfig.Get().FormationSpeedSyncMode == FormationSpeedSyncMode.Disabled)
@@ -74,6 +88,7 @@ namespace RTSCamera.CommandSystem.Logic
             var distanceWithMaxDuration = float.MaxValue;
             var maxDistance = float.MinValue;
             var minDistance = float.MaxValue;
+            var minSpeed = float.MaxValue;
             foreach (var formation in SelectedFormations)
             {
                 if (formation.CountOfUnits == 0)
@@ -82,6 +97,25 @@ namespace RTSCamera.CommandSystem.Logic
                     continue;
                 if (this != otherOrder || CommandQueueLogic.IsMovementOrderCompleted(formation, this))
                     continue;
+
+                var originalSpeed = MathF.Max(0.1f, formation.QuerySystem.MovementSpeed);
+                //formation.ApplyActionOnEachAttachedUnit(agent =>
+                //{
+                //    if (!agent.IsAIControlled)
+                //        return;
+                //    var aiComponent = agent.GetComponent<HumanAIComponent>();
+                //    if (aiComponent == null)
+                //        return;
+                //    if (!aiComponent.ShouldCatchUpWithFormation)
+                //        return;
+                //    var component = agent.GetComponent<CommandSystemAgentComponent>();
+                //    if (component == null)
+                //        return;
+                //    var distance = MathF.Sqrt(component.DistanceSquaredToTargetPosition);
+                //    var duration = distance / originalSpeed;
+                //    MaxDuration = MathF.Max(MaxDuration, duration);
+                //});
+
                 if (!VirtualFormationChanges.TryGetValue(formation, out var formationChange))
                     continue;
 
@@ -96,7 +130,7 @@ namespace RTSCamera.CommandSystem.Logic
                     return;
 
                 var targetDistance = targetPosition.Value.AsVec2.Distance(formation.CurrentPosition);
-                if (targetDistance < 3f)
+                if (targetDistance < 0.1f)
                     continue;
                 if (targetDistance > maxDistance)
                 {
@@ -106,7 +140,6 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     minDistance = targetDistance;
                 }
-                var originalSpeed = MathF.Max(0.1f, formation.QuerySystem.MovementSpeed);
                 targetDistances[formation] = targetDistance;
                 var duration = targetDistance / originalSpeed;
                 originalDurations[formation] = duration;
@@ -115,61 +148,75 @@ namespace RTSCamera.CommandSystem.Logic
                     maxOriginalDuration = duration;
                     distanceWithMaxDuration = targetDistance;
                 }
+                minSpeed = MathF.Min(minSpeed, originalSpeed);
             }
 
-            var distanceError = 1f;
-            switch (CommandSystemConfig.Get().FormationSpeedSyncMode)
+            var orderPositions = Utilities.Utility.CollectFormationCurrentAndOrderPositions(targetDistances.Keys, out var weightedAverageOrderPosition, out var weightedAverageCurrentPositions);
+            foreach (var pair in orderPositions)
             {
-                case FormationSpeedSyncMode.Linear:
-                    {
-                        foreach (var pair in targetDistances)
-                        {
-                            var linearSpeedLimit = pair.Value / maxOriginalDuration;
-                            var originalSpeed = MathF.Max(0.1f, pair.Key.QuerySystem.MovementSpeed);
-                            FormationSpeedLimits[pair.Key] = MathF.Clamp(linearSpeedLimit, 0.1f, originalSpeed);
-                        }
-                        break;
-                    }
-                case FormationSpeedSyncMode.CatchUp:
-                    {
-                        foreach (var pair in targetDistances)
-                        {
-                            var linearSpeedLimit = MathF.Max(0.1f, pair.Value / maxOriginalDuration);
-                            var originalSpeed = MathF.Max(0.1f, pair.Key.QuerySystem.MovementSpeed);
-                            //catch up and do not wait for slower formation
-                            FormationSpeedLimits[pair.Key] = MathF.Clamp(MathF.Lerp(linearSpeedLimit, originalSpeed, (pair.Value - distanceWithMaxDuration + distanceError) / (originalSpeed * 2f)), linearSpeedLimit, originalSpeed);
-                        }
-                        break;
-                    }
-                case FormationSpeedSyncMode.WaitForLastFormation:
-                    {
-                        var range = 5f;
-                        //foreach (var pair in targetDistances)
-                        //{
-                        //    var distance = pair.Value;
-                        //    var linearSpeedLimit = distance / maxOriginalDuration;
-                        //    var originalSpeed = MathF.Max(0.1f, pair.Key.CachedMovementSpeed);
-                        //    var originalDuration = originalDurations[pair.Key];
-                        //    var maxDistanceSpeed = GetMaxDistanceSpeed(targetDistances, pair.Value, minDistance, maxDistance, maxOriginalDuration, distanceWithMaxDuration, range);
-                        //    var minSpeed = MathF.Lerp(linearSpeedLimit, 0.1f, MathF.Pow(MathF.Clamp((maxOriginalDuration - originalDuration) / durationThreshold, 0f, 1f), 10f));
-                        //    //var minSpeed = 0.1f;
-                        //    var speedLimit = MathF.Clamp(MathF.Lerp(maxDistanceSpeed, minSpeed, MathF.Clamp((maxDistance - distance) / range - 0.1f, 0f, 1f)), minSpeed, originalSpeed);
-                        //    FormationSpeedLimits[pair.Key] = speedLimit;
-                        //}
-                        foreach (var pair in targetDistances)
-                        {
-                            var distance = pair.Value;
-                            var linearSpeedLimit = distance / maxOriginalDuration;
-                            var originalSpeed = MathF.Max(0.1f, pair.Key.QuerySystem.MovementSpeed);
-                            var originalDuration = originalDurations[pair.Key];
-                            var maxDistanceSpeed = GetMaxDistanceSpeed2(targetDistances, pair.Value, minDistance, maxDistance, maxOriginalDuration, distanceWithMaxDuration, range);
-                            var minSpeed = 0.1f;
-                            var speedLimit = MathF.Clamp(MathF.Lerp(maxDistanceSpeed, minSpeed, MathF.Clamp((maxDistance - distance - distanceError) / range, 0f, 1f)), minSpeed, originalSpeed);
-                            FormationSpeedLimits[pair.Key] = speedLimit;
-                        }
-                        break;
-                    }
+                var formation = pair.Key;
+                var orderPosition = pair.Value;
+                var expectedPosition = weightedAverageCurrentPositions - weightedAverageOrderPosition + orderPosition;
+                FormationExpectedPositions[formation] = expectedPosition;
             }
+            MaxDuration = maxOriginalDuration;
+            DistanceWithMaxDuration = distanceWithMaxDuration;
+            FormationTargetDistances = targetDistances;
+            MinSpeed = minSpeed;
+
+            //var distanceError = 1f;
+            //switch (CommandSystemConfig.Get().FormationSpeedSyncMode)
+            //{
+            //    case FormationSpeedSyncMode.Linear:
+            //        {
+            //            foreach (var pair in targetDistances)
+            //            {
+            //                var linearSpeedLimit = pair.Value / maxOriginalDuration;
+            //                var originalSpeed = MathF.Max(0.1f, pair.Key.QuerySystem.MovementSpeed);
+            //                FormationSpeedLimits[pair.Key] = MathF.Clamp(linearSpeedLimit, 0.1f, originalSpeed);
+            //            }
+            //            break;
+            //        }
+            //    case FormationSpeedSyncMode.CatchUp:
+            //        {
+            //            foreach (var pair in targetDistances)
+            //            {
+            //                var linearSpeedLimit = MathF.Max(0.1f, pair.Value / maxOriginalDuration);
+            //                var originalSpeed = MathF.Max(0.1f, pair.Key.QuerySystem.MovementSpeed);
+            //                //catch up and do not wait for slower formation
+            //                FormationSpeedLimits[pair.Key] = MathF.Clamp(MathF.Lerp(linearSpeedLimit, originalSpeed, (pair.Value - distanceWithMaxDuration + distanceError) / (originalSpeed * 2f)), linearSpeedLimit, originalSpeed);
+            //            }
+            //            break;
+            //        }
+            //    case FormationSpeedSyncMode.WaitForLastFormation:
+            //        {
+            //            var range = 5f;
+            //            //foreach (var pair in targetDistances)
+            //            //{
+            //            //    var distance = pair.Value;
+            //            //    var linearSpeedLimit = distance / maxOriginalDuration;
+            //            //    var originalSpeed = MathF.Max(0.1f, pair.Key.CachedMovementSpeed);
+            //            //    var originalDuration = originalDurations[pair.Key];
+            //            //    var maxDistanceSpeed = GetMaxDistanceSpeed(targetDistances, pair.Value, minDistance, maxDistance, maxOriginalDuration, distanceWithMaxDuration, range);
+            //            //    var minSpeed = MathF.Lerp(linearSpeedLimit, 0.1f, MathF.Pow(MathF.Clamp((maxOriginalDuration - originalDuration) / durationThreshold, 0f, 1f), 10f));
+            //            //    //var minSpeed = 0.1f;
+            //            //    var speedLimit = MathF.Clamp(MathF.Lerp(maxDistanceSpeed, minSpeed, MathF.Clamp((maxDistance - distance) / range - 0.1f, 0f, 1f)), minSpeed, originalSpeed);
+            //            //    FormationSpeedLimits[pair.Key] = speedLimit;
+            //            //}
+            //            foreach (var pair in targetDistances)
+            //            {
+            //                var distance = pair.Value;
+            //                var linearSpeedLimit = distance / maxOriginalDuration;
+            //                var originalSpeed = MathF.Max(0.1f, pair.Key.QuerySystem.MovementSpeed);
+            //                var originalDuration = originalDurations[pair.Key];
+            //                var maxDistanceSpeed = GetMaxDistanceSpeed2(targetDistances, pair.Value, minDistance, maxDistance, maxOriginalDuration, distanceWithMaxDuration, range);
+            //                var minSpeed = 0.1f;
+            //                var speedLimit = MathF.Clamp(MathF.Lerp(maxDistanceSpeed, minSpeed, MathF.Clamp((maxDistance - distance - distanceError) / range, 0f, 1f)), minSpeed, originalSpeed);
+            //                FormationSpeedLimits[pair.Key] = speedLimit;
+            //            }
+            //            break;
+            //        }
+            //}
         }
 
         private float GetMaxDistanceSpeed(Dictionary<Formation, float> targetDistances, float distance, float minDistance, float maxDistance, float maxOriginalDuration, float distanceWithMaxDuration, float range)
@@ -934,9 +981,9 @@ namespace RTSCamera.CommandSystem.Logic
                     FormationPendingOrder(formation, order);
                 }
                 order.UpdateMovementSpeed();
-                if (order.ShouldAdjustFormationSpeed && CommandSystemConfig.Get().FormationSpeedSyncMode != FormationSpeedSyncMode.Disabled && order.FormationSpeedLimits.Count > 1)
+                if (order.ShouldAdjustFormationSpeed && CommandSystemConfig.Get().FormationSpeedSyncMode != FormationSpeedSyncMode.Disabled && order.FormationTargetDistances.Count > 1)
                 {
-                    Utilities.Utility.DisplayAdjustFormationSpeedMessage(order.FormationSpeedLimits.Keys);
+                    Utilities.Utility.DisplayAdjustFormationSpeedMessage(order.FormationTargetDistances.Keys);
                 }
             }
             else
@@ -963,7 +1010,7 @@ namespace RTSCamera.CommandSystem.Logic
         private static void FormationPendingOrder(Formation formation, OrderInQueue order)
         {
             PendingOrders[formation] = order;
-            CommandQuerySystem.GetQueryForFormation(formation).ExpireAllQueries();
+            CommandQuerySystem.GetQueryForFormation(formation).OnOrderPended();
             TicksToSkip = 1;
         }
 

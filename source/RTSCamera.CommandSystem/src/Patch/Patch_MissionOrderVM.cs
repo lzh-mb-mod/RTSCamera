@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -164,7 +165,8 @@ namespace RTSCamera.CommandSystem.Patch
             }
             var orderToAdd = new OrderInQueue
             {
-                SelectedFormations = selectedFormations
+                SelectedFormations = selectedFormations,
+                ShouldAdjustFormationSpeed = Utilities.Utility.ShouldLockFormation()
             };
             MBReadOnlyList<Formation> focusedFormations = null;
             switch (orderSubType)
@@ -182,8 +184,13 @@ namespace RTSCamera.CommandSystem.Patch
                         orderToAdd.PositionEnd = unitPosition;
                         if (!queueCommand)
                         {
-                            Patch_OrderController.SimulateNewOrderWithPositionAndDirection(selectedFormations, __instance.OrderController.simulationFormations, unitPosition, unitPosition, true, out var simulationAgentFrames, false, out _, out var isLineShort, true, true);
+                            bool fadeOut = Utilities.Utility.ShouldFadeOut();
+                            Patch_OrderController.SimulateNewOrderWithPositionAndDirection(selectedFormations, __instance.OrderController.simulationFormations, unitPosition, unitPosition, fadeOut, out var simulationAgentFrames, true, out _, out var isLineShort, true, true);
                             orderToAdd.IsLineShort = isLineShort;
+                            if (fadeOut)
+                            {
+                                Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                            }
                         }
                         else
                         {
@@ -244,91 +251,155 @@ namespace RTSCamera.CommandSystem.Patch
                     orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                     break;
                 case OrderSubType.FormLine:
-                    orderToAdd.OrderType = OrderType.ArrangementLine;
-                    Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Line, false, out _, true, out _);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                    if (!queueCommand)
                     {
-                        ExecuteArrangementOrder(__instance, orderToAdd);
-                        skipNativeOrder = true;
-                        return null;
+                        orderToAdd.OrderType = OrderType.ArrangementLine;
+                        bool fadeOut = Utilities.Utility.ShouldFadeOut();
+                        Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Line, fadeOut, out var simulationAgentFrames, true, out _);
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+
+                        if (fadeOut)
+                        {
+                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                        }
+                        if (!queueCommand)
+                        {
+                            ExecuteArrangementOrder(__instance, orderToAdd);
+                            skipNativeOrder = true;
+                            return null;
+                        }
+                        break;
                     }
-                    break;
                 case OrderSubType.FormClose:
-                    orderToAdd.OrderType = OrderType.ArrangementCloseOrder;
-                    Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.ShieldWall, false, out _, true, out _);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                    if (!queueCommand)
                     {
-                        ExecuteArrangementOrder(__instance, orderToAdd);
-                        skipNativeOrder = true;
-                        return null;
+                        orderToAdd.OrderType = OrderType.ArrangementCloseOrder;
+                        bool fadeOut = Utilities.Utility.ShouldFadeOut();
+                        Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.ShieldWall, fadeOut, out var simulationAgentFrames, true, out _);
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+
+                        if (fadeOut)
+                        {
+                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                        }
+                        if (!queueCommand)
+                        {
+                            ExecuteArrangementOrder(__instance, orderToAdd);
+                            skipNativeOrder = true;
+                            return null;
+                        }
+                        break;
                     }
-                    break;
                 case OrderSubType.FormLoose:
-                    orderToAdd.OrderType = OrderType.ArrangementLoose;
-                    Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Loose, false, out _, true, out _);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                    if (!queueCommand)
                     {
-                        ExecuteArrangementOrder(__instance, orderToAdd);
-                        skipNativeOrder = true;
-                        return null;
+                        orderToAdd.OrderType = OrderType.ArrangementLoose;
+                        bool fadeOut = Utilities.Utility.ShouldFadeOut();
+                        Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Loose, fadeOut, out var simulationAgentFrames, true, out _);
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+
+                        if (fadeOut)
+                        {
+                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                        }
+                        if (!queueCommand)
+                        {
+                            ExecuteArrangementOrder(__instance, orderToAdd);
+                            skipNativeOrder = true;
+                            return null;
+                        }
+                        break;
                     }
-                    break;
                 case OrderSubType.FormCircular:
-                    orderToAdd.OrderType = OrderType.ArrangementCircular;
-                    Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Circle, false, out _, true, out _);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                    if (!queueCommand)
                     {
-                        ExecuteArrangementOrder(__instance, orderToAdd);
-                        skipNativeOrder = true;
-                        return null;
+                        orderToAdd.OrderType = OrderType.ArrangementCircular;
+                        bool fadeOut = Utilities.Utility.ShouldFadeOut();
+                        Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Circle, fadeOut, out var simulationAgentFrames, true, out _);
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+
+                        if (fadeOut)
+                        {
+                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                        }
+                        if (!queueCommand)
+                        {
+                            ExecuteArrangementOrder(__instance, orderToAdd);
+                            skipNativeOrder = true;
+                            return null;
+                        }
+                        break;
                     }
-                    break;
                 case OrderSubType.FormSchiltron:
-                    orderToAdd.OrderType = OrderType.ArrangementSchiltron;
-                    Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Square, false, out _, true, out _);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                    if (!queueCommand)
                     {
-                        ExecuteArrangementOrder(__instance, orderToAdd);
-                        skipNativeOrder = true;
-                        return null;
+                        orderToAdd.OrderType = OrderType.ArrangementSchiltron;
+                        bool fadeOut = Utilities.Utility.ShouldFadeOut();
+                        Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Square, fadeOut, out var simulationAgentFrames, true, out _);
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+
+                        if (fadeOut)
+                        {
+                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                        }
+                        if (!queueCommand)
+                        {
+                            ExecuteArrangementOrder(__instance, orderToAdd);
+                            skipNativeOrder = true;
+                            return null;
+                        }
+                        break;
                     }
-                    break;
                 case OrderSubType.FormV:
-                    orderToAdd.OrderType = OrderType.ArrangementVee;
-                    Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Skein, false, out _, true, out _);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                    if (!queueCommand)
                     {
-                        ExecuteArrangementOrder(__instance, orderToAdd);
-                        skipNativeOrder = true;
-                        return null;
+                        orderToAdd.OrderType = OrderType.ArrangementVee;
+                        bool fadeOut = Utilities.Utility.ShouldFadeOut();
+                        Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Skein, fadeOut, out var simulationAgentFrames, true, out _);
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+
+                        if (fadeOut)
+                        {
+                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                        }
+                        if (!queueCommand)
+                        {
+                            ExecuteArrangementOrder(__instance, orderToAdd);
+                            skipNativeOrder = true;
+                            return null;
+                        }
+                        break;
                     }
-                    break;
                 case OrderSubType.FormColumn:
-                    orderToAdd.OrderType = OrderType.ArrangementColumn;
-                    Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Column, false, out _, true, out _);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                    if (!queueCommand)
                     {
-                        return null;
+                        orderToAdd.OrderType = OrderType.ArrangementColumn;
+                        bool fadeOut = Utilities.Utility.ShouldFadeOut();
+                        Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Column, fadeOut, out var simulationAgentFrames, true, out _);
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+
+                        if (fadeOut)
+                        {
+                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                        }
+                        if (!queueCommand)
+                        {
+                            return null;
+                        }
+                        break;
                     }
-                    break;
                 case OrderSubType.FormScatter:
-                    orderToAdd.OrderType = OrderType.ArrangementScatter;
-                    Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Scatter, false, out _, true, out _);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                    if (!queueCommand)
                     {
-                        ExecuteArrangementOrder(__instance, orderToAdd);
-                        skipNativeOrder = true;
-                        return null;
+                        orderToAdd.OrderType = OrderType.ArrangementScatter;
+                        bool fadeOut = Utilities.Utility.ShouldFadeOut();
+                        Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, __instance.OrderController.simulationFormations, ArrangementOrder.ArrangementOrderEnum.Scatter, fadeOut, out var simulationAgentFrames, true, out _);
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+
+                        if (fadeOut)
+                        {
+                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                        }
+                        if (!queueCommand)
+                        {
+                            ExecuteArrangementOrder(__instance, orderToAdd);
+                            skipNativeOrder = true;
+                            return null;
+                        }
+                        break;
                     }
-                    break;
                 case OrderSubType.ToggleFacing:
                     // see OrderItemVM.OrderSelectionState
                     if (__instance.LastSelectedOrderItem.SelectionState == 3)
@@ -379,7 +450,6 @@ namespace RTSCamera.CommandSystem.Patch
                             // only pending order for formations that is not executing attacking/advance/fallback, etc.
                             orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
                             __instance.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, Utilities.Utility.GetOrderFlagPosition(missionScreen));
-                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
                         else
                         {
@@ -388,12 +458,13 @@ namespace RTSCamera.CommandSystem.Patch
                             {
                                 orderToAdd.TargetFormation = focusedFormations[0];
                             }
+                            // only pending order for formations that is not executing attacking/advance/fallback, etc.
                             orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
-                            Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations, orderToAdd.TargetFormation);
+                            Patch_OrderController.TryFadeOutForFacingToEnemyOrder(__instance.OrderController, selectedFormations, orderToAdd.TargetFormation);
                             Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, orderToAdd.TargetFormation);
                             __instance.OrderController.SetOrder(OrderType.LookAtEnemy);
-                            orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
+                        orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         skipNativeOrder = true;
                         break;
                     }
@@ -500,6 +571,7 @@ namespace RTSCamera.CommandSystem.Patch
                     Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations, orderToAdd.TargetFormation);
                     if (!queueCommand)
                     {
+                        Patch_OrderController.TryFadeOutForFacingToEnemyOrder(__instance.OrderController, selectedFormations, orderToAdd.TargetFormation);
                         Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, orderToAdd.TargetFormation);
                     }
                     orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);

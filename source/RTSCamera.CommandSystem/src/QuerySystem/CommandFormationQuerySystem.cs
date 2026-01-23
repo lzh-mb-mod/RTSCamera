@@ -133,17 +133,24 @@ namespace RTSCamera.CommandSystem.QuerySystem
             }, 0.5f);
             _areAgentsNearTargetPositions = new QueryData<bool>(() =>
             {
-                if (formation.CountOfUnitsWithoutDetachedOnes == ((formation.IsPlayerTroopInFormation || formation.HasPlayerControlledTroop) ? 1 : 0))
+                if (formation.CountOfUnitsWithoutLooseDetachedOnes == ((formation.IsPlayerTroopInFormation || formation.HasPlayerControlledTroop) ? 1 : 0))
                     return true;
-                if (formation.CountOfUnitsWithoutDetachedOnes > 0)
+                if (formation.CountOfUnitsWithoutLooseDetachedOnes > 0)
                 {
                     float scoreSum = 0f;
-                    float threshold = (float)formation.CountOfUnitsWithoutDetachedOnes / 2;
+                    float threshold = (float)formation.CountOfUnitsWithoutLooseDetachedOnes / 2;
                     formation.ApplyActionOnEachAttachedUnit((agent) =>
                     {
-                        var speed = agent.GetMaximumSpeedLimit();
+                        // GetCurrentSpeedLimit may return walk speed
+                        // var speed = agent.GetCurrentSpeedLimit();
+                        var speed = agent.MaximumForwardUnlimitedSpeed;
+                        //if (speed < 0)
+                        //{
+                        //    speed = agent.GetMaximumForwardUnlimitedSpeed();
+                        //}
+                        var velocitySquared = MathF.Max(speed, 4f);
                         var distanceSquared = agent.GetComponent<CommandSystemAgentComponent>()?.DistanceSquaredToTargetPosition ?? 0;
-                        var score = MathF.Pow(MathF.E, -distanceSquared / (speed * speed) * 9);
+                        var score = MathF.Pow(MathF.E, MathF.Min(-(distanceSquared - (speed * speed)) / (velocitySquared), 0f));
                         scoreSum += score;
                     });
                     if (scoreSum > threshold)
@@ -154,14 +161,15 @@ namespace RTSCamera.CommandSystem.QuerySystem
                 }
                 return true;
             }, 0.5f);
-            _coolDownToEvaluateAgentsDistanceToTarget = new QueryData<bool>(() => false, 0.31f + MBRandom.RandomFloat * 0.1f);
+            _coolDownToEvaluateAgentsDistanceToTarget = new QueryData<bool>(() => false, 0.31f + MBRandom.RandomFloat * 0.2f);
         }
-        public void ExpireAllQueries()
+
+        public void OnOrderPended()
         {
-            _closestEnemyFormation?.Expire();
-            _closestEnemyAgent?.Expire();
-            _virtualWeightedAverageEnemyPosition?.Expire();
-            _weightedAverageFacingTargetEnemyPosition?.Expire();
+            //_closestEnemyFormation?.Expire();
+            //_closestEnemyAgent?.Expire();
+            //_virtualWeightedAverageEnemyPosition?.Expire();
+            //_weightedAverageFacingTargetEnemyPosition?.Expire();
             _areAgentsNearTargetPositions.Expire();
             _coolDownToEvaluateAgentsDistanceToTarget.SetValue(true, Mission.Current.CurrentTime);
             NeedToUpdateTargetPositionDistance = true;

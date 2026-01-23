@@ -100,6 +100,8 @@ namespace RTSCamera.CommandSystem.Config
         // deprecated. use MovementTargetHighlightStyle instead.
         public bool MoreVisibleMovementTarget = true;
 
+        public float MovementTargetFadeOutDuration = 0.5f;
+
         // deprecated. use MovementTargetHighlightStyle instead.
         public bool MovementTargetMoreVisibleOnRtsViewOnly = true;
 
@@ -142,6 +144,7 @@ namespace RTSCamera.CommandSystem.Config
             MovementTargetHighlightStyleInRTSMode = other.MovementTargetHighlightStyleInRTSMode;
             MovementTargetHighlightMode = other.MovementTargetHighlightMode;
             MoreVisibleMovementTarget = other.MoreVisibleMovementTarget;
+            MovementTargetFadeOutDuration = other.MovementTargetFadeOutDuration;
             MovementTargetMoreVisibleOnRtsViewOnly = other.MovementTargetMoreVisibleOnRtsViewOnly;
             CommandQueueFlagShowMode = other.CommandQueueFlagShowMode;
             CommandQueueArrowShowMode = other.CommandQueueArrowShowMode;

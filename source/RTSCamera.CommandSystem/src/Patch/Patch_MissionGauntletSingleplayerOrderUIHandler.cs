@@ -352,6 +352,7 @@ namespace RTSCamera.CommandSystem.Patch
                                                     {
                                                         siegeWeapon.SetForcedUse(true);
                                                     }
+                                                    Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Move);
                                                 }
                                                 Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
                                                 break;
@@ -412,6 +413,7 @@ namespace RTSCamera.CommandSystem.Patch
                                                     {
                                                         siegeWeapon.SetForcedUse(true);
                                                     }
+                                                    Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Move);
                                                 }
                                             }
                                             else
@@ -440,6 +442,10 @@ namespace RTSCamera.CommandSystem.Patch
                                             orderToAdd.TargetEntity = focusedOrderableObject;
                                             Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.AttackEntity, selectedFormations, null, null, focusedOrderableObject);
                                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                            if (!queueCommand)
+                                            {
+                                                Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Charge);
+                                            }
                                             Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
                                             break;
                                         }
@@ -449,7 +455,10 @@ namespace RTSCamera.CommandSystem.Patch
                                             orderToAdd.TargetEntity = focusedOrderableObject;
                                             Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.PointDefence, selectedFormations, null, null, focusedOrderableObject);
                                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                                            Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
+                                            Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd); if (!queueCommand)
+                                            {
+                                                Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Move);
+                                            }
                                             break;
                                         }
                                 }
@@ -472,7 +481,7 @@ namespace RTSCamera.CommandSystem.Patch
                             skipNativeOrder = true;
                             // only pending order for formations that should be locked.
                             orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
-                            dataSource.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, Utilities.Utility.GetOrderFlagPosition(__instance.MissionScreen));
+                            dataSource.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, __instance.MissionScreen.GetOrderFlagPosition(), false));
                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
                         break;

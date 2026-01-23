@@ -663,7 +663,7 @@ namespace RTSCamera.CommandSystem.Patch
             simulationAgentFrames = !isSimulatingAgentFrames ? null : simulationAgentFrames;
             simulationFormationChanges = !isSimulatingFormationChanges ? null : simulationFormationChanges;
 
-            var formationOrderPositionList = CollectFormationOrderPositions(formations, out var averageOrderPosition, false, out var _).ToList();
+            var formationOrderPositionList = CollectFormationVirtualOrderPositions(formations, out var averageOrderPosition, false, out var _).ToList();
             var remainingFormationsList = new List<Formation>();
             remainingFormations = remainingFormationsList;
 
@@ -775,7 +775,7 @@ namespace RTSCamera.CommandSystem.Patch
             simulationAgentFrames = !isSimulatingAgentFrames ? null : simulationAgentFrames;
             simulationFormationChanges = !isSimulatingFormationChanges ? null : simulationFormationChanges;
 
-            var formationOrderPositionList = CollectFormationOrderPositions(formations, out var averageOrderPosition, true, out var weightedAverageDirection).ToList();
+            var formationOrderPositionList = CollectFormationVirtualOrderPositions(formations, out var averageOrderPosition, true, out var weightedAverageDirection).ToList();
             var remainingFormationsList = new List<Formation>();
             remainingFormations = remainingFormationsList;
 
@@ -861,7 +861,7 @@ namespace RTSCamera.CommandSystem.Patch
 
             )
         {
-            formationOrderPositionList = CollectFormationOrderPositions(formations, out averageOrderPosition, true, out weightedAverageDirection).ToList();
+            formationOrderPositionList = CollectFormationVirtualOrderPositions(formations, out averageOrderPosition, true, out weightedAverageDirection).ToList();
             oldOverallWidth = 0;
             minOverallWidth = 0;
             shouldFormationBeStackedWithPreviousFormation = new Dictionary<Formation, bool>();
@@ -1512,7 +1512,6 @@ namespace RTSCamera.CommandSystem.Patch
             Vec2 direction,
             ref List<WorldPosition> simulationAgentFrames)
         {
-
             var selectedFormations = formations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
             if (!Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(selectedFormations))
                 return true;
@@ -1601,6 +1600,8 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 var formationsWithLocking = new List<Formation> { };
                 var formationsWithoutLocking = new List<Formation> { };
+                var startIndex = 0;
+                bool fadeOut = Utilities.Utility.ShouldFadeOut();
                 foreach (var formation in __instance.SelectedFormations)
                 {
                     if (Utilities.Utility.ShouldLockFormationDuringLookAtDirection(formation))
@@ -1617,8 +1618,8 @@ namespace RTSCamera.CommandSystem.Patch
                     SimulateNewFacingOrderWithLockingFormations(formationsWithLocking,
                         __instance.simulationFormations,
                         OrderController.GetOrderLookAtDirection(__instance.SelectedFormations, orderPosition.AsVec2),
-                        false,
-                        out _,
+                        fadeOut,
+                        out var simulationAgentFrames,
                         true,
                         out var simulationFormationChanges);
                     foreach ((Formation formation, int unitSpacingReduction, float customWidth, WorldPosition position, Vec2 direction) in simulationFormationChanges)
@@ -1626,16 +1627,31 @@ namespace RTSCamera.CommandSystem.Patch
                         formation.SetMovementOrder(MovementOrder.MovementOrderMove(position));
                         formation.FacingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
                     }
+                    if (fadeOut)
+                    {
+                        Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, fadeOut, startIndex);
+                        startIndex += simulationAgentFrames.Count;
+                    }
                 }
                 if (formationsWithoutLocking.Count > 0)
                 {
                     var direction = OrderController.GetOrderLookAtDirection(__instance.SelectedFormations, orderPosition.AsVec2);
                     FacingOrder facingOrder = FacingOrder.FacingOrderLookAtDirection(direction);
+                    SimulateNewFacingOrderWithoutLockingFormations(formationsWithoutLocking,
+                        __instance.simulationFormations,
+                        OrderController.GetOrderLookAtDirection(__instance.SelectedFormations, orderPosition.AsVec2),
+                        fadeOut,
+                        out var simulationAgentFrames,
+                        true,
+                        out var simulationFormationChanges);
                     foreach (var formation in formationsWithoutLocking)
                     {
                         formation.FacingOrder = facingOrder;
-                        LivePreviewFormationChanges.UpdateFormationChange(formation, null, direction, null, null);
-                        LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtDirection, formation);
+                    }
+                    if (fadeOut)
+                    {
+                        Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, fadeOut, startIndex);
+                        startIndex += simulationAgentFrames.Count;
                     }
                 }
             }
@@ -1735,7 +1751,7 @@ namespace RTSCamera.CommandSystem.Patch
             codes.RemoveRange(get_SelectedFormationsIndex, endFinallyIndex - get_SelectedFormationsIndex + 1);
         }
 
-        private static Dictionary<Formation, Vec2> CollectFormationOrderPositions(
+        private static Dictionary<Formation, Vec2> CollectFormationVirtualOrderPositions(
             IEnumerable<Formation> formations,
             out Vec2 weightedAverageOrderPosition,
             bool collectDirection,
@@ -1789,7 +1805,7 @@ namespace RTSCamera.CommandSystem.Patch
         {
             simulationAgentFrames = ((!isSimulatingAgentFrames) ? null : new List<WorldPosition>());
             simulationFormationChanges = ((!isSimulatingFormationChanges) ? null : new List<(Formation, int, float, WorldPosition, Vec2)>());
-            var formationOrderPositionDictionary = CollectFormationOrderPositions(formations, out var averageOrderPosition, true, out var weightedAverageDirection);
+            var formationOrderPositionDictionary = CollectFormationVirtualOrderPositions(formations, out var averageOrderPosition, true, out var weightedAverageDirection);
 
             foreach (var formation in formations)
             {
@@ -1827,7 +1843,7 @@ namespace RTSCamera.CommandSystem.Patch
         {
             simulationAgentFrames = ((!isSimulatingAgentFrames) ? null : new List<WorldPosition>());
             simulationFormationChanges = ((!isSimulatingFormationChanges) ? null : new List<(Formation, int, float, WorldPosition, Vec2)>());
-            var formationOrderPositionDictionary = CollectFormationOrderPositions(formations, out var averageOrderPosition, true, out var weightedAverageDirection);
+            var formationOrderPositionDictionary = CollectFormationVirtualOrderPositions(formations, out var averageOrderPosition, true, out var weightedAverageDirection);
 
             foreach (var pair in formationOrderPositionDictionary)
             {
@@ -1861,6 +1877,44 @@ namespace RTSCamera.CommandSystem.Patch
             }
         }
 
+        public static void SimulateFacingToEnemyOrder(
+            IEnumerable<Formation> formations,
+            Dictionary<Formation, Formation> simulationFormations,
+            Formation targetFormation,
+            bool isSimulatingAgentFrames,
+            out List<WorldPosition> simulationAgentFrames,
+            bool isSimulatingFormationChanges,
+            out List<(Formation, int, float, WorldPosition, Vec2)> simulationFormationChanges)
+        {
+            simulationAgentFrames = ((!isSimulatingAgentFrames) ? null : new List<WorldPosition>());
+            simulationFormationChanges = ((!isSimulatingFormationChanges) ? null : new List<(Formation, int, float, WorldPosition, Vec2)>());
+            var formationOrderPositionDictionary = CollectFormationVirtualOrderPositions(formations, out var averageOrderPosition, true, out var weightedAverageDirection);
+
+            foreach (var formation in formations)
+            {
+                Vec2 newPositionVec2 = GetFormationVirtualPositionVec2(formation);
+                float width = GetFormationVirtualWidth(formation) ?? GetActualOrCurrentWidth(formation);
+                WorldPosition formationPosition = formation.CreateNewOrderWorldPosition(WorldPosition.WorldPositionEnforcedCache.None);
+                formationPosition.SetVec2(newPositionVec2);
+
+                Vec2 direction = GetFormationVirtualDirectionIncludingFacingEnemyAccordingToPositionAndDirection(formation, newPositionVec2, GetFormationVirtualDirection(formation));
+                if (isSimulatingFormationChanges)
+                {
+                    // should we update formationPosition?
+                    LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, formation, targetFormation);
+                }
+                var newDirection = GetVirtualDirectionOfFacingEnemyAccordingToPostitionAndDirection(formation, newPositionVec2, direction);
+                int unitSpacingReduction = 0;
+                var actualUnitSpacing = GetFormationVirtualUnitSpacing(formation) ?? GetActualOrCurrentUnitSpacing(formation);
+                DecreaseUnitSpacingAndWidthIfNotAllUnitsFit(formation, GetSimulationFormation(formation, simulationFormations), in formationPosition, in newDirection, ref width, ref unitSpacingReduction, actualUnitSpacing);
+                SimulateNewOrderWithFrameAndWidth(formation, GetSimulationFormation(formation, simulationFormations), simulationAgentFrames, simulationFormationChanges, in formationPosition, in newDirection, width, unitSpacingReduction, true, out var simulatedFormationDepth, actualUnitSpacing);
+                if (isSimulatingFormationChanges)
+                {
+                    LivePreviewFormationChanges.SetPreviewShape(formation, width, simulatedFormationDepth);
+                }
+            }
+        }
+
 
         public static void SimulateAgentFrames(
             IEnumerable<Formation> formations,
@@ -1869,7 +1923,7 @@ namespace RTSCamera.CommandSystem.Patch
         {
             simulationAgentFrames = new List<WorldPosition>();
             List<(Formation, int, float, WorldPosition, Vec2)> simulationFormationChanges = null;
-            var formationOrderPositionDictionary = CollectFormationOrderPositions(formations, out var averageOrderPosition, true, out var weightedAverageDirection);
+            var formationOrderPositionDictionary = CollectFormationVirtualOrderPositions(formations, out var averageOrderPosition, true, out var weightedAverageDirection);
 
 
             foreach (var formation in formations)
@@ -2289,6 +2343,29 @@ namespace RTSCamera.CommandSystem.Patch
                     out var simulationFormationChanges);
                 order.ActualFormationChanges.AddRange(simulationFormationChanges);
                 var changes = LivePreviewFormationChanges.CollectChanges(formationsWithoutLocking);
+                foreach (var change in changes)
+                {
+                    order.ShouldLockFormationInFacingOrder[change.Key] = false;
+                    order.VirtualFormationChanges[change.Key] = change.Value;
+                }
+            }
+        }
+
+        public static void FillOrderLookingAtEnemy(OrderInQueue order, OrderController orderController, Formation targetFormation)
+        {
+            order.TargetFormation = targetFormation;
+            var selectedFormations = orderController.SelectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
+            if (selectedFormations.Count > 0)
+            {
+                SimulateFacingToEnemyOrder(selectedFormations,
+                    orderController.simulationFormations,
+                    targetFormation,
+                    false,
+                    out _,
+                    true,
+                    out var simulationFormationChanges);
+                order.ActualFormationChanges.AddRange(simulationFormationChanges);
+                var changes = LivePreviewFormationChanges.CollectChanges(selectedFormations);
                 foreach (var change in changes)
                 {
                     order.ShouldLockFormationInFacingOrder[change.Key] = false;
@@ -2721,14 +2798,14 @@ namespace RTSCamera.CommandSystem.Patch
                 if (orderGroundPosition.NearlyEquals(vec3, 0.1f))
                 {
                     direction = simulationFormation.Direction;
-                    if (direction.NearlyEquals(formationDirection, 0.1f))
+                    if (direction.NearlyEquals(formationDirection, 0.03f))
                     {
                         var newArrangementType = newArrangementOrder == null ? null : Utilities.Utility.GetTypeOfArrangement(newArrangementOrder.Value, true);
                         var simulationFormationArrangementType = simulationFormation.Arrangement.GetType();
                         var simulationFormationArrangementOrderType = Utilities.Utility.GetTypeOfArrangement(simulationFormation.ArrangementOrder.OrderEnum, true);
                         if (newArrangementType == null && simulationFormationArrangementType == arrangement.GetType())
                             goto label_3;
-                        else if (isUnitSpacingTheSame && direction.NearlyEquals(formationDirection, 0.1f) && simulationFormationArrangementType == oldArrangementType)
+                        else if (isUnitSpacingTheSame && direction.NearlyEquals(formationDirection, 0.2f) && simulationFormationArrangementType == oldArrangementType)
                         {
                             // TODO: refactor needed.
                             if (simulationFormationArrangementOrderType == oldArrangementType)
@@ -2973,6 +3050,33 @@ namespace RTSCamera.CommandSystem.Patch
             else
             {
                 FacingEnemeyTarget[formation] = targetFormation;
+            }
+        }
+
+        public static void TryFadeOutForFacingToEnemyOrder(OrderController orderController, IEnumerable<Formation> selectedFormations, Formation targetFormation)
+        {
+            bool fadeOut = Utilities.Utility.ShouldFadeOut();
+            SimulateFacingToEnemyOrder(selectedFormations,
+                orderController.simulationFormations,
+                targetFormation,
+                fadeOut,
+                out var simulationAgentFrames,
+                true,
+                out var simulationFormationChanges);
+            if (fadeOut)
+            {
+                Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+            }
+        }
+
+        public static void TryFadeOutForMoveOrder(OrderController orderController, List<Formation> selectedFormations, WorldPosition worldPosition)
+        {
+            bool fadeOut = Utilities.Utility.ShouldFadeOut();
+            if (fadeOut)
+            {
+                SimulateNewOrderWithPositionAndDirection(selectedFormations, orderController.simulationFormations,
+                    worldPosition, worldPosition, true, out var simulationAgentFrames, false, out _, out _, true);
+                Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
             }
         }
     }

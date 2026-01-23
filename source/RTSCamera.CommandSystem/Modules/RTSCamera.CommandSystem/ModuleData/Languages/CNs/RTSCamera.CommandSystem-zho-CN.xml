@@ -11,8 +11,6 @@
 
     <string id="RTSCameraCommandSystem_click_to_select_formation" text="用鼠标选择编队" />
     <string id="RTSCameraCommandSystem_click_to_select_formation_hint" text="你可以按下{KeyName}来选择编队。选中的编队会用轮廓高亮。" />
-    <string id="RTSCameraCommandSystem_highlight_selected_formation" text="高亮选中的编队" />
-    <string id="RTSCameraCommandSystem_highlight_selected_formation_hint" text="选中的编队会用轮廓高亮" />
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="启用攻击特定编队" />
     <string id="RTSCameraCommandSystem_attack_specific_formation_hint" text="你可以在敌方编队上按下{KeyName}来发出集中攻击的命令。" />
     <string id="RTSCameraCommandSystem_attack_specific_formation_alt_hint" text="(新功能) 若同时按下Alt则不会打断移动指令。" />
@@ -46,13 +44,15 @@
     <string id="RTSCameraCommandSystem_movement_target_highlight_rts_mode" text="移动目标样式（RTS模式）" />
     <string id="RTSCameraCommandSystem_movement_target_highlight_rts_mode_hint" text="RTS模式下的移动目标样式。" />
 
+    <string id="RTSCameraCommandSystem_movement_target_fade_out_duration" text="移动目标淡出持续时间" />
+    <string id="RTSCameraCommandSystem_movement_target_fade_out_duration_hint" text="移动目标的淡出持续时间。" />
+
     <string id="RTSCameraCommandSystem_command_queue_flag_show_mode" text="何时显示命令旗帜" />
     <string id="RTSCameraCommandSystem_command_queue_flag_show_mode_hint" text="命令队列中的命令目标将会用旗帜标识出来。" />
     <string id="RTSCameraCommandSystem_highlight_mode_never" text="从不" />
     <string id="RTSCameraCommandSystem_highlight_mode_free_camera_only" text="仅自由视角下" />
-    <string id="RTSCameraCommandSystem_highlight_mode_night_or_free_camera" text="夜间或自由视角下" />
     <string id="RTSCameraCommandSystem_highlight_mode_always" text="总是" />
-  
+
     <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode" text="何时显示命令箭头" />
     <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode_hint" text="命令队列中的命令目标将会用箭头连接起来。" />
 

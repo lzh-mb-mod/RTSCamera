@@ -42,6 +42,9 @@
   <string id="str_rts_camera_command_system_movement_target_highlight_rts_mode" text="{=RTSCameraCommandSystem_movement_target_highlight_rts_mode}Movement Target Style (RTS Mode)" />
   <string id="str_rts_camera_command_system_movement_target_highlight_rts_mode_hint" text="{=RTSCameraCommandSystem_movement_target_highlight_rts_mode_hint}Movement target style in RTS mode." />
 
+  <string id="str_rts_camera_command_system_movement_target_fade_out_duration" text="{=RTSCameraCommandSystem_movement_target_fade_out_duration}Movement Target Fade Out Duration" />
+  <string id="str_rts_camera_command_system_movement_target_fade_out_duration_hint" text="{=RTSCameraCommandSystem_movement_target_fade_out_duration_hint}Duration of fade out for movement target." />
+
   <string id="str_rts_camera_command_system_command_queue_flag_show_mode" text="{=RTSCameraCommandSystem_command_queue_flag_show_mode}When to Show Order Flag" />
   <string id="str_rts_camera_command_system_command_queue_flag_show_mode_hint" text="{=RTSCameraCommandSystem_command_queue_flag_show_mode_hint}Command targets in Command Queue will be marked using flags." />
   <string id="str_rts_camera_command_system_command_queue_flag_show_mode_option.Never" text="{=RTSCameraCommandSystem_highlight_mode_never}Never" />

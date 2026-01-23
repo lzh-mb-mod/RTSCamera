@@ -1060,5 +1060,70 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             return new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, missionScreen.GetOrderFlagPosition(), false);
         }
+
+        public static Dictionary<Formation, Vec2> CollectFormationCurrentAndOrderPositions(
+            IEnumerable<Formation> formations,
+            out Vec2 weightedAverageOrderPosition,
+            out Vec2 weightedAverageCurrentPosition)
+        {
+            var formationOrderPositionDictionary = new Dictionary<Formation, Vec2>();
+            int sumOfUnits = 0;
+            weightedAverageOrderPosition = Vec2.Zero;
+            weightedAverageCurrentPosition = Vec2.Zero;
+            var minSpeed = float.MaxValue;
+            Formation formationWithMinSpeed = null;
+            Vec2 orderPositionWithMinSpeed = Vec2.Zero;
+            foreach (var formation in formations)
+            {
+                var orderPosition = formation.OrderPosition;
+                var currentPosition = formation.CurrentPosition;
+                if (orderPosition.IsValid && currentPosition.IsValid)
+                {
+                    if (minSpeed > formation.QuerySystem.MovementSpeed)
+                    {
+                        minSpeed = formation.QuerySystem.MovementSpeed;
+                        formationWithMinSpeed = formation;
+                        orderPositionWithMinSpeed = orderPosition;
+                    }
+                    var countOfUnits = formation.CountOfUnitsWithoutDetachedOnes;
+                    weightedAverageOrderPosition += orderPosition * countOfUnits;
+                    weightedAverageCurrentPosition += currentPosition * countOfUnits;
+                    sumOfUnits += countOfUnits;
+                }
+                formationOrderPositionDictionary.Add(formation, orderPosition);
+            }
+            //if (formationWithMinSpeed != null)
+            //{
+            //    weightedAverageCurrentPosition = weightedAverageOrderPosition - orderPositionWithMinSpeed + formationWithMinSpeed.CurrentPosition;
+            //    return formationOrderPositionDictionary;
+            //}
+            if (sumOfUnits > 0)
+            {
+                weightedAverageOrderPosition = weightedAverageOrderPosition * 1f / sumOfUnits;
+                weightedAverageCurrentPosition = weightedAverageCurrentPosition * 1f / sumOfUnits;
+            }
+            return formationOrderPositionDictionary;
+        }
+
+        public static Vec2 GetExpectedGlobalPositionOfUnit(Vec2 expectedFormationPosition, Formation formation, Agent unit, bool blendWithOrderDirection)
+        {
+            if (unit.IsDetachedFromFormation)
+            {
+                return unit.Position.AsVec2;
+            }
+
+            Vec2? localPositionOfUnitOrDefaultWithAdjustment = formation.Arrangement.GetLocalPositionOfUnitOrDefaultWithAdjustment(unit, blendWithOrderDirection ? ((formation.QuerySystem.EstimatedInterval - formation.Interval) * 0.9f) : 0f);
+            if (localPositionOfUnitOrDefaultWithAdjustment.HasValue)
+            {
+                return (blendWithOrderDirection ? formation.CurrentDirection : formation.QuerySystem.EstimatedDirection).TransformToParentUnitF(localPositionOfUnitOrDefaultWithAdjustment.Value) + expectedFormationPosition;
+            }
+
+            return unit.Position.AsVec2;
+        }
+
+        public static bool ShouldFadeOut()
+        {
+            return CommandSystemConfig.Get().MovementTargetFadeOutDuration > 0.1f;
+        }
     }
 }
