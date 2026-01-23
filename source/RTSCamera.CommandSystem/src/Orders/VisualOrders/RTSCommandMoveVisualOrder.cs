@@ -45,6 +45,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                 orderToAdd.ShouldAdjustFormationSpeed = Utilities.Utility.ShouldLockFormation();
                 if (!queueCommand)
                 {
+                    Patch_OrderController.TryFadeOutForMoveOrder(orderController, selectedFormations, worldPosition);
                     orderController.SetOrderWithTwoPositions(OrderType.MoveToLineSegment, worldPosition, worldPosition);
                     orderToAdd.IsLineShort = false;
                     orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);

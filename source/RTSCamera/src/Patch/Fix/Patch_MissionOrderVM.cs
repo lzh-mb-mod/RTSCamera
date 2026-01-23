@@ -18,6 +18,7 @@ namespace RTSCamera.Patch.Fix
 
         public static bool AllowEscape = true;
         public static bool AllowClosingOrderUI = false;
+        public static bool UpdateOrderUIOnOrderExecutedHasBeenCalled = false;
 
         private static bool _patched;
         public static bool Patch(Harmony harmony)
@@ -133,21 +134,30 @@ namespace RTSCamera.Patch.Fix
             bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true &&
                 RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepOrderUIOpen == true &&
                 RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera || Mission.Current.Mode == TaleWorlds.Core.MissionMode.Deployment || __instance.TroopController.IsTransferActive;
-            if (shouldKeepOpen)
+            
+            if (!UpdateOrderUIOnOrderExecutedHasBeenCalled)
             {
-                if (!__instance.TroopController.IsTransferActive)
+                UpdateOrderUIOnOrderExecutedHasBeenCalled = true;
+                if (shouldKeepOpen)
+                {
+                    if (!__instance.TroopController.IsTransferActive)
+                    {
+                        var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
+                        AllowClosingOrderUI = true;
+                        TryCloseToggleOrder(__instance);
+                        AllowClosingOrderUI = false;
+                        Patch_MissionOrderVM.OpenToggleOrder(__instance, false);
+                        _displayOrderMessageForLastOrder.SetValue(__instance, displayedOrderMessageForLastOrder);
+                    }
+                }
+                else
                 {
                     var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
+                    AllowClosingOrderUI = true;
                     TryCloseToggleOrder(__instance);
-                    Patch_MissionOrderVM.OpenToggleOrder(__instance, false);
+                    AllowClosingOrderUI = false;
                     _displayOrderMessageForLastOrder.SetValue(__instance, displayedOrderMessageForLastOrder);
                 }
-            }
-            else
-            {
-                var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
-                TryCloseToggleOrder(__instance);
-                _displayOrderMessageForLastOrder.SetValue(__instance, displayedOrderMessageForLastOrder);
             }
 
             var orderTroopPlacer = Mission.Current.GetMissionBehavior<OrderTroopPlacer>();
@@ -194,7 +204,12 @@ namespace RTSCamera.Patch.Fix
                 }
                 Mission.Current.IsOrderMenuOpen = shouldKeepOpen;
                 if (!shouldKeepOpen)
+                {
+#if DEBUG
+                    Utility.DisplayMessage("order ui closed");
+#endif
                     return true;
+                }
 
                 if (applySelectedOrders && __instance.SelectedOrderSet != null)
                 {
@@ -223,9 +238,10 @@ namespace RTSCamera.Patch.Fix
 
 
         // Called every tick so that the order UI can be closed only once per tick.
-        public static void TickAllowClosingOrderUI()
+        public static void TickIsFirstCallToUpdateOrderUIOnOrderExecuted()
         {
-            Patch_MissionOrderVM.AllowClosingOrderUI = true;
+            //Patch_MissionOrderVM.AllowClosingOrderUI = true;
+            Patch_MissionOrderVM.UpdateOrderUIOnOrderExecutedHasBeenCalled = false;
         }
     }
 }

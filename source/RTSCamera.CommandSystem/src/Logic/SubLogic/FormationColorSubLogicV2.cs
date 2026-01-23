@@ -39,12 +39,12 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         public uint _invisibleGroundMarkerColor = new Color(0.0f, 0.0f, 0.0f, 0.0f).ToUnsignedInteger();
 
-        public uint _allySelectedColor = new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger();
-        public uint _allyTargetColor = new Color(0.3f, 0.3f, 1.0f).ToUnsignedInteger();
-        public uint _mouseOverAllyColor = new Color(0.3f, 0.8f, 1.0f).ToUnsignedInteger();
-        public uint _enemySelectedColor = new Color(0.98f, 0.3f, 0.9f).ToUnsignedInteger();
-        public uint _enemyTargetColor = new Color(1f, 0.1f, 0.2f).ToUnsignedInteger();
-        public uint _mouseOverEnemyColor = new Color(0.98f, 0.6f, 0.5f).ToUnsignedInteger();
+        public uint _allySelectedColor = new Color(0.4f, 0.8f, 0.4f).ToUnsignedInteger();
+        public uint _allyTargetColor = new Color(0.3f, 0.3f, 0.9f).ToUnsignedInteger();
+        public uint _mouseOverAllyColor = new Color(0.27f, 0.72f, 0.9f).ToUnsignedInteger();
+        public uint _enemySelectedColor = new Color(0.89f, 0.27f, 0.81f).ToUnsignedInteger();
+        public uint _enemyTargetColor = new Color(0.9f, 0.09f, 0.18f).ToUnsignedInteger();
+        public uint _mouseOverEnemyColor = new Color(0.89f, 0.54f, 0.45f).ToUnsignedInteger();
         private readonly List<Formation> _enemyAsTargetFormations = new List<Formation>();
         private readonly List<Formation> _allyAsTargetFormations = new List<Formation>();
         private readonly List<Formation> _allySelectedFormations = new List<Formation>();

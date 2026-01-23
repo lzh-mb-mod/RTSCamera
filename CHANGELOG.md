@@ -1,5 +1,12 @@
 # Changelog
 
+## [v5.3.24] - 2026-01-23
+### Added
+- Movement target will fade out after giving orders.
+
+### Improved
+- Improve speed sync behavior in facing order.
+
 ## [v5.3.23] - 2026-01-20
 ### Fixed
 - Fix crash when attacked siege weapon is destroyed.

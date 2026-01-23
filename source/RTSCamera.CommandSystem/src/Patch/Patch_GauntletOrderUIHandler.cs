@@ -356,6 +356,7 @@ namespace RTSCamera.CommandSystem.Patch
                                                     {
                                                         siegeWeapon.SetForcedUse(true);
                                                     }
+                                                    Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Move);
                                                 }
                                                 Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
                                                 break;
@@ -384,12 +385,7 @@ namespace RTSCamera.CommandSystem.Patch
                                                 }
                                                 Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
                                                 // This is required to keep MissionOrderVM open in rts mode and close it in player mode.
-                                                var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
-                                                var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_movement_stop");
-                                                if (orderItem != null)
-                                                {
-                                                    missionOrderVM.OnOrderExecuted(orderItem);
-                                                }
+                                                Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_stop");
                                                 break;
                                             }
                                         }
@@ -423,6 +419,7 @@ namespace RTSCamera.CommandSystem.Patch
                                                     {
                                                         siegeWeapon.SetForcedUse(true);
                                                     }
+                                                    Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Move);
                                                 }
                                             }
                                             else
@@ -451,6 +448,10 @@ namespace RTSCamera.CommandSystem.Patch
                                             orderToAdd.TargetEntity = focusedOrderableObject;
                                             Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.AttackEntity, selectedFormations, null, null, focusedOrderableObject);
                                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                            if (!queueCommand)
+                                            {
+                                                Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Charge);
+                                            }
                                             Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
                                             break;
                                         }
@@ -460,7 +461,10 @@ namespace RTSCamera.CommandSystem.Patch
                                             orderToAdd.TargetEntity = focusedOrderableObject;
                                             Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.PointDefence, selectedFormations, null, null, focusedOrderableObject);
                                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                                            Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
+                                            Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd); if (!queueCommand)
+                                            {
+                                                Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Move);
+                                            }
                                             break;
                                         }
                                 }
@@ -483,12 +487,8 @@ namespace RTSCamera.CommandSystem.Patch
                             // only pending order for formations that should be locked.
                             orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
                             dataSource.OrderController.SetOrderWithPosition(OrderType.LookAtDirection, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, __instance.MissionScreen.GetOrderFlagPosition(), false));
-                            var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
-                            var orderItem = MissionSharedLibrary.Utilities.Utility.FindOrderWithId(missionOrderVM, "order_toggle_facing");
-                            if (orderItem != null)
-                            {
-                                missionOrderVM.OnOrderExecuted(orderItem);
-                            }
+                            // This is required to keep MissionOrderVM open in rts mode and close it in player mode.
+                            Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_toggle_facing");
                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                         }
                         dataSource.SelectedOrderSet?.ExecuteDeSelect();

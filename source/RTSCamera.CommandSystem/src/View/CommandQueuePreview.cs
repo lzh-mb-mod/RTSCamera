@@ -3,6 +3,7 @@ using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
+using RTSCamera.CommandSystem.Orders;
 using RTSCamera.CommandSystem.Patch;
 using System;
 using System.Collections.Generic;
@@ -263,6 +264,15 @@ namespace RTSCamera.CommandSystem.View
             FormationShapeEntity.Initialize();
         }
 
+        public override void OnMissionScreenActivate()
+        {
+            base.OnMissionScreenActivate();
+            if (!Mission.Current.IsNavalBattle)
+            {
+                RTSCommandOrderItemVM.RegisterEvent(Utility.GetMissionOrderVM(Mission.Current));
+            }
+        }
+
         public override void AfterStart()
         {
             base.AfterStart();
@@ -291,6 +301,8 @@ namespace RTSCamera.CommandSystem.View
             _commandQueuePreviewData = null;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             FormationShapeEntity.Clear();
+            RTSCommandOrderItemVM.ClearEvent();
+
             if (Mission.PlayerTeam?.PlayerOrderController == null)
                 return;
 

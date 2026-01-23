@@ -8,6 +8,7 @@
     <string id="RTSCameraCommandSystem_option_class" text="Système de commandement" />
 
     <string id="RTSCameraCommandSystem_command_system_options" text="Système de commandement" />
+
     <string id="RTSCameraCommandSystem_click_to_select_formation" text="Clic du milieu pour sélectionner une formation" />
     <string id="RTSCameraCommandSystem_click_to_select_formation_hint" text="Vous pouvez sélectionner directement une formation en appuyant sur {KeyName} dessus. La formation sélectionnée sera mise en surbrillance avec un contour." />
     <string id="RTSCameraCommandSystem_attack_specific_formation" text="Activer l’attaque d’une formation spécifique" />
@@ -21,7 +22,7 @@
     <string id="RTSCameraCommandSystem_after_enemy_formation_eliminated_hint" text="Comportement lorsque la formation ennemie attaquée est éliminée." />
     <string id="RTSCameraCommandSystem_after_charge_behavior_charge" text="Charge" />
     <string id="RTSCameraCommandSystem_after_charge_behavior_hold" text="Tenir la position" />
- 
+
     <string id="RTSCameraCommandSystem_troop_highlight_character_mode" text="Surlignage des troupes (Mode personnage)" />
     <string id="RTSCameraCommandSystem_troop_highlight_character_mode_hint" text="Style de surlignage des troupes en mode personnage." />
     <string id="RTSCameraCommandSystem_troop_highlight_option_no" text="Aucun" />
@@ -43,11 +44,13 @@
     <string id="RTSCameraCommandSystem_movement_target_highlight_rts_mode" text="Style de cible de mouvement (Mode RTS)" />
     <string id="RTSCameraCommandSystem_movement_target_highlight_rts_mode_hint" text="Style de la cible de mouvement en mode RTS." />
 
+    <string id="RTSCameraCommandSystem_movement_target_fade_out_duration" text="Durée de disparition de la cible de mouvement" />
+    <string id="RTSCameraCommandSystem_movement_target_fade_out_duration_hint" text="Durée de disparition de la cible de mouvement." />
+
     <string id="RTSCameraCommandSystem_command_queue_flag_show_mode" text="Quand afficher le drapeau d’ordre" />
     <string id="RTSCameraCommandSystem_command_queue_flag_show_mode_hint" text="Les cibles de commande dans la file d’ordres seront marquées par des drapeaux." />
     <string id="RTSCameraCommandSystem_highlight_mode_never" text="Jamais" />
     <string id="RTSCameraCommandSystem_highlight_mode_free_camera_only" text="Caméra libre uniquement" />
-    <string id="RTSCameraCommandSystem_highlight_mode_night_or_free_camera" text="De nuit ou en caméra libre" />
     <string id="RTSCameraCommandSystem_highlight_mode_always" text="Toujours" />
 
     <string id="RTSCameraCommandSystem_command_queue_arrow_show_mode" text="Quand afficher les flèches d’ordre" />
@@ -100,9 +103,10 @@
 
     <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai" text="Appliquer la correction de l’ordre d’engagement pour les formations IA" />
     <string id="RTSCameraCommandSystem_apply_advance_order_fix_for_ai_hint" text="Lorsque cette option est activée, les formations IA appliqueront également la correction de l’ordre d’engagement pour les armes de jet." />
-    
+
     <string id="RTSCameraCommandSystem_thrower_ratio_threshold" text="Seuil de ratio de lanceurs" />
     <string id="RTSCameraCommandSystem_thrower_ratio_threshold_hint" text="Le ratio minimum de lanceurs dans une formation pour activer la correction de l’ordre d’engagement pour les armes de jet." />
+
     <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold" text="Seuil de ratio de munitions restantes" />
     <string id="RTSCameraCommandSystem_remaining_ammo_ratio_threshold_hint" text="Le ratio minimum de munitions restantes pour que la formation garde ses distances." />
 

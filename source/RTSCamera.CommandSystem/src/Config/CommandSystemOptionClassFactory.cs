@@ -111,6 +111,11 @@ namespace RTSCamera.CommandSystem.Config
                             new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.NewModelOnly)),
                             new SelectionItem(true, "str_rts_camera_command_system_movement_target_highlight_style_option", nameof(MovementTargetHighlightStyle.AlwaysVisible)),
                         }), false));
+                commandOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_movement_target_fade_out_duration"),
+                    GameTexts.FindText("str_rts_camera_command_system_movement_target_fade_out_duration_hint"),
+                    () => CommandSystemConfig.Get().MovementTargetFadeOutDuration, f => CommandSystemConfig.Get().MovementTargetFadeOutDuration = f,
+                    0f, 2f, false, true));
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_command_queue_flag_show_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_command_queue_flag_show_mode_hint"),

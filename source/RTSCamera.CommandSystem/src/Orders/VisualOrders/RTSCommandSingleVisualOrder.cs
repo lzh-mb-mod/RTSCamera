@@ -64,25 +64,38 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                     return;
                 }
             }
-            if (orderToAdd.OrderType == OrderType.LookAtDirection)
-            {
-                Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, orderController, executionParameters.WorldPosition);
-            }
-            else if (orderToAdd.OrderType == OrderType.LookAtEnemy)
-            {
-                Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations, orderToAdd.TargetFormation);
-                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-            }
 
             if (queueCommand)
             {
+                if (orderToAdd.OrderType == OrderType.LookAtDirection)
+                {
+                    Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, orderController, executionParameters.WorldPosition);
+                }
+                else if (orderToAdd.OrderType == OrderType.LookAtEnemy)
+                {
+                    orderToAdd.TargetFormation = executionParameters.Formation;
+                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations, orderToAdd.TargetFormation);
+                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                }
                 CommandQueueLogic.AddOrderToQueue(orderToAdd);
             }
             else
             {
-                // only pending order for formations that should be locked.
-                orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
-                Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, orderToAdd.TargetFormation);
+                if (orderToAdd.OrderType == OrderType.LookAtDirection)
+                {
+                    Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, null);
+                    // only pending order for formations that is not executing attacking/advance/fallback, etc.
+                    orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
+                }
+                else
+                {
+                    orderToAdd.TargetFormation = executionParameters.Formation;
+                    // only pending order for formations that is not executing attacking/advance/fallback, etc.
+                    orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
+                    Patch_OrderController.TryFadeOutForFacingToEnemyOrder(orderController, selectedFormations, orderToAdd.TargetFormation);
+                    Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, orderToAdd.TargetFormation);
+                }
+
                 if (executionParameters.HasFormation && _useFormationTarget)
                     orderController.SetOrderWithFormation(_orderType, executionParameters.Formation);
                 else if (executionParameters.HasWorldPosition && _useWorldPositionTarget)

@@ -92,18 +92,17 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                     // only pending order for formations that is not executing attacking/advance/fallback, etc.
                     orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
                     orderController.SetOrderWithPosition(OrderType.LookAtDirection, executionParameters.WorldPosition);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                 }
                 else
                 {
                     orderToAdd.TargetFormation = executionParameters.Formation;
                     // only pending order for formations that is not executing attacking/advance/fallback, etc.
                     orderToAdd.SelectedFormations = orderToAdd.SelectedFormations.Where(f => !Utilities.Utility.IsFormationOrderPositionMoving(f)).ToList();
-                    Patch_OrderController.LivePreviewFormationChanges.SetFacingOrder(OrderType.LookAtEnemy, selectedFormations, orderToAdd.TargetFormation);
+                    Patch_OrderController.TryFadeOutForFacingToEnemyOrder(orderController, selectedFormations, orderToAdd.TargetFormation);
                     Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, orderToAdd.TargetFormation);
                     orderController.SetOrder(OrderType.LookAtEnemy);
-                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                 }
+                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                 CommandQueueLogic.TryPendingOrder(orderToAdd.SelectedFormations, orderToAdd);
             }
         }

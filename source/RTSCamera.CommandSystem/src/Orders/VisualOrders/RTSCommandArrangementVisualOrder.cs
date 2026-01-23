@@ -1,4 +1,5 @@
-﻿using RTSCamera.CommandSystem.Logic;
+﻿using RTSCamera.CommandSystem.Config;
+using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using System.Linq;
 using TaleWorlds.Localization;
@@ -59,9 +60,14 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                 SelectedFormations = selectedFormations
             };
             orderToAdd.OrderType = Utilities.Utility.ArrangementOrderEnumToOrderType(ArrangementOrder);
-            Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, orderController.simulationFormations, ArrangementOrder, false, out _, true, out _);
+            bool fadeOut = Utilities.Utility.ShouldFadeOut();
+            Patch_OrderController.SimulateNewArrangementOrder(selectedFormations, orderController.simulationFormations, ArrangementOrder, fadeOut, out var simulationAgentFrames, true, out _);
             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
 
+            if (fadeOut)
+            {
+                Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+            }
             if (!queueCommand)
             {
                 ExecuteArrangementOrder(orderController, orderToAdd);

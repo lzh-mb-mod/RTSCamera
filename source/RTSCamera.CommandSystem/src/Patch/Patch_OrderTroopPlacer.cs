@@ -486,7 +486,6 @@ namespace RTSCamera.CommandSystem.Patch
             ref List<GameEntity> ____orderPositionEntities)
         {
             var config = CommandSystemConfig.Get();
-            var timeOfDay =__instance.Mission.Scene.TimeOfDay;
             var currentMovementTargetHighlightStyle = IsFreeCamera ? config.MovementTargetHighlightStyleInRTSMode : config.MovementTargetHighlightStyleInCharacterMode;
 
             switch (currentMovementTargetHighlightStyle)
@@ -588,12 +587,13 @@ namespace RTSCamera.CommandSystem.Patch
                 MatrixFrame frame = new MatrixFrame(Mat3.Identity, groundPosition + (Vec3.Up * 1.0f));
                 orderPositionEntity.SetFrame(ref frame);
                 if (fadeOut)
-                    orderPositionEntity.FadeOut(0.3f, false);
+                    orderPositionEntity.FadeOut(CommandSystemConfig.Get().MovementTargetFadeOutDuration, false);
                 else if (alpha != -1.0)
                 {
                     alpha = OrderPositionEntityDestinationAlpha;
                     orderPositionEntity.SetVisibilityExcludeParents(true);
                     orderPositionEntity.SetAlpha(alpha);
+                    //orderPositionEntity.FadeIn();
                 }
                 else
                 {
@@ -952,18 +952,11 @@ namespace RTSCamera.CommandSystem.Patch
                         VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations),
                         ShouldAdjustFormationSpeed = shouldLimitFormationSpeedToLowest
                     });
+                    // This is required to keep MissionOrderVM open in rts mode and close it in player mode.
+                    Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_move");
                 }
             }
-            int entityIndex = 0;
-            foreach (WorldPosition worldPosition in simulationAgentFrames)
-            {
-                _addOrderPositionEntity.Invoke(__instance,
-                    new object[]
-                    {
-                        entityIndex, GetGroundedVec3(__instance.Mission, worldPosition), giveOrder, -1f
-                    });
-                ++entityIndex;
-            }
+            AddOrderPositionEntity(simulationAgentFrames, giveOrder);
             return false;
         }
         private static Vec3 GetGroundedVec3(Mission mission, WorldPosition worldPosition)
@@ -1001,6 +994,19 @@ namespace RTSCamera.CommandSystem.Patch
             if (_orderTroopPlacer == null)
                 return;
             _reset.Invoke(_orderTroopPlacer, new object[] { });
+        }
+
+        public static void AddOrderPositionEntity(List<WorldPosition> agentFrames, bool fadeOut, int startIndex = 0)
+        {
+            foreach (WorldPosition worldPosition in agentFrames)
+            {
+                _addOrderPositionEntity.Invoke(_orderTroopPlacer,
+                    new object[]
+                    {
+                        startIndex, GetGroundedVec3(_orderTroopPlacer.Mission, worldPosition), fadeOut, -1f
+                    });
+                ++startIndex;
+            }
         }
     }
 }

@@ -53,14 +53,14 @@ namespace RTSCamera.CommandSystem.Patch
             if (!CommandQueueLogic.PendingOrders.TryGetValue(___Agent.Formation, out var pendingOrder))
                 return true;
 
-            if (!pendingOrder.ShouldAdjustFormationSpeed || pendingOrder.FormationSpeedLimits.Count <= 1 || !pendingOrder.FormationSpeedLimits.ContainsKey(___Agent.Formation))
+            if (!pendingOrder.ShouldAdjustFormationSpeed || pendingOrder.FormationExpectedPositions.Count <= 1 || !pendingOrder.FormationExpectedPositions.ContainsKey(___Agent.Formation))
                 return true;
-            if (isCharging)
+            if (isCharging || ___Agent.IsDetachedFromFormation)
                 return true;
             Agent mountAgent = ___Agent.MountAgent;
-            float num1 = mountAgent != null ? mountAgent.GetMaximumForwardUnlimitedSpeed() : ___Agent.GetMaximumForwardUnlimitedSpeed();
+            float maxSpeed = mountAgent != null ? mountAgent.GetMaximumForwardUnlimitedSpeed() : ___Agent.GetMaximumForwardUnlimitedSpeed();
             bool flag = !isCharging;
-            Vec3 vec3;
+            Vec3 agentPosition;
             //if (isCharging)
             //{
             //    FormationQuerySystem closestEnemyFormation = ___Agent.Formation.CachedClosestEnemyFormation;
@@ -84,15 +84,50 @@ namespace RTSCamera.CommandSystem.Patch
             if (flag)
             {
                 Vec2 globalPositionOfUnit = ___Agent.Formation.GetCurrentGlobalPositionOfUnit(___Agent, true);
-                vec3 = ___Agent.Position;
-                Vec2 asVec2 = vec3.AsVec2;
-                Vec2 v = globalPositionOfUnit - asVec2;
-                float num4 = MathF.Clamp(-___Agent.GetMovementDirection().DotProduct(v), 0.0f, 100f);
-                float num5 = ___Agent.MountAgent != null ? 4f : 2f;
-                // The only change: limit locked formations.
-                //float num6 = (isCharging ? ___Agent.Formation.CachedFormationIntegrityData.AverageMaxUnlimitedSpeedExcludeFarAgents : ___Agent.Formation.CachedMovementSpeed) / num1;
-                float num6 = (isCharging ? ___Agent.Formation.CachedFormationIntegrityData.AverageMaxUnlimitedSpeedExcludeFarAgents : MathF.Min(pendingOrder.FormationSpeedLimits[___Agent.Formation], ___Agent.Formation.CachedMovementSpeed)) / num1;
-                __result = MathF.Clamp((float)(0.699999988079071 + 0.40000000596046448 * (((double)num1 - (double)num4 * (double)num5) / ((double)num1 + (double)num4 * (double)num5))) * num6, 0.1f, 1f);
+                agentPosition = ___Agent.Position;
+                Vec2 agentPositionVec2 = agentPosition.AsVec2;
+                var formationMovementSpeed = MathF.Max(0.1f, ___Agent.Formation.CachedMovementSpeed);
+                var finalMovementSpeed = formationMovementSpeed;
+                var distanceError = 1f;
+                var targetPosition = ___Agent.Formation.GetOrderPositionOfUnit(___Agent);
+                if (targetPosition.IsValid)
+                {
+                    var agentDistance = targetPosition.AsVec2.Distance(agentPositionVec2);
+                    var formationDistance = pendingOrder.FormationTargetDistances[___Agent.Formation];
+                    switch (CommandSystemConfig.Get().FormationSpeedSyncMode)
+                    {
+                        case FormationSpeedSyncMode.Linear:
+                            {
+                                finalMovementSpeed = MathF.Clamp((agentDistance + distanceError) / pendingOrder.MaxDuration, 0.1f, formationMovementSpeed);
+                                break;
+                            }
+                        case FormationSpeedSyncMode.CatchUp:
+                            {
+                                var linearSpeedLimit = MathF.Clamp((agentDistance + distanceError) / pendingOrder.MaxDuration, 0.1f, formationMovementSpeed);
+                                //catch up and do not wait for slower formation
+                                finalMovementSpeed = MathF.Clamp(MathF.Lerp(linearSpeedLimit, formationMovementSpeed, (formationDistance - pendingOrder.DistanceWithMaxDuration + distanceError) / (formationMovementSpeed * 2f)), linearSpeedLimit, formationMovementSpeed);
+                                break;
+                            }
+                        case FormationSpeedSyncMode.WaitForLastFormation:
+                            {
+                                var formationExpectedPosition = pendingOrder.FormationExpectedPositions[___Agent.Formation];
+                                globalPositionOfUnit = globalPositionOfUnit - ___Agent.Formation.CurrentPosition + formationExpectedPosition;
+                                var linearSpeedLimit = MathF.Clamp((agentDistance + distanceError) / pendingOrder.MaxDuration, 0.1f, formationMovementSpeed);
+                                //catch up and do not wait for slower formation
+                                finalMovementSpeed = MathF.Clamp(MathF.Lerp(linearSpeedLimit, formationMovementSpeed, (formationDistance - pendingOrder.DistanceWithMaxDuration + distanceError) / (formationMovementSpeed * 2f)), linearSpeedLimit, formationMovementSpeed);
+                                break;
+                            }
+                    }
+                }
+                Vec2 currentDiffVec = globalPositionOfUnit - agentPositionVec2;
+                float slowDownFactor = MathF.Clamp(-___Agent.GetMovementDirection().DotProduct(currentDiffVec), 0.0f, 100f);
+                float mountFactor = ___Agent.MountAgent != null ? 4f : 2f;
+                //float formationSpeedLimitFactor = (isCharging ? ___Agent.Formation.CachedFormationIntegrityData.AverageMaxUnlimitedSpeedExcludeFarAgents : ___Agent.Formation.CachedMovementSpeed) / num1;
+                float formationSpeedLimitFactor = finalMovementSpeed / maxSpeed;
+                float maxSpeedRatio = formationMovementSpeed / finalMovementSpeed;
+                var progressFactor = MathF.Clamp((float)(0.7 + 0.4 * (((double)maxSpeed - (double)slowDownFactor * (double)mountFactor) / MathF.Max(1f, (double)maxSpeed + (double)slowDownFactor * (double)mountFactor))), 0, maxSpeedRatio);
+                __result = MathF.Clamp(progressFactor * formationSpeedLimitFactor, 0.1f, 1f);
+                //__result = MathF.Clamp((float)(0.7 + 0.4 * (((double)maxSpeed - (double)slowDownFactor * (double)mountFactor) / ((double)maxSpeed + (double)slowDownFactor * (double)mountFactor))) * formationSpeedLimitFactor, 0.1f, 1f);
                 return false;
             }
             return true;
