@@ -19,9 +19,11 @@ namespace RTSCamera.CommandSystem.Orders
             OnExecuteOrder += missionOrderVM.OnOrderExecuted;
         }
 
-        public static void ClearEvent()
+        public static void UnregisterEvent(MissionOrderVM missionOrderVM)
         {
-            OnExecuteOrder = null;
+            if (missionOrderVM == null)
+                return;
+            OnExecuteOrder -= missionOrderVM.OnOrderExecuted;
         }
 
         public RTSCommandOrderItemVM(OrderController orderController, VisualOrder order)

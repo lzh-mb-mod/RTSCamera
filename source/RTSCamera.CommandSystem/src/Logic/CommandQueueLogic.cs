@@ -331,10 +331,6 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 orderController.OnOrderIssued -= OnOrderIssued;
             }
-            if (!Mission.Current.IsNavalBattle)
-            {
-                RTSCommandOrderItemVM.ClearEvent();
-            }
         }
 
         public static void AfterStart()

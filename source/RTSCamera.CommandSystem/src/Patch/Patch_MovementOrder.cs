@@ -81,7 +81,9 @@ namespace RTSCamera.CommandSystem.Patch
             if (!CommandSystemConfig.Get().FixAdvaneOrderForThrowing || Mission.Current.IsNavalBattle)
                 return true;
 
-            if (f.IsAIControlled && !CommandSystemConfig.Get().ApplyAdvanceOrderFixForAI)
+            FormationQuerySystem querySystem = f.QuerySystem;
+            bool isRanged = querySystem.IsRangedFormation || querySystem.IsRangedCavalryFormation;
+            if (f.IsAIControlled && !CommandSystemConfig.Get().ApplyAdvanceOrderFixForAI && !isRanged)
                 return true;
 
             if (__instance.OrderEnum != MovementOrder.MovementOrderEnum.Advance)
@@ -90,12 +92,11 @@ namespace RTSCamera.CommandSystem.Patch
             if (Mission.Current.Mode == TaleWorlds.Core.MissionMode.Deployment)
                 return true;
 
-            FormationQuerySystem querySystem = f.QuerySystem;
             FormationQuerySystem enemyQuerySystem = f.TargetFormation?.QuerySystem ?? f.CachedClosestEnemyFormation;
             WorldPosition positionAux;
 
 
-            if (querySystem.IsRangedFormation || querySystem.IsRangedCavalryFormation ||  querySystem.HasThrowingUnitRatio <= CommandSystemConfig.Get().ThrowerRatioThreshold || f.FiringOrder.OrderType == OrderType.HoldFire)
+            if (!isRanged && (querySystem.HasThrowingUnitRatio <= CommandSystemConfig.Get().ThrowerRatioThreshold || f.FiringOrder.OrderType == OrderType.HoldFire))
             {
                 return true;
             }
@@ -119,30 +120,33 @@ namespace RTSCamera.CommandSystem.Patch
             }
             var distanceSquared = f.CurrentPosition.DistanceSquared(positionAux.AsVec2);
             var ammoFactor = MathF.Pow(MathF.Max(commandQuerySystem.RatioOfRemainingAmmo - CommandSystemConfig.Get().RemainingAmmoRatioThreshold, 0f), 0.2f);
-            if (!CommandSystemConfig.Get().ShortenRangeBasedOnRemainingAmmo)
+            if (!CommandSystemConfig.Get().ShortenRangeBasedOnRemainingAmmo || isRanged)
             {
                 ammoFactor = 1f;
             }
-            var distanceFactor = MathF.Pow(MathF.Clamp(distanceSquared / MathF.Max(missileRange * missileRange, 1f) * 1.5f, 0f, 1f), 0.1f);
+            var distanceFactor = isRanged ? 1 : MathF.Pow(MathF.Clamp(distanceSquared / MathF.Max(missileRange * missileRange, 1f) * 1.5f, 0f, 1f), 0.1f);
             var vec2 = GetDirectionAux(__instance, f);
             positionAux.SetVec2(positionAux.AsVec2 - vec2 * missileRange * ammoFactor * distanceFactor);
 
             if (!____engageTargetPositionCache.IsValid)
                 ____engageTargetPositionCache = positionAux;
             float num1 = (float)((double)f.QuerySystem.MovementSpeedMaximum * (double)f.QuerySystem.MovementSpeedMaximum * 9.0) * f.Depth;
-            if ((double)(____engageTargetPositionCache.AsVec2 + vec2 * ____engageTargetPositionOffset).DistanceSquared(positionAux.AsVec2) > (double)f.CurrentPosition.DistanceSquared(____engageTargetPositionCache.AsVec2) * 0.10000000149011612 || (double)positionAux.AsVec2.DistanceSquared(f.CurrentPosition) <= (double)num1)
+            bool b1 = (double)(____engageTargetPositionCache.AsVec2 + vec2 * ____engageTargetPositionOffset).DistanceSquared(positionAux.AsVec2) > (double)f.CurrentPosition.DistanceSquared(____engageTargetPositionCache.AsVec2) * 0.10000000149011612;
+            bool b2 = (double)positionAux.AsVec2.DistanceSquared(f.CurrentPosition) <= (double)num1;
+            if (b1 || b2)
             {
                 ____engageTargetPositionCache = positionAux;
                 ____engageTargetPositionOffset = 0.0f;
             }
-            positionAux = ____engageTargetPositionCache;
-            if ((double)positionAux.AsVec2.DistanceSquared(f.CurrentPosition) > (double)num1 && f.Arrangement is LineFormation arrangement && (double)arrangement.GetUnavailableUnitPositions().Count<Vec2>() > (double)arrangement.UnitCount * 0.03)
+            var newCachedPosition = ____engageTargetPositionCache;
+            bool b3 = (double)newCachedPosition.AsVec2.DistanceSquared(f.CurrentPosition) > (double)num1 && f.Arrangement is LineFormation arrangement && (double)arrangement.GetUnavailableUnitPositions().Count<Vec2>() > (double)arrangement.UnitCount * 0.03;
+            if (b3)
             {
-                positionAux.SetVec2(positionAux.AsVec2 - vec2 * 10f);
-                ____engageTargetPositionOffset += 10f;
+                newCachedPosition.SetVec2(newCachedPosition.AsVec2 + vec2 * 10f);
+                ____engageTargetPositionOffset -= 10f;
             }
-            ____engageTargetPositionCache = positionAux;
-            __result = positionAux;
+            ____engageTargetPositionCache = newCachedPosition;
+            __result = newCachedPosition;
             return false;
         }
 

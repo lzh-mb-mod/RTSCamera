@@ -264,15 +264,6 @@ namespace RTSCamera.CommandSystem.View
             FormationShapeEntity.Initialize();
         }
 
-        public override void OnMissionScreenActivate()
-        {
-            base.OnMissionScreenActivate();
-            if (!Mission.Current.IsNavalBattle)
-            {
-                RTSCommandOrderItemVM.RegisterEvent(Utility.GetMissionOrderVM(Mission.Current));
-            }
-        }
-
         public override void AfterStart()
         {
             base.AfterStart();
@@ -301,7 +292,6 @@ namespace RTSCamera.CommandSystem.View
             _commandQueuePreviewData = null;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             FormationShapeEntity.Clear();
-            RTSCommandOrderItemVM.ClearEvent();
 
             if (Mission.PlayerTeam?.PlayerOrderController == null)
                 return;

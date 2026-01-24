@@ -18,6 +18,7 @@ namespace RTSCamera.Patch.Fix
 
         public static bool AllowEscape = true;
         public static bool AllowClosingOrderUI = false;
+        public static bool HasBeenClosedInThisTick = false;
         public static bool UpdateOrderUIOnOrderExecutedHasBeenCalled = false;
 
         private static bool _patched;
@@ -143,9 +144,7 @@ namespace RTSCamera.Patch.Fix
                     if (!__instance.TroopController.IsTransferActive)
                     {
                         var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
-                        AllowClosingOrderUI = true;
                         TryCloseToggleOrder(__instance);
-                        AllowClosingOrderUI = false;
                         Patch_MissionOrderVM.OpenToggleOrder(__instance, false);
                         _displayOrderMessageForLastOrder.SetValue(__instance, displayedOrderMessageForLastOrder);
                     }
@@ -153,9 +152,7 @@ namespace RTSCamera.Patch.Fix
                 else
                 {
                     var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
-                    AllowClosingOrderUI = true;
                     TryCloseToggleOrder(__instance);
-                    AllowClosingOrderUI = false;
                     _displayOrderMessageForLastOrder.SetValue(__instance, displayedOrderMessageForLastOrder);
                 }
             }
@@ -179,10 +176,13 @@ namespace RTSCamera.Patch.Fix
             {
                 // Close and open again, to fix the issue that MissionGauntletSingleplayerOrderUIHandler.OnTransferFinished may disable it's scene layer.
                 // and cause Command System not highlighting the original formation.
+
                 Patch_MissionOrderVM.TryCloseToggleOrder(__instance);
                 Patch_MissionOrderVM.OpenToggleOrder(__instance, false);
             }
         }
+
+        private static MethodInfo _OnOrderShownToggle = typeof(MissionOrderVM).GetMethod("OnOrderShownToggle", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static bool Prefix_TryCloseToggleOrder(MissionOrderVM __instance, bool applySelectedOrders, ref bool __result, MissionOrderCallbacks ____callbacks)
         {
@@ -202,12 +202,12 @@ namespace RTSCamera.Patch.Fix
                     AllowClosingOrderUI = false;
                     shouldKeepOpen = false;
                 }
-                Mission.Current.IsOrderMenuOpen = shouldKeepOpen;
-                if (!shouldKeepOpen)
+                if (!shouldKeepOpen && !HasBeenClosedInThisTick)
                 {
 #if DEBUG
                     Utility.DisplayMessage("order ui closed");
 #endif
+                    HasBeenClosedInThisTick = true;
                     return true;
                 }
 
@@ -220,6 +220,17 @@ namespace RTSCamera.Patch.Fix
                         orderItemVm.ExecuteAction(executionParameters);
                     }
                 }
+                //__instance.SelectedOrderSet?.ExecuteDeSelect();
+                //__instance.IsToggleOrderShown = false;
+                //_displayOrderMessageForLastOrder.SetValue(__instance, false);
+                //_OnOrderShownToggle.Invoke(__instance, new object[] { });
+                //if (!__instance.IsDeployment)
+                //{
+                //    __instance.InputRestrictions.ResetInputRestrictions();
+                //    __result = true;
+                //    return false;
+                //}
+                __result = false;
                 return false;
             }
             __result = false;
@@ -228,7 +239,10 @@ namespace RTSCamera.Patch.Fix
 
         public static bool TryCloseToggleOrder(MissionOrderVM __instance, bool applySelectedOrders = false)
         {
-            return __instance?.TryCloseToggleOrder(applySelectedOrders) ?? false;
+            AllowClosingOrderUI = true;
+            bool result = __instance?.TryCloseToggleOrder(applySelectedOrders) ?? false;
+            AllowClosingOrderUI = false;
+            return result;
         }
 
         public static void OpenToggleOrder(MissionOrderVM __instance, bool fromHold, bool displayMessage = true)
@@ -241,6 +255,7 @@ namespace RTSCamera.Patch.Fix
         public static void TickIsFirstCallToUpdateOrderUIOnOrderExecuted()
         {
             //Patch_MissionOrderVM.AllowClosingOrderUI = true;
+            Patch_MissionOrderVM.HasBeenClosedInThisTick = false;
             Patch_MissionOrderVM.UpdateOrderUIOnOrderExecutedHasBeenCalled = false;
         }
     }

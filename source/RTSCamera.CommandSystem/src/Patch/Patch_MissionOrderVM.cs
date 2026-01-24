@@ -58,6 +58,14 @@ namespace RTSCamera.CommandSystem.Patch
                     typeof(MissionOrderVM).GetMethod("PopulateOrderSets",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Prefix_PopulateOrderSets), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(MissionOrderVM).GetMethod("RegisterEvents",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    postfix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Postfix_RegisterEvents), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(MissionOrderVM).GetMethod("UnregisterEvents",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    postfix: new HarmonyMethod(typeof(Patch_MissionOrderVM).GetMethod(nameof(Postfix_UnregisterEvents), BindingFlags.Static | BindingFlags.Public)));
                 //harmony.Patch(
                 //    typeof(MissionOrderVM).GetMethod("OnOrder",
                 //        BindingFlags.Instance | BindingFlags.NonPublic),
@@ -539,7 +547,7 @@ namespace RTSCamera.CommandSystem.Patch
         //    CommandQueueLogic.TryTeleportSelectedFormationInDeployment(__instance.OrderController, order.SelectedFormations);
         //    CommandQueueLogic.CurrentFormationChanges.SetChanges(order.VirtualFormationChanges);
         //}
-         
+
         public static bool Prefix_CursorState(MissionOrderVM __instance, ref MissionOrderVM.CursorStates __result)
         {
             if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.LookAtDirection && Patch_OrderTroopPlacer.IsFreeCamera)
@@ -577,6 +585,22 @@ namespace RTSCamera.CommandSystem.Patch
                 return false;
             __instance.UpdateCanUseShortcuts(true);
             return false;
+        }
+
+        public static void Postfix_RegisterEvents(MissionOrderVM __instance)
+        {
+            if (!Mission.Current.IsNavalBattle)
+            {
+                RTSCommandOrderItemVM.RegisterEvent(__instance);
+            }
+        }
+
+        public static void Postfix_UnregisterEvents(MissionOrderVM __instance)
+        {
+            if (!Mission.Current.IsNavalBattle)
+            {
+                RTSCommandOrderItemVM.UnregisterEvent(__instance);
+            }
         }
     }
 }
