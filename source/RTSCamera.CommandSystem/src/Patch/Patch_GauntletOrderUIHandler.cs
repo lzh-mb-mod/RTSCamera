@@ -235,6 +235,10 @@ namespace RTSCamera.CommandSystem.Patch
                                     skipNativeOrder = true;
                                     dataSource.OrderController.SetOrderWithFormation(OrderType.Advance, focusedFormationCache[0]);
                                 }
+                                else
+                                {
+                                    Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_advance");
+                                }
                             }
                             else if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.LookAtEnemy)
                             {
@@ -247,6 +251,10 @@ namespace RTSCamera.CommandSystem.Patch
                                     skipNativeOrder = true;
                                     Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, orderToAdd.TargetFormation);
                                     dataSource.OrderController.SetOrder(OrderType.LookAtEnemy);
+                                }
+                                else
+                                {
+                                    Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_toggle_facing");
                                 }
                                 orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
                                 RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
@@ -268,6 +276,10 @@ namespace RTSCamera.CommandSystem.Patch
                                 orderToAdd.TargetFormation = focusedFormationCache[0];
                                 Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Charge, selectedFormations, focusedFormationCache[0], null, null);
                                 orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                if (queueCommand)
+                                {
+                                    Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_charge");
+                                }
                             }
                             break;
                         }
@@ -292,6 +304,10 @@ namespace RTSCamera.CommandSystem.Patch
                                             }
                                             Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Move, selectedFormations, null, null, null);
                                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                            if (queueCommand)
+                                            {
+                                                Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_move");
+                                            }
                                             break;
                                         }
                                     case OrderType.MoveToLineSegment:
@@ -300,19 +316,23 @@ namespace RTSCamera.CommandSystem.Patch
                                             IPointDefendable pointDefendable = focusedOrderableObject as IPointDefendable;
                                             Vec3 globalPosition1 = pointDefendable.DefencePoints.Last().GameEntity.GlobalPosition;
                                             Vec3 globalPosition2 = pointDefendable.DefencePoints.First().GameEntity.GlobalPosition;
-                                            if (selectedFormations.Count > 0 && queueCommand)
+                                            if (queueCommand)
                                             {
-                                                orderToAdd.OrderType = orderType == OrderType.MoveToLineSegment ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout;
-                                                WorldPosition targetLineSegmentBegin = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, globalPosition1, false);
-                                                WorldPosition targetLineSegmentEnd = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, globalPosition2, false);
-                                                OrderController.SimulateNewOrderWithPositionAndDirection(selectedFormations, dataSource.OrderController.simulationFormations,
-                                                    targetLineSegmentBegin, targetLineSegmentEnd, out var formationChanges, out var isLineShort, orderType == OrderType.MoveToLineSegment);
-                                                orderToAdd.IsLineShort = isLineShort;
-                                                orderToAdd.ActualFormationChanges = formationChanges;
-                                                orderToAdd.PositionBegin = targetLineSegmentBegin;
-                                                orderToAdd.PositionEnd = targetLineSegmentEnd;
-                                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(orderType == OrderType.MoveToLineSegment ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout, selectedFormations, null, null, null);
-                                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                                if (selectedFormations.Count > 0)
+                                                {
+                                                    orderToAdd.OrderType = orderType == OrderType.MoveToLineSegment ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout;
+                                                    WorldPosition targetLineSegmentBegin = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, globalPosition1, false);
+                                                    WorldPosition targetLineSegmentEnd = new WorldPosition(__instance.Mission.Scene, UIntPtr.Zero, globalPosition2, false);
+                                                    OrderController.SimulateNewOrderWithPositionAndDirection(selectedFormations, dataSource.OrderController.simulationFormations,
+                                                        targetLineSegmentBegin, targetLineSegmentEnd, out var formationChanges, out var isLineShort, orderType == OrderType.MoveToLineSegment);
+                                                    orderToAdd.IsLineShort = isLineShort;
+                                                    orderToAdd.ActualFormationChanges = formationChanges;
+                                                    orderToAdd.PositionBegin = targetLineSegmentBegin;
+                                                    orderToAdd.PositionEnd = targetLineSegmentEnd;
+                                                    Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(orderType == OrderType.MoveToLineSegment ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout, selectedFormations, null, null, null);
+                                                    orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                                    Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_move");
+                                                }
                                                 break;
                                             }
                                             return null;
@@ -358,6 +378,10 @@ namespace RTSCamera.CommandSystem.Patch
                                                     }
                                                     Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Move);
                                                 }
+                                                else
+                                                {
+                                                    Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_move");
+                                                }
                                                 Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
                                                 break;
                                             }
@@ -383,9 +407,13 @@ namespace RTSCamera.CommandSystem.Patch
                                                     Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.StandYourGround);
                                                     CommandQueueLogic.OnCustomOrderIssued(orderToAdd, dataSource.OrderController);
                                                 }
+                                                else
+                                                {
+
+                                                    Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_stop");
+                                                }
                                                 Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
                                                 // This is required to keep MissionOrderVM open in rts mode and close it in player mode.
-                                                Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_stop");
                                                 break;
                                             }
                                         }
@@ -421,6 +449,10 @@ namespace RTSCamera.CommandSystem.Patch
                                                     }
                                                     Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Move);
                                                 }
+                                                else
+                                                {
+                                                    Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_stop");
+                                                }
                                             }
                                             else
                                             {
@@ -435,6 +467,10 @@ namespace RTSCamera.CommandSystem.Patch
                                                         siegeWeapon.SetForcedUse(false);
                                                     }
                                                     Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.StandYourGround);
+                                                }
+                                                else
+                                                {
+                                                    Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_stop");
                                                 }
                                             }
                                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
@@ -452,6 +488,10 @@ namespace RTSCamera.CommandSystem.Patch
                                             {
                                                 Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Charge);
                                             }
+                                            else
+                                            {
+                                                Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_move");
+                                            }
                                             Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
                                             break;
                                         }
@@ -461,9 +501,14 @@ namespace RTSCamera.CommandSystem.Patch
                                             orderToAdd.TargetEntity = focusedOrderableObject;
                                             Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.PointDefence, selectedFormations, null, null, focusedOrderableObject);
                                             orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                                            Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd); if (!queueCommand)
+                                            Utilities.Utility.DisplayExecuteOrderMessage(selectedFormations, orderToAdd);
+                                            if (!queueCommand)
                                             {
                                                 Utilities.Utility.CallAfterSetOrder(dataSource.OrderController, OrderType.Move);
+                                            }
+                                            else
+                                            {
+                                                Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_move");
                                             }
                                             break;
                                         }
