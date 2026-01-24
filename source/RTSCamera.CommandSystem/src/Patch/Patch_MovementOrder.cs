@@ -93,8 +93,6 @@ namespace RTSCamera.CommandSystem.Patch
                 return true;
 
             FormationQuerySystem enemyQuerySystem = f.TargetFormation?.QuerySystem ?? f.CachedClosestEnemyFormation;
-            WorldPosition positionAux;
-
 
             if (!isRanged && (querySystem.HasThrowingUnitRatio <= CommandSystemConfig.Get().ThrowerRatioThreshold || f.FiringOrder.OrderType == OrderType.HoldFire))
             {
@@ -110,14 +108,18 @@ namespace RTSCamera.CommandSystem.Patch
             var missileRange = commandQuerySystem.AverageMissileRangeAdjusted;
             if (missileRange < 1f)
                 return true;
+
+            WorldPosition enemyPosition;
+            WorldPosition positionAux;
             if (enemyQuerySystem == null)
             {
                 return true;
             }
             else
             {
-                positionAux = enemyQuerySystem.Formation.CachedMedianPosition;
+                enemyPosition = enemyQuerySystem.Formation.CachedMedianPosition;
             }
+            positionAux = enemyPosition;
             var distanceSquared = f.CurrentPosition.DistanceSquared(positionAux.AsVec2);
             var ammoFactor = MathF.Pow(MathF.Max(commandQuerySystem.RatioOfRemainingAmmo - CommandSystemConfig.Get().RemainingAmmoRatioThreshold, 0f), 0.2f);
             if (!CommandSystemConfig.Get().ShortenRangeBasedOnRemainingAmmo || isRanged)
@@ -127,27 +129,58 @@ namespace RTSCamera.CommandSystem.Patch
             var distanceFactor = isRanged ? 1 : MathF.Pow(MathF.Clamp(distanceSquared / MathF.Max(missileRange * missileRange, 1f) * 1.5f, 0f, 1f), 0.1f);
             var vec2 = GetDirectionAux(__instance, f);
             positionAux.SetVec2(positionAux.AsVec2 - vec2 * missileRange * ammoFactor * distanceFactor);
+            var direction = f.Direction;
+            var leftVec = new Vec2(-direction.y, direction.x);
+            var width = f.Width;
+            var leftFront = positionAux.AsVec2 + leftVec * width / 2;
+            var rightFront = positionAux.AsVec2 - leftVec * width / 2;
+            var leftBack = leftFront - direction * f.Depth;
+            var righBack = rightFront - direction * f.Depth;
+            positionAux = AdjustOutOfBoundaryPositions(positionAux, leftFront);
+            positionAux = AdjustOutOfBoundaryPositions(positionAux, rightFront);
+            positionAux = AdjustOutOfBoundaryPositions(positionAux, leftBack);
+            positionAux = AdjustOutOfBoundaryPositions(positionAux, righBack);
 
             if (!____engageTargetPositionCache.IsValid)
                 ____engageTargetPositionCache = positionAux;
             float num1 = (float)((double)f.QuerySystem.MovementSpeedMaximum * (double)f.QuerySystem.MovementSpeedMaximum * 9.0) * f.Depth;
             bool b1 = (double)(____engageTargetPositionCache.AsVec2 + vec2 * ____engageTargetPositionOffset).DistanceSquared(positionAux.AsVec2) > (double)f.CurrentPosition.DistanceSquared(____engageTargetPositionCache.AsVec2) * 0.10000000149011612;
             bool b2 = (double)positionAux.AsVec2.DistanceSquared(f.CurrentPosition) <= (double)num1;
-            if (b1 || b2)
+            if ((b1 || b2))
             {
                 ____engageTargetPositionCache = positionAux;
                 ____engageTargetPositionOffset = 0.0f;
             }
             var newCachedPosition = ____engageTargetPositionCache;
             bool b3 = (double)newCachedPosition.AsVec2.DistanceSquared(f.CurrentPosition) > (double)num1 && f.Arrangement is LineFormation arrangement && (double)arrangement.GetUnavailableUnitPositions().Count<Vec2>() > (double)arrangement.UnitCount * 0.03;
-            if (b3)
+            if (b3 || newCachedPosition.GetNavMesh() == UIntPtr.Zero)
             {
-                newCachedPosition.SetVec2(newCachedPosition.AsVec2 + vec2 * 10f);
-                ____engageTargetPositionOffset -= 10f;
+                //newCachedPosition.SetVec2(newCachedPosition.AsVec2 - vec2 * 10f);
+                //____engageTargetPositionOffset += 10f;
+                var backwardPosition = newCachedPosition;
+                backwardPosition.SetVec2(backwardPosition.AsVec2 - vec2 * 10f);
+                if (backwardPosition.GetNavMesh() == UIntPtr.Zero)
+                {
+                    backwardPosition = Mission.Current.GetStraightPathToTarget(backwardPosition.AsVec2, enemyPosition);
+                }
+                var offset = (newCachedPosition.AsVec2 - backwardPosition.AsVec2).DotProduct(vec2);
+                newCachedPosition = backwardPosition;
+                ____engageTargetPositionOffset += offset;
             }
             ____engageTargetPositionCache = newCachedPosition;
             __result = newCachedPosition;
             return false;
+        }
+
+        private static WorldPosition AdjustOutOfBoundaryPositions(WorldPosition orderPosition, Vec2 position)
+        {
+            if (!Mission.Current.IsPositionInsideBoundaries(position))
+            {
+                var boundaryPosition = Mission.Current.GetClosestBoundaryPosition(position);
+                var diffVec = boundaryPosition - position;
+                orderPosition.SetVec2(orderPosition.AsVec2 + diffVec);
+            }
+            return orderPosition;
         }
 
         public static Vec2 GetDirectionAux(MovementOrder __instance, Formation f)
