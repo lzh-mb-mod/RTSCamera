@@ -47,6 +47,8 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
   - Fix issues related with formation width and unit spacing in the base game.
 
+  - Fix the issue in the base game that engage order for ranged troops may cause the game freeze.
+
   - Issue focus charge command by clicking middle button on enemy units.
 
   - Select your troops by clicking middle button on units.

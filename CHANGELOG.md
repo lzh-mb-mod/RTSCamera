@@ -1,6 +1,9 @@
 # Changelog
 
 ## [v5.3.24] - 2026-01-23
+### Fixed
+- Fix the issue in the base game that engage order for ranged troops may cause the game freeze.
+
 ### Added
 - Movement target will fade out after giving orders.
 

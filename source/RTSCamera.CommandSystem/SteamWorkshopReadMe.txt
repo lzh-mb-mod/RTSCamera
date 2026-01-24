@@ -12,6 +12,7 @@ Square and Circle formations are improved.
 Allows to give a series of orders and let your troops execute them one by one. For example, move along a given path and then shooting/charging.
 If you move/turn multiple formations at the same time, their relative positions/directions will be locked.
 Fix issues in the base game about formation width and unit spacing.
+Fix the issue in the base game that engage order for ranged troops may cause the game freeze.
 Set attack target without interrupting previous movement orders. For example, let your archers focus shooting while holding position.
 Facing to enemy order now has an optional enemy formation target.
 Allows you to select your formation using middle mouse button.
