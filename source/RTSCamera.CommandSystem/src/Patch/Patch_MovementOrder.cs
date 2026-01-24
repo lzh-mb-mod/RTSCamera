@@ -78,57 +78,66 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_GetPositionAux(MovementOrder __instance, Formation f, WorldPosition.WorldPositionEnforcedCache worldPositionEnforcedCache, ref WorldPosition __result, ref WorldPosition ____engageTargetPositionCache, ref float ____engageTargetPositionOffset)
         {
-            if (!CommandSystemConfig.Get().FixAdvaneOrderForThrowing || Mission.Current.IsNavalBattle)
+            if (Mission.Current.IsNavalBattle)
                 return true;
 
             FormationQuerySystem querySystem = f.QuerySystem;
             bool isRanged = querySystem.IsRangedFormation || querySystem.IsRangedCavalryFormation;
-            if (f.IsAIControlled && !CommandSystemConfig.Get().ApplyAdvanceOrderFixForAI && !isRanged)
-                return true;
-
             if (__instance.OrderEnum != MovementOrder.MovementOrderEnum.Advance)
                 return true;
 
             if (Mission.Current.Mode == TaleWorlds.Core.MissionMode.Deployment)
                 return true;
 
+            Vec2 vec2 = f.Direction;
+
             FormationQuerySystem enemyQuerySystem = f.TargetFormation?.QuerySystem ?? f.CachedClosestEnemyFormation;
-
-            if (!isRanged && (querySystem.HasThrowingUnitRatio <= CommandSystemConfig.Get().ThrowerRatioThreshold || f.FiringOrder.OrderType == OrderType.HoldFire))
-            {
-                return true;
-            }
-
             var commandQuerySystem = CommandQuerySystem.GetQueryForFormation(f);
-            if (commandQuerySystem.RatioOfRemainingAmmo < CommandSystemConfig.Get().RemainingAmmoRatioThreshold)
-            {
-                return true;
-            }
-
-            var missileRange = commandQuerySystem.AverageMissileRangeAdjusted;
-            if (missileRange < 1f)
-                return true;
 
             WorldPosition enemyPosition;
-            WorldPosition positionAux;
             if (enemyQuerySystem == null)
             {
-                return true;
+                Agent closestEnemyAgent = querySystem.ClosestEnemyAgent;
+                if (closestEnemyAgent == null)
+                {
+                    __result = f.CreateNewOrderWorldPosition(worldPositionEnforcedCache);
+                    return false;
+                }
+                enemyPosition = closestEnemyAgent.GetWorldPosition();
             }
             else
             {
                 enemyPosition = enemyQuerySystem.Formation.CachedMedianPosition;
             }
-            positionAux = enemyPosition;
-            var distanceSquared = f.CurrentPosition.DistanceSquared(positionAux.AsVec2);
-            var ammoFactor = MathF.Pow(MathF.Max(commandQuerySystem.RatioOfRemainingAmmo - CommandSystemConfig.Get().RemainingAmmoRatioThreshold, 0f), 0.2f);
-            if (!CommandSystemConfig.Get().ShortenRangeBasedOnRemainingAmmo || isRanged)
+            WorldPosition positionAux = enemyPosition;
+            bool shouldFallBack = isRanged ||
+                CommandSystemConfig.Get().FixAdvaneOrderForThrowing &&
+                querySystem.HasThrowingUnitRatio > CommandSystemConfig.Get().ThrowerRatioThreshold &&
+                commandQuerySystem.RatioOfRemainingAmmo > CommandSystemConfig.Get().RemainingAmmoRatioThreshold &&
+                f.FiringOrder.OrderType != OrderType.HoldFire &&
+                (CommandSystemConfig.Get().ApplyAdvanceOrderFixForAI || !f.IsAIControlled);
+            if (shouldFallBack)
             {
-                ammoFactor = 1f;
+                var distanceSquared = f.CurrentPosition.DistanceSquared(positionAux.AsVec2);
+                var ammoFactor = MathF.Pow(MathF.Max(commandQuerySystem.RatioOfRemainingAmmo - CommandSystemConfig.Get().RemainingAmmoRatioThreshold, 0f), 0.2f);
+                if (!CommandSystemConfig.Get().ShortenRangeBasedOnRemainingAmmo || isRanged)
+                {
+                    ammoFactor = 1f;
+                }
+                var missileRange = commandQuerySystem.AverageMissileRangeAdjusted;
+                var distanceFactor = isRanged ? 1 : MathF.Pow(MathF.Clamp(distanceSquared / MathF.Max(missileRange * missileRange, 1f) * 1.5f, 0f, 1f), 0.1f);
+                vec2 = GetDirectionAux(__instance, f);
+                positionAux.SetVec2(positionAux.AsVec2 - vec2 * missileRange * ammoFactor * distanceFactor);
             }
-            var distanceFactor = isRanged ? 1 : MathF.Pow(MathF.Clamp(distanceSquared / MathF.Max(missileRange * missileRange, 1f) * 1.5f, 0f, 1f), 0.1f);
-            var vec2 = GetDirectionAux(__instance, f);
-            positionAux.SetVec2(positionAux.AsVec2 - vec2 * missileRange * ammoFactor * distanceFactor);
+            else if (enemyQuerySystem != null)
+            {
+                vec2 = (enemyQuerySystem.Formation.CachedAveragePosition - f.CachedAveragePosition).Normalized();
+                float num = 2f;
+                if ((double)enemyQuerySystem.FormationPower < (double)f.QuerySystem.FormationPower * 0.2)
+                    num = 0.1f;
+                positionAux.SetVec2(positionAux.AsVec2 - vec2 * num);
+            }
+
             var direction = f.Direction;
             var leftVec = new Vec2(-direction.y, direction.x);
             var width = f.Width;
