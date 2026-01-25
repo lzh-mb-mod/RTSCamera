@@ -66,7 +66,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
 
             if (fadeOut)
             {
-                Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
             }
             if (!queueCommand)
             {

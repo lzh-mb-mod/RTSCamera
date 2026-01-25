@@ -1,5 +1,11 @@
 # Changelog
 
+## [v5.3.25] - 2026-01-25
+### Improved
+- Improve performance when giving orders in RTS view.
+
+- Improve behavior of facing order when selecting multiple formations
+
 ## [v5.3.24] - 2026-01-23
 ### Fixed
 - Fix the issue in the base game that engage order for ranged troops may cause the game freeze.

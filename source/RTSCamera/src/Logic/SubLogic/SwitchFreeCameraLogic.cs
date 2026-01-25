@@ -490,7 +490,6 @@ namespace RTSCamera.Logic.SubLogic
 
                 if (_config.OrderOnSwitchingCamera)
                 {
-
                     if (IsSpectatorCamera)
                     {
                         // If order UI is already shown when switch to free camera,

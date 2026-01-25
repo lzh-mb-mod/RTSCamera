@@ -525,6 +525,7 @@ namespace RTSCamera.CommandSystem.Patch
                         if (queueCommand)
                         {
                             Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, dataSource.OrderController, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, __instance.MissionScreen.GetOrderFlagPosition(), false));
+                            Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_toggle_facing");
                         }
                         else
                         {
