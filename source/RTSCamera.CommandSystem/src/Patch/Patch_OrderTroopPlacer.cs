@@ -872,7 +872,7 @@ namespace RTSCamera.CommandSystem.Patch
                 return true;
             bool fadeOut = Utilities.Utility.ShouldFadeOut() && giveOrder && !queueCommand;
             bool shouldAddAgentFrames = !giveOrder || fadeOut;
-            Patch_OrderController.SimulateNewOrderWithPositionAndDirection(formations, ___PlayerOrderController.simulationFormations, formationRealStartingPosition, formationRealEndingPosition, shouldAddAgentFrames, out simulationAgentFrames, giveOrder, out var formationChanges, out isLineShort, isFormationLayoutVertical, true);
+            Patch_OrderController.SimulateNewOrderWithPositionAndDirection(formations, ___PlayerOrderController.simulationFormations, formationRealStartingPosition, formationRealEndingPosition, shouldAddAgentFrames, out simulationAgentFrames, giveOrder, out var formationChanges, out isLineShort, isFormationLayoutVertical);
             bool shouldLimitFormationSpeedToLowest = Utilities.Utility.ShouldLockFormation();
             if (giveOrder)
             {
@@ -950,6 +950,11 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static void AddOrderPositionEntities(List<WorldPosition> agentFrames, bool fadeOut, int startIndex = 0)
         {
+            if (agentFrames == null)
+            {
+                Utility.DisplayMessage("RTS Command: agentFrames is null in AddOrderPositionEntities", new Color(1, 0, 0));
+                return;
+            }
             ref List<GameEntity> ____orderPositionEntities =
                 ref AccessTools.FieldRefAccess<OrderTroopPlacer, List<GameEntity>>(_orderTroopPlacer, _orderPositionEntities);
             ref Material ____meshMaterial = ref AccessTools.StaticFieldRefAccess<Material>(typeof(OrderTroopPlacer), "_meshMaterial");

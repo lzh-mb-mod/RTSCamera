@@ -450,7 +450,8 @@ namespace RTSCamera.CommandSystem.Patch
                 isSimulatingFormationChanges,
                 out simulationFormationChanges,
                 out isLineShort,
-                isFormationLayoutVertical);
+                isFormationLayoutVertical,
+                true);
         }
 
         public static bool SimulateNewOrderWithPositionAndDirection(
@@ -464,14 +465,14 @@ namespace RTSCamera.CommandSystem.Patch
             out List<(Formation, int, float, WorldPosition, Vec2)> simulationFormationChanges,
             out bool isLineShort,
             bool isFormationLayoutVertical = true,
-            bool isFromPlayerInput = false)
+            bool isFromPatch = false)
         {
             simulationAgentFrames = null;
             simulationFormationChanges = null;
             isLineShort = false;
             try
             {
-                if (!isFromPlayerInput && !Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(formations))
+                if (isFromPatch && !Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(formations))
                     return true;
                 var allFormations = formations.ToList();
                 simulationAgentFrames = ((!isSimulatingAgentFrames) ? null : new List<WorldPosition>());

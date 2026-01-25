@@ -1,6 +1,6 @@
 # Changelog
 
-## [v5.3.21] - 2026-01-25
+## [v5.3.21] - 2026-01-26
 ### Added
 - Movement target will fade out after giving orders.
 
@@ -9,7 +9,7 @@
 
 - Improve performance when giving orders in RTS view.
 
-- Improve behavior of facing order when selecting multiple formations
+- Improve behavior of facing order when selecting multiple formations.
 
 ## [v5.1.20] - 2026-01-19
 ### Fixed
