@@ -36,7 +36,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static readonly FieldInfo _dataSource =
             typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_dataSource),
                 BindingFlags.Instance | BindingFlags.NonPublic);
-
+        private static readonly FieldInfo _orderPositionEntities = typeof(OrderTroopPlacer).GetField("_orderPositionEntities", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly PropertyInfo _activeCursorState = typeof(OrderTroopPlacer).GetProperty("ActiveCursorState", BindingFlags.NonPublic | BindingFlags.Instance);
         private static readonly MethodInfo _cursorState = typeof(OrderTroopPlacer).GetMethod("GetCursorState", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly MethodInfo _handleMouseDown = typeof(OrderTroopPlacer).GetMethod("HandleMouseDown", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -104,12 +104,17 @@ namespace RTSCamera.CommandSystem.Patch
                     typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawingForMovementOrder",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_UpdateFormationDrawingForMovementOrder),
-                    BindingFlags.Static | BindingFlags.Public)));
+                        BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(
                     typeof(OrderTroopPlacer).GetMethod("UpdateFormationDrawingForFacingOrder",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_UpdateFormationDrawingForFacingOrder),
-                    BindingFlags.Static | BindingFlags.Public)));
+                        BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(OrderTroopPlacer).GetMethod("HideOrderPositionEntities",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_HideOrderPositionEntities),
+                        BindingFlags.Static | BindingFlags.Public)));
                 return true;
             }
             catch (Exception e)
@@ -415,8 +420,8 @@ namespace RTSCamera.CommandSystem.Patch
             return null;
         }
 
-        public static bool Prefix_AddOrderPositionEntity(OrderTroopPlacer __instance, int entityIndex,
-            ref Vec3 groundPosition, bool fadeOut, float alpha,
+        private static void AddOrderPositionEntity(OrderTroopPlacer __instance, int entityIndex,
+            Vec3 groundPosition, bool fadeOut, float alpha,
             ref List<GameEntity> ____orderPositionEntities, ref Material ____meshMaterial)
         {
             var config = CommandSystemConfig.Get();
@@ -454,19 +459,19 @@ namespace RTSCamera.CommandSystem.Patch
                         _originalMaterial = ____meshMaterial;
                         foreach (GameEntity orderPositionEntity in _originalOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
                         {
-                            orderPositionEntity.HideIfNotFadingOut();
+                            orderPositionEntity.SetVisibilityExcludeParents(false);
                         }
                         break;
                     case MovementTargetHighlightStyle.NewModelOnly:
                         foreach (GameEntity orderPositionEntity in _newModelOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
                         {
-                            orderPositionEntity.HideIfNotFadingOut();
+                            orderPositionEntity.SetVisibilityExcludeParents(false);
                         }
                         break;
                     case MovementTargetHighlightStyle.AlwaysVisible:
                         foreach (GameEntity orderPositionEntity in _alwaysVisibleOrderPositionEntities ?? Enumerable.Empty<GameEntity>())
                         {
-                            orderPositionEntity.HideIfNotFadingOut();
+                            orderPositionEntity.SetVisibilityExcludeParents(false);
                         }
                         break;
                 }
@@ -533,10 +538,39 @@ namespace RTSCamera.CommandSystem.Patch
                     orderPositionEntity.FadeIn();
                 }
 
-                return false;
             }
+            else
+            {
+                while (____orderPositionEntities.Count <= entityIndex)
+                {
+                    GameEntity empty = GameEntity.CreateEmpty(__instance.Mission.Scene);
+                    empty.EntityFlags |= EntityFlags.NotAffectedBySeason;
+                    MetaMesh copy = MetaMesh.GetCopy("order_flag_small");
+                    empty.AddComponent((GameEntityComponent)copy);
+                    empty.SetVisibilityExcludeParents(false);
+                    ____orderPositionEntities.Add(empty);
+                }
+                GameEntity orderPositionEntity = ____orderPositionEntities[entityIndex];
+                MatrixFrame frame = new MatrixFrame(Mat3.Identity, groundPosition);
+                orderPositionEntity.SetFrame(ref frame);
+                if ((double)alpha != -1.0)
+                {
+                    orderPositionEntity.SetVisibilityExcludeParents(true);
+                    orderPositionEntity.SetAlpha(alpha);
+                }
+                else if (fadeOut)
+                    orderPositionEntity.FadeOut(0.3f, false);
+                else
+                    orderPositionEntity.FadeIn();
+            }
+        }
 
-            return true;
+        public static bool Prefix_AddOrderPositionEntity(OrderTroopPlacer __instance, int entityIndex,
+            ref Vec3 groundPosition, bool fadeOut, float alpha,
+            ref List<GameEntity> ____orderPositionEntities, ref Material ____meshMaterial)
+        {
+            AddOrderPositionEntity(__instance, entityIndex, groundPosition, fadeOut, alpha, ref ____orderPositionEntities, ref ____meshMaterial);
+            return false;
         }
 
         private static void HandleSelectFormationKeyDown(OrderTroopPlacer __instance, ref Formation ____clickedFormation, ref Formation ____mouseOverFormation,
@@ -836,11 +870,9 @@ namespace RTSCamera.CommandSystem.Patch
             IEnumerable<Formation> formations = ___PlayerOrderController.SelectedFormations.Where((f => f.CountOfUnitsWithoutDetachedOnes > 0));
             if (!formations.Any())
                 return true;
-            Patch_OrderController.SimulateNewOrderWithPositionAndDirection(formations, ___PlayerOrderController.simulationFormations, formationRealStartingPosition, formationRealEndingPosition, true, out simulationAgentFrames, giveOrder && queueCommand, out var formationChanges, out isLineShort, isFormationLayoutVertical, true);
-            if (simulationAgentFrames == null)
-            {
-                return true;
-            }
+            bool fadeOut = Utilities.Utility.ShouldFadeOut() && giveOrder && !queueCommand;
+            bool shouldAddAgentFrames = !giveOrder || fadeOut;
+            Patch_OrderController.SimulateNewOrderWithPositionAndDirection(formations, ___PlayerOrderController.simulationFormations, formationRealStartingPosition, formationRealEndingPosition, shouldAddAgentFrames, out simulationAgentFrames, giveOrder, out var formationChanges, out isLineShort, isFormationLayoutVertical, true);
             bool shouldLimitFormationSpeedToLowest = Utilities.Utility.ShouldLockFormation();
             if (giveOrder)
             {
@@ -876,7 +908,10 @@ namespace RTSCamera.CommandSystem.Patch
                     });
                 }
             }
-            AddOrderPositionEntity(simulationAgentFrames, giveOrder);
+            if (shouldAddAgentFrames)
+            {
+                AddOrderPositionEntities(simulationAgentFrames, fadeOut);
+            }
             return false;
         }
         private static Vec3 GetGroundedVec3(Mission mission, WorldPosition worldPosition)
@@ -913,17 +948,39 @@ namespace RTSCamera.CommandSystem.Patch
             _reset.Invoke(_orderTroopPlacer, new object[] { });
         }
 
-        public static void AddOrderPositionEntity(List<WorldPosition> agentFrames, bool fadeOut, int startIndex = 0)
+        public static void AddOrderPositionEntities(List<WorldPosition> agentFrames, bool fadeOut, int startIndex = 0)
         {
+            ref List<GameEntity> ____orderPositionEntities =
+                ref AccessTools.FieldRefAccess<OrderTroopPlacer, List<GameEntity>>(_orderTroopPlacer, _orderPositionEntities);
+            ref Material ____meshMaterial = ref AccessTools.StaticFieldRefAccess<Material>(typeof(OrderTroopPlacer), "_meshMaterial");
             foreach (WorldPosition worldPosition in agentFrames)
             {
-                _addOrderPositionEntity.Invoke(_orderTroopPlacer,
-                    new object[]
-                    {
-                        startIndex, GetGroundedVec3(_orderTroopPlacer.Mission, worldPosition), fadeOut, -1f
-                    });
+                AddOrderPositionEntity(_orderTroopPlacer, startIndex, GetGroundedVec3(_orderTroopPlacer.Mission, worldPosition), fadeOut, -1f, ref ____orderPositionEntities, ref ____meshMaterial);
                 ++startIndex;
             }
+        }
+
+        public static bool Prefix_HideOrderPositionEntities(OrderTroopPlacer __instance,
+            ref List<GameEntity> ____orderPositionEntities,
+            List<GameEntity> ____orderRotationEntities)
+        {
+            if (__instance.SuspendTroopPlacer)
+            {
+                foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
+                    orderPositionEntity.HideIfNotFadingOut();
+            }
+            else
+            {
+                foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
+                    orderPositionEntity.SetVisibilityExcludeParents(false);
+            }
+            for (int index = 0; index < ____orderRotationEntities.Count; ++index)
+            {
+                GameEntity orderRotationEntity = ____orderRotationEntities[index];
+                orderRotationEntity.SetVisibilityExcludeParents(false);
+                orderRotationEntity.BodyFlag |= BodyFlags.Disabled;
+            }
+            return false;
         }
     }
 }

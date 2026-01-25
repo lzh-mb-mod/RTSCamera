@@ -1455,7 +1455,7 @@ namespace RTSCamera.CommandSystem.Patch
                 return true;
             if (Utilities.Utility.IsAnyFormationHavingMovingOrderPostion(formations))
             {
-                var formationCount = 0;
+                var unitCount = 0;
                 Vec2 averageOrderPosition = Vec2.Zero;
                 foreach (var formation in formations)
                 {
@@ -1464,41 +1464,44 @@ namespace RTSCamera.CommandSystem.Patch
                         var movingTarget = Utilities.Utility.GetFormationMovingOrderPosition(formation);
                         if (movingTarget != null)
                         {
-                            averageOrderPosition += movingTarget.Value.AsVec2;
-                            formationCount++;
+                            var count = formation.CountOfUnitsWithoutDetachedOnes;
+                            averageOrderPosition += movingTarget.Value.AsVec2 * count;
+                            unitCount += count;
                             continue;
                         }
                     }
                     var orderPosition = GetFormationVirtualPositionVec2(formation);
                     if (orderPosition.IsValid)
                     {
-                        averageOrderPosition += orderPosition;
-                        formationCount++;
+                        var count = formation.CountOfUnitsWithoutDetachedOnes;
+                        averageOrderPosition += orderPosition * count;
+                        unitCount += count;
                     }
                 }
-                if (formationCount > 0)
+                if (unitCount > 0)
                 {
-                    averageOrderPosition = averageOrderPosition * 1f / (float)formationCount;
+                    averageOrderPosition = averageOrderPosition * 1f / (float)unitCount;
                     __result = (target - averageOrderPosition).Normalized();
                     return false;
                 }
             }
             //if (Utilities.Utility.ShouldLockFormation())
             {
-                var formationCount = 0;
+                var unitCount = 0;
                 Vec2 averageOrderPosition = Vec2.Zero;
                 foreach (var formation in formations)
                 {
                     var orderPosition = GetFormationVirtualPositionVec2(formation);
                     if (orderPosition.IsValid)
                     {
-                        averageOrderPosition += orderPosition;
-                        formationCount++;
+                        var count = formation.CountOfUnitsWithoutDetachedOnes;
+                        averageOrderPosition += orderPosition  * count;
+                        unitCount += count;
                     }
                 }
-                if (formationCount > 0)
+                if (unitCount > 0)
                 {
-                    averageOrderPosition = averageOrderPosition * 1f / (float)formationCount;
+                    averageOrderPosition = averageOrderPosition * 1f / (float)unitCount;
                     __result = (target - averageOrderPosition).Normalized();
                     return false;
                 }
@@ -1629,7 +1632,7 @@ namespace RTSCamera.CommandSystem.Patch
                     }
                     if (fadeOut)
                     {
-                        Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, fadeOut, startIndex);
+                        Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, fadeOut, startIndex);
                         startIndex += simulationAgentFrames.Count;
                     }
                 }
@@ -1650,7 +1653,7 @@ namespace RTSCamera.CommandSystem.Patch
                     }
                     if (fadeOut)
                     {
-                        Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, fadeOut, startIndex);
+                        Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, fadeOut, startIndex);
                         startIndex += simulationAgentFrames.Count;
                     }
                 }
@@ -1769,7 +1772,6 @@ namespace RTSCamera.CommandSystem.Patch
                 if (orderPosition.IsValid)
                 {
                     weightedAverageOrderPosition += orderPosition * formation.CountOfUnitsWithoutDetachedOnes;
-                    //formationCount++;
                     sumOfUnits += formation.CountOfUnitsWithoutDetachedOnes;
                 }
                 formationOrderPositionDictionary.Add(formation, orderPosition);
@@ -2835,6 +2837,7 @@ namespace RTSCamera.CommandSystem.Patch
             OverridenUnitCount.SetValue(simulationFormation, new int?(unitCount));
             simulationFormation.SetPositioning(new WorldPosition?(formationPosition), new Vec2?(formationDirection));
             simulationFormation.Rearrange(arrangement.Clone(simulationFormation));
+            _arrangementOrder.SetValue(simulationFormation, formation.ArrangementOrder);
             simulationFormation.Arrangement.DeepCopyFrom(arrangement);
             simulationFormation.Arrangement.Width = width;
             _simulationFormationUniqueIdentifier.SetValue(null, index);
@@ -3065,7 +3068,7 @@ namespace RTSCamera.CommandSystem.Patch
                 out var simulationFormationChanges);
             if (fadeOut)
             {
-                Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
             }
         }
 
@@ -3076,7 +3079,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 SimulateNewOrderWithPositionAndDirection(selectedFormations, orderController.simulationFormations,
                     worldPosition, worldPosition, true, out var simulationAgentFrames, false, out _, out _, true);
-                Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
             }
         }
     }

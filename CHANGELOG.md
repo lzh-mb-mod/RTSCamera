@@ -7,6 +7,10 @@
 ### Improved
 - Improve speed sync behavior in facing order.
 
+- Improve performance when giving orders in RTS view.
+
+- Improve behavior of facing order when selecting multiple formations
+
 ## [v5.1.20] - 2026-01-19
 ### Fixed
 - Fix crash when attacked siege weapon is destroyed.

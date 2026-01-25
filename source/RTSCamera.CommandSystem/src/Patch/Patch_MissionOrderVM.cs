@@ -189,7 +189,7 @@ namespace RTSCamera.CommandSystem.Patch
                             orderToAdd.IsLineShort = isLineShort;
                             if (fadeOut)
                             {
-                                Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                                Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
                             }
                         }
                         else
@@ -259,7 +259,7 @@ namespace RTSCamera.CommandSystem.Patch
 
                         if (fadeOut)
                         {
-                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                            Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
                         }
                         if (!queueCommand)
                         {
@@ -278,7 +278,7 @@ namespace RTSCamera.CommandSystem.Patch
 
                         if (fadeOut)
                         {
-                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                            Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
                         }
                         if (!queueCommand)
                         {
@@ -297,7 +297,7 @@ namespace RTSCamera.CommandSystem.Patch
 
                         if (fadeOut)
                         {
-                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                            Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
                         }
                         if (!queueCommand)
                         {
@@ -316,7 +316,7 @@ namespace RTSCamera.CommandSystem.Patch
 
                         if (fadeOut)
                         {
-                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                            Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
                         }
                         if (!queueCommand)
                         {
@@ -335,7 +335,7 @@ namespace RTSCamera.CommandSystem.Patch
 
                         if (fadeOut)
                         {
-                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                            Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
                         }
                         if (!queueCommand)
                         {
@@ -354,7 +354,7 @@ namespace RTSCamera.CommandSystem.Patch
 
                         if (fadeOut)
                         {
-                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                            Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
                         }
                         if (!queueCommand)
                         {
@@ -373,7 +373,7 @@ namespace RTSCamera.CommandSystem.Patch
 
                         if (fadeOut)
                         {
-                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                            Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
                         }
                         if (!queueCommand)
                         {
@@ -390,7 +390,7 @@ namespace RTSCamera.CommandSystem.Patch
 
                         if (fadeOut)
                         {
-                            Patch_OrderTroopPlacer.AddOrderPositionEntity(simulationAgentFrames, true);
+                            Patch_OrderTroopPlacer.AddOrderPositionEntities(simulationAgentFrames, true);
                         }
                         if (!queueCommand)
                         {
