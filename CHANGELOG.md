@@ -1,5 +1,8 @@
 # Changelog
 
+## [v5.3.26]
+- 
+
 ## [v5.3.25] - 2026-01-25
 ## Fixed
 - Fix crash when moving AI controlled formation.

@@ -116,6 +116,8 @@ namespace RTSCamera.CommandSystem.Logic
                     continue;
                 if (!CommandQueueLogic.PendingOrders.TryGetValue(formation, out var otherOrder))
                     continue;
+
+                bool isPlayerOnly = Utilities.Utility.FormationArrangementContainsPlayerOnly(formation);
                 if (this != otherOrder || CommandQueueLogic.IsMovementOrderCompleted(formation, this))
                     continue;
 
@@ -164,7 +166,7 @@ namespace RTSCamera.CommandSystem.Logic
                 targetDistances[formation] = targetDistance;
                 var duration = targetDistance / originalSpeed;
                 originalDurations[formation] = duration;
-                if (duration > maxOriginalDuration)
+                if (duration > maxOriginalDuration && !isPlayerOnly)
                 {
                     maxOriginalDuration = duration;
                     distanceWithMaxDuration = targetDistance;

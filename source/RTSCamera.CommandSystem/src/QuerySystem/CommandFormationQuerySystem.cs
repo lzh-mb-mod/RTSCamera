@@ -143,14 +143,18 @@ namespace RTSCamera.CommandSystem.QuerySystem
             }, 0.5f);
             _areAgentsNearTargetPositions = new QueryData<bool>(() =>
             {
-                if (formation.CountOfUnitsWithoutLooseDetachedOnes == ((formation.IsPlayerTroopInFormation || formation.HasPlayerControlledTroop) ? 1 : 0))
+                if (Utilities.Utility.FormationArrangementContainsPlayerOnly(formation) && Agent.Main != null && !Agent.Main.IsAIControlled)
                     return true;
                 if (formation.CountOfUnitsWithoutLooseDetachedOnes > 0)
                 {
                     float scoreSum = 0f;
-                    float threshold = (float)formation.CountOfUnitsWithoutLooseDetachedOnes / 2;
+                    var unitCount = formation.CountOfUnitsWithoutLooseDetachedOnes;
                     formation.ApplyActionOnEachAttachedUnit((agent) =>
                     {
+                        if (!agent.IsAIControlled)
+                        {
+                            --unitCount;
+                        }
                         // GetCurrentSpeedLimit may return walk speed
                         // var speed = agent.GetCurrentSpeedLimit();
                         var speed = agent.GetMaximumForwardUnlimitedSpeed();
@@ -163,7 +167,7 @@ namespace RTSCamera.CommandSystem.QuerySystem
                         var score = MathF.Pow(MathF.E, MathF.Min(-(distanceSquared - (speed * speed)) / (velocitySquared), 0f));
                         scoreSum += score;
                     });
-                    if (scoreSum > threshold)
+                    if (scoreSum > unitCount * 0.5f)
                     {
                         return true;
                     }

@@ -1190,5 +1190,10 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             return CommandSystemConfig.Get().MovementTargetFadeOutDuration > 0.1f;
         }
+
+        public static bool FormationArrangementContainsPlayerOnly(Formation formation)
+        {
+            return formation.CountOfUnitsWithoutLooseDetachedOnes == ((formation.IsPlayerTroopInFormation || formation.HasPlayerControlledTroop) ? 1 : 0);
+        }
     }
 }
