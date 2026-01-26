@@ -1,4 +1,7 @@
 <Prefab>
+  <Parameters>
+    <Parameter Name="IsAlternativeLayout" DefaultValue="false"/>
+  </Parameters>
   <Constants>
     <Constant Name="Troop.Icon.Width" BrushName="Order.Troop.Icon" BrushLayer="Default" BrushValueType="Width" MultiplyResult="0.35"/>
     <Constant Name="Troop.Icon.Height" BrushName="Order.Troop.Icon" BrushLayer="Default" BrushValueType="Height" MultiplyResult="0.35"/>
@@ -52,35 +55,45 @@
               </Children>
             </ListPanel>
 
-            <!-- Left Shortcut Info -->
-            <ValueBasedVisibilityWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" PositionYOffset="-5" PositionXOffset="40" IndexToWatch="@FormationIndex" IndexToBeVisible="3" WatchType="LessThanEqual">
+            <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsHidden="*IsAlternativeLayout">
               <Children>
-                <Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" IsVisible="@CanToggleSelection">
+                <!-- Left Shortcut Info -->
+                <ValueBasedVisibilityWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" PositionYOffset="-5" PositionXOffset="115" IndexToWatch="@FormationIndex" IndexToBeVisible="3" WatchType="LessThanEqual">
                   <Children>
-                    <Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" IsVisible="@HaveTroops">
+                    <Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" IsVisible="@ShowSelectionInputs">
                       <Children>
-                        <InputKeyVisualWidget DataSource="{SelectionKey}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="60" SuggestedHeight="60" KeyID="@KeyID" IsVisible="@IsVisible"/>
+                        <InputKeyVisualWidget DataSource="{ApplySelectionKey}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="60" SuggestedHeight="60" KeyID="@KeyID" IsVisible="@IsVisible"/>
                       </Children>
                     </Widget>
                   </Children>
-                </Widget>
-              </Children>
-            </ValueBasedVisibilityWidget>
-            
-            <!-- Right Shortcut Info -->
-            <ValueBasedVisibilityWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" PositionYOffset="-5" PositionXOffset="-40" IndexToWatch="@FormationIndex" IndexToBeVisible="4" WatchType="BiggerThanEqual">
-              <Children>
-                <Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" IsVisible="@CanToggleSelection">
+                </ValueBasedVisibilityWidget>
+                
+                <!-- Right Shortcut Info -->
+                <ValueBasedVisibilityWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" PositionYOffset="-5" PositionXOffset="-115" IndexToWatch="@FormationIndex" IndexToBeVisible="4" WatchType="BiggerThanEqual">
                   <Children>
-                    <Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" IsVisible="@HaveTroops">
+                    <Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" IsVisible="@ShowSelectionInputs">
                       <Children>
-                        <InputKeyVisualWidget DataSource="{SelectionKey}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="60" SuggestedHeight="60" KeyID="@KeyID" IsVisible="@IsVisible"/>
+                        <InputKeyVisualWidget DataSource="{ApplySelectionKey}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="60" SuggestedHeight="60" KeyID="@KeyID" IsVisible="@IsVisible"/>
                       </Children>
                     </Widget>
                   </Children>
-                </Widget>
+                </ValueBasedVisibilityWidget>
               </Children>
-            </ValueBasedVisibilityWidget>
+            </Widget>
+
+            <!-- Gamepad Shortcut Info -->
+            <ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" PositionYOffset="-215" StackLayout.LayoutMethod="VerticalBottomToTop" IsVisible="*IsAlternativeLayout">
+              <Children>
+                <ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" IsVisible="@ShowSelectionInputs">
+                  <Children>
+                    <InputKeyVisualWidget DataSource="{ApplySelectionKey}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" KeyID="@KeyID" IsVisible="@IsVisible"/>
+                    <TextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" Brush="Order.Item.ShortcutText" Brush.FontSize="16" Text="/"/>
+                    <InputKeyVisualWidget DataSource="{ToggleSelectionKey}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="35" SuggestedHeight="35" KeyID="@KeyID" IsVisible="@IsVisible"/>
+                    <TextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" Brush="Order.Item.ShortcutText" Brush.FontSize="16" Text="@SelectionText"/>
+                  </Children>
+                </ListPanel>
+              </Children>
+            </ListPanel>
 
             <!-- Ammo Percentage -->
             <FillBarWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="77" SuggestedHeight="3" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="14" FillWidget="FillWidget" MaxAmountAsFloat="1.0" InitialAmountAsFloat="@AmmoPercentage">
