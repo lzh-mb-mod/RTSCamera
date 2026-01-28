@@ -96,6 +96,7 @@ namespace RTSCamera
                 _successPatch &= Patch_OrderFlag.Patch(_harmony);
                 _successPatch &= Patch_SandboxBattleBannerBearsModel.Patch(_harmony);
                 _successPatch &= Patch_OrderItemBaseVM.Patch(_harmony);
+                _successPatch &= Patch_OrderTroopItemVM.Patch(_harmony);
                 _successPatch &= Patch_BattleEndLogic.Patch(_harmony);
                 // naval dlc
                 if (IsNavalInstalled)
