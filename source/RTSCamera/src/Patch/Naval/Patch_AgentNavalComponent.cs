@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using System;
 using System.Reflection;
@@ -54,8 +54,9 @@ namespace RTSCamera.Patch.Naval
                 return true;
             }
 
-             ____lastOffShipCheckTime += 5f;
-            _checkAgentOffShip.Invoke(__instance, new object[] { false });
+            ____lastOffShipCheckTime += 5f;
+            // v1.4.5: CheckAgentOffShip() is now parameterless — bool argument was removed
+            _checkAgentOffShip.Invoke(__instance, null);
             return true;
         }
     }
