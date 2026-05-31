@@ -55,7 +55,7 @@ namespace RTSCamera.Patch.Naval
             }
 
              ____lastOffShipCheckTime += 5f;
-            _checkAgentOffShip.Invoke(__instance, new object[] { false });
+            _checkAgentOffShip.Invoke(__instance, Array.Empty<object>());
             return true;
         }
     }
