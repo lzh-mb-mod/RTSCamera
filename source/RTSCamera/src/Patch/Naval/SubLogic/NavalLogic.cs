@@ -13,13 +13,13 @@ namespace RTSCamera.Patch.Naval.SubLogic
 {
      public class NavalLogic
     {
-        private readonly RTSCameraLogic _logic;
-        private MissionBehavior _navalShipLogic;
-        private Delegate _handler;
+        //private readonly RTSCameraLogic _logic;
+        //private MissionBehavior _navalShipLogic;
+        //private Delegate _handler;
 
         public NavalLogic(RTSCameraLogic logic)
         {
-            _logic = logic;
+            //    _logic = logic;
         }
 
         public void AfterStart()

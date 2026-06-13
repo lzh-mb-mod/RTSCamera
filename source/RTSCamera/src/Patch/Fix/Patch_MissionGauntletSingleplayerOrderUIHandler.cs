@@ -39,6 +39,8 @@ namespace RTSCamera.Patch.Fix
         private static float _beginDraggingOffset;
         private static readonly float _beginDraggingOffsetThreshold = 20;
         private static bool _rightButtonDraggingMode;
+        private static Vec2 _mousePositionBeforeDragging;
+        private static Vec2? _mousePositionToRecover;
 
         public static bool Patch(Harmony harmony)
         {
@@ -116,6 +118,7 @@ namespace RTSCamera.Patch.Fix
             }
             _earlyDraggingMode = true;
             _beginDraggingOffset = 0;
+            _mousePositionBeforeDragging = ____orderTroopPlacer.Mission.InputManager.GetMousePositionPixel();
         }
 
         private static void EndEarlyDragging()
@@ -145,6 +148,7 @@ namespace RTSCamera.Patch.Fix
             EndEarlyDragging();
             _rightButtonDraggingMode = false;
             Patch_MissionOrderVM.AllowEscape = true;
+            _mousePositionToRecover = _mousePositionBeforeDragging;
         }
 
         private static void UpdateMouseVisibility(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, ref bool ____isTransferEnabled)
@@ -161,6 +165,11 @@ namespace RTSCamera.Patch.Fix
             {
                 layer.InputRestrictions.SetInputRestrictions(mouseVisibility,
                     inputUsageMask);
+            }
+            if (_mousePositionToRecover.HasValue)
+            {
+                Input.SetMousePosition((int)_mousePositionToRecover.Value.x, (int)_mousePositionToRecover.Value.y);
+                _mousePositionToRecover = null;
             }
             if (____dataSource.TroopController.IsTransferActive != ____isTransferEnabled)
             {

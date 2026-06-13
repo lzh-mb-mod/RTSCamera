@@ -4,6 +4,9 @@
 ### Fixed
 - Keep compatible with game v1.4.6.
 
+### Improved
+- After dragging mouse right button to rotate camera, mouse position will be recovered to the position before dragging, instead of to the center of window.
+
 ## [v5.3.25] - 2026-01-25
 ## Fixed
 - Fix crash when moving AI controlled formation.
