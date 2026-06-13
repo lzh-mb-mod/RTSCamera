@@ -173,6 +173,7 @@ namespace RTSCamera.CommandSystem.Config
             BehaviorAfterCharge = other.BehaviorAfterCharge;
             TroopHighlightStyleInCharacterMode = other.TroopHighlightStyleInCharacterMode;
             TroopHighlightStyleInRTSMode = other.TroopHighlightStyleInRTSMode;
+            HighlightTroopsWhenShowingIndicators = other.HighlightTroopsWhenShowingIndicators;
             MovementTargetHighlightStyleInCharacterMode = other.MovementTargetHighlightStyleInCharacterMode;
             MovementTargetHighlightStyleInRTSMode = other.MovementTargetHighlightStyleInRTSMode;
             MovementTargetHighlightMode = other.MovementTargetHighlightMode;

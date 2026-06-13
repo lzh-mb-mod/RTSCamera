@@ -4,6 +4,8 @@
 ### Fixed
 - Keep compatible with game v1.4.6.
 
+- Fix the issue that the option "Highlight Troops When Showing Indicators" is always reset to default on game start.
+
 ### Improved
 - After dragging mouse right button to rotate camera, mouse position will be recovered to the position before dragging, instead of to the center of window.
 
