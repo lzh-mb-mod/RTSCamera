@@ -135,7 +135,7 @@
     </Reference>
   </ItemGroup>
 
-  <Target Name="RemoveModulePackageDir" AfterTargets="BeforeBuild">
+  <Target Name="RemoveModulePackageDir" AfterTargets="BeforeBuild" Condition="'$(OS)'=='Windows_NT'">
     <Exec Command="rmdir &quot;$(ModulePackagePath)&quot; /s /q" />
   </Target>
 
@@ -149,7 +149,7 @@
     <Copy SourceFiles="@(_HarmonyAssemblies)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
   </Target>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(OS)'=='Windows_NT'">
     <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
     <Exec Command="xcopy &quot;$(TargetDir)MissionLibrary.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
     <Exec Command="xcopy &quot;$(TargetDir)RTSCameraAgentComponent.dll&quot; &quot;$(ModulePackagePath)bin\Win64_Shipping_Client\&quot; /C /I /Y /F" />
@@ -161,7 +161,7 @@
     <Exec Command="xcopy &quot;$(ProjectDir)Modules\.&quot; &quot;$(PackagePath)&quot; /E /C /I /Y /F&#xD;&#xA;" />
 
   </Target>
-  <Target Name="DeployModFiles" AfterTargets="PostBuild" Condition="'$(TargetFramework)' == 'net472'">
+  <Target Name="DeployModFiles" AfterTargets="PostBuild" Condition="'$(TargetFramework)' == 'net472' And '$(OS)'=='Windows_NT'">
     <Exec Command="xcopy &quot;$(ModulePackagePath).&quot; &quot;$(GamePath)Modules\$(ModuleAlias)&quot; /E /C /I /Y /F" />
   </Target>
 

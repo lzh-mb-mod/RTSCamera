@@ -78,15 +78,25 @@ namespace RTSCamera.CommandSystem.AgentComponents
             }
 
             _mesh = MetaMesh.GetCopy("rts_unit_marker");
+            if (_mesh == null)
+                return;
             if (_material == null)
             {
-                _material = _mesh.GetMeshAtIndex(0).GetMaterial().CreateCopy();
+                var baseMesh = _mesh.GetMeshAtIndex(0);
+                if (baseMesh == null)
+                    return;
+                _material = baseMesh.GetMaterial()?.CreateCopy();
+                if (_material == null)
+                    return;
                 _material.Flags |= MaterialFlags.TwoSided;
             }
             _mesh.SetMaterial(_material);
             //ClearMaterial();
             UpdateMeshFrame(Agent.HasMount);
-            Agent.AgentVisuals.GetEntity().AddMultiMesh(_mesh);
+            var entity = Agent.AgentVisuals?.GetEntity();
+            if (entity == null)
+                return;
+            entity.AddMultiMesh(_mesh);
             _mesh.SetFactor1(InvisibleColor);
             _mesh.SetContourColor(InvisibleColor);
             _mesh.SetContourState(false);
