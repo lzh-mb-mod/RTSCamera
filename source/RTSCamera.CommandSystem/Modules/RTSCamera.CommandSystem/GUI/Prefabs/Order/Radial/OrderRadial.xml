@@ -10,7 +10,7 @@
 
                 <Widget DoNotAcceptEvents="true" DataSource="{TroopController}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="20" MarginRight="20" MarginTop="20" MarginBottom="20">
                   <Children>
-                    <ListPanel DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" StackLayout.LayoutMethod="VerticalBottomToTop">
+                    <ListPanel DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" StackLayout.LayoutMethod="VerticalTopToBottom">
                       <Children>
                         <OrderTroopItem DataSource="{TroopItem0}" />
                         <OrderTroopItem DataSource="{TroopItem1}" />
@@ -18,7 +18,7 @@
                         <OrderTroopItem DataSource="{TroopItem3}" />
                       </Children>
                     </ListPanel>
-                    <ListPanel DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" StackLayout.LayoutMethod="VerticalBottomToTop">
+                    <ListPanel DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" StackLayout.LayoutMethod="VerticalTopToBottom">
                       <Children>
                         <OrderTroopItem DataSource="{TroopItem4}" />
                         <OrderTroopItem DataSource="{TroopItem5}" />

@@ -34,7 +34,7 @@
             </BrushWidget>
 
             <!-- Troop Type Icons and Troop Counts -->
-            <ListPanel DataSource="{ActiveFormationClasses}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" MarginLeft="15" VerticalAlignment="Top" MarginTop="45" StackLayout.LayoutMethod="VerticalBottomToTop" >
+            <ListPanel DataSource="{ActiveFormationClasses}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" MarginLeft="15" VerticalAlignment="Top" MarginTop="45" StackLayout.LayoutMethod="VerticalTopToBottom" >
               <ItemTemplate>
 
                 <ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" StackLayout.LayoutMethod="HorizontalLeftToRight">
@@ -82,7 +82,7 @@
             </Widget>
 
             <!-- Gamepad Shortcut Info -->
-            <ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" PositionYOffset="-215" StackLayout.LayoutMethod="VerticalBottomToTop" IsVisible="*IsAlternativeLayout">
+            <ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" PositionYOffset="-215" StackLayout.LayoutMethod="VerticalTopToBottom" IsVisible="*IsAlternativeLayout">
               <Children>
                 <ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" IsVisible="@ShowSelectionInputs">
                   <Children>
@@ -115,7 +115,7 @@
             </Widget>
 
             <!-- Filters -->
-            <ListPanel DataSource="{ActiveFilters}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Bottom" MarginBottom="35" MarginRight="15" StackLayout.LayoutMethod="VerticalBottomToTop">
+            <ListPanel DataSource="{ActiveFilters}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Bottom" MarginBottom="35" MarginRight="15" StackLayout.LayoutMethod="VerticalTopToBottom">
               <ItemTemplate>
                 <OrderOfBattleFormationFilterVisualBrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="20" SuggestedHeight="20" MarginBottom="5" FormationFilter="@FilterTypeValue" UnsetBrush="!FilterUnsetBrush" SpearBrush="!SpearBrush" ShieldBrush="!ShieldBrush" ThrownBrush="!ThrownBrush" HeavyBrush="!HeavyBrush" HighTierBrush="!HighTierBrush" LowTierBrush="!LowTierBrush" />
               </ItemTemplate>

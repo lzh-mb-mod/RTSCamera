@@ -9,7 +9,7 @@
   <Window>
     <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsDisabled="true">
       <Children>
-        <ListPanel DataSource="{HotKeyHintList}" LayoutImp.LayoutMethod="VerticalBottomToTop" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" VerticalAlignment="Bottom" SuggestedWidth="360" HorizontalAlignment="Right" MarginBottom="350" MarginRight="50" >
+        <ListPanel DataSource="{HotKeyHintList}" LayoutImp.LayoutMethod="VerticalTopToBottom" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" VerticalAlignment="Bottom" SuggestedWidth="360" HorizontalAlignment="Right" MarginBottom="350" MarginRight="50" >
           <ItemTemplate>
 
             <ListPanel LayoutImp.LayoutMethod="HorizontalLeftToRight" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="350" HorizontalAlignment="Left" MarginTop="10">

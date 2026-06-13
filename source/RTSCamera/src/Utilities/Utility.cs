@@ -126,11 +126,6 @@ namespace RTSCamera.Utilities
             }
         }
 
-        public static MissionBehavior GetNavalShipsLogic(Mission mission)
-        {
-            return MissionSharedLibrary.Utilities.Utility.GetMissionBehaviorOfType(mission, AccessTools.TypeByName("NavalDLC.Missions.MissionLogics.NavalShipsLogic"));
-        }
-
         public static MissionObject GetShip(MissionBehavior navalShipLogic, TeamSideEnum teamSide, FormationClass formationClass)
         {
             var getShipAssignmentMethod = AccessTools.Method(navalShipLogic.GetType(), "GetShipAssignment");
@@ -160,7 +155,7 @@ namespace RTSCamera.Utilities
 
         public static MissionObject GetPlayerControlledShip(Mission mission)
         {
-            var navalShipsLogic = GetNavalShipsLogic(mission);
+            var navalShipsLogic = MissionSharedLibrary.Utilities.Utility.GetNavalShipsLogic(mission);
             _playerControlledShip ??= AccessTools.Property("NavalDLC.Missions.MissionLogics.NavalShipsLogic:PlayerControlledShip");
             return (MissionObject)_playerControlledShip.GetValue(navalShipsLogic);
         }
@@ -198,7 +193,7 @@ namespace RTSCamera.Utilities
         {
             if (Agent.Main == null || Agent.Main.Formation == null)
                 return null;
-            var navalShipsLogic = GetNavalShipsLogic(mission);
+            var navalShipsLogic = MissionSharedLibrary.Utilities.Utility.GetNavalShipsLogic(mission);
             if (navalShipsLogic == null)
                 return null;
             return GetShip(navalShipsLogic, TeamSideEnum.PlayerTeam, Agent.Main.Formation.FormationIndex);
@@ -279,7 +274,7 @@ namespace RTSCamera.Utilities
         {
             if (Mission.Current.IsNavalBattle)
             {
-                var navalShipLogic = GetNavalShipsLogic(Mission.Current);
+                var navalShipLogic = MissionSharedLibrary.Utilities.Utility.GetNavalShipsLogic(Mission.Current);
                 if (navalShipLogic == null)
                     return;
                 var ship = GetShip(navalShipLogic, TeamSideEnum.PlayerTeam, formationClass);

@@ -49,27 +49,35 @@ namespace RTSCamera.Patch.Naval
             return codes.AsEnumerable();
         }
 
-        public static void EnableAIPilotPlayerShip(List<CodeInstruction> codes, bool isSecondPlace)
+        public static void EnableAIPilotPlayerShip(List<CodeInstruction> codes, bool isSecondPatch)
         {
-            bool found_get_IsPlayerShip = false;
+            bool found_first_get_isPlayerShip = false;
+            bool found_second_get_IsPlayerShip = false;
             int get_IsPlayerShip_Index = -1;
             for (int i = 0; i < codes.Count; ++i)
             {
-                 if (!found_get_IsPlayerShip)
+                if (!found_second_get_IsPlayerShip)
                 {
                     if (codes[i].opcode == OpCodes.Callvirt)
                     {
                         var operand = codes[i].operand as MethodInfo;
                         if (operand.Name == "get_IsPlayerShip")
                         {
-                            found_get_IsPlayerShip = true;
+                            // in the original code there're 3 places having isPlayerShip
+                            // we always ignore the first place.
+                            if (!found_first_get_isPlayerShip)
+                            {
+                                found_first_get_isPlayerShip = true;
+                                continue;
+                            }
+                            found_second_get_IsPlayerShip = true;
                             get_IsPlayerShip_Index = i;
                         }
                     }
                 }
             }
 
-            if (!found_get_IsPlayerShip)
+            if (!found_second_get_IsPlayerShip)
                 throw new Exception("Failed to find get_IsPlayerShip");
 
             bool verified = true;
@@ -78,24 +86,24 @@ namespace RTSCamera.Patch.Naval
             verified &= codes[get_IsPlayerShip_Index + 1].opcode == OpCodes.Brfalse_S;
             verified &= codes[get_IsPlayerShip_Index + 2].opcode == OpCodes.Call && (codes[get_IsPlayerShip_Index + 2].operand as MethodInfo).Name == "get_Current";
             verified &= codes[get_IsPlayerShip_Index + 3].opcode == OpCodes.Callvirt && (codes[get_IsPlayerShip_Index + 3].operand as MethodInfo).Name == "get_MainAgent";
-            verified &= codes[get_IsPlayerShip_Index + 4].opcode == (isSecondPlace ? OpCodes.Brtrue_S : OpCodes.Brtrue);
+            verified &= codes[get_IsPlayerShip_Index + 4].opcode == (isSecondPatch ? OpCodes.Brtrue_S : OpCodes.Brtrue);
 
             if (!verified)
                 throw new Exception("Failed to verify patched code in Patch_ShipOrder.EnableAIPilotPlayerShip");
 
             codes[get_IsPlayerShip_Index].opcode = OpCodes.Call;
-            codes[get_IsPlayerShip_Index].operand = typeof(Patch_ShipOrder).GetMethod(nameof(ShouldAIPilotPlayerShip), BindingFlags.Static | BindingFlags.Public);
+            codes[get_IsPlayerShip_Index].operand = typeof(Patch_ShipOrder).GetMethod(nameof(ShouldAIPilotShip), BindingFlags.Static | BindingFlags.Public);
             codes[get_IsPlayerShip_Index + 1].opcode = OpCodes.Brtrue_S;
             codes[get_IsPlayerShip_Index + 2].opcode = OpCodes.Nop;
             codes[get_IsPlayerShip_Index + 3].opcode = OpCodes.Nop;
-            codes[get_IsPlayerShip_Index + 4].opcode = (isSecondPlace ? OpCodes.Br_S : OpCodes.Br);
+            codes[get_IsPlayerShip_Index + 4].opcode = (isSecondPatch ? OpCodes.Br_S : OpCodes.Br);
         }
 
-        public static bool ShouldAIPilotPlayerShip(MissionObject ownerShip)
+        public static bool ShouldAIPilotShip(MissionObject ownerShip)
         {
             var isShipAIControlled = Utilities.Utility.IsShipAIControlled(ownerShip);
             var isPlayerShip = Utilities.Utility.IsPlayerShip(ownerShip);
-            return isPlayerShip && isShipAIControlled;
+            return !isPlayerShip || isShipAIControlled;
         }
     }
 }

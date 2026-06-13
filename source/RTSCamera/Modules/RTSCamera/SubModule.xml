@@ -2,15 +2,15 @@
 <Module>
   <Name value="RTS Camera"/>
   <Id value="RTSCamera"/>
-  <Version value="v5.3.26"/>
+  <Version value="v5.4.0"/>
   <SingleplayerModule value="true"/>
   <MultiplayerModule value="false"/>
   <DependedModules>
-    <DependedModule Id="Native" DependentVersion="v1.3.13" />
-    <DependedModule Id="SandBoxCore" DependentVersion="v1.3.13" />
-    <DependedModule Id="Sandbox" DependentVersion="v1.3.13" />
-    <DependedModule Id="CustomBattle" DependentVersion="v1.3.13"/>
-    <DependedModule Id="StoryMode" DependentVersion="v1.3.13" />
+    <DependedModule Id="Native" DependentVersion="v1.4.6" />
+    <DependedModule Id="SandBoxCore" DependentVersion="v1.4.6" />
+    <DependedModule Id="Sandbox" DependentVersion="v1.4.6" />
+    <DependedModule Id="CustomBattle" DependentVersion="v1.4.6"/>
+    <DependedModule Id="StoryMode" DependentVersion="v1.4.6" />
   </DependedModules>
   <DependedModuleMetadatas>
     <!-- order: [ "LoadBeforeThis", "LoadAfterThis" ] -->
@@ -19,11 +19,11 @@
     <!-- incompatible: [ "true", "false" ] -->
     <DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" />
 
-    <DependedModuleMetadata id="Native" order="LoadBeforeThis" version="v1.3.*" />
-    <DependedModuleMetadata id="SandBoxCore" order="LoadBeforeThis" version="v1.3.*" />
-    <DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" version="v1.3.*" />
-    <DependedModuleMetadata id="StoryMode" order="LoadBeforeThis" version="v1.3.*" />
-    <DependedModuleMetadata id="CustomBattle" order="LoadBeforeThis" version="v1.3.*" />
+    <DependedModuleMetadata id="Native" order="LoadBeforeThis" version="v1.4.*" />
+    <DependedModuleMetadata id="SandBoxCore" order="LoadBeforeThis" version="v1.4.*" />
+    <DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" version="v1.4.*" />
+    <DependedModuleMetadata id="StoryMode" order="LoadBeforeThis" version="v1.4.*" />
+    <DependedModuleMetadata id="CustomBattle" order="LoadBeforeThis" version="v1.4.*" />
   </DependedModuleMetadatas>
   <SubModules>
     <SubModule>

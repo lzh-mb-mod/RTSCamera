@@ -11,7 +11,7 @@ using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Patch.Naval
 {
-    public class Patch_ShipAgentSpawnLogicTeamSide
+    public class Patch_NavalTeamSideSpawnContext
     {
         private static bool _patched;
         public static bool Patch(Harmony harmony)
@@ -24,8 +24,8 @@ namespace RTSCamera.Patch.Naval
 
                 if (!RTSCameraSubModule.IsNavalInstalled)
                     return true;
-                harmony.Patch(AccessTools.TypeByName("ShipAgentSpawnLogicTeamSide").Method("AllocateAndDeployInitialTroopsOfPlayerTeam"),
-                    prefix: new HarmonyMethod(typeof(Patch_ShipAgentSpawnLogicTeamSide).GetMethod(nameof(Prefix_AllocateAndDeployInitialTroopsOfPlayerTeam), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(AccessTools.TypeByName("NavalTeamSideSpawnContext").Method("AllocateAndDeployInitialTroopsOfPlayerTeam"),
+                    prefix: new HarmonyMethod(typeof(Patch_NavalTeamSideSpawnContext).GetMethod(nameof(Prefix_AllocateAndDeployInitialTroopsOfPlayerTeam), BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {

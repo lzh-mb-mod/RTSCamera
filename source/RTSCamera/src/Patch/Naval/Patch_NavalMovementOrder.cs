@@ -42,7 +42,7 @@ namespace RTSCamera.Patch.Naval
         {
             try
             {
-                var navalShipsLogic = Utilities.Utility.GetNavalShipsLogic(Mission.Current);
+                var navalShipsLogic = Utility.GetNavalShipsLogic(Mission.Current);
                 if (navalShipsLogic == null)
                     return false;
                 var movementOrderEnum = GetMovementOrderEnum(____orderType);

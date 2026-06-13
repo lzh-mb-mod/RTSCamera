@@ -106,7 +106,7 @@ namespace RTSCamera
                     _successPatch &= Patch_NavalDLCHelpers.Patch(_harmony);
                     _successPatch &= Patch_MissionGauntletNavalOrderUIHandler.Patch(_harmony);
                     _successPatch &= Patch_NarvalShipTargetSelectionHandler.Patch(_harmony);
-                    _successPatch &= Patch_ShipAgentSpawnLogicTeamSide.Patch(_harmony);
+                    _successPatch &= Patch_NavalTeamSideSpawnContext.Patch(_harmony);
                     _successPatch &= Patch_NavalShipVisualOrderProvider.Patch(_harmony);
                     _successPatch &= Patch_NavalTroopVisualOrderProvider.Patch(_harmony);
                     _successPatch &= Patch_ShipOrder.Patch(_harmony);

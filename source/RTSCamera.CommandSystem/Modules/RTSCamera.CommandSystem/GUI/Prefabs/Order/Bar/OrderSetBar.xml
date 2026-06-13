@@ -11,7 +11,7 @@
         <Widget DoNotAcceptEvents="true" IsVisible="@IsSelected" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="30" SuggestedHeight="41" MarginLeft="80" VerticalAlignment="Center" Sprite="StdAssets\arrow_little"/>
         <!-- <Widget DoNotAcceptEvents="true" IsVisible="@IsSelected" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginLeft="115">
           <Children>
-            <ListPanel DoNotAcceptEvents="true" DataSource="{Orders}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalBottomToTop">
+            <ListPanel DoNotAcceptEvents="true" DataSource="{Orders}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom">
               <ItemTemplate>
                 <OrderItemBar />
               </ItemTemplate>

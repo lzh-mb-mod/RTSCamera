@@ -1,7 +1,8 @@
 # Changelog
 
-## [v5.3.26]
-- 
+## [v5.4.0] - 2026-06-13
+### Fixed
+- Keep compatible with game v1.4.6.
 
 ## [v5.3.25] - 2026-01-25
 ## Fixed

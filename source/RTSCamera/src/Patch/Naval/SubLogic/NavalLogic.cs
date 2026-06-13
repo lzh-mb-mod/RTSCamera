@@ -26,7 +26,7 @@ namespace RTSCamera.Patch.Naval.SubLogic
         {
             //if (Mission.Current.IsNavalBattle)
             //{
-            //    _navalShipLogic = Utilities.Utility.GetNavalShipsLogic(Mission.Current);
+            //    _navalShipLogic = Utility.GetNavalShipsLogic(Mission.Current);
             //    var eventInfo = _navalShipLogic.GetType().GetEvent("ShipControllerChanged");
             //    _handler = Delegate.CreateDelegate(eventInfo.EventHandlerType, this, typeof(NavalLogic).GetMethod(nameof(OnShipControllerChanged), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance));
             //    eventInfo.AddEventHandler(_navalShipLogic, _handler);

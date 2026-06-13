@@ -8,7 +8,7 @@
       <Children>
         <Widget DoNotAcceptEvents="true" IsVisible="@IsSelected" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren">
           <Children>
-            <ListPanel DoNotAcceptEvents="true" DataSource="{Orders}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalBottomToTop">
+            <ListPanel DoNotAcceptEvents="true" DataSource="{Orders}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom">
               <ItemTemplate>
                 <OrderItemBar />
               </ItemTemplate>
@@ -19,4 +19,3 @@
     </Widget>
   </Window>
 </Prefab>
-
