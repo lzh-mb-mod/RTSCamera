@@ -493,6 +493,12 @@ namespace RTSCamera.CommandSystem.Patch
         {
             var config = CommandSystemConfig.Get();
             var currentMovementTargetHighlightStyle = IsFreeCamera ? config.MovementTargetHighlightStyleInRTSMode : config.MovementTargetHighlightStyleInCharacterMode;
+            // Fix the issue that the new model is invisible in naval raid battle:
+            // revert to the original target marker.
+            if (__instance.Mission.IsNavalRaidBattle)
+            {
+                currentMovementTargetHighlightStyle = MovementTargetHighlightStyle.Original;
+            }
 
             switch (currentMovementTargetHighlightStyle)
             {
