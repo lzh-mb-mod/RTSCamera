@@ -140,12 +140,17 @@
 
   <string id="str_rts_camera_display_mod_message" text="{=RTSCamera_displaymodmessage}Display Message" />
   <string id="str_rts_camera_toggle_ui" text="{=RTSCamera_toggleui}Toggle HUD" />
-  <string id="str_rts_camera_switch_camera_on_ordering" text="{=RTSCamera_switchcameraonordering}Switch Camera on Ordering" />
-  <string id="str_rts_camera_switch_camera_on_ordering_hint" text="{=RTSCamera_switchcameraonorderinghint}Automatically switch to free camera when giving orders, and switch back when finished." />
+  <string id="str_rts_camera_camera_mode_on_ordering" text="{=RTSCamera_camera_mode_on_ordering}Camera Mode on Ordering" />
+  <string id="str_rts_camera_camera_mode_on_ordering_hint" text="{=RTSCamera_camera_mode_on_ordering_hint}When giving orders, which camera mode to switch to. Elevated makes the camera higher but still follows the player. Free Camera allows full control to camera" />
+  <string id="str_rts_camera_camera_mode_on_ordering_option.Original" text="{=RTSCamera_camera_mode_on_ordering_option_original}Original" />
+  <string id="str_rts_camera_camera_mode_on_ordering_option.Elevated" text="{=RTSCamera_camera_mode_on_ordering_option_elevated}Elevated" />
+  <string id="str_rts_camera_camera_mode_on_ordering_option.FreeCamera" text="{=RTSCamera_camera_mode_on_ordering_option_free_camera}Free Camera" />
   <string id="str_rts_camera_order_on_switching_camera" text="{=RTSCamera_orderonswitchingcamera}Order on Switching Camera" />
   <string id="str_rts_camera_order_on_switching_camera_hint" text="{=RTSCamera_orderonswitchingcamerahint}Automatically open order UI when switching to free camera, and close order UI when switching back." />
   <string id="str_rts_camera_keep_order_ui_open_in_free_camera" text="{=RTSCamera_keep_order_ui_open_in_free_camera}Keep Order UI Open in Free Camera" />
   <string id="str_rts_camera_keep_order_ui_open_in_free_camera_hint" text="{=RTSCamera_keep_order_ui_open_in_free_camera_hint}Keep Order UI Open in Free Camera" />
+  <string id="str_rts_camera_keep_order_ui_open_in_overlook_camera" text="{=RTSCamera_keep_order_ui_open_in_elevated_camera}Keep Order UI Open in Elevated Camera" />
+  <string id="str_rts_camera_keep_order_ui_open_in_overlook_camera_hint" text="{=RTSCamera_keep_order_ui_open_in_elevated_camera_hint}Keep Order UI Open in Elevated Camera" />
   <string id="str_rts_camera_show_hotkey_hint" text="{=RTSCamera_show_hotkey_hint}Show Hotkey Hint" />
   <string id="str_rts_camera_show_hotkey_hint_hint" text="{=RTSCamera_show_hotkey_hint_hint}Show hotkey hint in free camera mode." />
   <string id="str_rts_camera_fast_forward_hideout" text="{=RTSCamera_fast_forward_hideout}Fast Forward Hideout" />

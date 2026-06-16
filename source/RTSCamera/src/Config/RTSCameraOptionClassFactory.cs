@@ -351,11 +351,24 @@ namespace RTSCamera.Config
                         hideHudView?.ToggleUI();
                         menuManager.RequestToCloseMenu();
                     }));
-                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_switch_camera_on_ordering"),
-                    GameTexts.FindText("str_rts_camera_switch_camera_on_ordering_hint"),
-                    () => RTSCameraConfig.Get().SwitchCameraOnOrdering,
-                    b => RTSCameraConfig.Get().SwitchCameraOnOrdering = b));
+                miscellaneousOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_camera_mode_on_ordering"),
+                    GameTexts.FindText("str_rts_camera_camera_mode_on_ordering_hint"),
+                    new SelectionOptionData(i =>
+                    {
+                        if (i < 0 || i >= (int)CameraModeOnOrdering.Count)
+                        {
+                            return;
+                        }
+                        var config = RTSCameraConfig.Get();
+                        config.CameraModeOnOrdering = (CameraModeOnOrdering)i;
+                    }, () => (int)RTSCameraConfig.Get().CameraModeOnOrdering, () => (int)CameraModeOnOrdering.Count,
+                        () => new[]
+                        {
+                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "Original"),
+                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "Elevated"),
+                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "FreeCamera")
+                        }), true));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_order_on_switching_camera"),
                     GameTexts.FindText("str_rts_camera_order_on_switching_camera_hint"),
@@ -366,6 +379,11 @@ namespace RTSCamera.Config
                     GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_free_camera_hint"),
                     () => RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera,
                     b => RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera = b));
+                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_overlook_camera"),
+                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_overlook_camera_hint"),
+                    () => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera,
+                    b => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera = b));
                 optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_show_hotkey_hint"),

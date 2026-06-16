@@ -1,4 +1,7 @@
 # Changelog
+## [v5.4.2] - 2026-06-16
+## Added
+- When giving orders, camera will be elevated. Corresponding option is added.
 
 ## [v5.4.1] - 2026-06-15
 ### Fixed
