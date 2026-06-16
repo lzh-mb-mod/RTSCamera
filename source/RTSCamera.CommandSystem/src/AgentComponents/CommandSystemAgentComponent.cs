@@ -101,7 +101,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
             _mesh.SetContourColor(InvisibleColor);
             _mesh.SetContourState(false);
             _mesh.SetVisibilityMask(0);
-            //Agent.AgentVisuals.LazyUpdateAgentRendererData();
+            // Agent.AgentVisuals?.LazyUpdateAgentRendererData();
         }
 
         //private void ClearMaterial()

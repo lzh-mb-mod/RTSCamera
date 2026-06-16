@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.Config;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -41,7 +42,7 @@ namespace RTSCamera.Patch.Naval
 
         public static void Postfix_GetOrders(ref MBReadOnlyList<VisualOrderSet> __result)
         {
-            var newOrder = new NavalToggleShipOrderOrder("order_toggle_ai", GameTexts.FindText("str_rts_camera_ai_control_ship_on"), GameTexts.FindText("str_rts_camera_ai_control_ship_off"));
+            var newOrder = new NavalToggleShipOrderOrder("order_soldier_pilot_ship", "order_toggle_ai", GameTexts.FindText("str_rts_camera_ai_control_ship_on"), GameTexts.FindText("str_rts_camera_ai_control_ship_off"));
             if (Utilities.Utility.ShouldAddToggleShipOrderOrder())
             {
                 if (Input.IsGamepadActive)
@@ -67,8 +68,22 @@ namespace RTSCamera.Patch.Naval
                     if (stopOrderIndex != -1)
                     {
                         __result[stopOrderIndex] = CreateSingleOrderSetFor(newOrder);
-
                     }
+                }
+            }
+            if (!Input.IsGamepadActive)
+            {
+                if (RTSCameraConfig.Get().SwitchNavalRetreatAndDelegateCommand)
+                {
+                    var retreatOrderIndex = __result.FindIndex(orderSet => orderSet.StringId == "order_movement_retreat");
+                    var toggleAIIndex = __result.FindIndex(orderSet => orderSet.StringId == "order_toggle_ai");
+                    if (retreatOrderIndex == -1 || toggleAIIndex == -1)
+                        return;
+
+                    var retreatOrder = __result[retreatOrderIndex];
+                    var toggleAIOrder = __result[toggleAIIndex];
+                    __result[retreatOrderIndex] = toggleAIOrder;
+                    __result[toggleAIIndex] = retreatOrder;
                 }
             }
         }

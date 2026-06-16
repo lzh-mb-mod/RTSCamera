@@ -42,9 +42,10 @@ namespace RTSCamera.Patch.Naval
 
         public static void Postfix_GetOrders(ref MBReadOnlyList<VisualOrderSet> __result)
         {
-            var newOrder = new NavalToggleShipOrderOrder("order_toggle_ai", GameTexts.FindText("str_rts_camera_ai_control_ship_on"), GameTexts.FindText("str_rts_camera_ai_control_ship_off"));
+            var newOrder = new NavalToggleShipOrderOrder("order_soldier_pilot_ship", "order_toggle_ai", GameTexts.FindText("str_rts_camera_ai_control_ship_on"), GameTexts.FindText("str_rts_camera_ai_control_ship_off"));
             if (Utilities.Utility.ShouldAddToggleShipOrderOrder())
             {
+                var toggleAIIndex = __result.FindIndex(order => order.StringId == "order_toggle_ai");
                 if (Input.IsGamepadActive)
                 {
                     //var orderSet = __result.Where(orderSet => orderSet.StringId == "troop_visual_orders").FirstOrDefault();
@@ -52,6 +53,7 @@ namespace RTSCamera.Patch.Naval
                     //{
                     //    orderSet.AddOrder(newOrder);
                     //}
+                    var insertIndex = toggleAIIndex >= 0 ? toggleAIIndex : __result.Count - 1;
                     var lastOrderIndex = __result.Count - 1;
                     if (lastOrderIndex >= 0)
                     {
@@ -60,7 +62,8 @@ namespace RTSCamera.Patch.Naval
                 }
                 else
                 {
-                    __result.Add(CreateSingleOrderSetFor(newOrder));
+                    var insertIndex = toggleAIIndex >= 0 ? toggleAIIndex : __result.Count;
+                    __result.Insert(insertIndex, CreateSingleOrderSetFor(newOrder));
                 }
             }
         }

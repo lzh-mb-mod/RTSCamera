@@ -14,15 +14,18 @@ namespace RTSCamera.Patch.Naval
     {
         private readonly TextObject _positiveOrderName;
         private readonly TextObject _negativeOrderName;
+        private readonly string _iconId;
 
         public NavalToggleShipOrderOrder(
           string stringId,
+          string iconId,
           TextObject positiveOrder,
           TextObject negativeOrder)
           : base(stringId)
         {
             this._positiveOrderName = positiveOrder;
             this._negativeOrderName = negativeOrder;
+            _iconId = iconId;
         }
 
         public override TextObject GetName(OrderController orderController)
@@ -66,6 +69,7 @@ namespace RTSCamera.Patch.Naval
             else
             {
                 Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode = true;
+                Patch_MissionShip.AIPilotShipCommandJustGiven = true;
                 _afterSetOrder.Invoke(orderController, new object[] { OrderType.AIControlOn });
                 Utility.DisplayLocalizedText("str_rts_camera_soldiers_start_controlling_ship");
                 if (RTSCameraConfig.Get().SteeringModeWhenPlayerStopsPiloting == SteeringMode.DelegateCommand)
@@ -79,8 +83,7 @@ namespace RTSCamera.Patch.Naval
 
         protected override string GetIconId()
         {
-            string iconId = base.GetIconId();
-            return this._lastActiveState == OrderState.Active ? iconId + "_active" : iconId;
+            return this._lastActiveState == OrderState.Active ? _iconId + "_active" : _iconId;
         }
     }
 }

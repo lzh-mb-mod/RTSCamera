@@ -114,6 +114,9 @@
   <string id="str_rts_camera_steering_mode.Soldier" text="{=RTSCamera_steering_mode_soldier}Soldier" />
   <string id="str_rts_camera_steering_mode.DelegateCommand" text="{=RTSCamera_steering_mode_delegate_command}Delegate Command" />
 
+  <string id="str_rts_camera_switch_retreat_and_delegate_command" text="{=RTSCamera_switch_retreat_and_delegate_command}Switch Retreat and Delegate Command" />
+  <string id="str_rts_camera_switch_retreat_and_delegate_command_hint" text="{=RTSCamera_switch_retreat_and_delegate_command_hint}Switch hotkey and UI of Retreat and Delegate Command. So that Delegate Command is bound to F6." />
+
   <string id="str_rts_camera_ship_need_to_be_connected" text="{=RTSCamera_ship_need_to_be_connected}The ship need to connected to your ships to be captured." />
 
   <string id="str_rts_camera_unbalanced_options_description" text="{=RTSCamera_unbalancedoptionsdescription}Cheat Options" />

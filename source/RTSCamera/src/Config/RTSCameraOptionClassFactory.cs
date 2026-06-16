@@ -198,7 +198,7 @@ namespace RTSCamera.Config
                 }
                 if (!CommandBattleBehavior.CommandMode)
                 {
-                    if (!Mission.Current.IsNavalBattle)
+                    if (!Mission.Current.IsNavalBattle && !Mission.Current.IsNavalRaidBattle)
                     {
                         var playerFormationOption = new SelectionOptionViewModel(
                             GameTexts.FindText("str_rts_camera_player_formation"),
@@ -435,6 +435,17 @@ namespace RTSCamera.Config
                             new SelectionItem(true, "str_rts_camera_steering_mode", SteeringMode.DelegateCommand.ToString())
                             }), true));
                     }
+                    navalOptionCategory.AddOption(new BoolOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_switch_retreat_and_delegate_command"),
+                        GameTexts.FindText("str_rts_camera_switch_retreat_and_delegate_command_hint"),
+                        () =>
+                        {
+                            return RTSCameraConfig.Get().SwitchNavalRetreatAndDelegateCommand;
+                        },
+                        b =>
+                        {
+                            RTSCameraConfig.Get().SwitchNavalRetreatAndDelegateCommand = b;
+                        }));
                     optionClass.AddOptionCategory(1, navalOptionCategory);
                 }
 

@@ -63,7 +63,7 @@ namespace RTSCamera.Logic.SubLogic
                 else
                 {
                     Utility.PlayerControlAgent(agent);
-                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFaceDirection >= FollowFaceDirection.ControlNewTroopOnly);
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, Utilities.Utility.ShouldFollowAgentFacingDirection(true));
                 }
 
                 return true;
@@ -105,7 +105,8 @@ namespace RTSCamera.Logic.SubLogic
                 {
                     if ((!_switchFreeCameraLogic.IsSpectatorCamera && agent.Controller == AgentControllerType.Player) || agent.Team != Mission.PlayerTeam)
                         return false;
-                    if (!Utility.IsPlayerDead() && Mission.MainAgent != agent)
+                    bool isControllingNewAgent = agent != Mission.MainAgent;
+                    if (!Utility.IsPlayerDead() && isControllingNewAgent)
                     {
                         MissionLibrary.Event.MissionEvent.OnMainAgentWillBeChangedToAnotherOne(agent);
                         // Let AI control previous main agent.
@@ -128,7 +129,7 @@ namespace RTSCamera.Logic.SubLogic
 
                     if (!isInDeployment)
                     {
-                        Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFaceDirection >= FollowFaceDirection.Always);
+                        Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, Utilities.Utility.ShouldFollowAgentFacingDirection(isControllingNewAgent));
                     }
 
                     return true;
@@ -161,7 +162,7 @@ namespace RTSCamera.Logic.SubLogic
 
                     bool shouldSmoothMoveToAgent = Utility.BeforeSetMainAgent(Mission.MainAgent);
                     Utility.PlayerControlAgent(Mission.MainAgent);
-                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, _config.FollowFaceDirection >= FollowFaceDirection.Always);
+                    Utility.AfterSetMainAgent(shouldSmoothMoveToAgent, _flyCameraMissionView.MissionScreen, Utilities.Utility.ShouldFollowAgentFacingDirection(false));
 
                     return true;
                 }

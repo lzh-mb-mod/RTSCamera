@@ -188,6 +188,8 @@ namespace RTSCamera.Config
 
         public SteeringMode SteeringModeWhenPlayerStopsPiloting = SteeringMode.None;
 
+        public bool SwitchNavalRetreatAndDelegateCommand = true;
+
         public bool IsCameraOptionVisible = true;
 
         public bool IsControlOptionVisible = true;
@@ -242,6 +244,7 @@ namespace RTSCamera.Config
             PlayerShipControllerInFreeCamera = other.PlayerShipControllerInFreeCamera;
             SoldiersPilotShipInPlayerMode = other.SoldiersPilotShipInPlayerMode;
             SteeringModeWhenPlayerStopsPiloting = other.SteeringModeWhenPlayerStopsPiloting;
+            SwitchNavalRetreatAndDelegateCommand = other.SwitchNavalRetreatAndDelegateCommand;
             IsCameraOptionVisible = other.IsCameraOptionVisible;
             IsControlOptionVisible = other.IsControlOptionVisible;
             IsMiscellaneousOptionVisible = other.IsMiscellaneousOptionVisible;

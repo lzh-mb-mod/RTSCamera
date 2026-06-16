@@ -201,15 +201,17 @@ namespace RTSCamera.View
         public void FocusOnAgent(Agent agent)
         {
             FocusOnFormation(null);
-            LockToAgent = true;
+            var wasLockedToAgent = MissionScreen.LastFollowedAgent != null;
             var shouldSmoothMove = MissionScreen.LastFollowedAgent != agent;
-            typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true)
-                ?.Invoke(MissionScreen, new object[] { agent });
+            LockToAgent = true;
+            typeof(MissionScreen).GetProperty("LastFollowedAgent")?.SetValue(MissionScreen, agent);
             if (!_freeCameraLogic.IsSpectatorCamera)
+            {
                 _freeCameraLogic.SwitchCamera();
+            }
             if (shouldSmoothMove)
             {
-                Utility.SmoothMoveToAgent(MissionScreen, true, false);
+                Utility.SmoothMoveToAgent(MissionScreen, true, false, wasLockedToAgent);
             }
         }
 
@@ -317,6 +319,9 @@ namespace RTSCamera.View
 
         public SpectatorCameraTypes GetMissionCameraLockMode(bool lockedToMainPlayer)
         {
+            // Fix crash when game is closed directly.
+            if (Mission == null)
+                return SpectatorCameraTypes.Free;
             ICameraModeLogic otherCameraModeLogic =
                 Mission.MissionBehaviors.FirstOrDefault(
                         b => !(b is FlyCameraMissionView) && b is ICameraModeLogic) as

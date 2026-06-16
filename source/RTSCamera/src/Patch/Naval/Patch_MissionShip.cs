@@ -19,6 +19,8 @@ namespace RTSCamera.Patch.Naval
         private static bool _patched;
 
         public static bool ShouldAIControlPlayerShipInPlayerMode;
+
+        public static bool AIPilotShipCommandJustGiven = false;
         public static bool Patch(Harmony harmony)
         {
             try
@@ -66,7 +68,28 @@ namespace RTSCamera.Patch.Naval
             {
                 if (Agent.Main == null || Utilities.Utility.IsShipPilotByPlayer(__instance))
                 {
+                    var isPlayerControlled = Utilities.Utility.IsShipPlayerControlled(__instance);
+                    // Player has been piloting the ship for a while.
+                    if (isPlayerControlled)
+                    {
+                        if (AIPilotShipCommandJustGiven)
+                        {
+                            AIPilotShipCommandJustGiven = false;
+                            ShouldAIControlPlayerShipInPlayerMode = true;
+                            var shipControllerMachine = Utilities.Utility.GetShipControllerMachine(__instance);
+                            shipControllerMachine.PilotAgent.StopUsingGameObject();
+                            SetShipController(__instance, PlayerShipController.AI);
+                            return false;
+                        }
+                    }
+                    AIPilotShipCommandJustGiven = false;
                     return true;
+                }
+                AIPilotShipCommandJustGiven = false;
+                var formation = Utilities.Utility.GetShipFormation(__instance);
+                if (formation != null && formation.IsAIControlled)
+                {
+                    ShouldAIControlPlayerShipInPlayerMode = true;
                 }
                 var shipFormation = Utilities.Utility.GetShipFormation(__instance);
 
@@ -101,13 +124,18 @@ namespace RTSCamera.Patch.Naval
                 // When helmsman is installed, exclude infantry formation because helmsman will handle it.
                 if (ShouldAIControlPlayerShipInPlayerMode && !(RTSCameraSubModule.IsHelmsmanInstalled && shipFormation.FormationIndex == FormationClass.Infantry))
                 {
-                    _setController ??= AccessTools.Method("NavalDLC.Missions.Objects.MissionShip:SetController");
-                    // convert to int to avoid exception on Linux proton.
-                    _setController.Invoke(__instance, new object[] { (int)PlayerShipController.AI, true });
+                    SetShipController(__instance, PlayerShipController.AI);
                     return false;
                 }
                 return true;
             }
+        }
+
+        private static void SetShipController(MissionObject ship, PlayerShipController controller)
+        {
+            _setController ??= AccessTools.Method("NavalDLC.Missions.Objects.MissionShip:SetController");
+            // convert to int to avoid exception on Linux proton.
+            _setController.Invoke(ship, new object[] { (int)controller, true });
         }
     }
 }

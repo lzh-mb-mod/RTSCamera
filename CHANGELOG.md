@@ -1,5 +1,18 @@
 # Changelog
 
+## [v5.4.1] - 2026-06-15
+### Fixed
+- Support naval raid battle.
+
+### Improved
+- In naval battle bind "Soldier Pilot Ship" command back to F5. Now F6 is delegate command for player ship.
+
+- In naval battle, add an option to switch "retreat (f6)" order with "delegate command (F8)" order for AI ship. Now F6 is delegate command, and F8 is retreat. This improves consistency with player ship.
+
+- "Soldier Pilot Ship" command is shown when player pilots ship. "Soldier Pilot Ship" will be turned on when player gives "delegate command" order.
+
+- Improve camera sliding behavior when locking to new units.
+
 ## [v5.4.0] - 2026-06-13
 ### Fixed
 - Keep compatible with game v1.4.6.

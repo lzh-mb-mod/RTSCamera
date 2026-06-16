@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using TaleWorlds.Core;
+using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI;
@@ -172,18 +173,38 @@ namespace RTSCamera.Utilities
         {
             if (Agent.Main == null)
                 return false;
-            var playerControlledShip = GetPlayerControlledShip(Mission.Current);
-            var playerControlledShipFormation = playerControlledShip == null ? null : GetShipFormation(playerControlledShip);
+            //var playerControlledShip = GetPlayerControlledShip(Mission.Current);
+            //var playerControlledShipFormation = playerControlledShip == null ? null : GetShipFormation(playerControlledShip);
             var selectedFormations = Mission.Current.PlayerTeam.PlayerOrderController.SelectedFormations;
             foreach (var formation in selectedFormations)
             {
-                if (formation == playerControlledShipFormation && Agent.Main.IsPlayerControlled)
-                {
-                    return false;
-                }
+                // add the command even when player is piloting the ship.
+                //if (formation == playerControlledShipFormation && Agent.Main.IsPlayerControlled)
+                //{
+                //    return false;
+                //}
                 if (formation == Agent.Main.Formation && !CommandBattleBehavior.CommandMode && !(RTSCameraSubModule.IsHelmsmanInstalled && formation.FormationIndex == FormationClass.Infantry))
                 {
                     return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool IsPlayerPilotingSelectedShip()
+        {
+            if (Agent.Main == null)
+                return false;
+            var playerControlledShip = GetPlayerControlledShip(Mission.Current);
+            var playerControlledShipFormation = playerControlledShip == null ? null : GetShipFormation(playerControlledShip);
+            if (playerControlledShipFormation == null)
+                return false;
+            var selectedFormations = Mission.Current.PlayerTeam.PlayerOrderController.SelectedFormations;
+            foreach (var formation in selectedFormations)
+            {
+                if (formation == playerControlledShipFormation)
+                {
+                    return Agent.Main.IsPlayerControlled;
                 }
             }
             return false;
@@ -272,7 +293,7 @@ namespace RTSCamera.Utilities
 
         public static void TryToSetPlayerFormationClass(FormationClass formationClass)
         {
-            if (Mission.Current.IsNavalBattle)
+            if (Mission.Current.IsNavalBattle || Mission.Current.IsNavalRaidBattle)
             {
                 var navalShipLogic = MissionSharedLibrary.Utilities.Utility.GetNavalShipsLogic(Mission.Current);
                 if (navalShipLogic == null)
@@ -347,6 +368,13 @@ namespace RTSCamera.Utilities
         {
             _movementOrderEnum ??= AccessTools.Property("NavalDLC.Missions.ShipOrder:MovementOrderEnum");
             return (ShipMovementOrderEnum)_movementOrderEnum.GetValue(shipOrder);
+        }
+
+        public static bool ShouldFollowAgentFacingDirection(bool isControllingNewAgent)
+        {
+            var config = RTSCameraConfig.Get();
+            return config.FollowFaceDirection >= FollowFaceDirection.Always ||
+                config.FollowFaceDirection == FollowFaceDirection.ControlNewTroopOnly && isControllingNewAgent;
         }
     }
 }
