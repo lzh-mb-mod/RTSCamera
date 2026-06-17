@@ -128,6 +128,8 @@ namespace RTSCamera.Config
 
         public float RaisedHeight = 10;
 
+        public float ElevatedHeightInSiege = 0;
+
         public int PlayerControllerInFreeCamera = (int)AgentControllerType.AI;
 
         public FormationClass PlayerFormation = FormationClass.General;
@@ -184,6 +186,8 @@ namespace RTSCamera.Config
         public bool SwitchCameraOnOrdering = false;
 
         public CameraModeOnOrdering CameraModeOnOrdering = CameraModeOnOrdering.Elevated;
+
+        public float ElevatedHeight = 10f;
 
         public bool OrderOnSwitchingCamera = true;
 
@@ -252,6 +256,8 @@ namespace RTSCamera.Config
             CameraDistanceLimitFactor = other.CameraDistanceLimitFactor;
             SwitchCameraOnOrdering = other.SwitchCameraOnOrdering;
             CameraModeOnOrdering = other.CameraModeOnOrdering;
+            ElevatedHeight = other.ElevatedHeight;
+            ElevatedHeightInSiege = other.ElevatedHeightInSiege;
             OrderOnSwitchingCamera = other.OrderOnSwitchingCamera;
             KeepOrderUIOpenInFreeCamera = other.KeepOrderUIOpenInFreeCamera;
             KeepOrderUIOpenInElevatedCamera = other.KeepOrderUIOpenInElevatedCamera;

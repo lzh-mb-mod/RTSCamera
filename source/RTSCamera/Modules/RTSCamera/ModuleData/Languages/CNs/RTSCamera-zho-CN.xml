@@ -140,6 +140,7 @@
     <string id="RTSCamera_playeragentdead" text="玩家控制的角色已受伤。" />
     <string id="RTSCamera_switchtoplayer" text="切换到玩家角色。" />
     <string id="RTSCamera_switchtofreecamera" text="切换到自由视角。" />
+    <string id="RTSCamera_elevated_camera_hint" text="下达指令时抬高视角。" />
 
     <string id="RTSCamera_displaymodmessage" text="显示mod消息" />
     <string id="RTSCamera_toggleui" text="切换HUD" />

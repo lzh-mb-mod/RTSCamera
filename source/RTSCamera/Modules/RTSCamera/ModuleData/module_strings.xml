@@ -137,6 +137,7 @@
   <string id="str_rts_camera_player_dead" text="{=RTSCamera_playeragentdead}Player agent is injured." />
   <string id="str_rts_camera_switch_to_player" text="{=RTSCamera_switchtoplayer}Switch to player agent." />
   <string id="str_rts_camera_switch_to_free_camera" text="{=RTSCamera_switchtofreecamera}Switch to free camera." />
+  <string id="str_rts_camera_elevated_camera_hint" text="{=RTSCamera_elevated_camera_hint}Elevate camera when giving orders. " />
 
   <string id="str_rts_camera_display_mod_message" text="{=RTSCamera_displaymodmessage}Display Message" />
   <string id="str_rts_camera_toggle_ui" text="{=RTSCamera_toggleui}Toggle HUD" />
@@ -149,8 +150,8 @@
   <string id="str_rts_camera_order_on_switching_camera_hint" text="{=RTSCamera_orderonswitchingcamerahint}Automatically open order UI when switching to free camera, and close order UI when switching back." />
   <string id="str_rts_camera_keep_order_ui_open_in_free_camera" text="{=RTSCamera_keep_order_ui_open_in_free_camera}Keep Order UI Open in Free Camera" />
   <string id="str_rts_camera_keep_order_ui_open_in_free_camera_hint" text="{=RTSCamera_keep_order_ui_open_in_free_camera_hint}Keep Order UI Open in Free Camera" />
-  <string id="str_rts_camera_keep_order_ui_open_in_overlook_camera" text="{=RTSCamera_keep_order_ui_open_in_elevated_camera}Keep Order UI Open in Elevated Camera" />
-  <string id="str_rts_camera_keep_order_ui_open_in_overlook_camera_hint" text="{=RTSCamera_keep_order_ui_open_in_elevated_camera_hint}Keep Order UI Open in Elevated Camera" />
+  <string id="str_rts_camera_keep_order_ui_open_in_elevated_camera" text="{=RTSCamera_keep_order_ui_open_in_elevated_camera}Keep Order UI Open in Elevated Camera" />
+  <string id="str_rts_camera_keep_order_ui_open_in_elevated_camera_hint" text="{=RTSCamera_keep_order_ui_open_in_elevated_camera_hint}Keep Order UI Open in Elevated Camera" />
   <string id="str_rts_camera_show_hotkey_hint" text="{=RTSCamera_show_hotkey_hint}Show Hotkey Hint" />
   <string id="str_rts_camera_show_hotkey_hint_hint" text="{=RTSCamera_show_hotkey_hint_hint}Show hotkey hint in free camera mode." />
   <string id="str_rts_camera_fast_forward_hideout" text="{=RTSCamera_fast_forward_hideout}Fast Forward Hideout" />
