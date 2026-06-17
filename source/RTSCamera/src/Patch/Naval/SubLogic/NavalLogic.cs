@@ -13,20 +13,20 @@ namespace RTSCamera.Patch.Naval.SubLogic
 {
      public class NavalLogic
     {
-        private readonly RTSCameraLogic _logic;
-        private MissionBehavior _navalShipLogic;
-        private Delegate _handler;
+        //private readonly RTSCameraLogic _logic;
+        //private MissionBehavior _navalShipLogic;
+        //private Delegate _handler;
 
         public NavalLogic(RTSCameraLogic logic)
         {
-            _logic = logic;
+            //    _logic = logic;
         }
 
         public void AfterStart()
         {
             //if (Mission.Current.IsNavalBattle)
             //{
-            //    _navalShipLogic = Utilities.Utility.GetNavalShipsLogic(Mission.Current);
+            //    _navalShipLogic = Utility.GetNavalShipsLogic(Mission.Current);
             //    var eventInfo = _navalShipLogic.GetType().GetEvent("ShipControllerChanged");
             //    _handler = Delegate.CreateDelegate(eventInfo.EventHandlerType, this, typeof(NavalLogic).GetMethod(nameof(OnShipControllerChanged), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance));
             //    eventInfo.AddEventHandler(_navalShipLogic, _handler);
