@@ -42,7 +42,7 @@ namespace RTSCamera.Patch.Naval
 
         public static void Postfix_GetOrders(ref MBReadOnlyList<VisualOrderSet> __result)
         {
-            var newOrder = new NavalToggleShipOrderOrder("order_toggle_ai", GameTexts.FindText("str_rts_camera_ai_control_ship_on"), GameTexts.FindText("str_rts_camera_ai_control_ship_off"));
+            var newOrder = new NavalToggleShipOrderOrder("order_soldier_pilot_ship", "order_toggle_ai", GameTexts.FindText("str_rts_camera_ai_control_ship_on"), GameTexts.FindText("str_rts_camera_ai_control_ship_off"));
             if (Utilities.Utility.ShouldAddToggleShipOrderOrder())
             {
                 if (Input.IsGamepadActive)

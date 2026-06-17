@@ -692,7 +692,7 @@ namespace RTSCamera.Logic.SubLogic
                         // Set smooth move again if controls another agent instantly.
                         // Otherwise MissionScreen will reset camera elevate and bearing.
                         if (Mission.MainAgent != null && Mission.MainAgent.Controller == AgentControllerType.Player)
-                            Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen, _config.FollowFaceDirection >= FollowFaceDirection.ControlNewTroopOnly);
+                            Utility.AfterSetMainAgent(shouldSmoothToAgent, _controlTroopLogic.MissionScreen, Utilities.Utility.ShouldFollowAgentFacingDirection(true));
                         // Restore the variables to initial state
                         else if (shouldSmoothToAgent)
                         {
@@ -755,7 +755,10 @@ namespace RTSCamera.Logic.SubLogic
                     var shipFormation = Utilities.Utility.GetShipFormation(ship);
                     if (!(RTSCameraSubModule.IsHelmsmanInstalled && shipFormation.FormationIndex == FormationClass.Infantry))
                     {
-                        Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode = isShipAIControlled && Utilities.Utility.GetShipMovementOrderEnum(Utilities.Utility.GetShipOrder(ship)) != Utilities.Utility.ShipMovementOrderEnum.Stop;
+                        if (isShipAIControlled && Utilities.Utility.GetShipMovementOrderEnum(Utilities.Utility.GetShipOrder(ship)) != Utilities.Utility.ShipMovementOrderEnum.Stop)
+                        {
+                            Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode = true;
+                        }
                     }
 
                     _tryToPilotShipNextTick = true;
