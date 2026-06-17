@@ -117,6 +117,9 @@
     <string id="RTSCamera_steering_mode_soldier" text="Soldat" />
     <string id="RTSCamera_steering_mode_delegate_command" text="Déléguer la commande" />
 
+    <string id="RTSCamera_switch_retreat_and_delegate_command" text="Changer d'option entre retraite et déléguer la commande" />
+    <string id="RTSCamera_switch_retreat_and_delegate_command_hint" text="Changer le raccourci et l'interface de Retraite et Déléguer la commande. Ainsi, Déléguer la commande est assigné à F6." />
+
     <string id="RTSCamera_ship_need_to_be_connected" text="Le navire doit être relié aux vôtres pour pouvoir être capturé." />
 
     <string id="RTSCamera_unbalancedoptionsdescription" text="Options de triche" />
@@ -140,12 +143,17 @@
 
     <string id="RTSCamera_displaymodmessage" text="Afficher les messages du mod" />
     <string id="RTSCamera_toggleui" text="Afficher/masquer le HUD" />
-    <string id="RTSCamera_switchcameraonordering" text="Changer de caméra lors des ordres" />
-    <string id="RTSCamera_switchcameraonorderinghint" text="Passer automatiquement en caméra libre lors de la transmission d’ordres, puis revenir à la caméra du joueur une fois terminé." />
+    <string id="RTSCamera_camera_mode_on_ordering" text="Mode caméra lors des ordres" />
+    <string id="RTSCamera_camera_mode_on_ordering_hint" text="Lors de la passation d’ordres, vers quel mode de caméra basculer. Elevated rend la caméra plus haute mais suit toujours le joueur. Caméra libre permet un contrôle total de la caméra." />
+    <string id="RTSCamera_camera_mode_on_ordering_option_original" text="Original" />
+    <string id="RTSCamera_camera_mode_on_ordering_option_elevated" text="Elevated" />
+    <string id="RTSCamera_camera_mode_on_ordering_option_free_camera" text="Caméra libre" />
     <string id="RTSCamera_orderonswitchingcamera" text="Ordres lors du changement de caméra" />
     <string id="RTSCamera_orderonswitchingcamerahint" text="Ouvrir automatiquement l’interface d’ordres lors du passage en caméra libre, puis la fermer au retour à la caméra du joueur." />
     <string id="RTSCamera_keep_order_ui_open_in_free_camera" text="Garder l’interface d’ordres ouverte en caméra libre" />
     <string id="RTSCamera_keep_order_ui_open_in_free_camera_hint" text="Garder l’interface d’ordres ouverte en caméra libre." />
+    <string id="RTSCamera_keep_order_ui_open_in_elevated_camera" text="Garder l’interface d’ordres ouverte en caméra elevated" />
+    <string id="RTSCamera_keep_order_ui_open_in_elevated_camera_hint" text="Garder l’interface d’ordres ouverte en caméra elevated." />
     <string id="RTSCamera_show_hotkey_hint" text="Afficher les indications de touches" />
     <string id="RTSCamera_show_hotkey_hint_hint" text="Afficher les indications de touches en mode caméra libre." />
     <string id="RTSCamera_fast_forward_hideout" text="Avance rapide en repaire" />

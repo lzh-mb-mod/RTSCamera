@@ -9,9 +9,7 @@ using RTSCamera.Patch.TOR_fix;
 using RTSCamera.View;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.Naval;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -99,6 +97,11 @@ namespace RTSCamera.Logic.SubLogic
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggledOrderView);
         }
 
+        private bool ShouldSwitchCameraOnOrder()
+        {
+            return _config.CameraModeOnOrdering == CameraModeOnOrdering.FreeCamera && !Mission.IsNavalBattle;
+        }
+
         private void OnToggledOrderView(MissionPlayerToggledOrderViewEvent e)
         {
             bool showOrderHint = false;
@@ -113,7 +116,7 @@ namespace RTSCamera.Logic.SubLogic
                     // So we will wait for a tick if UI is closed,
                     // and if a false positive UI open event is triggered during this tick,
                     // we will not switch to agent camera, instead we will cancel the wait.
-                    if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode)
+                    if (ShouldSwitchCameraOnOrder() && !CommandBattleBehavior.CommandMode)
                     {
                         _switchToAgentNextTick = false;
                     }
@@ -124,7 +127,7 @@ namespace RTSCamera.Logic.SubLogic
                     if (IsSpectatorCamera)
                     {
                         showOrderHint = true;
-                        if (_config.SwitchCameraOnOrdering && !_config.OrderOnSwitchingCamera && !CommandBattleBehavior.CommandMode)
+                        if (ShouldSwitchCameraOnOrder() && !_config.OrderOnSwitchingCamera && !CommandBattleBehavior.CommandMode)
                         {
                             // The camera is already in free camera mode when ordering begins,
                             // so we skip switching camera to agent on ordering finished.
@@ -133,27 +136,33 @@ namespace RTSCamera.Logic.SubLogic
                     }
                     else
                     {
-                        if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode && !Mission.IsNavalBattle)
+                        if (!CommandBattleBehavior.CommandMode)
                         {
-                            _skipSwitchingCameraOnOrderingFinished = false;
-                            SwitchToFreeCamera();
-                            showOrderHint = true;
+                            if (ShouldSwitchCameraOnOrder())
+                            {
+                                _skipSwitchingCameraOnOrderingFinished = false;
+                                SwitchToFreeCamera();
+                                showOrderHint = true;
+                            }
                         }
                     }
                 }
             }
             else
             {
-                if (_config.SwitchCameraOnOrdering && !CommandBattleBehavior.CommandMode && !Mission.IsNavalBattle)
+                if (!CommandBattleBehavior.CommandMode)
                 {
-                    if (!_skipSwitchingCameraOnOrderingFinished)
+                    if (ShouldSwitchCameraOnOrder())
                     {
-                        _shouldIgnoreNextOrderViewOpenEvent = true;
-                        _switchToAgentNextTick = true;
-                    }
-                    else
-                    {
-                        _skipSwitchingCameraOnOrderingFinished = false;
+                        if (!_skipSwitchingCameraOnOrderingFinished)
+                        {
+                            _shouldIgnoreNextOrderViewOpenEvent = true;
+                            _switchToAgentNextTick = true;
+                        }
+                        else
+                        {
+                            _skipSwitchingCameraOnOrderingFinished = false;
+                        }
                     }
                 }
             }
@@ -830,6 +839,9 @@ namespace RTSCamera.Logic.SubLogic
                 // allow it to be actually closed.
                 Patch_MissionOrderVM.TryCloseToggleOrder(missionOrderVM);
                 _shouldIgnoreNextOrderViewOpenEvent = true;
+#if DEBUG
+                Utility.DisplayMessage("Refreshing orders");
+#endif
                 SetOpenToggleUINextTick(true);
             }
         }

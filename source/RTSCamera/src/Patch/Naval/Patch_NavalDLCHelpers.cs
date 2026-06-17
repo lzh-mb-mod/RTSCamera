@@ -78,11 +78,11 @@ namespace RTSCamera.Patch.Naval
                     {
                         if (Agent.Main.Formation != shipFormation)
                         {
-                            // Enable ship order when in free camera and ship is controlled by AI.
                             return true;
                         }
                         else
                         {
+                            // Enable ship order when in free camera and ship is controlled by AI.
                             return Utilities.Utility.GetPlayerShipControllerInFreeCamera() == PlayerShipController.AI;
                         }
                     }

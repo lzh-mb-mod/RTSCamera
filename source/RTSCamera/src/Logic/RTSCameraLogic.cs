@@ -17,6 +17,7 @@ namespace RTSCamera.Logic
         public ControlTroopLogic ControlTroopLogic;
         public CampaignSkillLogic CampaignSkillLogic;
         public NavalLogic NavalLogic;
+        public ElevatedCameraLogic ElevatedCameraLogic;
         public static RTSCameraLogic Instance;
 
         public RTSCameraLogic()
@@ -30,6 +31,7 @@ namespace RTSCamera.Logic
             ControlTroopLogic = new ControlTroopLogic(this);
             CampaignSkillLogic = new CampaignSkillLogic(this);
             NavalLogic = new NavalLogic(this);
+            ElevatedCameraLogic = new ElevatedCameraLogic(this);
         }
 
         public override void OnCreated()
@@ -50,6 +52,7 @@ namespace RTSCamera.Logic
             SwitchTeamLogic.OnBehaviourInitialize();
             ControlTroopLogic.OnBehaviourInitialize();
             CampaignSkillLogic.OnBehaviourInitialize();
+            ElevatedCameraLogic.OnBehaviourInitialize();
 
             var config = RTSCameraConfig.Get();
             if (!config.HasHintDisplayed)
@@ -69,6 +72,7 @@ namespace RTSCamera.Logic
             MissionSpeedLogic.OnRemoveBehaviour();
             SwitchFreeCameraLogic.OnRemoveBehaviour();
             NavalLogic.OnRemoveBehaviour();
+            ElevatedCameraLogic.OnRemoveBehaviour();
 
             Instance = null;
         }
@@ -101,6 +105,13 @@ namespace RTSCamera.Logic
             base.OnDeploymentFinished();
 
             SwitchFreeCameraLogic.OnDeploymentFinished();
+        }
+
+        public override void OnPreMissionTick(float dt)
+        {
+            base.OnPreMissionTick(dt);
+
+            ElevatedCameraLogic.OnPreMissionTick(dt);
         }
 
         public override void OnMissionTick(float dt)

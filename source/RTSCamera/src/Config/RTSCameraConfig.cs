@@ -17,6 +17,14 @@ namespace RTSCamera.Config
         Count
     }
 
+    public enum CameraModeOnOrdering
+    {
+        Original,
+        Elevated,
+        FreeCamera,
+        Count
+    }
+
     public enum AutoSetPlayerFormation
     {
         Never,
@@ -75,7 +83,7 @@ namespace RTSCamera.Config
 
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
-        protected static Version BinaryVersion => new Version(1, 8);
+        protected static Version BinaryVersion => new Version(1, 9);
 
         protected override void UpgradeToCurrentVersion()
         {
@@ -105,6 +113,9 @@ namespace RTSCamera.Config
                     TimingOfControlAllyAfterDeath = ControlAllyAfterDeath ? ControlAllyAfterDeathTiming.Always : ControlAllyAfterDeathTiming.FreeCamera;
                     goto case "1.8";
                 case "1.8":
+                    CameraModeOnOrdering = SwitchCameraOnOrdering ? CameraModeOnOrdering.FreeCamera : CameraModeOnOrdering.Elevated;
+                    goto case "1.9";
+                case "1.9":
                     break;
             }
 
@@ -172,9 +183,13 @@ namespace RTSCamera.Config
 
         public bool SwitchCameraOnOrdering = false;
 
+        public CameraModeOnOrdering CameraModeOnOrdering = CameraModeOnOrdering.Elevated;
+
         public bool OrderOnSwitchingCamera = true;
 
         public bool KeepOrderUIOpenInFreeCamera = true;
+
+        public bool KeepOrderUIOpenInElevatedCamera = false;
 
         public bool ShowHotKeyHint = true;
 
@@ -187,6 +202,8 @@ namespace RTSCamera.Config
         public bool SoldiersPilotShipInPlayerMode = true;
 
         public SteeringMode SteeringModeWhenPlayerStopsPiloting = SteeringMode.None;
+
+        public bool SwitchNavalRetreatAndDelegateCommand = true;
 
         public bool IsCameraOptionVisible = true;
 
@@ -234,14 +251,17 @@ namespace RTSCamera.Config
             LimitCameraDistance = other.LimitCameraDistance;
             CameraDistanceLimitFactor = other.CameraDistanceLimitFactor;
             SwitchCameraOnOrdering = other.SwitchCameraOnOrdering;
+            CameraModeOnOrdering = other.CameraModeOnOrdering;
             OrderOnSwitchingCamera = other.OrderOnSwitchingCamera;
             KeepOrderUIOpenInFreeCamera = other.KeepOrderUIOpenInFreeCamera;
+            KeepOrderUIOpenInElevatedCamera = other.KeepOrderUIOpenInElevatedCamera;
             ShowHotKeyHint = other.ShowHotKeyHint;
             FastForwardHideoutPrompted = other.FastForwardHideoutPrompted;
             FastForwardHideout = other.FastForwardHideout;
             PlayerShipControllerInFreeCamera = other.PlayerShipControllerInFreeCamera;
             SoldiersPilotShipInPlayerMode = other.SoldiersPilotShipInPlayerMode;
             SteeringModeWhenPlayerStopsPiloting = other.SteeringModeWhenPlayerStopsPiloting;
+            SwitchNavalRetreatAndDelegateCommand = other.SwitchNavalRetreatAndDelegateCommand;
             IsCameraOptionVisible = other.IsCameraOptionVisible;
             IsControlOptionVisible = other.IsControlOptionVisible;
             IsMiscellaneousOptionVisible = other.IsMiscellaneousOptionVisible;
