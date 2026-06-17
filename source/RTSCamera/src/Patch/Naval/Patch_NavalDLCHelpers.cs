@@ -63,7 +63,7 @@ namespace RTSCamera.Patch.Naval
                 return true;
             if (Agent.Main != null)
             {
-                var navalShipsLogic = Utilities.Utility.GetNavalShipsLogic(Mission.Current);
+                var navalShipsLogic = Utility.GetNavalShipsLogic(Mission.Current);
                 if (navalShipsLogic == null)
                     return true;
                 for (int index = 0; index < selectedFormations.Count; ++index)
@@ -105,7 +105,7 @@ namespace RTSCamera.Patch.Naval
 
         public static bool Prefix_IsAgentCaptainOfFormationShip(Agent agent, Formation formation, ref bool __result)
         {
-            var navalShipLogic = Utilities.Utility.GetNavalShipsLogic(Mission.Current);
+            var navalShipLogic = Utility.GetNavalShipsLogic(Mission.Current);
             if (navalShipLogic == null)
             {
                 __result = false;

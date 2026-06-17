@@ -95,7 +95,7 @@ namespace RTSCamera.Patch.Naval
         {
             var isShipAIControlled = Utilities.Utility.IsShipAIControlled(ownerShip);
             var isPlayerShip = Utilities.Utility.IsPlayerShip(ownerShip);
-            return isPlayerShip && isShipAIControlled;
+            return !isPlayerShip || isShipAIControlled;
         }
     }
 }

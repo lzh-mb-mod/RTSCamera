@@ -739,15 +739,15 @@ namespace RTSCamera.CommandSystem.Patch
             ref bool ____formationDrawingMode, Formation ____mouseOverFormation,
             ref List<GameEntity> ____orderPositionEntities, ref List<GameEntity> ____orderRotationEntities,
             ref bool ____wasDrawingForced, ref bool ____wasDrawingFacing, ref bool ____wasDrawingForming, ref bool ____wasDrawnPreviousFrame, ref WorldPosition? ____formationDrawingStartingPosition,
-            ref Vec2 ____deltaMousePosition)
+            ref Vec2 ____deltaMousePosition,
+            ref OrderController ____orderController)
         {
             if (!____initialized)
                 return false;
 
-
             _activeCursorState.SetValue(__instance,
                 (CursorState)_cursorState.Invoke(_orderTroopPlacer, new object[] { }));
-            if (!__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.Any())
+            if (!CanUpdate(__instance, ____orderController))
                 return false;
             ____isDrawnThisFrame = false;
             if (__instance.SuspendTroopPlacer)
@@ -1069,6 +1069,27 @@ namespace RTSCamera.CommandSystem.Patch
                 orderRotationEntity.BodyFlag |= BodyFlags.Disabled;
             }
             return false;
+        }
+
+        private static bool CanUpdate(OrderTroopPlacer __instance, OrderController ____orderController)
+        {
+            var orderController = GetOrderController(__instance, ____orderController);
+            if (!__instance.Mission.IsNavalBattle || orderController == Mission.Current.PlayerEnemyTeam.MasterOrderController)
+                return base_CanUpdate(__instance, ____orderController);
+            if (!base_CanUpdate(__instance, ____orderController))
+                return false;
+            MissionBehavior navalShipsLogic = Utility.GetNavalShipsLogic(__instance.Mission);
+            return navalShipsLogic != null && Utility.GetNumTeamShips(navalShipsLogic, TeamSideEnum.PlayerTeam) > 0;
+        }
+
+        private static bool base_CanUpdate(OrderTroopPlacer __instance, OrderController ____orderController)
+        {
+            return GetOrderController(__instance, ____orderController).SelectedFormations.Count > 0;
+        }
+
+        private static OrderController GetOrderController(OrderTroopPlacer __instance, OrderController ____orderController)
+        {
+            return ____orderController != null ? ____orderController : Mission.Current.PlayerTeam.PlayerOrderController;
         }
     }
 }
