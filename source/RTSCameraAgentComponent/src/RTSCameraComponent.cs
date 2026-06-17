@@ -37,6 +37,8 @@ namespace RTSCameraAgentComponent
 
         private bool _shouldUpdateColor = false;
 
+        private bool _shouldClearColorOnRemove = false;
+
         public delegate void OnComponentRemovedDelegate(RTSCameraComponent component);
 
         public event OnComponentRemovedDelegate OnComponentRemovedEvent;
@@ -181,6 +183,7 @@ namespace RTSCameraAgentComponent
                 Agent.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
                 if (Agent.HasMount)
                     Agent.MountAgent.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
+                _shouldClearColorOnRemove = true;
             }
             catch (Exception e)
             {
@@ -192,7 +195,10 @@ namespace RTSCameraAgentComponent
         {
             base.OnAgentRemoved();
 
-            ClearContourColor();
+            if (_shouldClearColorOnRemove)
+            {
+                ClearContourColor();
+            }
             OnComponentRemovedEvent?.Invoke(this);
         }
     }
