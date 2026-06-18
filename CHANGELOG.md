@@ -1,7 +1,24 @@
 # Changelog
 
-## [v5.3.26]
-- 
+## [v5.3.26] - 2026-16-19
+## Added
+- When giving orders, camera will be elevated. Corresponding option is added.
+
+## Fixed
+- Fix potential crash in naval battle.
+
+- Fix the issue that AI ship may not be piloted by soldier.
+
+- Fix the issue that the option "Highlight Troops When Showing Indicators" is always reset to default on game start.
+
+- Fix potential crash with other mods that creates new custom units.
+
+### Improved
+- After dragging mouse right button to rotate camera, mouse position will be recovered to the position before dragging, instead of to the center of window.
+
+- Improve camera sliding behavior when locking to new units.
+
+- "Soldier Pilot Ship" command is shown when player pilots ship.
 
 ## [v5.3.25] - 2026-01-25
 ## Fixed
