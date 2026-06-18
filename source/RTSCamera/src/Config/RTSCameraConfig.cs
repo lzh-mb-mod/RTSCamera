@@ -213,7 +213,7 @@ namespace RTSCamera.Config
 
         public bool IsControlOptionVisible = true;
 
-        public bool IsMiscellaneousOptionVisible = true;
+        public bool IsMiscellaneousOptionVisible = false;
 
         public bool IsNavalOptionVisible = true;
 

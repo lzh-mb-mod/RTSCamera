@@ -60,62 +60,39 @@ namespace RTSCamera.Config
                             new SelectionItem(true, "str_rts_camera_default_to_free_camera_option", "DeploymentStage"),
                             new SelectionItem(true, "str_rts_camera_default_to_free_camera_option", "Always")
                         }), true));
-                cameraOptionCategory.AddOption(new NumericOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_raised_height_after_switching_to_free_camera"),
-                    GameTexts.FindText("str_rts_camera_raised_height_hint"), () => RTSCameraConfig.Get().RaisedHeight,
-                    f =>
+                cameraOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_camera_mode_on_ordering"),
+                    GameTexts.FindText("str_rts_camera_camera_mode_on_ordering_hint"),
+                    new SelectionOptionData(i =>
                     {
-                        RTSCameraConfig.Get().RaisedHeight = f;
-                    }, 0, 50, true, true));
-                cameraOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_limit_camera_distance"),
-                    GameTexts.FindText("str_rts_camera_limit_camera_distance_hint"),
-                    () => RTSCameraConfig.Get().LimitCameraDistance,
-                    b =>
-                    {
-                        if (b)
+                        if (i < 0 || i >= (int)CameraModeOnOrdering.Count)
                         {
-                            RTSCameraConfig.Get().LimitCameraDistance = true;
+                            return;
                         }
-                        else
+                        var config = RTSCameraConfig.Get();
+                        config.CameraModeOnOrdering = (CameraModeOnOrdering)i;
+                    }, () => (int)RTSCameraConfig.Get().CameraModeOnOrdering, () => (int)CameraModeOnOrdering.Count,
+                        () => new[]
                         {
-                            RTSCameraConfig.Get().LimitCameraDistance = false;
-                        }
-                    }));
-                cameraOptionCategory.AddOption(new NumericOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_camera_distance_limit"),
-                    new TextObject(RTSCameraSkillBehavior.UpdateCameraMaxDistance(true).GetExplanations()),
-                    () => RTSCameraSkillBehavior.CameraDistanceLimit,
-                    RTSCameraSkillBehavior.UpdateCameraDistanceLimit, 0, RTSCameraSkillBehavior.CameraDistanceMaxLimit, false, true));
+                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "Original"),
+                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "Elevated"),
+                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "FreeCamera")
+                        }), true));
                 cameraOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_camera_height_follows_terrain"),
-                    GameTexts.FindText("str_rts_camera_camera_height_follows_terrain_hint"), () => RTSCameraConfig.Get().CameraHeightFollowsTerrain,
-                    b =>
-                    {
-                        RTSCameraConfig.Get().CameraHeightFollowsTerrain = b;
-                    }));
+                    GameTexts.FindText("str_rts_camera_order_on_switching_camera"),
+                    GameTexts.FindText("str_rts_camera_order_on_switching_camera_hint"),
+                    () => RTSCameraConfig.Get().OrderOnSwitchingCamera,
+                    b => RTSCameraConfig.Get().OrderOnSwitchingCamera = b));
                 cameraOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_constant_speed"),
-                    GameTexts.FindText("str_rts_camera_constant_speed_hint"), () => RTSCameraConfig.Get().ConstantSpeed,
-                    b =>
-                    {
-                        RTSCameraConfig.Get().ConstantSpeed = b;
-                    }));
+                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_free_camera"),
+                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_free_camera_hint"),
+                    () => RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera,
+                    b => RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera = b));
                 cameraOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_ignore_terrain"),
-                    GameTexts.FindText("str_rts_camera_ignore_terrain_hint"), () => RTSCameraConfig.Get().IgnoreTerrain,
-                    b =>
-                    {
-                        RTSCameraConfig.Get().IgnoreTerrain = b;
-                    }));
-                cameraOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_ignore_boundaries"),
-                    GameTexts.FindText("str_rts_camera_ignore_boundaries_hint"),
-                    () => RTSCameraConfig.Get().IgnoreBoundaries,
-                    b =>
-                    {
-                        RTSCameraConfig.Get().IgnoreBoundaries = b;
-                    }));
+                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_elevated_camera"),
+                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_elevated_camera_hint"),
+                    () => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera,
+                    b => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera = b));
                 cameraOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_follow_facing_direction"),
                     GameTexts.FindText("str_rts_camera_follow_facing_direction_hint"),
@@ -351,40 +328,62 @@ namespace RTSCamera.Config
                         hideHudView?.ToggleUI();
                         menuManager.RequestToCloseMenu();
                     }));
-                miscellaneousOptionCategory.AddOption(new SelectionOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_camera_mode_on_ordering"),
-                    GameTexts.FindText("str_rts_camera_camera_mode_on_ordering_hint"),
-                    new SelectionOptionData(i =>
+                miscellaneousOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_raised_height_after_switching_to_free_camera"),
+                    GameTexts.FindText("str_rts_camera_raised_height_hint"), () => RTSCameraConfig.Get().RaisedHeight,
+                    f =>
                     {
-                        if (i < 0 || i >= (int)CameraModeOnOrdering.Count)
+                        RTSCameraConfig.Get().RaisedHeight = f;
+                    }, 0, 50, true, true));
+                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_limit_camera_distance"),
+                    GameTexts.FindText("str_rts_camera_limit_camera_distance_hint"),
+                    () => RTSCameraConfig.Get().LimitCameraDistance,
+                    b =>
+                    {
+                        if (b)
                         {
-                            return;
+                            RTSCameraConfig.Get().LimitCameraDistance = true;
                         }
-                        var config = RTSCameraConfig.Get();
-                        config.CameraModeOnOrdering = (CameraModeOnOrdering)i;
-                    }, () => (int)RTSCameraConfig.Get().CameraModeOnOrdering, () => (int)CameraModeOnOrdering.Count,
-                        () => new[]
+                        else
                         {
-                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "Original"),
-                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "Elevated"),
-                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "FreeCamera")
-                        }), true));
+                            RTSCameraConfig.Get().LimitCameraDistance = false;
+                        }
+                    }));
+                miscellaneousOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_camera_distance_limit"),
+                    new TextObject(RTSCameraSkillBehavior.UpdateCameraMaxDistance(true).GetExplanations()),
+                    () => RTSCameraSkillBehavior.CameraDistanceLimit,
+                    RTSCameraSkillBehavior.UpdateCameraDistanceLimit, 0, RTSCameraSkillBehavior.CameraDistanceMaxLimit, false, true));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_order_on_switching_camera"),
-                    GameTexts.FindText("str_rts_camera_order_on_switching_camera_hint"),
-                    () => RTSCameraConfig.Get().OrderOnSwitchingCamera,
-                    b => RTSCameraConfig.Get().OrderOnSwitchingCamera = b));
+                    GameTexts.FindText("str_rts_camera_camera_height_follows_terrain"),
+                    GameTexts.FindText("str_rts_camera_camera_height_follows_terrain_hint"), () => RTSCameraConfig.Get().CameraHeightFollowsTerrain,
+                    b =>
+                    {
+                        RTSCameraConfig.Get().CameraHeightFollowsTerrain = b;
+                    }));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_free_camera"),
-                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_free_camera_hint"),
-                    () => RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera,
-                    b => RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera = b));
+                    GameTexts.FindText("str_rts_camera_constant_speed"),
+                    GameTexts.FindText("str_rts_camera_constant_speed_hint"), () => RTSCameraConfig.Get().ConstantSpeed,
+                    b =>
+                    {
+                        RTSCameraConfig.Get().ConstantSpeed = b;
+                    }));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_elevated_camera"),
-                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_elevated_camera_hint"),
-                    () => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera,
-                    b => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera = b));
-                optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
+                    GameTexts.FindText("str_rts_camera_ignore_terrain"),
+                    GameTexts.FindText("str_rts_camera_ignore_terrain_hint"), () => RTSCameraConfig.Get().IgnoreTerrain,
+                    b =>
+                    {
+                        RTSCameraConfig.Get().IgnoreTerrain = b;
+                    }));
+                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_ignore_boundaries"),
+                    GameTexts.FindText("str_rts_camera_ignore_boundaries_hint"),
+                    () => RTSCameraConfig.Get().IgnoreBoundaries,
+                    b =>
+                    {
+                        RTSCameraConfig.Get().IgnoreBoundaries = b;
+                    }));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_show_hotkey_hint"),
                     GameTexts.FindText("str_rts_camera_show_hotkey_hint_hint"),
