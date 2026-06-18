@@ -1,4 +1,11 @@
 # Changelog
+## [v5.4.4] - 2026-06-19
+## Improved
+- Improve elevated camera.
+
+## Changed
+- Reorganized options in mod menu.
+
 ## [v5.4.3] - 2026-06-17
 ## Fixed
 - Fix camera issue in naval battle when piloting ship. Caused by elevated camera in v5.4.2.
