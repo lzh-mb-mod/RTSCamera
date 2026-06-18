@@ -140,6 +140,7 @@
     <string id="RTSCamera_playeragentdead" text="Player agent is injured." />
     <string id="RTSCamera_switchtoplayer" text="Switch to player agent." />
     <string id="RTSCamera_switchtofreecamera" text="Switch to free camera." />
+    <string id="RTSCamera_elevated_camera_hint" text="Elevate camera when giving orders." />
 
     <string id="RTSCamera_displaymodmessage" text="Display Mod Message" />
     <string id="RTSCamera_toggleui" text="Toggle HUD" />

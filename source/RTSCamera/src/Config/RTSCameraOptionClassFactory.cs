@@ -198,7 +198,7 @@ namespace RTSCamera.Config
                 }
                 if (!CommandBattleBehavior.CommandMode)
                 {
-                    if (!Mission.Current.IsNavalBattle )
+                    if (!Mission.Current.IsNavalBattle)
                     {
                         var playerFormationOption = new SelectionOptionViewModel(
                             GameTexts.FindText("str_rts_camera_player_formation"),
@@ -380,8 +380,8 @@ namespace RTSCamera.Config
                     () => RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera,
                     b => RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera = b));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_overlook_camera"),
-                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_overlook_camera_hint"),
+                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_elevated_camera"),
+                    GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_elevated_camera_hint"),
                     () => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera,
                     b => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera = b));
                 optionClass.AddOptionCategory(1, miscellaneousOptionCategory);
