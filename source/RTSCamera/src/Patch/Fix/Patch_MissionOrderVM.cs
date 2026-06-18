@@ -135,7 +135,7 @@ namespace RTSCamera.Patch.Fix
             bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true &&
                 RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepOrderUIOpen == true &&
                 RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera || Mission.Current.Mode == TaleWorlds.Core.MissionMode.Deployment || __instance.TroopController.IsTransferActive ||
-                RTSCameraLogic.Instance?.ElevatedCameraLogic.IsElevatedCameraEnabled == true && RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera;
+                RTSCameraConfig.Get().CameraModeOnOrdering == CameraModeOnOrdering.Elevated && RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera;
             
             if (!UpdateOrderUIOnOrderExecutedHasBeenCalled)
             {
