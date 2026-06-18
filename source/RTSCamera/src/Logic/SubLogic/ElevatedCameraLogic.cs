@@ -1,6 +1,7 @@
 ﻿using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
+using RTSCamera.Patch.Naval;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -21,6 +22,8 @@ namespace RTSCamera.Logic.SubLogic
         private float _resultScale = 0;
 
         private bool _isOrderViewOpened = false;
+
+        private bool _doNotElevateCameraWhenOrderIsOpen = false;
 
         public bool IsElevatedCameraEnabled;
         private bool _isElevatedCameraApplied;
@@ -66,12 +69,24 @@ namespace RTSCamera.Logic.SubLogic
 
         private bool ShouldElevatedCameraOnOrder()
         {
-            if (_isOrderViewOpened && !_logic.SwitchFreeCameraLogic.IsSpectatorCamera && !CommandBattleBehavior.CommandMode && _config.CameraModeOnOrdering == CameraModeOnOrdering.Elevated && Agent.Main != null)
+            if (IsPlayerControllingShip())
             {
-                if (IsPlayerControllingShip())
+                // avoid elevate camera with "soldier pilot ship" command when player is piloting the ship.
+                // The camera will slide to player because player stops piloting ship.
+                // Elevating camera will break the sliding.
+                _doNotElevateCameraWhenOrderIsOpen = true;
+                return false;
+            }
+            if (!_isOrderViewOpened)
+            {
+                if (!Patch_MissionShip.AIPilotShipCommandJustGiven)
                 {
-                    return false;
+                    _doNotElevateCameraWhenOrderIsOpen = false;
                 }
+                return false;
+            }
+            if (_isOrderViewOpened && !_doNotElevateCameraWhenOrderIsOpen && !_logic.SwitchFreeCameraLogic.IsSpectatorCamera && !CommandBattleBehavior.CommandMode && _config.CameraModeOnOrdering == CameraModeOnOrdering.Elevated && Agent.Main != null)
+            {
                 if (_config.KeepOrderUIOpenInElevatedCamera)
                 {
                     // if we keep order UI open in elevated camera, we may want continuous ordering.
