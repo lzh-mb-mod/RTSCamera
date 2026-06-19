@@ -1,4 +1,4 @@
-RTS Command for v1.3.x (兼容战帆DLC)
+RTS Command for v1.4.6 (兼容战帆DLC)
 (全名 RTS Camera Command System)
 
 
@@ -20,7 +20,7 @@ RTS Command for v1.3.x (兼容战帆DLC)
 
 
 推荐：
-RTS Camera：RTS mod的另一部分，提供指挥时切换到自由视角的功能：https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
+RTS Camera：RTS mod的另一部分，提供指挥时切换到自由视角的功能：https://steamcommunity.com/sharedfiles/filedetails/?id=3747725551
 
 
 前置依赖：
@@ -29,9 +29,10 @@ RTS Camera：RTS mod的另一部分，提供指挥时切换到自由视角的功
 
 
 兼容性：
-与游戏本体v1.3.4-v1.3.13兼容，并兼容战帆DLC。其它版本：
+与游戏本体v1.4.5-v1.4.6兼容，并兼容战帆DLC。其它版本：
 v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991827
 v1.3.4-v1.3.13: https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285
+v1.4.5-v1.4.6: https://steamcommunity.com/sharedfiles/filedetails/?id=3747771970
 
 
 存档兼容性：

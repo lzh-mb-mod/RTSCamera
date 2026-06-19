@@ -1,14 +1,15 @@
-RTS Camera for v1.3.x (War Sail DLC Compatible)
+RTS Camera for v1.4.6 (War Sail DLC Compatible)
 
 
 Main features:
+- Elevate camera when giving orders.
 - Smoothly toggle free camera mode at any time in a battle.
 - Control one of your soldiers and continue fighting/commanding after player character is injured in battle.
 - Time speed control in battle. Automatic fast forward in hideout battle.
 
 
 Recommended:
-RTS Command: another part of the RTS mod, for commanding better. https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285
+RTS Command: another part of the RTS mod, for commanding better. https://steamcommunity.com/sharedfiles/filedetails/?id=3747771970
 
 
 War Sails DLC related:
@@ -22,9 +23,10 @@ Do not require any of ButterLib/MCM/UIExtenderEx.
 
 
 Compatibility:
-Compatible with v1.3.4-v1.3.13 and War Sail DLC. For other versions:
+Compatible with v1.4.5-v1.4.6 and War Sail DLC. For other versions:
 v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991660
-v1.3.4-v1.3.13: https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
+v1.3.4-v1.3.15: https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
+v1.4.5-v1.4.6: https://steamcommunity.com/sharedfiles/filedetails/?id=3747725551
 
 
 Notice:

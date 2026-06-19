@@ -1,7 +1,8 @@
-RTS Camera for v1.3.x (兼容战帆DLC)
+RTS Camera for v1.4.6 (兼容战帆DLC)
 
 
 主要功能：
+- 指挥时自动抬高视角。
 - 战斗中丝滑切换自由视角。
 - 玩家角色在战场上受伤后可控制下属士兵并继续战斗和指挥。
 - 控制战斗中的时间流速。在藏身处战斗中可以自动开启快进。
@@ -9,8 +10,7 @@ RTS Camera for v1.3.x (兼容战帆DLC)
 
 推荐：
 RTS Command：RTS mod的另一部分，提供更好的指挥系统。
- https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285
-
+https://steamcommunity.com/sharedfiles/filedetails/?id=3747771970
 
 战帆DLC相关：
 当你没在开船时，会新增让士兵驾驶你的船只的命令（快捷键F5）。这功能与舵手（Helmsman） mod 相同。
@@ -23,9 +23,10 @@ RTS Command：RTS mod的另一部分，提供更好的指挥系统。
 
 
 兼容性：
-与游戏本体v1.3.4-v1.3.13兼容，并兼容战帆DLC。其它版本：
+与游戏本体v1.4.5-v1.4.6兼容，并兼容战帆DLC。其它版本：
 v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991660
 v1.3.4-v1.3.13: https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
+v1.4.5-v1.4.6: https://steamcommunity.com/sharedfiles/filedetails/?id=3747725551
 
 
 注意：

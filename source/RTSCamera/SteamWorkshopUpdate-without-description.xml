@@ -1,6 +1,6 @@
 <Tasks>
   <GetItem>
-    <ItemId Value="3596692403"/>
+    <ItemId Value="3747725551"/>
     <!-- Can be found in the URL of your workshop item -->
   </GetItem>
   <UpdateItem>
@@ -17,16 +17,8 @@
       <Tag Value="UI"/>
       <Tag Value="AI"/>
       <Tag Value="Singleplayer"/>
-      <Tag Value="v1.3.4" />
-      <Tag Value="v1.3.5" />
-      <Tag Value="v1.3.6" />
-      <Tag Value="v1.3.7" />
-      <Tag Value="v1.3.8" />
-      <Tag Value="v1.3.9" />
-      <Tag Value="v1.3.10" />
-      <Tag Value="v1.3.11" />
-      <Tag Value="v1.3.12" />
-      <Tag Value="v1.3.13" />
+      <Tag Value="v1.4.5" />
+      <Tag Value="v1.4.6" />
     </Tags>
   </UpdateItem>
 </Tasks>
