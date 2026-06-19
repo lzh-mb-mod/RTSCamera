@@ -34,6 +34,7 @@ namespace RTSCamera
         public static bool IsCommandSystemInstalled = false;
         public static bool IsNavalInstalled = false;
         public static bool IsHelmsmanInstalled = false;
+        public static bool IsTORInstalled = false;
 
         // random generated
         public const int MissionTimeSpeedRequestId = 936012602;
@@ -45,6 +46,7 @@ namespace RTSCamera
             IsCommandSystemInstalled = Utility.IsModuleInstalled("RTSCamera.CommandSystem");
             IsNavalInstalled = Utility.IsModuleInstalled("NavalDLC");
             IsHelmsmanInstalled = Utility.IsModuleInstalled("Helmsman");
+            IsTORInstalled = Utility.IsModuleInstalled("TOR_Core");
             Utility.ShouldDisplayMessage = true;
             Initialize();
 

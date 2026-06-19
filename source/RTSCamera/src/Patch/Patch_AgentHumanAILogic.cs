@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.Patch.TOR_fix;
 using System;
 using System.Reflection;
 using TaleWorlds.Core;
@@ -24,6 +25,11 @@ namespace RTSCamera.Patch
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_AgentHumanAILogic).GetMethod(
                         nameof(Prefix_OnAgentControllerChanged), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(AgentHumanAILogic).GetMethod("OnAgentControllerChanged",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    postfix: new HarmonyMethod(typeof(Patch_AgentHumanAILogic).GetMethod(
+                        nameof(Postfix_OnAgentControllerChanged), BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {
@@ -63,6 +69,16 @@ namespace RTSCamera.Patch
                 Utility.DisplayMessage(e.ToString());
             }
             return true;
+        }
+
+        public static void Postfix_OnAgentControllerChanged(AgentHumanAILogic __instance,
+            Agent agent,
+            AgentControllerType oldController)
+        {
+            if (RTSCameraSubModule.IsTORInstalled)
+            {
+                Fix_WizardAIComponent.OnAgentControllerChanged(agent, oldController);
+            }
         }
     }
 }
