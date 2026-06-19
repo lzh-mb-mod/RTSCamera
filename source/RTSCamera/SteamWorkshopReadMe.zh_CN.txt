@@ -2,6 +2,7 @@ RTS Camera for v1.3.x (兼容战帆DLC)
 
 
 主要功能：
+- 指挥时自动抬高视角
 - 战斗中丝滑切换自由视角。
 - 玩家角色在战场上受伤后可控制下属士兵并继续战斗和指挥。
 - 控制战斗中的时间流速。在藏身处战斗中可以自动开启快进。
@@ -23,9 +24,9 @@ RTS Command：RTS mod的另一部分，提供更好的指挥系统。
 
 
 兼容性：
-与游戏本体v1.3.4-v1.3.13兼容，并兼容战帆DLC。其它版本：
+与游戏本体v1.3.4-v1.3.15兼容，并兼容战帆DLC。其它版本：
 v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991660
-v1.3.4-v1.3.13: https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
+v1.3.4-v1.3.15: https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
 
 
 注意：
