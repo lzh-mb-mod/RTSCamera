@@ -227,6 +227,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         {
             if (formation.Team.TeamIndex < _isFormationDirty.Count)
                 return false;
+            EnsureFormationCount(formation);
             return _isFormationDirty[formation.Team.TeamIndex][formation.Index];
         }
 
@@ -234,7 +235,18 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         {
             if (formation.Team.TeamIndex >= _isFormationDirty.Count)
                 return;
+            EnsureFormationCount(formation);
             _isFormationDirty[formation.Team.TeamIndex][formation.Index] = isFormationDirty;
+        }
+        
+        private void EnsureFormationCount(Formation formation)
+        {
+            if (formation.Team.TeamIndex >= _isFormationDirty.Count)
+                return;
+            for (int i = _isFormationDirty[formation.Team.TeamIndex].Count; i < formation.Index + 1; ++i)
+            {
+                _isFormationDirty[formation.Team.TeamIndex].Add(false);
+            }
         }
 
         public void AfterAddTeam(Team team)
@@ -244,7 +256,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                 for (int i = _isFormationDirty.Count; i <= team.TeamIndex; i++)
                 {
                     var list = new List<bool>();
-                    for (int j = 0; j < (int)FormationClass.NumberOfAllFormations; j++)
+                    for (int j = 0; j <= (int)FormationClass.NumberOfAllFormationsWithUnset; j++)
                     {
                         list.Add(false);
                     }
