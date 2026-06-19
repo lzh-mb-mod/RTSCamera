@@ -1,5 +1,11 @@
 # Changelog
 
+## [v5.3.27] - 2026-06-20
+## Fixed
+- Fix out of range error message with TOR (The Old Realms).
+
+- Fix crash when casting skills in free camera with TOR.
+
 ## [v5.3.26] - 2026-06-19
 ## Added
 - When giving orders, camera will be elevated. Corresponding option is added.
