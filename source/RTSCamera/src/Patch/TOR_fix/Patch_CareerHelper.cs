@@ -50,6 +50,7 @@ namespace RTSCamera.Patch.TOR_fix
                 return true;
             if (Game.Current.GameType is Campaign && Agent.Main.Character is CharacterObject && (Agent.Main.Character as CharacterObject)?.HeroObject == Hero.MainHero && Hero.MainHero != null)
                 return true;
+            // do not apply charge if main agent is not the player character.
             return false;
         }
 
