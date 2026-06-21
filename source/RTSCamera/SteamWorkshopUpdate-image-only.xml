@@ -1,0 +1,9 @@
+<Tasks>
+  <GetItem>
+    <ItemId Value="2879991660"/>
+    <!-- Can be found in the URL of your workshop item -->
+  </GetItem>
+  <UpdateItem>
+    <Image Value="D:\develop\src\RTSCamera\RTS Camera steamworkshop.jpg"/>
+  </UpdateItem>
+</Tasks>

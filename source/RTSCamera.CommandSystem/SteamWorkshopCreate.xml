@@ -75,7 +75,7 @@ source code: https://github.com/lzh-mb-mod/RTSCamera
       <!-- <Tag Value="Multiplayer"/> -->
       <Tag Value="v1.2.12" />
     </Tags>
-    <Image Value="D:\develop\src\RTSCamera\RTS Camera preview.jpg"/>
+    <Image Value="D:\develop\src\RTSCamera\RTS Command steamworkshop.jpg"/>
     <!--  Determines the featured image displayed on Steam Workshop, a direct path to it must be inserted here (the image should be smaller than 1 MB)  -->
     <Visibility Value="FriendsOnly"/>
     <!--  Determines visibility on Steam Workshop. Can be: Public, FriendsOnly, Private  -->
