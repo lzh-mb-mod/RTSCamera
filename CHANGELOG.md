@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.3.28] - 2026-06-21
+### Added
+- Add option "Elevate Camera with Movement Order Only".
+
+### Fixed
+- Fix crash in TOR when starting duel with bandit camp champion.
+
+- Fix the issue that elevated camera may stay enabled after switching "Camera Mode on Ordering" to a non-elevated mode.
+
+- Fix Command System order UI refresh after troop transfer in free camera and elevated camera.
+
+### Improved
+- Improve formation highlight and mouse-over colors in Command System.
+
 ## [v5.3.27] - 2026-06-20
 ## Fixed
 - Fix out of range error message with TOR (The Old Realms).
@@ -953,4 +967,3 @@ Move features related to command system to a new mod called RTSCamera.CommandSys
 - Option to use realistic blocking introduced in b0.8.1.
 
 - disable and enable damage.
-
