@@ -2,10 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
@@ -13,6 +10,13 @@ namespace RTSCamera.Patch.TOR_fix
 {
     public class Fix_WizardAIComponent
     {
+        private static Type abilityManagerMissionLogicType;
+        private static MethodInfo isCastingMissionMethod;
+        private static MethodInfo isAbilityUserMethod;
+        private static Type abilityComponentType;
+        private static PropertyInfo knownAbilitySystemProperty;
+        private static Type wizardAIComponentType;
+
         public static void OnAgentControllerChanged(
             Agent agent,
             AgentControllerType oldController)
@@ -24,9 +28,9 @@ namespace RTSCamera.Patch.TOR_fix
             //agent.AddComponent((AgentComponent)abilityComponent);
             //if (agent.IsAIControlled && abilityComponent.KnownAbilitySystem.Count > 0)
             //    agent.AddComponent((AgentComponent)new WizardAIComponent(agent));
-            var type = AccessTools.TypeByName("AbilityManagerMissionLogic");
-            var isCastingMissionMethod = AccessTools.Method(type, "IsCastingMission");
-            var isAbilityUserMethod = AccessTools.Method("TOR_Core.Extensions.AgentExtensions:IsAbilityUser");
+            abilityManagerMissionLogicType ??= AccessTools.TypeByName("AbilityManagerMissionLogic");
+            isCastingMissionMethod ??= AccessTools.Method(abilityManagerMissionLogicType, "IsCastingMission");
+            isAbilityUserMethod ??= AccessTools.Method("TOR_Core.Extensions.AgentExtensions:IsAbilityUser");
             var abilityManagerMissionLogic = GetAbilityManagerMissionLogic(Mission.Current);
 
             var isCastingMission = (bool)isCastingMissionMethod.Invoke(abilityManagerMissionLogic, null);
@@ -34,14 +38,14 @@ namespace RTSCamera.Patch.TOR_fix
             if (!isCastingMission || !isAbilityUser)
                 return;
 
-            var abilityComponentType = AccessTools.TypeByName("AbilityComponent");
+            abilityComponentType ??= AccessTools.TypeByName("AbilityComponent");
             var abilityComponent = Utilities.Utility.GetAgentComponent(agent, abilityComponentType);
-            var knownAbilitySystemProperty = AccessTools.Property(abilityComponentType, "KnownAbilitySystem");
+            knownAbilitySystemProperty = AccessTools.Property(abilityComponentType, "KnownAbilitySystem");
             var knownAbilitySystem = (IList)knownAbilitySystemProperty.GetValue(abilityComponent);
 
             if (agent.IsAIControlled && knownAbilitySystem.Count > 0)
             {
-                var wizardAIComponentType = AccessTools.TypeByName("WizardAIComponent");
+                wizardAIComponentType ??= AccessTools.TypeByName("WizardAIComponent");
                 var newWidzardAIComponent = (AgentComponent)Activator.CreateInstance(wizardAIComponentType, new object[] { agent });
                 agent.AddComponent(newWidzardAIComponent);
             }
@@ -49,7 +53,7 @@ namespace RTSCamera.Patch.TOR_fix
 
         public static MissionBehavior GetAbilityManagerMissionLogic(Mission mission)
         {
-            return Utility.GetMissionBehaviorOfType(mission, AccessTools.TypeByName("AbilityManagerMissionLogic"));
+            return Utility.GetMissionBehaviorOfType(mission, abilityManagerMissionLogicType);
         }
     }
 }
