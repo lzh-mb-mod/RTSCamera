@@ -26,8 +26,7 @@ namespace RTSCamera.Patch.TOR_fix
                 var method = AccessTools.Method(AccessTools.TypeByName("CareerHelper"), "ApplyCareerAbilityCharge");
                 if (method != null)
                 {
-                    harmony.Patch(
-                        AccessTools.Method(AccessTools.TypeByName("CareerHelper"), "ApplyCareerAbilityCharge"),
+                    harmony.Patch(method,
                         prefix: new HarmonyMethod(
                             typeof(Patch_CareerHelper).GetMethod(nameof(Prefix_ApplyCareerAbilityCharge),
                                 BindingFlags.Static | BindingFlags.Public)));

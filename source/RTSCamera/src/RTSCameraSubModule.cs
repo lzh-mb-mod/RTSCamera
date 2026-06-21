@@ -145,7 +145,11 @@ namespace RTSCamera
         {
             base.OnBeforeInitialModuleScreenSetAsRoot();
 
-            Patch_CareerHelper.Patch(_harmony);
+            if (IsTORInstalled)
+            {
+                _successPatch &= Patch_CareerHelper.Patch(_harmony);
+                _successPatch &= Patch_MissileCastingBehavior.Patch(_harmony);
+            }
 
             if (!ThirdInitialize())
                 return;
