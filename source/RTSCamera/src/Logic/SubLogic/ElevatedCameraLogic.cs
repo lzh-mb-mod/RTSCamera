@@ -87,12 +87,18 @@ namespace RTSCamera.Logic.SubLogic
             }
             if (_isOrderViewOpened && !_doNotElevateCameraWhenOrderIsOpen && !_logic.SwitchFreeCameraLogic.IsSpectatorCamera && !CommandBattleBehavior.CommandMode && _config.CameraModeOnOrdering == CameraModeOnOrdering.Elevated && Agent.Main != null)
             {
+                var orderVM = Utility.GetMissionOrderVM(_logic.Mission);
+                if (orderVM == null)
+                    return false;
+                if (_config.ElevateCameraWithMovementOrderOnly)
+                {
+                    return orderVM.SelectedOrderSet != null && !orderVM.SelectedOrderSet.HasSingleOrder && orderVM.SelectedOrderSet.OrderSet.StringId == "order_type_movement";
+                }
                 if (_config.KeepOrderUIOpenInElevatedCamera)
                 {
                     // if we keep order UI open in elevated camera, we may want continuous ordering.
                     return true;
                 }
-                var orderVM = Utility.GetMissionOrderVM(_logic.Mission);
                 if (orderVM.SelectedOrderSet == null)
                     return true;
                 if (orderVM.SelectedOrderSet.HasSingleOrder)

@@ -113,13 +113,20 @@ namespace RTSCameraAgentComponent
                 UpdateColor();
         }
 
-        public void ClearFormationColor()
+        public void ClearFormationColor(bool updateInstantly)
         {
             bool needUpdate = SetContourColorWithoutUpdate((int)ColorLevel.TargetFormation, null, true);
             needUpdate |= SetContourColorWithoutUpdate((int)ColorLevel.SelectedFormation, null, true);
             needUpdate |= SetContourColorWithoutUpdate((int)ColorLevel.MouseOverFormation, null, true);
             if (needUpdate)
+            {
                 UpdateColor();
+            }
+            if (updateInstantly)
+            {
+                _shouldUpdateColor = false;
+                SetColor();
+            }
         }
 
         [SecurityCritical]

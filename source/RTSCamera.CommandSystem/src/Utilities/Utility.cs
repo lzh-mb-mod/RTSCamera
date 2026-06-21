@@ -440,6 +440,11 @@ namespace RTSCamera.CommandSystem.Utilities
             return false;
         }
 
+        public static bool ShouldKeepRelativePositions()
+        {
+            return true;
+        }
+
         public static bool IsFormationOrderPositionMoving(Formation formation)
         {
             if (Patch_OrderController.LivePreviewFormationChanges.VirtualChanges.TryGetValue(formation, out var formationChange))

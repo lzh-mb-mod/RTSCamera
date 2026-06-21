@@ -129,13 +129,18 @@ namespace RTSCamera.Patch.Fix
         private static PropertyInfo _displayOrderMessageForLastOrder = AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder");
         private static MethodInfo _Reset_OrderTrropPlacer = typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static bool ShouldKeepOpen()
+        {
+            return RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true &&
+                RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepOrderUIOpen == true &&
+                RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera ||
+                RTSCameraConfig.Get().CameraModeOnOrdering == CameraModeOnOrdering.Elevated && RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera;
+        }
+
         public static void UpdateOrderUIOnOrderExecuted(MissionOrderVM __instance)
         {
             // Close UI if needed
-            bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true &&
-                RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepOrderUIOpen == true &&
-                RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera || Mission.Current.Mode == TaleWorlds.Core.MissionMode.Deployment || __instance.TroopController.IsTransferActive ||
-                RTSCameraConfig.Get().CameraModeOnOrdering == CameraModeOnOrdering.Elevated && RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera;
+            bool shouldKeepOpen = ShouldKeepOpen() || Mission.Current.Mode == TaleWorlds.Core.MissionMode.Deployment || __instance.TroopController.IsTransferActive;
             
             if (!UpdateOrderUIOnOrderExecutedHasBeenCalled)
             {
@@ -173,12 +178,15 @@ namespace RTSCamera.Patch.Fix
         public static void Postfix_OnTransferFinished(MissionOrderVM __instance)
         {
             // Keep orders UI open after transfer finished in free camera mode.
-            if (RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera ||
-                RTSCameraLogic.Instance?.ElevatedCameraLogic.IsElevatedCameraEnabled == true && RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera)
+            //if (RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera ||
+            //    RTSCameraLogic.Instance?.ElevatedCameraLogic.IsElevatedCameraEnabled == true && RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera)
+            if (ShouldKeepOpen())
             {
                 // Close and open again, to fix the issue that MissionGauntletSingleplayerOrderUIHandler.OnTransferFinished may disable it's scene layer.
                 // and cause Command System not highlighting the original formation.
 
+                // force order UI being closed.
+                HasBeenClosedInThisTick = false;
                 Patch_MissionOrderVM.TryCloseToggleOrder(__instance);
                 Patch_MissionOrderVM.OpenToggleOrder(__instance, false);
             }

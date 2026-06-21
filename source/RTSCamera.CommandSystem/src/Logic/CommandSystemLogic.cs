@@ -40,9 +40,9 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     agent.GetComponent<RTSCameraComponent>()?.SetContourColor((int)level, color, alwaysVisible, updateInstantly);
                 },
-                clearAgentHighlight: (Agent agent) =>
+                clearAgentHighlight: (Agent agent, bool updateInstantly) =>
                 {
-                    agent.GetComponent<RTSCameraComponent>()?.ClearFormationColor();
+                    agent.GetComponent<RTSCameraComponent>()?.ClearFormationColor(updateInstantly);
                 },
                 updateAgentColor: (Agent agent) =>
                 {
@@ -74,9 +74,9 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     agent.GetComponent<CommandSystemAgentComponent>()?.SetColor((int)level, color, alwaysVisible, updateInstantly);
                 },
-                clearAgentHighlight: (Agent agent) =>
+                clearAgentHighlight: (Agent agent, bool updateInstantly) =>
                 {
-                    agent.GetComponent<CommandSystemAgentComponent>()?.ClearFormationColor();
+                    agent.GetComponent<CommandSystemAgentComponent>()?.ClearFormationColor(updateInstantly);
                 },
                 updateAgentColor: (Agent agent) =>
                 {
@@ -152,6 +152,7 @@ namespace RTSCamera.CommandSystem.Logic
             CommandQueueLogic.OnRemoveBehavior();
             CommandQuerySystem.OnRemoveBehavior();
             Patch_GauntletOrderUIHandler.OnRemoveBehavior();
+            CommandSystemAgentComponent.ClearMaterial();
         }
 
         public override void AfterStart()

@@ -494,7 +494,7 @@ namespace RTSCamera.CommandSystem.Patch
                     TryIntializeFormationChanges(formation);
                 }
 
-                if (Utilities.Utility.ShouldLockFormation())
+                if (Utilities.Utility.ShouldKeepRelativePositions())
                 {
                     if (Utilities.Utility.ShouldKeepFormationWidth())
                     {
@@ -554,7 +554,7 @@ namespace RTSCamera.CommandSystem.Patch
                                 actualUnitSpacings[formation] = virtualUnitSpacing.Value;
                         }
                     }
-                    if (Utilities.Utility.ShouldLockFormation())
+                    if (Utilities.Utility.ShouldKeepRelativePositions())
                     {
                         if (formations.Any())
                         {
@@ -590,7 +590,7 @@ namespace RTSCamera.CommandSystem.Patch
                         //}
                     }
                     formationLineEnd = Mission.Current.GetStraightPathToTarget(formationLineEnd.AsVec2, formationLineBegin);
-                    if (Utilities.Utility.ShouldLockFormation())
+                    if (Utilities.Utility.ShouldKeepRelativePositions())
                     {
                         var clickedCenter = formationLineBegin;
                         clickedCenter.SetVec2((formationLineBegin.AsVec2 + formationLineEnd.AsVec2) / 2f);

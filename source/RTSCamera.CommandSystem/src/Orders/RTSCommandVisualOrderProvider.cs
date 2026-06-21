@@ -1,4 +1,5 @@
 ﻿using RTSCamera.CommandSystem.Orders.VisualOrders;
+using SandBox.Missions.MissionLogics.Hideout;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
@@ -11,6 +12,7 @@ namespace RTSCamera.CommandSystem.Orders
 {
     public class RTSCommandVisualOrderProvider: VisualOrderProvider
     {
+        private bool IsHideOut => Mission.Current?.HasMissionBehavior<HideoutMissionController>() ?? false;
         public override bool IsAvailable()
         {
             return Mission.Current != null && !Mission.Current.IsFriendlyMission && !Mission.Current.IsNavalBattle;
@@ -28,7 +30,10 @@ namespace RTSCamera.CommandSystem.Orders
             genericVisualOrderSet1.AddOrder(new RTSCommandMoveVisualOrder("order_movement_move"));
             genericVisualOrderSet1.AddOrder(new RTSCommandFollowMeVisualOrder("order_movement_follow"));
             genericVisualOrderSet1.AddOrder(new RTSCommandChargeVisualOrder("order_movement_charge"));
-            genericVisualOrderSet1.AddOrder(new RTSCommandAdvanceVisualOrder("order_movement_advance"));
+            if (!IsHideOut)
+            {
+                genericVisualOrderSet1.AddOrder(new RTSCommandAdvanceVisualOrder("order_movement_advance"));
+            }
             genericVisualOrderSet1.AddOrder(new RTSCommandFallbackVisualOrder("order_movement_fallback"));
             genericVisualOrderSet1.AddOrder(new RTSCommandStopVisualOrder("order_movement_stop"));
             genericVisualOrderSet1.AddOrder(new RTSCommandRetreatVisualOrder("order_movement_retreat"));
@@ -90,7 +95,10 @@ namespace RTSCamera.CommandSystem.Orders
             genericVisualOrderSet1.AddOrder(new RTSCommandMoveVisualOrder("order_movement_move"));
             genericVisualOrderSet1.AddOrder(new RTSCommandFollowMeVisualOrder("order_movement_follow"));
             genericVisualOrderSet1.AddOrder(new RTSCommandChargeVisualOrder("order_movement_charge"));
-            genericVisualOrderSet1.AddOrder(new RTSCommandAdvanceVisualOrder("order_movement_advance"));
+            if (!IsHideOut)
+            {
+                genericVisualOrderSet1.AddOrder(new RTSCommandAdvanceVisualOrder("order_movement_advance"));
+            }
             genericVisualOrderSet1.AddOrder(new RTSCommandFallbackVisualOrder("order_movement_fallback"));
             genericVisualOrderSet1.AddOrder(new RTSCommandStopVisualOrder("order_movement_stop"));
             genericVisualOrderSet1.AddOrder(new RTSCommandRetreatVisualOrder("order_movement_retreat"));
@@ -143,5 +151,6 @@ namespace RTSCamera.CommandSystem.Orders
             }
             return legacyOrders;
         }
+
     }
 }

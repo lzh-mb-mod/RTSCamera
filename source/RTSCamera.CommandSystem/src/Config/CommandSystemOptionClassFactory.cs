@@ -35,8 +35,8 @@ namespace RTSCamera.CommandSystem.Config
                     () => CommandSystemConfig.Get().ClickToSelectFormation, b =>
                     {
                         CommandSystemConfig.Get().ClickToSelectFormation = b;
-                        outlineView?.SetEnableColorForSelectedFormation(b);
-                        groundMarkerView?.SetEnableColorForSelectedFormation(b);
+                        outlineView?.OnMouseOverEnabledChanged(b);
+                        groundMarkerView?.OnMouseOverEnabledChanged(b);
                     }));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_attack_specific_formation"),
@@ -44,6 +44,8 @@ namespace RTSCamera.CommandSystem.Config
                     () => CommandSystemConfig.Get().AttackSpecificFormation, b =>
                     {
                         CommandSystemConfig.Get().AttackSpecificFormation = b;
+                        outlineView?.OnMouseOverEnabledChanged(b);
+                        groundMarkerView?.OnMouseOverEnabledChanged(b);
                     }));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_disable_native_attack"),

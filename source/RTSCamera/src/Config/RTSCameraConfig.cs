@@ -128,8 +128,6 @@ namespace RTSCamera.Config
 
         public float RaisedHeight = 10;
 
-        public float ElevatedHeightInSiege = 0;
-
         public int PlayerControllerInFreeCamera = (int)AgentControllerType.AI;
 
         public FormationClass PlayerFormation = FormationClass.General;
@@ -189,11 +187,15 @@ namespace RTSCamera.Config
 
         public float ElevatedHeight = 10f;
 
+        public float ElevatedHeightInSiege = 0;
+
         public bool OrderOnSwitchingCamera = true;
 
         public bool KeepOrderUIOpenInFreeCamera = true;
 
         public bool KeepOrderUIOpenInElevatedCamera = false;
+
+        public bool ElevateCameraWithMovementOrderOnly = false;
 
         public bool ShowHotKeyHint = true;
 
@@ -261,6 +263,7 @@ namespace RTSCamera.Config
             OrderOnSwitchingCamera = other.OrderOnSwitchingCamera;
             KeepOrderUIOpenInFreeCamera = other.KeepOrderUIOpenInFreeCamera;
             KeepOrderUIOpenInElevatedCamera = other.KeepOrderUIOpenInElevatedCamera;
+            ElevateCameraWithMovementOrderOnly = other.ElevateCameraWithMovementOrderOnly;
             ShowHotKeyHint = other.ShowHotKeyHint;
             FastForwardHideoutPrompted = other.FastForwardHideoutPrompted;
             FastForwardHideout = other.FastForwardHideout;
