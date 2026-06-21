@@ -2815,18 +2815,18 @@ namespace RTSCamera.CommandSystem.Patch
                         var newArrangementType = newArrangementOrder == null ? null : Utilities.Utility.GetTypeOfArrangement(newArrangementOrder.Value, true);
                         var simulationFormationArrangementType = simulationFormation.Arrangement.GetType();
                         var simulationFormationArrangementOrderType = Utilities.Utility.GetTypeOfArrangement(simulationFormation.ArrangementOrder.OrderEnum, true);
-                        if (newArrangementType == null && simulationFormationArrangementType == arrangement.GetType())
-                            goto label_3;
-                        else if (isUnitSpacingTheSame && direction.NearlyEquals(formationDirection, 0.2f) && simulationFormationArrangementType == oldArrangementType)
+                        //if (newArrangementType == null && simulationFormationArrangementType == oldArrangementType)
+                        //    goto label_3;
+                        if (isUnitSpacingTheSame && direction.NearlyEquals(formationDirection, 0.2f) && simulationFormationArrangementType == oldArrangementType)
                         {
                             // TODO: refactor needed.
-                            if (simulationFormationArrangementOrderType == oldArrangementType)
+                            if (newArrangementOrder == null)
                             {
-                                goto label_2;
+                                goto label_3;
                             }
                             else
                             {
-                                goto label_1;
+                                goto label_2;
                             }
                         }
                         else if (isUnitSpacingTheSameWithNewArrangement && direction.NearlyEquals(formationDirection, 0.1f) && newArrangementOrder != null && simulationFormationArrangementType == newArrangementType && simulationFormationArrangementOrderType == newArrangementType)
@@ -2865,9 +2865,8 @@ namespace RTSCamera.CommandSystem.Patch
                 if (arrangement.IsTurnBackwardsNecessary(asVec2_1, new WorldPosition?(formationPosition), previousDirection, true, new Vec2?(vec2_2)))
                     (simulationFormation.Arrangement as ColumnFormation).UnitPositionsOnVanguardFileIndex.Reverse();
             }
-            goto label_2;
         label_1:
-            //if (arrangement.GetType() != oldArrangementType)
+            if (arrangement.GetType() != oldArrangementType)
             {
                 ArrangementOrderProperty.SetValue(simulationFormation, formation.ArrangementOrder);
                 simulationFormation.SetArrangementOrder(Utilities.Utility.GetArrangementOrder(oldArrangementOrder));

@@ -563,6 +563,8 @@ namespace RTSCamera.CommandSystem.Logic
                     ExecuteOrderForFormation(order, formation);
                     OnOrderExecutedForFormation(order, formation);
                     order = GetNextOrderForFormation(formation);
+                    isApplicable = formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
+                    isPendingOrderCompleted = IsPendingOrderCompleted(formation);
                 }
             }
             catch (Exception e)
@@ -853,7 +855,7 @@ namespace RTSCamera.CommandSystem.Logic
                             case OrderType.ArrangementVee:
                             case OrderType.ArrangementColumn:
                             case OrderType.ArrangementScatter:
-                                ExecuteArrangementOrder(order);
+                                ExecuteArrangementOrder(order, formation);
                                 break;
                             case OrderType.FireAtWill:
                                 formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
@@ -1085,21 +1087,17 @@ namespace RTSCamera.CommandSystem.Logic
             TicksToSkip = 1;
         }
 
-        private static void ExecuteArrangementOrder(OrderInQueue order)
+        private static void ExecuteArrangementOrder(OrderInQueue order, Formation formation)
         {
-            foreach (var pair in order.VirtualFormationChanges)
+            var change = order.VirtualFormationChanges[formation];
+            TryCancelStopOrder(formation);
+            formation.SetArrangementOrder(Utilities.Utility.GetArrangementOrder(change.ArrangementOrder.Value));
+            formation.SetPositioning(unitSpacing: change.UnitSpacing);
+            if (change.Width != null)
             {
-                var formation = pair.Key;
-                var change = pair.Value;
-                TryCancelStopOrder(formation);
-                formation.SetArrangementOrder(Utilities.Utility.GetArrangementOrder(change.ArrangementOrder.Value));
-                formation.SetPositioning(unitSpacing: change.UnitSpacing);
-                if (change.Width != null)
-                {
-                    formation.SetFormOrder(FormOrder.FormOrderCustom(change.Width.Value));
-                }
-                CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+                formation.SetFormOrder(FormOrder.FormOrderCustom(change.Width.Value));
             }
+            CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
         }
 
         public static void TryTeleportSelectedFormationInDeployment(OrderController orderController, IEnumerable<Formation> formations)
