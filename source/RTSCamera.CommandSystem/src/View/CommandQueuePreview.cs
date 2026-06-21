@@ -158,8 +158,6 @@ namespace RTSCamera.CommandSystem.View
 
         public void Update(Vec3 orderPosition, Vec2 direciton, float width, float depth, float rightSideOffset, bool isSelected)
         {
-            if (!isSelected)
-                return;
             var frontBorder = 0.5f;
             var leftBorder = 0.1f;
             var rightBorder = 0.1f + rightSideOffset;

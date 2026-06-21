@@ -70,6 +70,14 @@ namespace RTSCamera.Config
                             return;
                         }
                         var config = RTSCameraConfig.Get();
+                        if (config.CameraModeOnOrdering == CameraModeOnOrdering.Elevated && i != (int)CameraModeOnOrdering.Elevated)
+                        {
+                            var elevatedCameraLogic = Mission.Current.GetMissionBehavior<RTSCameraLogic>()?.ElevatedCameraLogic;
+                            if (elevatedCameraLogic != null)
+                            {
+                                elevatedCameraLogic.TurnOffElevatedCamera();
+                            }
+                        }
                         config.CameraModeOnOrdering = (CameraModeOnOrdering)i;
                     }, () => (int)RTSCameraConfig.Get().CameraModeOnOrdering, () => (int)CameraModeOnOrdering.Count,
                         () => new[]
@@ -93,23 +101,11 @@ namespace RTSCamera.Config
                     GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_elevated_camera_hint"),
                     () => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera,
                     b => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera = b));
-                cameraOptionCategory.AddOption(new SelectionOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_follow_facing_direction"),
-                    GameTexts.FindText("str_rts_camera_follow_facing_direction_hint"),
-                    new SelectionOptionData(i =>
-                    {
-                        if (i < 0 || i >= (int)FollowFaceDirection.Count)
-                            return;
-                        RTSCameraConfig.Get().FollowFaceDirection = (FollowFaceDirection)i;
-                    }, () =>
-                    {
-                        return (int)RTSCameraConfig.Get().FollowFaceDirection;
-                    }, () => (int)FollowFaceDirection.Count, () => new[]
-                        {
-                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Never"),
-                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "ControlNewUnitOnly"),
-                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Always")
-                        }), true));
+                cameraOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_elevate_camera_with_movement_order_only"),
+                    GameTexts.FindText("str_rts_camera_elevate_camera_with_movement_order_only_hint"),
+                    () => RTSCameraConfig.Get().ElevateCameraWithMovementOrderOnly,
+                    b => RTSCameraConfig.Get().ElevateCameraWithMovementOrderOnly = b));
                 optionClass.AddOptionCategory(0, cameraOptionCategory);
 
                 var controlOptionCategory = new OptionCategory("Control",
@@ -376,6 +372,23 @@ namespace RTSCamera.Config
                     {
                         RTSCameraConfig.Get().IgnoreTerrain = b;
                     }));
+                miscellaneousOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_follow_facing_direction"),
+                    GameTexts.FindText("str_rts_camera_follow_facing_direction_hint"),
+                    new SelectionOptionData(i =>
+                    {
+                        if (i < 0 || i >= (int)FollowFaceDirection.Count)
+                            return;
+                        RTSCameraConfig.Get().FollowFaceDirection = (FollowFaceDirection)i;
+                    }, () =>
+                    {
+                        return (int)RTSCameraConfig.Get().FollowFaceDirection;
+                    }, () => (int)FollowFaceDirection.Count, () => new[]
+                        {
+                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Never"),
+                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "ControlNewUnitOnly"),
+                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Always")
+                        }), true));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_ignore_boundaries"),
                     GameTexts.FindText("str_rts_camera_ignore_boundaries_hint"),

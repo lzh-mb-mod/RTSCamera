@@ -66,6 +66,7 @@ namespace RTSCamera.Patch.Fix
                         BindingFlags.Instance | BindingFlags.Public),
                     postfix: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
                         nameof(Postfix_OnMissionScreenTick), BindingFlags.Static | BindingFlags.Public)));
+
                 return true;
             }
             catch (Exception e)

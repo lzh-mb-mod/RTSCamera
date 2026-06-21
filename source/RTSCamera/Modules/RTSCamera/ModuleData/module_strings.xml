@@ -152,6 +152,8 @@
   <string id="str_rts_camera_keep_order_ui_open_in_free_camera_hint" text="{=RTSCamera_keep_order_ui_open_in_free_camera_hint}Keep Order UI Open in Free Camera" />
   <string id="str_rts_camera_keep_order_ui_open_in_elevated_camera" text="{=RTSCamera_keep_order_ui_open_in_elevated_camera}Keep Order UI Open in Elevated Camera" />
   <string id="str_rts_camera_keep_order_ui_open_in_elevated_camera_hint" text="{=RTSCamera_keep_order_ui_open_in_elevated_camera_hint}Keep Order UI Open in Elevated Camera" />
+  <string id="str_rts_camera_elevate_camera_with_movement_order_only" text="{=RTSCamera_elevate_camera_with_movement_order_only}Elevate Camera with Movement Order Only" />
+  <string id="str_rts_camera_elevate_camera_with_movement_order_only_hint" text="{=RTSCamera_elevate_camera_with_movement_order_only_hint}Elevate camera only when giving movement order." />
   <string id="str_rts_camera_show_hotkey_hint" text="{=RTSCamera_show_hotkey_hint}Show Hotkey Hint" />
   <string id="str_rts_camera_show_hotkey_hint_hint" text="{=RTSCamera_show_hotkey_hint_hint}Show hotkey hint in free camera mode." />
   <string id="str_rts_camera_fast_forward_hideout" text="{=RTSCamera_fast_forward_hideout}Fast Forward Hideout" />

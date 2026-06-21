@@ -104,15 +104,10 @@ namespace RTSCamera.CommandSystem.AgentComponents
             // Agent.AgentVisuals?.LazyUpdateAgentRendererData();
         }
 
-        //private void ClearMaterial()
-        //{
-        //    if (_defaultMaterial == null)
-        //    {
-        //        _defaultMaterial = Material.GetFromResource("default_empty");
-        //    }
-        //    _mesh.SetMaterial(_defaultMaterial);
-        //    _materialCleared = true;
-        //}
+        public static void ClearMaterial()
+        {
+            _material = null;
+        }
         
         //private void RecoverMaterial()
         //{
@@ -213,7 +208,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
                 UpdateColor();
         }
 
-        public void ClearFormationColor()
+        public void ClearFormationColor(bool updateInstantly)
         {
             if (_mesh == null)
             {
@@ -227,7 +222,13 @@ namespace RTSCamera.CommandSystem.AgentComponents
             needUpdate |= SetColorWithoutUpdate((int)ColorLevel.SelectedFormation, null, true);
             needUpdate |= SetColorWithoutUpdate((int)ColorLevel.MouseOverFormation, null, true);
             if (needUpdate)
+            {
                 UpdateColor();
+            }
+            if (updateInstantly)
+            {
+                TryUpdateColor();
+            }
         }
 
         public override void OnMount(Agent mount)
@@ -302,7 +303,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
                 //}
                 var color = CurrentColor.HasValue ? CurrentColor.Value : InvisibleColor;
                 _mesh.SetFactor1(color);
-                _mesh.SetContourColor(color);
+                _mesh.SetContourColor((Color.FromUint(color) * 0.8f).ToUnsignedInteger());
                 _mesh.SetContourState(CurrentAlwaysVisible);
                 _mesh.SetVisibilityMask(VisibilityMaskFlags.Final);
             }

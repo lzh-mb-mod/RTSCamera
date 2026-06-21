@@ -62,6 +62,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static bool _isInitialized = false;
         private static CurrentCursorState _currentCursorState = CurrentCursorState.Invisible;
         private static Formation _clickedFormation = null;
+        private static Formation _lastNewMouseOverFormation = null;
         private static UiQueryData<CurrentCursorState> _cachedCursorState;
         private static FormationColorSubLogicV2 _outlineView;
         private static FormationColorSubLogicV2 _groundMarkerView;
@@ -78,6 +79,8 @@ namespace RTSCamera.CommandSystem.Patch
         private static Material _newModelMaterial;
         private static Material _alwaysVisibleMaterial;
         private static bool _skipDrawingForDestinationForOneTick;
+        private static Timer _clearMouseOverFormationTimer;
+        private static Timer _changeMouseOverFormationTimer;
 
         public static bool Patch(Harmony harmony)
         {
@@ -168,6 +171,8 @@ namespace RTSCamera.CommandSystem.Patch
             MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
             IsFreeCamera = false;
             _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
+            _clearMouseOverFormationTimer = new Timer(-1f, -1f, false);
+            _changeMouseOverFormationTimer = new Timer(-1f, -1f, false);
         }
 
         public static void OnRemoveBehavior()
@@ -179,6 +184,7 @@ namespace RTSCamera.CommandSystem.Patch
             _groundMarkerView = null;
             _cachedCursorState = null;
             _clickedFormation = null;
+            _lastNewMouseOverFormation = null;
             _focusedFormationsCache = null;
             if (_targetSelectionHandler != null)
             {
@@ -190,6 +196,8 @@ namespace RTSCamera.CommandSystem.Patch
             _originalOrderPositionEntities = _newModelOrderPositionEntities = _alwaysVisibleOrderPositionEntities = null;
             _currentMaterial = _originalMaterial = _newModelMaterial = _alwaysVisibleMaterial = null;
             _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
+            _clearMouseOverFormationTimer = null;
+            _changeMouseOverFormationTimer = null;
         }
 
         private static void OnFormationFocused(MBReadOnlyList<Formation> focusedFormations)
@@ -397,13 +405,36 @@ namespace RTSCamera.CommandSystem.Patch
                         }
                         else if (CommandSystemConfig.Get().IsMouseOverEnabled())
                         {
-                            var formation = GetMouseOverFormation(__instance, collisionDistance,
+                            var newFormation = GetMouseOverFormation(__instance, collisionDistance,
                                 __instance.Mission.PlayerTeam.PlayerOrderController, ref ____deltaMousePosition,
                                 ____formationDrawingMode);
-                            ____mouseOverFormation = formation;
-                            if (formation != null)
+                            if (newFormation != null)
                             {
-                                if (formation.Team.IsEnemyOf(__instance.Mission.PlayerTeam))
+                                _lastNewMouseOverFormation = newFormation;
+                            }
+                            if (____mouseOverFormation != null && newFormation == null)
+                            {
+                                if (_clearMouseOverFormationTimer.Check(MBCommon.GetApplicationTime()))
+                                {
+                                    ____mouseOverFormation = newFormation;
+                                    _clearMouseOverFormationTimer.Reset(MBCommon.GetApplicationTime(), 0.20f);
+                                    _changeMouseOverFormationTimer.Reset(MBCommon.GetApplicationTime(), 0.15f);
+                                }
+                                else
+                                {
+                                    ____mouseOverFormation = _lastNewMouseOverFormation;
+                                }
+                            }
+                            else if (____mouseOverFormation != null && newFormation != null && newFormation != ____mouseOverFormation && _changeMouseOverFormationTimer.Check(MBCommon.GetApplicationTime()) ||
+                                newFormation != null && ____mouseOverFormation == null)
+                            {
+                                ____mouseOverFormation = newFormation;
+                                _clearMouseOverFormationTimer.Reset(MBCommon.GetApplicationTime(), 0.20f);
+                                _changeMouseOverFormationTimer.Reset(MBCommon.GetApplicationTime(), 0.15f);
+                            }
+                            if (____mouseOverFormation != null)
+                            {
+                                if (____mouseOverFormation.Team.IsEnemyOf(__instance.Mission.PlayerTeam))
                                 {
                                     if (CommandSystemConfig.Get().AttackSpecificFormation)
                                     {
@@ -477,9 +508,7 @@ namespace RTSCamera.CommandSystem.Patch
                 agent = agent.RiderAgent;
             if (agent == null)
                 return null;
-            if (CommandSystemConfig.Get().IsMouseOverEnabled() && !__instance.IsDrawingForced && !____formationDrawingMode && agent?.Formation != null &&
-                !(___PlayerOrderController.SelectedFormations.Count == 1 &&
-                  ___PlayerOrderController.SelectedFormations.Contains(agent.Formation)))
+            if (CommandSystemConfig.Get().IsMouseOverEnabled() && !__instance.IsDrawingForced && !____formationDrawingMode && agent?.Formation != null)
             {
                 return agent.Formation;
             }
@@ -1003,10 +1032,20 @@ namespace RTSCamera.CommandSystem.Patch
         }
         private static Vec3 GetGroundedVec3(Mission mission, WorldPosition worldPosition)
         {
-            if (!mission.IsNavalBattle)
-                return worldPosition.GetGroundVec3();
-            Vec2 asVec2 = worldPosition.AsVec2;
-            return new Vec3(asVec2.X, asVec2.Y, mission.Scene.GetWaterLevelAtPosition(asVec2, true, true));
+            if (mission.IsNavalBattle)
+            {
+                Vec2 asVec2 = worldPosition.AsVec2;
+                var waterLevel = mission.Scene.GetWaterLevelAtPosition(asVec2, true, true);
+                var groundVec3 = worldPosition.GetGroundVec3();
+                return new Vec3(groundVec3.X, groundVec3.Y, TaleWorlds.Library.MathF.Max(waterLevel, groundVec3.Z));
+            }
+            if (mission.IsNavalBattle)
+            {
+
+                Vec2 asVec2 = worldPosition.AsVec2;
+                return new Vec3(asVec2.X, asVec2.Y, mission.Scene.GetWaterLevelAtPosition(asVec2, true, true));
+            }
+            return worldPosition.GetGroundVec3();
         }
 
         public static bool Prefix_UpdateFormationDrawingForFacingOrder(OrderTroopPlacer __instance,

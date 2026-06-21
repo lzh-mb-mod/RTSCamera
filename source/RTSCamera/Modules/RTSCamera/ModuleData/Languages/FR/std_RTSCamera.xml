@@ -153,8 +153,10 @@
     <string id="RTSCamera_orderonswitchingcamerahint" text="Ouvrir automatiquement l’interface d’ordres lors du passage en caméra libre, puis la fermer au retour à la caméra du joueur." />
     <string id="RTSCamera_keep_order_ui_open_in_free_camera" text="Garder l’interface d’ordres ouverte en caméra libre" />
     <string id="RTSCamera_keep_order_ui_open_in_free_camera_hint" text="Garder l’interface d’ordres ouverte en caméra libre." />
-    <string id="RTSCamera_keep_order_ui_open_in_elevated_camera" text="Garder l’interface d’ordres ouverte en caméra elevated" />
-    <string id="RTSCamera_keep_order_ui_open_in_elevated_camera_hint" text="Garder l’interface d’ordres ouverte en caméra elevated." />
+    <string id="RTSCamera_keep_order_ui_open_in_elevated_camera" text="Garder l’interface d’ordres ouverte en caméra élevée" />
+    <string id="RTSCamera_keep_order_ui_open_in_elevated_camera_hint" text="Garder l’interface d’ordres ouverte en caméra élevée." />
+    <string id="RTSCamera_elevate_camera_with_movement_order_only" text="Relever la caméra uniquement lors des ordres de déplacement" />
+    <string id="RTSCamera_elevate_camera_with_movement_order_only_hint" text="Relever la caméra uniquement lors de la passation d’ordres de déplacement." />
     <string id="RTSCamera_show_hotkey_hint" text="Afficher les indications de touches" />
     <string id="RTSCamera_show_hotkey_hint_hint" text="Afficher les indications de touches en mode caméra libre." />
     <string id="RTSCamera_fast_forward_hideout" text="Avance rapide en repaire" />

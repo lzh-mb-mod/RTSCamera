@@ -155,6 +155,8 @@
     <string id="RTSCamera_keep_order_ui_open_in_free_camera_hint" text="Keep Order UI Open in Free Camera" />
     <string id="RTSCamera_keep_order_ui_open_in_elevated_camera" text="Keep Order UI Open in Elevated Camera" />
     <string id="RTSCamera_keep_order_ui_open_in_elevated_camera_hint" text="Keep Order UI Open in Elevated Camera" />
+    <string id="RTSCamera_elevate_camera_with_movement_order_only" text="Elevate Camera with Movement Order Only" />
+    <string id="RTSCamera_elevate_camera_with_movement_order_only_hint" text="Elevate camera only when giving movement order." />
     <string id="RTSCamera_show_hotkey_hint" text="Show Hotkey Hint" />
     <string id="RTSCamera_show_hotkey_hint_hint" text="Show hotkey hint in free camera mode." />
     <string id="RTSCamera_fast_forward_hideout" text="Fast Forward Hideout" />

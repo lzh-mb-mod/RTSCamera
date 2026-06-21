@@ -1,4 +1,5 @@
 ﻿using RTSCamera.CommandSystem.Orders.VisualOrders;
+using SandBox.Missions.MissionLogics.Hideout;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
@@ -11,6 +12,8 @@ namespace RTSCamera.CommandSystem.Orders
 {
     public class RTSCommandVisualOrderProvider: VisualOrderProvider
     {
+        private bool IsHideOut => Mission.Current?.HasMissionBehavior<HideoutMissionController>() ?? false;
+        private bool IsNavalRaid = Mission.Current?.IsNavalRaidBattle ?? false;
         public override bool IsAvailable()
         {
             return Mission.Current != null && !Mission.Current.IsFriendlyMission && !Mission.Current.IsNavalBattle;
@@ -18,7 +21,7 @@ namespace RTSCamera.CommandSystem.Orders
 
         public override MBReadOnlyList<VisualOrderSet> GetOrders()
         {
-            return BannerlordConfig.OrderLayoutType == 1 ? GetLegacyOrders() : GetDefaultOrders();
+            return BannerlordConfig.OrderLayoutType == 1 && !IsNavalRaid ? GetLegacyOrders() : GetDefaultOrders();
         }
 
         private MBReadOnlyList<VisualOrderSet> GetDefaultOrders()
@@ -28,7 +31,10 @@ namespace RTSCamera.CommandSystem.Orders
             genericVisualOrderSet1.AddOrder(new RTSCommandMoveVisualOrder("order_movement_move"));
             genericVisualOrderSet1.AddOrder(new RTSCommandFollowMeVisualOrder("order_movement_follow"));
             genericVisualOrderSet1.AddOrder(new RTSCommandChargeVisualOrder("order_movement_charge"));
-            genericVisualOrderSet1.AddOrder(new RTSCommandAdvanceVisualOrder("order_movement_advance"));
+            if (!IsHideOut)
+            {
+                genericVisualOrderSet1.AddOrder(new RTSCommandAdvanceVisualOrder("order_movement_advance"));
+            }
             genericVisualOrderSet1.AddOrder(new RTSCommandFallbackVisualOrder("order_movement_fallback"));
             genericVisualOrderSet1.AddOrder(new RTSCommandStopVisualOrder("order_movement_stop"));
             genericVisualOrderSet1.AddOrder(new RTSCommandRetreatVisualOrder("order_movement_retreat"));
@@ -56,7 +62,10 @@ namespace RTSCamera.CommandSystem.Orders
             RTSCommandActivateFacingVisualOrder order8 = new RTSCommandActivateFacingVisualOrder(OrderType.LookAtDirection, "order_toggle_facing");
             genericVisualOrderSet3.AddOrder(order3);
             genericVisualOrderSet3.AddOrder(order4);
-            genericVisualOrderSet3.AddOrder(order5);
+            if (!IsNavalRaid)
+            {
+                genericVisualOrderSet3.AddOrder(order5);
+            }
             if (order6 != null)
                 genericVisualOrderSet3.AddOrder(order6);
             if (order7 != null)
@@ -90,7 +99,10 @@ namespace RTSCamera.CommandSystem.Orders
             genericVisualOrderSet1.AddOrder(new RTSCommandMoveVisualOrder("order_movement_move"));
             genericVisualOrderSet1.AddOrder(new RTSCommandFollowMeVisualOrder("order_movement_follow"));
             genericVisualOrderSet1.AddOrder(new RTSCommandChargeVisualOrder("order_movement_charge"));
-            genericVisualOrderSet1.AddOrder(new RTSCommandAdvanceVisualOrder("order_movement_advance"));
+            if (!IsHideOut)
+            {
+                genericVisualOrderSet1.AddOrder(new RTSCommandAdvanceVisualOrder("order_movement_advance"));
+            }
             genericVisualOrderSet1.AddOrder(new RTSCommandFallbackVisualOrder("order_movement_fallback"));
             genericVisualOrderSet1.AddOrder(new RTSCommandStopVisualOrder("order_movement_stop"));
             genericVisualOrderSet1.AddOrder(new RTSCommandRetreatVisualOrder("order_movement_retreat"));
@@ -143,5 +155,6 @@ namespace RTSCamera.CommandSystem.Orders
             }
             return legacyOrders;
         }
+
     }
 }

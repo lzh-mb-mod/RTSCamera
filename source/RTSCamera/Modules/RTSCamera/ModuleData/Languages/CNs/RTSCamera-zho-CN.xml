@@ -156,6 +156,8 @@
     <string id="RTSCamera_keep_order_ui_open_in_free_camera_hint" text="自由视角下保持指挥UI开启" />
     <string id="RTSCamera_keep_order_ui_open_in_elevated_camera" text="抬高视角下保持指挥UI开启" />
     <string id="RTSCamera_keep_order_ui_open_in_elevated_camera_hint" text="抬高视角下保持指挥UI开启" />
+    <string id="RTSCamera_elevate_camera_with_movement_order_only" text="仅在移动指令时抬高视角" />
+    <string id="RTSCamera_elevate_camera_with_movement_order_only_hint" text="仅在下达移动指令时抬高视角。" />
     <string id="RTSCamera_show_hotkey_hint" text="显示快捷键" />
     <string id="RTSCamera_show_hotkey_hint_hint" text="自由视角下显示快捷键。" />
     <string id="RTSCamera_fast_forward_hideout" text="藏身处快进" />
