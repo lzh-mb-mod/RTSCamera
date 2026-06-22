@@ -2,6 +2,7 @@
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Logic;
+using RTSCamera.View;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -134,7 +135,7 @@ namespace RTSCamera.Patch.Fix
             return RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true &&
                 RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepOrderUIOpen == true &&
                 RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera ||
-                RTSCameraConfig.Get().CameraModeOnOrdering == CameraModeOnOrdering.Elevated && RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera;
+                FlyCameraMissionView.Instance?.ElevatedCameraSubView.IsElevatedCameraNoticable == true && RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera;
         }
 
         public static void UpdateOrderUIOnOrderExecuted(MissionOrderVM __instance)

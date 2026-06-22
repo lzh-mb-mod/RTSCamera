@@ -1,23 +1,17 @@
 ﻿using HarmonyLib;
-using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
-using RTSCamera.Logic;
-using RTSCamera.Patch.Naval;
 using RTSCamera.View;
 using SandBox.Missions.MissionLogics.Arena;
 using System;
 using System.Linq;
 using System.Reflection;
 using TaleWorlds.Core;
-using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.GauntletUI;
 using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.View.MissionViews;
-using static TaleWorlds.MountAndBlade.Mission;
 
 namespace RTSCamera.Utilities
 {
@@ -115,7 +109,7 @@ namespace RTSCamera.Utilities
             var formationToFollow = mission.MainAgent?.Formation ?? mission.PlayerTeam.FormationsIncludingSpecialAndEmpty?.FirstOrDefault(f => f.CountOfUnits > 0);
             if (formationToFollow != null)
             {
-                mission.GetMissionBehavior<FlyCameraMissionView>()?.FocusOnFormation(formationToFollow);
+                FlyCameraMissionView.Instance?.FocusOnFormation(formationToFollow);
             }
             foreach (var formation in mission.PlayerTeam.FormationsIncludingSpecialAndEmpty)
             {
@@ -257,7 +251,7 @@ namespace RTSCamera.Utilities
             if (component == null)
                 return null;
             return AccessTools.Property(component.GetType(), "SteppedShip").GetValue(component) as MissionObject;
-            
+
         }
 
         public static void CancelAIPilotPlayerShip(Mission mission)
@@ -285,7 +279,7 @@ namespace RTSCamera.Utilities
             {
                 if (componentType.IsAssignableFrom(components[index].GetType()))
                 {
-                    return components[index]; 
+                    return components[index];
                 }
             }
             return null;
@@ -376,5 +370,77 @@ namespace RTSCamera.Utilities
             return config.FollowFaceDirection >= FollowFaceDirection.Always ||
                 config.FollowFaceDirection == FollowFaceDirection.ControlNewTroopOnly && isControllingNewAgent;
         }
+
+        public static class CameraEaseSolver
+        {
+            /// <summary>
+            /// Solves the rise parameters a and b from delay, duration, and r thresholds.
+            /// </summary>
+            public static void SolveRiseParams(
+                double delay,
+                double duration,
+                double R_start,
+                double R_end,
+                out double a,
+                out double b)
+            {
+                if (delay <= 0)
+                    throw new ArgumentOutOfRangeException(nameof(delay), "delay must be greater than 0.");
+
+                double t1 = delay;
+                double t2 = delay + duration;
+                double lnRStart = Math.Log(R_start);
+                double lnREnd = Math.Log(R_end);
+                double K = lnRStart / lnREnd; // Positive value, for example 7.884.
+
+                // Solve x = 2^{-a} in the range (0, 1) using binary search.
+                double lo = 1e-12;
+                double hi = 1.0 - 1e-12;
+
+                for (int i = 0; i < 60; i++)
+                {
+                    double mid = (lo + hi) * 0.5;
+                    double ln1 = Math.Log(1 - Math.Pow(mid, t1));
+                    double ln2 = Math.Log(1 - Math.Pow(mid, t2));
+                    double fx = ln1 - K * ln2;
+
+                    // Note: f(x) is monotonically increasing in this interval.
+                    if (fx < 0)
+                        lo = mid; // fx < 0 means a larger x is needed.
+                    else
+                        hi = mid; // fx > 0 means a smaller x is needed.
+                }
+
+                double x = (lo + hi) * 0.5;
+                a = -Math.Log(x, 2.0);
+                b = lnRStart / Math.Log(1 - Math.Pow(x, t1));
+            }
+
+            /// <summary>
+            /// Solves the fall parameter c from T_down and the "return-to-position" r threshold.
+            /// </summary>
+            public static double SolveFallParam(double T_down, double R_start)
+            {
+                double lo = 0.0;
+                double hi = 10.0; // The upper bound for u is sufficiently large.
+
+                for (int i = 0; i < 60; i++)
+                {
+                    double mid = (lo + hi) * 0.5;
+                    double val = (1.0 + mid * Math.Log(2.0)) * Math.Pow(2.0, -mid);
+
+                    // The function is monotonically decreasing:
+                    // val > target means u is too small.
+                    if (val > R_start)
+                        lo = mid;
+                    else
+                        hi = mid;
+                }
+
+                double u = (lo + hi) * 0.5;
+                return u / T_down;
+            }
+        }
+
     }
 }

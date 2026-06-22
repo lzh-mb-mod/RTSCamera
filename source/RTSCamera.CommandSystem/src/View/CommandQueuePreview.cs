@@ -164,28 +164,34 @@ namespace RTSCamera.CommandSystem.View
             var backBorder = 0f;
             var rightVec2 = direciton.RightVec();
             var heightOffset = 1f;
+            var color = isSelected ? SelectedColor : UnselectedColor;
             var frontMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (direciton * frontBorder + rightVec2 * (rightBorder - leftBorder) / 2).ToVec3(), rightVec2, width + leftBorder + rightBorder);
             FrontLine.SetGlobalFrame(frontMatrix);
             FrontLine.SetVisibilityExcludeParents(true);
+            FrontLine.SetFactorColor(color);
             // TODO: alpha not working
             FrontLine.SetAlpha(isSelected ? -1f : 0.2f);
             var leftMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (rightVec2 * (-width / 2 - leftBorder) + direciton * (-depth + frontBorder - backBorder) / 2).ToVec3(), direciton, depth + frontBorder + backBorder);
             LeftLine.SetGlobalFrame(leftMatrix);
             LeftLine.SetVisibilityExcludeParents(true);
             LeftLine.SetAlpha(isSelected ? -1f : 0.2f);
+            LeftLine.SetFactorColor(color);
             var rightMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (rightVec2 * (width / 2 + rightBorder) + direciton * (-depth + frontBorder - backBorder) / 2).ToVec3(), direciton, depth + frontBorder + backBorder);
             RightLine.SetGlobalFrame(rightMatrix);
             RightLine.SetVisibilityExcludeParents(true);
             RightLine.SetAlpha(isSelected ? -1f : 0.2f);
+            RightLine.SetFactorColor(color);
             float shortLength = MathF.Min(MathF.Clamp(width * 0.1f, 1f, 10f), depth * 0.3f);
             var leftBackmatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (direciton * (-depth - backBorder) + rightVec2 * ((shortLength - width) / 2 - leftBorder)).ToVec3(), rightVec2, shortLength);
             LeftBackLine.SetGlobalFrame(leftBackmatrix);
             LeftBackLine.SetVisibilityExcludeParents(true);
             LeftBackLine.SetAlpha(isSelected ? -1f : 0.2f);
+            LeftBackLine.SetFactorColor(color);
             var rightBackMatrix = GetMatrixFrame(orderPosition + Vec3.Up * heightOffset + (direciton * (-depth - backBorder) + rightVec2 * ((width - shortLength) / 2 + rightBorder)).ToVec3(), rightVec2, shortLength);
             RightBackLine.SetGlobalFrame(rightBackMatrix);
             RightBackLine.SetVisibilityExcludeParents(true);
             RightBackLine.SetAlpha(isSelected ? -1f : 0.2f);
+            RightBackLine.SetFactorColor(color);
         }
 
         private MatrixFrame GetMatrixFrame(Vec3 middlePosition, Vec2 lineDirection, float length)

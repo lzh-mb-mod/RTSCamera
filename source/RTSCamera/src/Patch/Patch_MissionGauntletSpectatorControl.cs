@@ -45,7 +45,7 @@ namespace RTSCamera.Patch
             if (RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true)
             {
                 // update 
-                if (Mission.Current.GetMissionBehavior<FlyCameraMissionView>()?.LockToAgent == true)
+                if (FlyCameraMissionView.Instance?.LockToAgent == true)
                 {
                     // Do not consider main agent dead when lock to agent.
                     ____dataSource.SetMainAgentStatus(false);

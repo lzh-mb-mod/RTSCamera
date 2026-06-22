@@ -17,12 +17,11 @@ namespace RTSCamera.Config
         Count
     }
 
-    public enum CameraModeOnOrdering
+    public enum ElevatedCameraTriggerMode
     {
-        Original,
-        Elevated,
-        FreeCamera,
-        Count
+        Never,
+        WhenOpeningOrderUI,
+        WhenGivingMovementOrder
     }
 
     public enum AutoSetPlayerFormation
@@ -113,7 +112,6 @@ namespace RTSCamera.Config
                     TimingOfControlAllyAfterDeath = ControlAllyAfterDeath ? ControlAllyAfterDeathTiming.Always : ControlAllyAfterDeathTiming.FreeCamera;
                     goto case "1.8";
                 case "1.8":
-                    CameraModeOnOrdering = SwitchCameraOnOrdering ? CameraModeOnOrdering.FreeCamera : CameraModeOnOrdering.Elevated;
                     goto case "1.9";
                 case "1.9":
                     break;
@@ -183,7 +181,7 @@ namespace RTSCamera.Config
 
         public bool SwitchCameraOnOrdering = false;
 
-        public CameraModeOnOrdering CameraModeOnOrdering = CameraModeOnOrdering.Elevated;
+        public ElevatedCameraTriggerMode ElevatedCameraTriggerMode = ElevatedCameraTriggerMode.WhenOpeningOrderUI;
 
         public float ElevatedHeight = 10f;
 
@@ -195,7 +193,11 @@ namespace RTSCamera.Config
 
         public bool KeepOrderUIOpenInElevatedCamera = false;
 
-        public bool ElevateCameraWithMovementOrderOnly = false;
+        public float ElevatedCameraDelay = 0.35f;
+
+        public float ElevatedCameraDuration = 0.7f;
+
+        public float ElevatedCameraOffDuration = 1f;
 
         public bool ShowHotKeyHint = true;
 
@@ -257,13 +259,15 @@ namespace RTSCamera.Config
             LimitCameraDistance = other.LimitCameraDistance;
             CameraDistanceLimitFactor = other.CameraDistanceLimitFactor;
             SwitchCameraOnOrdering = other.SwitchCameraOnOrdering;
-            CameraModeOnOrdering = other.CameraModeOnOrdering;
+            ElevatedCameraTriggerMode = other.ElevatedCameraTriggerMode;
             ElevatedHeight = other.ElevatedHeight;
             ElevatedHeightInSiege = other.ElevatedHeightInSiege;
             OrderOnSwitchingCamera = other.OrderOnSwitchingCamera;
             KeepOrderUIOpenInFreeCamera = other.KeepOrderUIOpenInFreeCamera;
             KeepOrderUIOpenInElevatedCamera = other.KeepOrderUIOpenInElevatedCamera;
-            ElevateCameraWithMovementOrderOnly = other.ElevateCameraWithMovementOrderOnly;
+            ElevatedCameraDelay = other.ElevatedCameraDelay;
+            ElevatedCameraDuration = other.ElevatedCameraDuration;
+            ElevatedCameraOffDuration = other.ElevatedCameraOffDuration;
             ShowHotKeyHint = other.ShowHotKeyHint;
             FastForwardHideoutPrompted = other.FastForwardHideoutPrompted;
             FastForwardHideout = other.FastForwardHideout;

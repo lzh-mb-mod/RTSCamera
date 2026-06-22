@@ -51,6 +51,9 @@ namespace RTSCamera.View
         private RTSCameraLogic _rtsCameraLogic;
         private SwitchFreeCameraLogic _freeCameraLogic;
 
+        public ElevatedCameraSubView ElevatedCameraSubView;
+        public static FlyCameraMissionView Instance;
+
         private readonly int _shiftSpeedMultiplier = 3;
         private Vec3 _cameraSpeed;
         private float _cameraSpeedMultiplier;
@@ -257,6 +260,13 @@ namespace RTSCamera.View
             _previousHeightToTerrain = null;
         }
 
+        public override void OnBehaviorInitialize()
+        {
+            base.OnBehaviorInitialize();
+
+            Instance = this;
+        }
+
         public override void OnMissionScreenInitialize()
         {
             base.OnMissionScreenInitialize();
@@ -270,6 +280,8 @@ namespace RTSCamera.View
             _config = RTSCameraConfig.Get();
             _rtsCameraLogic = Mission.GetMissionBehavior<RTSCameraLogic>();
             _freeCameraLogic = _rtsCameraLogic.SwitchFreeCameraLogic;
+            ElevatedCameraSubView = new ElevatedCameraSubView(_rtsCameraLogic);
+            ElevatedCameraSubView.OnMissionScreenInitialize();
 
             var movieName = "RTSCameraShowControlHint";
             _showControlHintVM = new ShowControlHintVM(Mission.GetMissionBehavior<SiegeDeploymentHandler>() == null);
@@ -292,6 +304,8 @@ namespace RTSCamera.View
 
             MissionScreen.OnSpectateAgentFocusIn -= MissionScreenOnSpectateAgentFocusIn;
             MissionScreen.OnSpectateAgentFocusOut -= MissionScreenOnSpectateAgentFocusOut;
+
+            ElevatedCameraSubView.OnMissionScreenFinalize();
         }
 
         public override void OnRemoveBehavior()
@@ -305,7 +319,14 @@ namespace RTSCamera.View
             _config = null;
 
             ACameraControllerManager.Get().Clear();
+            Instance = null;
+        }
 
+        public override void OnMissionScreenTick(float dt)
+        {
+            base.OnMissionScreenTick(dt);
+
+            ElevatedCameraSubView.OnMissionScreenTick(dt);
         }
 
         public override bool UpdateOverridenCamera(float dt)

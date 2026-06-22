@@ -31,6 +31,9 @@
     <string id="RTSCamera_camera_height_follows_terrain_hint" text="La hauteur de la caméra suit le relief, sauf lorsqu’elle se trouve dans ou au‑dessus d’un objet de scène (mur, maison, rocher…)." />
     <string id="RTSCamera_ignore_terrain_hint" text="La caméra ne sera pas bloquée par le terrain ni les bâtiments lorsque cette option est activée." />
     <string id="RTSCamera_ignore_boundaries_hint" text="La caméra ne sera pas limitée par les frontières lorsque cette option est activée." />
+    <string id="RTSCamera_elevated_camera_rise_delay_hint" text="Délai en secondes avant que la caméra élevée commence à monter de façon visible." />
+    <string id="RTSCamera_elevated_camera_rise_duration_hint" text="Temps en secondes nécessaire pour que la caméra élevée atteigne presque sa hauteur maximale." />
+    <string id="RTSCamera_elevated_camera_off_duration_hint" text="Temps en secondes nécessaire pour que la caméra élevée revienne presque à sa hauteur normale." />
     <string id="RTSCamera_display_message_hint" text="Afficher ou non les messages de ce mod." />
     <string id="RTSCamera_toggle_ui_hint" text="Afficher/masquer le HUD du jeu, pour la capture vidéo." />
     <string id="RTSCamera_disable_death_hint" text="Toutes les unités deviennent invulnérables, pour la capture vidéo." />
@@ -66,6 +69,9 @@
     <string id="RTSCamera_camera_height_follows_terrain" text="Hauteur de caméra suivant le relief" />
     <string id="RTSCamera_ignore_terrain" text="Ignorer le terrain" />
     <string id="RTSCamera_ignore_boundaries" text="Ignorer les frontières" />
+    <string id="RTSCamera_elevated_camera_rise_delay" text="Délai de montée de la caméra élevée" />
+    <string id="RTSCamera_elevated_camera_rise_duration" text="Durée de montée de la caméra élevée" />
+    <string id="RTSCamera_elevated_camera_off_duration" text="Durée de retour de la caméra élevée" />
     <string id="RTSCamera_follow_facing_direction" text="Suivre la direction de visée" />
     <string id="RTSCamera_follow_facing_direction_hint" text="Au retour de la caméra, indiquer si elle doit se tourner pour suivre la direction de visée du personnage." />
     <string id="RTSCamera_follow_facing_direction_option_never" text="Jamais" />
@@ -144,19 +150,19 @@
 
     <string id="RTSCamera_displaymodmessage" text="Afficher les messages du mod" />
     <string id="RTSCamera_toggleui" text="Afficher/masquer le HUD" />
-    <string id="RTSCamera_camera_mode_on_ordering" text="Mode caméra lors des ordres" />
-    <string id="RTSCamera_camera_mode_on_ordering_hint" text="Lors de la passation d’ordres, vers quel mode de caméra basculer. Elevated rend la caméra plus haute mais suit toujours le joueur. Caméra libre permet un contrôle total de la caméra." />
-    <string id="RTSCamera_camera_mode_on_ordering_option_original" text="Original" />
-    <string id="RTSCamera_camera_mode_on_ordering_option_elevated" text="Elevated" />
-    <string id="RTSCamera_camera_mode_on_ordering_option_free_camera" text="Caméra libre" />
+    <string id="RTSCamera_elevated_camera_trigger_mode" text="Mode de déclenchement de la caméra élevée" />
+    <string id="RTSCamera_elevated_camera_trigger_mode_hint" text="Lors de la passation d’ordres, choisissez quand la caméra élevée doit être déclenchée." />
+    <string id="RTSCamera_elevated_camera_trigger_mode_option_never" text="Jamais" />
+    <string id="RTSCamera_elevated_camera_trigger_mode_option_when_opening_order_ui" text="À l’ouverture de l’interface d’ordres" />
+    <string id="RTSCamera_elevated_camera_trigger_mode_option_when_giving_movement_order" text="Uniquement lors d’un ordre de déplacement" />
+    <string id="RTSCamera_switch_camera_on_ordering" text="Changer de caméra lors des ordres" />
+    <string id="RTSCamera_switch_camera_on_ordering_hint" text="Passer en caméra libre lors de l’ouverture de l’interface d’ordres, puis revenir en arrière à sa fermeture." />
     <string id="RTSCamera_orderonswitchingcamera" text="Ordres lors du changement de caméra" />
     <string id="RTSCamera_orderonswitchingcamerahint" text="Ouvrir automatiquement l’interface d’ordres lors du passage en caméra libre, puis la fermer au retour à la caméra du joueur." />
     <string id="RTSCamera_keep_order_ui_open_in_free_camera" text="Garder l’interface d’ordres ouverte en caméra libre" />
     <string id="RTSCamera_keep_order_ui_open_in_free_camera_hint" text="Garder l’interface d’ordres ouverte en caméra libre." />
     <string id="RTSCamera_keep_order_ui_open_in_elevated_camera" text="Garder l’interface d’ordres ouverte en caméra élevée" />
     <string id="RTSCamera_keep_order_ui_open_in_elevated_camera_hint" text="Garder l’interface d’ordres ouverte en caméra élevée." />
-    <string id="RTSCamera_elevate_camera_with_movement_order_only" text="Relever la caméra uniquement lors des ordres de déplacement" />
-    <string id="RTSCamera_elevate_camera_with_movement_order_only_hint" text="Relever la caméra uniquement lors de la passation d’ordres de déplacement." />
     <string id="RTSCamera_show_hotkey_hint" text="Afficher les indications de touches" />
     <string id="RTSCamera_show_hotkey_hint_hint" text="Afficher les indications de touches en mode caméra libre." />
     <string id="RTSCamera_fast_forward_hideout" text="Avance rapide en repaire" />
