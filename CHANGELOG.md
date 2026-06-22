@@ -1,5 +1,15 @@
 # Changelog
 
+## [v5.3.29] - 2026-06-23
+### Added
+- Added options to adjust trigger condition and movement speed of elevated camera.
+
+### Fixed
+- Fix the bug that elevated camera moves too slow when slow down is enabled.
+
+### Improved
+- Formation target marker is shown as light green.
+
 ## [v5.3.28] - 2026-06-21
 ### Added
 - Add option "Elevate Camera with Movement Order Only".
