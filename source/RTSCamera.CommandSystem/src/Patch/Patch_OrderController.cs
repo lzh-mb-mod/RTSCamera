@@ -2865,7 +2865,7 @@ namespace RTSCamera.CommandSystem.Patch
                 if (arrangement.IsTurnBackwardsNecessary(asVec2_1, new WorldPosition?(formationPosition), previousDirection, true, new Vec2?(vec2_2)))
                     (simulationFormation.Arrangement as ColumnFormation).UnitPositionsOnVanguardFileIndex.Reverse();
             }
-        label_1:
+        //label_1:
             if (arrangement.GetType() != oldArrangementType)
             {
                 ArrangementOrderProperty.SetValue(simulationFormation, formation.ArrangementOrder);

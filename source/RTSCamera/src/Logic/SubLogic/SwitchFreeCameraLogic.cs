@@ -99,7 +99,7 @@ namespace RTSCamera.Logic.SubLogic
 
         private bool ShouldSwitchCameraOnOrder()
         {
-            return _config.CameraModeOnOrdering == CameraModeOnOrdering.FreeCamera && !Mission.IsNavalBattle;
+            return _config.SwitchCameraOnOrdering && !Mission.IsNavalBattle;
         }
 
         private void OnToggledOrderView(MissionPlayerToggledOrderViewEvent e)
@@ -791,7 +791,7 @@ namespace RTSCamera.Logic.SubLogic
                 UpdateMainAgentControllerInFreeCamera();
             }
             // When main agent is null and player press E to lock to agent, we should not set the main agent to allow pressing E again to show inquiry and control the locked agent.
-            else if (_config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.Always || _config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.FreeCamera && Mission?.GetMissionBehavior<FlyCameraMissionView>()?.LockToAgent != true)
+            else if (_config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.Always || _config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.FreeCamera && FlyCameraMissionView.Instance?.LockToAgent != true)
             {
                 _controlTroopLogic.SetMainAgent();
             }

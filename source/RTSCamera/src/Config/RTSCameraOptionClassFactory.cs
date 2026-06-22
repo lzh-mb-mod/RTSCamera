@@ -61,31 +61,37 @@ namespace RTSCamera.Config
                             new SelectionItem(true, "str_rts_camera_default_to_free_camera_option", "Always")
                         }), true));
                 cameraOptionCategory.AddOption(new SelectionOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_camera_mode_on_ordering"),
-                    GameTexts.FindText("str_rts_camera_camera_mode_on_ordering_hint"),
+                    GameTexts.FindText("str_rts_camera_elevated_camera_trigger_mode"),
+                    GameTexts.FindText("str_rts_camera_elevated_camera_trigger_mode_hint"),
                     new SelectionOptionData(i =>
                     {
-                        if (i < 0 || i >= (int)CameraModeOnOrdering.Count)
+                        if (i < 0 || i >= Enum.GetValues(typeof(ElevatedCameraTriggerMode)).Length)
                         {
                             return;
                         }
                         var config = RTSCameraConfig.Get();
-                        if (config.CameraModeOnOrdering == CameraModeOnOrdering.Elevated && i != (int)CameraModeOnOrdering.Elevated)
+                        if (config.ElevatedCameraTriggerMode != ElevatedCameraTriggerMode.Never &&
+                            i == (int)ElevatedCameraTriggerMode.Never)
                         {
-                            var elevatedCameraLogic = Mission.Current.GetMissionBehavior<RTSCameraLogic>()?.ElevatedCameraLogic;
+                            var elevatedCameraLogic = FlyCameraMissionView.Instance?.ElevatedCameraSubView;
                             if (elevatedCameraLogic != null)
                             {
-                                elevatedCameraLogic.TurnOffElevatedCamera();
+                                elevatedCameraLogic.DisableElevatedCamera();
                             }
                         }
-                        config.CameraModeOnOrdering = (CameraModeOnOrdering)i;
-                    }, () => (int)RTSCameraConfig.Get().CameraModeOnOrdering, () => (int)CameraModeOnOrdering.Count,
+                        config.ElevatedCameraTriggerMode = (ElevatedCameraTriggerMode)i;
+                    }, () => (int)RTSCameraConfig.Get().ElevatedCameraTriggerMode, () => Enum.GetValues(typeof(ElevatedCameraTriggerMode)).Length,
                         () => new[]
                         {
-                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "Original"),
-                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "Elevated"),
-                            new SelectionItem(true, "str_rts_camera_camera_mode_on_ordering_option", "FreeCamera")
+                            new SelectionItem(true, "str_rts_camera_elevated_camera_trigger_mode_option", "Never"),
+                            new SelectionItem(true, "str_rts_camera_elevated_camera_trigger_mode_option", "WhenOpeningOrderUI"),
+                            new SelectionItem(true, "str_rts_camera_elevated_camera_trigger_mode_option", "WhenGivingMovementOrder")
                         }), true));
+                cameraOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_switch_camera_on_ordering"),
+                    GameTexts.FindText("str_rts_camera_switch_camera_on_ordering_hint"),
+                    () => RTSCameraConfig.Get().SwitchCameraOnOrdering,
+                    b => RTSCameraConfig.Get().SwitchCameraOnOrdering = b));
                 cameraOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_order_on_switching_camera"),
                     GameTexts.FindText("str_rts_camera_order_on_switching_camera_hint"),
@@ -101,11 +107,6 @@ namespace RTSCamera.Config
                     GameTexts.FindText("str_rts_camera_keep_order_ui_open_in_elevated_camera_hint"),
                     () => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera,
                     b => RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera = b));
-                cameraOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_elevate_camera_with_movement_order_only"),
-                    GameTexts.FindText("str_rts_camera_elevate_camera_with_movement_order_only_hint"),
-                    () => RTSCameraConfig.Get().ElevateCameraWithMovementOrderOnly,
-                    b => RTSCameraConfig.Get().ElevateCameraWithMovementOrderOnly = b));
                 optionClass.AddOptionCategory(0, cameraOptionCategory);
 
                 var controlOptionCategory = new OptionCategory("Control",
@@ -397,6 +398,33 @@ namespace RTSCamera.Config
                     {
                         RTSCameraConfig.Get().IgnoreBoundaries = b;
                     }));
+                miscellaneousOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_elevated_camera_rise_delay"),
+                    GameTexts.FindText("str_rts_camera_elevated_camera_rise_delay_hint"),
+                    () => RTSCameraConfig.Get().ElevatedCameraDelay,
+                    f =>
+                    {
+                        RTSCameraConfig.Get().ElevatedCameraDelay = Math.Max(0.01f, f);
+                        FlyCameraMissionView.Instance?.ElevatedCameraSubView?.RefreshTimingParameters();
+                    }, 0.01f, 2f, false, true));
+                miscellaneousOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_elevated_camera_rise_duration"),
+                    GameTexts.FindText("str_rts_camera_elevated_camera_rise_duration_hint"),
+                    () => RTSCameraConfig.Get().ElevatedCameraDuration,
+                    f =>
+                    {
+                        RTSCameraConfig.Get().ElevatedCameraDuration = Math.Max(0.01f, f);
+                        FlyCameraMissionView.Instance?.ElevatedCameraSubView?.RefreshTimingParameters();
+                    }, 0.01f, 3f, false, true));
+                miscellaneousOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_elevated_camera_off_duration"),
+                    GameTexts.FindText("str_rts_camera_elevated_camera_off_duration_hint"),
+                    () => RTSCameraConfig.Get().ElevatedCameraOffDuration,
+                    f =>
+                    {
+                        RTSCameraConfig.Get().ElevatedCameraOffDuration = Math.Max(0.01f, f);
+                        FlyCameraMissionView.Instance?.ElevatedCameraSubView?.RefreshTimingParameters();
+                    }, 0.01f, 3f, false, true));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_show_hotkey_hint"),
                     GameTexts.FindText("str_rts_camera_show_hotkey_hint_hint"),

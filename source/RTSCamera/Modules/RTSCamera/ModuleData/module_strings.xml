@@ -27,6 +27,9 @@
   <string id="str_rts_camera_camera_height_follows_terrain_hint" text="{=RTSCamera_camera_height_follows_terrain_hint}Camera elevation will follow terrain height, except when camera is inside or above a scene object (wall, house, stone...)" />
   <string id="str_rts_camera_ignore_terrain_hint" text="{=RTSCamera_ignore_terrain_hint}Camera will not be blocked by terrain and buildings when enabled." />
   <string id="str_rts_camera_ignore_boundaries_hint" text="{=RTSCamera_ignore_boundaries_hint}Camera will not be restricted by boundaries when enabled." />
+  <string id="str_rts_camera_elevated_camera_rise_delay_hint" text="{=RTSCamera_elevated_camera_rise_delay_hint}Delay in seconds before the elevated camera begins to rise noticeably." />
+  <string id="str_rts_camera_elevated_camera_rise_duration_hint" text="{=RTSCamera_elevated_camera_rise_duration_hint}Time in seconds for the elevated camera to rise to almost full height." />
+  <string id="str_rts_camera_elevated_camera_off_duration_hint" text="{=RTSCamera_elevated_camera_off_duration_hint}Time in seconds for the elevated camera to return to almost normal height." />
   <string id="str_rts_camera_display_message_hint" text="{=RTSCamera_display_message_hint}Whether to display message of this mod." />
   <string id="str_rts_camera_toggle_ui_hint" text="{=RTSCamera_toggle_ui_hint}Toggle HUD of the game, for making video." />
 
@@ -63,6 +66,9 @@
   <string id="str_rts_camera_camera_height_follows_terrain" text="{=RTSCamera_camera_height_follows_terrain}Camera Height Follows Terrain" />
   <string id="str_rts_camera_ignore_terrain" text="{=RTSCamera_ignore_terrain}Ignore Terrain" />
   <string id="str_rts_camera_ignore_boundaries" text="{=RTSCamera_ignore_boundaries}Ignore Boundaries" />
+  <string id="str_rts_camera_elevated_camera_rise_delay" text="{=RTSCamera_elevated_camera_rise_delay}Elevated Camera Rise Delay" />
+  <string id="str_rts_camera_elevated_camera_rise_duration" text="{=RTSCamera_elevated_camera_rise_duration}Elevated Camera Rise Duration" />
+  <string id="str_rts_camera_elevated_camera_off_duration" text="{=RTSCamera_elevated_camera_off_duration}Elevated Camera Off Duration" />
   <string id="str_rts_camera_follow_facing_direction" text="{=RTSCamera_follow_facing_direction}Follow Facing Direction" />
   <string id="str_rts_camera_follow_facing_direction_hint" text="{=RTSCamera_follow_facing_direction_hint}When camera switch back, whether to rotate camera to follow character's facing direction." />
   <string id="str_rts_camera_follow_facing_direction_option.Never" text="{=RTSCamera_follow_facing_direction_option_never}Never" />
@@ -141,19 +147,19 @@
 
   <string id="str_rts_camera_display_mod_message" text="{=RTSCamera_displaymodmessage}Display Message" />
   <string id="str_rts_camera_toggle_ui" text="{=RTSCamera_toggleui}Toggle HUD" />
-  <string id="str_rts_camera_camera_mode_on_ordering" text="{=RTSCamera_camera_mode_on_ordering}Camera Mode on Ordering" />
-  <string id="str_rts_camera_camera_mode_on_ordering_hint" text="{=RTSCamera_camera_mode_on_ordering_hint}When giving orders, which camera mode to switch to. Elevated makes the camera higher but still follows the player. Free Camera allows full control to camera" />
-  <string id="str_rts_camera_camera_mode_on_ordering_option.Original" text="{=RTSCamera_camera_mode_on_ordering_option_original}Original" />
-  <string id="str_rts_camera_camera_mode_on_ordering_option.Elevated" text="{=RTSCamera_camera_mode_on_ordering_option_elevated}Elevated" />
-  <string id="str_rts_camera_camera_mode_on_ordering_option.FreeCamera" text="{=RTSCamera_camera_mode_on_ordering_option_free_camera}Free Camera" />
+  <string id="str_rts_camera_elevated_camera_trigger_mode" text="{=RTSCamera_elevated_camera_trigger_mode}Elevated Camera Trigger Mode" />
+  <string id="str_rts_camera_elevated_camera_trigger_mode_hint" text="{=RTSCamera_elevated_camera_trigger_mode_hint}When giving orders, choose when the elevated camera should be triggered." />
+  <string id="str_rts_camera_elevated_camera_trigger_mode_option.Never" text="{=RTSCamera_elevated_camera_trigger_mode_option_never}Never" />
+  <string id="str_rts_camera_elevated_camera_trigger_mode_option.WhenOpeningOrderUI" text="{=RTSCamera_elevated_camera_trigger_mode_option_when_opening_order_ui}When Opening Order UI" />
+  <string id="str_rts_camera_elevated_camera_trigger_mode_option.WhenGivingMovementOrder" text="{=RTSCamera_elevated_camera_trigger_mode_option_when_giving_movement_order}When Giving Movement Order" />
+  <string id="str_rts_camera_switch_camera_on_ordering" text="{=RTSCamera_switch_camera_on_ordering}Switch Camera on Ordering" />
+  <string id="str_rts_camera_switch_camera_on_ordering_hint" text="{=RTSCamera_switch_camera_on_ordering_hint}Switch to free camera when opening the order UI, and switch back when closing it." />
   <string id="str_rts_camera_order_on_switching_camera" text="{=RTSCamera_orderonswitchingcamera}Order on Switching Camera" />
   <string id="str_rts_camera_order_on_switching_camera_hint" text="{=RTSCamera_orderonswitchingcamerahint}Automatically open order UI when switching to free camera, and close order UI when switching back." />
   <string id="str_rts_camera_keep_order_ui_open_in_free_camera" text="{=RTSCamera_keep_order_ui_open_in_free_camera}Keep Order UI Open in Free Camera" />
   <string id="str_rts_camera_keep_order_ui_open_in_free_camera_hint" text="{=RTSCamera_keep_order_ui_open_in_free_camera_hint}Keep Order UI Open in Free Camera" />
   <string id="str_rts_camera_keep_order_ui_open_in_elevated_camera" text="{=RTSCamera_keep_order_ui_open_in_elevated_camera}Keep Order UI Open in Elevated Camera" />
   <string id="str_rts_camera_keep_order_ui_open_in_elevated_camera_hint" text="{=RTSCamera_keep_order_ui_open_in_elevated_camera_hint}Keep Order UI Open in Elevated Camera" />
-  <string id="str_rts_camera_elevate_camera_with_movement_order_only" text="{=RTSCamera_elevate_camera_with_movement_order_only}Elevate Camera with Movement Order Only" />
-  <string id="str_rts_camera_elevate_camera_with_movement_order_only_hint" text="{=RTSCamera_elevate_camera_with_movement_order_only_hint}Elevate camera only when giving movement order." />
   <string id="str_rts_camera_show_hotkey_hint" text="{=RTSCamera_show_hotkey_hint}Show Hotkey Hint" />
   <string id="str_rts_camera_show_hotkey_hint_hint" text="{=RTSCamera_show_hotkey_hint_hint}Show hotkey hint in free camera mode." />
   <string id="str_rts_camera_fast_forward_hideout" text="{=RTSCamera_fast_forward_hideout}Fast Forward Hideout" />
