@@ -1,6 +1,5 @@
 ﻿using MissionSharedLibrary.Config;
 using MissionSharedLibrary.Utilities;
-using RTSCamera.CampaignGame.Behavior;
 using System;
 using System.IO;
 using System.Xml.Serialization;
