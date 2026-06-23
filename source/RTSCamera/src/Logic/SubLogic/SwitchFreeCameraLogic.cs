@@ -565,14 +565,15 @@ namespace RTSCamera.Logic.SubLogic
             {
                 if (oldMissionMode == MissionMode.Battle && Mission.Mode == MissionMode.Stealth)
                 {
-                    if (!_config.FastForwardHideoutPrompted)
-                    {
-                        _config.FastForwardHideoutPrompted = true;
-                        if (_config.FastForwardHideout == FastForwardHideout.Never)
-                        {
-                            _shouldShowFastForwardInHideoutPromptInThisMission = true;
-                        }
-                    }
+                    // disable prompt for fastforward in hideout.
+                    //if (!_config.FastForwardHideoutPrompted)
+                    //{
+                    //    _config.FastForwardHideoutPrompted = true;
+                    //    if (_config.FastForwardHideout == FastForwardHideout.Never)
+                    //    {
+                    //        _shouldShowFastForwardInHideoutPromptInThisMission = true;
+                    //    }
+                    //}
                     if (_config.FastForwardHideout >= FastForwardHideout.UntilBossFight)
                         FastForwardHideoutNextTick = true;
                 }
