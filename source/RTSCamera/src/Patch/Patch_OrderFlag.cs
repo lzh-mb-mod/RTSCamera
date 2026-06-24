@@ -1,17 +1,16 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.Logic;
+using RTSCamera.Patch.Fix;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using TaleWorlds.Engine;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.View.Screens;
-using TaleWorlds.ScreenSystem;
 
 namespace RTSCamera.Patch
 {
@@ -32,6 +31,19 @@ namespace RTSCamera.Patch
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_OrderFlag).GetMethod(
                         nameof(Prefix_GetCollidedEntity), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    typeof(OrderFlag).GetMethod("GetFlagPosition",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    prefix: new HarmonyMethod(typeof(Patch_OrderFlag).GetMethod(
+                        nameof(Prefix_GetFlagPosition), BindingFlags.Static | BindingFlags.Public)));
+                //if (RTSCameraSubModule.IsNavalInstalled)
+                //{
+                //    harmony.Patch(
+                //        AccessTools.Method("NavalDLC.View.MissionViews.Order.NavalOrderFlag:GetFlagPosition"),
+                //    prefix: new HarmonyMethod(typeof(Patch_OrderFlag).GetMethod(
+                //        nameof(Prefix_GetFlagPosition), BindingFlags.Static | BindingFlags.Public)));
+
+                //}
             }
             catch (Exception e)
             {
@@ -82,7 +94,7 @@ namespace RTSCamera.Patch
         public static bool Prefix_GetCollidedEntity(OrderFlag __instance, ref WeakGameEntity __result, ref Vec3 closestPoint, MissionScreen ____missionScreen, Mission ____mission)
         {
             // use Input.MousePositionRanged if mouse is visible. In official code the condition is Mission.Current.GetMissionBehavior<BattleDeploymentHandler>() != null
-            Vec2 screenPoint = ____missionScreen.MouseVisible ? Input.MousePositionRanged : new Vec2(0.5f, 0.5f);
+            Vec2 screenPoint = ____missionScreen.MouseVisible ? Input.MousePositionRanged : Patch_MissionGauntletSingleplayerOrderUIHandler.MousePositionRangedBeforeDragging ?? new Vec2(0.5f, 0.5f);
             ____missionScreen.ScreenPointToWorldRay(screenPoint, out var rayBegin, out var rayEnd);
             //Vec3 vec3 = (rayEnd - rayBegin).NormalizedCopy();
             //rayEnd = rayBegin + vec3 * 10000f;
@@ -95,19 +107,33 @@ namespace RTSCamera.Patch
             return false;
         }
 
-        //public static GameEntity GetCollidedEntity(OrderFlag __instance)
-        //{
-        //    var missionScreen = Utility.GetMissionScreen();
-        //    var mission = Mission.Current;
-        //    // use Input.MousePositionRanged if mouse is visible. In official code the condition is Mission.Current.GetMissionBehavior<BattleDeploymentHandler>() != null
-        //    Vec2 screenPoint = missionScreen.MouseVisible ? Input.MousePositionRanged : new Vec2(0.5f, 0.5f);
-        //    missionScreen.ScreenPointToWorldRay(screenPoint, out var rayBegin, out var rayEnd);
-        //    mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out float _, out GameEntity collidedEntity, 0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora);
-        //    while (collidedEntity != null && !collidedEntity.GetScriptComponents().Any((ScriptComponentBehavior sc) => sc is IOrderable orderable && orderable.GetOrder(Mission.Current.PlayerTeam.Side) != OrderType.None))
-        //    {
-        //        collidedEntity = collidedEntity.Parent;
-        //    }
-        //    return collidedEntity;
-        //}
+        public static bool Prefix_GetFlagPosition(
+            OrderFlag __instance,
+            ref Vec3 __result,
+            ref bool isOnValidGround,
+            bool checkForTargetEntity,
+            Vec3 targetCollisionPoint,
+            MissionScreen ____missionScreen,
+            Mission ____mission)
+        {
+            if (!__instance.IsVisible || checkForTargetEntity)
+                return true;
+            // use mouse position before dragging if dragging camera in free camera mode.
+            if (!____missionScreen.MouseVisible && (RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? false) && Patch_MissionGauntletSingleplayerOrderUIHandler.MousePositionRangedBeforeDragging.HasValue)
+            {
+                var screenPoint = Patch_MissionGauntletSingleplayerOrderUIHandler.MousePositionRangedBeforeDragging.Value;
+                ____missionScreen.ScreenPointToWorldRay(screenPoint, out var rayBegin, out var rayEnd);
+
+                ____mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out float _, out Vec3 closestPoint, out var _, 0.3f, BodyFlags.CommonCollisionExcludeFlags | BodyFlags.BodyOwnerEntity | BodyFlags.BodyOwnerFlora);
+
+                WorldPosition orderPosition = new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, closestPoint, false);
+                isOnValidGround = Mission.Current.IsOrderPositionAvailable(in orderPosition, Mission.Current.PlayerTeam);
+
+                __result = closestPoint;
+                return false;
+            }
+
+            return true;
+        }
     }
 }

@@ -184,7 +184,11 @@ namespace RTSCamera.CommandSystem.Utilities
 
         public static void DisplayExecuteOrderMessageInQueue(IEnumerable<Formation> selectedFormations, OrderInQueue order)
         {
-            MissionSharedLibrary.Utilities.Utility.DisplayLocalizedText("str_rts_camera_command_system_execute_order_in_queue", null, MessageColor);
+            if (!order.IsExecutingOrderMessageShown)
+            {
+                order.IsExecutingOrderMessageShown = true;
+                MissionSharedLibrary.Utilities.Utility.DisplayLocalizedText("str_rts_camera_command_system_execute_order_in_queue", null, MessageColor);
+            }
             List<TextObject> formationNameList = new List<TextObject>();
             foreach (var formation in selectedFormations)
                 formationNameList.Add(GameTexts.FindText("str_troop_group_name", ((int)formation.PhysicalClass).ToString()));
