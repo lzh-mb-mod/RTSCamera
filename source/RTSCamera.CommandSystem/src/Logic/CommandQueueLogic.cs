@@ -122,7 +122,10 @@ namespace RTSCamera.CommandSystem.Logic
                     continue;
 
                 bool isPlayerOnly = Utilities.Utility.FormationArrangementContainsPlayerOnly(formation);
-                if (this != otherOrder || CommandQueueLogic.IsMovementOrderCompleted(formation, this))
+                // For player only formation, movement order is always completed.
+                // We need to make player only formation follow the other formations,
+                // but not the oppsite.
+                if (this != otherOrder || CommandQueueLogic.IsMovementOrderCompleted(formation, this) && !isPlayerOnly)
                     continue;
 
                 var originalSpeed = MathF.Max(0.1f, formation.CachedMovementSpeed);

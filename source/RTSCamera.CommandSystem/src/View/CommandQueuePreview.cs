@@ -39,7 +39,7 @@ namespace RTSCamera.CommandSystem.View
         public OrderTargetType OrderTargetType;
     }
 
-    public struct ArrowEntity
+    public class ArrowEntity
     {
         public static uint ArrowColor = new Color(0.4f, 0.8f, 0.4f).ToUnsignedInteger();
         public static uint FocusingArrowColor = new Color(0.7f, 0.3f, 0.2f).ToUnsignedInteger();
@@ -49,6 +49,8 @@ namespace RTSCamera.CommandSystem.View
         public GameEntity ArrowHead;
         public GameEntity ArrowBody;
         public OrderTargetType? TargetType;
+        public bool _isShown;
+        public float _alpha;
 
         public void UpdateColor(OrderTargetType orderTargetType)
         {
@@ -79,15 +81,43 @@ namespace RTSCamera.CommandSystem.View
                     return ArrowColor;
             }
         }
+
+        public void Hide(bool isPreviewShown)
+        {
+
+            if (isPreviewShown)
+            {
+                ArrowHead.SetVisibilityExcludeParents(false);
+                ArrowBody.SetVisibilityExcludeParents(false);
+            }
+            else
+            {
+                if (_isShown)
+                {
+                    if (_alpha == -1)
+                    {
+                        ArrowHead.FadeOut(CommandSystemConfig.Get().MovementTargetFadeOutDuration, false);
+                        ArrowBody.FadeOut(CommandSystemConfig.Get().MovementTargetFadeOutDuration, false);
+                    }
+                    else
+                    {
+                        ArrowHead.HideIfNotFadingOut();
+                        ArrowBody.HideIfNotFadingOut();
+                    }
+                }
+            }
+            _isShown = false;
+        }
     }
 
-    public struct FormationShapeEntity
+    public class FormationShapeEntity
     {
         public GameEntity FrontLine;
         public GameEntity LeftLine;
         public GameEntity RightLine;
         public GameEntity LeftBackLine;
         public GameEntity RightBackLine;
+        private bool _isShown;
         public static uint SelectedColor = new Color(0.5f, 1.0f, 0.5f).ToUnsignedInteger();
         public static uint UnselectedColor = new Color(1f, 1f, 1f).ToUnsignedInteger();
 
@@ -119,6 +149,7 @@ namespace RTSCamera.CommandSystem.View
             RightLine = CreateLineEntity();
             LeftBackLine = CreateLineEntity();
             RightBackLine = CreateLineEntity();
+            _isShown = true;
         }
 
         private GameEntity CreateLineEntity()
@@ -158,6 +189,7 @@ namespace RTSCamera.CommandSystem.View
 
         public void Update(Vec3 orderPosition, Vec2 direciton, float width, float depth, float rightSideOffset, bool isSelected)
         {
+            _isShown = true;
             var frontBorder = 0.5f;
             var leftBorder = 0.1f;
             var rightBorder = 0.1f + rightSideOffset;
@@ -204,13 +236,28 @@ namespace RTSCamera.CommandSystem.View
             return matrixFrame;
         }
 
-        public void Hide()
+        public void Hide(bool isPreviewShown)
         {
-            FrontLine.SetVisibilityExcludeParents(false);
-            LeftLine.SetVisibilityExcludeParents(false);
-            RightLine.SetVisibilityExcludeParents(false);
-            LeftBackLine.SetVisibilityExcludeParents(false);
-            RightBackLine.SetVisibilityExcludeParents(false);
+            if (isPreviewShown)
+            {
+                FrontLine.SetVisibilityExcludeParents(false);
+                LeftLine.SetVisibilityExcludeParents(false);
+                RightLine.SetVisibilityExcludeParents(false);
+                LeftBackLine.SetVisibilityExcludeParents(false);
+                RightBackLine.SetVisibilityExcludeParents(false);
+            }
+            else
+            {
+                if (_isShown)
+                {
+                    FrontLine.FadeOut(CommandSystemConfig.Get().MovementTargetFadeOutDuration, false);
+                    LeftLine.FadeOut(CommandSystemConfig.Get().MovementTargetFadeOutDuration, false);
+                    RightLine.FadeOut(CommandSystemConfig.Get().MovementTargetFadeOutDuration, false);
+                    LeftBackLine.FadeOut(CommandSystemConfig.Get().MovementTargetFadeOutDuration, false);
+                    RightBackLine.FadeOut(CommandSystemConfig.Get().MovementTargetFadeOutDuration, false);
+                }
+            }
+            _isShown = false;
         }
     }
 
@@ -328,14 +375,18 @@ namespace RTSCamera.CommandSystem.View
             {
                 return;
             }
+            if (_isPreviewShown)
+            {
+                UpdatePreview(dt);
+            }
 
             if (_orderTroopPlacer.SuspendTroopPlacer ||
                 _config.CommandQueueFlagShowMode == ShowMode.Never && _config.CommandQueueArrowShowMode == ShowMode.Never && _config.CommandQueueFormationShapeShowMode == ShowMode.Never)
             {
                 if (_isPreviewShown)
                 {
-                    HidePreview();
                     _isPreviewShown = false;
+                    HidePreview();
                 }
             }
             else
@@ -345,7 +396,6 @@ namespace RTSCamera.CommandSystem.View
                     _isPreviewShown = true;
                     IsPreviewOutdated = true;
                 }
-                UpdatePreview(dt);
             }
         }
 
@@ -391,6 +441,21 @@ namespace RTSCamera.CommandSystem.View
             }
         }
 
+        private bool ShouldShowFormationShape()
+        {
+            return _config.CommandQueueFormationShapeShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueFormationShapeShowMode == ShowMode.FreeCameraOnly;
+        }
+
+        private bool ShouldShowOrderPositionFlag()
+        {
+            return _config.CommandQueueFlagShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueFlagShowMode == ShowMode.FreeCameraOnly;
+        }
+
+        private bool ShouldShowArrow()
+        {
+            return _config.CommandQueueArrowShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueArrowShowMode == ShowMode.FreeCameraOnly;
+        }
+
         private void TickPreview(float dt)
         {
             int agentIndex = 0;
@@ -413,17 +478,17 @@ namespace RTSCamera.CommandSystem.View
                     }
                     var arrowEnd = order.OrderPosition.GetGroundVec3();
                     if (order.Width != null && order.Depth != null &&
-                        (_config.CommandQueueFormationShapeShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueFormationShapeShowMode == ShowMode.FreeCameraOnly))
+                        ShouldShowFormationShape())
                     {
                         AddFormationShape(formationShapeIndex, arrowEnd, order.Direction, order.Width.Value, order.Depth.Value, order.RightSideOffset ?? 0, previewData.IsSelected);
                         ++formationShapeIndex;
                     }
-                    if (_config.CommandQueueFlagShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueFlagShowMode == ShowMode.FreeCameraOnly)
+                    if (ShouldShowOrderPositionFlag())
                     {
                         AddOrderPositionFlag(orderFlagIndex, arrowEnd, order.Direction, previewData.IsSelected ? -1 : 0.2f);
                         ++orderFlagIndex;
                     }
-                    if (arrowStart.IsValid && arrowEnd.IsValid && (_config.CommandQueueArrowShowMode == ShowMode.Always || _isFreeCamera && _config.CommandQueueArrowShowMode == ShowMode.FreeCameraOnly))
+                    if (arrowStart.IsValid && arrowEnd.IsValid && ShouldShowArrow())
                     {
                         var vec = arrowEnd - arrowStart;
                         var length = vec.Normalize();
@@ -991,6 +1056,8 @@ namespace RTSCamera.CommandSystem.View
             bodyFrame.Scale(new Vec3(basicScale, (length - connectPointToArrowEndDistance) * 1.335942f, 1));
             arrowEntity.ArrowHead.SetFrame(ref headFrame);
             arrowEntity.ArrowBody.SetFrame(ref bodyFrame);
+            arrowEntity._isShown = true;
+            arrowEntity._alpha = alpha;
             if ((double)alpha != -1.0)
             {
                 arrowEntity.ArrowHead.SetVisibilityExcludeParents(true);
@@ -1027,10 +1094,9 @@ namespace RTSCamera.CommandSystem.View
 
         private void HideArrowEntities()
         {
-            foreach(var arrowEntity in _arrowEntities)
+            foreach (var arrowEntity in _arrowEntities)
             {
-                arrowEntity.ArrowHead.HideIfNotFadingOut();
-                arrowEntity.ArrowBody.HideIfNotFadingOut(); 
+                arrowEntity.Hide(_isPreviewShown);
             }
         }
 
@@ -1038,7 +1104,7 @@ namespace RTSCamera.CommandSystem.View
         {
             foreach (var formationShape in _formationShapeEntities)
             {
-                formationShape.Hide();
+                formationShape.Hide(_isPreviewShown);
             }
         }
 
