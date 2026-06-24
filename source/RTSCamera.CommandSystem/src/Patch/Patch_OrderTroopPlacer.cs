@@ -1097,7 +1097,16 @@ namespace RTSCamera.CommandSystem.Patch
             if (__instance.SuspendTroopPlacer)
             {
                 foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
-                    orderPositionEntity.HideIfNotFadingOut();
+                {
+                    if (orderPositionEntity.IsVisibleIncludeParents())
+                    {
+                        orderPositionEntity.FadeOut(CommandSystemConfig.Get().MovementTargetFadeOutDuration, false);
+                    }
+                    else
+                    {
+                        orderPositionEntity.HideIfNotFadingOut();
+                    }
+                }
             }
             else
             {
