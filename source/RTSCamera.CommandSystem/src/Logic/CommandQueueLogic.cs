@@ -91,6 +91,10 @@ namespace RTSCamera.CommandSystem.Logic
         public float DistanceWithMaxDuration { get; set; } = 0;
 
         public float MinSpeed { get; set; } = 0;
+
+        public bool IsAdjustingSpeedMessageShown { get; set; } = false;
+
+        public bool IsExecutingOrderMessageShown { get; set; } = false;
         public void UpdateMovementSpeed()
         {
             FormationSpeedLimits.Clear();
@@ -554,17 +558,21 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     Patch_OrderController.SetFacingEnemyTargetFormation(formation, null);
                 }
+                UpdatePendingOrder(formation);
                 var order = GetNextOrderForFormation(formation);
                 bool isApplicable = formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
                 bool isPendingOrderCompleted = IsPendingOrderCompleted(formation);
+                var isReadyToExecuteOrder = IsReadyToExecuteOrder(formation, order);
                 while (TicksToSkip <= 0 && order != null &&
-                    (!isApplicable || isPendingOrderCompleted))
+                    (!isApplicable || isPendingOrderCompleted) && isReadyToExecuteOrder)
                 {
                     ExecuteOrderForFormation(order, formation);
                     OnOrderExecutedForFormation(order, formation);
+                    UpdatePendingOrder(formation);
                     order = GetNextOrderForFormation(formation);
                     isApplicable = formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
                     isPendingOrderCompleted = IsPendingOrderCompleted(formation);
+                    isReadyToExecuteOrder = IsReadyToExecuteOrder(formation, order);
                 }
             }
             catch (Exception e)
@@ -607,11 +615,20 @@ namespace RTSCamera.CommandSystem.Logic
             return !formation.OrderPositionIsValid || CommandQuerySystem.GetQueryForFormation(formation).HasCurrentMovementOrderCompleted;
         }
 
-        public static bool IsPendingOrderCompleted(Formation formation)
+        public static void UpdatePendingOrder(Formation formation)
         {
             if (PendingOrders.TryGetValue(formation, out var order))
             {
                 order.UpdateMovementSpeed();
+                if (order.ShouldAdjustFormationSpeed &&
+                    !order.IsAdjustingSpeedMessageShown &&
+                    order.RemainingFormations.Count == 0 &&
+                    CommandSystemConfig.Get().FormationSpeedSyncMode != FormationSpeedSyncMode.Disabled &&
+                    order.FormationTargetDistances.Count > 1)
+                {
+                    order.IsAdjustingSpeedMessageShown = true;
+                    Utilities.Utility.DisplayAdjustFormationSpeedMessage(order.FormationTargetDistances.Keys);
+                }
                 foreach (var otherFormation in order.SelectedFormations)
                 {
                     if (otherFormation != formation)
@@ -622,13 +639,13 @@ namespace RTSCamera.CommandSystem.Logic
                             // waiting for them to execute this order.
                             if (otherOrder != order)
                             {
-                                return false;
+                                return;
                             }
                             else
                             {
                                 if (!IsMovementOrderCompleted(otherFormation, order))
                                 {
-                                    return false;
+                                    return;
                                 }
                             }
                         }
@@ -637,26 +654,38 @@ namespace RTSCamera.CommandSystem.Logic
                     {
                         if (!IsMovementOrderCompleted(formation, order))
                         {
-                            return false;
+                            return;
                         }
                     }
                 }
 
-                // All formations in the order completed the order.
-                foreach (var otherFormation in order.SelectedFormations)
-                {
-                    if (PendingOrders.TryGetValue(otherFormation, out var otherOrder))
-                    {
-                        PendingOrders.Remove(otherFormation);
-                    }
-                }
+                // Completes the pending order.
+                PendingOrders.Remove(formation);
             }
+        }
+
+        public static bool IsPendingOrderCompleted(Formation formation)
+        {
             if (ShouldSkipCurrentOrders.TryGetValue(formation, out var result) && result)
             {
                 ShouldSkipCurrentOrders[formation] = false;
                 return true;
             }
+            PendingOrders.TryGetValue(formation, out var order);
             return IsMovementOrderCompleted(formation, order);
+        }
+
+        public static bool IsReadyToExecuteOrder(Formation formation, OrderInQueue order)
+        {
+            if (order == null)
+                return false;
+            foreach (var remainingFormation in order.RemainingFormations)
+            {
+                if (PendingOrders.ContainsKey(remainingFormation))
+                    return false;
+            }
+
+            return true;
         }
 
         public static void ExecuteOrderForFormation(OrderInQueue order, Formation formation)
@@ -1054,10 +1083,6 @@ namespace RTSCamera.CommandSystem.Logic
                     FormationPendingOrder(formation, order);
                 }
                 order.UpdateMovementSpeed();
-                if (order.ShouldAdjustFormationSpeed && CommandSystemConfig.Get().FormationSpeedSyncMode != FormationSpeedSyncMode.Disabled && order.FormationTargetDistances.Count > 1)
-                {
-                    Utilities.Utility.DisplayAdjustFormationSpeedMessage(order.FormationTargetDistances.Keys);
-                }
             }
             else
             {

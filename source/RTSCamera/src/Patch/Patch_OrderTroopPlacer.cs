@@ -1,8 +1,10 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.Patch.Fix;
 using System;
 using System.Reflection;
 using TaleWorlds.Engine;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
@@ -25,6 +27,10 @@ namespace RTSCamera.CommandSystem.Patch
                        BindingFlags.Instance | BindingFlags.Public),
                    prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(
                        nameof(Prefix_UpdateFormationDrawing), BindingFlags.Static | BindingFlags.Public)));
+                harmony.Patch(
+                    AccessTools.Method(typeof(OrderTroopPlacer), "GetScreenPoint"),
+                    prefix: new HarmonyMethod(typeof(Patch_OrderTroopPlacer).GetMethod(nameof(Prefix_GetScreenPoint),
+                        BindingFlags.Static | BindingFlags.Public)));
                 return true;
             }
             catch (Exception e)
@@ -47,6 +53,19 @@ namespace RTSCamera.CommandSystem.Patch
                 _displayedOrderMessageForLastOrder.SetValue(missionOrderVM, false);
             }
             return true;
+        }
+
+        public static bool Prefix_GetScreenPoint(OrderTroopPlacer __instance, ref Vec2 __result, ref Vec2 ____deltaMousePosition)
+        {
+            __result = GetMousePositionPixelKeepingPositionDuringDragging(__instance) + ____deltaMousePosition;
+            return false;
+        }
+
+        private static Vec2 GetMousePositionPixelKeepingPositionDuringDragging(OrderTroopPlacer __instance)
+        {
+            return !__instance.MissionScreen.MouseVisible ?
+                Patch_MissionGauntletSingleplayerOrderUIHandler.MousePositionRangedBeforeDragging ?? new Vec2(0.5f, 0.5f) :
+                __instance.Input.GetMousePositionRanged();
         }
     }
 }

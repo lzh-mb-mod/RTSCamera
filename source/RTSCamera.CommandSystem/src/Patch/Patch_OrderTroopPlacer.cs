@@ -58,6 +58,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static readonly MethodInfo _getGroundVec3 = typeof(OrderTroopPlacer).GetMethod("GetGroundedVec3", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly MethodInfo _addOrderPositionEntity = typeof(OrderTroopPlacer).GetMethod("AddOrderPositionEntity", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly MethodInfo _reset = typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _getScreenPoint = typeof(OrderTroopPlacer).GetMethod("GetScreenPoint", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static bool _isInitialized = false;
         private static CurrentCursorState _currentCursorState = CurrentCursorState.Invisible;
@@ -237,11 +238,14 @@ namespace RTSCamera.CommandSystem.Patch
             _cursorState.Invoke(_orderTroopPlacer, new object[] { });
             return _currentCursorState;
         }
-        private static Vec2 GetScreenPoint(OrderTroopPlacer __instance, ref Vec2 ____deltaMousePosition)
+
+        private static Vec2 GetScreenPoint(OrderTroopPlacer __instance)
         {
-            return !__instance.MissionScreen.MouseVisible
-                ? new Vec2(0.5f, 0.5f) + ____deltaMousePosition
-                : __instance.Input.GetMousePositionRanged() + ____deltaMousePosition;
+            var result = (Vec2)_getScreenPoint.Invoke(__instance, new object[] { });
+//#if DEBUG
+//            Utility.DisplayMessage($"{result.x} {result.y}");
+//#endif
+            return result;
         }
 
         private static void BeginFormationDraggingOrClicking(OrderTroopPlacer __instance, ref Vec2 ____deltaMousePosition,
@@ -272,7 +276,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 Vec3 rayBegin;
                 Vec3 rayEnd;
-                __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance, ref ____deltaMousePosition), out rayBegin, out rayEnd);
+                __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance), out rayBegin, out rayEnd);
                 float collisionDistance1;
                 WeakGameEntity collidedEntity1;
                 if (__instance.Mission.Scene.RayCastForClosestEntityOrTerrain(rayBegin, rayEnd, out collisionDistance1, out collidedEntity1, 0.3f, BodyFlags.CommonFocusRayCastExcludeFlags | BodyFlags.BodyOwnerFlora))
@@ -485,7 +489,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static Agent RayCastForAgent(OrderTroopPlacer __instance, float distance, ref Vec2 ____deltaMousePosition)
         {
-            __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance, ref ____deltaMousePosition), out var rayBegin, out var rayEnd);
+            __instance.MissionScreen.ScreenPointToWorldRay(GetScreenPoint(__instance), out var rayBegin, out var rayEnd);
             var agent = __instance.Mission.RayCastForClosestAgent(rayBegin, rayEnd,
                 __instance.MissionScreen.LastFollowedAgent?.Index ?? -1, 0.3f, out var agentDistance);
             if (agentDistance > distance || agent == null)
@@ -787,7 +791,7 @@ namespace RTSCamera.CommandSystem.Patch
             ____isDrawnThisFrame = false;
             if (__instance.SuspendTroopPlacer)
                 return false;
-            
+
             bool isSelectFormationKeyPressed = CommandSystemConfig.Get().IsMouseOverEnabled() &&
                                             CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
                                                 .IsKeyPressed(__instance.Input);
@@ -1032,13 +1036,6 @@ namespace RTSCamera.CommandSystem.Patch
         }
         private static Vec3 GetGroundedVec3(Mission mission, WorldPosition worldPosition)
         {
-            if (mission.IsNavalBattle)
-            {
-                Vec2 asVec2 = worldPosition.AsVec2;
-                var waterLevel = mission.Scene.GetWaterLevelAtPosition(asVec2, true, true);
-                var groundVec3 = worldPosition.GetGroundVec3();
-                return new Vec3(groundVec3.X, groundVec3.Y, TaleWorlds.Library.MathF.Max(waterLevel, groundVec3.Z));
-            }
             if (mission.IsNavalBattle)
             {
 
