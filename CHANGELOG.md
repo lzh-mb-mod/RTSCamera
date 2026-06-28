@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.4.7] - 2026-06-28
+### Fixed
+- Fix the toggle widget indicator for option categories hidden by default.
+
+### Improved
+- Improve order queue preview rendering and interaction.
+
+- Make formations start queued orders together and reduce queued-order message spam.
+
+- Keep the order flag and formation movement target preview at the original screen position while dragging in free camera.
+
+### Changed
+- Remove the fast forward prompt in hideout.
+
 ## [v5.4.6] - 2026-06-23
 ### Added
 - Added options to adjust trigger condition and movement speed of elevated camera.
