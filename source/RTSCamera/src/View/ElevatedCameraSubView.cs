@@ -196,7 +196,7 @@ namespace RTSCamera.View
                     _isElevatedCameraTriggered = true;
                     _fallElapsed = 0f;
                     _riseElapsed = GetRiseElapsed(_resultProgress);
-                    _targetScale = ScaleInConfig;
+                    _inputScale = _targetScale = ScaleInConfig;
                 }
             }
             else if (IsElevatedCameraApplied && IsElevatedCameraNoticable)
