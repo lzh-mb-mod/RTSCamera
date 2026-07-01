@@ -32,6 +32,7 @@ namespace RTSCamera.View
         private float _riseElapsed;
         private float _fallElapsed;
         private float _fallStartProgress = 1f;
+        private float? _resultProgressBeforeKeepingCamera = null;
 
         private bool _isOrderViewOpened = false;
 
@@ -47,6 +48,7 @@ namespace RTSCamera.View
         public bool IsElevatedCameraApplied { get; private set; }
 
         public bool IsElevatedCameraNoticable => IsElevatedCameraEnabled && _resultScale > 5f;
+
         private bool _elevatedMessageShown = false;
 
         private float ScaleInConfig
@@ -195,6 +197,12 @@ namespace RTSCamera.View
                     IsKeepingElevatedCamera = true;
                     _isElevatedCameraTriggered = true;
                     _fallElapsed = 0f;
+
+                    if (_resultProgressBeforeKeepingCamera.HasValue)
+                    {
+                        _resultProgress = _resultProgressBeforeKeepingCamera.Value;
+                        _resultProgressBeforeKeepingCamera = null;
+                    }
                     _riseElapsed = GetRiseElapsed(_resultProgress);
                     _inputScale = _targetScale = ScaleInConfig;
                 }
@@ -203,9 +211,10 @@ namespace RTSCamera.View
             {
                 IsKeepingElevatedCamera = true;
                 _fallElapsed = 0f;
+                _isElevatedCameraTriggered = false;
+                _resultProgressBeforeKeepingCamera = _resultProgress;
                 _riseElapsed = float.MaxValue;
                 _inputScale = _targetScale = _resultScale;
-                _isElevatedCameraTriggered = false;
             }
         }
 
@@ -221,6 +230,7 @@ namespace RTSCamera.View
             _isElevatedCameraTriggered = false;
             _fallStartProgress = _resultProgress;
             _fallElapsed = 0f;
+            _resultProgressBeforeKeepingCamera = null;
 
             _manuallyAdjusted = false;
         }
