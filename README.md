@@ -345,6 +345,9 @@ There're more hotkeys configurable but are disabled by default. You can configur
 
 You can get source code at [github.com](https://github.com/lzh-mb-mod/RTSCamera).
 
+## Donate
+By me a coffee at https://ko-fi.com/lizhenhuan1019
+
 ## Contact with me
 - Email:
 

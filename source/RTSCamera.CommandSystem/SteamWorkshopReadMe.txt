@@ -102,3 +102,6 @@ Feel free to comment below or send email to lizhenhuan1019@outlook.com
 links:
 Nexusmods: https://www.nexusmods.com/mountandblade2bannerlord/mods/355
 source code: https://github.com/lzh-mb-mod/RTSCamera
+
+Donate
+By me a coffee at https://ko-fi.com/lizhenhuan1019

@@ -349,6 +349,9 @@ Command System:
 
 你可以在[github.com](https://github.com/lzh-mb-mod/RTSCamera)获取到源代码。
 
+## 捐赠
+爱发电：https://ifdian.net/a/lizhenhuan1019
+
 ## 联系方式
 - 邮箱：
 
