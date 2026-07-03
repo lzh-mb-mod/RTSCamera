@@ -1,5 +1,16 @@
 # Changelog
 
+## [v5.4.8] - 2026-07-03
+### Added
+- Add an option to highlight units without a formation.
+
+### Fixed
+- Fix elevated camera rising speed so camera elevation matches the expected timing.
+
+- Fix formation target marker updates when charging to a target formation.
+
+- Fix command queue issues after switching the player team.
+
 ## [v5.4.7] - 2026-06-28
 ### Fixed
 - Fix the toggle widget indicator for option categories hidden by default.
