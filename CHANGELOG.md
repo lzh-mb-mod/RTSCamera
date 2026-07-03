@@ -1,5 +1,16 @@
 # Changelog
 
+## [v5.3.31] - 2026-07-03
+### Added
+- Add an option to highlight agents without formation.
+
+### Fixed
+- Fix elevated camera rising speed so the elevation timing matches the expected behavior.
+
+- Fix formation target marker updates when charging to a target formation.
+
+- Fix command queue issues after switching player team.
+
 ## [v5.3.30] - 2026-06-28
 ### Fixed
 - Fix the toggle widget indicator for option categories hidden by default.
