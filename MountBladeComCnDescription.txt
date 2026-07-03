@@ -213,7 +213,7 @@ RTS自由视角[RTS Camera]：
 [url=https://bbs.mountblade.com.cn/download_2068.html]Cinematic Camera：调整相机参数（移动速度、景深等）[/url]
 
 [b][color=Blue]◆捐赠[/color][/b]
-爱发电：https://ifdian.net/a/lizhenhuan1019
+爱发电：[url]https://ifdian.net/a/lizhenhuan1019[/url]
 
 [b][color=Blue]◆改动日志[/color][/b]
 ## [v5.4.8 / v5.3.31] - 2026-07-03
