@@ -80,3 +80,6 @@ Helmsman舵手：如果你用RTS Camera，你不需要使用Helmsman舵手。RTS
 Nexusmods: https://www.nexusmods.com/mountandblade2bannerlord/mods/355
 中文站下载区：https://bbs.mountblade.com.cn/download_2000.html
 源代码：https://github.com/lzh-mb-mod/RTSCamera
+
+捐赠
+爱发电：https://ifdian.net/a/lizhenhuan1019
