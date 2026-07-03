@@ -97,6 +97,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public ShowMode HighlightTroopsWhenShowingIndicators = ShowMode.Always;
 
+        public bool HighlightTroopsWithoutFormation = false;
+
         public MovementTargetHighlightStyle MovementTargetHighlightStyleInCharacterMode = MovementTargetHighlightStyle.NewModelOnly;
 
         public MovementTargetHighlightStyle MovementTargetHighlightStyleInRTSMode = MovementTargetHighlightStyle.AlwaysVisible;
@@ -174,6 +176,7 @@ namespace RTSCamera.CommandSystem.Config
             TroopHighlightStyleInCharacterMode = other.TroopHighlightStyleInCharacterMode;
             TroopHighlightStyleInRTSMode = other.TroopHighlightStyleInRTSMode;
             HighlightTroopsWhenShowingIndicators = other.HighlightTroopsWhenShowingIndicators;
+            HighlightTroopsWithoutFormation = other.HighlightTroopsWithoutFormation;
             MovementTargetHighlightStyleInCharacterMode = other.MovementTargetHighlightStyleInCharacterMode;
             MovementTargetHighlightStyleInRTSMode = other.MovementTargetHighlightStyleInRTSMode;
             MovementTargetHighlightMode = other.MovementTargetHighlightMode;

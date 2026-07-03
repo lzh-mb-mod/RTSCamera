@@ -297,6 +297,8 @@ namespace RTSCamera.CommandSystem.AgentComponents
         {
             try
             {
+                if (_mesh == null)
+                    return;
                 //if (_materialCleared)
                 //{
                 //    RecoverMaterial();

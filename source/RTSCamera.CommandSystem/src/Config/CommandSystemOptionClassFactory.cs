@@ -7,7 +7,6 @@ using MissionSharedLibrary.View.ViewModelCollection.Options.Selection;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Orders;
-using RTSCamera.CommandSystem.Patch;
 using System;
 using System.Collections.Generic;
 using TaleWorlds.Core;
@@ -93,6 +92,13 @@ namespace RTSCamera.CommandSystem.Config
                         new SelectionItem(true, "str_rts_camera_command_system_highlight_troops_when_showing_indicators_option", nameof(ShowMode.FreeCameraOnly)),
                         new SelectionItem(true, "str_rts_camera_command_system_highlight_troops_when_showing_indicators_option", nameof(ShowMode.Always))
                     }), false));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_troops_without_formation"),
+                    GameTexts.FindText("str_rts_camera_command_system_highlight_troops_without_formation_hint"),
+                    () => CommandSystemConfig.Get().HighlightTroopsWithoutFormation, b =>
+                    {
+                        CommandSystemConfig.Get().HighlightTroopsWithoutFormation = b;
+                    }));
                 commandOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_character_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_movement_target_highlight_character_mode_hint"),

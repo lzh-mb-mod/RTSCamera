@@ -35,6 +35,9 @@
     <string id="RTSCameraCommandSystem_highlight_troops_when_showing_indicators" text="Surligner les troupes lors de l’affichage des indicateurs" />
     <string id="RTSCameraCommandSystem_highlight_troops_when_showing_indicators_hint" text="Lorsque activé, les troupes seront surlignées lors de l’affichage des indicateurs de formation." />
 
+    <string id="RTSCameraCommandSystem_highlight_troops_without_formation" text="Surligner les troupes sans formation" />
+    <string id="RTSCameraCommandSystem_highlight_troops_without_formation_hint" text="Lorsque activé, les troupes sans formation peuvent également être surlignées." />
+
     <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode" text="Style de cible de mouvement (Mode personnage)" />
     <string id="RTSCameraCommandSystem_movement_target_highlight_character_mode_hint" text="Style de la cible de mouvement en mode personnage." />
     <string id="RTSCameraCommandSystem_highlight_style_original" text="Original" />
