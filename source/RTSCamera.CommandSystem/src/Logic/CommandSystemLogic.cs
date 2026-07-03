@@ -36,6 +36,10 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     return _config.IsMouseOverEnabled();
                 },
+                shouldHighlightAgentWithoutFormation: () =>
+                {
+                    return _config.HighlightTroopsWithoutFormation;
+                },
                 setAgentColor: (Agent agent,int level, uint? color, bool alwaysVisible, bool updateInstantly) =>
                 {
                     agent.GetComponent<RTSCameraComponent>()?.SetContourColor((int)level, color, alwaysVisible, updateInstantly);
@@ -69,6 +73,10 @@ namespace RTSCamera.CommandSystem.Logic
                 mouseOverEnabled: () =>
                 {
                     return _config.IsMouseOverEnabled();
+                },
+                shouldHighlightAgentWithoutFormation: () =>
+                {
+                    return _config.HighlightTroopsWithoutFormation;
                 },
                 setAgentColor: (Agent agent, int level, uint? color, bool alwaysVisible, bool updateInstantly) =>
                 {
@@ -331,6 +339,14 @@ namespace RTSCamera.CommandSystem.Logic
 
             OutlineColorSubLogic.OnAgentFleeing(affectedAgent);
             GroundMarkerColorSubLogic.OnAgentFleeing(affectedAgent);
+        }
+
+        public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
+        {
+            base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
+
+            OutlineColorSubLogic.OnAgentRemoved(affectedAgent);
+            GroundMarkerColorSubLogic.OnAgentRemoved(affectedAgent);
         }
 
         public void OnEquipItemsFromSpawnEquipmentBegin(Agent agent, Agent.CreationType creationType)

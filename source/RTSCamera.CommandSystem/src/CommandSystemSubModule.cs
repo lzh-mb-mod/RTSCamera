@@ -126,6 +126,9 @@ namespace RTSCamera.CommandSystem
             // limit locked formation speed.
             _successPatch &= Patch_HumanAIComponent.Patch(_harmony);
 
+            // fix issue that formation marker target is not updated when issuing chargewithtarget order to formations
+            _successPatch &= Patch_MissionGauntletFormationMarker.Patch(_harmony);
+
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Command: patch failed"));

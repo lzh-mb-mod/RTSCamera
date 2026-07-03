@@ -324,6 +324,8 @@ namespace RTSCamera.CommandSystem.Logic
             CurrentFormationChanges = new FormationChanges();
             LatestOrderInQueueChanges = new FormationChanges();
             FormationVolleyMode = new Dictionary<Formation, VolleyMode>();
+            MissionLibrary.Event.MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
         }
 
         public static void OnRemoveBehavior()
@@ -340,9 +342,29 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 orderController.OnOrderIssued -= OnOrderIssued;
             }
+            MissionLibrary.Event.MissionEvent.PreSwitchTeam -= OnPreSwitchTeam;
+            MissionLibrary.Event.MissionEvent.PostSwitchTeam -= OnPostSwitchTeam;
         }
 
         public static void AfterStart()
+        {
+            var orderController = Mission.Current?.PlayerTeam?.PlayerOrderController;
+            if (orderController != null)
+            {
+                orderController.OnOrderIssued += OnOrderIssued;
+            }
+        }
+
+        private static void OnPreSwitchTeam()
+        {
+            var orderController = Mission.Current?.PlayerTeam?.PlayerOrderController;
+            if (orderController != null)
+            {
+                orderController.OnOrderIssued -= OnOrderIssued;
+            }
+        }
+
+        private static void OnPostSwitchTeam()
         {
             var orderController = Mission.Current?.PlayerTeam?.PlayerOrderController;
             if (orderController != null)

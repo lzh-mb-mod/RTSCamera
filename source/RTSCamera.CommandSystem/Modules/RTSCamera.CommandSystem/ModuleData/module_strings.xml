@@ -33,6 +33,9 @@
   <string id="str_rts_camera_command_system_highlight_troops_when_showing_indicators_option.FreeCameraOnly" text="{=RTSCameraCommandSystem_highlight_mode_free_camera_only}Free Camera Only" />
   <string id="str_rts_camera_command_system_highlight_troops_when_showing_indicators_option.Always" text="{=RTSCameraCommandSystem_highlight_mode_always}Always" />
 
+  <string id="str_rts_camera_command_system_highlight_troops_without_formation" text="{=RTSCameraCommandSystem_highlight_troops_without_formation}Highlight Troops Without Formation" />
+  <string id="str_rts_camera_command_system_highlight_troops_without_formation_hint" text="{=RTSCameraCommandSystem_highlight_troops_without_formation_hint}When enabled, troops without formation can also be highlighted." />
+
   <string id="str_rts_camera_command_system_movement_target_highlight_character_mode" text="{=RTSCameraCommandSystem_movement_target_highlight_character_mode}Movement Target Style (Character Mode)" />
   <string id="str_rts_camera_command_system_movement_target_highlight_character_mode_hint" text="{=RTSCameraCommandSystem_movement_target_highlight_character_mode_hint}Movement target style in character mode." />
   <string id="str_rts_camera_command_system_movement_target_highlight_style_option.Original" text="{=RTSCameraCommandSystem_highlight_style_original}Original" />
