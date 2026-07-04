@@ -1,107 +1,121 @@
-RTS Command for v1.4.6 (兼容战帆DLC)
+[h1]RTS Command for v1.4.6 (兼容战帆DLC)[/h1]
 (全名 RTS Camera Command System)
 
+[h2]主要功能[/h2]
+[list]
+[*]重做了游戏中的指挥系统。
+[*]高亮指令目标以在远处时也能看见。
+[*]增加了齐射指令。
+[*]带投掷武器的部队在开战指令下会保持正确的距离。
+[*]攻城战中你可以点击攻城器来让你的士兵停止使用该攻城器。
+[*]改进了方阵和圆阵。
+[*]可下达一系列指令，并让你的部队挨个执行这些指令。例如，可让部队沿给定路径移动，然后开始射击或冲锋。
+[*]若你同时移动/旋转多个编队，他们的相对位置和方向会锁定。
+[*]修复了游戏本体中的编队宽度和单位间距的问题。
+[*]修复了游戏本体中远程部队的开战指令可能导致游戏卡死的问题。
+[*]可在下达集中攻击指令的同时维持原本的移动指令。例如，让你的弓箭手待在原地同时攻击指定的目标。
+[*]面朝敌军指令可以选择一个的敌方编队作为目标。
+[*]可用鼠标左键点击指挥界面来选择编队或下达指令。
+[*]加入了空心方阵，替换了原本的实心方阵。
+[/list]
 
-主要功能：
-重做了游戏中的指挥系统。
-高亮指令目标以在远处时也能看见。
-增加了齐射指令。
-带投掷武器的部队在开战指令下会保持正确的距离。
-攻城战中你可以点击攻城器来让你的士兵停止使用该攻城器。
-改进了方阵和圆阵。
-可下达一系列指令，并让你的部队挨个执行这些指令。例如，可让部队沿给定路径移动，然后开始射击或冲锋。
-若你同时移动/旋转多个编队，他们的相对位置和方向会锁定。
-修复了游戏本体中的编队宽度和单位间距的问题。
-修复了游戏本体中远程部队的开战指令可能导致游戏卡死的问题。
-可在下达集中攻击指令的同时维持原本的移动指令。例如，让你的弓箭手待在原地同时攻击指定的目标。
-面朝敌军指令可以选择一个的敌方编队作为目标。
-可用鼠标左键点击指挥界面来选择编队或下达指令。
-加入了空心方阵，替换了原本的实心方阵。
+[h2]推荐[/h2]
+[list]
+[*]RTS Camera：RTS mod 的另一部分，提供指挥时切换到自由视角的功能。[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3747725551]Steam Workshop[/url]
+[/list]
 
+[h2]前置依赖[/h2]
+[list]
+[*]不需要 ButterLib、MCM 或 UIExtenderEx。
+[*]如果你启用了 War Sails DLC，请在 mod 列表中把它放在本 mod 之前而非之后。
+[/list]
 
-推荐：
-RTS Camera：RTS mod的另一部分，提供指挥时切换到自由视角的功能：https://steamcommunity.com/sharedfiles/filedetails/?id=3747725551
+[h2]游戏兼容性[/h2]
+与游戏本体 v1.4.5-v1.4.6 兼容，并兼容战帆 DLC。其它版本：
+[list]
+[*]v1.2.12: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2879991827]Steam Workshop[/url]
+[*]v1.3.4-v1.3.13: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285]Steam Workshop[/url]
+[*]v1.4.5-v1.4.6: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3747771970]Steam Workshop[/url]
+[/list]
 
+[h2]Mod兼容性[/h2]
+[list]
+[*][b]与 "RTS Camera Universal" 不兼容。这个 mod 是其他人把我的旧版 RTS 合在了一起打包，导致与本 mod 冲突。请不要和这个 mod 一起用。[/b]
+[/list]
 
-前置依赖：
-不需要任何前置如ButterLib/MCM/UIExtenderEx。
-如果你启用了War Sails DLC，请在mod列表中把它放在本mod之前而非之后。
+[h2]存档兼容性[/h2]
+这个 mod 不会向存档读写任何东西，放心随时启用随时卸载。
 
+[h2]使用指南[/h2]
+请在启动器中启用 "RTSCamera" 和 "RTSCamera.CommandSystem"。
 
-兼容性：
-与游戏本体v1.4.5-v1.4.6兼容，并兼容战帆DLC。其它版本：
-v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991827
-v1.3.4-v1.3.13: https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285
-v1.4.5-v1.4.6: https://steamcommunity.com/sharedfiles/filedetails/?id=3747771970
+完整指南：[url=https://github.com/lzh-mb-mod/RTSCamera/blob/master/README.zh-CN.md]README.zh-CN.md[/url]
 
+[list]
+[*]按住 Shift 并下达指令，可将指令添加到指令队列。部队会挨个执行队列中的指令。
+[*]若你同时移动/旋转多个编队，他们的相对位置和方向会锁定。
+[*]当你在地面拖动部队时，按住 Ctrl 可锁定编队宽度和相对位置。
+[*]按住 Alt 可禁用锁定，回退到游戏默认行为。
+[*]点击敌方编队同时按住 Alt 键，可在下达集中攻击指令的同时维持原有的移动指令不变。
+[*]指挥时对着敌方士兵按下鼠标中键可让你的编队攻击该士兵所在的编队。
+[*]对着己方士兵按下鼠标中键可选择该编队。
+[*]被集中攻击的敌方编队会用红色轮廓标出。
+[*]己方选中的编队会以绿色轮廓标出。
+[*]己方被集中攻击的编队会以深蓝色轮廓标出。
+[*]自动齐射：按 F3 F6（传统命令布局下 F8 F1）或 H。士兵会瞄准并等待其他士兵，当大多数士兵准备好以后开火。
+[*]手动齐射：按 F3 F7（传统命令布局下 F8 F2）或 J。士兵会瞄准并等待你的开火指令。
+[*]齐射开火：按 F3 F8（传统命令布局下 F8 F3）或 K。让手动齐射下的士兵开火。
+[*]在场景中按 L 键可打开配置菜单。
+[/list]
 
-存档兼容性：
-这个mod不会向存档读写任何东西，放心随时启用随时卸载。
+[h2]快捷键列表[/h2]
+[list]
+[*]鼠标中键 - 选择/攻击编队
+[*]Alt + 鼠标中键 - 攻击敌人同时维持原有移动指令
+[*]左 Alt 或右 Alt - 攻击敌方编队时保持移动指令；切换编队锁定行为
+[*]左 Shift 或右 Shift - 将指令添加到队列
+[*]左 Ctrl 或右 Ctrl - 拖动时保持编队宽度不变
+[*]H - 自动齐射
+[*]J - 手动齐射
+[*]K - 齐射开火
+[*]L - 打开配置菜单
+[*]所有快捷键均可在配置菜单中设置。
+[/list]
 
+[h2]更多细节[/h2]
+[b]改进了方阵和圆阵：[/b]
+[list]
+[*]当在方阵/圆阵和其它阵型间切换时，方阵/圆阵的最外圈士兵数量会尽可能保持和线阵/盾墙/散阵的第一排士兵数量一致。
+[*]这会让阵型更快成型，避免士兵挤成一团。
+[*]在游戏本体中当方阵士兵数是平方数时，最中心的士兵位置有问题。RTS 修复了这个问题。
+[*]玩家可使用空心方阵。对 AI 不生效。
+[*]当阵型切换到圆阵时，圆阵会更加紧凑。可在选项中禁用这个行为。
+[/list]
 
-使用指南：
-请在启动器中启用"RTSCamera"和"RTSCamera.CommandSystem".
-完整指南：https://github.com/lzh-mb-mod/RTSCamera/blob/master/README.zh-CN.md
-
-按住`Shift`并下达指令，可将指令添加到指令队列。部队会挨个执行队列中的指令。
-若你同时移动/旋转多个编队，他们的相对位置和方向会锁定。
-    - 当你在地面拖动部队时，按住`Ctrl`可锁定编队宽度和相对位置。
-    - 按住`Alt`可禁用锁定，回退到游戏默认行为。
-点击敌方编队同时按住`Alt`键，可在下达集中攻击指令的同时维持原有的移动指令不变。
-指挥时对着敌方士兵按下鼠标中键可让你的编队攻击该士兵所在的编队。
-对着己方士兵按下鼠标中键可选择该编队。
-被集中攻击的敌方编队会用红色轮廓标出。
-己方选中的编队会以绿色轮廓标出。
-己方被集中攻击的编队会以深蓝色轮廓标出。
-
-自动齐射：按`F3 F6`（传统命令布局下`F8 F1`）或`H`。士兵会瞄准并等待其他士兵，当大多数士兵准备好以后开火。
-手动齐射：按`F3 F7`（传统命令布局下`F8 F2`）或`J`。士兵会瞄准并等待你的开火指令。
-齐射开火：按`F3 F8`（传统命令布局下`F8 F3`）或`K`。让手动齐射下的士兵开火。
-
-在场景中按L键可打开配置菜单。
-
-
-快捷键列表：
-鼠标中键       - 选择/攻击编队
-Alt + 鼠标中键 - 攻击敌人同时维持原有移动指令
-左Alt或右Alt - 攻击敌方编队时保持移动指令；切换编队锁定行为。
-左Shift或右Shift - 将指令添加到队列。
-左Ctrl或右Ctrl - 拖动时保持编队宽度不变。
-H             -  自动齐射。
-J             -  手动齐射。
-K             -  齐射开火
-L             - 打开配置菜单
-所有快捷键均可在配置菜单中设置。
-
-
-更多细节：
-改进了方阵和圆阵：
-  - 当在方阵/圆阵和其它阵型间切换时，方阵/圆阵的最外圈士兵数量会尽可能保持和线阵/盾墙/散阵的第一排士兵数量一致。
-    这会让阵型更快成型，避免士兵挤成一团。
-  - 在游戏本体中当方阵士兵数是平方数时，最中心的士兵位置有问题。RTS修复了这个问题。
-  - 玩家可使用空心方阵。对AI不生效。
-  - 当阵型切换到圆阵时，圆阵会更加紧凑。可在选项中禁用这个行为。
-
-
-问题排查
-如果进游戏以后显示"text with id xxxxx does't exist":
-    如果你启用了权力的游戏，请在启动器中把RTS Camera, RTS Camera Command System移到权游之前。至少在目前的权游6.2版本，它里面的文件有bug，导致后续所有mod都不能正确加载字符串。
+[h2]问题排查[/h2]
+如果进游戏以后显示 "text with id xxxxx does't exist"：
+[list]
+[*]如果你启用了权力的游戏，请在启动器中把 RTS Camera、RTS Camera Command System 移到权游之前。至少在目前的权游 6.2 版本，它里面的文件有 bug，导致后续所有 mod 都不能正确加载字符串。
+[/list]
 
 如果游戏启动时崩溃，请检查下面列出的事项：
-1. 检查Modules文件夹，确保没有RTSCamera或者RTSCamera.CommandSystem。如果你使用创意工坊的mod，Modules文件夹不应有同一mod。
-2. 如果你使用了下面任何一个mod，请确保它们都更新到最新了
-- BattleMiniMap战斗小地图
-- ImprovedCombatAI改进的战斗AI
-- CinematicCamera电影镜头
+[list]
+[*]检查 Modules 文件夹，确保没有 RTSCamera 或者 RTSCamera.CommandSystem。如果你使用创意工坊的 mod，Modules 文件夹不应有同一 mod。
+[*]如果你使用了下面任何一个 mod，请确保它们都更新到最新了：
+[*]BattleMiniMap 战斗小地图
+[*]ImprovedCombatAI 改进的战斗AI
+[*]CinematicCamera 电影镜头
+[/list]
 
-问题反馈和建议
-可直接留言或发邮件到lizhenhuan1019@outlook.com
+[h2]问题反馈和建议[/h2]
+可直接留言或发邮件到 [url=mailto:lizhenhuan1019@outlook.com]lizhenhuan1019@outlook.com[/url]
 
+[h2]链接[/h2]
+[list]
+[*]Nexusmods: [url=https://www.nexusmods.com/mountandblade2bannerlord/mods/355]RTS Camera[/url]
+[*]中文站下载区: [url=https://bbs.mountblade.com.cn/download_2000.html]骑砍中文站[/url]
+[*]源代码: [url=https://github.com/lzh-mb-mod/RTSCamera]GitHub[/url]
+[/list]
 
-链接：
-Nexusmods: https://www.nexusmods.com/mountandblade2bannerlord/mods/355
-中文站下载区: https://bbs.mountblade.com.cn/download_2000.html
-源代码：https://github.com/lzh-mb-mod/RTSCamera
-
-捐赠
-爱发电：https://ifdian.net/a/lizhenhuan1019
+[h2]捐赠[/h2]
+[url=https://ifdian.net/a/lizhenhuan1019]爱发电[/url]
