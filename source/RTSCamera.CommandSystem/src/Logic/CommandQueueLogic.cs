@@ -772,7 +772,7 @@ namespace RTSCamera.CommandSystem.Logic
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
                             case OrderType.ChargeWithTarget:
-                                formation.SetMovementOrder(MovementOrder.MovementOrderChargeToTarget(formation));
+                                formation.SetMovementOrder(MovementOrder.MovementOrderChargeToTarget(order.TargetFormation));
                                 if (order.TargetFormation != null)
                                 {
                                     Utilities.Utility.DisplayFormationChargeMessage(formation);
