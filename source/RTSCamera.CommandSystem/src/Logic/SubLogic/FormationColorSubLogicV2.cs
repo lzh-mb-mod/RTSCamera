@@ -476,7 +476,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         public void OnUnitRemoved(Formation formation, Agent agent)
         {
-            if (agent.State != AgentState.Active || Mission.Current.IsMissionEnding || !Mission.Current.IsDeploymentFinished)
+            if (agent.State != AgentState.Active || Mission.Current.IsMissionEnding/* || !Mission.Current.IsDeploymentFinished*/)
                 return;
             if (_agentsNewlyAddedToFormations.Count > 0 && _agentsNewlyAddedToFormations.Peek() == agent)
             {
