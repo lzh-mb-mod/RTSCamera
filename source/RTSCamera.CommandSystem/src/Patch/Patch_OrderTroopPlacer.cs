@@ -80,6 +80,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static Material _newModelMaterial;
         private static Material _alwaysVisibleMaterial;
         private static bool _skipDrawingForDestinationForOneTick;
+        private static bool _isDrawingForDestinationInLastTick;
         private static Timer _clearMouseOverFormationTimer;
         private static Timer _changeMouseOverFormationTimer;
 
@@ -834,6 +835,7 @@ namespace RTSCamera.CommandSystem.Patch
                         ref ____formationDrawingMode, ____isMouseDown);
                 }
             }
+            bool isDrawingForDestination = false;
             if ((__instance.Input.IsKeyDown(InputKey.LeftMouseButton) || __instance.Input.IsKeyDown(InputKey.ControllerRTrigger)) && ____isMouseDown)
             {
                 if (___formationDrawTimer.Check(MBCommon.GetApplicationTime()) &&
@@ -896,7 +898,9 @@ namespace RTSCamera.CommandSystem.Patch
             else
             {
                 _updateFormationDrawingForDestination.Invoke(__instance, new object[] { false });
+                isDrawingForDestination = true;
             }
+            _isDrawingForDestinationInLastTick = isDrawingForDestination;
 
             UpdateMouseOverFormation(____mouseOverFormation);
             foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
@@ -1090,13 +1094,19 @@ namespace RTSCamera.CommandSystem.Patch
         {
             if (__instance.SuspendTroopPlacer)
             {
-                foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
+                if (_isDrawingForDestinationInLastTick)
                 {
-                    if (orderPositionEntity.IsVisibleIncludeParents())
+                    foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
                     {
-                        orderPositionEntity.FadeOut(CommandSystemConfig.Get().MovementTargetFadeOutDuration, false);
+                        if (orderPositionEntity.IsVisibleIncludeParents())
+                        {
+                            orderPositionEntity.FadeOut(CommandSystemConfig.Get().MovementTargetFadeOutDuration, false);
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
                     {
                         orderPositionEntity.HideIfNotFadingOut();
                     }
@@ -1104,6 +1114,8 @@ namespace RTSCamera.CommandSystem.Patch
             }
             else
             {
+                // Optimize:
+                // Keep calling HideIfNotFadingOut in every tick may take more performance
                 foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
                     orderPositionEntity.SetVisibilityExcludeParents(false);
             }
