@@ -100,6 +100,7 @@ namespace RTSCamera
                 _successPatch &= Patch_OrderItemBaseVM.Patch(_harmony);
                 _successPatch &= Patch_OrderTroopItemVM.Patch(_harmony);
                 _successPatch &= Patch_BattleEndLogic.Patch(_harmony);
+                _successPatch &= Patch_MissionFormationMarkerVM.Patch(_harmony);
                 // naval dlc
                 if (IsNavalInstalled)
                 {
@@ -198,15 +199,30 @@ namespace RTSCamera
         {
             base.OnGameStart(game, gameStarterObject);
 
-            game.GameTextManager.LoadGameTexts();
-            AddCampaignBehavior(gameStarterObject);
+            try
+            {
+                game.GameTextManager.LoadGameTexts();
+                AddCampaignBehavior(gameStarterObject);
+            }
+            catch (Exception e)
+            {
+                MBDebug.Print(e.ToString());
+                InformationManager.DisplayMessage(new InformationMessage($"RTS Camera: catch exception: {e}"));
+            }
         }
 
         public override void RegisterSubModuleObjects(bool isSavedCampaign)
         {
             base.RegisterSubModuleObjects(isSavedCampaign);
-            RTSCameraSkillEffects.Initialize();
-
+            try
+            {
+                RTSCameraSkillEffects.Initialize();
+            }
+            catch (Exception e)
+            {
+                MBDebug.Print(e.ToString());
+                InformationManager.DisplayMessage(new InformationMessage($"RTS Camera: failed to register skill effects: {e}"));
+            }
         }
 
         private void AddCampaignBehavior(object gameStarter)
