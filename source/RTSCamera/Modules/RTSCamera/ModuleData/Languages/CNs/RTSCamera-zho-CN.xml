@@ -1,97 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+<base type="string">
   <tags>
     <tag language="简体中文" />
   </tags>
   <strings>
     <string id="RTSCamera_option_class" text="自由视角" />
-
     <string id="RTSCamera_command_battle" text="(RTS Camera)指挥这场战斗。" />
     <string id="RTSCamera_cannot_control_agent_in_command_mode" text="指挥模式下无法控制单位。" />
     <string id="RTSCamera_command_mode_tool_tip" text="你受伤了。你可能可以指挥你的部队，但你无法直接参与战斗。" />
-
     <string id="RTSCamera_switch_camera_hint" text="战斗中按{KeyName}来切换到自由视角" />
-
-    <string id="RTSCamera_switch_free_camera_hint" text="在自由视角和玩家视角间切换。" />
-    <string id="RTSCamera_use_free_camera_by_default_hint" text="进入战斗时自动切换到自由视角。" />
-    <string id="RTSCamera_raised_height_hint" text="切换到自由视角后相机提高的高度。" />
-    <string id="RTSCamera_limit_camera_distance_hint" text="根据战术和侦察技能限制相机距离" />
-    <string id="RTSCamera_toggle_pause_hint" text="暂停游戏或取消暂停游戏。" />
-    <string id="RTSCamera_slow_motion_hint" text="是否启用慢速模式(调整时间的流逝速度)。" />
-    <string id="RTSCamera_slow_motion_factor_hint" text="时间流逝速度倍率。" />
-    <string id="RTSCamera_player_controller_in_free_camera_hint" text="自由视角中玩家角色的控制模式。如果设为无，你的角色不会被控制。如果设为AI，你的角色会被AI控制。如果设为玩家，你仍然可以直接控制你的角色。" />
-    <string id="RTSCamera_player_formation_hint" text="将玩家分配到指定的编队。" />
-    <string id="RTSCamera_watch_another_hero_hint" text="观察一个你选择的英雄。" />
-    <string id="RTSCamera_select_character_hint" text="用鼠标选择一个角色，然后你可以将相机对准它或者控制它。" />
-    <string id="RTSCamera_prefer_unit_in_same_formation_hint" text="当寻找可控制的单位时倾向于和玩家在同一编队中的单位。" />
-    <string id="RTSCamera_control_troops_in_player_party_only_hint" text="当寻找可控制的单位时只考虑玩家部队内的单位。" />
-    <string id="RTSCamera_ignore_retreating_troops_hint" text="当寻找可控制的单位时忽略正在撤退的单位" />
-    <string id="RTSCamera_constant_speed_hint" text="镜头移动速度不再受高度影响。" />
-    <string id="RTSCamera_camera_height_follows_terrain_hint" text="镜头高度会随地形变化" />
-    <string id="RTSCamera_ignore_terrain_hint" text="启用后镜头不再受到地面或建筑的阻挡。" />
-    <string id="RTSCamera_ignore_boundaries_hint" text="启用后镜头不再受到地图边界的限制。" />
-    <string id="RTSCamera_elevated_camera_rise_delay_hint" text="抬高视角开始明显上升前的延迟时间（秒）。" />
-    <string id="RTSCamera_elevated_camera_rise_duration_hint" text="抬高视角上升到接近最大高度所需的时间（秒）。" />
-    <string id="RTSCamera_elevated_camera_off_duration_hint" text="抬高视角恢复到接近正常高度所需的时间（秒）。" />
-    <string id="RTSCamera_display_message_hint" text="是否显示本mod的消息。" />
-    <string id="RTSCamera_toggle_ui_hint" text="开关游戏的HUD，用于制作视频。" />
     <string id="RTSCamera_disable_death_hint" text="所有单位无敌不会阵亡，用于制作视频。" />
     <string id="RTSCamera_switch_team_hint" text="交换玩家所在的队伍，用于制作视频。" />
-
-    <string id="RTSCamera_createdefaultconfig" text="创建默认配置" />
-    <string id="RTSCamera_foundoldconfig" text="找到旧配置文件: " />
-    <string id="RTSCamera_deleteoldconfig" text="删除旧配置文件" />
-    <string id="RTSCamera_renameoldconfig" text="将旧配置文件重命名为新名称..." />
-
     <string id="RTSCamera_controltroop" text="正在控制：{ControlledTroopName}。" />
     <string id="RTSCamera_notrooptocontrol" text="无可控制的下属士兵。" />
     <string id="RTSCamera_deathdisabled" text="已启用全员无敌。" />
     <string id="RTSCamera_deathenabled" text="已禁用全员无敌。" />
-
-    <string id="RTSCamera_savedconfig" text="保存配置文件成功。" />
-    <string id="RTSCamera_saveconfigfailed" text="保存配置文件失败。" />
-    <string id="RTSCamera_exceptioncaught" text="捕获到异常：" />
-    <string id="RTSCamera_loadedconfig" text="加载配置成功。" />
-    <string id="RTSCamera_loadconfigfailed" text="加载配置文件失败。" />
-
     <string id="RTSCamera_camera_options" text="镜头选项" />
+    <string id="RTSCamera_switchfreecamera" text="切换自由视角" />
+    <string id="RTSCamera_switch_free_camera_hint" text="在自由视角和玩家视角间切换。" />
     <string id="RTSCamera_default_to_free_camera" text="默认自由视角" />
     <string id="RTSCamera_default_to_free_camera_hint" text="默认使用自由视角的时机" />
     <string id="RTSCamera_default_to_free_camera_option_never" text="从不" />
     <string id="RTSCamera_default_to_free_camera_option_deployment_stage" text="部署阶段" />
     <string id="RTSCamera_controller_default_to_free_camera_option_always" text="总是" />
-    <string id="RTSCamera_switchfreecamera" text="切换自由视角" />
     <string id="RTSCamera_raisedheightafterswitchingtofreecamera" text="相机提高的高度" />
+    <string id="RTSCamera_raised_height_hint" text="切换到自由视角后相机提高的高度。" />
     <string id="RTSCamera_limit_camera_distance" text="限制相机距离" />
+    <string id="RTSCamera_limit_camera_distance_hint" text="根据战术和侦察技能限制相机距离" />
     <string id="RTSCamera_camera_distance_limit" text="相机距离限制" />
     <string id="RTSCamera_constantspeed" text="恒定镜头速度" />
+    <string id="RTSCamera_constant_speed_hint" text="镜头移动速度不再受高度影响。" />
     <string id="RTSCamera_camera_height_follows_terrain" text="镜头高度跟随地形" />
+    <string id="RTSCamera_camera_height_follows_terrain_hint" text="镜头高度会随地形变化" />
     <string id="RTSCamera_ignore_terrain" text="镜头忽略地形" />
+    <string id="RTSCamera_ignore_terrain_hint" text="启用后镜头不再受到地面或建筑的阻挡。" />
     <string id="RTSCamera_ignore_boundaries" text="镜头忽略边界限制" />
+    <string id="RTSCamera_ignore_boundaries_hint" text="启用后镜头不再受到地图边界的限制。" />
     <string id="RTSCamera_elevated_camera_rise_delay" text="抬高视角上升延迟" />
+    <string id="RTSCamera_elevated_camera_rise_delay_hint" text="抬高视角开始明显上升前的延迟时间（秒）。" />
     <string id="RTSCamera_elevated_camera_rise_duration" text="抬高视角上升时长" />
+    <string id="RTSCamera_elevated_camera_rise_duration_hint" text="抬高视角上升到接近最大高度所需的时间（秒）。" />
     <string id="RTSCamera_elevated_camera_off_duration" text="抬高视角关闭持续时间" />
+    <string id="RTSCamera_elevated_camera_off_duration_hint" text="抬高视角恢复到接近正常高度所需的时间（秒）。" />
     <string id="RTSCamera_follow_facing_direction" text="跟随面朝方向" />
     <string id="RTSCamera_follow_facing_direction_hint" text="切换到角色时，是否旋转相机以跟随角色的面朝方向。" />
     <string id="RTSCamera_follow_facing_direction_option_never" text="从不" />
     <string id="RTSCamera_follow_facing_direction_option_control_new_unit_only" text="仅当控制新单位时（推荐）" />
     <string id="RTSCamera_follow_facing_direction_option_always" text="总是" />
-
     <string id="RTSCamera_control_options" text="控制选项" />
     <string id="RTSCamera_player_controller_in_free_camera" text="玩家角色的控制模式" />
+    <string id="RTSCamera_player_controller_in_free_camera_hint" text="自由视角中玩家角色的控制模式。如果设为无，你的角色不会被控制。如果设为AI，你的角色会被AI控制。如果设为玩家，你仍然可以直接控制你的角色。" />
     <string id="RTSCamera_controller_type_none" text="无" />
     <string id="RTSCamera_controller_type_AI" text="AI（推荐）" />
     <string id="RTSCamera_controller_type_player" text="玩家" />
     <string id="RTSCamera_playerformation" text="玩家编队" />
     <string id="RTSCamera_player_formation_unset" text="未设定" />
+    <string id="RTSCamera_player_formation_hint" text="将玩家分配到指定的编队。" />
     <string id="RTSCamera_assign_player_formation" text="玩家编队分配方式" />
     <string id="RTSCamera_assign_player_formation_hint" text="在部署阶段将玩家添加到哪个编队。" />
     <string id="RTSCamera_assign_player_formation_default_or_general_formation" text="默认或将领编队" />
     <string id="RTSCamera_assign_player_formation_default" text="默认编队" />
     <string id="RTSCamera_assign_player_formation_overwrite" text="上一个选项中的编队" />
     <string id="RTSCamera_watchanotherhero" text="观察另一个英雄单位" />
+    <string id="RTSCamera_watch_another_hero_hint" text="观察一个你选择的英雄。" />
     <string id="RTSCamera_select_character" text="选择角色" />
+    <string id="RTSCamera_select_character_hint" text="用鼠标选择一个角色，然后你可以将相机对准它或者控制它。" />
     <string id="RTSCamera_control_ally_after_death_timing" text="阵亡后控制队友" />
     <string id="RTSCamera_control_ally_after_death_timing_hint" text="什么条件下，阵亡后自动控制你的一个队友来继续战斗。" />
     <string id="RTSCamera_control_ally_after_death_timing_option_never" text="从不" />
@@ -99,57 +72,61 @@
     <string id="RTSCamera_control_ally_after_death_timing_option_always" text="总是（推荐）" />
     <string id="RTSCamera_control_ally_after_death_timing_prompt" text="你想启用“死后控制队友”吗？" />
     <string id="RTSCamera_prefer_unit_in_same_formation" text="优先控制同编队内的单位" />
+    <string id="RTSCamera_prefer_unit_in_same_formation_hint" text="当寻找可控制的单位时倾向于和玩家在同一编队中的单位。" />
     <string id="RTSCamera_controltroopsinplayerpartyonly" text="只控制属于玩家部队的单位" />
+    <string id="RTSCamera_control_troops_in_player_party_only_hint" text="当寻找可控制的单位时只考虑玩家部队内的单位。" />
     <string id="RTSCamera_limited_to_player_party_only" text="只控制属于玩家部队的单位已启用。只会考虑玩家部队内的单位作为控制目标。" />
     <string id="RTSCamera_controlheroonly" text="只控制英雄单位" />
     <string id="RTSCamera_controlheroonlyhint" text="只考虑英雄单位作为控制目标。" />
     <string id="RTSCamera_limitedtoheroonly" text="只控制英雄单位已启用。只会考虑英雄单位作为控制目标。" />
     <string id="RTSCamera_ignoreretreatingtroops" text="忽略正在撤退的单位" />
-
-    <string id="RTSCamera_miscellaneous_options" text="杂项" />
+    <string id="RTSCamera_ignore_retreating_troops_hint" text="当寻找可控制的单位时忽略正在撤退的单位" />
+    <string id="RTSCamera_time_speed_options" text="时间速度选项" />
     <string id="RTSCamera_togglepause" text="切换暂停" />
+    <string id="RTSCamera_toggle_pause_hint" text="暂停游戏或取消暂停游戏。" />
     <string id="RTSCamera_slowmotionmode" text="慢速模式" />
+    <string id="RTSCamera_slow_motion_hint" text="是否启用慢速模式(调整时间的流逝速度)。" />
     <string id="RTSCamera_slowmotionfactor" text="慢速倍率" />
+    <string id="RTSCamera_slow_motion_factor_hint" text="时间流逝速度倍率。" />
     <string id="RTSCamera_slowmotiononrtsview" text="自动慢速模式" />
     <string id="RTSCamera_slowmotiononrtsviewhint" text="自由视角中自动切换慢速模式" />
-
+    <string id="RTSCamera_slow_motion_hotkey_mode" text="慢速快捷键触发方式" />
+    <string id="RTSCamera_slow_motion_hotkey_mode_hint" text="快捷键如何触发慢速模式。" />
+    <string id="RTSCamera_hotkey_mode_toggle" text="切换" />
+    <string id="RTSCamera_hotkey_mode_hold" text="按住" />
+    <string id="RTSCamera_fast_forward_hotkey_mode" text="快速快捷键触发方式" />
+    <string id="RTSCamera_fast_forward_hotkey_mode_hint" text="快捷键如何触发快速模式。" />
+    <string id="RTSCamera_miscellaneous_options" text="杂项" />
+    <string id="RTSCamera_displaymodmessage" text="显示mod消息" />
+    <string id="RTSCamera_display_message_hint" text="是否显示本mod的消息。" />
+    <string id="RTSCamera_toggleui" text="切换HUD" />
+    <string id="RTSCamera_toggle_ui_hint" text="开关游戏的HUD，用于制作视频。" />
     <string id="RTSCamera_naval_options" text="战帆选项" />
     <string id="RTSCamera_player_ship_controller_in_free_camera" text="自由视角下的玩家船只控制" />
     <string id="RTSCamera_player_ship_controller_in_free_camera_hint" text="自由视角下的玩家船只控制模式。如果设置为无，玩家船只将不会被控制。如果设置为AI，AI将控制玩家船只。如果设置为玩家，您仍然可以直接控制您的船只。" />
-
     <string id="RTSCamera_steering_mode_when_player_stops_piloting" text="玩家停止开船时的控船方式" />
     <string id="RTSCamera_steering_mode_when_player_stops_piloting_hint" text="当玩家停止开船时，船只将如何被控制。如果设置为无，船只将保持不受控制。如果设置为士兵，船只将由士兵驾驶并接受您的指令。如果设置为委派指挥，船只将由士兵驾驶并接受来自AI的船只指令。" />
     <string id="RTSCamera_steering_mode_none" text="无（默认）" />
     <string id="RTSCamera_steering_mode_soldier" text="士兵" />
     <string id="RTSCamera_steering_mode_delegate_command" text="委派指挥" />
-
     <string id="RTSCamera_switch_retreat_and_delegate_command" text="交换撤退和委派命令" />
     <string id="RTSCamera_switch_retreat_and_delegate_command_hint" text="交换撤退和委派命令的快捷键和UI。这样，委派命令就会绑定到F6。" />
-
     <string id="RTSCamera_ship_need_to_be_connected" text="船只必须连接到您的船只才能被俘获。" />
-
     <string id="RTSCamera_unbalancedoptionsdescription" text="作弊选项" />
     <string id="RTSCamera_disabledeath" text="全员无敌" />
     <string id="RTSCamera_enable_all_invulnerable_hotkey" text="启用全员无敌的按键" />
     <string id="RTSCamera_switchteam" text="切换队伍" />
     <string id="RTSCamera_enable_switch_team_hotkey" text="启用切换队伍的按键" />
-
     <string id="RTSCamera_missionpaused" text="已暂停关卡。" />
     <string id="RTSCamera_missioncontinue" text="关卡继续。" />
-
-    <string id="RTSCamera_slowmotionenabled" text="启用变速模式。" />
+    <string id="RTSCamera_slowmotionenabled" text="启用慢速模式。" />
     <string id="RTSCamera_normalmodeenabled" text="启用正常速度。" />
-
     <string id="RTSCamera_fastforwardenabled" text="启用快速模式。" />
     <string id="RTSCamera_fastforwarddisabled" text="禁用快速模式。" />
-
     <string id="RTSCamera_playeragentdead" text="玩家控制的角色已受伤。" />
     <string id="RTSCamera_switchtoplayer" text="切换到玩家角色。" />
     <string id="RTSCamera_switchtofreecamera" text="切换到自由视角。" />
     <string id="RTSCamera_elevated_camera_hint" text="下达指令时抬高视角。" />
-
-    <string id="RTSCamera_displaymodmessage" text="显示mod消息" />
-    <string id="RTSCamera_toggleui" text="切换HUD" />
     <string id="RTSCamera_elevated_camera_trigger_mode" text="抬高视角触发模式" />
     <string id="RTSCamera_elevated_camera_trigger_mode_hint" text="下达指令时，选择在什么情况下触发抬高视角。" />
     <string id="RTSCamera_elevated_camera_trigger_mode_option_never" text="从不" />
@@ -171,15 +148,13 @@
     <string id="RTSCamera_fast_forward_hideout_option_until_boss_fight" text="直到Boss战" />
     <string id="RTSCamera_fast_forward_hideout_option_always" text="总是" />
     <string id="RTSCamera_fast_forward_hideout_prompt" text="你想给藏身处的战斗快进吗？" />
-
     <string id="RTSCamera_ai_control_ship_on" text="士兵开船开启" />
     <string id="RTSCamera_player_control_ship_off" text="士兵开船关闭" />
     <string id="RTSCamera_soldiers_start_controlling_ship" text="士兵正在开船。" />
     <string id="RTSCamera_soldiers_stop_controlling_ship" text="士兵停止开船。" />
-
     <string id="RTSCamera_hotkeycategory" text="自由视角按键" />
     <string id="RTSCamera_pausekey" text="暂停" />
-    <string id="RTSCamera_slowmotionkey" text="变速模式" />
+    <string id="RTSCamera_slowmotionkey" text="慢速模式" />
     <string id="RTSCamera_fastforwardkey" text="快进" />
     <string id="RTSCamera_freecamerakey" text="自由视角" />
     <string id="RTSCamera_disabledeathkey" text="全员无敌" />
@@ -196,7 +171,6 @@
     <string id="RTSCamera_camera_decrease_camera_speed" text="降低相机速度" />
     <string id="RTSCamera_camera_reset_camera_speed" text="重置相机速度" />
     <string id="RTSCamera_camera_move_by_mouse" text="通过鼠标移动相机" />
-
     <string id="RTSCamera_slowmotionkey_description" text="启用慢速模式。再按一次恢复。" />
     <string id="RTSCamera_fastforwardkey_description" text="切换快进模式" />
     <string id="RTSCamera_disable_death_description" text="所有单位都不会阵亡，可用于录制视频。作弊模式需要启用且需要在菜单中启用该快捷键。" />
@@ -214,27 +188,20 @@
     <string id="RTSCamera_camera_decrease_camera_speed_description" text="降低相机速度" />
     <string id="RTSCamera_camera_reset_camera_speed_description" text="重置相机速度" />
     <string id="RTSCamera_camera_move_by_mouse_description" text="按住按键以通过鼠标移动相机" />
-
     <string id="RTSCamera_enemywipedout" text="敌人已被消灭。" />
     <string id="RTSCamera_switchtoenemyteam" text="已切换至敌军队伍。" />
-
     <string id="RTSCamera_select_character_view_hint" text="请左键点击以选择一个角色，然后按{KeyName}键锁定到它，再按一次来控制它。" />
     <string id="RTSCamera_control_troop_hint" text="按{KeyName}键来控制你的一个队友。" />
     <string id="RTSCamera_control_current_agent_hint" text="按{KeyName}来控制该角色" />
     <string id="RTSCamera_focus_on_formation_hint" text="按{KeyName}让相机跟随选中的编队" />
-
     <string id="RTSCamera_tactics_skill_effect_description" text="RTS相机距离限制 战术: +{a0}m" />
     <string id="RTSCamera_scouting_skill_effect_description" text=" RTS相机距离限制 侦察: +{a0}%" />
-
     <string id="RTSCamera_base_distance" text="基础距离" />
     <string id="RTSCamera_out_of_campaign" text="不在战役中" />
     <string id="RTSCamera_no_main_hero" text="玩家英雄不存在" />
-
     <string id="RTSCamera_cheat_mode_required" text="启用作弊模式后才可关闭该选项" />
-  
     <string id="RTSCamera_focus_on_formation_usage" text="（新功能）自由视角下打开指挥界面后，按{KeyName}可让相机跟随选定的编队" />
     <string id="RTSCamera_control_troop_usage" text="玩家阵亡后后按{KeyName}可以让相机跟随一个士兵，然后再按一次{KeyName}控制该士兵继续战斗" />
-
     <string id="RTSCamera_open_menu_hotkey_hint" text="打开菜单" />
     <string id="RTSCamera_switch_camera_hotkey_hint" text="切换自由视角" />
     <string id="RTSCamera_control_troop_hotkey_hint" text="锁定单位/编队；控制士兵" />

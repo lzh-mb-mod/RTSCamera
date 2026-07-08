@@ -79,6 +79,13 @@ namespace RTSCamera.Config
         Count
     }
 
+    public enum HotkeyMode
+    {
+        Toggle,
+        Hold,
+        Count
+    }
+
     public class RTSCameraConfig : RTSCameraConfigBase<RTSCameraConfig>
     {
         protected static Version BinaryVersion => new Version(1, 9);
@@ -150,6 +157,10 @@ namespace RTSCamera.Config
 
         public bool SlowMotionOnRtsView;
 
+        public HotkeyMode SlowMotionHotkeyMode = HotkeyMode.Toggle;
+
+        public HotkeyMode FastForwardHotkeyMode = HotkeyMode.Toggle;
+
         public bool DisplayMessage = true;
 
         public bool HasHintDisplayed = false;
@@ -218,6 +229,8 @@ namespace RTSCamera.Config
 
         public bool IsMiscellaneousOptionVisible = false;
 
+        public bool IsTimeSpeedOptionVisible = false;
+
         public bool IsNavalOptionVisible = true;
 
         public bool IsCheatOptionVisible = true;
@@ -244,6 +257,8 @@ namespace RTSCamera.Config
             SlowMotionMode = other.SlowMotionMode;
             SlowMotionFactor = other.SlowMotionFactor;
             SlowMotionOnRtsView = other.SlowMotionOnRtsView;
+            SlowMotionHotkeyMode = other.SlowMotionHotkeyMode;
+            FastForwardHotkeyMode = other.FastForwardHotkeyMode;
             DisplayMessage = other.DisplayMessage;
             HasHintDisplayed = other.HasHintDisplayed;
             ControlAllyAfterDeath = other.ControlAllyAfterDeath;
@@ -277,6 +292,7 @@ namespace RTSCamera.Config
             IsCameraOptionVisible = other.IsCameraOptionVisible;
             IsControlOptionVisible = other.IsControlOptionVisible;
             IsMiscellaneousOptionVisible = other.IsMiscellaneousOptionVisible;
+            IsTimeSpeedOptionVisible = other.IsTimeSpeedOptionVisible;
             IsNavalOptionVisible = other.IsNavalOptionVisible;
             IsCheatOptionVisible = other.IsCheatOptionVisible;
         }

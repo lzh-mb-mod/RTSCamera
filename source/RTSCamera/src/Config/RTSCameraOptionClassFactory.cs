@@ -12,7 +12,6 @@ using System;
 using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
-using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews;
@@ -124,11 +123,11 @@ namespace RTSCamera.Config
                     {
                         return (int)RTSCameraConfig.Get().TimingOfControlAllyAfterDeath;
                     }, () => (int)ControlAllyAfterDeathTiming.Count, () => new[]
-                        {
-                            new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "Never"),
-                            new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "FreeCamera"),
-                            new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "Always")
-                        }), true));
+                    {
+                        new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "Never"),
+                        new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "FreeCamera"),
+                        new SelectionItem(true, "str_rts_camera_control_ally_after_death_timing_option", "Always")
+                    }), true));
                 if (!CommandBattleBehavior.CommandMode)
                 {
                     controlOptionCategory.AddOption(new SelectionOptionViewModel(
@@ -204,17 +203,17 @@ namespace RTSCamera.Config
                                 },
                                 () => (int)FormationClass.NumberOfRegularFormations, () => new[]
                                 {
-                            new SelectionItem(true, "str_troop_group_name", "0"),
-                            new SelectionItem(true, "str_troop_group_name", "1"),
-                            new SelectionItem(true, "str_troop_group_name", "2"),
-                            new SelectionItem(true, "str_troop_group_name", "3"),
-                            new SelectionItem(true, "str_troop_group_name", "4"),
-                            new SelectionItem(true, "str_troop_group_name", "5"),
-                            new SelectionItem(true, "str_troop_group_name", "6"),
-                            new SelectionItem(true, "str_troop_group_name", "7"),
-                            new SelectionItem(true, "str_troop_group_name", "8"),
-                            new SelectionItem(true, "str_troop_group_name", "9"),
-                            new SelectionItem(true, "str_rts_camera_player_formation_unset")
+                                    new SelectionItem(true, "str_troop_group_name", "0"),
+                                    new SelectionItem(true, "str_troop_group_name", "1"),
+                                    new SelectionItem(true, "str_troop_group_name", "2"),
+                                    new SelectionItem(true, "str_troop_group_name", "3"),
+                                    new SelectionItem(true, "str_troop_group_name", "4"),
+                                    new SelectionItem(true, "str_troop_group_name", "5"),
+                                    new SelectionItem(true, "str_troop_group_name", "6"),
+                                    new SelectionItem(true, "str_troop_group_name", "7"),
+                                    new SelectionItem(true, "str_troop_group_name", "8"),
+                                    new SelectionItem(true, "str_troop_group_name", "9"),
+                                    new SelectionItem(true, "str_rts_camera_player_formation_unset")
                                 }), true, true);
                         controlOptionCategory.AddOption(playerFormationOption);
                         controlOptionCategory.AddOption(new SelectionOptionViewModel(
@@ -244,9 +243,9 @@ namespace RTSCamera.Config
                             }, () => (int)RTSCameraConfig.Get().AssignPlayerFormation, () => (int)AssignPlayerFormation.Count,
                                 () => new[]
                                 {
-                            new SelectionItem(true, "str_rts_camera_assign_player_formation", nameof(AssignPlayerFormation.DefaultOrGeneralFormation)),
-                            new SelectionItem(true, "str_rts_camera_assign_player_formation", nameof(AssignPlayerFormation.Default)),
-                            new SelectionItem(true, "str_rts_camera_assign_player_formation", nameof(AssignPlayerFormation.Overwrite))
+                                    new SelectionItem(true, "str_rts_camera_assign_player_formation", nameof(AssignPlayerFormation.DefaultOrGeneralFormation)),
+                                    new SelectionItem(true, "str_rts_camera_assign_player_formation", nameof(AssignPlayerFormation.Default)),
+                                    new SelectionItem(true, "str_rts_camera_assign_player_formation", nameof(AssignPlayerFormation.Overwrite))
                                 }), true));
                     }
                 }
@@ -262,11 +261,6 @@ namespace RTSCamera.Config
                         selectCharacterView.IsSelectingCharacter = true;
                         menuManager.RequestToCloseMenu();
                     }));
-                //controlOptionCategory.AddOption(new BoolOptionViewModel(
-                //    GameTexts.FindText("str_rts_camera_control_ally_after_death"),
-                //    GameTexts.FindText("str_rts_camera_control_ally_after_death_hint"),
-                //    () => RTSCameraConfig.Get().ControlAllyAfterDeath,
-                //    b => RTSCameraConfig.Get().ControlAllyAfterDeath = b));
                 controlOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_prefer_unit_in_same_formation"),
                     GameTexts.FindText("str_rts_camera_prefer_unit_in_same_formation_hint"),
@@ -289,28 +283,64 @@ namespace RTSCamera.Config
                     b => RTSCameraConfig.Get().IgnoreRetreatingTroops = b));
                 optionClass.AddOptionCategory(0, controlOptionCategory);
 
-                var miscellaneousOptionCategory = new OptionCategory("Miscellaneous",
-                    GameTexts.FindText("str_rts_camera_miscellaneous_options"),
-                    () => RTSCameraConfig.Get().IsMiscellaneousOptionVisible, (b) => RTSCameraConfig.Get().IsMiscellaneousOptionVisible = b);
-                miscellaneousOptionCategory.AddOption(new ActionOptionViewModel(GameTexts.FindText("str_rts_camera_toggle_pause"), GameTexts.FindText("str_rts_camera_toggle_pause_hint"),
+                var timeSpeedOptionCategory = new OptionCategory("TimeSpeed",
+                    GameTexts.FindText("str_rts_camera_time_speed_options"),
+                    () => RTSCameraConfig.Get().IsTimeSpeedOptionVisible,
+                    b => RTSCameraConfig.Get().IsTimeSpeedOptionVisible = b);
+                timeSpeedOptionCategory.AddOption(new ActionOptionViewModel(GameTexts.FindText("str_rts_camera_toggle_pause"), GameTexts.FindText("str_rts_camera_toggle_pause_hint"),
                     () =>
                     {
                         menuManager.RequestToCloseMenu();
                         rtsCameraLogic.MissionSpeedLogic?.TogglePause();
                     }));
-                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                timeSpeedOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_mode"),
                     GameTexts.FindText("str_rts_camera_slow_motion_hint"), () => RTSCameraConfig.Get().SlowMotionMode,
                     b => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionMode(b)));
-                miscellaneousOptionCategory.AddOption(new NumericOptionViewModel(
+                timeSpeedOptionCategory.AddOption(new NumericOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_factor"),
                     GameTexts.FindText("str_rts_camera_slow_motion_factor_hint"),
                     () => RTSCameraConfig.Get().SlowMotionFactor,
                     f => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionFactor(f), 0, 3, false, true));
-                miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
+                timeSpeedOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_on_rts_view"),
                     GameTexts.FindText("str_rts_camera_slow_motion_on_rts_view_hint"), () => RTSCameraConfig.Get().SlowMotionOnRtsView,
                     b => RTSCameraConfig.Get().SlowMotionOnRtsView = b));
+                timeSpeedOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_slow_motion_hotkey_mode"),
+                    GameTexts.FindText("str_rts_camera_slow_motion_hotkey_mode_hint"),
+                    new SelectionOptionData(
+                        i =>
+                        {
+                            RTSCameraConfig.Get().SlowMotionHotkeyMode = (HotkeyMode)i;
+                        },
+                        () => (int)RTSCameraConfig.Get().SlowMotionHotkeyMode,
+                        () => (int)HotkeyMode.Count,
+                        () => new SelectionItem[]
+                        {
+                            new SelectionItem(true, "str_rts_camera_hotkey_mode", nameof(HotkeyMode.Toggle)),
+                            new SelectionItem(true, "str_rts_camera_hotkey_mode", nameof(HotkeyMode.Hold))
+                        }), false));
+                timeSpeedOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_fast_forward_hotkey_mode"),
+                    GameTexts.FindText("str_rts_camera_fast_forward_hotkey_mode_hint"),
+                    new SelectionOptionData(
+                        i =>
+                        {
+                            RTSCameraConfig.Get().FastForwardHotkeyMode = (HotkeyMode)i;
+                        },
+                        () => (int)RTSCameraConfig.Get().FastForwardHotkeyMode,
+                        () => (int)HotkeyMode.Count,
+                        () => new SelectionItem[]
+                        {
+                            new SelectionItem(true, "str_rts_camera_hotkey_mode", nameof(HotkeyMode.Toggle)),
+                            new SelectionItem(true, "str_rts_camera_hotkey_mode", nameof(HotkeyMode.Hold))
+                        }), false));
+                optionClass.AddOptionCategory(1, timeSpeedOptionCategory);
+
+                var miscellaneousOptionCategory = new OptionCategory("Miscellaneous",
+                    GameTexts.FindText("str_rts_camera_miscellaneous_options"),
+                    () => RTSCameraConfig.Get().IsMiscellaneousOptionVisible, (b) => RTSCameraConfig.Get().IsMiscellaneousOptionVisible = b);
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_display_mod_message"),
                     GameTexts.FindText("str_rts_camera_display_message_hint"),
@@ -385,11 +415,11 @@ namespace RTSCamera.Config
                     {
                         return (int)RTSCameraConfig.Get().FollowFaceDirection;
                     }, () => (int)FollowFaceDirection.Count, () => new[]
-                        {
-                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Never"),
-                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "ControlNewUnitOnly"),
-                            new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Always")
-                        }), true));
+                    {
+                        new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Never"),
+                        new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "ControlNewUnitOnly"),
+                        new SelectionItem(true, "str_rts_camera_follow_facing_direction_option", "Always")
+                    }), true));
                 miscellaneousOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_ignore_boundaries"),
                     GameTexts.FindText("str_rts_camera_ignore_boundaries_hint"),
@@ -471,9 +501,9 @@ namespace RTSCamera.Config
                                 return (int)RTSCameraConfig.Get().PlayerShipControllerInFreeCamera;
                             }, () => (int)PlayerShipController.Count, () => new[]
                             {
-                            new SelectionItem(true, "str_rts_camera_controller_type", PlayerShipController.None.ToString()),
-                            new SelectionItem(true, "str_rts_camera_controller_type", PlayerShipController.AI.ToString()),
-                            new SelectionItem(true, "str_rts_camera_controller_type", PlayerShipController.Player.ToString())
+                                new SelectionItem(true, "str_rts_camera_controller_type", PlayerShipController.None.ToString()),
+                                new SelectionItem(true, "str_rts_camera_controller_type", PlayerShipController.AI.ToString()),
+                                new SelectionItem(true, "str_rts_camera_controller_type", PlayerShipController.Player.ToString())
                             }), true));
                         navalOptionCategory.AddOption(new SelectionOptionViewModel(
                             GameTexts.FindText("str_rts_camera_steering_mode_when_player_stops_piloting"),
@@ -488,9 +518,9 @@ namespace RTSCamera.Config
                                 return (int)RTSCameraConfig.Get().SteeringModeWhenPlayerStopsPiloting;
                             }, () => (int)SteeringMode.Count, () => new[]
                             {
-                            new SelectionItem(true, "str_rts_camera_steering_mode", SteeringMode.None.ToString()),
-                            new SelectionItem(true, "str_rts_camera_steering_mode", SteeringMode.Soldier.ToString()),
-                            new SelectionItem(true, "str_rts_camera_steering_mode", SteeringMode.DelegateCommand.ToString())
+                                new SelectionItem(true, "str_rts_camera_steering_mode", SteeringMode.None.ToString()),
+                                new SelectionItem(true, "str_rts_camera_steering_mode", SteeringMode.Soldier.ToString()),
+                                new SelectionItem(true, "str_rts_camera_steering_mode", SteeringMode.DelegateCommand.ToString())
                             }), true));
                     }
                     navalOptionCategory.AddOption(new BoolOptionViewModel(
@@ -538,7 +568,7 @@ namespace RTSCamera.Config
                 }
 
                 return optionClass;
-            }, RTSCameraSubModule.ModuleId, new Version(1,0, 0));
+            }, RTSCameraSubModule.ModuleId, new Version(1, 0, 0));
         }
     }
 }
