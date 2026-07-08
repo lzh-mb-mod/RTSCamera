@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
+using RTSCamera.Config;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -69,6 +70,21 @@ namespace RTSCamera.Patch.Naval
                         __result[stopOrderIndex] = CreateSingleOrderSetFor(newOrder);
 
                     }
+                }
+            }
+            if (!Input.IsGamepadActive)
+            {
+                if (RTSCameraConfig.Get().SwitchNavalRetreatAndDelegateCommand)
+                {
+                    var retreatOrderIndex = __result.FindIndex(orderSet => orderSet.StringId == "order_movement_retreat");
+                    var toggleAIIndex = __result.FindIndex(orderSet => orderSet.StringId == "order_toggle_ai");
+                    if (retreatOrderIndex == -1 || toggleAIIndex == -1)
+                        return;
+
+                    var retreatOrder = __result[retreatOrderIndex];
+                    var toggleAIOrder = __result[toggleAIIndex];
+                    __result[retreatOrderIndex] = toggleAIOrder;
+                    __result[toggleAIIndex] = retreatOrder;
                 }
             }
         }
