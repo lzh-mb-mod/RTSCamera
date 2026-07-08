@@ -31,6 +31,7 @@ Compatibility:
 Compatible with v1.2.12. For other versions:
 v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991827
 v1.3.4-v1.3.13: https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285
+v1.4.5-v1.4.7: https://steamcommunity.com/sharedfiles/filedetails/?id=3747771970
 
 
 Save compatibility:

@@ -20,6 +20,7 @@ RTS Command：RTS mod的另一部分，提供更好的指挥系统。
 与游戏本体v1.2.12兼容。其它版本：
 v1.2.12: https://steamcommunity.com/sharedfiles/filedetails/?id=2879991660
 v1.3.4-v1.3.13: https://steamcommunity.com/sharedfiles/filedetails/?id=3596692403
+v1.4.5-v1.4.7: https://steamcommunity.com/sharedfiles/filedetails/?id=3747725551
 
 
 注意：
