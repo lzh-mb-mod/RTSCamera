@@ -1,5 +1,25 @@
 # Changelog
 
+## [v5.3.32] - 2026-07-08
+### Added
+- Add a time speed option category.
+
+### Fixed
+- Fix incorrect charge target in order queue.
+
+- Player will no longer stop using game object when switching to free camera in friendly mission.
+
+- Fix agent highlight color when removed from formation in friendly missions, triggered by Cinematic Camera.
+
+- Hide the formation marker in elevated camera when the formation contains only the player.
+
+- Remove the fadeout effect of troop movement target marker after giving charge order.
+
+- Fix the issue that switching Retreat and Delegate Command option doesn't work.
+
+### Improved
+- Reorder options and texts, and remove unused texts.
+
 ## [v5.3.31] - 2026-07-03
 ### Added
 - Add an option to highlight agents without formation.
