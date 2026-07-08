@@ -1,4 +1,4 @@
-[b][color=Red]支持游戏本体v1.2.12，或1.3.4-1.3.13，v1.4.6/战帆1.0.0-1.1.1，v1.2.6版本[/color]
+[b][color=Red]支持游戏本体v1.2.12，或1.3.4-1.3.15，v1.4.7及对应的战帆版本[/color]
 [color=Purple]作者：[/color][/b]LiZhenhuan1019
 
 [b][color=Blue]◆MOD介绍[/color][/b]
@@ -8,7 +8,7 @@ RTS自由视角[RTS Camera]Mod 为《骑马与砍杀2：霸主》的战斗场景
 本Mod不会读写存档数据，安装或卸载均不会影响现有存档。
 
 [b]Mod兼容性[/b]
-◆在The Old Realms中的崩溃在v5.1.7中修复。但有报告说最新版和The Old Realms不兼容。
+◆在The Old Realms中的崩溃在v5.1.7中修复。
 ◆权游mod中若出现"text with id xxxxx does't exist"，请在启动器中将RTS Camera移至权游上方。
 ◆Helmsman舵手：如果你用RTS Camera，你不需要使用Helmsman舵手。RTS Camera提供和舵手一样的功能。
 
@@ -215,7 +215,29 @@ RTS自由视角[RTS Camera]：
 [b][color=Blue]◆捐赠[/color][/b]
 爱发电：[url]https://ifdian.net/a/lizhenhuan1019[/url]
 
-[b][color=Blue]◆改动日志[/color][/b]
+[b][color=Blue]◆改动日志[/color][/b]# 改动日志
+## [v5.4.9 / v5.3.32] - 2026-07-09
+### 新增
+- 新增时间速度选项分类。
+
+### 修复
+- (v5.4.9)修复在 v1.4.7 中的崩溃问题。
+
+- 修复指令队列中的冲锋目标错误。
+
+- 修复在城镇场景中，切换到自由视角后玩家会停止使用场景物件的问题。
+
+- 修复在城镇场景中，单位脱离编队后其高亮颜色错误的问题。该问题会被 Cinematic Camera 触发。
+
+- 当编队中只有玩家时，隐藏编队标记。
+
+- 移除下达冲锋指令后部队移动目标标记的淡出效果。
+
+- (v5.3.32)修复切换“撤退”和“委派指挥”选项不生效的问题。
+
+### 改进
+- 重新整理选项和相关文本，并移除未使用的文本。
+
 ## [v5.4.8 / v5.3.31] - 2026-07-03
 ### 新增
 - 新增高亮无编队单位的选项。
@@ -645,3 +667,6 @@ RTS自由视角[RTS Camera]：
 邮箱：
 lizhenhuan1019@outlook.com
 lizhenhuan1019@qq.com
+
+[b][color=Blue]◆捐赠[/color][/b]
+爱发电：[url]https://ifdian.net/a/lizhenhuan1019[/url]

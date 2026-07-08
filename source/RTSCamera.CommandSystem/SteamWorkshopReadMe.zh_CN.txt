@@ -1,4 +1,4 @@
-[h1]RTS Command for v1.4.6 (兼容战帆DLC)[/h1]
+[h1]RTS Command for v1.4.x (兼容战帆DLC)[/h1]
 (全名 RTS Camera Command System)
 
 [h2]主要功能[/h2]
@@ -31,11 +31,11 @@
 [/list]
 
 [h2]游戏兼容性[/h2]
-与游戏本体 v1.4.5-v1.4.6 兼容，并兼容战帆 DLC。其它版本：
+与游戏本体 v1.4.5-v1.4.7 兼容，并兼容战帆 DLC。其它版本：
 [list]
 [*]v1.2.12: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2879991827]Steam Workshop[/url]
 [*]v1.3.4-v1.3.13: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285]Steam Workshop[/url]
-[*]v1.4.5-v1.4.6: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3747771970]Steam Workshop[/url]
+[*]v1.4.5-v1.4.7: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3747771970]Steam Workshop[/url]
 [/list]
 
 [h2]Mod兼容性[/h2]
