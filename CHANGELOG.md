@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.4.10] - 2026-07-09
+### Fixed
+- Fix crash when choosing "Command the battle" option after player is injured in game version v1.4.7.
+
 ## [v5.4.9] - 2026-07-09
 ### Added
 - Add a time speed option category.
