@@ -119,7 +119,7 @@ namespace RTSCamera.Patch
             if (!__instance.IsVisible || checkForTargetEntity)
                 return true;
             // use mouse position before dragging if dragging camera in free camera mode.
-            if (!____missionScreen.MouseVisible && (RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera ?? false) && Patch_MissionGauntletSingleplayerOrderUIHandler.MousePositionRangedBeforeDragging.HasValue)
+            if (!____missionScreen.MouseVisible && Patch_MissionGauntletSingleplayerOrderUIHandler.MousePositionRangedBeforeDragging.HasValue)
             {
                 var screenPoint = Patch_MissionGauntletSingleplayerOrderUIHandler.MousePositionRangedBeforeDragging.Value;
                 ____missionScreen.ScreenPointToWorldRay(screenPoint, out var rayBegin, out var rayEnd);
