@@ -9,6 +9,7 @@ using RTSCamera.Patch.TOR_fix;
 using RTSCamera.View;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -51,6 +52,7 @@ namespace RTSCamera.Logic.SubLogic
         private bool _openOrderUINextTick = false;
         private bool _refreshOrdersNextTick = false;
 
+        private static FieldInfo _initialPlayerAgent = null;
 
         private bool _isPlayerTeamSetupCompleted = false;
 
@@ -220,12 +222,15 @@ namespace RTSCamera.Logic.SubLogic
                     }
                     if (Mission.MainAgent != null)
                     {
+                        // since v1.4.7, Mission.InitialPlayerAgent is added.
+                        _initialPlayerAgent ??= typeof(Mission).GetField("_initialPlayerAgent", BindingFlags.Instance | BindingFlags.NonPublic);
+                        _initialPlayerAgent?.SetValue(Mission, Mission.MainAgent);
                         Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
                         if (Mission.PlayerTeam.IsPlayerGeneral)
                         {
                             Utility.SetPlayerAsCommander(true);
                             // set in GeneralsAndCaptainsAssignmentLogic.OnDeploymentFinished
-                            Mission.MainAgent?.SetCanLeadFormationsRemotely(true);
+                            Mission.MainAgent.SetCanLeadFormationsRemotely(true);
                             Mission.PlayerTeam.GeneralAgent = Mission.MainAgent;
                         }
                         team.PlayerOrderController?.SelectAllFormations();
