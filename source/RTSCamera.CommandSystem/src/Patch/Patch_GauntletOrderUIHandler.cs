@@ -193,9 +193,10 @@ namespace RTSCamera.CommandSystem.Patch
             if (dataSource == null)
                 return null;
             bool queueCommand = Utilities.Utility.ShouldQueueCommand();
-            var selectedFormations = dataSource.OrderController.SelectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
+            var selectedFormations = dataSource.OrderController.SelectedFormations.ToList();
             if (selectedFormations.Count == 0)
                 return null;
+
             if (!queueCommand)
             {
                 Patch_OrderController.LivePreviewFormationChanges.SetChanges(CommandQueueLogic.CurrentFormationChanges.CollectChanges(selectedFormations));
@@ -286,6 +287,7 @@ namespace RTSCamera.CommandSystem.Patch
                         var focusedOrderableObject = __instance.MissionScreen.OrderFlag.FocusedOrderableObject;
                         if (focusedOrderableObject != null)
                         {
+                            selectedFormations = selectedFormations.ToList();
                             if (selectedFormations.Count > 0)
                             {
                                 BattleSideEnum side = selectedFormations[0].Team.Side;
@@ -318,6 +320,7 @@ namespace RTSCamera.CommandSystem.Patch
                                             Vec3 globalPosition2 = pointDefendable.DefencePoints.First().GameEntity.GlobalPosition;
                                             if (queueCommand)
                                             {
+                                                selectedFormations = selectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
                                                 if (selectedFormations.Count > 0)
                                                 {
                                                     orderToAdd.OrderType = orderType == OrderType.MoveToLineSegment ? OrderType.MoveToLineSegment : OrderType.MoveToLineSegmentWithHorizontalLayout;
@@ -566,7 +569,7 @@ namespace RTSCamera.CommandSystem.Patch
             bool mouseVisibility =
                 (__instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ||
                  ____dataSource.IsToggleOrderShown && (__instance.Input.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null));
-            var inputUsageMask = __instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ? InputUsageMask.All : CommandSystemConfig.Get().OrderUIClickable ? InputUsageMask.All : InputUsageMask.Invalid;
+            var inputUsageMask = __instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ? InputUsageMask.All : CommandSystemConfig.Get().OrderUIClickable && ____dataSource.IsToggleOrderShown ? InputUsageMask.All : InputUsageMask.Invalid;
             var layer = ____gauntletLayer;
             if (mouseVisibility != layer.InputRestrictions.MouseVisibility || inputUsageMask != layer.InputRestrictions.InputUsageMask)
             {

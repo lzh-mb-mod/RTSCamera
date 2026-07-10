@@ -480,6 +480,10 @@ namespace RTSCamera.CommandSystem.Patch
                 float length = (formationLineEnd.AsVec2 - formationLineBegin.AsVec2).Length;
                 isLineShort = false;
 
+                if (allFormations.Count == 0)
+                {
+                    return false;
+                }
                 foreach (var formation in formations)
                 {
                     var virtualWidth = GetFormationVirtualWidth(formation);
@@ -505,10 +509,13 @@ namespace RTSCamera.CommandSystem.Patch
                     }
                     else
                     {
-                        CollectStacksRecord(formations, out _, out var minOverallWidth, out var shouldFormationBeStackedWithPreviousFormation, out var stacksRecord, out _, out _, out _);
-                        if (length < minOverallWidth + (formations.Count() - shouldFormationBeStackedWithPreviousFormation.Count(pair => pair.Value == true) - 1) * 1.5f)
+                        if (formations.Any())
                         {
-                            isLineShort = true;
+                            CollectStacksRecord(formations, out _, out var minOverallWidth, out var shouldFormationBeStackedWithPreviousFormation, out _, out _, out _, out _);
+                            if (length < minOverallWidth + (formations.Count() - shouldFormationBeStackedWithPreviousFormation.Count(pair => pair.Value == true) - 1) * 1.5f)
+                            {
+                                isLineShort = true;
+                            }
                         }
                     }
                 }
@@ -554,14 +561,11 @@ namespace RTSCamera.CommandSystem.Patch
                                 actualUnitSpacings[formation] = virtualUnitSpacing.Value;
                         }
                     }
-                    if (Utilities.Utility.ShouldKeepRelativePositions())
+                    if (Utilities.Utility.ShouldKeepRelativePositions() && formations.Any())
                     {
-                        if (formations.Any())
-                        {
-                            var clickedPosition = formationLineBegin;
-                            SimulateNewOrderWithKeepingRelativePositions(formations, simulationFormations, true, clickedPosition, formationLineBegin, formationLineEnd, isSimulatingAgentFrames, simulationAgentFrames, isSimulatingFormationChanges, simulationFormationChanges, out remainingFormations);
-                            formations = remainingFormations;
-                        }
+                        var clickedPosition = formationLineBegin;
+                        SimulateNewOrderWithKeepingRelativePositions(formations, simulationFormations, true, clickedPosition, formationLineBegin, formationLineEnd, isSimulatingAgentFrames, simulationAgentFrames, isSimulatingFormationChanges, simulationFormationChanges, out remainingFormations);
+                        formations = remainingFormations;
                     }
                     if (formations.Any())
                     {
@@ -590,7 +594,7 @@ namespace RTSCamera.CommandSystem.Patch
                         //}
                     }
                     formationLineEnd = Mission.Current.GetStraightPathToTarget(formationLineEnd.AsVec2, formationLineBegin);
-                    if (Utilities.Utility.ShouldKeepRelativePositions())
+                    if (Utilities.Utility.ShouldKeepRelativePositions() && formations.Any())
                     {
                         var clickedCenter = formationLineBegin;
                         clickedCenter.SetVec2((formationLineBegin.AsVec2 + formationLineEnd.AsVec2) / 2f);
@@ -1515,7 +1519,7 @@ namespace RTSCamera.CommandSystem.Patch
             Vec2 direction,
             ref List<WorldPosition> simulationAgentFrames)
         {
-            var selectedFormations = formations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
+            var selectedFormations = formations.ToList();
             if (!Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(selectedFormations))
                 return true;
 

@@ -543,6 +543,8 @@ namespace RTSCamera.CommandSystem.Logic
         {
             if (order.CustomOrderType == CustomOrderType.Original && order.OrderType == OrderType.None)
                 return;
+            if (order.SelectedFormations.Count == 0)
+                return;
             order.RemainingFormations = order.SelectedFormations.ToList();
             LatestOrderInQueueChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(order.SelectedFormations));
             OrderQueue.Add(order);
@@ -724,7 +726,11 @@ namespace RTSCamera.CommandSystem.Logic
                             case OrderType.MoveToLineSegmentWithHorizontalLayout:
                                 {
                                     var formationChanges = order.ActualFormationChanges;
-                                    (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.First(c => c.formation == formation);
+                                    (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.FirstOrDefault(c => c.formation == formation);
+                                    if (f == null)
+                                    {
+                                        return;
+                                    }
                                     var virtualFormationChange = order.VirtualFormationChanges[formation];
                                     if (formation.UnitSpacing != virtualFormationChange.UnitSpacing)
                                     {
@@ -1013,8 +1019,12 @@ namespace RTSCamera.CommandSystem.Logic
         private static void FacingOrderLookAtDirection(OrderInQueue order, Formation formation)
         {
             var formationChanges = order.ActualFormationChanges;
+            (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.FirstOrDefault(c => c.formation == formation);
+            if (f == null)
+            {
+                return;
+            }
             Patch_OrderController.SetFacingEnemyTargetFormation(formation, null);
-            (Formation f, int unitSpacingReduced, float customWidth, WorldPosition position, Vec2 direction) = formationChanges.First(c => c.formation == formation);
             if (order.ShouldLockFormationInFacingOrder.TryGetValue(formation, out var shouldLockFormationInFacingOrder) && shouldLockFormationInFacingOrder)
             {
                 formation.SetMovementOrder(MovementOrder.MovementOrderMove(position));
@@ -1098,6 +1108,8 @@ namespace RTSCamera.CommandSystem.Logic
         {
             // Disabled for naval battle for now.
             if (Mission.Current.IsNavalBattle)
+                return;
+            if (formations.IsEmpty())
                 return;
             if (CanBePended(order))
             {

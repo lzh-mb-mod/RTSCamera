@@ -1,13 +1,9 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
-using RTSCamera.Config;
-using RTSCamera.Logic;
-using RTSCamera.Logic.SubLogic;
 using System;
 using System.Reflection;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
-using TaleWorlds.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -91,10 +87,12 @@ namespace RTSCamera.Patch.Fix
         }
 
 
-        private static bool ShouldBeginEarlyDragging(GauntletOrderUIHandler __instance)
+        private static bool ShouldBeginEarlyDragging(GauntletOrderUIHandler __instance, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
         {
-            return !_earlyDraggingMode &&
-                   (__instance.MissionScreen.InputManager.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null) && IsDragKeyPressed(__instance);
+            return !_rightButtonDraggingMode && !_earlyDraggingMode &&
+                   //(__instance.MissionScreen.InputManager.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null) &&
+                   (____gauntletLayer.InputRestrictions.MouseVisibility || Patch_OrderTroopPlacer.IsMouseDown(____orderTroopPlacer)) &&
+                   IsDragKeyDown(__instance);
         }
 
         private static bool IsDragKeyPressed(GauntletOrderUIHandler __instance)
@@ -114,7 +112,10 @@ namespace RTSCamera.Patch.Fix
 
         private static void BeginEarlyDragging(OrderTroopPlacer ____orderTroopPlacer)
         {
-            if ((bool?)typeof(OrderTroopPlacer).GetField("_isMouseDown", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(____orderTroopPlacer) ?? false)
+#if DEBUG
+            Utility.DisplayMessage("Begin Early Drag");
+#endif
+            if (Patch_OrderTroopPlacer.IsMouseDown(____orderTroopPlacer))
             {
                 Patch_MissionOrderVM.AllowEscape = false;
             }
@@ -126,29 +127,42 @@ namespace RTSCamera.Patch.Fix
 
         private static void EndEarlyDragging()
         {
+#if DEBUG
+            Utility.DisplayMessage("End Early Drag");
+#endif
             _earlyDraggingMode = false;
             _beginDraggingOffset = 0;
         }
 
-        private static bool ShouldBeginDragging()
+        private static bool ShouldBeginDragging(OrderTroopPlacer ____orderTroopPlacer)
         {
-            return _earlyDraggingMode && _beginDraggingOffset > _beginDraggingOffsetThreshold;
+            return _earlyDraggingMode &&
+                (____orderTroopPlacer.MissionScreen.InputManager.IsAltDown() ||
+                ____orderTroopPlacer.MissionScreen.LastFollowedAgent == null ||
+                !Patch_OrderTroopPlacer.IsMouseDown(____orderTroopPlacer)) &&
+                 _beginDraggingOffset > _beginDraggingOffsetThreshold;
         }
 
         private static void BeginDrag()
         {
             EndEarlyDragging();
+#if DEBUG
+            Utility.DisplayMessage("Begin Drag");
+#endif
             _rightButtonDraggingMode = true;
             Patch_MissionOrderVM.AllowEscape = false;
         }
 
         private static void EndDrag(OrderTroopPlacer ____orderTroopPlacer)
         {
-            if (_earlyDraggingMode && ((bool?)typeof(OrderTroopPlacer).GetField("_isMouseDown", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(____orderTroopPlacer) ?? false))
+            if (_earlyDraggingMode && Patch_OrderTroopPlacer.IsMouseDown(____orderTroopPlacer))
             {
                 typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(____orderTroopPlacer, new object[] { });
             }
             EndEarlyDragging();
+#if DEBUG
+            Utility.DisplayMessage("End Drag");
+#endif
             _rightButtonDraggingMode = false;
             Patch_MissionOrderVM.AllowEscape = true;
             MousePositionToRecover = MousePositionBeforeDragging;
@@ -164,7 +178,7 @@ namespace RTSCamera.Patch.Fix
                 (__instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ||
                  ____dataSource.IsToggleOrderShown && (__instance.Input.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null)) &&
                 !_rightButtonDraggingMode && !_earlyDraggingMode;
-            var inputUsageMask = __instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ? InputUsageMask.All : RTSCameraSubModule.IsCommandSystemInstalled && UIConfig.DoNotUseGeneratedPrefabs ? InputUsageMask.All : InputUsageMask.Invalid;
+            var inputUsageMask = __instance.IsDeployment || ____dataSource.TroopController.IsTransferActive ? InputUsageMask.All : RTSCameraSubModule.IsCommandSystemInstalled && UIConfig.DoNotUseGeneratedPrefabs && ____dataSource.IsToggleOrderShown ? InputUsageMask.All : InputUsageMask.Invalid;
             var layer = ____gauntletLayer;
             if (mouseVisibility != layer.InputRestrictions.MouseVisibility || inputUsageMask != layer.InputRestrictions.InputUsageMask)
             {
@@ -231,7 +245,7 @@ namespace RTSCamera.Patch.Fix
 
 
 
-        private static void UpdateDragData(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, OrderTroopPlacer ____orderTroopPlacer)
+        private static void UpdateDragData(GauntletOrderUIHandler __instance, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
         {
             if (_willEndDraggingMode)
             {
@@ -245,13 +259,13 @@ namespace RTSCamera.Patch.Fix
             }
             else if (____dataSource.IsToggleOrderShown || __instance.IsDeployment)
             {
-                if (ShouldBeginEarlyDragging(__instance))
+                if (ShouldBeginEarlyDragging(__instance, ____gauntletLayer, ____orderTroopPlacer))
                 {
                     BeginEarlyDragging(____orderTroopPlacer);
                 }
                 else if (IsDragKeyDown(__instance))
                 {
-                    if (ShouldBeginDragging())
+                    if (ShouldBeginDragging(____orderTroopPlacer))
                     {
                         BeginDrag();
                     }
@@ -267,7 +281,7 @@ namespace RTSCamera.Patch.Fix
 
         public static void Postfix_OnMissionScreenTick(GauntletOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer, ref bool ____isTransferEnabled)
         {
-            UpdateDragData(__instance, ____dataSource, ____orderTroopPlacer);
+            UpdateDragData(__instance, ____dataSource, ____gauntletLayer, ____orderTroopPlacer);
             UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer, ref ____isTransferEnabled);
             UpdateOrderUIVisibility(__instance, ____dataSource, ____gauntletLayer);
             Patch_MissionOrderVM.TickIsFirstCallToUpdateOrderUIOnOrderExecuted();

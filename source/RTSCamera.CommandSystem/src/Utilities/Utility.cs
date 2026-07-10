@@ -563,7 +563,7 @@ namespace RTSCamera.CommandSystem.Utilities
 
         public static bool ShouldLockFormationDuringLookAtDirection(Formation formation)
         {
-            return !IsFormationOrderPositionMoving(formation) && Patch_OrderController.GetFormationVirtualFacingOrder(formation) == OrderType.LookAtDirection && ShouldLockFormation();
+            return formation.CountOfUnitsWithoutDetachedOnes > 0 && !IsFormationOrderPositionMoving(formation) && Patch_OrderController.GetFormationVirtualFacingOrder(formation) == OrderType.LookAtDirection && ShouldLockFormation();
         }
 
         public static bool ShouldKeepFormationWidth()

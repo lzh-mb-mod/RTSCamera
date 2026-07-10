@@ -9,12 +9,14 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
-namespace RTSCamera.CommandSystem.Patch
+namespace RTSCamera.Patch
 {
     public class Patch_OrderTroopPlacer
     {
         private static bool _patched;
         private static PropertyInfo _displayedOrderMessageForLastOrder = AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder");
+        private static FieldInfo _isMouseDownField = AccessTools.Field(typeof(OrderTroopPlacer), "_isMouseDown");
+
         public static bool Patch(Harmony harmony)
         {
             try
@@ -66,6 +68,12 @@ namespace RTSCamera.CommandSystem.Patch
             return !__instance.MissionScreen.MouseVisible ?
                 Patch_MissionGauntletSingleplayerOrderUIHandler.MousePositionRangedBeforeDragging ?? new Vec2(0.5f, 0.5f) :
                 __instance.Input.GetMousePositionRanged();
+        }
+
+
+        public static bool IsMouseDown(OrderTroopPlacer __instance)
+        {
+            return (bool)_isMouseDownField.GetValue(__instance);
         }
     }
 }

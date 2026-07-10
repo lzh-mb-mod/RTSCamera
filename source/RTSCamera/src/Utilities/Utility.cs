@@ -49,7 +49,7 @@ namespace RTSCamera.Utilities
                     MissionSharedLibrary.Utilities.Utility.AIControlMainAgent(
                         Mission.Current.Mode != MissionMode.StartUp &&
                         Mission.Current.Mode != MissionMode.Conversation &&
-                        //Mission.Current.Mode != MissionMode.Stealth &&
+                        Mission.Current.Mode != MissionMode.Stealth &&
                         Mission.Current.Mode != MissionMode.Barter &&
                         Mission.Current.Mode != MissionMode.Deployment &&
                         Mission.Current.Mode != MissionMode.Replay, true);

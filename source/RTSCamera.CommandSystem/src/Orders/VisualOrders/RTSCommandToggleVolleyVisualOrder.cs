@@ -1,5 +1,6 @@
 ﻿using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
+using System.Linq;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
@@ -23,7 +24,10 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
         public override void ExecuteOrder(OrderController orderController, VisualOrderExecutionParameters executionParameters)
         {
             bool queueCommand = OnBeforeExecuteOrder(orderController, executionParameters);
-            var selectedFormations = orderController.SelectedFormations;
+            var selectedFormations = orderController.SelectedFormations.ToList();
+            if (selectedFormations.Count == 0)
+                return;
+
             var orderToAdd = new OrderInQueue
             {
                 SelectedFormations = selectedFormations
