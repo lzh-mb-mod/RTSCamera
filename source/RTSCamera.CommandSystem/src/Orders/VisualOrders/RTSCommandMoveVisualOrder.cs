@@ -30,6 +30,9 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
 
             bool queueCommand = OnBeforeExecuteOrder(orderController, executionParameters);
             var selectedFormations = orderController.SelectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
+            if (selectedFormations.Count == 0)
+                return;
+
             var orderToAdd = new OrderInQueue
             {
                 SelectedFormations = selectedFormations

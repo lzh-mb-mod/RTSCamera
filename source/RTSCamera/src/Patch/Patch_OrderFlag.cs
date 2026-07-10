@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
-using RTSCamera.Logic;
 using RTSCamera.Patch.Fix;
 using System;
 using System.Linq;
