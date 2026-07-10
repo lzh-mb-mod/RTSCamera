@@ -1,5 +1,12 @@
 # Changelog
 
+## [v5.3.33] - 2026-07-10
+### Fixed
+- Fix crash when player is injured with order UI open.
+
+### Improved
+- Improved soldier pilot ship order.
+
 ## [v5.3.32] - 2026-07-08
 ### Added
 - Add a time speed option category.
