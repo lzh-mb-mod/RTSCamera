@@ -270,7 +270,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         //public uint _neutralMouseOverHighlightColor = new Color(1, 1, 1).ToUnsignedInteger();
         //public uint _neutralMouseOverTargetedColor = new Color(1, 1, 1).ToUnsignedInteger();
         private readonly Stack<Agent> _agentsNewlyAddedToFormations = new Stack<Agent>();
-        private readonly Stack<Agent> _agentsRemovedFromFormations = new Stack<Agent>();
+        private readonly List<Agent> _agentsRemovedFromFormations = new List<Agent>();
         private readonly List<Agent> _agentsWithEmptyFormations = new List<Agent>();
         private readonly Dictionary<Formation, FormationColorStatus> _formationColorStatusDictionary = new Dictionary<Formation, FormationColorStatus>();
         private readonly FormationColorStatus _colorStatusOfNoFormationAgents = new FormationColorStatus();
@@ -397,7 +397,8 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             {
                 while (_agentsRemovedFromFormations.Count > 0)
                 {
-                    var agent = _agentsRemovedFromFormations.Pop();
+                    var agent = _agentsRemovedFromFormations[_agentsRemovedFromFormations.Count - 1];
+                    _agentsRemovedFromFormations.RemoveAt(_agentsRemovedFromFormations.Count - 1);
                     if (agent.Formation != null && IsFormationDirty(agent.Formation))
                         continue;
 
@@ -462,9 +463,9 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         public void OnUnitAdded(Formation formation, Agent agent)
         {
-            if (_agentsRemovedFromFormations.Count > 0 && _agentsRemovedFromFormations.Peek() == agent)
+            if (_agentsRemovedFromFormations.Count > 0 && _agentsRemovedFromFormations[_agentsRemovedFromFormations.Count - 1] == agent)
             {
-                _agentsRemovedFromFormations.Pop();
+                _agentsRemovedFromFormations.RemoveAt(_agentsRemovedFromFormations.Count - 1);
             }
             _agentsNewlyAddedToFormations.Push(agent);
 
@@ -482,7 +483,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             {
                 _agentsNewlyAddedToFormations.Pop();
             }
-            _agentsRemovedFromFormations.Push(agent);
+            _agentsRemovedFromFormations.Add(agent);
 
             if (ShouldHighlightAgentWithoutFormation())
             {
@@ -544,6 +545,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             if (affectedAgent.Formation != null)
                 return;
 
+            _agentsRemovedFromFormations.Remove(affectedAgent);
             if (ShouldHighlightAgentWithoutFormation())
             {
                 _agentsWithEmptyFormations.Remove(affectedAgent);
