@@ -1,5 +1,18 @@
 # Changelog
 
+## [v5.4.12] - 2026-07-11
+### Fixed
+- Fix the issue that orders in the command queue will not be executed when all units in formation are detached.
+
+- In stealth missions, the player character will not charge when switching to free camera.
+
+- Fix the issue that middle mouse clicking cannot select formations on siege towers.
+
+- Fix crash in the Warsails mission to rescue player's sister.
+
+### Improved
+- Improve cancelling behavior when dragging formation shape and clicking the right mouse button.
+
 ## [v5.4.11] - 2026-07-10
 ### Fixed
 - Fix crash when player is injured with order UI open.
