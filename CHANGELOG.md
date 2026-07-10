@@ -1,5 +1,12 @@
 # Changelog
 
+## [v5.4.11] - 2026-07-10
+### Fixed
+- Fix crash when player is injured with order UI open.
+
+### Improved
+- Improved soldier pilot ship order.
+
 ## [v5.4.10] - 2026-07-09
 ### Fixed
 - Fix crash when choosing "Command the battle" option after player is injured in game version v1.4.7.
