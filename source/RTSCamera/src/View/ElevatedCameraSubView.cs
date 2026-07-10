@@ -20,6 +20,7 @@ namespace RTSCamera.View
         private const float MinTransitionSeconds = 0.01f;
         private const float RiseStartThreshold = 0.19f;
         private const float RiseEndThreshold = 0.81f;
+        private float _currentAgentScale = 0f;
         private Vec3 _targetLocalOffset;
         private Vec3 _localOffset;
         private float _targetScale = 0f;
@@ -324,8 +325,12 @@ namespace RTSCamera.View
 
         private void UpdateOffset()
         {
-            var height = Agent.Main.AgentScale * 0.3f;
-            var offset = Agent.Main.AgentScale * 0.7f;
+            if (Agent.Main != null)
+            {
+                _currentAgentScale = Agent.Main.AgentScale;
+            }
+            var height = _currentAgentScale * 0.3f;
+            var offset = _currentAgentScale * 0.7f;
             var smoothProgress = Smooth(_resultProgress);
             _resultScale = _inputScale * smoothProgress;
             _targetLocalOffset = Vec3.Up * height * _resultScale;

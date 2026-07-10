@@ -1,13 +1,11 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using System;
-using System.Linq;
 using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
-using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.VisualOrders.OrderSets;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
 

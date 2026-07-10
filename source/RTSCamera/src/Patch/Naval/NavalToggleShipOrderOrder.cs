@@ -47,7 +47,7 @@ namespace RTSCamera.Patch.Naval
                 return null;
             if (Agent.Main.Formation == formation)
             {
-                return Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode;
+                return Patch_MissionShip.ShouldAIControlPlayerShipInPlayerMode && !Utilities.Utility.IsPlayerPilotingSelectedShip();
             }
             return null;
         }
