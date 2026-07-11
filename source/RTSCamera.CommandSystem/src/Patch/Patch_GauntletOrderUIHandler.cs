@@ -224,13 +224,30 @@ namespace RTSCamera.CommandSystem.Patch
                                 orderTroopPlacer.SuspendTroopPlacer = true;
                                 _targetFormationOrderGivenWithActionButton?.SetValue(__instance, true);
                             }
-                            if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.Advance)
+                            if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.Charge)
+                            {
+                                orderToAdd.OrderType = OrderType.Charge;
+                                orderToAdd.TargetFormation = focusedFormationCache[0];
+                                Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Charge, selectedFormations, focusedFormationCache[0], null, null);
+                                orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
+                                RTSCommandVisualOrder.ClearSelectTargetMode();
+                                if (!queueCommand)
+                                {
+                                    skipNativeOrder = true;
+                                    dataSource.OrderController.SetOrderWithFormation(OrderType.Charge, focusedFormationCache[0]);
+                                }
+                                else
+                                {
+                                    Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_movement_charge");
+                                }
+                            }
+                            else if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.Advance)
                             {
                                 orderToAdd.OrderType = OrderType.Advance;
                                 orderToAdd.TargetFormation = focusedFormationCache[0];
                                 Patch_OrderController.LivePreviewFormationChanges.SetMovementOrder(OrderType.Advance, selectedFormations, focusedFormationCache[0], null, null);
                                 orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                                RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
+                                RTSCommandVisualOrder.ClearSelectTargetMode();
                                 if (!queueCommand)
                                 {
                                     skipNativeOrder = true;
@@ -252,13 +269,14 @@ namespace RTSCamera.CommandSystem.Patch
                                     skipNativeOrder = true;
                                     Patch_OrderController.SetFacingEnemyTargetFormation(selectedFormations, orderToAdd.TargetFormation);
                                     dataSource.OrderController.SetOrder(OrderType.LookAtEnemy);
+                                    Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_toggle_facing");
                                 }
                                 else
                                 {
                                     Utilities.Utility.MissionOrderVM_OnOrderExecutedWithId("order_toggle_facing");
                                 }
                                 orderToAdd.VirtualFormationChanges = Patch_OrderController.LivePreviewFormationChanges.CollectChanges(selectedFormations);
-                                RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
+                                RTSCommandVisualOrder.ClearSelectTargetMode();
                             }
                             else
                             {
@@ -524,7 +542,7 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         orderToAdd.OrderType = OrderType.LookAtDirection;
                         orderToAdd.ShouldAdjustFormationSpeed = Utilities.Utility.ShouldLockFormation();
-                        RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
+                        RTSCommandVisualOrder.ClearSelectTargetMode();
                         if (queueCommand)
                         {
                             Patch_OrderController.FillOrderLookingAtPosition(orderToAdd, dataSource.OrderController, new WorldPosition(Mission.Current.Scene, UIntPtr.Zero, __instance.MissionScreen.GetOrderFlagPosition(), false));
@@ -609,7 +627,7 @@ namespace RTSCamera.CommandSystem.Patch
         {
             if (__instance.IsValidForTick && ____dataSource != null && ____gauntletLayer.IsActive && ____dataSource.IsToggleOrderShown && CommandSystemConfig.Get().OrderUIClickable)
             {
-                ____orderTroopPlacer.IsDrawingFacing = ____dataSource.SelectedOrderSet?.OrderIconId == "order_type_facing" || RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.LookAtDirection;
+                ____orderTroopPlacer.IsDrawingFacing = ____dataSource.CursorState == MissionOrderVM.CursorStates.Face;
             }
         }
 

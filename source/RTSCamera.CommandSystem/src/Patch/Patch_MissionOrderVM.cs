@@ -550,10 +550,10 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_CursorState(MissionOrderVM __instance, ref MissionOrderVM.CursorStates __result)
         {
-            if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.LookAtDirection && Patch_OrderTroopPlacer.IsFreeCamera)
+            if (RTSCommandVisualOrder.OrderToSelectTarget == SelectTargetMode.LookAtDirection)
             {
                 __result = MissionOrderVM.CursorStates.Face;
-                Patch_OrderTroopPlacer.SetIsDrawingFacing(true);
+                //Patch_OrderTroopPlacer.SetIsDrawingFacing(true);
                 return false;
             }
             return true;
@@ -563,8 +563,9 @@ namespace RTSCamera.CommandSystem.Patch
         {
             if (RTSCommandVisualOrder.OrderToSelectTarget != SelectTargetMode.None)
             {
-                RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
-                return !Patch_OrderTroopPlacer.IsFreeCamera;
+                var selectTargetOrder = RTSCommandVisualOrder.OrderToSelectTarget;
+                RTSCommandVisualOrder.ClearSelectTargetMode();
+                return selectTargetOrder != SelectTargetMode.LookAtDirection;
             }
             return true;
         }

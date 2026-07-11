@@ -1,6 +1,7 @@
 ﻿using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
+using RTSCamera.CommandSystem.Orders;
 using RTSCamera.CommandSystem.Orders.VisualOrders;
 using RTSCamera.CommandSystem.Patch;
 using System;
@@ -212,6 +213,21 @@ namespace RTSCamera.CommandSystem.Utilities
                 textObject.SetTextVariable("STR1", GameTexts.GameTextHelper.MergeTextObjectsWithComma(formationNameList, false));
                 textObject.SetTextVariable("STR2", GetOrderString(order));
                 MissionSharedLibrary.Utilities.Utility.DisplayMessage(textObject.ToString(), MessageColor);
+            }
+        }
+
+        public static void DisplayClickToSelectTargetMessage(SelectTargetMode selectTargetMode)
+        {
+            switch (selectTargetMode)
+            {
+                case SelectTargetMode.Charge:
+                case SelectTargetMode.Advance:
+                case SelectTargetMode.LookAtEnemy:
+                    MissionSharedLibrary.Utilities.Utility.DisplayLocalizedText("str_rts_camera_command_system_click_enemy_to_select_target_for_command", null, MessageColor);
+                    break;
+                case SelectTargetMode.LookAtDirection:
+                    MissionSharedLibrary.Utilities.Utility.DisplayLocalizedText("str_rts_camera_command_system_click_ground_to_select_target_for_command", null, MessageColor);
+                    break;
             }
         }
 

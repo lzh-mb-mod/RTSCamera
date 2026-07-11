@@ -51,10 +51,10 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             }
             if (orderToAdd.OrderType == OrderType.LookAtDirection)
             {
-                if (IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable)
+                if (IsFromClicking && CommandSystemConfig.Get().OrderUIClickable)
                 {
                     // Allows to click ground to select target to facing to.
-                    OrderToSelectTarget = SelectTargetMode.LookAtDirection;
+                    SetSelectTargetMode(SelectTargetMode.LookAtDirection);
                     return;
                 }
             }
@@ -63,7 +63,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                 if (IsSelectTargetForMouseClickingKeyDown && IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
                 {
                     // Allows to click enemy to select target to facing to.
-                    OrderToSelectTarget = SelectTargetMode.LookAtEnemy;
+                    SetSelectTargetMode(SelectTargetMode.LookAtEnemy);
                     return;
                 }
             }

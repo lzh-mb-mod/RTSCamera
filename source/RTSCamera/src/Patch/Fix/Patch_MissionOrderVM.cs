@@ -204,6 +204,8 @@ namespace RTSCamera.Patch.Fix
             // and there's performance issue.
             // So it's implemented in this way:
             // Prevent the order UI from being closed in certain condition, and only close once when needed.
+            // For example, when giving Activate facing order by hotkey with alt key pressed in RTS Command,
+            // GauntletOrderUIHandler.TickInput will close toggle order but RTS Command doesn't hope so.
             if (__instance.IsToggleOrderShown)
             {
                 bool shouldKeepOpen = RTSCameraLogic.Instance?.SwitchFreeCameraLogic.IsSpectatorCamera == true && RTSCameraLogic.Instance?.SwitchFreeCameraLogic.ShouldKeepOrderUIOpen == true && RTSCameraConfig.Get().KeepOrderUIOpenInFreeCamera;

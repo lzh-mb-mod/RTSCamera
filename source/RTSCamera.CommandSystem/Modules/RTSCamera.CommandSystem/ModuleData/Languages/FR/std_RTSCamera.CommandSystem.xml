@@ -92,6 +92,8 @@
 
     <string id="RTSCameraCommandSystem_order_ui_clickable_extension" text="Extension de l’interface d’ordres cliquable" />
     <string id="RTSCameraCommandSystem_order_ui_clickable_extension_hint" text="Permet de sélectionner une cible de commande pour les ordres de face/avance en maintenant {KeyName} enfoncée tout en donnant vos ordres, puis en cliquant sur la cible." />
+    <string id="RTSCameraCommandSystem_click_enemy_to_select_target_for_command" text="Cliquez sur l’ennemi pour sélectionner la cible de la commande" />
+    <string id="RTSCameraCommandSystem_click_ground_to_select_target_for_command" text="Cliquez sur le sol pour sélectionner la cible de la commande" />
 
     <string id="RTSCameraCommandSystem_face_enemy_by_default" text="Faire face à l’ennemi par défaut" />
     <string id="RTSCameraCommandSystem_face_enemy_by_default_hint" text="Indique si les troupes doivent faire face à l’ennemi au début de la bataille." />
