@@ -10,8 +10,12 @@
 
 - Fix crash in the Warsails mission to rescue player's sister.
 
+- Fix order queue for empty formations.
+
 ### Improved
 - Improve cancelling behavior when dragging formation shape and clicking the right mouse button.
+
+- Improve order target selection when using mouse to click orders.
 
 ## [v5.4.11] - 2026-07-10
 ### Fixed
