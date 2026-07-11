@@ -15,6 +15,9 @@ namespace RTSCamera.Patch
     public class Patch_MissionFormationMarkerVM
     {
         private static bool _patched;
+        // use reflection to keep compatible with early version of v1.3.x.
+        private static PropertyInfo ShowDistanceTextsProperty = typeof(MissionFormationMarkerVM).GetProperty("ShowDistanceTexts", BindingFlags.Instance | BindingFlags.Public);
+        private static PropertyInfo ShowDistanceTextsTargetProperty = typeof(MissionFormationMarkerTargetVM).GetProperty("ShowDistanceTexts", BindingFlags.Instance | BindingFlags.Public);
         public static bool Patch(Harmony harmony)
         {
             try
@@ -55,7 +58,10 @@ namespace RTSCamera.Patch
                     __instance.Targets.Add(formationMarkerTargetVm);
                     formationMarkerTargetVm.IsEnabled = __instance.IsEnabled;
                     formationMarkerTargetVm.IsFormationTargetRelevant = __instance.IsFormationTargetRelevant;
-                    formationMarkerTargetVm.ShowDistanceTexts = __instance.ShowDistanceTexts;
+                    if (ShowDistanceTextsProperty != null && ShowDistanceTextsTargetProperty != null)
+                    {
+                        ShowDistanceTextsTargetProperty.SetValue(formationMarkerTargetVm, ShowDistanceTextsProperty.GetValue(__instance));
+                    }
                 }
             }
             if (formationList.Count() < __instance.Targets.Count)
