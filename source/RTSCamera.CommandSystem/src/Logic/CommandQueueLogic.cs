@@ -566,6 +566,13 @@ namespace RTSCamera.CommandSystem.Logic
             CommandQueuePreview.IsPreviewOutdated = true;
         }
 
+        public static void ClearForEmptyFormation()
+        {
+            var emptyFormations = PendingOrders.Select(pair => pair.Key).Where(f => f.CountOfUnits == 0).ToList();
+            emptyFormations.ForEach(f => PendingOrders.Remove(f));
+            ClearOrderInQueue(emptyFormations);
+        }
+
         public static void UpdateFormation(Formation formation)
         {
             try
@@ -657,7 +664,7 @@ namespace RTSCamera.CommandSystem.Logic
                 }
                 foreach (var otherFormation in order.SelectedFormations)
                 {
-                    if (otherFormation != formation)
+                    if (otherFormation != formation && otherFormation.CountOfUnits > 0)
                     {
                         if (PendingOrders.TryGetValue(otherFormation, out var otherOrder))
                         {
@@ -686,6 +693,8 @@ namespace RTSCamera.CommandSystem.Logic
                 }
 
                 // Completes the pending order.
+                // We should not remove pending orders for other formations.
+                // because they may still needs to wait for the pending order
                 PendingOrders.Remove(formation);
             }
         }
@@ -706,8 +715,8 @@ namespace RTSCamera.CommandSystem.Logic
             if (order == null)
                 return false;
             foreach (var remainingFormation in order.RemainingFormations)
-            {
-                if (PendingOrders.ContainsKey(remainingFormation))
+            {   
+                if (PendingOrders.ContainsKey(remainingFormation) && remainingFormation.CountOfUnits > 0)
                     return false;
             }
 

@@ -1,10 +1,7 @@
-﻿using MissionSharedLibrary.Utilities;
-using RTSCamera.CommandSystem.Config;
+﻿using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
-using System;
 using System.Linq;
-using TaleWorlds.Engine;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
@@ -57,19 +54,19 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             orderToAdd.OrderType = IsFacingEnemy(GetActiveState(orderController)) ? OrderType.LookAtDirection : OrderType.LookAtEnemy;
             if (orderToAdd.OrderType == OrderType.LookAtDirection)
             {
-                if (IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable)
+                if (IsFromClicking && CommandSystemConfig.Get().OrderUIClickable)
                 {
                     // Allows to click ground to select target to facing to.
-                    OrderToSelectTarget = SelectTargetMode.LookAtDirection;
+                    SetSelectTargetMode(SelectTargetMode.LookAtDirection);
                     return;
                 }
             }
             else
             {
-                if (IsSelectTargetForMouseClickingKeyDown && IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
+                if (IsSelectTargetForMouseClickingKeyDown && IsFromClicking && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
                 {
                     // Allows to click enemy to select target to facing to.
-                    OrderToSelectTarget = SelectTargetMode.LookAtEnemy;
+                    SetSelectTargetMode(SelectTargetMode.LookAtEnemy);
                     return;
                 }
             }

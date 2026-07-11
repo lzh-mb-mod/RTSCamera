@@ -212,7 +212,7 @@ namespace RTSCamera.CommandSystem.Config
                         CommandSystemConfig.Get().OrderUIClickableExtension = b;
                         if (!b)
                         {
-                            RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
+                            RTSCommandVisualOrder.ClearSelectTargetMode();
                         }
                     }));
                 commandOptionCategory.AddOption(new BoolOptionViewModel(

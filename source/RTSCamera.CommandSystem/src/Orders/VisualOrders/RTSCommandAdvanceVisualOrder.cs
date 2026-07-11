@@ -29,16 +29,16 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
         {
             bool queueCommand = OnBeforeExecuteOrder(orderController, executionParameters);
 
-            if (IsSelectTargetForMouseClickingKeyDown && IsFromClicking && Patch_OrderTroopPlacer.IsFreeCamera && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
-            {
-                // Allows to click enemy to select target to advance to.
-                OrderToSelectTarget = SelectTargetMode.Advance;
-                return;
-            }
             var selectedFormations = orderController.SelectedFormations.ToList();
             if (selectedFormations.Count == 0)
                 return;
 
+            if (IsSelectTargetForMouseClickingKeyDown && IsFromClicking && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
+            {
+                // Allows to click enemy to select target to advance to.
+                SetSelectTargetMode(SelectTargetMode.Advance);
+                return;
+            }
             var orderToAdd = new OrderInQueue
             {
                 SelectedFormations = selectedFormations

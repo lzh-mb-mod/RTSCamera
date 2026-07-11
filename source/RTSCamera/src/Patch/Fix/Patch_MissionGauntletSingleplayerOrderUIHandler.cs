@@ -32,6 +32,7 @@ namespace RTSCamera.Patch.Fix
         private static bool _isInSwitchTeamEvent;
         private static bool _willEndDraggingMode;
         private static bool _earlyDraggingMode;
+        private static bool _mouseVisibleWhenEarlyDraggingBegin;
         private static float _beginDraggingOffset;
         private static readonly float _beginDraggingOffsetThreshold = 20;
         private static bool _rightButtonDraggingMode;
@@ -90,7 +91,6 @@ namespace RTSCamera.Patch.Fix
         private static bool ShouldBeginEarlyDragging(GauntletOrderUIHandler __instance, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer)
         {
             return !_rightButtonDraggingMode && !_earlyDraggingMode &&
-                   //(__instance.MissionScreen.InputManager.IsAltDown() || __instance.MissionScreen.LastFollowedAgent == null) &&
                    (____gauntletLayer.InputRestrictions.MouseVisibility || Patch_OrderTroopPlacer.IsMouseDown(____orderTroopPlacer)) &&
                    IsDragKeyDown(__instance);
         }
@@ -110,7 +110,7 @@ namespace RTSCamera.Patch.Fix
             return __instance.MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton) || __instance.MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.ControllerLTrigger);
         }
 
-        private static void BeginEarlyDragging(OrderTroopPlacer ____orderTroopPlacer)
+        private static void BeginEarlyDragging(OrderTroopPlacer ____orderTroopPlacer, GauntletLayer ____gauntletLayer)
         {
 #if DEBUG
             Utility.DisplayMessage("Begin Early Drag");
@@ -121,6 +121,7 @@ namespace RTSCamera.Patch.Fix
             }
             _earlyDraggingMode = true;
             _beginDraggingOffset = 0;
+            _mouseVisibleWhenEarlyDraggingBegin = ____gauntletLayer.InputRestrictions.MouseVisibility;
             MousePositionRangedBeforeDragging = ____orderTroopPlacer.Mission.InputManager.GetMousePositionRanged();
             MousePositionBeforeDragging = ____orderTroopPlacer.Mission.InputManager.GetMousePositionPixel();
         }
@@ -137,8 +138,7 @@ namespace RTSCamera.Patch.Fix
         private static bool ShouldBeginDragging(OrderTroopPlacer ____orderTroopPlacer)
         {
             return _earlyDraggingMode &&
-                (____orderTroopPlacer.MissionScreen.InputManager.IsAltDown() ||
-                ____orderTroopPlacer.MissionScreen.LastFollowedAgent == null ||
+                (_mouseVisibleWhenEarlyDraggingBegin ||
                 !Patch_OrderTroopPlacer.IsMouseDown(____orderTroopPlacer)) &&
                  _beginDraggingOffset > _beginDraggingOffsetThreshold;
         }
@@ -155,11 +155,15 @@ namespace RTSCamera.Patch.Fix
 
         private static void EndDrag(OrderTroopPlacer ____orderTroopPlacer)
         {
-            if (_earlyDraggingMode && Patch_OrderTroopPlacer.IsMouseDown(____orderTroopPlacer))
+            if (_earlyDraggingMode)
             {
-                typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(____orderTroopPlacer, new object[] { });
+                if (Patch_OrderTroopPlacer.IsMouseDown(____orderTroopPlacer))
+                {
+                    typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(____orderTroopPlacer, new object[] { });
+                }
+                EndEarlyDragging();
+                _mouseVisibleWhenEarlyDraggingBegin = false;
             }
-            EndEarlyDragging();
 #if DEBUG
             Utility.DisplayMessage("End Drag");
 #endif
@@ -261,7 +265,7 @@ namespace RTSCamera.Patch.Fix
             {
                 if (ShouldBeginEarlyDragging(__instance, ____gauntletLayer, ____orderTroopPlacer))
                 {
-                    BeginEarlyDragging(____orderTroopPlacer);
+                    BeginEarlyDragging(____orderTroopPlacer, ____gauntletLayer);
                 }
                 else if (IsDragKeyDown(__instance))
                 {

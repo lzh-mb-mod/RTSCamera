@@ -196,7 +196,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static void OnToggleFreeCamera(bool isFreeCamera)
         {
             IsFreeCamera = isFreeCamera;
-            RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
+            //RTSCommandVisualOrder.ClearSelectTargetMode();
         }
 
         public static bool IsDraggingFormation(OrderTroopPlacer __instance, Vec2? ____formationDrawingStartingPointOfMouse, float? ____formationDrawingStartingTime)

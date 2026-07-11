@@ -73,7 +73,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static void DisableSelectTargetMode()
         {
-            RTSCommandVisualOrder.OrderToSelectTarget = SelectTargetMode.None;
+            RTSCommandVisualOrder.ClearSelectTargetMode();
         }
     }
 }

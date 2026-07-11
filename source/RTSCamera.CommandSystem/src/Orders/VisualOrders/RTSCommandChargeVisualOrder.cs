@@ -32,6 +32,12 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
             if (selectedFormations.Count == 0)
                 return;
 
+            if (IsSelectTargetForMouseClickingKeyDown && IsFromClicking && CommandSystemConfig.Get().OrderUIClickable && CommandSystemConfig.Get().OrderUIClickableExtension)
+            {
+                // Allows to click enemy to select target to advance to.
+                SetSelectTargetMode(SelectTargetMode.Charge);
+                return;
+            }
             var orderToAdd = new OrderInQueue
             {
                 SelectedFormations = selectedFormations

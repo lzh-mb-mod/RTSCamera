@@ -10,6 +10,7 @@ namespace RTSCamera.CommandSystem.Orders
     public enum SelectTargetMode
     {
         None,
+        Charge,
         Advance,
         LookAtDirection,
         LookAtEnemy,
@@ -22,6 +23,17 @@ namespace RTSCamera.CommandSystem.Orders
         public static bool IsFromClicking = false;
 
         public static SelectTargetMode OrderToSelectTarget = SelectTargetMode.None;
+
+        public static void ClearSelectTargetMode()
+        {
+            OrderToSelectTarget = SelectTargetMode.None;
+        }
+
+        protected static void SetSelectTargetMode(SelectTargetMode selectTargetMode)
+        {
+            OrderToSelectTarget = selectTargetMode;
+            Utilities.Utility.DisplayClickToSelectTargetMessage(selectTargetMode);
+        }
         protected RTSCommandVisualOrder(string stringId) : base(stringId)
         {
         }
@@ -41,7 +53,7 @@ namespace RTSCamera.CommandSystem.Orders
             IsSelectTargetForMouseClickingKeyDown = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectTargetForCommand).IsKeyDownInOrder();
             if (!IsSelectTargetForMouseClickingKeyDown)
             {
-                OrderToSelectTarget = SelectTargetMode.None;
+                ClearSelectTargetMode();
             }
             return QueueCommand;
         }

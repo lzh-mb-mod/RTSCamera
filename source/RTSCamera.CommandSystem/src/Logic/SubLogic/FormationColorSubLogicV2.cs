@@ -334,6 +334,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         public void OnRemoveBehaviour()
         {
             _actionQueue.Clear();
+            _agentsNewlyAddedToFormations.Clear();
             _agentsRemovedFromFormations.Clear();
             _agentsWithEmptyFormations.Clear();
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);

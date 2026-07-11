@@ -92,6 +92,8 @@
 
     <string id="RTSCameraCommandSystem_order_ui_clickable_extension" text="Order UI Clickable Extension" />
     <string id="RTSCameraCommandSystem_order_ui_clickable_extension_hint" text="Allows to select command target for facing/engage order by holding {KeyName} while give orders, and then click the target." />
+    <string id="RTSCameraCommandSystem_click_enemy_to_select_target_for_command" text="Click Enemy to Select Target for Command" />
+    <string id="RTSCameraCommandSystem_click_ground_to_select_target_for_command" text="Click Ground to Select Target for Command" />
 
     <string id="RTSCameraCommandSystem_face_enemy_by_default" text="Face Enemy By Default" />
     <string id="RTSCameraCommandSystem_face_enemy_by_default_hint" text="Whether troops should face the enemy when battle starts." />
