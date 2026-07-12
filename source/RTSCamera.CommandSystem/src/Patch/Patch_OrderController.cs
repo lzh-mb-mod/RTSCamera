@@ -2897,8 +2897,7 @@ namespace RTSCamera.CommandSystem.Patch
             }
             else
             {
-                // add a small number to resolve the issue that the movement target marker may disappear during dragging.
-                if ((double)width + 0.363f < (double)newWidth && unitSpacing > 0)
+                if ((double)width < (double)newWidth && unitSpacing > 0)
                     return;
             }
             Vec2? nullable = simulationFormation.Arrangement.GetLocalPositionOfUnitOrDefault(unitIndex);

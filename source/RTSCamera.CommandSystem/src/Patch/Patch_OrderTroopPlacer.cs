@@ -1,13 +1,11 @@
 ﻿using HarmonyLib;
 using MissionLibrary.Event;
-using MissionSharedLibrary.QuerySystem;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.CampaignGame;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Logic.SubLogic;
-using RTSCamera.CommandSystem.Orders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -780,11 +778,20 @@ namespace RTSCamera.CommandSystem.Patch
                                                 .IsKeyDown(__instance.Input);
             bool isLeftButtonPressed = __instance.Input.IsKeyPressed(InputKey.LeftMouseButton) ||
                               __instance.Input.IsKeyPressed(InputKey.ControllerRTrigger);
-            bool isDragKeyDown = __instance.Input.IsKeyDown(InputKey.RightMouseButton) ||
+            bool isLeftButtonDown = __instance.Input.IsKeyDown(InputKey.LeftMouseButton) ||
+                __instance.Input.IsKeyDown(InputKey.ControllerRTrigger);
+            bool isLeftButtonReleased = __instance.Input.IsKeyReleased(InputKey.LeftMouseButton) ||
+                __instance.Input.IsKeyReleased(InputKey.ControllerRTrigger);
+            bool isCameraDragKeyDown = __instance.Input.IsKeyDown(InputKey.RightMouseButton) ||
                 __instance.Input.IsKeyDown(InputKey.ControllerLTrigger);
 
-            if (isLeftButtonPressed)
+            // If click on button on UI, isLeftButtonPressed may be triggerred, but isLeftButtonDown is not.
+            // we should not trigger mouse down if click on button.
+            if (isLeftButtonPressed && isLeftButtonDown)
             {
+#if DEBUG
+                Utility.DisplayMessage("mouse down");
+#endif
                 ____isMouseDown = true;
                 _handleMouseDown?.Invoke(__instance, new object[] { });
             }
@@ -801,14 +808,28 @@ namespace RTSCamera.CommandSystem.Patch
                     ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
                     ref ____formationDrawingStartingTime);
             }
-            if ((__instance.Input.IsKeyReleased(InputKey.LeftMouseButton) || __instance.Input.IsKeyReleased(InputKey.ControllerRTrigger)) && ____isMouseDown &&
-                !isDragKeyDown)
+            // isLeftButtonReleased will not be triggerd when we drag onto a clickable button
+            // so we should use !isLeftButtonDown here.
+            if (!isLeftButtonDown && ____isMouseDown)
             {
-                ____isMouseDown = false;
-                // Formation.GetOrderPositionOfUnit is wrong in the next tick after movement order is issued.
-                // we skip updating from the wrong position for 1 tick.
-                _skipDrawingForDestinationForOneTick = true;
-                _handleMouseUp?.Invoke(__instance, new object[] { });
+                // if camera drag key is down, we need to cancel the drag to formation.
+                if (!isCameraDragKeyDown)
+                {
+#if DEBUG
+                    Utility.DisplayMessage("mouse up");
+#endif
+                    ____isMouseDown = false;
+                    // Formation.GetOrderPositionOfUnit is wrong in the next tick after movement order is issued.
+                    // we skip updating from the wrong position for 1 tick.
+                    _skipDrawingForDestinationForOneTick = true;
+                    _handleMouseUp?.Invoke(__instance, new object[] { });
+                }
+                else
+                {
+                    Reset(ref ____isMouseDown, ref ____formationDrawingMode, ref ____formationDrawingStartingPosition,
+                    ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime,
+                    ref ____mouseOverFormation, ref _clickedFormation);
+                }
             }
             else if (____isMouseDown && isSelectFormationKeyDown)
             {
@@ -820,7 +841,7 @@ namespace RTSCamera.CommandSystem.Patch
                 }
             }
             bool isDrawingForDestination = false;
-            if ((__instance.Input.IsKeyDown(InputKey.LeftMouseButton) || __instance.Input.IsKeyDown(InputKey.ControllerRTrigger)) && ____isMouseDown)
+            if (____isMouseDown && isLeftButtonDown)
             {
                 if (___formationDrawTimer.Check(MBCommon.GetApplicationTime()) &&
                     !__instance.IsDrawingFacing &&
