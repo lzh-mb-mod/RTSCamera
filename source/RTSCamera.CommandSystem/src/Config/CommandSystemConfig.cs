@@ -138,6 +138,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public CircleFormationUnitSpacingPreference CircleFormationUnitSpacingPreference = CircleFormationUnitSpacingPreference.Tight;
 
+        public bool OverrideMountedUnitsIntervalThreshold = false;
+
         public float MountedUnitsIntervalThreshold = 0.1f;
 
         public bool FixAdvaneOrderForThrowing = true;
@@ -195,6 +197,7 @@ namespace RTSCamera.CommandSystem.Config
             OrderUIClickableExtension = other.OrderUIClickableExtension;
             FacingEnemyByDefault = other.FacingEnemyByDefault;
             CircleFormationUnitSpacingPreference = other.CircleFormationUnitSpacingPreference;
+            OverrideMountedUnitsIntervalThreshold = other.OverrideMountedUnitsIntervalThreshold;
             MountedUnitsIntervalThreshold = other.MountedUnitsIntervalThreshold;
             FixAdvaneOrderForThrowing = other.FixAdvaneOrderForThrowing;
             ApplyAdvanceOrderFixForAI = other.ApplyAdvanceOrderFixForAI;

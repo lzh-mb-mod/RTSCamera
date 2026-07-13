@@ -220,11 +220,19 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default_hint"),
                     () => CommandSystemConfig.Get().FacingEnemyByDefault,
                     b => CommandSystemConfig.Get().FacingEnemyByDefault = b));
-                commandOptionCategory.AddOption(new NumericOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_mounted_units_interval_threshold"),
-                    GameTexts.FindText("str_rts_camera_command_system_mounted_units_interval_threshold_hint"),
-                    () => CommandSystemConfig.Get().MountedUnitsIntervalThreshold,
-                    f =>  CommandSystemConfig.Get().MountedUnitsIntervalThreshold = f, 0.01f, 0.5f, false, true));
+                if (!CommandSystemSubModule.IsTAOMInstalled)
+                {
+                    commandOptionCategory.AddOption(new BoolOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_command_system_override_mounted_units_interval_threshold"),
+                        GameTexts.FindText("str_rts_camera_command_system_override_mounted_units_interval_threshold_hint"),
+                        () => CommandSystemConfig.Get().OverrideMountedUnitsIntervalThreshold,
+                        b => CommandSystemConfig.Get().OverrideMountedUnitsIntervalThreshold = b));
+                    commandOptionCategory.AddOption(new NumericOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_command_system_mounted_units_interval_threshold"),
+                        GameTexts.FindText("str_rts_camera_command_system_mounted_units_interval_threshold_hint"),
+                        () => CommandSystemConfig.Get().MountedUnitsIntervalThreshold,
+                        f => CommandSystemConfig.Get().MountedUnitsIntervalThreshold = f, 0.01f, 0.5f, false, true));
+                }
                 //commandOptionCategory.AddOption(new NumericOptionViewModel(
                 //    new TaleWorlds.Localization.TextObject("r"), null,
                 //    () => CommandQueuePreview.r, f =>

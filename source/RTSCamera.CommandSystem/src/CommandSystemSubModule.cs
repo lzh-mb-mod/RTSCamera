@@ -10,13 +10,11 @@ using RTSCamera.CommandSystem.Orders;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.Usage;
 using System;
-using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
-using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order.Visual;
 
@@ -27,6 +25,7 @@ namespace RTSCamera.CommandSystem
         public static readonly string ShortModuleId = "RTSCommand";
         public static readonly string ModuleId = "RTSCamera.CommandSystem";
         public static bool IsRealisticBattleModuleInstalled = true;
+        public static bool IsTAOMInstalled;
 
         private readonly Harmony _harmony = new Harmony("RTSCommandPatch");
         private bool _successPatch;
@@ -37,7 +36,7 @@ namespace RTSCamera.CommandSystem
 
             // If RBM is loaded, disable the ChargeToFormation feature for infantry to not break RBM frontline behavior
             IsRealisticBattleModuleInstalled = Utility.IsModuleInstalled("RBM") && Utility.IsModuleInstalled("RealisticBattleAiModule");
-
+            IsTAOMInstalled = Utility.IsModuleInstalled("TAOM");
             Utility.ShouldDisplayMessage = true;
             Initialize();
 
