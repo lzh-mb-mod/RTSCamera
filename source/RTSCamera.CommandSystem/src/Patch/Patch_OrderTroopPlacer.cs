@@ -69,6 +69,9 @@ namespace RTSCamera.CommandSystem.Patch
         private static bool _isDrawingForDestinationInLastTick;
         private static Timer _clearMouseOverFormationTimer;
         private static Timer _changeMouseOverFormationTimer;
+        private static bool _wasDragCameraKeyDown;
+        private static bool _wasSelectFormationKeyDown;
+        private static float _beginDraggingOffset;
 
         public static bool Patch(Harmony harmony)
         {
@@ -184,6 +187,9 @@ namespace RTSCamera.CommandSystem.Patch
             _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
             _clearMouseOverFormationTimer = null;
             _changeMouseOverFormationTimer = null;
+            _wasDragCameraKeyDown = false;
+            _wasSelectFormationKeyDown = false;
+            _beginDraggingOffset = 0f;
         }
 
         private static void OnFormationFocused(MBReadOnlyList<Formation> focusedFormations)
@@ -199,6 +205,14 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool IsDraggingFormation(OrderTroopPlacer __instance, Vec2? ____formationDrawingStartingPointOfMouse, float? ____formationDrawingStartingTime)
         {
+            if (!__instance.MissionScreen.SceneLayer.InputRestrictions.MouseVisibility)
+            {
+                float inputXRaw = __instance.MissionScreen.SceneLayer.Input.GetMouseMoveX();
+                float inputYRaw = __instance.MissionScreen.SceneLayer.Input.GetMouseMoveY();
+                _beginDraggingOffset += inputYRaw * inputYRaw + inputXRaw * inputXRaw;
+                if (_beginDraggingOffset > 20f)
+                    return true;
+            }
             if (____formationDrawingStartingPointOfMouse.HasValue)
             {
                 Vec2 vec2 = ____formationDrawingStartingPointOfMouse.Value - __instance.Input.GetMousePositionPixel();
@@ -343,6 +357,7 @@ namespace RTSCamera.CommandSystem.Patch
                         {
                             ____formationDrawingMode = true;
                             ____clickedFormation = null;
+                            _beginDraggingOffset = 0;
                         }
                     }
 
@@ -355,7 +370,8 @@ namespace RTSCamera.CommandSystem.Patch
         {
             var activeCursorState = (CursorState)_activeCursorState.GetValue(__instance);
             CursorState cursorState = CursorState.Invisible;
-            if (!__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.IsEmpty() && _clickedFormation == null)
+            bool hasSelectedFormation = !__instance.Mission.PlayerTeam.PlayerOrderController.SelectedFormations.IsEmpty();
+            if ((hasSelectedFormation || __instance.Mission.Mode == MissionMode.Deployment) && _clickedFormation == null)
             {
                 float collisionDistance;
                 WeakGameEntity collidedEntity;
@@ -423,7 +439,7 @@ namespace RTSCamera.CommandSystem.Patch
                             }
                         }
                     }
-                    if (cursorState == CursorState.Invisible)
+                    if (cursorState == CursorState.Invisible && hasSelectedFormation)
                     {
                         cursorState = IsCursorStateGroundOrNormal(____formationDrawingMode);
                     }
@@ -768,7 +784,13 @@ namespace RTSCamera.CommandSystem.Patch
             _activeCursorState.SetValue(__instance,
                 (CursorState)_getCursorState.Invoke(_orderTroopPlacer, new object[] { }));
             if (!CanUpdate(__instance, ____orderController))
+            {
+                if (Mission.Current?.Mode == MissionMode.Deployment)
+                {
+                    UpdateMouseOverFormation(____mouseOverFormation);
+                }
                 return false;
+            }
             ____isDrawnThisFrame = false;
             if (__instance.SuspendTroopPlacer)
                 return false;
@@ -778,7 +800,7 @@ namespace RTSCamera.CommandSystem.Patch
                                                 .IsKeyPressed(__instance.Input);
             bool isSelectFormationKeyReleased = CommandSystemConfig.Get().IsMouseOverEnabled() &&
                                                 CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
-                                                    .IsKeyReleased(__instance.Input);
+                                                    .IsKeyReleased();
             bool isSelectFormationKeyDown = CommandSystemConfig.Get().IsMouseOverEnabled() &&
                                             CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
                                                 .IsKeyDown(__instance.Input);
@@ -786,10 +808,12 @@ namespace RTSCamera.CommandSystem.Patch
                               __instance.Input.IsKeyPressed(InputKey.ControllerRTrigger);
             bool isLeftButtonDown = __instance.Input.IsKeyDown(InputKey.LeftMouseButton) ||
                 __instance.Input.IsKeyDown(InputKey.ControllerRTrigger);
-            bool isLeftButtonReleased = __instance.Input.IsKeyReleased(InputKey.LeftMouseButton) ||
-                __instance.Input.IsKeyReleased(InputKey.ControllerRTrigger);
-            bool isCameraDragKeyDown = __instance.Input.IsKeyDown(InputKey.RightMouseButton) ||
-                __instance.Input.IsKeyDown(InputKey.ControllerLTrigger);
+            // __instance.Input is scenelayer input. SceneLayer.IsKeyReleased is not triggered when clicking on buttons.
+            bool isLeftButtonReleased = Input.IsKeyReleased(InputKey.LeftMouseButton) ||
+                Input.IsKeyReleased(InputKey.ControllerRTrigger);
+            // __instance.Input is scenelayer input. SceneLayer.IsKeyDown is not triggered when clicking on buttons.
+            bool isCameraDragKeyDown = Input.IsKeyDown(InputKey.RightMouseButton) ||
+                Input.IsKeyDown(InputKey.ControllerLTrigger);
 
             // If click on button on UI, isLeftButtonPressed may be triggerred, but isLeftButtonDown is not.
             // we should not trigger mouse down if click on button.
@@ -801,25 +825,29 @@ namespace RTSCamera.CommandSystem.Patch
                 ____isMouseDown = true;
                 _handleMouseDown?.Invoke(__instance, new object[] { });
             }
-            if (isSelectFormationKeyPressed)
+            // If select formation key is bound to mouse left button, and click on button on UI, isSelectFormationKeyPressed may be triggerred, but isSelectFormationKeyDown is not.
+            // we should not trigger mouse down if click on button.
+            if (isSelectFormationKeyPressed && isSelectFormationKeyDown)
             {
                 HandleSelectFormationKeyDown(__instance, ref _clickedFormation, ref ____mouseOverFormation,
                     ref ____formationDrawingMode, ref ____deltaMousePosition, ref ____formationDrawingStartingPosition,
                     ref ____formationDrawingStartingPointOfMouse, ref ____formationDrawingStartingTime);
             }
-            if (isSelectFormationKeyReleased)
+            // if select formation key is mouse left button, and clicked and released on order UI,
+            // we need to use _wasSelectFormationKeyDown
+            if (isSelectFormationKeyReleased && _wasSelectFormationKeyDown)
             {
+                _beginDraggingOffset = 0;
                 HandleSelectFormationKeyUp(__instance, ref _clickedFormation, __instance.Mission.PlayerTeam.PlayerOrderController,
                     ____orderRotationEntities, ref ____formationDrawingMode, ref ____deltaMousePosition,
                     ref ____formationDrawingStartingPosition, ref ____formationDrawingStartingPointOfMouse,
                     ref ____formationDrawingStartingTime);
             }
-            // isLeftButtonReleased will not be triggerd when we drag onto a clickable button
-            // so we should use !isLeftButtonDown here.
-            if (!isLeftButtonDown && ____isMouseDown)
+            if (isLeftButtonReleased && ____isMouseDown)
             {
                 // if camera drag key is down, we need to cancel the drag to formation.
-                if (!isCameraDragKeyDown)
+                // if camera drag key is pressed on order ui, we need to use wasDragCameraKeyDown.
+                if (!isCameraDragKeyDown && !_wasDragCameraKeyDown)
                 {
 #if DEBUG
                     Utility.DisplayMessage("mouse up");
@@ -923,6 +951,8 @@ namespace RTSCamera.CommandSystem.Patch
             ____wasDrawingForming = __instance.IsDrawingForming;
             ____wasDrawnPreviousFrame = ____isDrawnThisFrame;
 
+            _wasDragCameraKeyDown = isCameraDragKeyDown;
+            _wasSelectFormationKeyDown = isSelectFormationKeyDown;
             return false;
         }
 
@@ -942,6 +972,8 @@ namespace RTSCamera.CommandSystem.Patch
             ____formationDrawingStartingTime = new float?();
             ____mouseOverFormation = (Formation)null;
             ____clickedFormation = (Formation)null;
+
+            _beginDraggingOffset = 0;
         }
 
         //public static void SelectFormationFromUI(OrderTroopPlacer __instance, Formation ____clickedFormation)
