@@ -1,5 +1,15 @@
 # Changelog
 
+## [v5.4.13] - 2026-07-14
+### Fixed
+- Fix performance issue that FPS may drop to 10 in TOAM (Tales from the Age of Men) mod.
+
+- Fix the issue that dragging on the ground to resize formation width is cancelled when the mouse moves onto order buttons or troop UI.
+
+- Fix incorrect dragging start position after clicking troop cards in the deployment stage.
+
+- Fix the issue that troops are not highlighted in the deployment stage.
+
 ## [v5.4.12] - 2026-07-11
 ### Fixed
 - Fix the issue that orders in the command queue will not be executed when all units in formation are detached.
