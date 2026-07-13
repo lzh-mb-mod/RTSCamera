@@ -40,6 +40,7 @@
 
 [h2]Mod兼容性[/h2]
 [list]
+[*]与TOAM魔戒人类纪元的性能问题在v5.4.13中修复。
 [*][b]与 "RTS Camera Universal" 不兼容。这个 mod 是其他人把我的旧版 RTS 合在了一起打包，导致与本 mod 冲突。请不要和这个 mod 一起用。[/b]
 [/list]
 

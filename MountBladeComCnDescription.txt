@@ -8,6 +8,7 @@ RTS自由视角[RTS Camera]Mod 为《骑马与砍杀2：霸主》的战斗场景
 本Mod不会读写存档数据，安装或卸载均不会影响现有存档。
 
 [b]Mod兼容性[/b]
+◆与TOAM魔戒人类纪元的性能问题在v5.4.13中修复。
 ◆在The Old Realms中的崩溃在v5.1.7中修复。
 ◆权游mod中若出现"text with id xxxxx does't exist"，请在启动器中将RTS Camera移至权游上方。
 ◆Helmsman舵手：如果你用RTS Camera，你不需要使用Helmsman舵手。RTS Camera提供和舵手一样的功能。

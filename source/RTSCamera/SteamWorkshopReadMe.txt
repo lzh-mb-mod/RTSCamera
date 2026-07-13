@@ -35,6 +35,7 @@ Compatible with v1.4.5-v1.4.7 and War Sail DLC. For other versions:
 
 [h2]Mod Compatibility[/h2]
 [list]
+[*]Performance issue with TOAM (Tales from the Age of Men) is fixed in v5.4.13.
 [*][b]Incompatible with "RTS Camera Universal". That one is made by the other guy, packing my old RTS mods into one mod, conflicting with this mod. Please make sure not to use them together.[/b]
 [*]If you use Realm of Thrones, please move RTS Camera above Realm of Thrones, or "text with id xxxxx does't exist" will show up.
 [*]Helmsman: You don't need it if you use RTS Camera. In RTS Camera you can use F5 to toggle soldier piloting, exactly the same as Helmsman, and you will get better integration with camera related features. However, if you still use Helmsman, RTS Camera will not add F5 command for the first ship to avoid conflict and weird behavior.
