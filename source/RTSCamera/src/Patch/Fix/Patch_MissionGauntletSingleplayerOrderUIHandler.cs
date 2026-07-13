@@ -102,12 +102,14 @@ namespace RTSCamera.Patch.Fix
 
         private static bool IsDragKeyDown(GauntletOrderUIHandler __instance)
         {
-            return __instance.MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.RightMouseButton) || __instance.MissionScreen.SceneLayer.Input.IsKeyDown(InputKey.ControllerLTrigger);
+            // __instance.Input is scenelayer input. SceneLayer.IsKeyDown is not triggered when clicking on buttons.
+            return Input.IsKeyDown(InputKey.RightMouseButton) || Input.IsKeyDown(InputKey.ControllerLTrigger);
         }
 
         private static bool IsDragKeyReleased(GauntletOrderUIHandler __instance)
         {
-            return __instance.MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.RightMouseButton) || __instance.MissionScreen.SceneLayer.Input.IsKeyReleased(InputKey.ControllerLTrigger);
+            // __instance.Input is scenelayer input. SceneLayer.IsKeyReleased is not triggered when clicking on buttons.
+            return Input.IsKeyReleased(InputKey.RightMouseButton) || Input.IsKeyReleased(InputKey.ControllerLTrigger);
         }
 
         private static void BeginEarlyDragging(OrderTroopPlacer ____orderTroopPlacer, GauntletLayer ____gauntletLayer)

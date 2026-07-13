@@ -287,7 +287,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         private bool ShouldHighlightWhenShowingIndicator => _isShowIndicatorDown &&( !_isFreeCamera && HighlightEnabledInCharacterMode() && _config.HighlightTroopsWhenShowingIndicators == ShowMode.Always || (_isFreeCamera && HighlightEnabledInRtsMode() && _config.HighlightTroopsWhenShowingIndicators >= ShowMode.FreeCameraOnly));
 
-        private bool ShouldHighlightWhenShowingOrder => _isOrderShown && (!_isFreeCamera && HighlightEnabledInCharacterMode() || (_isFreeCamera && HighlightEnabledInRtsMode()));
+        private bool ShouldHighlightWhenShowingOrder => (_isOrderShown || Mission.Current?.Mode == MissionMode.Deployment) && (!_isFreeCamera && HighlightEnabledInCharacterMode() || (_isFreeCamera && HighlightEnabledInRtsMode()));
         private bool ShouldMouseOverFormationWithShowingOrder => ShouldHighlightWhenShowingOrder && MouseOverEnabled();
 
         public Func<bool> HighlightEnabledInCharacterMode { get; }
