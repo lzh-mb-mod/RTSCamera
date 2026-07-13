@@ -2,7 +2,7 @@
 
 A mod for Mount&Blade II Bannerlord that provides free camera and better commanding in battle.
 
-## Save Compability
+## Save Compatibility
 This mod does not read or write stuffs to your game save. Installing or removing this mod has no impact on your game save.
 
 ## Main features
