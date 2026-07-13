@@ -26,7 +26,7 @@ namespace RTSCamera.CommandSystem.Patch
                 _patched = true;
 
                 var minimumDistanceInterfaceMethod = typeof(IFormation).GetProperty(nameof(IFormation.MinimumDistance), BindingFlags.Instance | BindingFlags.Public)
-                        .GetMethod;
+                    .GetMethod;
                 var minimumDistanceMap = typeof(Formation).GetInterfaceMap(minimumDistanceInterfaceMethod.DeclaringType);
                 var minimumDistanceIndex = Array.IndexOf(minimumDistanceMap.InterfaceMethods, minimumDistanceInterfaceMethod);
                 var minimumDistanceTargetMethod = minimumDistanceMap.TargetMethods[minimumDistanceIndex];
@@ -58,13 +58,21 @@ namespace RTSCamera.CommandSystem.Patch
                    prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
                        nameof(Prefix_MaximumInterval), BindingFlags.Static | BindingFlags.Public)));
 
+                if (!CommandSystemSubModule.IsTAOMInstalled &&
+                    CommandSystemConfig.Get().OverrideMountedUnitsIntervalThreshold)
+                {
+                    harmony.Patch(
+                        typeof(Formation).GetProperty(nameof(Formation.CalculateHasSignificantNumberOfMounted)).GetGetMethod(),
+                        prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
+                            nameof(Prefix_CalculateHasSignificantNumberOfMounted), BindingFlags.Static | BindingFlags.Public)));
+                }
+
                 harmony.Patch(typeof(Formation).GetMethod("CalculateDesiredWidth", BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
                         nameof(Prefix_CalculateDesiredWidth), BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(typeof(Formation).GetMethod(nameof(Formation.SetFormOrder), BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
                         nameof(Prefix_SetFormOrder), BindingFlags.Static | BindingFlags.Public)));
-
 
                 //harmony.Patch(
                 //    typeof(Formation).GetMethod("TransformCustomWidthBetweenArrangementOrientations",
@@ -85,11 +93,6 @@ namespace RTSCamera.CommandSystem.Patch
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
                         nameof(Prefix_ReapplyFormOrder), BindingFlags.Static | BindingFlags.Public)));
-
-                harmony.Patch(
-                    typeof(Formation).GetProperty(nameof(Formation.CalculateHasSignificantNumberOfMounted)).GetGetMethod(),
-                    prefix: new HarmonyMethod(typeof(Patch_Formation).GetMethod(
-                        nameof(Prefix_CalculateHasSignificantNumberOfMounted), BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
             {
@@ -333,7 +336,10 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static bool Prefix_CalculateHasSignificantNumberOfMounted(Formation __instance, bool? ____overridenHasAnyMountedUnit, ref bool __result)
         {
-            return ____overridenHasAnyMountedUnit.HasValue ? ____overridenHasAnyMountedUnit.Value : (double)__instance.QuerySystem.CavalryUnitRatio + (double)__instance.QuerySystem.RangedCavalryUnitRatio >= CommandSystemConfig.Get().MountedUnitsIntervalThreshold;
+            if (!CommandSystemConfig.Get().OverrideMountedUnitsIntervalThreshold)
+                return true;
+            __result = ____overridenHasAnyMountedUnit.HasValue ? ____overridenHasAnyMountedUnit.Value : (double)__instance.QuerySystem.CavalryUnitRatio + (double)__instance.QuerySystem.RangedCavalryUnitRatio >= CommandSystemConfig.Get().MountedUnitsIntervalThreshold;
+            return false;
         }
     }
 }
