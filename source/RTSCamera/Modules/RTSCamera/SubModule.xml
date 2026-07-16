@@ -17,7 +17,7 @@
     <!-- optional: [ "true", "false" ] -->
     <!-- version: [ "e1.0.0.0", "e1.*", "e1.0.*", "e1.0.0.*" ] -->
     <!-- incompatible: [ "true", "false" ] -->
-    <DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" />
+    <DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" optional="true" />
 
     <DependedModuleMetadata id="Native" order="LoadBeforeThis" version="v1.3.*" />
     <DependedModuleMetadata id="SandBoxCore" order="LoadBeforeThis" version="v1.3.*" />
