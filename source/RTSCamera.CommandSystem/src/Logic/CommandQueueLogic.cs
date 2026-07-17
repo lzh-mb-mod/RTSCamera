@@ -566,13 +566,6 @@ namespace RTSCamera.CommandSystem.Logic
             CommandQueuePreview.IsPreviewOutdated = true;
         }
 
-        public static void ClearForEmptyFormation()
-        {
-            var emptyFormations = PendingOrders.Select(pair => pair.Key).Where(f => f.CountOfUnits == 0).ToList();
-            emptyFormations.ForEach(f => PendingOrders.Remove(f));
-            ClearOrderInQueue(emptyFormations);
-        }
-
         public static void UpdateFormation(Formation formation)
         {
             try
@@ -741,15 +734,17 @@ namespace RTSCamera.CommandSystem.Logic
                                         return;
                                     }
                                     var virtualFormationChange = order.VirtualFormationChanges[formation];
-                                    if (formation.UnitSpacing != virtualFormationChange.UnitSpacing)
+                                    var oldUnitSpacing = virtualFormationChange.UnitSpacing ?? formation.UnitSpacing;
+                                    var newUnitSpacing = MathF.Max(oldUnitSpacing - unitSpacingReduced, 0);
+                                    if (formation.UnitSpacing != newUnitSpacing)
                                     {
-                                        formation.SetPositioning(unitSpacing: virtualFormationChange.UnitSpacing);
+                                        formation.SetPositioning(unitSpacing: newUnitSpacing);
                                     }
                                     if (order.IsLineShort)
                                     {
-                                        if (virtualFormationChange.Width != null && formation.Width != virtualFormationChange.Width && formation.ArrangementOrder.OrderEnum != ArrangementOrder.ArrangementOrderEnum.Column)
+                                        if (formation.Width != customWidth && formation.ArrangementOrder.OrderEnum != ArrangementOrder.ArrangementOrderEnum.Column)
                                         {
-                                            formation.SetFormOrder(FormOrder.FormOrderCustom(virtualFormationChange.Width.Value));
+                                            formation.SetFormOrder(FormOrder.FormOrderCustom(customWidth));
                                         }
                                         switch (OrderController.GetActiveFacingOrderOf(formation))
                                         {
@@ -1036,6 +1031,17 @@ namespace RTSCamera.CommandSystem.Logic
             Patch_OrderController.SetFacingEnemyTargetFormation(formation, null);
             if (order.ShouldLockFormationInFacingOrder.TryGetValue(formation, out var shouldLockFormationInFacingOrder) && shouldLockFormationInFacingOrder)
             {
+                var virtualFormationChange = order.VirtualFormationChanges[formation];
+                var oldUnitSpacing = virtualFormationChange.UnitSpacing ?? formation.UnitSpacing;
+                var newUnitSpacing = MathF.Max(oldUnitSpacing - unitSpacingReduced, 0);
+                if (formation.UnitSpacing != newUnitSpacing)
+                {
+                    formation.SetPositioning(unitSpacing: newUnitSpacing);
+                }
+                if (formation.Width != customWidth && formation.ArrangementOrder.OrderEnum != ArrangementOrder.ArrangementOrderEnum.Column)
+                {
+                    formation.SetFormOrder(FormOrder.FormOrderCustom(customWidth));
+                }
                 formation.SetMovementOrder(MovementOrder.MovementOrderMove(position));
             }
             formation.SetFacingOrder(FacingOrder.FacingOrderLookAtDirection(direction));
@@ -1203,8 +1209,11 @@ namespace RTSCamera.CommandSystem.Logic
 
         public static void OnFormationUnitsCleared(Formation formation)
         {
-            if (formation.Team != null && formation.Team.IsPlayerTeam)
+            if (formation.Team != null)
             {
+                PendingOrders.Remove(formation);
+                ClearOrderInQueue(new List<Formation> { formation });
+                SetFormationVolleyMode(formation, VolleyMode.Disabled);
                 CurrentFormationChanges.SetChanges(new List<KeyValuePair<Formation, FormationChange>>
                 {
                     new KeyValuePair<Formation, FormationChange>(formation, new FormationChange())

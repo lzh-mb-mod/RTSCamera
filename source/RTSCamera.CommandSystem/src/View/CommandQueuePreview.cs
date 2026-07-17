@@ -1151,6 +1151,7 @@ namespace RTSCamera.CommandSystem.View
                 previewDepth = depth;
                 previewRightSideOffset = rightSideOffset;
             }
+            var orderPosition = Patch_OrderController.GetFormationVirtualPositionWithEccentricPosition(formation);
             if (_showAgentFrames)
             {
                 Patch_OrderController.SimulateAgentFrames(new List<Formation> { formation },
@@ -1159,7 +1160,7 @@ namespace RTSCamera.CommandSystem.View
                 return new OrderPreviewData
                 {
                     AgentPositions = simulationFormationChanges,
-                    OrderPosition = Patch_OrderController.GetFormationVirtualPosition(formation),
+                    OrderPosition = orderPosition,
                     Direction = Patch_OrderController.GetFormationVirtualDirection(formation),
                     Width = previeweWidth,
                     Depth = previewDepth,
@@ -1171,7 +1172,7 @@ namespace RTSCamera.CommandSystem.View
             {
                 return new OrderPreviewData
                 {
-                    OrderPosition = Patch_OrderController.GetFormationVirtualPosition(formation),
+                    OrderPosition = orderPosition,
                     Direction = Patch_OrderController.GetFormationVirtualDirection(formation),
                     Width = previeweWidth,
                     Depth = previewDepth,

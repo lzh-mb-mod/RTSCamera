@@ -46,6 +46,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static readonly MethodInfo _addOrderPositionEntity = typeof(OrderTroopPlacer).GetMethod("AddOrderPositionEntity", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly MethodInfo _reset = typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly MethodInfo _getScreenPoint = typeof(OrderTroopPlacer).GetMethod("GetScreenPoint", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo _hideOrderPositionEntities = typeof(OrderTroopPlacer).GetMethod("HideOrderPositionEntities", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static bool _isInitialized = false;
         private static CursorState _currentCursorState = CursorState.Invisible;
@@ -793,7 +794,9 @@ namespace RTSCamera.CommandSystem.Patch
             }
             ____isDrawnThisFrame = false;
             if (__instance.SuspendTroopPlacer)
+            {
                 return false;
+            }
 
             bool isSelectFormationKeyPressed = CommandSystemConfig.Get().IsMouseOverEnabled() &&
                                             CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectFormation)
@@ -1137,6 +1140,8 @@ namespace RTSCamera.CommandSystem.Patch
         {
             if (__instance.SuspendTroopPlacer)
             {
+                // if we're drawing for destination in the last tick, and troop placer is suspended,
+                // the entities for destination should be faded out.
                 if (_isDrawingForDestinationInLastTick)
                 {
                     foreach (GameEntity orderPositionEntity in ____orderPositionEntities)
@@ -1169,6 +1174,14 @@ namespace RTSCamera.CommandSystem.Patch
                 orderRotationEntity.BodyFlag |= BodyFlags.Disabled;
             }
             return false;
+        }
+
+        public static void HideOrderPositionEntities()
+        {
+            if (_orderTroopPlacer == null)
+                return;
+
+            _hideOrderPositionEntities.Invoke(_orderTroopPlacer, new object[] { });
         }
 
         private static bool CanUpdate(OrderTroopPlacer __instance, OrderController ____orderController)
