@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -29,6 +28,7 @@ namespace RTSCamera.CommandSystem.Logic
         public VolleyMode? VolleyMode;
         public float? PreviewWidth;
         public float? PreviewDepth;
+        public WorldPosition? EccentricPosition;
     }
     public class FormationChanges
     {
@@ -58,6 +58,7 @@ namespace RTSCamera.CommandSystem.Logic
                 change.VolleyMode = pair.Value.VolleyMode;
                 change.PreviewWidth = pair.Value.PreviewWidth;
                 change.PreviewDepth = pair.Value.PreviewDepth;
+                change.EccentricPosition = pair.Value.EccentricPosition;
                 VirtualChanges[pair.Key] = change;
             }
         }
@@ -288,12 +289,13 @@ namespace RTSCamera.CommandSystem.Logic
             }
         }
 
-        public void SetPreviewShape(Formation formation, float width, float depth)
+        public void SetPreviewShape(Formation formation, WorldPosition? eccentricPosition, float width, float depth)
         { 
             if (!VirtualChanges.TryGetValue(formation, out var change))
             {
                 change = new FormationChange();
             }
+            change.EccentricPosition = eccentricPosition;
             change.PreviewWidth = width;
             change.PreviewDepth = depth;
             VirtualChanges[formation] = change;
@@ -312,9 +314,5 @@ namespace RTSCamera.CommandSystem.Logic
                 return currentCustomWidth * 0.1f;
             return orderTypeOld == ArrangementOrder.ArrangementOrderEnum.Column && orderTypeNew != ArrangementOrder.ArrangementOrderEnum.Column ? currentCustomWidth / 0.1f : currentCustomWidth;
         }
-
-
-
-
     }
 }

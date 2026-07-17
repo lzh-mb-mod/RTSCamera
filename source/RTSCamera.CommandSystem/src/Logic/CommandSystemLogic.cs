@@ -182,7 +182,6 @@ namespace RTSCamera.CommandSystem.Logic
         {
             base.OnPreDisplayMissionTick(dt);
 
-            CommandQueueLogic.ClearForEmptyFormation();
             OutlineColorSubLogic.OnPreDisplayMissionTick(dt);
             GroundMarkerColorSubLogic.OnPreDisplayMissionTick(dt);
 
