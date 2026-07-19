@@ -90,13 +90,19 @@
   <string id="str_rts_camera_slow_motion_mode" text="{=RTSCamera_slowmotionmode}Slow Motion Mode" />
   <string id="str_rts_camera_slow_motion_hint" text="{=RTSCamera_slow_motion_hint}Whether to enable slow motion mode (to adjust time speed)." />
   <string id="str_rts_camera_slow_motion_factor" text="{=RTSCamera_slowmotionfactor}Slow Motion Factor" />
-  <string id="str_rts_camera_slow_motion_factor_hint" text="{=RTSCamera_slow_motion_factor_hint}The factor of time speed." />
+  <string id="str_rts_camera_slow_motion_factor_hint" text="{=RTSCamera_slow_motion_factor_hint}The factor of time speed. Note that setting to greater than 1 may cause issue to AI or simulation. Please use fast forward below if you want to increase time speed." />
   <string id="str_rts_camera_slow_motion_on_rts_view" text="{=RTSCamera_slowmotiononrtsview}Slow Motion On RTS view" />
   <string id="str_rts_camera_slow_motion_on_rts_view_hint" text="{=RTSCamera_slowmotiononrtsviewhint}Automatically turn on Slow Motion mode On RTS view" />
   <string id="str_rts_camera_slow_motion_hotkey_mode" text="{=RTSCamera_slow_motion_hotkey_mode}Slow Motion Hotkey Mode" />
   <string id="str_rts_camera_slow_motion_hotkey_mode_hint" text="{=RTSCamera_slow_motion_hotkey_mode_hint}The mode of slow motion with hotkey." />
   <string id="str_rts_camera_hotkey_mode.Toggle" text="{=RTSCamera_hotkey_mode_toggle}Toggle" />
   <string id="str_rts_camera_hotkey_mode.Hold" text="{=RTSCamera_hotkey_mode_hold}Hold" />
+  <string id="str_rts_camera_fast_forward_mode" text="{=RTSCamera_fast_forward_mode}Fast Forward Mode" />
+  <string id="str_rts_camera_fast_forward_hint" text="{=RTSCamera_fast_forward_hint}Whether to enable fast forward mode" />
+  <string id="str_rts_camera_override_fast_forward_speed" text="{=RTSCamera_override_fast_forward_speed}Override Fast Forward Speed" />
+  <string id="str_rts_camera_override_fast_forward_speed_hint" text="{=RTSCamera_override_fast_forward_speed_hint}(Restart required) Whether to override the default fast forward speed. Default is 10x. If enabled, the fast forward speed will be set by the value below." />
+  <string id="str_rts_camera_fast_forward_speed" text="{=RTSCamera_fast_forward_speed}Fast Forward Speed" />
+  <string id="str_rts_camera_fast_forward_speed_hint" text="{=RTSCamera_fast_forward_speed_hint}Time speed under fast forward mode. Require the above option being enabled." />
   <string id="str_rts_camera_fast_forward_hotkey_mode" text="{=RTSCamera_fast_forward_hotkey_mode}Fast Forward Hotkey Mode" />
   <string id="str_rts_camera_fast_forward_hotkey_mode_hint" text="{=RTSCamera_fast_forward_hotkey_mode_hint}The mode of fast forward with hotkey." />
 

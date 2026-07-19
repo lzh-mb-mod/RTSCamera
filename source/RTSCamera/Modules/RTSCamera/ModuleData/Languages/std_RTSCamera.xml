@@ -87,13 +87,19 @@
     <string id="RTSCamera_slowmotionmode" text="Slow Motion Mode" />
     <string id="RTSCamera_slow_motion_hint" text="Whether to enable slow motion mode (to adjust time speed)." />
     <string id="RTSCamera_slowmotionfactor" text="Slow Motion Factor" />
-    <string id="RTSCamera_slow_motion_factor_hint" text="The factor of time speed." />
+    <string id="RTSCamera_slow_motion_factor_hint" text="The factor of time speed. Note that setting to greater than 1 may cause issue to AI or simulation. Please use fast forward below if you want to increase time speed." />
     <string id="RTSCamera_slowmotiononrtsview" text="Slow Motion in Free Camera" />
     <string id="RTSCamera_slowmotiononrtsviewhint" text="Automatically turn on Slow Motion mode in free camera" />
     <string id="RTSCamera_slow_motion_hotkey_mode" text="Slow Motion Hotkey Mode" />
     <string id="RTSCamera_slow_motion_hotkey_mode_hint" text="The mode of slow motion with hotkey." />
     <string id="RTSCamera_hotkey_mode_toggle" text="Toggle" />
     <string id="RTSCamera_hotkey_mode_hold" text="Hold" />
+    <string id="RTSCamera_fast_forward_mode" text="Fast Forward Mode" />
+    <string id="RTSCamera_fast_forward_hint" text="Whether to enable fast forward mode" />
+    <string id="RTSCamera_override_fast_forward_speed" text="Override Fast Forward Speed" />
+    <string id="RTSCamera_override_fast_forward_speed_hint" text="(Restart required) Whether to override the default fast forward speed. Default is 10x. If enabled, the fast forward speed will be set by the value below." />
+    <string id="RTSCamera_fast_forward_speed" text="Fast Forward Speed" />
+    <string id="RTSCamera_fast_forward_speed_hint" text="Time speed under fast forward mode. Require the above option being enabled." />
     <string id="RTSCamera_fast_forward_hotkey_mode" text="Fast Forward Hotkey Mode" />
     <string id="RTSCamera_fast_forward_hotkey_mode_hint" text="The mode of fast forward with hotkey." />
     <string id="RTSCamera_miscellaneous_options" text="Miscellaneous Options" />

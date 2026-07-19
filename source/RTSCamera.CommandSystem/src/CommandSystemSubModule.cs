@@ -94,7 +94,7 @@ namespace RTSCamera.CommandSystem
             var missionStartingManager = AMissionStartingManager.Get();
             missionStartingManager.AddHandler(new CommandSystemMissionStartingHandler());
             missionStartingManager.AddSingletonHandler("RTSCameraAgentComponent.MissionStartingHandler",
-                new RTSCameraAgentComponent.MissionStartingHandler(), new Version(1, 0, 0));
+                new RTSCameraAgentComponent.MissionStartingHandler(), new Version(1, 1, 0));
 
             _successPatch = true;
             _successPatch &=  Patch_OrderTroopPlacer.Patch(_harmony);
