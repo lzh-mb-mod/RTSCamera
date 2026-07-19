@@ -1,7 +1,7 @@
 ﻿using MissionLibrary.HotKey;
 using MissionSharedLibrary.Config.HotKey;
 using MissionSharedLibrary.HotKey;
-using MissionSharedLibrary.Usage;
+using MissionSharedLibrary.Repository;
 using System;
 using System.Collections.Generic;
 using TaleWorlds.InputSystem;

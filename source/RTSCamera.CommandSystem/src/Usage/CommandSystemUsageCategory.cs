@@ -1,5 +1,6 @@
 ﻿using MissionLibrary.Usage;
 using MissionSharedLibrary.Usage;
+using MissionSharedLibrary.Repository;
 using RTSCamera.CommandSystem.Config.HotKey;
 using System;
 using System.Collections.Generic;
