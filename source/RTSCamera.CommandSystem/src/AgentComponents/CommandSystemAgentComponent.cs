@@ -225,7 +225,7 @@ namespace RTSCamera.CommandSystem.AgentComponents
             {
                 UpdateColor();
             }
-            if (updateInstantly)
+            if (updateInstantly && needUpdate)
             {
                 TryUpdateColor();
             }

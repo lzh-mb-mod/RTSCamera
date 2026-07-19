@@ -435,8 +435,67 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _volleyStatus = newStatus;
         }
 
-
         public void OnAIInputSet(Agent agent, ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)
+        {
+            OnAIInputSetForDefensiveHold(agent, ref eventFlag, ref movementFlag, ref inputVector);
+            OnAIInputSetForVolley(agent, ref eventFlag, ref movementFlag, ref inputVector);
+        }
+
+        public void OnAIInputSetForDefensiveHold(Agent agent, ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)
+        {
+            if (agent.Formation == null || CommandQueueLogic.GetFormationDefensiveHoldMode(agent.Formation) == DefensiveHoldMode.Disabled)
+                return;
+
+            if (agent.HasMount)
+                return;
+
+            var arrrangementOrder = agent.Formation.ArrangementOrder.OrderEnum;
+            if (arrrangementOrder != ArrangementOrder.ArrangementOrderEnum.Circle &&
+                arrrangementOrder != ArrangementOrder.ArrangementOrderEnum.ShieldWall &&
+                arrrangementOrder != ArrangementOrder.ArrangementOrderEnum.Square)
+                return;
+
+            var targetAgent = agent.GetTargetAgent() ?? agent.ImmediateEnemy;
+            if (targetAgent == null)
+                return;
+
+            var distanceSquared = targetAgent.Position.DistanceSquared(agent.Position);
+
+            if (distanceSquared > 400)
+                return;
+
+            var aiMoveDestination = agent.GetAIMoveDestination();
+            var isAIAtMoveDestination = aiMoveDestination.AsVec2.DistanceSquared(agent.Position.AsVec2) < 2f;
+            if (isAIAtMoveDestination)
+            {
+                if (inputVector.LengthSquared >= 0.5f)
+                {
+                    inputVector = Vec2.Zero;
+                }
+                return;
+            }
+
+            var orderPositionOfUnit = agent.Formation.GetOrderPositionOfUnit(agent);
+            if (!orderPositionOfUnit.IsValid)
+            {
+                return;
+            }
+            var agentFrame = agent.Frame;
+            var vecToFormationPosition = (orderPositionOfUnit.GetGroundVec3() - agent.Position).AsVec2;
+            var distanceToOrderPositionOfUnit = vecToFormationPosition.Normalize();
+
+            var movementVector = agentFrame.rotation.TransformToParent(inputVector.ToVec3(0)).AsVec2.Normalized();
+            var cos = Vec2.DotProduct(movementVector, vecToFormationPosition);
+            var isMovingToDestination = cos > 0.2;
+
+
+            if (isMovingToDestination)
+                return;
+
+            inputVector = agentFrame.rotation.TransformToLocal((vecToFormationPosition * MathF.Clamp(distanceToOrderPositionOfUnit, 0, 1)).ToVec3(0)).AsVec2;
+        }
+
+        private void OnAIInputSetForVolley(Agent agent, ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)
         {
             if (VolleyMode != VolleyMode.Disabled && agent.IsAIControlled)
             {
@@ -455,7 +514,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                     {
                         IsVolleySuspended = true;
                         OnVolleyDisabled(agent);
-                        if (_volleyStatus != VolleyStatus.PrepareForShooting)
+                        if (_volleyStatus != VolleyStatus.PrepareForShooting)     
                         {
                             _volleyStatus = VolleyStatus.WaitingForOrder;
                         }

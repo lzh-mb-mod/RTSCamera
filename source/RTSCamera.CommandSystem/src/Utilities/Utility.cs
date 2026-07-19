@@ -318,8 +318,10 @@ namespace RTSCamera.CommandSystem.Utilities
                     var orderMessage = GameTexts.FindText("str_rts_camera_command_system_defensive_attack");
                     orderMessage.SetTextVariable("TARGET_NAME", GameTexts.FindText("str_troop_group_name", ((int)order.TargetFormation.PhysicalClass).ToString()));
                     return orderMessage;
+                case CustomOrderType.AutoVolley:
+                    return GameTexts.FindText("str_rts_camera_command_system_auto_volley");
                 case CustomOrderType.ManualVolley:
-                    return GameTexts.FindText("str_rts_camera_command_system_volley_enabled");
+                    return GameTexts.FindText("str_rts_camera_command_system_manual_volley");
                 case CustomOrderType.DisableVolley:
                     return GameTexts.FindText("str_rts_camera_command_system_volley_disabled");
                 case CustomOrderType.VolleyFire:
@@ -330,6 +332,14 @@ namespace RTSCamera.CommandSystem.Utilities
                         var text = GameTexts.FindText(stringId, variation);
                         text = AppendEntityName(text, order.TargetEntity);
                         return text;
+                    }
+                case CustomOrderType.EnableDefensiveHold:
+                    {
+                        return GameTexts.FindText("str_rts_camera_command_system_defensive_hold_on");
+                    }
+                case CustomOrderType.DisableDefensiveHold:
+                    {
+                        return GameTexts.FindText("str_rts_camera_command_system_defensive_hold_off");
                     }
             }
             return GameTexts.FindText(stringId, variation);

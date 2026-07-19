@@ -26,7 +26,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
         }
         public override TextObject GetName(OrderController orderController)
         {
-            switch (this.GetActiveState(orderController))
+            switch (GetActiveState(orderController))
             {
                 case OrderState.PartiallyActive:
                 case OrderState.Active:

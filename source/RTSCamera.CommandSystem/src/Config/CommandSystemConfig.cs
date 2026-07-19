@@ -142,6 +142,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public float MountedUnitsIntervalThreshold = 0.1f;
 
+        public bool AddDefensiveHoldOrder = false;
+
         public bool FixAdvaneOrderForThrowing = true;
 
         public bool ApplyAdvanceOrderFixForAI = false;
@@ -199,6 +201,7 @@ namespace RTSCamera.CommandSystem.Config
             CircleFormationUnitSpacingPreference = other.CircleFormationUnitSpacingPreference;
             OverrideMountedUnitsIntervalThreshold = other.OverrideMountedUnitsIntervalThreshold;
             MountedUnitsIntervalThreshold = other.MountedUnitsIntervalThreshold;
+            AddDefensiveHoldOrder = other.AddDefensiveHoldOrder;
             FixAdvaneOrderForThrowing = other.FixAdvaneOrderForThrowing;
             ApplyAdvanceOrderFixForAI = other.ApplyAdvanceOrderFixForAI;
             ThrowerRatioThreshold = other.ThrowerRatioThreshold;

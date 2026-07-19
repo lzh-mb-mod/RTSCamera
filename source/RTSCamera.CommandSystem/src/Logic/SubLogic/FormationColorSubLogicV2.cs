@@ -428,7 +428,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
                         {
                             var color = _colorStatusOfNoFormationAgents.GetFormationColorResultInt(this, GetRoleType(agent));
                             bool isRunnigAway = agent.IsRunningAway || (agent.CommonAIComponent?.IsRetreating ?? false);
-                            if (color != null && agent.IsRunningAway)
+                            if (color != null && isRunnigAway)
                             {
                                 color = Vec3.Lerp(Color.FromUint(color.Value).ToVec3(), Color.White.ToVec3(), 0.5f).ToARGB;
                             }

@@ -3,7 +3,6 @@ using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Logic;
 using System;
-using System.Linq;
 using System.Reflection;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
@@ -29,6 +28,13 @@ namespace RTSCamera.CommandSystem.Patch
                         BindingFlags.Instance | BindingFlags.Public),
                     prefix: new HarmonyMethod(
                         typeof(Patch_HumanAIComponent).GetMethod(nameof(Prefix_GetDesiredSpeedInFormation),
+                            BindingFlags.Static | BindingFlags.Public)));
+
+                harmony.Patch(
+                    typeof(HumanAIComponent).GetMethod(nameof(HumanAIComponent.SetBehaviorValueSet),
+                        BindingFlags.Instance | BindingFlags.Public),
+                    postfix: new HarmonyMethod(
+                        typeof(Patch_HumanAIComponent).GetMethod(nameof(Postfix_SetBehaviorValueSet),
                             BindingFlags.Static | BindingFlags.Public)));
             }
             catch (Exception e)
@@ -131,6 +137,38 @@ namespace RTSCamera.CommandSystem.Patch
                 return false;
             }
             return true;
+        }
+
+        public static void Postfix_SetBehaviorValueSet(HumanAIComponent __instance, Agent ___Agent, HumanAIComponent.BehaviorValueSet behaviorValueSet, ref HumanAIComponent.BehaviorValueSet ____lastBehaviorValueSet,
+            HumanAIComponent.BehaviorValues[] ____behaviorValues,
+            ref bool ____hasNewBehaviorValues)
+        {
+            if (!CommandSystemConfig.Get().AddDefensiveHoldOrder)
+                return;
+            if (behaviorValueSet != HumanAIComponent.BehaviorValueSet.DefensiveArrangementMove)
+                return;
+            if (___Agent.Formation == null || CommandQueueLogic.GetFormationDefensiveHoldMode(___Agent.Formation) != DefensiveHoldMode.Enabled)
+                return;
+
+            SetBehaviorParams(HumanAIComponent.AISimpleBehaviorKind.GoToPos, 8f, 5f, 8f, 20f, 8f, ____behaviorValues, ref ____hasNewBehaviorValues);
+            SetBehaviorParams(HumanAIComponent.AISimpleBehaviorKind.Melee, 0.0f, 5f, 0.0f, 20f, 0.0f, ____behaviorValues, ref ____hasNewBehaviorValues);
+        }
+        private static void SetBehaviorParams(
+            HumanAIComponent.AISimpleBehaviorKind behavior,
+            float y1,
+            float x2,
+            float y2,
+            float x3,
+            float y3,
+            HumanAIComponent.BehaviorValues[] ____behaviorValues,
+            ref bool ____hasNewBehaviorValues)
+        {
+            ____behaviorValues[(int)behavior].y1 = y1;
+            ____behaviorValues[(int)behavior].x2 = x2;
+            ____behaviorValues[(int)behavior].y2 = y2;
+            ____behaviorValues[(int)behavior].x3 = x3;
+            ____behaviorValues[(int)behavior].y3 = y3;
+            ____hasNewBehaviorValues = true;
         }
     }
 }

@@ -26,6 +26,7 @@ namespace RTSCamera.CommandSystem.Logic
         public OrderType? AIControlOrderType;
         public ArrangementOrderEnum? ArrangementOrder;
         public VolleyMode? VolleyMode;
+        public DefensiveHoldMode? DefensiveHoldMode;
         public float? PreviewWidth;
         public float? PreviewDepth;
         public WorldPosition? EccentricPosition;
@@ -56,6 +57,7 @@ namespace RTSCamera.CommandSystem.Logic
                 change.RidingOrderType = pair.Value.RidingOrderType;
                 change.ArrangementOrder = pair.Value.ArrangementOrder;
                 change.VolleyMode = pair.Value.VolleyMode;
+                change.DefensiveHoldMode = pair.Value.DefensiveHoldMode;
                 change.PreviewWidth = pair.Value.PreviewWidth;
                 change.PreviewDepth = pair.Value.PreviewDepth;
                 change.EccentricPosition = pair.Value.EccentricPosition;
@@ -285,6 +287,19 @@ namespace RTSCamera.CommandSystem.Logic
                     return;
                 }
                 change.VolleyMode = null;
+                VirtualChanges[formation] = change;
+            }
+        }
+
+        public void SetDefensiveHoldMode(DefensiveHoldMode defensiveHoldMode, IEnumerable<Formation> formations)
+        {
+            foreach (var formation in formations)
+            {
+                if (!VirtualChanges.TryGetValue(formation, out var change))
+                {
+                    change = new FormationChange();
+                }
+                change.DefensiveHoldMode = defensiveHoldMode;
                 VirtualChanges[formation] = change;
             }
         }

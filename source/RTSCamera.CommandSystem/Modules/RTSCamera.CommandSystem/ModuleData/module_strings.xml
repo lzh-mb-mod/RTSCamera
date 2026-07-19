@@ -107,6 +107,11 @@
   <string id="str_rts_camera_command_system_mounted_units_interval_threshold" text="{=RTSCameraCommandSystem_mounted_units_interval_threshold}Mounted Units Interval Threshold" />
   <string id="str_rts_camera_command_system_mounted_units_interval_threshold_hint" text="{=RTSCameraCommandSystem_mounted_units_interval_threshold_hint}The threshold for ratio of mounted units in a formation to keep distance from each other. Default is 0.1 in vanilla" />
 
+  <string id="str_rts_camera_command_system_add_defensive_hold_order" text="{=RTSCameraCommandSystem_add_defensive_hold_order}Add Defensive Hold Order" />
+  <string id="str_rts_camera_command_system_add_defensive_hold_order_hint" text="{=RTSCameraCommandSystem_add_defensive_hold_order_hint}When enabled, add an order to let troops under defensive formation keep at their position, instead of leaving their position to attack enemy." />
+  <string id="str_rts_camera_command_system_defensive_hold_on" text="{=RTSCameraCommandSystem_defensive_hold_on}Defensive Hold Enabled" />
+  <string id="str_rts_camera_command_system_defensive_hold_off" text="{=RTSCameraCommandSystem_defensive_hold_off}Defensive Hold Disabled" />
+
   <string id="str_rts_camera_command_system_advance_order_options" text="{=RTSCameraCommandSystem_advance_order_options}Engage Order Options" />
 
   <string id="str_rts_camera_command_system_fix_advance_order_for_throwing_weapons" text="{=RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons}Fix Engage Order for Throwing Weapons" />
