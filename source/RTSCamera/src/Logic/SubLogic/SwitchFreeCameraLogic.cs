@@ -697,7 +697,8 @@ namespace RTSCamera.Logic.SubLogic
                         affectedAgent.OnMainAgentWieldedItemChange = null;
                         // TODO: optimize this logic
                         bool shouldSmoothToAgent = Utility.BeforeSetMainAgent(agent);
-                        if (IsSpectatorCamera && _config.TimingOfControlAllyAfterDeath >= ControlAllyAfterDeathTiming.FreeCamera || (_config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.Always && !Mission.IsFastForward))
+                        if (IsSpectatorCamera && _config.TimingOfControlAllyAfterDeath >= ControlAllyAfterDeathTiming.FreeCamera || (_config.TimingOfControlAllyAfterDeath == ControlAllyAfterDeathTiming.Always && !Mission.IsFastForward) ||
+                            _config.FastForwardHideout >= FastForwardHideout.UntilBossFight && Utility.IsHideoutBattle() && IsSpectatorCamera && Mission.IsFastForward)
                         {
                             // will there be 2 agent with player controller in the same formation
                             // if we set new main agent here?
