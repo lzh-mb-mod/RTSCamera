@@ -122,7 +122,7 @@ namespace RTSCameraAgentComponent
             {
                 UpdateColor();
             }
-            if (updateInstantly)
+            if (updateInstantly && needUpdate)
             {
                 _shouldUpdateColor = false;
                 SetColor();
@@ -190,7 +190,7 @@ namespace RTSCameraAgentComponent
                 Agent.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
                 if (Agent.HasMount)
                     Agent.MountAgent.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
-                _shouldClearColorOnRemove = true;
+                _shouldClearColorOnRemove = CurrentColor != null;
             }
             catch (Exception e)
             {

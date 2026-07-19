@@ -26,6 +26,8 @@ namespace RTSCamera.CommandSystem.Logic
         DisableVolley,
         VolleyFire,
         StopUsing,
+        EnableDefensiveHold,
+        DisableDefensiveHold
     }
 
     public enum VolleyMode
@@ -33,6 +35,12 @@ namespace RTSCamera.CommandSystem.Logic
         Disabled,
         Auto,
         Manual
+    }
+
+    public enum DefensiveHoldMode
+    {
+        Disabled,
+        Enabled,
     }
 
     public class VolleyByWeaponClassRecord
@@ -314,6 +322,7 @@ namespace RTSCamera.CommandSystem.Logic
         private static int TicksToSkip = 0;
 
         public static Dictionary<Formation, VolleyMode> FormationVolleyMode = new Dictionary<Formation, VolleyMode>();
+        public static Dictionary<Formation, DefensiveHoldMode> FormationDefensiveHoldMode = new Dictionary<Formation, DefensiveHoldMode>();
 
         public static void OnBehaviorInitialize()
         {
@@ -323,6 +332,7 @@ namespace RTSCamera.CommandSystem.Logic
             CurrentFormationChanges = new FormationChanges();
             LatestOrderInQueueChanges = new FormationChanges();
             FormationVolleyMode = new Dictionary<Formation, VolleyMode>();
+            FormationDefensiveHoldMode = new Dictionary<Formation, DefensiveHoldMode>();
             MissionLibrary.Event.MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
             MissionLibrary.Event.MissionEvent.PostSwitchTeam += OnPostSwitchTeam;
         }
@@ -335,6 +345,7 @@ namespace RTSCamera.CommandSystem.Logic
             CurrentFormationChanges = null;
             LatestOrderInQueueChanges = null;
             FormationVolleyMode = null;
+            FormationDefensiveHoldMode = null;
 
             var orderController = Mission.Current?.PlayerTeam?.PlayerOrderController;
             if (orderController != null)
@@ -498,6 +509,9 @@ namespace RTSCamera.CommandSystem.Logic
                     }
                 case CustomOrderType.StopUsing:
                     return false;
+                case CustomOrderType.EnableDefensiveHold:
+                case CustomOrderType.DisableDefensiveHold:
+                    return true;
                 default:
                     Utility.DisplayMessage("Error: unexpected order type");
                     break;
@@ -1005,9 +1019,22 @@ namespace RTSCamera.CommandSystem.Logic
                         }
                         TryPendingOrder(new List<Formation> { formation }, order);
                         CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+                        break;
                     }
-                    break;
-
+                case CustomOrderType.EnableDefensiveHold:
+                    {
+                        SetFormationDefensiveHoldMode(formation, DefensiveHoldMode.Enabled);
+                        TryPendingOrder(new List<Formation> { formation }, order);
+                        CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+                        break;
+                    }
+                case CustomOrderType.DisableDefensiveHold:
+                    {
+                        SetFormationDefensiveHoldMode(formation, DefensiveHoldMode.Disabled);
+                        TryPendingOrder(new List<Formation> { formation }, order);
+                        CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
+                        break;
+                    }
             }
         }
         private static void TryCancelStopOrder(Formation formation)
@@ -1343,6 +1370,39 @@ namespace RTSCamera.CommandSystem.Logic
 #endif
                 AgentListVolleyFire(record.AgentList);
             }
+        }
+
+        public static void SetFormationDefensiveHoldMode(Formation formation, DefensiveHoldMode defensiveHoldMode)
+        {
+            FormationDefensiveHoldMode[formation] = defensiveHoldMode;
+            ArrangementOrder.ArrangementOrderEnum arrangementOrderEnum = formation.ArrangementOrder.OrderEnum;
+            MovementOrder movementOrder = formation.GetReadonlyMovementOrderReference();
+            MovementOrder.MovementOrderEnum movementOrderEnum = movementOrder.OrderEnum;
+            switch (movementOrderEnum)
+            {
+                case MovementOrder.MovementOrderEnum.Charge:
+                case MovementOrder.MovementOrderEnum.ChargeToTarget:
+                    if (movementOrder.GetPosition(formation).IsValid)
+                    {
+                        movementOrderEnum = MovementOrder.MovementOrderEnum.Move;
+                        break;
+                    }
+                    break;
+            }
+            formation.ApplyActionOnEachUnit(agent =>
+            {
+                agent.RefreshBehaviorValues(movementOrderEnum, arrangementOrderEnum);
+            });
+        }
+
+        public static DefensiveHoldMode GetFormationDefensiveHoldMode(Formation formation)
+        {
+            if (!FormationDefensiveHoldMode.TryGetValue(formation, out var defensiveHoldMode))
+            {
+                return DefensiveHoldMode.Disabled;
+            }
+
+            return defensiveHoldMode;
         }
     }
 }

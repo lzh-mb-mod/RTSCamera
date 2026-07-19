@@ -103,6 +103,11 @@
     <string id="RTSCameraCommandSystem_mounted_units_interval_threshold" text="骑乘单位间隔阈值" />
     <string id="RTSCameraCommandSystem_mounted_units_interval_threshold_hint" text="编队中骑乘单位比例的阈值，以使单位间有更大间隔。游戏本体中默认为0.1。" />
 
+    <string id="RTSCameraCommandSystem_add_defensive_hold_order" text="添加防御保持指令" />
+    <string id="RTSCameraCommandSystem_add_defensive_hold_order_hint" text="启用后，添加一个指令，使处于防御阵型的部队保持在原地，而不是离开原地去攻击敌军。" />
+    <string id="RTSCameraCommandSystem_defensive_hold_on" text="防御保持开启" />
+    <string id="RTSCameraCommandSystem_defensive_hold_off" text="防御保持关闭" />
+
     <string id="RTSCameraCommandSystem_advance_order_options" text="开战指令选项" />
 
     <string id="RTSCameraCommandSystem_fix_advance_order_for_throwing_weapons" text="修正投掷武器的开战指令" />

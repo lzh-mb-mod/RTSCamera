@@ -233,6 +233,11 @@ namespace RTSCamera.CommandSystem.Config
                         () => CommandSystemConfig.Get().MountedUnitsIntervalThreshold,
                         f => CommandSystemConfig.Get().MountedUnitsIntervalThreshold = f, 0.01f, 0.5f, false, true));
                 }
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_add_defensive_hold_order"),
+                    GameTexts.FindText("str_rts_camera_command_system_add_defensive_hold_order_hint"),
+                    () => CommandSystemConfig.Get().AddDefensiveHoldOrder,
+                    b => CommandSystemConfig.Get().AddDefensiveHoldOrder = b));
                 //commandOptionCategory.AddOption(new NumericOptionViewModel(
                 //    new TaleWorlds.Localization.TextObject("r"), null,
                 //    () => CommandQueuePreview.r, f =>

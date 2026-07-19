@@ -808,6 +808,8 @@ namespace RTSCamera.CommandSystem.View
                 case CustomOrderType.ManualVolley:
                 case CustomOrderType.DisableVolley:
                 case CustomOrderType.VolleyFire:
+                case CustomOrderType.EnableDefensiveHold:
+                case CustomOrderType.DisableDefensiveHold:
                     return null;
                 case CustomOrderType.StopUsing:
                 default:
