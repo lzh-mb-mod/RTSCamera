@@ -238,7 +238,6 @@ namespace RTSCamera.View
 
         public void OnMissionScreenTick(float dt)
         {
-
             if (ShouldEnableElevatedCamera())
             {
                 EnableElevatedCamera(ShouldTriggerElevatedCamera());
@@ -249,6 +248,8 @@ namespace RTSCamera.View
                     DisableElevatedCamera();
             }
 
+            if (MBCommon.IsPaused || MissionState.Current.Paused)
+                return;
             if (IsElevatedCameraEnabled && Agent.Main != null)
             {
                 HandleInput(dt);

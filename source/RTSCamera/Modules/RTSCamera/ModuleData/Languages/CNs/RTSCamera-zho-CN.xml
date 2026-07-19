@@ -87,15 +87,21 @@
     <string id="RTSCamera_slowmotionmode" text="慢速模式" />
     <string id="RTSCamera_slow_motion_hint" text="是否启用慢速模式(调整时间的流逝速度)。" />
     <string id="RTSCamera_slowmotionfactor" text="慢速倍率" />
-    <string id="RTSCamera_slow_motion_factor_hint" text="时间流逝速度倍率。" />
+    <string id="RTSCamera_slow_motion_factor_hint" text="时间流逝速度倍率。注意，设置大于1可能会导致AI或模拟出现问题。请使用下面的快进选项来提高时间流逝速度。" />
     <string id="RTSCamera_slowmotiononrtsview" text="自动慢速模式" />
     <string id="RTSCamera_slowmotiononrtsviewhint" text="自由视角中自动切换慢速模式" />
     <string id="RTSCamera_slow_motion_hotkey_mode" text="慢速快捷键触发方式" />
     <string id="RTSCamera_slow_motion_hotkey_mode_hint" text="快捷键如何触发慢速模式。" />
     <string id="RTSCamera_hotkey_mode_toggle" text="切换" />
     <string id="RTSCamera_hotkey_mode_hold" text="按住" />
-    <string id="RTSCamera_fast_forward_hotkey_mode" text="快速快捷键触发方式" />
-    <string id="RTSCamera_fast_forward_hotkey_mode_hint" text="快捷键如何触发快速模式。" />
+    <string id="RTSCamera_fast_forward_mode" text="快进模式" />
+    <string id="RTSCamera_fast_forward_hint" text="是否启用快进模式" />
+    <string id="RTSCamera_override_fast_forward_speed" text="覆盖快进速度" />
+    <string id="RTSCamera_override_fast_forward_speed_hint" text="（需要重启）是否覆盖默认的快进速度。默认是10倍速。如果启用，快进速度将由下面的数值设置。" />
+    <string id="RTSCamera_fast_forward_speed" text="快进速度" />
+    <string id="RTSCamera_fast_forward_speed_hint" text="快进模式下的时间流逝速度。需要启用上面的选项。" />
+    <string id="RTSCamera_fast_forward_hotkey_mode" text="快进快捷键触发方式" />
+    <string id="RTSCamera_fast_forward_hotkey_mode_hint" text="快捷键如何触发快进模式。" />
     <string id="RTSCamera_miscellaneous_options" text="杂项" />
     <string id="RTSCamera_displaymodmessage" text="显示mod消息" />
     <string id="RTSCamera_display_message_hint" text="是否显示本mod的消息。" />
@@ -121,8 +127,8 @@
     <string id="RTSCamera_missioncontinue" text="关卡继续。" />
     <string id="RTSCamera_slowmotionenabled" text="启用慢速模式。" />
     <string id="RTSCamera_normalmodeenabled" text="启用正常速度。" />
-    <string id="RTSCamera_fastforwardenabled" text="启用快速模式。" />
-    <string id="RTSCamera_fastforwarddisabled" text="禁用快速模式。" />
+    <string id="RTSCamera_fastforwardenabled" text="启用快进模式。" />
+    <string id="RTSCamera_fastforwarddisabled" text="禁用快进模式。" />
     <string id="RTSCamera_playeragentdead" text="玩家控制的角色已受伤。" />
     <string id="RTSCamera_switchtoplayer" text="切换到玩家角色。" />
     <string id="RTSCamera_switchtofreecamera" text="切换到自由视角。" />

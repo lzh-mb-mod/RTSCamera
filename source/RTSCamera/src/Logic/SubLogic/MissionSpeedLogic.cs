@@ -3,6 +3,7 @@ using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Logic.SubLogic
@@ -27,6 +28,10 @@ namespace RTSCamera.Logic.SubLogic
             if (_config.SlowMotionMode && !_slowMotionRequestAdded)
             {
                 AddSlowMotionRequest();
+            }
+            if (_config.FastForwardMode)
+            {
+                SetFastForwardMode(_config.FastForwardMode);
             }
         }
         public void OnBehaviourInitialize()
@@ -97,15 +102,7 @@ namespace RTSCamera.Logic.SubLogic
                     {
                         _fastForwardHotKeyCollDown = 10;
                     }
-                    Mission.SetFastForwardingFromUI(shouldFastForward);
-                    if (Mission.Current.IsFastForward)
-                    {
-                        Utility.DisplayLocalizedText("str_rts_camera_fast_forward_enabled");
-                    }
-                    else
-                    {
-                        Utility.DisplayLocalizedText("str_rts_camera_fast_forward_disabled");
-                    }
+                    SetFastForwardMode(shouldFastForward);
                 }
             }
         }
@@ -137,12 +134,41 @@ namespace RTSCamera.Logic.SubLogic
 
         public void SetSlowMotionFactor(float factor)
         {
+            if (_config.SlowMotionFactor == factor)
+                return;
+
             _config.SlowMotionFactor = factor;
 
             if (_config.SlowMotionMode)
             {
                 UpdateSlowMotionRequest();
             }
+            _config.Serialize();
+        }
+        public void SetFastForwardMode(bool fastForwardMode)
+        {
+            if (Mission.IsFastForward == fastForwardMode && _config.FastForwardMode == fastForwardMode)
+                return;
+
+            _config.FastForwardMode = fastForwardMode;
+            Mission.SetFastForwardingFromUI(fastForwardMode);
+            if (Mission.Current.IsFastForward)
+            {
+                Utility.DisplayLocalizedText("str_rts_camera_fast_forward_enabled");
+            }
+            else
+            {
+                Utility.DisplayLocalizedText("str_rts_camera_fast_forward_disabled");
+            }
+            _config.Serialize();
+        }
+
+        public void SetFastForwardSpeed(float speed)
+        {
+            if (_config.FastForwardSpeed == speed)
+                return;
+
+            _config.FastForwardSpeed = speed;
             _config.Serialize();
         }
 

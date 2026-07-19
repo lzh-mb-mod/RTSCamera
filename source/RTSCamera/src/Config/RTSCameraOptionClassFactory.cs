@@ -295,13 +295,14 @@ namespace RTSCamera.Config
                     }));
                 timeSpeedOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_mode"),
-                    GameTexts.FindText("str_rts_camera_slow_motion_hint"), () => RTSCameraConfig.Get().SlowMotionMode,
+                    GameTexts.FindText("str_rts_camera_slow_motion_hint"),
+                    () => RTSCameraConfig.Get().SlowMotionMode,
                     b => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionMode(b)));
                 timeSpeedOptionCategory.AddOption(new NumericOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_factor"),
                     GameTexts.FindText("str_rts_camera_slow_motion_factor_hint"),
                     () => RTSCameraConfig.Get().SlowMotionFactor,
-                    f => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionFactor(f), 0, 3, false, true));
+                    f => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionFactor(f), 0, 2f, false, true));
                 timeSpeedOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_on_rts_view"),
                     GameTexts.FindText("str_rts_camera_slow_motion_on_rts_view_hint"), () => RTSCameraConfig.Get().SlowMotionOnRtsView,
@@ -321,6 +322,21 @@ namespace RTSCamera.Config
                             new SelectionItem(true, "str_rts_camera_hotkey_mode", nameof(HotkeyMode.Toggle)),
                             new SelectionItem(true, "str_rts_camera_hotkey_mode", nameof(HotkeyMode.Hold))
                         }), false));
+                timeSpeedOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_fast_forward_mode"),
+                    GameTexts.FindText("str_rts_camera_fast_forward_hint"),
+                    () => RTSCameraConfig.Get().FastForwardMode,
+                    b => rtsCameraLogic.MissionSpeedLogic.SetFastForwardMode(b)));
+                timeSpeedOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_override_fast_forward_speed"),
+                    GameTexts.FindText("str_rts_camera_override_fast_forward_speed_hint"),
+                    () => RTSCameraConfig.Get().OverrideFastForwardSpeed,
+                    b => RTSCameraConfig.Get().OverrideFastForwardSpeed = b));
+                timeSpeedOptionCategory.AddOption(new NumericOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_fast_forward_speed"),
+                    GameTexts.FindText("str_rts_camera_fast_forward_speed_hint"),
+                    () => RTSCameraConfig.Get().FastForwardSpeed,
+                    f => rtsCameraLogic.MissionSpeedLogic.SetFastForwardSpeed(f), 2f, 10f, false, true));
                 timeSpeedOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_fast_forward_hotkey_mode"),
                     GameTexts.FindText("str_rts_camera_fast_forward_hotkey_mode_hint"),

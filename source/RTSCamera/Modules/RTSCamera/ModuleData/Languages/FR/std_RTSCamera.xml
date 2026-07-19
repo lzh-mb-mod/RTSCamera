@@ -87,13 +87,19 @@
     <string id="RTSCamera_slowmotionmode" text="Mode ralenti" />
     <string id="RTSCamera_slow_motion_hint" text="Activer ou non le mode ralenti (pour ajuster la vitesse du temps)." />
     <string id="RTSCamera_slowmotionfactor" text="Facteur de ralenti" />
-    <string id="RTSCamera_slow_motion_factor_hint" text="Facteur de la vitesse du temps." />
+    <string id="RTSCamera_slow_motion_factor_hint" text="Facteur de la vitesse du temps. Notez que le réglage à une valeur supérieure à 1 peut causer des problèmes à l’IA ou à la simulation. Veuillez utiliser l’avance rapide ci-dessous si vous souhaitez augmenter la vitesse du temps." />
     <string id="RTSCamera_slowmotiononrtsview" text="Ralenti en caméra libre" />
     <string id="RTSCamera_slowmotiononrtsviewhint" text="Activer automatiquement le mode ralenti en caméra libre." />
     <string id="RTSCamera_slow_motion_hotkey_mode" text="Mode de raccourci pour le ralenti" />
     <string id="RTSCamera_slow_motion_hotkey_mode_hint" text="Le mode de ralenti avec le raccourci." />
     <string id="RTSCamera_hotkey_mode_toggle" text="Basculer" />
     <string id="RTSCamera_hotkey_mode_hold" text="Maintenir" />
+    <string id="RTSCamera_fast_forward_mode" text="Mode avance rapide" />
+    <string id="RTSCamera_fast_forward_hint" text="Activer ou non le mode avance rapide." />
+    <string id="RTSCamera_override_fast_forward_speed" text="Remplacer la vitesse d’avance rapide" />
+    <string id="RTSCamera_override_fast_forward_speed_hint" text="(Redémarrage requis) Activer ou non le remplacement de la vitesse d’avance rapide par défaut. La valeur par défaut est x10. Si activé, la vitesse d’avance rapide sera définie par la valeur ci-dessous." />
+    <string id="RTSCamera_fast_forward_speed" text="Vitesse d’avance rapide" />
+    <string id="RTSCamera_fast_forward_speed_hint" text="Vitesse du temps en mode avance rapide. Nécessite l’activation de l’option ci-dessus." />
     <string id="RTSCamera_fast_forward_hotkey_mode" text="Mode de raccourci pour l’avance rapide" />
     <string id="RTSCamera_fast_forward_hotkey_mode_hint" text="Le mode d’avance rapide avec le raccourci." />
     <string id="RTSCamera_miscellaneous_options" text="Options diverses" />

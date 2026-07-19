@@ -100,6 +100,7 @@ namespace RTSCamera
                 _successPatch &= Patch_OrderTroopItemVM.Patch(_harmony);
                 _successPatch &= Patch_BattleEndLogic.Patch(_harmony);
                 _successPatch &= Patch_MissionFormationMarkerVM.Patch(_harmony);
+                _successPatch &= Patch_MissionState.Patch(_harmony);
                 // naval dlc
                 if (IsNavalInstalled)
                 {
@@ -185,7 +186,7 @@ namespace RTSCamera
             RTSCameraUsageCategory.RegisterUsageCategory();
             var missionStartingManager = Global.GetInstance<AMissionStartingManager>();
             missionStartingManager.AddSingletonHandler("RTSCameraAgentComponent.MissionStartingHandler",
-                new RTSCameraAgentComponent.MissionStartingHandler(), new Version(1, 0, 0));
+                new RTSCameraAgentComponent.MissionStartingHandler(), new Version(1, 1, 0));
             missionStartingManager.AddHandler(new MissionStartingHandler.MissionStartingHandler());
             var menuClassCollection = AMenuManager.Get().MenuClassCollection;
             AMenuManager.Get().OnMenuClosedEvent += RTSCameraConfig.OnMenuClosed;
