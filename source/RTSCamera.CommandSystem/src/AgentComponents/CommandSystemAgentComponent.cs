@@ -424,7 +424,18 @@ namespace RTSCamera.CommandSystem.AgentComponents
         public void SetVolleyMode(VolleyMode volleyMode)
         {
             _agentAIInputHandler.SetVolleyMode(Agent, volleyMode);
-            if (volleyMode != VolleyMode.Disabled)
+            UpdateHasOnAiInputSetCallback();
+        }
+
+        public void SetDefensiveHoldMode(DefensiveHoldMode defensiveHoldMode)
+        {
+            _agentAIInputHandler.SetDefensiveHoldMode(Agent, defensiveHoldMode);
+            UpdateHasOnAiInputSetCallback();
+        }
+
+        private void UpdateHasOnAiInputSetCallback()
+        {
+            if (_agentAIInputHandler.VolleyMode != VolleyMode.Disabled || _agentAIInputHandler.DefensiveHoldMode != DefensiveHoldMode.Disabled)
             {
                 Agent.SetHasOnAiInputSetCallback(true);
             }

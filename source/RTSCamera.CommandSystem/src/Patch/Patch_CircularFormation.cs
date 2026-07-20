@@ -4,7 +4,6 @@ using RTSCamera.CommandSystem.Config;
 using System;
 using System.Reflection;
 using TaleWorlds.Engine;
-using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.CommandSystem.Patch

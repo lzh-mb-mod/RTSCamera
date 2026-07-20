@@ -3,7 +3,6 @@ using MissionSharedLibrary.Utilities;
 using RTSCamera.CampaignGame.Behavior;
 using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
-using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace RTSCamera.Logic.SubLogic
@@ -28,10 +27,6 @@ namespace RTSCamera.Logic.SubLogic
             if (_config.SlowMotionMode && !_slowMotionRequestAdded)
             {
                 AddSlowMotionRequest();
-            }
-            if (_config.FastForwardMode)
-            {
-                SetFastForwardMode(_config.FastForwardMode);
             }
         }
         public void OnBehaviourInitialize()
@@ -147,10 +142,9 @@ namespace RTSCamera.Logic.SubLogic
         }
         public void SetFastForwardMode(bool fastForwardMode)
         {
-            if (Mission.IsFastForward == fastForwardMode && _config.FastForwardMode == fastForwardMode)
+            if (Mission.IsFastForward == fastForwardMode)
                 return;
 
-            _config.FastForwardMode = fastForwardMode;
             Mission.SetFastForwardingFromUI(fastForwardMode);
             if (Mission.Current.IsFastForward)
             {

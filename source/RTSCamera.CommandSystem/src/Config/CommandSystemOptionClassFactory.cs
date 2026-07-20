@@ -196,6 +196,7 @@ namespace RTSCamera.CommandSystem.Config
                     new SelectionOptionData(i => CommandSystemConfig.Get().CircleFormationUnitSpacingPreference = (CircleFormationUnitSpacingPreference)i,
                         () => (int)CommandSystemConfig.Get().CircleFormationUnitSpacingPreference, () => (int)CircleFormationUnitSpacingPreference.Count, () => new List<SelectionItem>
                         {
+                            new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Minimum"),
                             new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Tight"),
                             new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Loose")
                         }), false));
@@ -237,7 +238,14 @@ namespace RTSCamera.CommandSystem.Config
                     GameTexts.FindText("str_rts_camera_command_system_add_defensive_hold_order"),
                     GameTexts.FindText("str_rts_camera_command_system_add_defensive_hold_order_hint"),
                     () => CommandSystemConfig.Get().AddDefensiveHoldOrder,
-                    b => CommandSystemConfig.Get().AddDefensiveHoldOrder = b));
+                    b =>
+                    {
+                        CommandSystemConfig.Get().AddDefensiveHoldOrder = b;
+                        if (!b)
+                        {
+                            CommandQueueLogic.ClearAllDefensiveHoldMode();
+                        }
+                    }));
                 //commandOptionCategory.AddOption(new NumericOptionViewModel(
                 //    new TaleWorlds.Localization.TextObject("r"), null,
                 //    () => CommandQueuePreview.r, f =>

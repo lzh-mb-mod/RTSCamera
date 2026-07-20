@@ -159,8 +159,6 @@ namespace RTSCamera.Config
 
         public HotkeyMode SlowMotionHotkeyMode = HotkeyMode.Toggle;
 
-        public bool FastForwardMode;
-
         public bool OverrideFastForwardSpeed;
 
         public float FastForwardSpeed = 3f;
@@ -264,7 +262,6 @@ namespace RTSCamera.Config
             SlowMotionFactor = other.SlowMotionFactor;
             SlowMotionOnRtsView = other.SlowMotionOnRtsView;
             SlowMotionHotkeyMode = other.SlowMotionHotkeyMode;
-            FastForwardMode = other.FastForwardMode;
             OverrideFastForwardSpeed = other.OverrideFastForwardSpeed;
             FastForwardSpeed = other.FastForwardSpeed;
             FastForwardHotkeyMode = other.FastForwardHotkeyMode;

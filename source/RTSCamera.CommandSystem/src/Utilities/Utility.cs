@@ -616,14 +616,14 @@ namespace RTSCamera.CommandSystem.Utilities
             }
         }
 
-        public static Type GetTypeOfArrangement(ArrangementOrderEnum orderEnum, bool hollowSquareAllowed = false)
+        public static Type GetTypeOfArrangement(ArrangementOrderEnum orderEnum, bool customArrangementAllowed = false)
         {
             return orderEnum switch
             {
-                ArrangementOrderEnum.Circle => typeof(CircularFormation),
+                ArrangementOrderEnum.Circle => CommandSystemConfig.Get().CircleFormationUnitSpacingPreference == CircleFormationUnitSpacingPreference.Minimum && customArrangementAllowed ? typeof(CircularSchiltronFormation) : typeof(CircularFormation),
                 ArrangementOrderEnum.Column => typeof(ColumnFormation),
                 ArrangementOrderEnum.Skein => typeof(SkeinFormation),
-                ArrangementOrderEnum.Square => CommandSystemConfig.Get().HollowSquare && hollowSquareAllowed ? typeof(SquareFormation) : typeof(RectilinearSchiltronFormation),
+                ArrangementOrderEnum.Square => CommandSystemConfig.Get().HollowSquare && customArrangementAllowed ? typeof(SquareFormation) : typeof(RectilinearSchiltronFormation),
                 _ => typeof(LineFormation),
             };
         }
@@ -744,7 +744,7 @@ namespace RTSCamera.CommandSystem.Utilities
                 case ArrangementOrder.ArrangementOrderEnum.Square:
                     return Utilities.Utility.GetMinimumWidthOfSquareFormation(formation);
                 case ArrangementOrder.ArrangementOrderEnum.Circle:
-                    return Utilities.Utility.GetMinimumWidthOfCircularFormation(formation, unitSpacing);
+                    return Utilities.Utility.GetMinimumWidthOfCircularFormation(formation, 0);
                 case ArrangementOrder.ArrangementOrderEnum.Column:
                     return Utilities.Utility.GetMinimumWidthOfColumnFormation(formation, unitSpacing);
                 default:
@@ -769,14 +769,22 @@ namespace RTSCamera.CommandSystem.Utilities
         {
             int countWithOverride = GetUnitCountWithOverride(formation);
             int maximumRankCount = GetMaximumRankCountOfCircularFormation(formation, countWithOverride, unitSpacing);
-            float radialInterval = formation.MinimumInterval + formation.UnitDiameter;
-            float distanceInterval = formation.MinimumDistance + formation.UnitDiameter;
-            return (float)((double)(GetCircumferenceAuxOfCircularFormation(countWithOverride, maximumRankCount, radialInterval, distanceInterval)) / MathF.PI);
+            float interval = formation.MinimumInterval + formation.UnitDiameter;
+            float distance = formation.MinimumDistance + formation.UnitDiameter;
+            return (float)((double)(GetCircumferenceAuxOfCircularFormation(countWithOverride, maximumRankCount, interval, distance)) / MathF.PI);
         }
 
         public static float GetMaximumWidthOfCircularFormation(Formation formation, int unitSpacing)
         {
-            return MathF.Max(0.0f, (float)(GetUnitCountWithOverride(formation) * (double)((GetFormationInterval(formation, unitSpacing) + formation.UnitDiameter)) / MathF.PI));
+            if (CommandSystemConfig.Get().CircleFormationUnitSpacingPreference == CircleFormationUnitSpacingPreference.Minimum && ShouldEnableHollowSquareOrSolidCircleFormationFor(formation))
+            {
+                int countWithOverride = GetUnitCountWithOverride(formation);
+                int maximumRankCount = GetMaximumRankCountOfCircularFormation(formation, countWithOverride, 0);
+                float interval = formation.MinimumInterval + formation.UnitDiameter;
+                float distance = formation.MinimumDistance + formation.UnitDiameter;
+                return (float)((double)(GetCircumferenceAuxOfCircularFormation(countWithOverride, maximumRankCount, interval, distance)) / MathF.PI);
+            }
+            return MathF.Max(0.0f, (float)(GetUnitCountWithOverride(formation) * (double)(GetFormationInterval(formation, unitSpacing) + formation.UnitDiameter) / MathF.PI));
         }
 
         public static int GetMaximumRankCountOfCircularFormation(Formation formation, int unitCount, int unitSpacing)
@@ -787,9 +795,9 @@ namespace RTSCamera.CommandSystem.Utilities
             float distance = GetFormationDistance(formation, unitSpacing) + formation.UnitDiameter;
             while (placedUnitCount < unitCount)
             {
+                ++rankCount;
                 int unitCountInCurrentRank = (int)(MathF.TwoPI * (double)((float)rankCount * distance) / (double)interval);
                 placedUnitCount += MathF.Max(1, unitCountInCurrentRank);
-                ++rankCount;
             }
             return MathF.Max(rankCount, 1);
         }
@@ -798,20 +806,21 @@ namespace RTSCamera.CommandSystem.Utilities
         public static float GetCircumferenceAuxOfCircularFormation(
             int unitCount,
             int rankCount,
-            float radialInterval,
-            float distanceInterval)
+            float interval,
+            float distance)
         {
-            float circuferenceDiffBetweenRank = (float)(TaleWorlds.Library.MathF.PI * 2.0 * (double)distanceInterval);
-            float initialCircumference = TaleWorlds.Library.MathF.Max(0f, (float)unitCount * radialInterval);
+            float circuferenceDiffBetweenRank = (float)(TaleWorlds.Library.MathF.PI * 2.0 * (double)distance);
+            float initialCircumference = TaleWorlds.Library.MathF.Max(0f, (float)(unitCount * (double)interval + 0.0000003));
             float OutmostCircumference;
             int unitCountAux;
             int rankToReduce = 0;
             do
             {
-                OutmostCircumference = initialCircumference - rankToReduce * circuferenceDiffBetweenRank;
-                OutmostCircumference -= OutmostCircumference % radialInterval;
+                OutmostCircumference = (float)(initialCircumference - rankToReduce * circuferenceDiffBetweenRank);
+                OutmostCircumference -= OutmostCircumference % interval;
                 var nextCircumference = TaleWorlds.Library.MathF.Max(0f, initialCircumference - (rankToReduce + 1) * circuferenceDiffBetweenRank);
-                unitCountAux = GetUnitCountAuxOfCircularFormation(nextCircumference, rankCount, radialInterval, distanceInterval);
+                nextCircumference -= nextCircumference % interval;
+                unitCountAux = GetUnitCountAuxOfCircularFormation(nextCircumference, rankCount, interval, distance);
                 ++rankToReduce;
             }
             while (unitCountAux >= unitCount && OutmostCircumference > 0f);
@@ -825,9 +834,9 @@ namespace RTSCamera.CommandSystem.Utilities
                 initialCircumference = OutmostCircumference;
                 do
                 {
-                    OutmostCircumference = initialCircumference - unitCountToReduceInOutmostRank * radialInterval;
-                    var nextCircumference = TaleWorlds.Library.MathF.Max(0f, initialCircumference - (unitCountToReduceInOutmostRank + 1) * radialInterval);
-                    unitCountAux = GetUnitCountAuxOfCircularFormation(nextCircumference, rankCount, radialInterval, distanceInterval);
+                    OutmostCircumference = initialCircumference - unitCountToReduceInOutmostRank * interval;
+                    var nextCircumference = TaleWorlds.Library.MathF.Max(0f, initialCircumference - (unitCountToReduceInOutmostRank + 1) * interval);
+                    unitCountAux = GetUnitCountAuxOfCircularFormation(nextCircumference, rankCount, interval, distance);
                     ++unitCountToReduceInOutmostRank;
                 }
                 while (unitCountAux >= unitCount && OutmostCircumference > 0f);
@@ -849,9 +858,10 @@ namespace RTSCamera.CommandSystem.Utilities
                 var numInCurrentRank = (int)(TaleWorlds.Library.MathF.Max(0.0, (double)circumference - (double)(rankCount - i) * circuferenceDiffBetweenRank) / (double)radialInterval);
                 num += numInCurrentRank;
             }
-            // original code
-            //return num;
-            return TaleWorlds.Library.MathF.Max(num, 1);
+            //// original code
+            ////return num;
+            //return TaleWorlds.Library.MathF.Max(num, 1);
+            return num;
         }
 
         private static float GetDiameterOfCircularFormation(Formation formation, float circumference, int unitSpacing)
@@ -873,7 +883,7 @@ namespace RTSCamera.CommandSystem.Utilities
         }
         public static float GetMaximumWidthOfSquareFormation(Formation formation)
         {
-            if (CommandSystemConfig.Get().HollowSquare && ShouldEnableHollowSquareFormationFor(formation))
+            if (CommandSystemConfig.Get().HollowSquare && ShouldEnableHollowSquareOrSolidCircleFormationFor(formation))
             {
                 return GetSideWidthFromUnitCountOfSquareFormation(GetUnitsPerSideFromRankCountOfSquareFormation(formation, 1), GetFormationInterval(formation, GetUnitSpacingOf(ArrangementOrderEnum.Square)), formation.UnitDiameter);
             }
@@ -1022,7 +1032,7 @@ namespace RTSCamera.CommandSystem.Utilities
         }
 
 
-        public static bool ShouldEnableHollowSquareFormationFor(Formation formation)
+        public static bool ShouldEnableHollowSquareOrSolidCircleFormationFor(Formation formation)
         {
             var team = formation?.Team;
             return !formation.IsAIControlled && team != null && team == Mission.Current.PlayerTeam && (team.IsPlayerGeneral || team.IsPlayerSergeant && formation.PlayerOwner == Agent.Main);
@@ -1083,6 +1093,19 @@ namespace RTSCamera.CommandSystem.Utilities
                 }
             }
             return CommandQueueLogic.GetFormationVolleyMode(formation) == volleyMode;
+        }
+
+        public static bool DoesFormationHasDefensiveHoldOrder(Formation formation, DefensiveHoldMode defensiveHoldMode)
+        {
+            bool queueCommand = Utilities.Utility.ShouldQueueCommand();
+            if (queueCommand)
+            {
+                if (CommandQueueLogic.LatestOrderInQueueChanges.VirtualChanges.TryGetValue(formation, out var formationChange))
+                {
+                    return formationChange.DefensiveHoldMode == null ? defensiveHoldMode == DefensiveHoldMode.Disabled : formationChange.DefensiveHoldMode == defensiveHoldMode;
+                }
+            }
+            return CommandQueueLogic.GetFormationDefensiveHoldMode(formation) == defensiveHoldMode;
         }
 
         public static bool ShouldQueueCommand()

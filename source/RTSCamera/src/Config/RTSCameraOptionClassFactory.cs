@@ -325,7 +325,7 @@ namespace RTSCamera.Config
                 timeSpeedOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_fast_forward_mode"),
                     GameTexts.FindText("str_rts_camera_fast_forward_hint"),
-                    () => RTSCameraConfig.Get().FastForwardMode,
+                    () => Mission.Current?.IsFastForward ?? false,
                     b => rtsCameraLogic.MissionSpeedLogic.SetFastForwardMode(b)));
                 timeSpeedOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_override_fast_forward_speed"),

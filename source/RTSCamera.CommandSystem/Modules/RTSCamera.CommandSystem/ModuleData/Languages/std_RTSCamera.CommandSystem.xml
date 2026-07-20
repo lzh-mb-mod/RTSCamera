@@ -83,7 +83,8 @@
     <string id="RTSCameraCommandSystem_square_formation_corner_Fix_hint" text="When enabled, soldiers positioned at the corners of a square formation will face toward the diagonal direction of the formation, ensuring better defensive coverage and a more natural appearance." />
 
     <string id="RTSCameraCommandSystem_circle_formation_preference" text="Circle Formation Preference" />
-    <string id="RTSCameraCommandSystem_circle_formation_preference_hint" text="Preferes tight circle formation or loose circle formation" />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_hint" text="Preferes minimum, tight or loose circle formation." />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_option_minimum" text="Minimum Circle Formation" />
     <string id="RTSCameraCommandSystem_circle_formation_preference_option_tight" text="Tight Circle Formation" />
     <string id="RTSCameraCommandSystem_circle_formation_preference_option_loose" text="Loose Circle Formation" />
 
