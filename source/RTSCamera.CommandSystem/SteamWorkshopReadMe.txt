@@ -61,9 +61,9 @@ For complete usage: [url=https://github.com/lzh-mb-mod/RTSCamera/blob/master/REA
 [*]Hold Alt while clicking the enemy formation to target the enemy without interrupting previous movement orders.
 [*]Click middle mouse button on the enemy formation to make your formation attack it.
 [*]Click middle mouse button on your formation to select it.
-[*]The attacked enemy formation will be highlighted with red outline when you open command panel.
-[*]Your attacked formation will be highlighted with dark blue outline when you open command panel.
-[*]Your selected formation will be highlighted with green outline when you open command panel.
+[*]The attacked enemy formation will be highlighted with red color when you open command panel.
+[*]Your attacked formation will be highlighted with dark blue color when you open command panel.
+[*]Your selected formation will be highlighted with blue color when you open command panel.
 [*]Auto Volley: Press F3 F6 (if using legacy order layout, F8 F1) or H. Soldiers will aim and wait for others and fire when most soldiers are ready.
 [*]Manual Volley: Press F3 F7 (if using legacy order layout, F8 F2) or J. Soldiers will aim and wait for your orders to fire.
 [*]Volley Fire: Press F3 F8 (if using legacy order layout, F8 F3) or K. Let soldiers in manual volley fire.
@@ -92,6 +92,7 @@ For complete usage: [url=https://github.com/lzh-mb-mod/RTSCamera/blob/master/REA
 [*]In the base game, when the unit count in square formation is a square number, the center unit is not correctly placed. This is fixed in this mod.
 [*]Player can use hollow square formation. Not enabled for AI.
 [*]When formation is switched to circle formation, the circle formation will be tighter. This can be changed in option.
+[*]You can enable the "Add Defensive Hold Order" option in config menu so that you can give this order to troops. With this order your troops under defensive arrangement (shield wall, square, circle) will hold positions and shields.
 [/list]
 
 [h2]Troubleshooting[/h2]
