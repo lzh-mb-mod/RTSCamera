@@ -154,9 +154,21 @@ namespace RTSCamera.CommandSystem.Orders
             volleyVisualOrderSet.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));
             volleyVisualOrderSet.AddOrder(new ReturnVisualOrder());
             legacyOrders.Add(volleyVisualOrderSet);
+            var defensiveHoldOrder = new RTSCommandToggleDefensiveHoldVisualOrder("order_defensive_hold", "order_movement_stop");
             if (!Input.IsGamepadActive)
             {
-                legacyOrders.Add(new SingleVisualOrderSet(new ReturnVisualOrder()));
+                if (CommandSystemConfig.Get().AddDefensiveHoldOrder)
+                {
+                    legacyOrders.Add(new SingleVisualOrderSet(defensiveHoldOrder));
+                }
+                else
+                {
+                    legacyOrders.Add(new SingleVisualOrderSet(new ReturnVisualOrder()));
+                }
+            }
+            else
+            {
+                volleyVisualOrderSet.AddOrder(defensiveHoldOrder);
             }
             return legacyOrders;
         }
