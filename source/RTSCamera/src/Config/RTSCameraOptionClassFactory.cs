@@ -297,7 +297,7 @@ namespace RTSCamera.Config
                     GameTexts.FindText("str_rts_camera_slow_motion_mode"),
                     GameTexts.FindText("str_rts_camera_slow_motion_hint"),
                     () => RTSCameraConfig.Get().SlowMotionMode,
-                    b => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionMode(b)));
+                    b => rtsCameraLogic.MissionSpeedLogic.SetSlowMotionModeFromUI(b)));
                 timeSpeedOptionCategory.AddOption(new NumericOptionViewModel(
                     GameTexts.FindText("str_rts_camera_slow_motion_factor"),
                     GameTexts.FindText("str_rts_camera_slow_motion_factor_hint"),
@@ -326,7 +326,7 @@ namespace RTSCamera.Config
                     GameTexts.FindText("str_rts_camera_fast_forward_mode"),
                     GameTexts.FindText("str_rts_camera_fast_forward_hint"),
                     () => Mission.Current?.IsFastForward ?? false,
-                    b => rtsCameraLogic.MissionSpeedLogic.SetFastForwardMode(b)));
+                    b => rtsCameraLogic.MissionSpeedLogic.SetFastForwardModeFromUI(b)));
                 timeSpeedOptionCategory.AddOption(new BoolOptionViewModel(
                     GameTexts.FindText("str_rts_camera_override_fast_forward_speed"),
                     GameTexts.FindText("str_rts_camera_override_fast_forward_speed_hint"),
