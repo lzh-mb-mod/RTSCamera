@@ -14,8 +14,8 @@ namespace RTSCamera.Logic.SubLogic
         private bool _slowMotionRequestAdded = false;
         private bool _slowMotionByRTSView = false;
         private int _fastForwardHotKeyCollDown = 0;
-        private bool _shouldSlowMotionAfterKeyUp = true;
-        private bool _shouldFastForwardAfterKeyUp = true;
+        private bool _shouldSlowMotionAfterKeyUp = false;
+        private bool _shouldFastForwardAfterKeyUp = false;
 
         public Mission Mission => _logic.Mission;
 
@@ -28,6 +28,7 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (_config.SlowMotionMode && !_slowMotionRequestAdded)
             {
+                _shouldSlowMotionAfterKeyUp = true;
                 AddSlowMotionRequest();
             }
         }

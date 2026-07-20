@@ -504,7 +504,6 @@ namespace RTSCamera.CommandSystem.AgentComponents
             base.OnHit(affectorAgent, damage, affectorWeapon, b, collisionData);
 
             _agentAIInputHandler.OnHit(Agent, affectorAgent, damage, affectorWeapon, b, collisionData);
-
         }
 
         public void OnControllerChanged(AgentControllerType oldController)

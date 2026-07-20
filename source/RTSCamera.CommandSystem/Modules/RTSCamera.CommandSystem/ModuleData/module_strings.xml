@@ -108,10 +108,13 @@
   <string id="str_rts_camera_command_system_mounted_units_interval_threshold" text="{=RTSCameraCommandSystem_mounted_units_interval_threshold}Mounted Units Interval Threshold" />
   <string id="str_rts_camera_command_system_mounted_units_interval_threshold_hint" text="{=RTSCameraCommandSystem_mounted_units_interval_threshold_hint}The threshold for ratio of mounted units in a formation to keep distance from each other. Default is 0.1 in vanilla" />
 
+  <string id="str_rts_caemra_command_system_defensive_hold_options" text="{=RTSCameraCommandSystem_defensive_hold_options}Defensive Hold Options" />
   <string id="str_rts_camera_command_system_add_defensive_hold_order" text="{=RTSCameraCommandSystem_add_defensive_hold_order}Add Defensive Hold Order" />
   <string id="str_rts_camera_command_system_add_defensive_hold_order_hint" text="{=RTSCameraCommandSystem_add_defensive_hold_order_hint}When enabled, add an order to let troops under defensive formation keep at their positions and hold shields, instead of leaving their position to attack enemy." />
   <string id="str_rts_camera_command_system_defensive_hold_on" text="{=RTSCameraCommandSystem_defensive_hold_on}Defensive Hold Enabled" />
   <string id="str_rts_camera_command_system_defensive_hold_off" text="{=RTSCameraCommandSystem_defensive_hold_off}Defensive Hold Disabled" />
+  <string id="str_rts_camera_command_system_attack_if_hit" text="{=RTSCameraCommandSystem_attack_if_hit}Attack if Hit" />
+  <string id="str_rts_camera_command_system_attack_if_hit_hint" text="{=RTSCameraCommandSystem_attack_if_hit_hint}When enabled, troops under defensive formation will attack the enemy if they are hit by the enemy." />
 
   <string id="str_rts_camera_command_system_advance_order_options" text="{=RTSCameraCommandSystem_advance_order_options}Engage Order Options" />
 
