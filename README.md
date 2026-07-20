@@ -233,13 +233,15 @@ This mod is composed of 2 parts, RTS Camera and Command System.
 
 - You can select your formations by clicking middle mouse button on soldiers.
 
-  - Selected troops will be highlighted with green color when you open command panel.
+  - Selected troops will be highlighted with blue color when you open command panel.
 
 - Your formation targeted by the enemy formation will be highlighted with dark blue color when you open command panel.
 
 - Movement orders will be shown under troop cards.
 
 - Fix direction of units on the corner of square formation.
+
+- New command "Defensive Hold" to make your troops under defensive arrangement (shield wall, square, circle) hold positions and shields.
 
 ## Hotkeys
 You can config hotkeys by pressing `L` to open menu, and click `Config Key`.
