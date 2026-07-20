@@ -55,6 +55,7 @@ namespace RTSCamera.CommandSystem.Config
 
     public enum CircleFormationUnitSpacingPreference
     {
+        Minimum,
         Tight,
         Loose,
         Count
@@ -130,13 +131,13 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool SquareFormationCornerFix = true;
 
+        public CircleFormationUnitSpacingPreference CircleFormationUnitSpacingPreference = CircleFormationUnitSpacingPreference.Tight;
+
         public bool OrderUIClickable = true;
 
         public bool OrderUIClickableExtension = false;
 
         public bool FacingEnemyByDefault = false;
-
-        public CircleFormationUnitSpacingPreference CircleFormationUnitSpacingPreference = CircleFormationUnitSpacingPreference.Tight;
 
         public bool OverrideMountedUnitsIntervalThreshold = false;
 
@@ -195,10 +196,10 @@ namespace RTSCamera.CommandSystem.Config
             HasHintDisplayed = other.HasHintDisplayed;
             HollowSquare = other.HollowSquare;
             SquareFormationCornerFix = other.SquareFormationCornerFix;
+            CircleFormationUnitSpacingPreference = other.CircleFormationUnitSpacingPreference;
             OrderUIClickable = other.OrderUIClickable;
             OrderUIClickableExtension = other.OrderUIClickableExtension;
             FacingEnemyByDefault = other.FacingEnemyByDefault;
-            CircleFormationUnitSpacingPreference = other.CircleFormationUnitSpacingPreference;
             OverrideMountedUnitsIntervalThreshold = other.OverrideMountedUnitsIntervalThreshold;
             MountedUnitsIntervalThreshold = other.MountedUnitsIntervalThreshold;
             AddDefensiveHoldOrder = other.AddDefensiveHoldOrder;

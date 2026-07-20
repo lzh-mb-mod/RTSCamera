@@ -1,5 +1,6 @@
 ﻿using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
+using RTSCamera.CommandSystem.Utilities;
 using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
@@ -80,7 +81,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
 
         protected override bool? OnGetFormationHasOrder(Formation formation)
         {
-            return CommandQueueLogic.GetFormationDefensiveHoldMode(formation) == DefensiveHoldMode.Enabled;
+            return Utility.DoesFormationHasDefensiveHoldOrder(formation, DefensiveHoldMode.Enabled);
         }
 
         public override bool IsTargeted() => false;

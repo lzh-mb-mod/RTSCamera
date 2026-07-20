@@ -1392,6 +1392,11 @@ namespace RTSCamera.CommandSystem.Logic
             formation.ApplyActionOnEachUnit(agent =>
             {
                 agent.RefreshBehaviorValues(movementOrderEnum, arrangementOrderEnum);
+                var component = agent.GetComponent<CommandSystemAgentComponent>();
+                if (component != null)
+                {
+                    component.SetDefensiveHoldMode(defensiveHoldMode); ;
+                }
             });
         }
 
@@ -1403,6 +1408,11 @@ namespace RTSCamera.CommandSystem.Logic
             }
 
             return defensiveHoldMode;
+        }
+
+        public static void ClearAllDefensiveHoldMode()
+        {
+            FormationDefensiveHoldMode.Clear();
         }
     }
 }

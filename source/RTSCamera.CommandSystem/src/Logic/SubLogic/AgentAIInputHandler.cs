@@ -25,6 +25,9 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         }
         public VolleyMode VolleyMode { get; private set; } = VolleyMode.Disabled;
         private VolleyStatus _volleyStatus;
+        public DefensiveHoldMode DefensiveHoldMode { get; private set; } = DefensiveHoldMode.Disabled;
+        private bool _defensiveHoldCanAttack = true;
+        private float _defensiveHoldLastHitTime = 0f;
 
 
         private bool _cancelAttackOnVolleyDisabled = false;
@@ -143,6 +146,16 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         public void OnFormationSet(Agent agent)
         {
+            DefensiveHoldMode newDefensiveHoldMode = DefensiveHoldMode.Disabled;
+            if (agent.Formation != null)
+            {
+                newDefensiveHoldMode = CommandQueueLogic.GetFormationDefensiveHoldMode(agent.Formation);
+            }
+            if (newDefensiveHoldMode != DefensiveHoldMode)
+            {
+                SetDefensiveHoldMode(agent, newDefensiveHoldMode);
+            }
+
             VolleyMode newVolleyMode = VolleyMode.Disabled;
             if (agent.Formation != null)
             {
@@ -154,8 +167,61 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             }
         }
 
+        public void SetDefensiveHoldMode(Agent agent, DefensiveHoldMode defensiveHoldMode)
+        {
+            DefensiveHoldMode = defensiveHoldMode;
+            if (DefensiveHoldMode == DefensiveHoldMode.Disabled)
+            {
+                SetCanAttack(agent, true);
+
+                _defensiveHoldCanAttack = true;
+                _defensiveHoldLastHitTime = -1f;
+                if (agent.Formation != null)
+                {
+                    agent.SetFiringOrder(agent.Formation.FiringOrder.OrderEnum);
+                }
+            }
+            else
+            {
+                agent.SetFiringOrder(FiringOrder.RangedWeaponUsageOrderEnum.HoldYourFire);
+                if (ShouldDisableAttackUnderDefensiveHold(agent))
+                {
+                    SetCanAttack(agent, false);
+                    _defensiveHoldCanAttack = false;
+                    _defensiveHoldLastHitTime = -1f;
+                }
+            }
+        }
+
+        private bool ShouldDisableAttackUnderDefensiveHold(Agent agent)
+        {
+            if (agent.Formation == null)
+                return false;
+            var arrrangementOrder = agent.Formation.ArrangementOrder.OrderEnum;
+            if (arrrangementOrder != ArrangementOrder.ArrangementOrderEnum.Circle &&
+                arrrangementOrder != ArrangementOrder.ArrangementOrderEnum.ShieldWall &&
+                arrrangementOrder != ArrangementOrder.ArrangementOrderEnum.Square)
+                return false;
+            var movementOrder = agent.Formation.GetReadonlyMovementOrderReference();
+            if (movementOrder.OrderEnum == MovementOrder.MovementOrderEnum.Charge || movementOrder.OrderEnum == MovementOrder.MovementOrderEnum.ChargeToTarget)
+                return false;
+            return agent.HasShieldCached && !agent.HasMount && !IsWieldingRangedWeapon(agent) && (_defensiveHoldLastHitTime < 0 || Mission.Current.CurrentTime - _defensiveHoldLastHitTime > 5f);
+        }
+
+        private bool IsWieldingRangedWeapon(Agent agent)
+        {
+            var wieldedWeapon = agent.WieldedWeapon;
+            return !wieldedWeapon.IsEmpty && wieldedWeapon.CurrentUsageItem.IsRangedWeapon;
+        }
+
         public void OnHit(Agent affectedAgent, Agent affectorAgent, int damage, in MissionWeapon affectorWeapon, in Blow b, in AttackCollisionData collisionData)
         {
+            if (DefensiveHoldMode == DefensiveHoldMode.Enabled)
+            {
+                if (!b.IsMissile && (!collisionData.AttackBlockedWithShield || _defensiveHoldCanAttack))
+                    _defensiveHoldLastHitTime = Mission.Current.CurrentTime;
+            }
+
             if (VolleyMode != VolleyMode.Disabled && !IsVolleySuspended)
             {
                 switch (_volleyStatus)
@@ -178,14 +244,20 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         public void OnControllerChanged(Agent agent, AgentControllerType oldController)
         {
+            DefensiveHoldMode newDefensiveHoldMode = DefensiveHoldMode.Disabled;
             VolleyMode newVolleyMode = VolleyMode.Disabled;
             if (agent.Controller == AgentControllerType.AI && agent.Formation != null)
             {
                 newVolleyMode = CommandQueueLogic.GetFormationVolleyMode(agent.Formation);
+                newDefensiveHoldMode = CommandQueueLogic.GetFormationDefensiveHoldMode(agent.Formation);
             }
             if (newVolleyMode != VolleyMode)
             {
                 SetVolleyMode(agent, newVolleyMode);
+            }
+            if (newDefensiveHoldMode != DefensiveHoldMode)
+            {
+                SetDefensiveHoldMode(agent, newDefensiveHoldMode);
             }
         }
 
@@ -443,8 +515,30 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         public void OnAIInputSetForDefensiveHold(Agent agent, ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)
         {
-            if (agent.Formation == null || CommandQueueLogic.GetFormationDefensiveHoldMode(agent.Formation) == DefensiveHoldMode.Disabled)
+            if (agent.Formation == null || !agent.IsAIControlled || DefensiveHoldMode == DefensiveHoldMode.Disabled)
                 return;
+
+            if (_defensiveHoldCanAttack)
+            {
+                if (ShouldDisableAttackUnderDefensiveHold(agent))
+                {
+                    SetCanAttack(agent, false);
+                    _defensiveHoldCanAttack = false;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                if (!ShouldDisableAttackUnderDefensiveHold(agent))
+                {
+                    SetCanAttack(agent, true);
+                    _defensiveHoldCanAttack = true;
+                    return;
+                }
+            }
 
             if (agent.HasMount)
                 return;
@@ -464,17 +558,6 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             if (distanceSquared > 400)
                 return;
 
-            var aiMoveDestination = agent.GetAIMoveDestination();
-            var isAIAtMoveDestination = aiMoveDestination.AsVec2.DistanceSquared(agent.Position.AsVec2) < 2f;
-            if (isAIAtMoveDestination)
-            {
-                if (inputVector.LengthSquared >= 0.5f)
-                {
-                    inputVector = Vec2.Zero;
-                }
-                return;
-            }
-
             var orderPositionOfUnit = agent.Formation.GetOrderPositionOfUnit(agent);
             if (!orderPositionOfUnit.IsValid)
             {
@@ -488,11 +571,10 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             var cos = Vec2.DotProduct(movementVector, vecToFormationPosition);
             var isMovingToDestination = cos > 0.2;
 
-
             if (isMovingToDestination)
                 return;
 
-            inputVector = agentFrame.rotation.TransformToLocal((vecToFormationPosition * MathF.Clamp(distanceToOrderPositionOfUnit, 0, 1)).ToVec3(0)).AsVec2;
+            inputVector = agentFrame.rotation.TransformToLocal((vecToFormationPosition * MathF.Clamp(distanceToOrderPositionOfUnit * 0.5f, 0, 1)).ToVec3(0)).AsVec2;
         }
 
         private void OnAIInputSetForVolley(Agent agent, ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)

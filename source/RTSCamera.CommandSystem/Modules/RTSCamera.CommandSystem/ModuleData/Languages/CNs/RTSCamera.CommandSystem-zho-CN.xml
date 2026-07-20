@@ -83,7 +83,8 @@
     <string id="RTSCameraCommandSystem_square_formation_corner_Fix_hint" text="启用后，位于方阵角落的士兵将面向方阵的对角线方向，以确保更好的防御覆盖和更自然的外观。" />
 
     <string id="RTSCameraCommandSystem_circle_formation_preference" text="圆阵偏好" />
-    <string id="RTSCameraCommandSystem_circle_formation_preference_hint" text="偏好紧凑圆阵或松散圆阵" />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_hint" text="偏好最小、紧凑或松散圆阵。" />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_option_minimum" text="最小圆阵" />
     <string id="RTSCameraCommandSystem_circle_formation_preference_option_tight" text="紧凑圆阵" />
     <string id="RTSCameraCommandSystem_circle_formation_preference_option_loose" text="松散圆阵" />
 

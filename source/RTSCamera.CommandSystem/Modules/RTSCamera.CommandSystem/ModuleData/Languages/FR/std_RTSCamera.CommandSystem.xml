@@ -83,7 +83,8 @@
     <string id="RTSCameraCommandSystem_square_formation_corner_Fix_hint" text="Lorsque cette option est activée, les soldats placés aux angles d’une formation en carré feront face vers la diagonale de la formation, ce qui assure une meilleure couverture défensive et un aspect plus naturel." />
 
     <string id="RTSCameraCommandSystem_circle_formation_preference" text="Préférence de formation en cercle" />
-    <string id="RTSCameraCommandSystem_circle_formation_preference_hint" text="Privilégier une formation en cercle serré ou en cercle lâche." />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_hint" text="Privilégier une formation en cercle minimum, serré ou lâche." />
+    <string id="RTSCameraCommandSystem_circle_formation_preference_option_minimum" text="Formation en cercle minimum" />
     <string id="RTSCameraCommandSystem_circle_formation_preference_option_tight" text="Formation en cercle serré" />
     <string id="RTSCameraCommandSystem_circle_formation_preference_option_loose" text="Formation en cercle lâche" />
 

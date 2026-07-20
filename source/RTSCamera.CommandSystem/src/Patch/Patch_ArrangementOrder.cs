@@ -47,14 +47,23 @@ namespace RTSCamera.CommandSystem.Patch
         {
             if (__instance.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Square && CommandSystemConfig.Get().HollowSquare)
             {
-                bool shouldEnableHollowSquareFor = Utilities.Utility.ShouldEnableHollowSquareFormationFor(formation);
+                bool shouldEnableHollowSquareFor = Utilities.Utility.ShouldEnableHollowSquareOrSolidCircleFormationFor(formation);
                 bool isSimuationFormation = formation.Team == null;
-                bool isAIControlled = formation.IsAIControlled;
                 if (shouldEnableHollowSquareFor || isSimuationFormation)
                 {
                     __result = new SquareFormation(formation);
                     return false;
                 }
+            }
+            else if (__instance.OrderEnum == ArrangementOrder.ArrangementOrderEnum.Circle && CommandSystemConfig.Get().CircleFormationUnitSpacingPreference == CircleFormationUnitSpacingPreference.Minimum)
+            {
+               bool shouldEnableHollowSquareFor = Utilities.Utility.ShouldEnableHollowSquareOrSolidCircleFormationFor(formation);
+               bool isSimuationFormation = formation.Team == null;
+               if (shouldEnableHollowSquareFor || isSimuationFormation)
+               {
+                   __result = new CircularSchiltronFormation(formation);
+                   return false;
+               }
             }
             return true;
         }
@@ -66,7 +75,7 @@ namespace RTSCamera.CommandSystem.Patch
         {
             var previousUnitSpacing = formation.UnitSpacing;
             var newUnitSpacing = __instance.GetUnitSpacing();
-            if (Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(formation) && formation.Arrangement.GetType() != Utilities.Utility.GetTypeOfArrangement(__instance.OrderEnum, Utilities.Utility.ShouldEnableHollowSquareFormationFor(formation)))
+            if (Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(formation) && formation.Arrangement.GetType() != Utilities.Utility.GetTypeOfArrangement(__instance.OrderEnum, Utilities.Utility.ShouldEnableHollowSquareOrSolidCircleFormationFor(formation)))
             {
                 _formOrder.SetValue(formation, FormOrder.FormOrderCustom(Patch_OrderController.GetFormationVirtualWidth(formation) ?? formation.Width));
                 _unitSpacing.SetValue(formation, Patch_OrderController.GetFormationVirtualUnitSpacing(formation) ?? newUnitSpacing);
