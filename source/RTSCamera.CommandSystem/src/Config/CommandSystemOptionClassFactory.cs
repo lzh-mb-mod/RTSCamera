@@ -234,18 +234,6 @@ namespace RTSCamera.CommandSystem.Config
                         () => CommandSystemConfig.Get().MountedUnitsIntervalThreshold,
                         f => CommandSystemConfig.Get().MountedUnitsIntervalThreshold = f, 0.01f, 0.5f, false, true));
                 }
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_add_defensive_hold_order"),
-                    GameTexts.FindText("str_rts_camera_command_system_add_defensive_hold_order_hint"),
-                    () => CommandSystemConfig.Get().AddDefensiveHoldOrder,
-                    b =>
-                    {
-                        CommandSystemConfig.Get().AddDefensiveHoldOrder = b;
-                        if (!b)
-                        {
-                            CommandQueueLogic.ClearAllDefensiveHoldMode();
-                        }
-                    }));
                 //commandOptionCategory.AddOption(new NumericOptionViewModel(
                 //    new TaleWorlds.Localization.TextObject("r"), null,
                 //    () => CommandQueuePreview.r, f =>
@@ -275,6 +263,32 @@ namespace RTSCamera.CommandSystem.Config
                 //    }, 0, 1, false, true));
                 optionClass.AddOptionCategory(0, commandOptionCategory);
 
+                var defensiveHoldOptionCategory = new OptionCategory("DefensiveHold",
+                    GameTexts.FindText("str_rts_caemra_command_system_defensive_hold_options"),
+                    () => CommandSystemConfig.Get().IsDefensiveHoldOptionVisible, b => CommandSystemConfig.Get().IsDefensiveHoldOptionVisible = b);
+
+                defensiveHoldOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_add_defensive_hold_order"),
+                    GameTexts.FindText("str_rts_camera_command_system_add_defensive_hold_order_hint"),
+                    () => CommandSystemConfig.Get().AddDefensiveHoldOrder,
+                    b =>
+                    {
+                        CommandSystemConfig.Get().AddDefensiveHoldOrder = b;
+                        if (!b)
+                        {
+                            CommandQueueLogic.ClearAllDefensiveHoldMode();
+                        }
+                    }));
+                defensiveHoldOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_attack_if_hit"),
+                    GameTexts.FindText("str_rts_camera_command_system_attack_if_hit_hint"),
+                    () => CommandSystemConfig.Get().AttackIfHit,
+                    b =>
+                    {
+                        CommandSystemConfig.Get().AttackIfHit = b;
+                    }));
+
+                optionClass.AddOptionCategory(1, defensiveHoldOptionCategory);
 
                 var advanceOrderOptionCategory = new OptionCategory("AdvanceOrder",
                     GameTexts.FindText("str_rts_camera_command_system_advance_order_options"),

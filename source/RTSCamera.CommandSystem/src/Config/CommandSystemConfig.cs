@@ -145,6 +145,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool AddDefensiveHoldOrder = false;
 
+        public bool AttackIfHit = true;
+
         public bool FixAdvaneOrderForThrowing = true;
 
         public bool ApplyAdvanceOrderFixForAI = false;
@@ -166,6 +168,8 @@ namespace RTSCamera.CommandSystem.Config
         public bool AutoVolleyByWeaponTypeForThrown = false;
 
         public bool IsCommandOptionVisible = true;
+
+        public bool IsDefensiveHoldOptionVisible = true;
 
         public bool IsAdvanceOrderOptionVisible = true;
 
@@ -203,6 +207,7 @@ namespace RTSCamera.CommandSystem.Config
             OverrideMountedUnitsIntervalThreshold = other.OverrideMountedUnitsIntervalThreshold;
             MountedUnitsIntervalThreshold = other.MountedUnitsIntervalThreshold;
             AddDefensiveHoldOrder = other.AddDefensiveHoldOrder;
+            AttackIfHit = other.AttackIfHit;
             FixAdvaneOrderForThrowing = other.FixAdvaneOrderForThrowing;
             ApplyAdvanceOrderFixForAI = other.ApplyAdvanceOrderFixForAI;
             ThrowerRatioThreshold = other.ThrowerRatioThreshold;
@@ -214,6 +219,7 @@ namespace RTSCamera.CommandSystem.Config
             AutoVolleyByWeaponTypeForNonThrown = other.AutoVolleyByWeaponTypeForNonThrown;
             AutoVolleyByWeaponTypeForThrown = other.AutoVolleyByWeaponTypeForThrown;
             IsCommandOptionVisible = other.IsCommandOptionVisible;
+            IsDefensiveHoldOptionVisible = other.IsDefensiveHoldOptionVisible;
             IsAdvanceOrderOptionVisible = other.IsAdvanceOrderOptionVisible;
             IsVolleyOrderOptionVisible = other.IsVolleyOrderOptionVisible;
         }

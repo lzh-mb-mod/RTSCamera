@@ -104,10 +104,13 @@
     <string id="RTSCameraCommandSystem_mounted_units_interval_threshold" text="Mounted Units Interval Threshold" />
     <string id="RTSCameraCommandSystem_mounted_units_interval_threshold_hint" text="The threshold for ratio of mounted units in a formation to keep distance from each other. Default is 0.1 in vanilla" />
 
+    <string id="RTSCameraCommandSystem_defensive_hold_options" text="Defensive Hold Options" />
     <string id="RTSCameraCommandSystem_add_defensive_hold_order" text="Add Defensive Hold Order" />
     <string id="RTSCameraCommandSystem_add_defensive_hold_order_hint" text="When enabled, add an order to let troops under defensive formation keep at their positions and hold shields, instead of leaving their position to attack enemy." />
     <string id="RTSCameraCommandSystem_defensive_hold_on" text="Defensive Hold Enabled" />
     <string id="RTSCameraCommandSystem_defensive_hold_off" text="Defensive Hold Disabled" />
+    <string id="RTSCameraCommandSystem_attack_if_hit" text="Attack if Hit" />
+    <string id="RTSCameraCommandSystem_attack_if_hit_hint" text="When enabled, troops under defensive formation will attack the enemy if they are hit by the enemy." />
 
     <string id="RTSCameraCommandSystem_advance_order_options" text="Engage Order Options" />
 

@@ -104,10 +104,13 @@
     <string id="RTSCameraCommandSystem_mounted_units_interval_threshold" text="Seuil d'intervalle des unités montées" />
     <string id="RTSCameraCommandSystem_mounted_units_interval_threshold_hint" text="Le seuil pour le ratio d'unités montées dans une formation pour garder la distance entre elles. Par défaut, c'est 0.1 dans le jeu vanilla." />
 
+    <string id="RTSCameraCommandSystem_defensive_hold_options" text="Options de maintien défensif" />
     <string id="RTSCameraCommandSystem_add_defensive_hold_order" text="Ajouter un ordre de maintien défensif" />
     <string id="RTSCameraCommandSystem_add_defensive_hold_order_hint" text="Lorsque cette option est activée, un ordre sera ajouté pour permettre aux troupes en formation défensive de rester à leur position et de tenir leurs boucliers, au lieu de quitter leur position pour attaquer l’ennemi." />
     <string id="RTSCameraCommandSystem_defensive_hold_on" text="Maintien défensif activé" />
     <string id="RTSCameraCommandSystem_defensive_hold_off" text="Maintien défensif désactivé" />
+    <string id="RTSCameraCommandSystem_attack_if_hit" text="Attaquer si touché" />
+    <string id="RTSCameraCommandSystem_attack_if_hit_hint" text="Lorsque cette option est activée, les troupes en formation défensive attaqueront l’ennemi si elles sont touchées par celui-ci." />
 
     <string id="RTSCameraCommandSystem_advance_order_options" text="Options d’ordre d’engagement" />
 

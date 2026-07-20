@@ -27,7 +27,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         private VolleyStatus _volleyStatus;
         public DefensiveHoldMode DefensiveHoldMode { get; private set; } = DefensiveHoldMode.Disabled;
         private bool _defensiveHoldCanAttack = true;
-        private float _defensiveHoldLastHitTime = 0f;
+        private float _defensiveHoldLastHitTime = -1f;
 
 
         private bool _cancelAttackOnVolleyDisabled = false;
@@ -205,7 +205,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             var movementOrder = agent.Formation.GetReadonlyMovementOrderReference();
             if (movementOrder.OrderEnum == MovementOrder.MovementOrderEnum.Charge || movementOrder.OrderEnum == MovementOrder.MovementOrderEnum.ChargeToTarget)
                 return false;
-            return agent.HasShieldCached && !agent.HasMount && !IsWieldingRangedWeapon(agent) && (_defensiveHoldLastHitTime < 0 || Mission.Current.CurrentTime - _defensiveHoldLastHitTime > 5f);
+            return agent.HasShieldCached && !agent.HasMount && !IsWieldingRangedWeapon(agent) && (!CommandSystemConfig.Get().AttackIfHit || _defensiveHoldLastHitTime < 0 || Mission.Current.CurrentTime - _defensiveHoldLastHitTime > 5f);
         }
 
         private bool IsWieldingRangedWeapon(Agent agent)
@@ -218,7 +218,7 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
         {
             if (DefensiveHoldMode == DefensiveHoldMode.Enabled)
             {
-                if (!b.IsMissile && (!collisionData.AttackBlockedWithShield || _defensiveHoldCanAttack))
+                if (!b.IsMissile && CommandSystemConfig.Get().AttackIfHit && (!collisionData.AttackBlockedWithShield || _defensiveHoldCanAttack))
                     _defensiveHoldLastHitTime = Mission.Current.CurrentTime;
             }
 
@@ -571,10 +571,10 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             var cos = Vec2.DotProduct(movementVector, vecToFormationPosition);
             var isMovingToDestination = cos > 0.2;
 
-            if (isMovingToDestination)
+            if (isMovingToDestination || distanceToOrderPositionOfUnit < 0.1f)
                 return;
 
-            inputVector = agentFrame.rotation.TransformToLocal((vecToFormationPosition * MathF.Clamp(distanceToOrderPositionOfUnit * 0.5f, 0, 1)).ToVec3(0)).AsVec2;
+            inputVector = agentFrame.rotation.TransformToLocal((vecToFormationPosition * MathF.Clamp(distanceToOrderPositionOfUnit * 0.95f, 0, 1)).ToVec3(0)).AsVec2;
         }
 
         private void OnAIInputSetForVolley(Agent agent, ref Agent.EventControlFlag eventFlag, ref Agent.MovementControlFlag movementFlag, ref Vec2 inputVector)
