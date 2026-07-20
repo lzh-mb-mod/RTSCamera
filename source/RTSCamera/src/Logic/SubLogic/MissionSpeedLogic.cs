@@ -14,6 +14,8 @@ namespace RTSCamera.Logic.SubLogic
         private bool _slowMotionRequestAdded = false;
         private bool _slowMotionByRTSView = false;
         private int _fastForwardHotKeyCollDown = 0;
+        private bool _shouldSlowMotionAfterKeyUp = true;
+        private bool _shouldFastForwardAfterKeyUp = true;
 
         public Mission Mission => _logic.Mission;
 
@@ -43,7 +45,7 @@ namespace RTSCamera.Logic.SubLogic
             }
             if (_slowMotionByRTSView)
             {
-                SetSlowMotionMode(false);
+                SetSlowMotionModeFromUI(false);
                 _slowMotionByRTSView = false;
             }
         }
@@ -52,7 +54,7 @@ namespace RTSCamera.Logic.SubLogic
         {
             if (_config.SlowMotionOnRtsView && !CommandBattleBehavior.CommandMode)
             {
-                SetSlowMotionMode(freeCamera);
+                SetSlowMotionModeFromUI(freeCamera);
                 _slowMotionByRTSView = freeCamera;
             }
         }
@@ -75,7 +77,7 @@ namespace RTSCamera.Logic.SubLogic
 
             bool shouldSlowDown = _config.SlowMotionHotkeyMode == HotkeyMode.Toggle ?
                 RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SlowMotion).IsKeyPressedInOrder() ^ _config.SlowMotionMode :
-                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SlowMotion).IsKeyDownInOrder();
+                RTSCameraGameKeyCategory.GetKey(GameKeyEnum.SlowMotion).IsKeyDownInOrder() || _shouldSlowMotionAfterKeyUp;
             if (_config.SlowMotionMode != shouldSlowDown)
             {
                 SetSlowMotionMode(shouldSlowDown);
@@ -90,7 +92,7 @@ namespace RTSCamera.Logic.SubLogic
             {
                 bool shouldFastForward = _config.FastForwardHotkeyMode == HotkeyMode.Toggle ?
                     RTSCameraGameKeyCategory.GetKey(GameKeyEnum.Fastforward).IsKeyPressedInOrder() ^ Mission.Current.IsFastForward :
-                    RTSCameraGameKeyCategory.GetKey(GameKeyEnum.Fastforward).IsKeyDownInOrder();
+                    (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.Fastforward).IsKeyDownInOrder() || _shouldFastForwardAfterKeyUp);
                 if (Mission.Current.IsFastForward != shouldFastForward)
                 {
                     if (_config.FastForwardHotkeyMode == HotkeyMode.Toggle)
@@ -107,6 +109,12 @@ namespace RTSCamera.Logic.SubLogic
             var paused = !MissionState.Current.Paused;
             MissionState.Current.Paused = paused;
             Utility.DisplayLocalizedText(paused ? "str_rts_camera_mission_paused" : "str_rts_camera_mission_continued");
+        }
+
+        public void SetSlowMotionModeFromUI(bool slowMotionMode)
+        {
+            _shouldSlowMotionAfterKeyUp = slowMotionMode;
+            SetSlowMotionMode(slowMotionMode);
         }
 
         public void SetSlowMotionMode(bool slowMotionMode)
@@ -140,6 +148,13 @@ namespace RTSCamera.Logic.SubLogic
             }
             _config.Serialize();
         }
+
+        public void SetFastForwardModeFromUI(bool fastForwardMode)
+        {
+            _shouldFastForwardAfterKeyUp = fastForwardMode;
+            SetFastForwardMode(fastForwardMode);
+        }
+
         public void SetFastForwardMode(bool fastForwardMode)
         {
             if (Mission.IsFastForward == fastForwardMode)
