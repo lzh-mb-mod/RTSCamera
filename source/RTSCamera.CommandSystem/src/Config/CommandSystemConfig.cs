@@ -169,6 +169,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool IsCommandOptionVisible = true;
 
+        public bool IsFormationOptionVisible = true;
+
         public bool IsDefensiveHoldOptionVisible = true;
 
         public bool IsAdvanceOrderOptionVisible = true;
@@ -219,6 +221,7 @@ namespace RTSCamera.CommandSystem.Config
             AutoVolleyByWeaponTypeForNonThrown = other.AutoVolleyByWeaponTypeForNonThrown;
             AutoVolleyByWeaponTypeForThrown = other.AutoVolleyByWeaponTypeForThrown;
             IsCommandOptionVisible = other.IsCommandOptionVisible;
+            IsFormationOptionVisible = other.IsFormationOptionVisible;
             IsDefensiveHoldOptionVisible = other.IsDefensiveHoldOptionVisible;
             IsAdvanceOrderOptionVisible = other.IsAdvanceOrderOptionVisible;
             IsVolleyOrderOptionVisible = other.IsVolleyOrderOptionVisible;
