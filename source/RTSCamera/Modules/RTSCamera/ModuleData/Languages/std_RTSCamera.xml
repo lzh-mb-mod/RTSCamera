@@ -117,7 +117,6 @@
     <string id="RTSCamera_steering_mode_delegate_command" text="Delegate Command" />
     <string id="RTSCamera_switch_retreat_and_delegate_command" text="Switch Retreat and Delegate Command" />
     <string id="RTSCamera_switch_retreat_and_delegate_command_hint" text="Switch hotkey and UI of Retreat and Delegate Command. So that Delegate Command is bound to F6." />
-    <string id="RTSCamera_ship_need_to_be_connected" text="The ship need to connected to your ships to be captured." />
     <string id="RTSCamera_unbalancedoptionsdescription" text="Cheat Options" />
     <string id="RTSCamera_disabledeath" text="All Invulnerable" />
     <string id="RTSCamera_enable_all_invulnerable_hotkey" text="Enable All Invulnerable Hotkey" />

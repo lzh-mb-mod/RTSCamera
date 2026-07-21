@@ -117,7 +117,6 @@
     <string id="RTSCamera_steering_mode_delegate_command" text="Déléguer la commande" />
     <string id="RTSCamera_switch_retreat_and_delegate_command" text="Changer d'option entre retraite et déléguer la commande" />
     <string id="RTSCamera_switch_retreat_and_delegate_command_hint" text="Changer le raccourci et l'interface de Retraite et Déléguer la commande. Ainsi, Déléguer la commande est assigné à F6." />
-    <string id="RTSCamera_ship_need_to_be_connected" text="Le navire doit être relié aux vôtres pour pouvoir être capturé." />
     <string id="RTSCamera_unbalancedoptionsdescription" text="Options de triche" />
     <string id="RTSCamera_disabledeath" text="Invulnérabilité totale" />
     <string id="RTSCamera_enable_all_invulnerable_hotkey" text="Raccourci Invulnérabilité totale" />

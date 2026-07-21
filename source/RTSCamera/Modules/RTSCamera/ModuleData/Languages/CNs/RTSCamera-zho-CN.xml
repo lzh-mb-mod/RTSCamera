@@ -117,7 +117,6 @@
     <string id="RTSCamera_steering_mode_delegate_command" text="委派指挥" />
     <string id="RTSCamera_switch_retreat_and_delegate_command" text="交换撤退和委派命令" />
     <string id="RTSCamera_switch_retreat_and_delegate_command_hint" text="交换撤退和委派命令的快捷键和UI。这样，委派命令就会绑定到F6。" />
-    <string id="RTSCamera_ship_need_to_be_connected" text="船只必须连接到您的船只才能被俘获。" />
     <string id="RTSCamera_unbalancedoptionsdescription" text="作弊选项" />
     <string id="RTSCamera_disabledeath" text="全员无敌" />
     <string id="RTSCamera_enable_all_invulnerable_hotkey" text="启用全员无敌的按键" />
