@@ -71,7 +71,7 @@ namespace RTSCamera.Patch.Naval
             // The only case to handle is when Agent.Main.Formation is null
             if (Agent.Main.Formation == null)
             {
-                __result = ____overridenDescriptionForActiveEnemyShipControllerMachine != null ? ____overridenDescriptionForActiveEnemyShipControllerMachine : GameTexts.FindText("RTSCamera_ship_need_to_be_connected");
+                __result = ____overridenDescriptionForActiveEnemyShipControllerMachine != null ? ____overridenDescriptionForActiveEnemyShipControllerMachine : GameTexts.FindText("str_rts_camera_ship_need_to_be_connected");
                 return false;
             }
             return true;
