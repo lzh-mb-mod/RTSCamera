@@ -1,5 +1,27 @@
 # Changelog
 
+## [v5.4.14] - 2026-07-21
+### Added
+- Add Fast Forward options.
+
+- Add defensive hold order for defensive formations such as shield wall, circle formation, and square formation.
+
+- Add reset button for hot key configuration.
+
+### Fixed
+- Fix the issue that player will not attack after switching to free camera in hideout battle.
+
+- Fix slow motion option when hotkey mode is set to hold.
+
+- Fix the issue that troop target entities may not correctly hide during fading out for facing order.
+
+### Improved
+- Improve formation placing at terrain edge.
+
+- Make formation width and unit spacing in order queue consistent with direct order.
+
+- Add option for keeping size of circle formation minimum.
+
 ## [v5.4.13] - 2026-07-14
 ### Fixed
 - Fix performance issue that FPS may drop to 10 in TOAM (Tales from the Age of Men) mod.
