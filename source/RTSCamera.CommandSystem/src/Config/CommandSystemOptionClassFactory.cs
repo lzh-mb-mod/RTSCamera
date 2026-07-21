@@ -176,64 +176,6 @@ namespace RTSCamera.CommandSystem.Config
                         new SelectionItem(true, "str_rts_camera_command_system_formation_speed_sync_mode_option", nameof(FormationSpeedSyncMode.CatchUp)),
                         new SelectionItem(true, "str_rts_camera_command_system_formation_speed_sync_mode_option", nameof(FormationSpeedSyncMode.WaitForLastFormation)),
                     }), false));
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_hollow_square_formation"),
-                    GameTexts.FindText("str_rts_camera_command_system_hollow_square_formation_hint"),
-                    () => CommandSystemConfig.Get().HollowSquare, b =>
-                    {
-                        CommandSystemConfig.Get().HollowSquare = b;
-                    }));
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_square_formation_corner_fix"),
-                    GameTexts.FindText("str_rts_camera_command_system_square_formation_corner_fix_hint"),
-                    () => CommandSystemConfig.Get().SquareFormationCornerFix, b =>
-                    {
-                        CommandSystemConfig.Get().SquareFormationCornerFix = b;
-                    }));
-                commandOptionCategory.AddOption(new SelectionOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_circle_formation_preference"),
-                    GameTexts.FindText("str_rts_camera_command_system_circle_formation_preference_hint"),
-                    new SelectionOptionData(i => CommandSystemConfig.Get().CircleFormationUnitSpacingPreference = (CircleFormationUnitSpacingPreference)i,
-                        () => (int)CommandSystemConfig.Get().CircleFormationUnitSpacingPreference, () => (int)CircleFormationUnitSpacingPreference.Count, () => new List<SelectionItem>
-                        {
-                            new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Minimum"),
-                            new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Tight"),
-                            new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Loose")
-                        }), false));
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable"),
-                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable_hint"),
-                    () => CommandSystemConfig.Get().OrderUIClickable,
-                    b => CommandSystemConfig.Get().OrderUIClickable = UIConfig.DoNotUseGeneratedPrefabs = b));
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable_extension"),
-                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable_extension_hint").SetTextVariable("KeyName", CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectTargetForCommand).ToSequenceString()),
-                    () => CommandSystemConfig.Get().OrderUIClickableExtension,
-                    b => {
-                        CommandSystemConfig.Get().OrderUIClickableExtension = b;
-                        if (!b)
-                        {
-                            RTSCommandVisualOrder.ClearSelectTargetMode();
-                        }
-                    }));
-                commandOptionCategory.AddOption(new BoolOptionViewModel(
-                    GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default"),
-                    GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default_hint"),
-                    () => CommandSystemConfig.Get().FacingEnemyByDefault,
-                    b => CommandSystemConfig.Get().FacingEnemyByDefault = b));
-                if (!CommandSystemSubModule.IsTAOMInstalled)
-                {
-                    commandOptionCategory.AddOption(new BoolOptionViewModel(
-                        GameTexts.FindText("str_rts_camera_command_system_override_mounted_units_interval_threshold"),
-                        GameTexts.FindText("str_rts_camera_command_system_override_mounted_units_interval_threshold_hint"),
-                        () => CommandSystemConfig.Get().OverrideMountedUnitsIntervalThreshold,
-                        b => CommandSystemConfig.Get().OverrideMountedUnitsIntervalThreshold = b));
-                    commandOptionCategory.AddOption(new NumericOptionViewModel(
-                        GameTexts.FindText("str_rts_camera_command_system_mounted_units_interval_threshold"),
-                        GameTexts.FindText("str_rts_camera_command_system_mounted_units_interval_threshold_hint"),
-                        () => CommandSystemConfig.Get().MountedUnitsIntervalThreshold,
-                        f => CommandSystemConfig.Get().MountedUnitsIntervalThreshold = f, 0.01f, 0.5f, false, true));
-                }
                 //commandOptionCategory.AddOption(new NumericOptionViewModel(
                 //    new TaleWorlds.Localization.TextObject("r"), null,
                 //    () => CommandQueuePreview.r, f =>
@@ -261,7 +203,70 @@ namespace RTSCamera.CommandSystem.Config
                 //    {
                 //        CommandQueuePreview.a = f;
                 //    }, 0, 1, false, true));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable"),
+                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable_hint"),
+                    () => CommandSystemConfig.Get().OrderUIClickable,
+                    b => CommandSystemConfig.Get().OrderUIClickable = UIConfig.DoNotUseGeneratedPrefabs = b));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable_extension"),
+                    GameTexts.FindText("str_rts_camera_command_system_order_ui_clickable_extension_hint").SetTextVariable("KeyName", CommandSystemGameKeyCategory.GetKey(GameKeyEnum.SelectTargetForCommand).ToSequenceString()),
+                    () => CommandSystemConfig.Get().OrderUIClickableExtension,
+                    b => {
+                        CommandSystemConfig.Get().OrderUIClickableExtension = b;
+                        if (!b)
+                        {
+                            RTSCommandVisualOrder.ClearSelectTargetMode();
+                        }
+                    }));
+                commandOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default"),
+                    GameTexts.FindText("str_rts_camera_command_system_face_enemy_by_default_hint"),
+                    () => CommandSystemConfig.Get().FacingEnemyByDefault,
+                    b => CommandSystemConfig.Get().FacingEnemyByDefault = b));
                 optionClass.AddOptionCategory(0, commandOptionCategory);
+
+                var formationOptionCategory = new OptionCategory("Formation",
+                    GameTexts.FindText("str_rts_camera_command_system_formation_options"),
+                    () => CommandSystemConfig.Get().IsFormationOptionVisible, b => CommandSystemConfig.Get().IsFormationOptionVisible = b);
+                formationOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_hollow_square_formation"),
+                    GameTexts.FindText("str_rts_camera_command_system_hollow_square_formation_hint"),
+                    () => CommandSystemConfig.Get().HollowSquare, b =>
+                    {
+                        CommandSystemConfig.Get().HollowSquare = b;
+                    }));
+                formationOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_square_formation_corner_fix"),
+                    GameTexts.FindText("str_rts_camera_command_system_square_formation_corner_fix_hint"),
+                    () => CommandSystemConfig.Get().SquareFormationCornerFix, b =>
+                    {
+                        CommandSystemConfig.Get().SquareFormationCornerFix = b;
+                    }));
+                formationOptionCategory.AddOption(new SelectionOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_circle_formation_preference"),
+                    GameTexts.FindText("str_rts_camera_command_system_circle_formation_preference_hint"),
+                    new SelectionOptionData(i => CommandSystemConfig.Get().CircleFormationUnitSpacingPreference = (CircleFormationUnitSpacingPreference)i,
+                        () => (int)CommandSystemConfig.Get().CircleFormationUnitSpacingPreference, () => (int)CircleFormationUnitSpacingPreference.Count, () => new List<SelectionItem>
+                        {
+                            new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Minimum"),
+                            new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Tight"),
+                            new SelectionItem(true, "str_rts_camera_command_system_circle_formation_preference_option", "Loose")
+                        }), false));
+                if (!CommandSystemSubModule.IsTAOMInstalled)
+                {
+                    formationOptionCategory.AddOption(new BoolOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_command_system_override_mounted_units_interval_threshold"),
+                        GameTexts.FindText("str_rts_camera_command_system_override_mounted_units_interval_threshold_hint"),
+                        () => CommandSystemConfig.Get().OverrideMountedUnitsIntervalThreshold,
+                        b => CommandSystemConfig.Get().OverrideMountedUnitsIntervalThreshold = b));
+                    formationOptionCategory.AddOption(new NumericOptionViewModel(
+                        GameTexts.FindText("str_rts_camera_command_system_mounted_units_interval_threshold"),
+                        GameTexts.FindText("str_rts_camera_command_system_mounted_units_interval_threshold_hint"),
+                        () => CommandSystemConfig.Get().MountedUnitsIntervalThreshold,
+                        f => CommandSystemConfig.Get().MountedUnitsIntervalThreshold = f, 0.01f, 0.5f, false, true));
+                }
+                optionClass.AddOptionCategory(0, formationOptionCategory);
 
                 var defensiveHoldOptionCategory = new OptionCategory("DefensiveHold",
                     GameTexts.FindText("str_rts_caemra_command_system_defensive_hold_options"),
