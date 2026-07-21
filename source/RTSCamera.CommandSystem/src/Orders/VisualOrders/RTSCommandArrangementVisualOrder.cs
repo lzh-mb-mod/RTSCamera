@@ -28,7 +28,7 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
                 case TaleWorlds.MountAndBlade.ArrangementOrder.ArrangementOrderEnum.Skein:
                     return new TextObject("{=uCyQNvq1}Skein");
                 case TaleWorlds.MountAndBlade.ArrangementOrder.ArrangementOrderEnum.Square:
-                    return new TextObject("{=squareOrder}Square");
+                    return new TextObject("{=E3tCWX7w}Square");
                 default:
                     return TextObject.GetEmpty();
             }
