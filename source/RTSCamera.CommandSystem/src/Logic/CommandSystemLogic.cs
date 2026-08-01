@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using MissionSharedLibrary.Utilities;
 using RTSCamera.CommandSystem.AgentComponents;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View.Screens;
 
 namespace RTSCamera.CommandSystem.Logic
 {
@@ -206,15 +208,17 @@ namespace RTSCamera.CommandSystem.Logic
                 }
             }
 
-            if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.AutoVolley).IsKeyPressed())
+
+            var input = Utility.GetMissionScreen().SceneLayer.Input;
+            if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.AutoVolley).IsKeyPressed(input))
             {
                 Utilities.Utility.ExecuteAutoVolley();
             }
-            else if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.ManualVolley).IsKeyPressed())
+            else if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.ManualVolley).IsKeyPressed(input))
             {
                 Utilities.Utility.ExecuteManualVolley();
             }
-            else if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.VolleyFire).IsKeyPressed())
+            else if (CommandSystemGameKeyCategory.GetKey(GameKeyEnum.VolleyFire).IsKeyPressed(input))
             {
                 Utilities.Utility.ExecuteVolleyFire();
             }
