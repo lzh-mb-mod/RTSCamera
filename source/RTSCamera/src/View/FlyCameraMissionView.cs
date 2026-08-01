@@ -65,6 +65,7 @@ namespace RTSCamera.View
         private bool _levelToEdge;
         private bool _lockToAgent;
         private GauntletLayer _showControlHintLayer;
+        private GauntletMovieIdentifier _showControlHintMovie;
         private ShowControlHintVM _showControlHintVM;
 
         private float _cameraDistanceLimitVerticalScale = 1.5f;
@@ -286,7 +287,7 @@ namespace RTSCamera.View
             var movieName = "RTSCameraShowControlHint";
             _showControlHintVM = new ShowControlHintVM(Mission.GetMissionBehavior<SiegeDeploymentHandler>() == null);
             _showControlHintLayer = new GauntletLayer(movieName, ViewOrderPriority);
-            _showControlHintLayer.LoadMovie(movieName, _showControlHintVM);
+            _showControlHintMovie = _showControlHintLayer.LoadMovie(movieName, _showControlHintVM);
             _showControlHintLayer.InputRestrictions.SetInputRestrictions(false, InputUsageMask.Invalid);
             MissionScreen.AddLayer(_showControlHintLayer);
 
@@ -300,7 +301,12 @@ namespace RTSCamera.View
         {
             base.OnMissionScreenFinalize();
 
+            if (_showControlHintMovie != null)
+            {
+                _showControlHintLayer.ReleaseMovie(_showControlHintMovie);
+            }
             MissionScreen.RemoveLayer(_showControlHintLayer);
+            _showControlHintMovie = null;
 
             MissionScreen.OnSpectateAgentFocusIn -= MissionScreenOnSpectateAgentFocusIn;
             MissionScreen.OnSpectateAgentFocusOut -= MissionScreenOnSpectateAgentFocusOut;

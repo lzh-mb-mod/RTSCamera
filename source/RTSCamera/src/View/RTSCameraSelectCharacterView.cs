@@ -20,6 +20,7 @@ namespace RTSCamera.View
         private static readonly uint EnemyMouseOverColor = new Color(0.98f, 0.6f, 0.5f).ToUnsignedInteger();
         private static readonly uint EnemySelectedColor = new Color(0.98f, 0.2f, 0.3f).ToUnsignedInteger();
         private GauntletLayer _gauntletLayer;
+        private GauntletMovieIdentifier _movie;
         private SelectCharacterVM _dataSource;
         private FlyCameraMissionView _flyCameraMissionView;
 
@@ -117,7 +118,7 @@ namespace RTSCamera.View
             var movieName = nameof(RTSCameraSelectCharacterView);
             _gauntletLayer = new GauntletLayer(movieName, ViewOrderPriority) { IsFocusLayer = false };
             _dataSource = new SelectCharacterVM();
-            _gauntletLayer.LoadMovie(movieName, _dataSource);
+            _movie = _gauntletLayer.LoadMovie(movieName, _dataSource);
             _gauntletLayer.InputRestrictions.SetInputRestrictions();
             _gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
             MissionScreen.AddLayer(_gauntletLayer);
@@ -130,9 +131,14 @@ namespace RTSCamera.View
             if (_gauntletLayer != null)
             {
                 _gauntletLayer.InputRestrictions.ResetInputRestrictions();
+                if (_movie != null)
+                {
+                    _gauntletLayer.ReleaseMovie(_movie);
+                }
                 MissionScreen.RemoveLayer(_gauntletLayer);
                 _gauntletLayer = null;
             }
+            _movie = null;
         }
 
         public override void OnMissionScreenTick(float dt)
