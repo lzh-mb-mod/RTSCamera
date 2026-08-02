@@ -337,6 +337,9 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
             _agentsNewlyAddedToFormations.Clear();
             _agentsRemovedFromFormations.Clear();
             _agentsWithEmptyFormations.Clear();
+            _formationColorStatusDictionary.Clear();
+            _mouseOverFormation = null;
+            _orderUiHandler = null;
             Game.Current.EventManager.UnregisterEvent<MissionPlayerToggledOrderViewEvent>(OnToggleOrderViewEvent);
             Mission.Current.Teams.OnPlayerTeamChanged -= Mission_OnPlayerTeamChanged;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
