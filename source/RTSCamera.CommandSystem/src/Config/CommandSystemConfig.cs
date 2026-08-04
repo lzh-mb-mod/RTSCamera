@@ -167,6 +167,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool AutoVolleyByWeaponTypeForThrown = false;
 
+        public bool EnableVolleyRelatedFeatures = true;
+
         public bool IsCommandOptionVisible = true;
 
         public bool IsFormationOptionVisible = true;
@@ -220,6 +222,7 @@ namespace RTSCamera.CommandSystem.Config
             MaxAimingTime = other.MaxAimingTime;
             AutoVolleyByWeaponTypeForNonThrown = other.AutoVolleyByWeaponTypeForNonThrown;
             AutoVolleyByWeaponTypeForThrown = other.AutoVolleyByWeaponTypeForThrown;
+            EnableVolleyRelatedFeatures = other.EnableVolleyRelatedFeatures;
             IsCommandOptionVisible = other.IsCommandOptionVisible;
             IsFormationOptionVisible = other.IsFormationOptionVisible;
             IsDefensiveHoldOptionVisible = other.IsDefensiveHoldOptionVisible;
@@ -290,4 +293,3 @@ namespace RTSCamera.CommandSystem.Config
         protected override string SaveName => Path.Combine(ConfigPath.ConfigDir, "RTSCamera", nameof(CommandSystemConfig) + ".xml");
     }
 }
-

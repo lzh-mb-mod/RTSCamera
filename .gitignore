@@ -1,5 +1,6 @@
 .vs/
 source/package/
+source/*/package/
 source/*/bin/
 source/*/obj/
 *.DotSettings*

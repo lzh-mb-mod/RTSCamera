@@ -332,6 +332,18 @@ namespace RTSCamera.CommandSystem.Config
                 var volleyOptionCategory = new OptionCategory("VolleyOrder",
                     GameTexts.FindText("str_rts_camera_command_system_volley_order_options"),
                     () => CommandSystemConfig.Get().IsVolleyOrderOptionVisible, (b) => CommandSystemConfig.Get().IsVolleyOrderOptionVisible = b);
+                volleyOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_enable_volley_related_features"),
+                    GameTexts.FindText("str_rts_camera_command_system_enable_volley_related_features_hint"),
+                    () => CommandSystemConfig.Get().EnableVolleyRelatedFeatures,
+                    b =>
+                    {
+                        CommandSystemConfig.Get().EnableVolleyRelatedFeatures = b;
+                        if (!b)
+                        {
+                            CommandQueueLogic.ClearAllVolleyRelatedFeatures();
+                        }
+                    }));
                 volleyOptionCategory.AddOption(new SelectionOptionViewModel(
                     GameTexts.FindText("str_rts_camera_command_system_volley_pre_aiming_mode"),
                     GameTexts.FindText("str_rts_camera_command_system_volley_pre_aiming_mode_hint"),

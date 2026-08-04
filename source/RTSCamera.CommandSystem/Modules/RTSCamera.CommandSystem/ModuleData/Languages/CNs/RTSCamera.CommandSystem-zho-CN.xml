@@ -173,6 +173,8 @@
     <string id="RTSCameraCommandSystem_volley_fire" text="齐射开火" />
 
     <string id="RTSCameraCommandSystem_volley_order_options" text="齐射指令选项" />
+    <string id="RTSCameraCommandSystem_enable_volley_related_features" text="启用齐射相关功能" />
+    <string id="RTSCameraCommandSystem_enable_volley_related_features_hint" text="禁用后，自动齐射、听令齐射、齐射开火，以及它们对应的热键和排队指令都会被关闭。" />
 
     <string id="RTSCameraCommandSystem_volley_pre_aiming_mode" text="预瞄准模式" />
     <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_hint" text="如果启用预瞄准，部队将瞄准目标而不开火。" />

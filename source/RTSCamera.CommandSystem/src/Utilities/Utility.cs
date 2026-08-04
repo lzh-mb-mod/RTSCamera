@@ -1138,6 +1138,8 @@ namespace RTSCamera.CommandSystem.Utilities
 
         public static void ExecuteAutoVolley()
         {
+            if (!CommandSystemConfig.Get().AreVolleyRelatedFeaturesEnabled())
+                return;
             var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
             if (missionOrderVM == null)
                 return;
@@ -1150,6 +1152,8 @@ namespace RTSCamera.CommandSystem.Utilities
 
         public static void ExecuteManualVolley()
         {
+            if (!CommandSystemConfig.Get().AreVolleyRelatedFeaturesEnabled())
+                return;
             var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
             if (missionOrderVM == null)
                 return;
@@ -1162,6 +1166,8 @@ namespace RTSCamera.CommandSystem.Utilities
 
         public static void ExecuteVolleyFire()
         {
+            if (!CommandSystemConfig.Get().AreVolleyRelatedFeaturesEnabled())
+                return;
             var missionOrderVM = MissionSharedLibrary.Utilities.Utility.GetMissionOrderVM(Mission.Current);
             if (missionOrderVM == null)
                 return;
