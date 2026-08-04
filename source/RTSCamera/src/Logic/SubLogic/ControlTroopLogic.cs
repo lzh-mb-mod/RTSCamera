@@ -78,6 +78,10 @@ namespace RTSCamera.Logic.SubLogic
 
         public bool ForceControlAgent()
         {
+            if (_selectCharacterView.IsSelectingCharacter)
+            {
+                _selectCharacterView.IsSelectingCharacter = false;
+            }
             var agent = GetAgentToControl();
             if (agent == null)
             {
