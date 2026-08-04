@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.3.37] - 2026-08-05
+### Added
+- Add an option to disable volley-related features.
+
+### Fixed
+- Fix potential memory leaks caused by mission UI resources not being released.
+
+- Fix volley hotkeys not responding correctly when the order UI captures input.
+
+- Fix forced troop control leaving character selection active.
+
+### Improved
+- Mark the Override Fast Forward Speed option as requiring a restart.
+
 ## [v5.3.36] - 2026-07-21
 ### Added
 - Add Fast Forward options.
