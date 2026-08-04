@@ -173,6 +173,8 @@
     <string id="RTSCameraCommandSystem_volley_fire" text="Volley Fire" />
 
     <string id="RTSCameraCommandSystem_volley_order_options" text="Volley Order Options" />
+    <string id="RTSCameraCommandSystem_enable_volley_related_features" text="Enable Volley Related Features" />
+    <string id="RTSCameraCommandSystem_enable_volley_related_features_hint" text="When disabled, Auto Volley, Volley on Command, Volley Fire, and their related hotkeys and queued orders are turned off." />
 
     <string id="RTSCameraCommandSystem_volley_pre_aiming_mode" text="Pre-Aiming Mode" />
     <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_hint" text="If pre-aiming is enabled, troops will aim at the target without firing." />

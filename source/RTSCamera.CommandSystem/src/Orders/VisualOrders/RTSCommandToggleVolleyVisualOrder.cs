@@ -1,4 +1,5 @@
-﻿using RTSCamera.CommandSystem.Logic;
+﻿using RTSCamera.CommandSystem.Config;
+using RTSCamera.CommandSystem.Logic;
 using RTSCamera.CommandSystem.Patch;
 using System.Linq;
 using TaleWorlds.Localization;
@@ -23,6 +24,8 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
 
         public override void ExecuteOrder(OrderController orderController, VisualOrderExecutionParameters executionParameters)
         {
+            if (!CommandSystemConfig.Get().AreVolleyRelatedFeaturesEnabled())
+                return;
             bool queueCommand = OnBeforeExecuteOrder(orderController, executionParameters);
             var selectedFormations = orderController.SelectedFormations.ToList();
             if (selectedFormations.Count == 0)

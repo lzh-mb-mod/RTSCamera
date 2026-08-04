@@ -559,11 +559,27 @@ namespace RTSCamera.CommandSystem.Logic
                 return;
             if (order.SelectedFormations.Count == 0)
                 return;
+            if (IsVolleyRelatedOrder(order.CustomOrderType) && !CommandSystemConfig.Get().AreVolleyRelatedFeaturesEnabled())
+                return;
             order.RemainingFormations = order.SelectedFormations.ToList();
             LatestOrderInQueueChanges.SetChanges(Patch_OrderController.LivePreviewFormationChanges.CollectChanges(order.SelectedFormations));
             OrderQueue.Add(order);
             Utilities.Utility.DisplayAddOrderToQueueMessage();
             CommandQueuePreview.IsPreviewOutdated = true;
+        }
+
+        private static bool IsVolleyRelatedOrder(CustomOrderType customOrderType)
+        {
+            switch (customOrderType)
+            {
+                case CustomOrderType.AutoVolley:
+                case CustomOrderType.ManualVolley:
+                case CustomOrderType.DisableVolley:
+                case CustomOrderType.VolleyFire:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         public static void ClearOrderInQueue(IEnumerable<Formation> formations)
@@ -984,24 +1000,32 @@ namespace RTSCamera.CommandSystem.Logic
                     formation.SetTargetFormation(order.TargetFormation);
                     break;
                 case CustomOrderType.AutoVolley:
+                    if (!CommandSystemConfig.Get().AreVolleyRelatedFeaturesEnabled())
+                        break;
                     SetFormationVolleyMode(formation, VolleyMode.Auto);
                     formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
                     TryPendingOrder(new List<Formation> { formation }, order);
                     CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                     break;
                 case CustomOrderType.ManualVolley:
+                    if (!CommandSystemConfig.Get().AreVolleyRelatedFeaturesEnabled())
+                        break;
                     SetFormationVolleyMode(formation, VolleyMode.Manual);
                     formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
                     TryPendingOrder(new List<Formation> { formation }, order);
                     CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                     break;
                 case CustomOrderType.DisableVolley:
+                    if (!CommandSystemConfig.Get().AreVolleyRelatedFeaturesEnabled())
+                        break;
                     SetFormationVolleyMode(formation, VolleyMode.Disabled);
                     formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
                     TryPendingOrder(new List<Formation> { formation }, order);
                     CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                     break;
                 case CustomOrderType.VolleyFire:
+                    if (!CommandSystemConfig.Get().AreVolleyRelatedFeaturesEnabled())
+                        break;
                     formation.SetFiringOrder(FiringOrder.FiringOrderFireAtWill);
                     SetFormationVolleyMode(formation, VolleyMode.Manual);
                     FormationVolleyFire(formation);
@@ -1267,6 +1291,10 @@ namespace RTSCamera.CommandSystem.Logic
 
         public static VolleyMode GetFormationVolleyMode(Formation formation)
         {
+            if (!CommandSystemConfig.Get().AreVolleyRelatedFeaturesEnabled())
+            {
+                return VolleyMode.Disabled;
+            }
             if (!FormationVolleyMode.TryGetValue(formation, out var volleyMode))
             {
                 return VolleyMode.Disabled;
@@ -1413,6 +1441,36 @@ namespace RTSCamera.CommandSystem.Logic
         public static void ClearAllDefensiveHoldMode()
         {
             FormationDefensiveHoldMode.Clear();
+        }
+
+        public static void ClearAllVolleyRelatedFeatures()
+        {
+            if (FormationVolleyMode != null)
+            {
+                foreach (var formation in FormationVolleyMode.Keys.ToList())
+                {
+                    SetFormationVolleyMode(formation, VolleyMode.Disabled);
+                }
+                FormationVolleyMode.Clear();
+            }
+
+            if (PendingOrders != null)
+            {
+                foreach (var pair in PendingOrders.ToList())
+                {
+                    if (!IsVolleyRelatedOrder(pair.Value.CustomOrderType))
+                        continue;
+                    pair.Value.SelectedFormations.Remove(pair.Key);
+                    PendingOrders.Remove(pair.Key);
+                }
+            }
+
+            if (OrderQueue != null)
+            {
+                OrderQueue.RemoveAll(order => IsVolleyRelatedOrder(order.CustomOrderType));
+            }
+
+            CommandQueuePreview.IsPreviewOutdated = true;
         }
     }
 }

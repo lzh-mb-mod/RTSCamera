@@ -183,6 +183,8 @@
   <string id="str_rts_camera_command_system_volley_fire" text="{=RTSCameraCommandSystem_volley_fire}Volley Fire" />
 
   <string id="str_rts_camera_command_system_volley_order_options" text="{=RTSCameraCommandSystem_volley_order_options}Volley Order Options" />
+  <string id="str_rts_camera_command_system_enable_volley_related_features" text="{=RTSCameraCommandSystem_enable_volley_related_features}Enable Volley Related Features" />
+  <string id="str_rts_camera_command_system_enable_volley_related_features_hint" text="{=RTSCameraCommandSystem_enable_volley_related_features_hint}When disabled, Auto Volley, Volley on Command, Volley Fire, and their related hotkeys and queued orders are turned off." />
 
   <string id="str_rts_camera_command_system_volley_pre_aiming_mode" text="{=RTSCameraCommandSystem_volley_pre_aiming_mode}Pre-Aiming Mode" />
   <string id="str_rts_camera_command_system_volley_pre_aiming_mode_hint" text="{=RTSCameraCommandSystem_volley_pre_aiming_mode_hint}If pre-aiming is enabled, troops will aim at the target without firing." />

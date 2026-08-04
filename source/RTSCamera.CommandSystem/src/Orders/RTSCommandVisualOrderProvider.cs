@@ -14,6 +14,7 @@ namespace RTSCamera.CommandSystem.Orders
     public class RTSCommandVisualOrderProvider: VisualOrderProvider
     {
         private bool IsHideOut => Mission.Current?.HasMissionBehavior<HideoutMissionController>() ?? false;
+        private bool AreVolleyRelatedFeaturesEnabled => CommandSystemConfig.Get().AreVolleyRelatedFeaturesEnabled();
         public override bool IsAvailable()
         {
             return Mission.Current != null && !Mission.Current.IsFriendlyMission && !Mission.Current.IsNavalBattle;
@@ -74,9 +75,12 @@ namespace RTSCamera.CommandSystem.Orders
             if (transferOrder != null)
                 toggleVisualOrderSet.AddOrder(transferOrder);
 
-            toggleVisualOrderSet.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_auto_volley", GameTexts.FindText("str_rts_camera_command_system_auto_volley"), GameTexts.FindText("str_rts_camera_command_system_auto_volley_off"), Logic.VolleyMode.Auto));
-            toggleVisualOrderSet.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_manual_volley", GameTexts.FindText("str_rts_camera_command_system_manual_volley"), GameTexts.FindText("str_rts_camera_command_system_manual_volley_off"), Logic.VolleyMode.Manual));
-            toggleVisualOrderSet.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));
+            if (AreVolleyRelatedFeaturesEnabled)
+            {
+                toggleVisualOrderSet.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_auto_volley", GameTexts.FindText("str_rts_camera_command_system_auto_volley"), GameTexts.FindText("str_rts_camera_command_system_auto_volley_off"), Logic.VolleyMode.Auto));
+                toggleVisualOrderSet.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_manual_volley", GameTexts.FindText("str_rts_camera_command_system_manual_volley"), GameTexts.FindText("str_rts_camera_command_system_manual_volley_off"), Logic.VolleyMode.Manual));
+                toggleVisualOrderSet.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));
+            }
             toggleVisualOrderSet.AddOrder(new ReturnVisualOrder());
             defaultOrders.Add(movementVisualOrderSet);
             defaultOrders.Add(formVisualOrderSet);
@@ -147,12 +151,16 @@ namespace RTSCamera.CommandSystem.Orders
                 if (order8 != null)
                     legacyOrders.Add(new SingleVisualOrderSet(order8));
             }
-            RTSCommandGenericVisualOrderSet volleyVisualOrderSet = new RTSCommandGenericVisualOrderSet("order_type_volley", GameTexts.FindText("str_rts_camera_command_system_volley_order"), true, true, new RTSCommandToggleVolleyVisualOrder("order_auto_volley", GameTexts.FindText("str_rts_camera_command_system_auto_volley"), GameTexts.FindText("str_rts_camera_command_system_auto_volley_off"), Logic.VolleyMode.Auto));
-            volleyVisualOrderSet.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_auto_volley", GameTexts.FindText("str_rts_camera_command_system_auto_volley"), GameTexts.FindText("str_rts_camera_command_system_auto_volley_off"), Logic.VolleyMode.Auto));
-            volleyVisualOrderSet.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_manual_volley", GameTexts.FindText("str_rts_camera_command_system_manual_volley"), GameTexts.FindText("str_rts_camera_command_system_manual_volley_off"), Logic.VolleyMode.Manual));
-            volleyVisualOrderSet.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));
-            volleyVisualOrderSet.AddOrder(new ReturnVisualOrder());
-            legacyOrders.Add(volleyVisualOrderSet);
+            RTSCommandGenericVisualOrderSet volleyVisualOrderSet = null;
+            if (AreVolleyRelatedFeaturesEnabled)
+            {
+                volleyVisualOrderSet = new RTSCommandGenericVisualOrderSet("order_type_volley", GameTexts.FindText("str_rts_camera_command_system_volley_order"), true, true, new RTSCommandToggleVolleyVisualOrder("order_auto_volley", GameTexts.FindText("str_rts_camera_command_system_auto_volley"), GameTexts.FindText("str_rts_camera_command_system_auto_volley_off"), Logic.VolleyMode.Auto));
+                volleyVisualOrderSet.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_auto_volley", GameTexts.FindText("str_rts_camera_command_system_auto_volley"), GameTexts.FindText("str_rts_camera_command_system_auto_volley_off"), Logic.VolleyMode.Auto));
+                volleyVisualOrderSet.AddOrder(new RTSCommandToggleVolleyVisualOrder("order_manual_volley", GameTexts.FindText("str_rts_camera_command_system_manual_volley"), GameTexts.FindText("str_rts_camera_command_system_manual_volley_off"), Logic.VolleyMode.Manual));
+                volleyVisualOrderSet.AddOrder(new RTSCommandVolleyFireVisualOrder("order_volley_fire"));
+                volleyVisualOrderSet.AddOrder(new ReturnVisualOrder());
+                legacyOrders.Add(volleyVisualOrderSet);
+            }
             var defensiveHoldOrder = new RTSCommandToggleDefensiveHoldVisualOrder("order_defensive_hold", "order_movement_stop");
             if (!Input.IsGamepadActive)
             {
@@ -167,7 +175,17 @@ namespace RTSCamera.CommandSystem.Orders
             }
             else
             {
-                volleyVisualOrderSet.AddOrder(defensiveHoldOrder);
+                if (CommandSystemConfig.Get().AddDefensiveHoldOrder)
+                {
+                    if (volleyVisualOrderSet != null)
+                    {
+                        volleyVisualOrderSet.AddOrder(defensiveHoldOrder);
+                    }
+                    else
+                    {
+                        legacyOrders.Add(new SingleVisualOrderSet(defensiveHoldOrder));
+                    }
+                }
             }
             return legacyOrders;
         }

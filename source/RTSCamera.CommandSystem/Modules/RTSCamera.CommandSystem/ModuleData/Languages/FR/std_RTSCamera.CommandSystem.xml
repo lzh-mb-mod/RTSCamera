@@ -173,6 +173,8 @@
     <string id="RTSCameraCommandSystem_volley_fire" text="Tir de volée" />
 
     <string id="RTSCameraCommandSystem_volley_order_options" text="Options d'ordre de volée" />
+    <string id="RTSCameraCommandSystem_enable_volley_related_features" text="Activer les fonctionnalités liées à la volée" />
+    <string id="RTSCameraCommandSystem_enable_volley_related_features_hint" text="Lorsqu'elles sont désactivées, Volée automatique, Volée sur commande, Tir de volée, ainsi que leurs raccourcis et ordres en file d'attente sont coupés." />
 
     <string id="RTSCameraCommandSystem_volley_pre_aiming_mode" text="Mode de pré-visée" />
     <string id="RTSCameraCommandSystem_volley_pre_aiming_mode_hint" text="Si le mode de pré-visée est activé, les troupes viseront la cible sans tirer." />
