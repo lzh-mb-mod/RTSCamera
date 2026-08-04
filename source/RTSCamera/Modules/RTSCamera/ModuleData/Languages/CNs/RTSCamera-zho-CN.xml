@@ -96,7 +96,7 @@
     <string id="RTSCamera_hotkey_mode_hold" text="按住" />
     <string id="RTSCamera_fast_forward_mode" text="快进模式" />
     <string id="RTSCamera_fast_forward_hint" text="是否启用快进模式" />
-    <string id="RTSCamera_override_fast_forward_speed" text="覆盖快进速度" />
+    <string id="RTSCamera_override_fast_forward_speed" text="覆盖快进速度（需要重启）" />
     <string id="RTSCamera_override_fast_forward_speed_hint" text="（需要重启）是否覆盖默认的快进速度。默认是10倍速。如果启用，快进速度将由下面的数值设置。" />
     <string id="RTSCamera_fast_forward_speed" text="快进速度" />
     <string id="RTSCamera_fast_forward_speed_hint" text="快进模式下的时间流逝速度。需要启用上面的选项。" />

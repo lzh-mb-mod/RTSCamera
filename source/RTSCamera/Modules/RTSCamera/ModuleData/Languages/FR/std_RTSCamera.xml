@@ -96,7 +96,7 @@
     <string id="RTSCamera_hotkey_mode_hold" text="Maintenir" />
     <string id="RTSCamera_fast_forward_mode" text="Mode avance rapide" />
     <string id="RTSCamera_fast_forward_hint" text="Activer ou non le mode avance rapide." />
-    <string id="RTSCamera_override_fast_forward_speed" text="Remplacer la vitesse d’avance rapide" />
+    <string id="RTSCamera_override_fast_forward_speed" text="Remplacer la vitesse d’avance rapide (Redémarrage requis)" />
     <string id="RTSCamera_override_fast_forward_speed_hint" text="(Redémarrage requis) Activer ou non le remplacement de la vitesse d’avance rapide par défaut. La valeur par défaut est x10. Si activé, la vitesse d’avance rapide sera définie par la valeur ci-dessous." />
     <string id="RTSCamera_fast_forward_speed" text="Vitesse d’avance rapide" />
     <string id="RTSCamera_fast_forward_speed_hint" text="Vitesse du temps en mode avance rapide. Nécessite l’activation de l’option ci-dessus." />
