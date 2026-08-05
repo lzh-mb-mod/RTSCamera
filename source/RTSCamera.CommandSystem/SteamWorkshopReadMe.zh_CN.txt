@@ -1,4 +1,6 @@
 [h1]RTS Command for v1.4.x (兼容战帆DLC)[/h1]
+RTS Camera 系列 指挥系统模块
+由原作者 LiZhenhuan1019（lzh）持续维护
 (全名 RTS Camera Command System)
 
 [h2]主要功能[/h2]
@@ -41,7 +43,7 @@
 [h2]Mod兼容性[/h2]
 [list]
 [*]与TOAM魔戒人类纪元的性能问题在v5.4.13中修复。
-[*][b]与 "RTS Camera Universal" 不兼容。这个 mod 是其他人把我的旧版 RTS 合在了一起打包，导致与本 mod 冲突。请不要和这个 mod 一起用。[/b]
+[*][b]与第三方社区分支"RTS Camera Universal" 不兼容。这个 mod 是其他人把我的旧版 RTS 合在了一起打包，导致与本 mod 冲突。请不要和这个 mod 一起用。[/b]
 [/list]
 
 [h2]存档兼容性[/h2]

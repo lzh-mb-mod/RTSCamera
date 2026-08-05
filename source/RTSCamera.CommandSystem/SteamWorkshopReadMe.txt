@@ -1,4 +1,6 @@
-[h1]RTS Command for v1.4.x (War Sail DLC Compatible)[/h1]
+[h1]RTS Command for v1.4.x (War Sails DLC Compatible)[/h1]
+Part of the RTS Camera project, actively maintained by the original author (LiZhenhuan1019/lzh)
+Command submodule
 (full name RTS Camera Command System)
 
 [h2]Main Features[/h2]
@@ -42,7 +44,7 @@ Compatible with v1.4.5-v1.4.7 and War Sail DLC. For other versions:
 [h2]Mod Compatibility[/h2]
 [list]
 [*]Performance issue with TOAM (Tales from the Age of Men) is fixed in v5.4.13.
-[*][b]Incompatible with "RTS Camera Universal". That one is made by the other guy, packing my old RTS mods into one mod, conflicting with this mod. Please make sure not to use them together.[/b]
+[*][b]Incompatible with the community fork "RTS Camera Universal". That one is made by the other guy, packing my old RTS mods into one mod, conflicting with this mod. Please make sure not to use them together.[/b]
 [/list]
 
 [h2]Save Compatibility[/h2]
