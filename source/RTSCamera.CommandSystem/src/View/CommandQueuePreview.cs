@@ -129,10 +129,7 @@ namespace RTSCamera.CommandSystem.View
 
         public static void Initialize()
         {
-            if (_cachedEntity == null)
-            {
-                _cachedEntity = GameEntity.Instantiate(Mission.Current.Scene, "rts_decal_white_prefab_2", false);
-            }
+            _cachedEntity = GameEntity.Instantiate(Mission.Current.Scene, "rts_decal_white_prefab_2", false);
         }
 
         public static void Clear()
@@ -154,36 +151,11 @@ namespace RTSCamera.CommandSystem.View
 
         private GameEntity CreateLineEntity()
         {
-            //GameEntity result = GameEntity.CreateEmpty(Mission.Current.Scene);
-            var result = GameEntity.CopyFrom(Mission.Current.Scene, _cachedEntity);
-
-            //if (_lineMesh == null)
-            //{
-            //    _lineMesh = MetaMesh.GetCopy("decal_mesh");
-            //    _lineMesh.SetFactor1(FormationShapeColor);
-            //    //_lineMesh.SetContourColor(FormationShapeColor);
-            //    //_lineMesh.SetContourState(true);
-            //    if (_decalMaterial == null)
-            //    {
-            //        _decalMaterial = Material.GetFromResource("decal_white").CreateCopy();
-            //        _decalMaterial.Flags |= MaterialFlags.CullFrontFaces | MaterialFlags.NoModifyDepthBuffer;
-            //    }
-            //    _lineMesh.SetMaterial(_decalMaterial);
-            //}
-            //result.AddComponent(_lineMesh.CreateCopy());
-            //result.SetVisibilityExcludeParents(false);
-            result.SetMobility(GameEntity.Mobility.Dynamic);
-            var decal = result.GetComponentAtIndex(0, GameEntity.ComponentType.Decal) as Decal;
-            if (decal != null)
+            if (_cachedEntity == null)
             {
-                decal.SetIsVisible(true);
-                decal.CheckAndRegisterToDecalSet();
-                Mission.Current.Scene.AddDecalInstance(decal, "editor_set", true);
-            //decal.SetVectorArgument(1f, 1f, 0.0f, 0.0f);
+                Initialize();
             }
-
-            //result.EntityFlags |= EntityFlags.NotAffectedBySeason;
-            //result.EntityVisibilityFlags = EntityVisibilityFlags.NoShadow;
+            var result = GameEntity.CopyFrom(Mission.Current.Scene, _cachedEntity);
             return result;
         }
 
@@ -312,7 +284,6 @@ namespace RTSCamera.CommandSystem.View
             IsPreviewOutdated = true;
             _commandQueuePreviewData = new Dictionary<Formation, CommandQueueFormationPreviewData>();
             MissionEvent.ToggleFreeCamera += OnToggleFreeCamera;
-            FormationShapeEntity.Initialize();
         }
 
         public override void AfterStart()
