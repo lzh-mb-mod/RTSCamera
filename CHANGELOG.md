@@ -7,9 +7,11 @@
 ### Fixed
 - Fix potential memory leaks caused by mission UI resources not being released.
 
-- Fix volley hotkeys not responding correctly when the order UI captures input.
+- Fix volley hotkeys being triggered while another UI layer captures keyboard input, such as when typing in a conversation UI.
 
 - Fix forced troop control leaving character selection active.
+
+- Fix an issue with the formation shape material to improve stability.
 
 ### Improved
 - Mark the Override Fast Forward Speed option as requiring a restart.
