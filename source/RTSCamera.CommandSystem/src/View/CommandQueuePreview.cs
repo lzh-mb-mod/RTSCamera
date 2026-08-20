@@ -312,6 +312,7 @@ namespace RTSCamera.CommandSystem.View
             _commandQueuePreviewData = null;
             _formationShapeEntities = null;
             _commandQueuePreviewData = null;
+            _agentPositionMeshMaterial = null;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             FormationShapeEntity.Clear();
 

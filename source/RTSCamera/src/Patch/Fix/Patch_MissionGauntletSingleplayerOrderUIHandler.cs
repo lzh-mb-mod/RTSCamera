@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
+using TaleWorlds.GauntletUI.Data;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -23,6 +24,12 @@ namespace RTSCamera.Patch.Fix
 
         private static FieldInfo _dataSource =
             typeof(MissionGauntletSingleplayerOrderUIHandler).GetField(nameof(_dataSource),
+                BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly FieldInfo _gauntletLayer =
+            typeof(GauntletOrderUIHandler).GetField(nameof(_gauntletLayer),
+                BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly FieldInfo _movie =
+            typeof(GauntletOrderUIHandler).GetField(nameof(_movie),
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static readonly MethodInfo InitializeInADisgustingManner =
@@ -323,8 +330,33 @@ namespace RTSCamera.Patch.Fix
             if (missionOrderVM != null)
                 Patch_MissionOrderVM.TryCloseToggleOrder(missionOrderVM);
             _isInSwitchTeamEvent = true;
-            _uiHandler.OnMissionScreenFinalize();
-            _isInSwitchTeamEvent = false;
+            try
+            {
+                ReleaseOrderUILayer();
+                _uiHandler.OnMissionScreenFinalize();
+            }
+            finally
+            {
+                _isInSwitchTeamEvent = false;
+            }
+        }
+
+        private static void ReleaseOrderUILayer()
+        {
+            var gauntletLayer = _gauntletLayer.GetValue(_uiHandler) as GauntletLayer;
+            if (gauntletLayer == null)
+                return;
+
+            var movie = _movie.GetValue(_uiHandler) as GauntletMovieIdentifier;
+            if (movie != null && gauntletLayer.GetMovieIdentifier(movie.MovieName) == movie)
+            {
+                gauntletLayer.ReleaseMovie(movie);
+            }
+
+            if (_uiHandler.MissionScreen.HasLayer(gauntletLayer))
+            {
+                _uiHandler.MissionScreen.RemoveLayer(gauntletLayer);
+            }
         }
 
         private static void OnPostSwitchTeam()

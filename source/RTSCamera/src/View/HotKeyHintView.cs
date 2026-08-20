@@ -5,8 +5,6 @@ using RTSCamera.Logic;
 using System.Collections.Generic;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
-using TaleWorlds.GauntletUI.Data;
-using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace RTSCamera.View
@@ -38,6 +36,14 @@ namespace RTSCamera.View
         public override void OnMissionScreenFinalize()
         {
             base.OnMissionScreenFinalize();
+            if (_movie != null && GauntletLayer != null)
+            {
+                GauntletLayer.ReleaseMovie(_movie);
+            }
+            if (GauntletLayer != null)
+            {
+                MissionScreen.RemoveLayer(GauntletLayer);
+            }
             GauntletLayer = null;
             _dataSource?.OnFinalize();
             _dataSource = null;
