@@ -2,15 +2,15 @@
 <Module>
   <Name value="RTS Camera Command System" />
   <Id value="RTSCamera.CommandSystem" />
-  <Version value="v5.4.15" />
+  <Version value="v5.5.0" />
   <ModuleCategory value="Singleplayer"/>
   <ModuleType value="Community" />
   <DependedModules>
-    <DependedModule Id="Native" DependentVersion="v1.4.7" />
-    <DependedModule Id="SandBoxCore" DependentVersion="v1.4.7" />
-    <DependedModule Id="Sandbox" DependentVersion="v1.4.7" />
-    <DependedModule Id="CustomBattle" DependentVersion="v1.4.7" />
-    <DependedModule Id="StoryMode" DependentVersion="v1.4.7" />
+    <DependedModule Id="Native" DependentVersion="v1.5.0" />
+    <DependedModule Id="SandBoxCore" DependentVersion="v1.5.0" />
+    <DependedModule Id="Sandbox" DependentVersion="v1.5.0" />
+    <DependedModule Id="CustomBattle" DependentVersion="v1.5.0" />
+    <DependedModule Id="StoryMode" DependentVersion="v1.5.0" />
     <!-- Cannot start the game without Naval DLC with official launcher -->
     <!-- <DependedModule Id="NavalDLC" DependentVersion="v1.0.0" Optional="true" /> -->
   </DependedModules>
@@ -21,11 +21,11 @@
     <!-- incompatible: [ "true", "false" ] -->
     <DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" optional="true" />
 
-    <DependedModuleMetadata id="Native" order="LoadBeforeThis" version="v1.4.*" />
-    <DependedModuleMetadata id="SandBoxCore" order="LoadBeforeThis" version="v1.4.*" />
-    <DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" version="v1.4.*" />
-    <DependedModuleMetadata id="StoryMode" order="LoadBeforeThis" version="v1.4.*" />
-    <DependedModuleMetadata id="CustomBattle" order="LoadBeforeThis" version="v1.4.*" />
+    <DependedModuleMetadata id="Native" order="LoadBeforeThis" version="v1.5.*" />
+    <DependedModuleMetadata id="SandBoxCore" order="LoadBeforeThis" version="v1.5.*" />
+    <DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" version="v1.5.*" />
+    <DependedModuleMetadata id="StoryMode" order="LoadBeforeThis" version="v1.5.*" />
+    <DependedModuleMetadata id="CustomBattle" order="LoadBeforeThis" version="v1.5.*" />
   </DependedModuleMetadatas>
   <SubModules>
     <SubModule>
