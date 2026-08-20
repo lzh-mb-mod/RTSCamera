@@ -192,54 +192,59 @@ namespace RTSCamera.Logic.SubLogic
             }
         }
 
-        public void OnEarlyTeamDeployed(Team team)
+        public void OnEarlyOnBattleSideSpawned(BattleSideEnum side)
         {
-            if (team == Mission.PlayerTeam)
+            foreach (Team team in Mission.GetTeamsOfSide(side))
             {
-                // need to set main agent because GeneralsAndCaptainsAssignmentLogic.OnTeamDeployed assumes that main agent is not null.
-                if (CommandBattleBehavior.CommandMode && Mission.MainAgent == null)
+                if (team == Mission.PlayerTeam)
                 {
-                    // Force control agent, setting controller to Player, to avoid the issue that,
-                    // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
-                    // DeploymentMissionController.FinishDeployment set controller of main agent to Player.
-                    Agent agentToControl = null;
-                    if (Mission.IsNavalBattle)
+                    // need to set main agent because GeneralsAndCaptainsAssignmentLogic.OnTeamDeployed assumes that main agent is not null.
+                    if (CommandBattleBehavior.CommandMode && Mission.MainAgent == null)
                     {
-                        // in naval battle the first formation is player formation by default.
-                        var infantryFormation = Mission.PlayerTeam.GetFormation(FormationClass.Infantry);
-                        if (infantryFormation.Captain != null)
+                        // Force control agent, setting controller to Player, to avoid the issue that,
+                        // DeploymentMissionController.OnAgentControllerSetToPlayer may pause main agent ai, when 
+                        // DeploymentMissionController.FinishDeployment set controller of main agent to Player.
+                        Agent agentToControl = null;
+                        if (Mission.IsNavalBattle)
                         {
-                            agentToControl = infantryFormation.Captain;
+                            // in naval battle the first formation is player formation by default.
+                            var infantryFormation = Mission.PlayerTeam.GetFormation(FormationClass.Infantry);
+                            if (infantryFormation.Captain != null)
+                            {
+                                agentToControl = infantryFormation.Captain;
+                            }
+                        }
+                        if (agentToControl == null)
+                        {
+                            agentToControl = _controlTroopLogic.GetAgentToControl();
+                        }
+                        if (agentToControl != null)
+                        {
+                            Utility.PlayerControlAgent(agentToControl);
+                        }
+                        if (Mission.MainAgent != null)
+                        {
+                            // since v1.4.7, Mission.InitialPlayerAgent is added.
+                            _initialPlayerAgent ??= typeof(Mission).GetField("_initialPlayerAgent", BindingFlags.Instance | BindingFlags.NonPublic);
+                            _initialPlayerAgent?.SetValue(Mission, Mission.MainAgent);
+                            Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
+                            if (Mission.PlayerTeam.IsPlayerGeneral)
+                            {
+                                Utility.SetPlayerAsCommander(true);
+                                // set in GeneralsAndCaptainsAssignmentLogic.OnDeploymentFinished
+                                Mission.MainAgent.SetCanLeadFormationsRemotely(true);
+                                Mission.PlayerTeam.GeneralAgent = Mission.MainAgent;
+                            }
+                            team.PlayerOrderController?.SelectAllFormations();
                         }
                     }
-                    if (agentToControl == null)
+                    if (CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite)
                     {
-                        agentToControl = _controlTroopLogic.GetAgentToControl();
+                        if (Mission.MainAgent?.Formation != null)
+                            RecordCurrentPlayerFormation(Mission.MainAgent.Formation.FormationIndex);
                     }
-                    if (agentToControl != null)
-                    {
-                        Utility.PlayerControlAgent(agentToControl);
-                    }
-                    if (Mission.MainAgent != null)
-                    {
-                        // since v1.4.7, Mission.InitialPlayerAgent is added.
-                        _initialPlayerAgent ??= typeof(Mission).GetField("_initialPlayerAgent", BindingFlags.Instance | BindingFlags.NonPublic);
-                        _initialPlayerAgent?.SetValue(Mission, Mission.MainAgent);
-                        Utility.SetIsPlayerAgentAdded(_controlTroopLogic.MissionScreen, true);
-                        if (Mission.PlayerTeam.IsPlayerGeneral)
-                        {
-                            Utility.SetPlayerAsCommander(true);
-                            // set in GeneralsAndCaptainsAssignmentLogic.OnDeploymentFinished
-                            Mission.MainAgent.SetCanLeadFormationsRemotely(true);
-                            Mission.PlayerTeam.GeneralAgent = Mission.MainAgent;
-                        }
-                        team.PlayerOrderController?.SelectAllFormations();
-                    }
-                }
-                if (CommandBattleBehavior.CommandMode || _config.AssignPlayerFormation < AssignPlayerFormation.Overwrite)
-                {
-                    if (Mission.MainAgent?.Formation != null)
-                        RecordCurrentPlayerFormation(Mission.MainAgent.Formation.FormationIndex);
+
+                    break;
                 }
             }
         }
@@ -298,29 +303,33 @@ namespace RTSCamera.Logic.SubLogic
         }
 
 
-        public void OnTeamDeployed(Team team)
+        public void OnBattleSideSpawned(BattleSideEnum side)
         {
             try
             {
                 // TODO: Redundant with Patch_MissionOrderDeploymentControllerVM.Prefix_ExecuteDeployAll
-                if (team == Mission.PlayerTeam)
+                foreach (var team in Mission.GetTeamsOfSide(side))
                 {
-                    if (CommandBattleBehavior.CommandMode || _config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
+                    if (team == Mission.PlayerTeam)
                     {
-                        // switch to free camera during deployment stage
-                        _switchToFreeCameraNextTick = true;
-                    }
-                    if (ShouldRecordPlayerFormation())
-                    {
-                        // Player is not assigned to general formation yet because player needs to deploy with order of battle.
-                        if (Mission.MainAgent?.Formation != null)
-                            RecordCurrentPlayerFormation(Mission.MainAgent.Formation.FormationIndex);
-                    }
-                    _isPlayerTeamSetupCompleted = true;
-                    if (!CommandBattleBehavior.CommandMode && !Utility.IsHideoutBattle() && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
-                    {
-                        // Set player formation when team is deployed.
-                        TrySetPlayerFormation();
+                        if (CommandBattleBehavior.CommandMode || _config.DefaultToFreeCamera >= DefaultToFreeCamera.DeploymentStage)
+                        {
+                            // switch to free camera during deployment stage
+                            _switchToFreeCameraNextTick = true;
+                        }
+                        if (ShouldRecordPlayerFormation())
+                        {
+                            // Player is not assigned to general formation yet because player needs to deploy with order of battle.
+                            if (Mission.MainAgent?.Formation != null)
+                                RecordCurrentPlayerFormation(Mission.MainAgent.Formation.FormationIndex);
+                        }
+                        _isPlayerTeamSetupCompleted = true;
+                        if (!CommandBattleBehavior.CommandMode && !Utility.IsHideoutBattle() && _config.AssignPlayerFormation == AssignPlayerFormation.Overwrite)
+                        {
+                            // Set player formation when team is deployed.
+                            TrySetPlayerFormation();
+                        }
+                        break;
                     }
                 }
             }

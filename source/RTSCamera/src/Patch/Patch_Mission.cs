@@ -28,15 +28,15 @@ namespace RTSCamera.Patch
                         nameof(Prefix_UpdateSceneTimeSpeed), BindingFlags.Static | BindingFlags.Public)));
                 // recover player formation from general formation
                 harmony.Patch(
-                    typeof(Mission).GetMethod("OnTeamDeployed",
-                        BindingFlags.Instance | BindingFlags.Public),
+                    typeof(Mission).GetMethod("OnBattleSideSpawned",
+                        BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(
-                        typeof(Patch_Mission).GetMethod(nameof(Prefix_OnTeamDeployed),
+                        typeof(Patch_Mission).GetMethod(nameof(Prefix_OnBattleSideSpawned),
                             BindingFlags.Static | BindingFlags.Public)));
                 // recover player formation from general formation
                 harmony.Patch(
                     typeof(Mission).GetMethod("OnDeploymentFinished",
-                        BindingFlags.Instance | BindingFlags.Public),
+                        BindingFlags.Instance | BindingFlags.NonPublic),
                     prefix: new HarmonyMethod(
                         typeof(Patch_Mission).GetMethod(nameof(Prefix_OnDeploymentFinished),
                             BindingFlags.Static | BindingFlags.Public)));
@@ -76,9 +76,9 @@ namespace RTSCamera.Patch
             return true;
         }
 
-        public static void Prefix_OnTeamDeployed(Team team)
+        public static void Prefix_OnBattleSideSpawned(BattleSideEnum side)
         {
-            RTSCameraLogic.Instance?.SwitchFreeCameraLogic.OnEarlyTeamDeployed(team);
+            RTSCameraLogic.Instance?.SwitchFreeCameraLogic.OnEarlyOnBattleSideSpawned(side);
         }
 
         public static void Prefix_OnDeploymentFinished(Mission __instance)

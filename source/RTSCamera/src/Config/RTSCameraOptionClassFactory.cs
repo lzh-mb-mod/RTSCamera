@@ -171,7 +171,7 @@ namespace RTSCamera.Config
                 }
                 if (!CommandBattleBehavior.CommandMode)
                 {
-                    if (!Mission.Current.IsNavalBattle && !Mission.Current.IsNavalRaidBattle)
+                    if (!Mission.Current.IsNavalBattle)
                     {
                         var playerFormationOption = new SelectionOptionViewModel(
                             GameTexts.FindText("str_rts_camera_player_formation"),
@@ -182,7 +182,10 @@ namespace RTSCamera.Config
                                     config.PlayerFormation = (FormationClass)i;
                                     if (i >= 0 && i < (int)FormationClass.NumberOfAllFormations)
                                     {
-                                        rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)i;
+                                        if (!Mission.Current.IsNavalRaidBattle)
+                                        {
+                                            rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = (FormationClass)i;
+                                        }
                                         if (CommandBattleBehavior.CommandMode)
                                             return;
                                         Utilities.Utility.TryToSetPlayerFormationClass((FormationClass)i);
@@ -237,7 +240,7 @@ namespace RTSCamera.Config
                                     rtsCameraLogic.SwitchFreeCameraLogic.CurrentPlayerFormation = formationClass;
                                     if (CommandBattleBehavior.CommandMode)
                                         return;
-                                    Utilities.Utility.TryToSetPlayerFormationClass(formationClass); ;
+                                    Utilities.Utility.TryToSetPlayerFormationClass(formationClass);
                                     playerFormationOption.UpdateData(false);
                                 }
                             }, () => (int)RTSCameraConfig.Get().AssignPlayerFormation, () => (int)AssignPlayerFormation.Count,

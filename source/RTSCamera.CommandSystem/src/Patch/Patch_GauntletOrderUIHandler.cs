@@ -92,71 +92,59 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static void ApplyCommandQueueChange(List<CodeInstruction> codes)
         {
-            bool found_get_ActiveTargetState = false;
-            //bool found_get_cursorState = false;
-            //bool found_switch = false;
-            int index_get_ActiveTargetState = -1;
-            //int index_get_cursorState = -1;
-            //int index_switch = -1;
-            for (int i = 0; i < codes.Count; ++i)
+            var getIsToggleOrderShown = AccessTools.PropertyGetter(typeof(MissionOrderVM),
+                nameof(MissionOrderVM.IsToggleOrderShown));
+            var isKeyReleased = AccessTools.Method(typeof(IInputContext),
+                nameof(IInputContext.IsKeyReleased), new[] { typeof(InputKey) });
+
+            int isToggleOrderShownIndex = codes.FindIndex(code => code.Calls(getIsToggleOrderShown));
+            if (isToggleOrderShownIndex < 0)
             {
-                if (!found_get_ActiveTargetState)
+                throw new Exception("get_IsToggleOrderShown not found");
+            }
+
+            int firstIsKeyReleasedIndex = codes.FindIndex(isToggleOrderShownIndex + 1,
+                code => code.Calls(isKeyReleased));
+            int secondIsKeyReleasedIndex = firstIsKeyReleasedIndex < 0
+                ? -1
+                : codes.FindIndex(firstIsKeyReleasedIndex + 1, code => code.Calls(isKeyReleased));
+            if (firstIsKeyReleasedIndex < 0 || secondIsKeyReleasedIndex < 0)
+            {
+                throw new Exception("Order action input checks not found");
+            }
+
+            int skipOrderActionBranchIndex = secondIsKeyReleasedIndex + 1;
+            if (skipOrderActionBranchIndex >= codes.Count ||
+                (codes[skipOrderActionBranchIndex].opcode != OpCodes.Brfalse &&
+                 codes[skipOrderActionBranchIndex].opcode != OpCodes.Brfalse_S))
+            {
+                throw new Exception("Failed to verify order action input checks");
+            }
+
+            int inputGetterIndex = -1;
+            for (int i = firstIsKeyReleasedIndex - 1; i > isToggleOrderShownIndex; --i)
+            {
+                if (codes[i].operand is MethodInfo method && method.Name == "get_Input")
                 {
-                    if (codes[i].opcode == OpCodes.Callvirt)
-                    {
-                        if ((codes[i].operand as MethodInfo).Name == "get_ActiveTargetState")
-                        {
-                            found_get_ActiveTargetState = true;
-                            index_get_ActiveTargetState = i;
-                            break;
-                        }
-                    }
+                    inputGetterIndex = i;
+                    break;
                 }
-                //if (!found_get_cursorState)
-                //{
-                //    if (codes[i].opcode == OpCodes.Call)
-                //    {
-                //        if ((codes[i].operand as MethodInfo).Name == "get_cursorState")
-                //        {
-                //            found_get_cursorState = true;
-                //            index_get_cursorState = i;
-                //        }
-                //    }
-                //}
-                //else if (!found_switch)
-                //{
-                //    if (codes[i].opcode == OpCodes.Switch)
-                //    {
-                //        found_switch = true;
-                //        index_switch = i;
-                //        break;
-                //    }
-                //}
             }
-            if (!found_get_ActiveTargetState)
+            int insertIndex = inputGetterIndex - 1;
+            if (insertIndex < 0 || codes[insertIndex].opcode != OpCodes.Ldarg_0)
             {
-                throw new Exception("get_ActiveTargetState not found");
+                throw new Exception("Failed to find the start of the order action input check");
             }
-            //if (!found_get_cursorState)
-            //{
-            //    throw new Exception("get_cursorState not found");
-            //}
-            //if (!found_switch)
-            //{
-            //    throw new Exception("switch not found");
-            //}
-            codes.InsertRange(index_get_ActiveTargetState - 2, new List<CodeInstruction>
+
+            var loadInstance = new CodeInstruction(OpCodes.Ldarg_0);
+            loadInstance.labels.AddRange(codes[insertIndex].labels);
+            codes[insertIndex].labels.Clear();
+            codes.InsertRange(insertIndex, new[]
             {
-                new CodeInstruction(OpCodes.Ldarg_0),
+                loadInstance,
                 new CodeInstruction(OpCodes.Call, typeof(Patch_GauntletOrderUIHandler).GetMethod(nameof(TryAddSelectedOrderToQueue), BindingFlags.Static | BindingFlags.NonPublic)),
-                new CodeInstruction(OpCodes.Brtrue, codes[index_get_ActiveTargetState + 1].operand)
+                new CodeInstruction(OpCodes.Brtrue, codes[skipOrderActionBranchIndex].operand)
             });
-            //codes.InsertRange(index_get_cursorState - 1, new List<CodeInstruction>
-            //{
-            //    new CodeInstruction(OpCodes.Ldarg_0),
-            //    new CodeInstruction(OpCodes.Call, typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(nameof(TryAddSelectedOrderToQueue), BindingFlags.Static | BindingFlags.NonPublic)),
-            //    new CodeInstruction(OpCodes.Brtrue, codes[index_switch + 1].operand)
-            //});
         }
 
         private static bool TryAddSelectedOrderToQueue(GauntletOrderUIHandler __instance)
@@ -164,7 +152,7 @@ namespace RTSCamera.CommandSystem.Patch
             if (__instance.Mission.IsNavalBattle)
                 return false;
             var dataSource = _dataSource.GetValue(__instance) as MissionOrderVM;
-            if (dataSource.ActiveTargetState == 0 && (__instance.Input.IsKeyReleased(InputKey.LeftMouseButton) || __instance.Input.IsKeyReleased(InputKey.ControllerRTrigger)))
+            if (__instance.Input.IsKeyReleased(InputKey.LeftMouseButton) || __instance.Input.IsKeyReleased(InputKey.ControllerRTrigger))
             {
                 OrderSetVM selectedOrderSet = dataSource.SelectedOrderSet;
                 if (selectedOrderSet != null && Input.IsGamepadActive)

@@ -268,6 +268,17 @@ namespace RTSCamera.CommandSystem.Config
                 }
                 optionClass.AddOptionCategory(0, formationOptionCategory);
 
+                var navalRaidOptionCategory = new OptionCategory("NavalRaid",
+                    GameTexts.FindText("str_rts_camera_command_system_naval_raid_options"),
+                    () => CommandSystemConfig.Get().IsNavalRaidOptionVisible,
+                    b => CommandSystemConfig.Get().IsNavalRaidOptionVisible = b);
+                navalRaidOptionCategory.AddOption(new BoolOptionViewModel(
+                    GameTexts.FindText("str_rts_camera_command_system_fix_move_order_when_disembarking"),
+                    GameTexts.FindText("str_rts_camera_command_system_fix_move_order_when_disembarking_hint"),
+                    () => CommandSystemConfig.Get().PreventNavalRaidMoveOrderReset,
+                    b => CommandSystemConfig.Get().PreventNavalRaidMoveOrderReset = b));
+                optionClass.AddOptionCategory(1, navalRaidOptionCategory);
+
                 var defensiveHoldOptionCategory = new OptionCategory("DefensiveHold",
                     GameTexts.FindText("str_rts_caemra_command_system_defensive_hold_options"),
                     () => CommandSystemConfig.Get().IsDefensiveHoldOptionVisible, b => CommandSystemConfig.Get().IsDefensiveHoldOptionVisible = b);

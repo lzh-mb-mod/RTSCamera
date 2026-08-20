@@ -211,6 +211,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static void FixNoLineShortFormationDirection(List<CodeInstruction> codes)
         {
+            CodeInstruction simulatedDirectionLoad = null;
             bool foundGetActiveFacingOrderOf = false;
             bool foundLookAtDirection = false;
             bool foundSetMovementOrder = false;
@@ -221,6 +222,15 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 if (!foundGetActiveFacingOrderOf)
                 {
+                    if (codes[i].opcode == OpCodes.Call)
+                    {
+                        var methodOperand = codes[i].operand as MethodInfo;
+                        if (methodOperand != null &&
+                            methodOperand.Name == nameof(FacingOrder.FacingOrderLookAtDirection))
+                        {
+                            simulatedDirectionLoad = codes[i - 1];
+                        }
+                    }
                     if (codes[i].opcode == OpCodes.Call)
                     {
                         var methodOperand = codes[i].operand as MethodInfo;
@@ -273,16 +283,17 @@ namespace RTSCamera.CommandSystem.Patch
                     }
                 }
             }
-            if (foundSetMovementOrder && foundSetFacingOrder)
+            if (simulatedDirectionLoad != null && foundSetMovementOrder && foundSetFacingOrder)
             {
                 // use direction returned from SimulateNewOrderWithPositionAndDirection
-                codes[startIndex + 2].opcode = OpCodes.Ldloc_S;
-                codes[startIndex + 2].operand = (sbyte)13;
+                codes[startIndex + 2].opcode = simulatedDirectionLoad.opcode;
+                codes[startIndex + 2].operand = simulatedDirectionLoad.operand;
                 codes[startIndex + 3].opcode = OpCodes.Nop;
+                codes[startIndex + 3].operand = null;
             }
             else
             {
-                throw new Exception("SetMovementOrder or SetFacingOrder not found");
+                throw new Exception("Simulated direction, SetMovementOrder or SetFacingOrder not found");
             }
         }
 

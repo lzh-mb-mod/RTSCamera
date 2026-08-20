@@ -23,8 +23,9 @@ namespace RTSCamera.Patch.Naval
 
                 if (!RTSCameraSubModule.IsNavalInstalled)
                     return true;
-                harmony.Patch(AccessTools.TypeByName("ShipOrder").Method("ManageShipDetachments"),
-                    transpiler: new HarmonyMethod(typeof(Patch_ShipOrder).GetMethod(nameof(Transpile_ManageShipDetachments), BindingFlags.Static | BindingFlags.Public)));
+                // Not required in v1.5.0.
+                //harmony.Patch(AccessTools.TypeByName("ShipOrder").Method("ManageShipDetachments"),
+                //    transpiler: new HarmonyMethod(typeof(Patch_ShipOrder).GetMethod(nameof(Transpile_ManageShipDetachments), BindingFlags.Static | BindingFlags.Public)));
 
             }
             catch (Exception e)
@@ -38,71 +39,71 @@ namespace RTSCamera.Patch.Naval
             return true;
         }
 
-        public static IEnumerable<CodeInstruction> Transpile_ManageShipDetachments(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = new List<CodeInstruction>(instructions);
-            // Enable AI to pilot player ship in player mode.
-            EnableAIPilotPlayerShip(codes, false);
-            // patch twice
-            EnableAIPilotPlayerShip(codes, true);
-            return codes.AsEnumerable();
-        }
+        //public static IEnumerable<CodeInstruction> Transpile_ManageShipDetachments(IEnumerable<CodeInstruction> instructions)
+        //{
+        //    var codes = new List<CodeInstruction>(instructions);
+        //    // Enable AI to pilot player ship in player mode.
+        //    EnableAIPilotPlayerShip(codes, false);
+        //    // patch twice
+        //    EnableAIPilotPlayerShip(codes, true);
+        //    return codes.AsEnumerable();
+        //}
 
-        public static void EnableAIPilotPlayerShip(List<CodeInstruction> codes, bool isSecondPatch)
-        {
-            bool found_first_get_isPlayerShip = false;
-            bool found_second_get_IsPlayerShip = false;
-            int get_IsPlayerShip_Index = -1;
-            for (int i = 0; i < codes.Count; ++i)
-            {
-                if (!found_second_get_IsPlayerShip)
-                {
-                    if (codes[i].opcode == OpCodes.Callvirt)
-                    {
-                        var operand = codes[i].operand as MethodInfo;
-                        if (operand.Name == "get_IsPlayerShip")
-                        {
-                            // in the original code there're 3 places having isPlayerShip
-                            // we always ignore the first place.
-                            if (!found_first_get_isPlayerShip)
-                            {
-                                found_first_get_isPlayerShip = true;
-                                continue;
-                            }
-                            found_second_get_IsPlayerShip = true;
-                            get_IsPlayerShip_Index = i;
-                        }
-                    }
-                }
-            }
+        //public static void EnableAIPilotPlayerShip(List<CodeInstruction> codes, bool isSecondPatch)
+        //{
+        //    bool found_first_get_isPlayerShip = false;
+        //    bool found_second_get_IsPlayerShip = false;
+        //    int get_IsPlayerShip_Index = -1;
+        //    for (int i = 0; i < codes.Count; ++i)
+        //    {
+        //        if (!found_second_get_IsPlayerShip)
+        //        {
+        //            if (codes[i].opcode == OpCodes.Callvirt)
+        //            {
+        //                var operand = codes[i].operand as MethodInfo;
+        //                if (operand.Name == "get_IsPlayerShip")
+        //                {
+        //                    // in the original code there're 3 places having isPlayerShip
+        //                    // we always ignore the first place.
+        //                    if (!found_first_get_isPlayerShip)
+        //                    {
+        //                        found_first_get_isPlayerShip = true;
+        //                        continue;
+        //                    }
+        //                    found_second_get_IsPlayerShip = true;
+        //                    get_IsPlayerShip_Index = i;
+        //                }
+        //            }
+        //        }
+        //    }
 
-            if (!found_second_get_IsPlayerShip)
-                throw new Exception("Failed to find get_IsPlayerShip");
+        //    if (!found_second_get_IsPlayerShip)
+        //        throw new Exception("Failed to find get_IsPlayerShip");
 
-            bool verified = true;
-            verified &= codes[get_IsPlayerShip_Index - 2].opcode == OpCodes.Ldarg_0;
-            verified &= codes[get_IsPlayerShip_Index - 1].opcode == OpCodes.Ldfld && (codes[get_IsPlayerShip_Index - 1].operand as FieldInfo).Name == "_ownerShip";
-            verified &= codes[get_IsPlayerShip_Index + 1].opcode == OpCodes.Brfalse_S;
-            verified &= codes[get_IsPlayerShip_Index + 2].opcode == OpCodes.Call && (codes[get_IsPlayerShip_Index + 2].operand as MethodInfo).Name == "get_Current";
-            verified &= codes[get_IsPlayerShip_Index + 3].opcode == OpCodes.Callvirt && (codes[get_IsPlayerShip_Index + 3].operand as MethodInfo).Name == "get_MainAgent";
-            verified &= codes[get_IsPlayerShip_Index + 4].opcode == (isSecondPatch ? OpCodes.Brtrue_S : OpCodes.Brtrue);
+        //    bool verified = true;
+        //    verified &= codes[get_IsPlayerShip_Index - 2].opcode == OpCodes.Ldarg_0;
+        //    verified &= codes[get_IsPlayerShip_Index - 1].opcode == OpCodes.Ldfld && (codes[get_IsPlayerShip_Index - 1].operand as FieldInfo).Name == "_ownerShip";
+        //    verified &= codes[get_IsPlayerShip_Index + 1].opcode == OpCodes.Brfalse_S;
+        //    verified &= codes[get_IsPlayerShip_Index + 2].opcode == OpCodes.Call && (codes[get_IsPlayerShip_Index + 2].operand as MethodInfo).Name == "get_Current";
+        //    verified &= codes[get_IsPlayerShip_Index + 3].opcode == OpCodes.Callvirt && (codes[get_IsPlayerShip_Index + 3].operand as MethodInfo).Name == "get_MainAgent";
+        //    verified &= codes[get_IsPlayerShip_Index + 4].opcode == (isSecondPatch ? OpCodes.Brtrue_S : OpCodes.Brtrue);
 
-            if (!verified)
-                throw new Exception("Failed to verify patched code in Patch_ShipOrder.EnableAIPilotPlayerShip");
+        //    if (!verified)
+        //        throw new Exception("Failed to verify patched code in Patch_ShipOrder.EnableAIPilotPlayerShip");
 
-            codes[get_IsPlayerShip_Index].opcode = OpCodes.Call;
-            codes[get_IsPlayerShip_Index].operand = typeof(Patch_ShipOrder).GetMethod(nameof(ShouldAIPilotShip), BindingFlags.Static | BindingFlags.Public);
-            codes[get_IsPlayerShip_Index + 1].opcode = OpCodes.Brtrue_S;
-            codes[get_IsPlayerShip_Index + 2].opcode = OpCodes.Nop;
-            codes[get_IsPlayerShip_Index + 3].opcode = OpCodes.Nop;
-            codes[get_IsPlayerShip_Index + 4].opcode = (isSecondPatch ? OpCodes.Br_S : OpCodes.Br);
-        }
+        //    codes[get_IsPlayerShip_Index].opcode = OpCodes.Call;
+        //    codes[get_IsPlayerShip_Index].operand = typeof(Patch_ShipOrder).GetMethod(nameof(ShouldAIPilotShip), BindingFlags.Static | BindingFlags.Public);
+        //    codes[get_IsPlayerShip_Index + 1].opcode = OpCodes.Brtrue_S;
+        //    codes[get_IsPlayerShip_Index + 2].opcode = OpCodes.Nop;
+        //    codes[get_IsPlayerShip_Index + 3].opcode = OpCodes.Nop;
+        //    codes[get_IsPlayerShip_Index + 4].opcode = (isSecondPatch ? OpCodes.Br_S : OpCodes.Br);
+        //}
 
-        public static bool ShouldAIPilotShip(MissionObject ownerShip)
-        {
-            var isShipAIControlled = Utilities.Utility.IsShipAIControlled(ownerShip);
-            var isPlayerShip = Utilities.Utility.IsPlayerShip(ownerShip);
-            return !isPlayerShip || isShipAIControlled;
-        }
+        //public static bool ShouldAIPilotShip(MissionObject ownerShip)
+        //{
+        //    var isShipAIControlled = Utilities.Utility.IsShipAIControlled(ownerShip);
+        //    var isPlayerShip = Utilities.Utility.IsPlayerShip(ownerShip);
+        //    return !isPlayerShip || isShipAIControlled;
+        //}
     }
 }

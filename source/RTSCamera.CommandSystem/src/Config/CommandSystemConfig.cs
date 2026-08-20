@@ -139,6 +139,8 @@ namespace RTSCamera.CommandSystem.Config
 
         public bool FacingEnemyByDefault = false;
 
+        public bool PreventNavalRaidMoveOrderReset = true;
+
         public bool OverrideMountedUnitsIntervalThreshold = false;
 
         public float MountedUnitsIntervalThreshold = 0.1f;
@@ -172,6 +174,8 @@ namespace RTSCamera.CommandSystem.Config
         public bool IsCommandOptionVisible = true;
 
         public bool IsFormationOptionVisible = true;
+
+        public bool IsNavalRaidOptionVisible = true;
 
         public bool IsDefensiveHoldOptionVisible = true;
 
@@ -208,6 +212,7 @@ namespace RTSCamera.CommandSystem.Config
             OrderUIClickable = other.OrderUIClickable;
             OrderUIClickableExtension = other.OrderUIClickableExtension;
             FacingEnemyByDefault = other.FacingEnemyByDefault;
+            PreventNavalRaidMoveOrderReset = other.PreventNavalRaidMoveOrderReset;
             OverrideMountedUnitsIntervalThreshold = other.OverrideMountedUnitsIntervalThreshold;
             MountedUnitsIntervalThreshold = other.MountedUnitsIntervalThreshold;
             AddDefensiveHoldOrder = other.AddDefensiveHoldOrder;
@@ -225,6 +230,7 @@ namespace RTSCamera.CommandSystem.Config
             EnableVolleyRelatedFeatures = other.EnableVolleyRelatedFeatures;
             IsCommandOptionVisible = other.IsCommandOptionVisible;
             IsFormationOptionVisible = other.IsFormationOptionVisible;
+            IsNavalRaidOptionVisible = other.IsNavalRaidOptionVisible;
             IsDefensiveHoldOptionVisible = other.IsDefensiveHoldOptionVisible;
             IsAdvanceOrderOptionVisible = other.IsAdvanceOrderOptionVisible;
             IsVolleyOrderOptionVisible = other.IsVolleyOrderOptionVisible;

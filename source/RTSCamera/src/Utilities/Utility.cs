@@ -287,7 +287,7 @@ namespace RTSCamera.Utilities
 
         public static void TryToSetPlayerFormationClass(FormationClass formationClass)
         {
-            if (Mission.Current.IsNavalBattle || Mission.Current.IsNavalRaidBattle)
+            if (Mission.Current.IsNavalBattle)
             {
                 var navalShipLogic = MissionSharedLibrary.Utilities.Utility.GetNavalShipsLogic(Mission.Current);
                 if (navalShipLogic == null)

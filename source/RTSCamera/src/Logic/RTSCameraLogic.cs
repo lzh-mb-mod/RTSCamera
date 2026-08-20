@@ -89,11 +89,11 @@ namespace RTSCamera.Logic
             CampaignSkillLogic.AfterAddTeam(team);
         }
 
-        public override void OnTeamDeployed(Team team)
+        public override void OnBattleSideSpawned(BattleSideEnum side)
         {
-            base.OnTeamDeployed(team);
+            base.OnBattleSideSpawned(side);
 
-            SwitchFreeCameraLogic.OnTeamDeployed(team);
+            SwitchFreeCameraLogic.OnBattleSideSpawned(side);
         }
 
         public override void OnDeploymentFinished()

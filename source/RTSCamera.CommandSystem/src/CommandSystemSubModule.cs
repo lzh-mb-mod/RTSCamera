@@ -128,6 +128,9 @@ namespace RTSCamera.CommandSystem
             // fix issue that formation marker target is not updated when issuing chargewithtarget order to formations
             _successPatch &= Patch_MissionGauntletFormationMarker.Patch(_harmony);
 
+            // Keep land movement orders when troops rejoin their formation while abandoning a ship in naval raids.
+            _successPatch &= Patch_MissionShip.Patch(_harmony);
+
             if (!_successPatch)
             {
                 InformationManager.DisplayMessage(new InformationMessage("RTS Command: patch failed"));

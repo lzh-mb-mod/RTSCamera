@@ -86,7 +86,11 @@
 
     <string id="RTSCameraCommandSystem_face_enemy_by_default" text="默认面朝敌军" />
     <string id="RTSCameraCommandSystem_face_enemy_by_default_hint" text="战斗开始时部队是否应该默认面朝敌军。" />
-    
+
+    <string id="RTSCameraCommandSystem_naval_raid_options" text="海战突袭选项" />
+    <string id="RTSCameraCommandSystem_fix_move_order_when_disembarking" text="修复下船时的移动指令" />
+    <string id="RTSCameraCommandSystem_fix_move_order_when_disembarking_hint" text="防止士兵在海军突袭中下船并重新加入编队时，将已有的岸上移动指令重置到船上的集结点。" />
+
     <string id="RTSCameraCommandSystem_formation_options" text="阵型选项" />
     <string id="RTSCameraCommandSystem_hollow_square_formation" text="启用空心方阵" />
     <string id="RTSCameraCommandSystem_hollow_square_formation_hint" text="是否为玩家启用空心方阵。" />
