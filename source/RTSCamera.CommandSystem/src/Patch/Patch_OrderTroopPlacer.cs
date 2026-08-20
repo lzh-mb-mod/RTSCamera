@@ -532,9 +532,6 @@ namespace RTSCamera.CommandSystem.Patch
                     {
                         _alwaysVisibleOrderPositionEntities = new List<GameEntity>();
                         _alwaysVisibleMaterial = Material.GetFromResource("vertex_color_blend_no_depth_mat").CreateCopy();
-                        _alwaysVisibleMaterial.Flags |= MaterialFlags.NoDepthTest;
-                        // since v1.3.4, the AlwaysDepthTest flag may exists with NoDepthTest and the mesh will be invisible. We need to remove the flag here.
-                        _alwaysVisibleMaterial.Flags &= ~MaterialFlags.AlwaysDepthTest;
 
                     }
                     break;
