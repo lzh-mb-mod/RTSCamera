@@ -334,7 +334,11 @@ namespace RTSCamera.CommandSystem.Patch
             for (int index = 0; index < ____orderRotationEntities.Count; ++index)
             {
                 GameEntity orderRotationEntity = ____orderRotationEntities[index];
-                if (orderRotationEntity == null && orderRotationEntity.IsVisibleIncludeParents() && ___PlayerOrderController.SelectedFormations.ElementAt(index / 2) != formation)
+                var formationIndex = index / 2;
+                if (orderRotationEntity != null &&
+                    formationIndex < ___PlayerOrderController.SelectedFormations.Count &&
+                    orderRotationEntity.IsVisibleIncludeParents() &&
+                    ___PlayerOrderController.SelectedFormations[formationIndex] != formation)
                 {
                     orderRotationEntity.SetVisibilityExcludeParents(false);
                     orderRotationEntity.BodyFlag |= BodyFlags.Disabled;

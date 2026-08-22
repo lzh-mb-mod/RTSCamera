@@ -52,7 +52,11 @@ namespace RTSCamera.CommandSystem.Patch
             if (!CommandQueueLogic.PendingOrders.TryGetValue(___Agent.Formation, out var pendingOrder))
                 return true;
 
-            if (!pendingOrder.ShouldAdjustFormationSpeed || pendingOrder.FormationExpectedPositions.Count <= 1 || !pendingOrder.FormationExpectedPositions.ContainsKey(___Agent.Formation))
+            if (!pendingOrder.ShouldAdjustFormationSpeed ||
+                pendingOrder.FormationExpectedPositions.Count <= 1 ||
+                pendingOrder.MaxDuration <= 0f ||
+                !pendingOrder.FormationExpectedPositions.TryGetValue(___Agent.Formation, out var formationExpectedPosition) ||
+                !pendingOrder.FormationTargetDistances.TryGetValue(___Agent.Formation, out var formationDistance))
                 return true;
             if (isCharging || ___Agent.IsDetachedFromFormation)
                 return true;
@@ -92,7 +96,6 @@ namespace RTSCamera.CommandSystem.Patch
                 if (targetPosition.IsValid)
                 {
                     var agentDistance = targetPosition.AsVec2.Distance(agentPositionVec2);
-                    var formationDistance = pendingOrder.FormationTargetDistances[___Agent.Formation];
                     switch (CommandSystemConfig.Get().FormationSpeedSyncMode)
                     {
                         case FormationSpeedSyncMode.Linear:
@@ -109,7 +112,6 @@ namespace RTSCamera.CommandSystem.Patch
                             }
                         case FormationSpeedSyncMode.WaitForLastFormation:
                             {
-                                var formationExpectedPosition = pendingOrder.FormationExpectedPositions[___Agent.Formation];
                                 globalPositionOfUnit = globalPositionOfUnit - ___Agent.Formation.CurrentPosition + formationExpectedPosition;
                                 var linearSpeedLimit = MathF.Clamp((agentDistance + distanceError) / pendingOrder.MaxDuration, 0.1f, formationMovementSpeed);
                                 //catch up and do not wait for slower formation

@@ -42,7 +42,7 @@ namespace RTSCamera.Patch.Fix
         {
             // In the original code, main agent will fade out only if the controller type is Player
             // We need to fade out the main agent event if the controller type is AI. This happen in free camera mode.
-            if (Mission.Current?.MainAgent != null)
+            if (Mission.Current?.MainAgent != null && !Mission.Current.MainAgent.IsPlayerControlled)
             {
                 Mission.Current.MainAgent.FadeOut(true, false);
             }

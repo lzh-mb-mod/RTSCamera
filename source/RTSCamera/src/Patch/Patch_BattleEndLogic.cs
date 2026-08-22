@@ -34,20 +34,38 @@ namespace RTSCamera.Patch
                 return false;
             }
         }
-        public static bool Prefix_TryExit(BattleEndLogic __instance, ref BattleEndLogic.ExitResult __result, bool ____isEnemySideRetreating)
+        public static bool Prefix_TryExit(BattleEndLogic __instance, ref BattleEndLogic.ExitResult __result)
         {
             if (!CommandBattleBehavior.CommandMode)
             {
                 return true;
             }
 
-            if (!__instance.Mission.MissionEnded && !____isEnemySideRetreating)
+            if (GameNetwork.IsClientOrReplay)
             {
-                __result = Mission.Current.IsSiegeBattle && __instance.Mission.PlayerTeam.IsDefender ? BattleEndLogic.ExitResult.SurrenderSiege : BattleEndLogic.ExitResult.NeedsPlayerConfirmation;
+                __result = BattleEndLogic.ExitResult.False;
                 return false;
             }
-            __instance.Mission.EndMission();
-            __result = BattleEndLogic.ExitResult.True;
+
+            var mission = __instance.Mission;
+            if (mission.MissionEnded || !__instance.PlayerVictory && !__instance.EnemyVictory)
+            {
+                // Unlike the original code, do not check whether MainAgent is active and close to an enemy,
+                // because Command Mode has no player-controlled agent.
+                if (!mission.MissionEnded && !__instance.IsEnemySideRetreating)
+                {
+                    __result = mission.IsSiegeBattle && mission.PlayerTeam.IsDefender
+                        ? BattleEndLogic.ExitResult.SurrenderSiege
+                        : BattleEndLogic.ExitResult.NeedsPlayerConfirmation;
+                    return false;
+                }
+
+                mission.EndMission();
+                __result = BattleEndLogic.ExitResult.True;
+                return false;
+            }
+
+            __result = BattleEndLogic.ExitResult.False;
             return false;
         }
     }

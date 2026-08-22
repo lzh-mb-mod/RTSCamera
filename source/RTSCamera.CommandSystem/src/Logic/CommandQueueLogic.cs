@@ -319,7 +319,7 @@ namespace RTSCamera.CommandSystem.Logic
         // virtual positions of last executed order.
         public static FormationChanges CurrentFormationChanges = new FormationChanges();
         public static FormationChanges LatestOrderInQueueChanges = new FormationChanges();
-        private static int TicksToSkip = 0;
+        private static Dictionary<Formation, int> _ticksToSkipByFormation = new Dictionary<Formation, int>();
 
         public static Dictionary<Formation, VolleyMode> FormationVolleyMode = new Dictionary<Formation, VolleyMode>();
         public static Dictionary<Formation, DefensiveHoldMode> FormationDefensiveHoldMode = new Dictionary<Formation, DefensiveHoldMode>();
@@ -331,6 +331,7 @@ namespace RTSCamera.CommandSystem.Logic
             ShouldSkipCurrentOrders = new Dictionary<Formation, bool>();
             CurrentFormationChanges = new FormationChanges();
             LatestOrderInQueueChanges = new FormationChanges();
+            _ticksToSkipByFormation = new Dictionary<Formation, int>();
             FormationVolleyMode = new Dictionary<Formation, VolleyMode>();
             FormationDefensiveHoldMode = new Dictionary<Formation, DefensiveHoldMode>();
             MissionLibrary.Event.MissionEvent.PreSwitchTeam += OnPreSwitchTeam;
@@ -344,6 +345,7 @@ namespace RTSCamera.CommandSystem.Logic
             ShouldSkipCurrentOrders = null;
             CurrentFormationChanges = null;
             LatestOrderInQueueChanges = null;
+            _ticksToSkipByFormation = null;
             FormationVolleyMode = null;
             FormationDefensiveHoldMode = null;
 
@@ -604,9 +606,16 @@ namespace RTSCamera.CommandSystem.Logic
                 if (Mission.Current.IsNavalBattle)
                     return;
                 TickVolley(formation);
-                if (TicksToSkip > 0)
+                if (_ticksToSkipByFormation.TryGetValue(formation, out var ticksToSkip))
                 {
-                    TicksToSkip--;
+                    if (ticksToSkip <= 1)
+                    {
+                        _ticksToSkipByFormation.Remove(formation);
+                    }
+                    else
+                    {
+                        _ticksToSkipByFormation[formation] = ticksToSkip - 1;
+                    }
                     return;
                 }
                 var facingTarget = Patch_OrderController.GetFacingEnemyTargetFormation(formation);
@@ -619,7 +628,7 @@ namespace RTSCamera.CommandSystem.Logic
                 bool isApplicable = formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
                 bool isPendingOrderCompleted = IsPendingOrderCompleted(formation);
                 var isReadyToExecuteOrder = IsReadyToExecuteOrder(formation, order);
-                while (TicksToSkip <= 0 && order != null &&
+                while (!_ticksToSkipByFormation.ContainsKey(formation) && order != null &&
                     (!isApplicable || isPendingOrderCompleted) && isReadyToExecuteOrder)
                 {
                     ExecuteOrderForFormation(order, formation);
@@ -1204,6 +1213,7 @@ namespace RTSCamera.CommandSystem.Logic
                     order.SelectedFormations.Remove(formation);
                 }
                 PendingOrders.Remove(formation);
+                _ticksToSkipByFormation.Remove(formation);
             }
         }
 
@@ -1211,7 +1221,7 @@ namespace RTSCamera.CommandSystem.Logic
         {
             PendingOrders[formation] = order;
             CommandQuerySystem.GetQueryForFormation(formation).OnOrderPended();
-            TicksToSkip = 1;
+            _ticksToSkipByFormation[formation] = 1;
         }
 
         private static void ExecuteArrangementOrder(OrderInQueue order, Formation formation)
@@ -1263,6 +1273,7 @@ namespace RTSCamera.CommandSystem.Logic
             if (formation.Team != null)
             {
                 PendingOrders.Remove(formation);
+                _ticksToSkipByFormation.Remove(formation);
                 ClearOrderInQueue(new List<Formation> { formation });
                 SetFormationVolleyMode(formation, VolleyMode.Disabled);
                 CurrentFormationChanges.SetChanges(new List<KeyValuePair<Formation, FormationChange>>

@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
@@ -11,7 +12,7 @@ namespace RTSCamera.Patch.Naval
 {
     public class Patch_NarvalShipTargetSelectionHandler
     {
-        private static PropertyInfo _globalFrame;
+        private static Func<object, MatrixFrame> _getGlobalFrame;
         private static bool _patched;
         public static bool Patch(Harmony harmony)
         {
@@ -22,6 +23,12 @@ namespace RTSCamera.Patch.Naval
                 _patched = true;
                 if (!RTSCameraSubModule.IsNavalInstalled)
                     return true;
+                var globalFrame = AccessTools.Property(
+                    "NavalDLC.Missions.Objects.MissionShip:GlobalFrame");
+                var instance = Expression.Parameter(typeof(object), "instance");
+                _getGlobalFrame = Expression.Lambda<Func<object, MatrixFrame>>(
+                    Expression.Property(Expression.Convert(instance, globalFrame.DeclaringType), globalFrame),
+                    instance).Compile();
                 harmony.Patch(
                     AccessTools.Method("NavalDLC.View.MissionViews.NavalShipTargetSelectionHandler:GetShipDistanceToCenter"),
                     prefix: new HarmonyMethod(typeof(Patch_NarvalShipTargetSelectionHandler).GetMethod(
@@ -46,8 +53,7 @@ namespace RTSCamera.Patch.Naval
                 return true;
             }
 
-            _globalFrame ??= AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:GlobalFrame");
-            Vec3 origin = ((MatrixFrame)_globalFrame.GetValue(ship)).origin;
+            Vec3 origin = _getGlobalFrame(ship).origin;
             float num = origin.AsVec2.Distance(cameraPosition.AsVec2);
             if ((double)num >= 1000.0)
             {
