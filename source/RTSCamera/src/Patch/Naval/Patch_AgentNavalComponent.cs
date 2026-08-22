@@ -1,7 +1,9 @@
 ﻿using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 
@@ -9,9 +11,6 @@ namespace RTSCamera.Patch.Naval
 {
     public class Patch_AgentNavalComponent
     {
-        private static MethodInfo _checkAgentOffShip = AccessTools.TypeByName("AgentNavalComponent").GetMethod("CheckAgentOffShip",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
         private static bool _patched;
         public static bool Patch(Harmony harmony)
         {
@@ -24,7 +23,8 @@ namespace RTSCamera.Patch.Naval
                 if (!RTSCameraSubModule.IsNavalInstalled)
                     return true;
                 harmony.Patch(AccessTools.TypeByName("AgentNavalComponent").Method("OnTick"),
-                    prefix: new HarmonyMethod(typeof(Patch_AgentNavalComponent).GetMethod(nameof(Prefix_OnTick), BindingFlags.Static | BindingFlags.Public)));
+                    transpiler: new HarmonyMethod(typeof(Patch_AgentNavalComponent).GetMethod(
+                        nameof(Transpiler_OnTick), BindingFlags.Static | BindingFlags.Public)));
 
             }
             catch (Exception e)
@@ -38,25 +38,34 @@ namespace RTSCamera.Patch.Naval
             return true;
         }
 
-        public static bool Prefix_OnTick(AgentComponent __instance, float dt, Agent ___Agent, ref float ____lastOffShipCheckTime)
+        public static IEnumerable<CodeInstruction> Transpiler_OnTick(IEnumerable<CodeInstruction> instructions)
         {
-            if ((double)dt <= 0.0)
-                return false;
-            if (___Agent.IsAIControlled)
-                return true;
-            // When player controlled, agent will not lose ship.
-            if (___Agent.IsPlayerControlled && ___Agent.Formation != null)
+            var isAIControlled = AccessTools.PropertyGetter(typeof(Agent), nameof(Agent.IsAIControlled));
+            var shouldCheckAgentOffShip = AccessTools.Method(
+                typeof(Patch_AgentNavalComponent), nameof(ShouldCheckAgentOffShip));
+            var replaced = false;
+
+            foreach (var instruction in instructions)
             {
-                return true;
-            }
-            if (!(____lastOffShipCheckTime + 5.0 <= ___Agent.Mission.CurrentTime && ___Agent.Mission.IsDeploymentFinished))
-            {
-                return true;
+                if (!replaced && instruction.Calls(isAIControlled))
+                {
+                    instruction.opcode = OpCodes.Call;
+                    instruction.operand = shouldCheckAgentOffShip;
+                    replaced = true;
+                }
+
+                yield return instruction;
             }
 
-             ____lastOffShipCheckTime += 5f;
-            _checkAgentOffShip.Invoke(__instance, Array.Empty<object>());
-            return true;
+            if (!replaced)
+            {
+                throw new InvalidOperationException("Failed to find Agent.IsAIControlled in AgentNavalComponent.OnTick.");
+            }
+        }
+
+        public static bool ShouldCheckAgentOffShip(Agent agent)
+        {
+            return agent.IsAIControlled || agent.IsMainAgent && !agent.IsPlayerControlled;
         }
     }
 }

@@ -40,30 +40,22 @@ namespace RTSCamera.Patch.Naval
 
         public static void Postfix_GetOrders(ref MBReadOnlyList<VisualOrderSet> __result)
         {
-            var newOrder = new NavalToggleShipOrderOrder("order_soldier_pilot_ship", "order_toggle_ai", GameTexts.FindText("str_rts_camera_ai_control_ship_on"), GameTexts.FindText("str_rts_camera_ai_control_ship_off"));
-            if (Utilities.Utility.ShouldAddToggleShipOrderOrder())
+            if (__result == null || !Utilities.Utility.ShouldAddToggleShipOrderOrder() ||
+                __result.FindIndex(order => order.StringId == "order_soldier_pilot_ship") >= 0)
             {
-                var toggleAIIndex = __result.FindIndex(order => order.StringId == "order_toggle_ai");
-                if (Input.IsGamepadActive)
-                {
-                    //var orderSet = __result.Where(orderSet => orderSet.StringId == "troop_visual_orders").FirstOrDefault();
-                    //if (orderSet != null)
-                    //{
-                    //    orderSet.AddOrder(newOrder);
-                    //}
-                    var insertIndex = toggleAIIndex >= 0 ? toggleAIIndex : __result.Count - 1;
-                    var lastOrderIndex = __result.Count - 1;
-                    if (lastOrderIndex >= 0)
-                    {
-                        __result.Insert(lastOrderIndex, CreateSingleOrderSetFor(newOrder));
-                    }
-                }
-                else
-                {
-                    var insertIndex = toggleAIIndex >= 0 ? toggleAIIndex : __result.Count;
-                    __result.Insert(insertIndex, CreateSingleOrderSetFor(newOrder));
-                }
+                return;
             }
+
+            var newOrder = new NavalToggleShipOrderOrder(
+                "order_soldier_pilot_ship",
+                "order_toggle_ai",
+                GameTexts.FindText("str_rts_camera_ai_control_ship_on"),
+                GameTexts.FindText("str_rts_camera_ai_control_ship_off"));
+            var toggleAIIndex = __result.FindIndex(order => order.StringId == "order_toggle_ai");
+            var insertIndex = toggleAIIndex >= 0
+                ? toggleAIIndex
+                : Input.IsGamepadActive ? Math.Max(0, __result.Count - 1) : __result.Count;
+            __result.Insert(insertIndex, CreateSingleOrderSetFor(newOrder));
         }
 
         private static SingleVisualOrderSet CreateSingleOrderSetFor(VisualOrder order)

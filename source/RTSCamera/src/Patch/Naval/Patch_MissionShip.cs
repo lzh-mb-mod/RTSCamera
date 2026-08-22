@@ -1,5 +1,4 @@
-﻿using HarmonyLib;
-using Microsoft.VisualBasic;
+using HarmonyLib;
 using MissionSharedLibrary.Utilities;
 using RTSCamera.Config;
 using RTSCamera.Logic;
@@ -77,7 +76,12 @@ namespace RTSCamera.Patch.Naval
                             AIPilotShipCommandJustGiven = false;
                             ShouldAIControlPlayerShipInPlayerMode = true;
                             var shipControllerMachine = Utilities.Utility.GetShipControllerMachine(__instance);
-                            shipControllerMachine.PilotAgent.StopUsingGameObject();
+                            var pilotAgent = shipControllerMachine?.PilotAgent;
+                            if (pilotAgent == null)
+                            {
+                                return true;
+                            }
+                            pilotAgent.StopUsingGameObject();
                             SetShipController(__instance, PlayerShipController.AI);
                             return false;
                         }
@@ -86,12 +90,15 @@ namespace RTSCamera.Patch.Naval
                     return true;
                 }
                 AIPilotShipCommandJustGiven = false;
-                var formation = Utilities.Utility.GetShipFormation(__instance);
-                if (formation != null && formation.IsAIControlled)
+                var shipFormation = Utilities.Utility.GetShipFormation(__instance);
+                if (shipFormation == null)
+                {
+                    return true;
+                }
+                if (shipFormation.IsAIControlled)
                 {
                     ShouldAIControlPlayerShipInPlayerMode = true;
                 }
-                var shipFormation = Utilities.Utility.GetShipFormation(__instance);
 
                 var playerControlledShip = Utilities.Utility.GetPlayerControlledShip(Mission.Current);
                 // When player stops piloting the ship, and PlayerControlledShip is not updated yet because ship controller is not updated.

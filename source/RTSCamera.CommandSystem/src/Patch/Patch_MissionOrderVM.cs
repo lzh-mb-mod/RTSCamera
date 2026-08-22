@@ -579,8 +579,16 @@ namespace RTSCamera.CommandSystem.Patch
             __instance.OrderSets.ApplyActionOnAllItems((o => o.OnFinalize()));
             __instance.OrderSets.Clear();
             MBReadOnlyList<VisualOrderSet> orders = VisualOrderFactory.GetOrders();
+            __instance.HasAnyCascadingOrders = false;
             for (int index = 0; index < orders.Count; ++index)
-                __instance.OrderSets.Add(new RTSCommandOrderSetVM(__instance.OrderController, orders[index]));
+            {
+                var orderSet = new RTSCommandOrderSetVM(__instance.OrderController, orders[index]);
+                __instance.OrderSets.Add(orderSet);
+                if (!orderSet.HasSingleOrder)
+                {
+                    __instance.HasAnyCascadingOrders = true;
+                }
+            }
             _updateOrderShortcuts.Invoke(__instance, Array.Empty<object>());
             if (!____isMultiplayer)
                 return false;

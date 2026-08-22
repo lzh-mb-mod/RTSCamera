@@ -44,11 +44,17 @@ namespace RTSCamera.Patch.Naval
             {
                 var navalShipsLogic = Utility.GetNavalShipsLogic(Mission.Current);
                 if (navalShipsLogic == null)
+                {
+                    __result = false;
                     return false;
+                }
                 var movementOrderEnum = GetMovementOrderEnum(____orderType);
                 var ship = Utilities.Utility.GetShip(navalShipsLogic, formation.Team.TeamSide, formation.FormationIndex);
                 if (ship == null)
+                {
+                    __result = false;
                     return false;
+                }
                 // The only change, do not return null for player ship
                 //return ship.IsPlayerShip || ship.IsPlayerControlled ? new bool?() : new bool?(ship.ShipOrder.MovementOrderEnum == movementOrderEnum);
                 __result = Utilities.Utility.IsShipPlayerControlled(ship) ? new bool?() : new bool?(Utilities.Utility.GetShipMovementOrderEnum(Utilities.Utility.GetShipOrder(ship)) == movementOrderEnum);

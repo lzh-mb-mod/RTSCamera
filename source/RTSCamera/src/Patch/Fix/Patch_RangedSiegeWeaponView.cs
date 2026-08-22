@@ -13,6 +13,19 @@ namespace RTSCamera.Patch.Fix
     public class Patch_RangedSiegeWeaponView
     {
         private static bool _patched;
+        private static readonly BindingFlags InstanceNonPublic =
+            BindingFlags.Instance | BindingFlags.NonPublic;
+        private static readonly MethodInfo HandleUserInput =
+            typeof(RangedSiegeWeaponView).GetMethod("HandleUserInput", InstanceNonPublic);
+        private static readonly MethodInfo StartUsingWeaponCamera =
+            typeof(RangedSiegeWeaponView).GetMethod("StartUsingWeaponCamera", InstanceNonPublic);
+        private static readonly MethodInfo HandleUserCameraRotation =
+            typeof(RangedSiegeWeaponView).GetMethod("HandleUserCameraRotation", InstanceNonPublic);
+        private static readonly MethodInfo ResetCamera =
+            typeof(RangedSiegeWeaponView).GetMethod("ResetCamera", InstanceNonPublic);
+        private static readonly MethodInfo HandleUserAiming =
+            typeof(RangedSiegeWeaponView).GetMethod("HandleUserAiming", InstanceNonPublic);
+
         public static bool Patch(Harmony harmony)
         {
             try
@@ -21,8 +34,7 @@ namespace RTSCamera.Patch.Fix
                     return false;
                 _patched = true;
                 harmony.Patch(
-                    typeof(RangedSiegeWeaponView).GetMethod("HandleUserInput",
-                        BindingFlags.Instance | BindingFlags.NonPublic),
+                    HandleUserInput,
                     prefix: new HarmonyMethod(
                         typeof(Patch_RangedSiegeWeaponView).GetMethod(nameof(Prefix_HandleUserInput),
                             BindingFlags.Static | BindingFlags.Public)));
@@ -39,7 +51,6 @@ namespace RTSCamera.Patch.Fix
         }
         public static bool Prefix_HandleUserInput(float dt, RangedSiegeWeaponView __instance, ref bool ____isInWeaponCameraMode)
         {
-            var bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
             // In the original code, the condition is to check pilot agent is IsMainAgent.
             // We modify it to check if the controller is Player.
             bool isForceUse = Mission.Current?.MainAgent != null && Mission.Current.MainAgent.IsPlayerControlled && __instance.RangedSiegeWeapon.PlayerForceUse;
@@ -49,20 +60,21 @@ namespace RTSCamera.Patch.Fix
                 if (!____isInWeaponCameraMode)
                 {
                     ____isInWeaponCameraMode = true;
-                    typeof(RangedSiegeWeaponView).GetMethod("StartUsingWeaponCamera", bindingFlags).Invoke(__instance, new object[0]);
+                    StartUsingWeaponCamera.Invoke(__instance, new object[0]);
                 }
-                typeof(RangedSiegeWeaponView).GetMethod("HandleUserCameraRotation", bindingFlags)
-                    .Invoke(__instance, new object[1] { dt });
+                if (isForceUse)
+                {
+                    HandleUserCameraRotation.Invoke(__instance, new object[1] { dt });
+                }
             }
             if (____isInWeaponCameraMode && !usingWeapon)
             {
                 ____isInWeaponCameraMode = false;
-                typeof(RangedSiegeWeaponView).GetMethod("ResetCamera", bindingFlags)?.Invoke(__instance, new object[0]);
+                ResetCamera?.Invoke(__instance, new object[0]);
             }
 
             if (__instance.PilotAgent != null && (__instance.PilotAgent.Controller == AgentControllerType.Player || isForceUse))
-                typeof(RangedSiegeWeaponView).GetMethod("HandleUserAiming", bindingFlags)
-                    .Invoke(__instance, new object[1] { dt });
+                HandleUserAiming.Invoke(__instance, new object[1] { dt });
             return false;
         }
     }

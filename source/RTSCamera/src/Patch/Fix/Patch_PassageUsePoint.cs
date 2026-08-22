@@ -37,7 +37,6 @@ namespace RTSCamera.Patch.Fix
 
             return true;
         }
-        // TODO: verify the need of this patch.
         public static bool Prefix_DisabledForAgent(PassageUsePoint __instance, Agent agent, ref bool __result)
         {
             if (agent.MountAgent != null || __instance.IsDeactivated || __instance.ToLocation == null && !__instance.IsMissionExit || __instance.IsDisabled)
@@ -48,7 +47,9 @@ namespace RTSCamera.Patch.Fix
 
             if (agent.IsAIControlled && CampaignMission.Current.Location.GetLocationCharacter(agent.Origin) == null)
             {
-                __result = false;
+                // The main agent may not have a LocationCharacter after switching to free camera.
+                // Other AI agents must remain disabled because PassageUsePoint.OnUse requires one.
+                __result = !agent.IsMainAgent;
                 return false;
             }
 
