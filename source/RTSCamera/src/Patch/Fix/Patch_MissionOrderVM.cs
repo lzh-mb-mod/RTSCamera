@@ -6,7 +6,10 @@ using RTSCamera.View;
 using System;
 using System.Linq;
 using System.Reflection;
+using TaleWorlds.Core;
 using TaleWorlds.Engine;
+using TaleWorlds.Library;
+using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
 using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
@@ -73,11 +76,17 @@ namespace RTSCamera.Patch.Fix
 
         public static bool Prefix_CheckCanBeOpened(MissionOrderVM __instance, bool displayMessage, ref bool __result)
         {
-            // In free camera mode, order UI can be opened event if main agent is controller by AI
+            // Free camera intentionally permits the order UI while the AI controls MainAgent and while the mission is ending.
             if (Agent.Main != null && !Agent.Main.IsPlayerControlled && Mission.Current
                 .GetMissionBehavior<RTSCameraLogic>()?.SwitchFreeCameraLogic.IsSpectatorCamera == true)
             {
-                __result = true;
+                __result = __instance.Team.HasBots && __instance.PlayerHasAnyTroopUnderThem &&
+                           (__instance.Team.IsPlayerGeneral || __instance.Team.IsPlayerSergeant);
+                if (!__result && displayMessage)
+                {
+                    InformationManager.DisplayMessage(new InformationMessage(
+                        new TextObject("{=DQvGNQ0g}There isn't any unit under command.").ToString()));
+                }
                 return false;
             }
 

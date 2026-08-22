@@ -561,8 +561,12 @@ namespace RTSCamera.CommandSystem.Patch
         }
         public static void Postfix_OnMissionScreenTick(GauntletOrderUIHandler __instance, ref float ____latestDt, ref bool ____isReceivingInput, float dt, MissionOrderVM ____dataSource, GauntletLayer ____gauntletLayer, OrderTroopPlacer ____orderTroopPlacer, ref bool ____isTransferEnabled)
         {
-            UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer, ref ____isTransferEnabled);
-            UpdateOrderTroopPlacerDrawingFacing(__instance, ____dataSource, ____gauntletLayer, ____orderTroopPlacer);
+            if (__instance != null && ____dataSource?.TroopController != null &&
+                ____gauntletLayer != null && ____orderTroopPlacer != null)
+            {
+                UpdateMouseVisibility(__instance, ____dataSource, ____gauntletLayer, ref ____isTransferEnabled);
+                UpdateOrderTroopPlacerDrawingFacing(__instance, ____dataSource, ____gauntletLayer, ____orderTroopPlacer);
+            }
             UpdateCallbackList();
             //return true;
         }
@@ -629,7 +633,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         private static void UpdateCallbackList()
         {
-            if (_callbackList.Count == 0)
+            if (_callbackList == null || _callbackList.Count == 0)
                 return;
 
             var next = _callbackList[_callbackList.Count - 1];

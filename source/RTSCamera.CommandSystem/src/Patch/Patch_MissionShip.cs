@@ -21,6 +21,8 @@ namespace RTSCamera.CommandSystem.Patch
                     return false;
                 _patched = true;
 
+                if (!CommandSystemSubModule.IsNavalInstalled)
+                    return true;
                 var missionShipType = AccessTools.TypeByName("NavalDLC.Missions.Objects.MissionShip");
                 if (missionShipType == null)
                     return true;

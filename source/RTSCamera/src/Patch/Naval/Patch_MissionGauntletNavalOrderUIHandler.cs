@@ -4,8 +4,6 @@ using RTSCamera.Patch.Fix;
 using System;
 using System.Reflection;
 using TaleWorlds.Engine;
-using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace RTSCamera.Patch.Naval
 {
@@ -37,15 +35,11 @@ namespace RTSCamera.Patch.Naval
             return true;
         }
 
-        public static bool Prefix_OnSelectedFormationsChanged(object __instance,
-            OrderController ____orderController,
-            MissionFormationTargetSelectionHandler ____formationTargetHandler,
-            Object ____shipTargetHandler)
+        public static void Prefix_OnSelectedFormationsChanged()
         {
             // MissionOrderVM.OnTroopFormationSelected will close the order UI and open it again to refresh the available orders.
             // We should allow it to be closed so that orders will be refreshed. Or the advance visual orders may not be available when switching from agent view to rts view.
             Patch_MissionOrderVM.AllowClosingOrderUI = true;
-            return false;
         }
     }
 }

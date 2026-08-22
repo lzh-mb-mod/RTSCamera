@@ -42,7 +42,8 @@ namespace RTSCamera.Patch
 
         public static bool Prefix_RefreshFormationMarkers(MissionFormationMarkerVM __instance,
             Mission ____mission,
-            MissionFormationMarkerVM.FormationMarkerDistanceComparer ____comparer)
+            MissionFormationMarkerVM.FormationMarkerDistanceComparer ____comparer,
+            bool ____isMultiplayer)
         {
             // The only change: add '&& !ShouldHideFormationMarker(f)' to hide player formation marker if contains player only.
             IEnumerable<Formation> formationList = ____mission.Teams.SelectMany(t => t.FormationsIncludingEmpty.Where(f => f.CountOfUnits > 0 && !ShouldHideFormationMarker(f))).ToList();
@@ -56,6 +57,10 @@ namespace RTSCamera.Patch
                     formationMarkerTargetVm.IsEnabled = __instance.IsEnabled;
                     formationMarkerTargetVm.IsFormationTargetRelevant = __instance.IsFormationTargetRelevant;
                     formationMarkerTargetVm.ShowDistanceTexts = __instance.ShowDistanceTexts;
+                    formationMarkerTargetVm.FarAlphaTarget = ____isMultiplayer ? 0.35f : 0.7f;
+                    formationMarkerTargetVm.FarDistanceCutoff = ____isMultiplayer ? 350f : 500f;
+                    formationMarkerTargetVm.CloseDistanceCutoff = ____isMultiplayer ? 5f : 10f;
+                    formationMarkerTargetVm.ClosestFadeoutRange = ____isMultiplayer ? 1f : 5f;
                 }
             }
             if (formationList.Count() < __instance.Targets.Count)

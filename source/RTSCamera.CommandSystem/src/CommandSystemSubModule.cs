@@ -26,6 +26,7 @@ namespace RTSCamera.CommandSystem
         public static readonly string ModuleId = "RTSCamera.CommandSystem";
         public static bool IsRealisticBattleModuleInstalled = true;
         public static bool IsTAOMInstalled;
+        public static bool IsNavalInstalled;
 
         private readonly Harmony _harmony = new Harmony("RTSCommandPatch");
         private bool _successPatch;
@@ -37,6 +38,7 @@ namespace RTSCamera.CommandSystem
             // If RBM is loaded, disable the ChargeToFormation feature for infantry to not break RBM frontline behavior
             IsRealisticBattleModuleInstalled = Utility.IsModuleInstalled("RBM") && Utility.IsModuleInstalled("RealisticBattleAiModule");
             IsTAOMInstalled = Utility.IsModuleInstalled("TAOM");
+            IsNavalInstalled = Utility.IsModuleInstalled("NavalDLC");
             Utility.ShouldDisplayMessage = true;
             Initialize();
 
@@ -129,7 +131,10 @@ namespace RTSCamera.CommandSystem
             _successPatch &= Patch_MissionGauntletFormationMarker.Patch(_harmony);
 
             // Keep land movement orders when troops rejoin their formation while abandoning a ship in naval raids.
-            _successPatch &= Patch_MissionShip.Patch(_harmony);
+            if (IsNavalInstalled)
+            {
+                _successPatch &= Patch_MissionShip.Patch(_harmony);
+            }
 
             if (!_successPatch)
             {

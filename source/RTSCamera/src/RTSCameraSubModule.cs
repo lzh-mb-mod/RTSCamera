@@ -53,24 +53,9 @@ namespace RTSCamera
             {
                 _successPatch = true;
 
-                //_harmony.Patch(
-                //    typeof(CommonVillagersCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingTheMainAgent",
-                //        BindingFlags.Instance | BindingFlags.NonPublic),
-                //    prefix: new HarmonyMethod(typeof(CheckIfConversationAgentIsEscortingTheMainAgent).GetMethod(
-                //        nameof(CheckIfConversationAgentIsEscortingTheMainAgent.Prefix_CheckIfConversationAgentIsEscortingTheMainAgent),
-                //        BindingFlags.Static | BindingFlags.Public)));
-                //_harmony.Patch(
-                //    typeof(GuardsCampaignBehavior).GetMethod("CheckIfConversationAgentIsEscortingTheMainAgent",
-                //        BindingFlags.Instance | BindingFlags.NonPublic),
-                //    prefix: new HarmonyMethod(typeof(CheckIfConversationAgentIsEscortingTheMainAgent).GetMethod(
-                //        nameof(CheckIfConversationAgentIsEscortingTheMainAgent
-                //            .Prefix_CheckIfConversationAgentIsEscortingTheMainAgent),
-                //        BindingFlags.Static | BindingFlags.Public)));
-
                 // below checked
                 _successPatch &= Patch_PassageUsePoint.Patch(_harmony);
                 _successPatch &= Patch_OrderOfBattleVM.Patch(_harmony);
-                _successPatch &= Patch_DeploymentMissionController.Patch(_harmony);
                 _successPatch &= Patch_LadderQueueManager.Patch(_harmony);
                 _successPatch &= Patch_MissionFormationTargetSelectionHandler.Patch(_harmony);
                 _successPatch &= Patch_FormationMarkerListPanel.Patch(_harmony);
@@ -112,7 +97,6 @@ namespace RTSCamera
                     _successPatch &= Patch_NavalTeamSideSpawnContext.Patch(_harmony);
                     _successPatch &= Patch_NavalShipVisualOrderProvider.Patch(_harmony);
                     _successPatch &= Patch_NavalTroopVisualOrderProvider.Patch(_harmony);
-                    _successPatch &= Patch_ShipOrder.Patch(_harmony);
                     _successPatch &= Patch_AgentNavalComponent.Patch(_harmony);
                     _successPatch &= Patch_NavalMovementOrder.Patch(_harmony);
                     _successPatch &= Patch_MissionGauntletNavalShipMarker.Patch(_harmony);

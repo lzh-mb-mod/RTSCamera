@@ -12,6 +12,7 @@ namespace RTSCamera.Patch.Fix
     public class Patch_LadderQueueManager
     {
         private static bool _patched;
+
         public static bool Patch(Harmony harmony)
         {
             try
@@ -43,6 +44,7 @@ namespace RTSCamera.Patch.Fix
                 Agent agent = ____userAgents[index];
                 if (agent.Controller == AgentControllerType.Player)
                 {
+                    agent.SetIsLadderQueueUsing(false);
                     ____userAgents.RemoveAt(index);
                 }
             }

@@ -48,31 +48,40 @@ namespace RTSCamera.Patch.Naval
         private static MethodInfo _checkSpawnNextBatch;
         private static MethodInfo _getActiveHeroesOfShip;
         private static MethodInfo _assignCaptainToShipForDeploymentMode;
+        private static PropertyInfo _captain;
 
         public static bool Prefix_AllocateAndDeployInitialTroopsOfPlayerTeam(Object __instance, MissionLogic ____agentsLogic, MissionLogic ____shipsLogic)
         {
             if (!CommandBattleBehavior.CommandMode)
+                return true;
+            if (__instance == null || ____agentsLogic == null || ____shipsLogic == null)
                 return true;
             _teamSide ??= AccessTools.Property(__instance.GetType(), "TeamSide");
             _findTroopOrigin ??= AccessTools.Method(____agentsLogic.GetType(), "FindTroopOrigin");
 
             var teamSide = (TeamSideEnum)_teamSide.GetValue(__instance);
             // if player character doesn't exists, find a hero under player's command, else find any troop under player's command
-            IAgentOriginBase troopOrigin = (IAgentOriginBase)_findTroopOrigin.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin.Troop.IsPlayerCharacter) });
+            IAgentOriginBase troopOrigin = (IAgentOriginBase)_findTroopOrigin.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin?.Troop?.IsPlayerCharacter == true) });
             if (troopOrigin == null)
             {
-                troopOrigin = (IAgentOriginBase)_findTroopOrigin.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin.IsUnderPlayersCommand && origin.Troop.IsHero ) });
+                troopOrigin = (IAgentOriginBase)_findTroopOrigin.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin?.IsUnderPlayersCommand == true && origin.Troop?.IsHero == true) });
                 if (troopOrigin == null)
                 {
-                    troopOrigin = (IAgentOriginBase)_findTroopOrigin.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin.IsUnderPlayersCommand) });
+                    troopOrigin = (IAgentOriginBase)_findTroopOrigin.Invoke(____agentsLogic, new object[] { teamSide, (Predicate<IAgentOriginBase>)(origin => origin?.IsUnderPlayersCommand == true) });
                 }
             }
+            if (troopOrigin == null)
+                throw new InvalidOperationException("Failed to find a player-commanded troop for Naval deployment.");
 
             _getShipAssignment ??= AccessTools.Method(____shipsLogic.GetType(), "GetShipAssignment");
             var shipAssignment = _getShipAssignment.Invoke(____shipsLogic, new object[] { TeamSideEnum.PlayerTeam, FormationClass.Infantry });
+            if (shipAssignment == null)
+                throw new InvalidOperationException("Failed to find the player ship assignment for Naval deployment.");
 
             _missionShip ??= AccessTools.Property(shipAssignment.GetType(), "MissionShip");
             var missionShip = (MissionObject)_missionShip.GetValue(shipAssignment);
+            if (missionShip == null)
+                throw new InvalidOperationException("The player ship assignment has no mission ship.");
 
             _addReservedTroopToShip ??= AccessTools.Method(____agentsLogic.GetType(), "AddReservedTroopToShip");
             _addReservedTroopToShip.Invoke(____agentsLogic, new object[] { troopOrigin, missionShip });
@@ -87,7 +96,8 @@ namespace RTSCamera.Patch.Naval
             _checkSpawnNextBatch.Invoke(__instance, null);
 
             _getActiveHeroesOfShip ??= AccessTools.Method(____agentsLogic.GetType(), "GetActiveHeroesOfShip");
-            var activeHeroesOfShip = _getActiveHeroesOfShip.Invoke(____agentsLogic, new object[] { missionShip }) as IEnumerable<Agent>;
+            var activeHeroesOfShip = _getActiveHeroesOfShip.Invoke(
+                ____agentsLogic, new object[] { missionShip }) as IEnumerable<Agent> ?? Enumerable.Empty<Agent>();
 
             Agent agent1 = activeHeroesOfShip.FirstOrDefault(agent => agent.IsPlayerTroop);
             // if no player troop, get any hero
@@ -96,8 +106,8 @@ namespace RTSCamera.Patch.Naval
                 agent1 = activeHeroesOfShip.FirstOrDefault(agent => agent.IsHero);
             }
 
-            var formation = Utilities.Utility.GetShipFormation(missionShip);
-            if (formation.Captain == agent1)
+            _captain ??= AccessTools.Property("NavalDLC.Missions.Objects.MissionShip:Captain");
+            if ((Agent)_captain.GetValue(missionShip) == agent1)
                 return false;
 
             _assignCaptainToShipForDeploymentMode ??= AccessTools.Method(____agentsLogic.GetType(), "AssignCaptainToShipForDeploymentMode");

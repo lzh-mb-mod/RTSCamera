@@ -63,6 +63,8 @@ namespace RTSCamera.Patch.Fix
                 harmony.Patch(
                     typeof(MissionGauntletSingleplayerOrderUIHandler).GetMethod("OnMissionScreenFinalize",
                         BindingFlags.Public | BindingFlags.Instance),
+                    prefix: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
+                        nameof(Prefix_OnMissionScreenFinalize), BindingFlags.Static | BindingFlags.Public)),
                     postfix: new HarmonyMethod(typeof(Patch_MissionGauntletSingleplayerOrderUIHandler).GetMethod(
                         nameof(Postfix_OnMissionScreenFinalize), BindingFlags.Static | BindingFlags.Public)));
                 harmony.Patch(
@@ -87,6 +89,18 @@ namespace RTSCamera.Patch.Fix
         {
             RegisterReload(__instance);
             return true;
+        }
+
+        public static void Prefix_OnMissionScreenFinalize(MissionGauntletSingleplayerOrderUIHandler __instance)
+        {
+            var missionOrderVM = _dataSource?.GetValue(__instance) as MissionOrderVM;
+            if (missionOrderVM != null)
+            {
+                // Finalization must perform a real close even when the order UI is configured to stay open.
+                // No further UI update can occur, so bypassing the per-tick close guard cannot cause repeated refreshes.
+                Patch_MissionOrderVM.HasBeenClosedInThisTick = false;
+                Patch_MissionOrderVM.TryCloseToggleOrder(missionOrderVM);
+            }
         }
 
         public static void Postfix_OnMissionScreenFinalize()

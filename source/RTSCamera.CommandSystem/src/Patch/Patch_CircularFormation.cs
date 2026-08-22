@@ -47,10 +47,13 @@ namespace RTSCamera.CommandSystem.Patch
             return true;
         }
 
-        // show formation marker below troop card
-        public static bool Prefix_GetCircuferenceAux(int unitCount, int rankCount, float radialInterval, float distanceInterval, ref float __result)
+        public static bool Prefix_GetCircuferenceAux(CircularFormation __instance, int unitCount, int rankCount, float radialInterval, float distanceInterval, ref float __result)
         {
             if (CommandSystemConfig.Get().CircleFormationUnitSpacingPreference == CircleFormationUnitSpacingPreference.Loose)
+                return true;
+            var formation = Owner.GetValue(__instance) as Formation;
+            if (formation == null ||
+                formation.Team != null && !Utilities.Utility.ShouldEnablePlayerOrderControllerPatchForFormation(formation))
                 return true;
             __result = Utilities.Utility.GetCircumferenceAuxOfCircularFormation(unitCount, rankCount, radialInterval, distanceInterval);
             return false;
