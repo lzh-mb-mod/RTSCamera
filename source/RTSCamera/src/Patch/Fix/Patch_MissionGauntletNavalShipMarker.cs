@@ -32,6 +32,8 @@ namespace RTSCamera.Patch.Fix
                     AccessTools.Property(dataSourceField.FieldType, "ShipMarkers"));
                 var distanceText = AccessTools.Property(
                     "NavalDLC.ViewModelCollection.HUD.ShipMarker.NavalShipMarkerItemVM:DistanceText");
+                if (distanceText == null)
+                    return true;
                 _getDistance = CompilePropertyGetter<float>(AccessTools.Property(
                     "NavalDLC.ViewModelCollection.HUD.ShipMarker.NavalShipMarkerItemVM:Distance"));
                 _getDistanceText = CompilePropertyGetter<string>(distanceText);
