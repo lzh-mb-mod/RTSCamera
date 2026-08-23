@@ -176,6 +176,7 @@
     <string id="RTSCamera_camera_increase_camera_speed" text="Augmenter la vitesse de la caméra" />
     <string id="RTSCamera_camera_decrease_camera_speed" text="Réduire la vitesse de la caméra" />
     <string id="RTSCamera_camera_reset_camera_speed" text="Réinitialiser la vitesse de la caméra" />
+    <string id="RTSCamera_camera_move_by_mouse" text="Déplacer la caméra avec la souris" />
     <string id="RTSCamera_slowmotionkey_description" text="Activer le mode ralenti. Appuyez à nouveau pour revenir à la normale." />
     <string id="RTSCamera_fastforwardkey_description" text="Activer/désactiver l’avance rapide." />
     <string id="RTSCamera_disable_death_description" text="Toutes les unités ne peuvent pas mourir, pour la capture vidéo. Le mode triche doit être activé et le raccourci doit être activé dans le menu." />
@@ -192,6 +193,7 @@
     <string id="RTSCamera_camera_increase_camera_speed_description" text="Augmenter la vitesse de la caméra." />
     <string id="RTSCamera_camera_decrease_camera_speed_description" text="Réduire la vitesse de la caméra." />
     <string id="RTSCamera_camera_reset_camera_speed_description" text="Réinitialiser la vitesse de la caméra." />
+    <string id="RTSCamera_camera_move_by_mouse_description" text="Maintenir pour déplacer la caméra avec la souris." />
     <string id="RTSCamera_enemywipedout" text="L’ennemi a été entièrement anéanti." />
     <string id="RTSCamera_switchtoenemyteam" text="Vous avez rejoint l’équipe ennemie." />
     <string id="RTSCamera_select_character_view_hint" text="Veuillez sélectionner un personnage avec un clic gauche. Puis appuyez sur {KeyName} pour vous verrouiller sur lui, et appuyez encore pour le contrôler." />

@@ -166,11 +166,14 @@
 
     <string id="RTSCameraCommandSystem_volley_order" text="齐射" />
     <string id="RTSCameraCommandSystem_auto_volley" text="自动齐射" />
+    <string id="RTSCameraCommandSystem_auto_volley_hint" text="为选中的远程编队切换自动齐射模式。" />
     <string id="RTSCameraCommandSystem_auto_volley_off" text="自动齐射关闭" />
     <string id="RTSCameraCommandSystem_manual_volley" text="听令齐射" />
+    <string id="RTSCameraCommandSystem_manual_volley_hint" text="为选中的远程编队切换听令齐射模式。" />
     <string id="RTSCameraCommandSystem_manual_volley_off" text="听令齐射关闭" />
     <string id="RTSCameraCommandSystem_volley_disabled" text="齐射关闭" />
     <string id="RTSCameraCommandSystem_volley_fire" text="齐射开火" />
+    <string id="RTSCameraCommandSystem_volley_fire_hint" text="让选中的远程编队齐射开火。" />
 
     <string id="RTSCameraCommandSystem_volley_order_options" text="齐射指令选项" />
     <string id="RTSCameraCommandSystem_enable_volley_related_features" text="启用齐射相关功能" />
