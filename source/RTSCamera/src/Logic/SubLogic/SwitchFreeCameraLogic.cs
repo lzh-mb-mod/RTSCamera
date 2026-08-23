@@ -834,6 +834,7 @@ namespace RTSCamera.Logic.SubLogic
             // if the ship is AI controlled, don't pilot the ship to avoid interrupting AI control.
             if (!isShipAIControlled)
             {
+                DeselectPlayerShipFromMixedSelection(ship);
                 // Referencing MissionMainAgentInteractionComponent.FocusStateCheckTick
                 if (!Mission.MainAgent.IsUsingGameObject && Mission.MainAgent.IsAbleToUseMachine() && !(shipControllerMachineStandingPoint is SpawnedItemEntity) && Mission.MainAgent.ObjectHasVacantPosition(shipControllerMachineStandingPoint))
                 {
@@ -843,6 +844,23 @@ namespace RTSCamera.Logic.SubLogic
                 {
                     RefreshOrders();
                 }
+            }
+        }
+
+        private void DeselectPlayerShipFromMixedSelection(MissionObject playerShip)
+        {
+            var orderController = Mission.PlayerTeam?.PlayerOrderController;
+            var playerShipFormation = Utilities.Utility.GetShipFormation(playerShip);
+            if (orderController == null || playerShipFormation == null || orderController.SelectedFormations.Count <= 1)
+                return;
+
+            for (var index = 0; index < orderController.SelectedFormations.Count; ++index)
+            {
+                if (orderController.SelectedFormations[index] != playerShipFormation)
+                    continue;
+
+                orderController.DeselectFormation(playerShipFormation);
+                return;
             }
         }
 
