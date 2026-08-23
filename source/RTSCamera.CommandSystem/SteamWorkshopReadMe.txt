@@ -34,11 +34,11 @@ Command submodule
 [/list]
 
 [h2]Game Compatibility[/h2]
-Compatible with v1.4.5-v1.4.7 and War Sail DLC. For other versions:
+Compatible with v1.4.5-v1.4.8 and War Sail DLC. For other versions:
 [list]
 [*]v1.2.12: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2879991827]Steam Workshop[/url]
 [*]v1.3.4-v1.3.13: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3596693285]Steam Workshop[/url]
-[*]v1.4.5-v1.4.7: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3747771970]Steam Workshop[/url]
+[*]v1.4.5-v1.4.8: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3747771970]Steam Workshop[/url]
 [/list]
 
 [h2]Mod Compatibility[/h2]
