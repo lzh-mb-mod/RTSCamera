@@ -1,5 +1,18 @@
 # Changelog
 
+## [v5.3.38] - 2026-08-23
+### Fixed
+- Fix AI-controlled ships using troop orders after returning from free camera with all ships selected.
+
+- Fix potential mission interaction and menu resource cleanup issues.
+
+- Fix missing hotkey description translations.
+
+### Improved
+- Improve Naval ship marker performance.
+
+- Improve queued-order and formation-state handling.
+
 ## [v5.3.37] - 2026-08-05
 ### Added
 - Add an option to disable volley-related features.
