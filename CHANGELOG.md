@@ -1,5 +1,20 @@
 # Changelog
 
+## [v5.5.0] - 2026-08-23
+### Fixed
+- Fix AI-controlled ships using troop orders after returning from free camera with all ships selected.
+
+- Fix potential mission interaction and menu resource cleanup issues.
+
+- Fix missing hotkey description translations.
+
+### Improved
+- Update compatibility for Bannerlord v1.5.1.
+
+- Improve Naval ship marker performance.
+
+- Improve queued-order and formation-state handling.
+
 ## [v5.4.15] - 2026-08-05
 ### Added
 - Add an option to disable volley-related features.
