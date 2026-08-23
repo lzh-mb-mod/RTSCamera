@@ -3,7 +3,6 @@ using RTSCamera.Config;
 using RTSCamera.Config.HotKey;
 using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer;
 using TaleWorlds.MountAndBlade.Missions.Handlers;
 
 namespace RTSCamera.Logic.SubLogic
