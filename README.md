@@ -347,6 +347,10 @@ There're more hotkeys configurable but are disabled by default. You can configur
 
 You can get source code at [github.com](https://github.com/lzh-mb-mod/RTSCamera).
 
+## Release
+
+You can download the released files at [nexusmods.com](https://www.nexusmods.com/mountandblade2bannerlord/mods/355) or [github release](https://github.com/lzh-mb-mod/RTSCamera/releases).
+
 ## Donate
 By me a coffee at https://ko-fi.com/lizhenhuan1019
 
