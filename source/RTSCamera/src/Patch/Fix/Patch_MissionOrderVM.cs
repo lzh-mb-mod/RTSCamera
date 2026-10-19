@@ -136,7 +136,6 @@ namespace RTSCamera.Patch.Fix
             //return false;
         }
 
-        private static PropertyInfo _displayOrderMessageForLastOrder = AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder");
         private static MethodInfo _Reset_OrderTrropPlacer = typeof(OrderTroopPlacer).GetMethod("Reset", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static bool ShouldKeepOpen()
@@ -147,6 +146,9 @@ namespace RTSCamera.Patch.Fix
                 FlyCameraMissionView.Instance?.ElevatedCameraSubView.IsElevatedCameraNoticable == true && RTSCameraConfig.Get().KeepOrderUIOpenInElevatedCamera;
         }
 
+        // v1.5.5 removed MissionOrderVM.DisplayedOrderMessageForLastOrder: duplicate order messages are now
+        // suppressed per formation and frame (_lastOrderMessageFrameNoOfFormations), so closing and reopening
+        // the order UI no longer requires resetting a displayed-message flag.
         public static void UpdateOrderUIOnOrderExecuted(MissionOrderVM __instance)
         {
             // Close UI if needed
@@ -159,17 +161,13 @@ namespace RTSCamera.Patch.Fix
                 {
                     if (!__instance.TroopController.IsTransferActive)
                     {
-                        var displayedOrderMessageForLastOrder = (bool?)_displayOrderMessageForLastOrder?.GetValue(__instance) ?? false;
                         TryCloseToggleOrder(__instance);
                         Patch_MissionOrderVM.OpenToggleOrder(__instance, false);
-                        _displayOrderMessageForLastOrder?.SetValue(__instance, displayedOrderMessageForLastOrder);
                     }
                 }
                 else
                 {
-                    var displayedOrderMessageForLastOrder = (bool?)_displayOrderMessageForLastOrder?.GetValue(__instance) ?? false;
                     TryCloseToggleOrder(__instance);
-                    _displayOrderMessageForLastOrder?.SetValue(__instance, displayedOrderMessageForLastOrder);
                 }
             }
 
@@ -244,7 +242,6 @@ namespace RTSCamera.Patch.Fix
                 }
                 //__instance.SelectedOrderSet?.ExecuteDeSelect();
                 //__instance.IsToggleOrderShown = false;
-                //_displayOrderMessageForLastOrder.SetValue(__instance, false);
                 //_OnOrderShownToggle.Invoke(__instance, new object[] { });
                 //if (!__instance.IsDeployment)
                 //{

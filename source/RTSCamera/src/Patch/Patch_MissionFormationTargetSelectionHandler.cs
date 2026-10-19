@@ -19,13 +19,13 @@ namespace RTSCamera.Patch
                 if (_patched)
                     return false;
                 _patched = true;
-                var applicationVersion = Utility.GetModuleVersion("Native");
-                if (applicationVersion.HasValue && applicationVersion.Value.IsNewerThan(ApplicationVersion.FromString("v1.4.7")))
+                var tryGetFormationDistanceToCenter = typeof(MissionFormationTargetSelectionHandler).GetMethod(
+                    "TryGetFormationDistanceToCenter", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (tryGetFormationDistanceToCenter != null)
                 {
                     // for v1.4.7 and above.
                     harmony.Patch(
-                        typeof(MissionFormationTargetSelectionHandler).GetMethod("TryGetFormationDistanceToCenter",
-                            BindingFlags.Instance | BindingFlags.NonPublic),
+                        tryGetFormationDistanceToCenter,
                         prefix: new HarmonyMethod(typeof(Patch_MissionFormationTargetSelectionHandler).GetMethod(
                             nameof(Prefix_TryGetFormationDistanceToCenter), BindingFlags.Static | BindingFlags.Public)));
                 }

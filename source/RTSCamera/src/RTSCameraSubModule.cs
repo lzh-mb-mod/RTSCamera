@@ -81,7 +81,6 @@ namespace RTSCamera
                 _successPatch &= Patch_HideoutMissionController.Patch(_harmony);
                 _successPatch &= Patch_OrderFlag.Patch(_harmony);
                 _successPatch &= Patch_SandboxBattleBannerBearsModel.Patch(_harmony);
-                _successPatch &= Patch_OrderItemBaseVM.Patch(_harmony);
                 _successPatch &= Patch_OrderTroopItemVM.Patch(_harmony);
                 _successPatch &= Patch_BattleEndLogic.Patch(_harmony);
                 _successPatch &= Patch_MissionFormationMarkerVM.Patch(_harmony);
@@ -93,7 +92,7 @@ namespace RTSCamera
                     _successPatch &= Patch_MissionShip.Patch(_harmony);
                     _successPatch &= Patch_NavalDLCHelpers.Patch(_harmony);
                     _successPatch &= Patch_MissionGauntletNavalOrderUIHandler.Patch(_harmony);
-                    _successPatch &= Patch_NarvalShipTargetSelectionHandler.Patch(_harmony);
+                    _successPatch &= Patch_NavalShipTargetSelectionHandler.Patch(_harmony);
                     _successPatch &= Patch_NavalTeamSideSpawnContext.Patch(_harmony);
                     _successPatch &= Patch_NavalShipVisualOrderProvider.Patch(_harmony);
                     _successPatch &= Patch_NavalTroopVisualOrderProvider.Patch(_harmony);

@@ -14,8 +14,6 @@ namespace RTSCamera.CommandSystem.Patch
     {
         private static FieldInfo ActiveOrders = typeof(OrderSubjectVM).GetField("ActiveOrders",
             BindingFlags.NonPublic | BindingFlags.Instance);
-        private static PropertyInfo _orderSubType = typeof(OrderItemVM).GetProperty("OrderSubType",
-            BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static bool _patched;
         public static bool Patch(Harmony harmony)

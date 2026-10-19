@@ -7,14 +7,12 @@ using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View.MissionViews.Order;
-using TaleWorlds.MountAndBlade.ViewModelCollection.Order;
 
 namespace RTSCamera.Patch
 {
     public class Patch_OrderTroopPlacer
     {
         private static bool _patched;
-        private static PropertyInfo _displayedOrderMessageForLastOrder = AccessTools.Property(typeof(MissionOrderVM), "DisplayedOrderMessageForLastOrder");
         private static FieldInfo _isMouseDownField = AccessTools.Field(typeof(OrderTroopPlacer), "_isMouseDown");
 
         public static bool Patch(Harmony harmony)
@@ -50,9 +48,6 @@ namespace RTSCamera.Patch
             {
                 // Fix the issue that can't drag when slow motion is enabled and mouse is visible.
                 ____formationDrawingStartingTime = 0;
-                var missionOrderVM = Utility.GetMissionOrderVM(Mission.Current);
-                // Fix the issue that movement order message may not be shown in free camera, when order UI is kept open.
-                _displayedOrderMessageForLastOrder?.SetValue(missionOrderVM, false);
             }
             return true;
         }

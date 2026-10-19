@@ -56,7 +56,7 @@ namespace RTSCamera.CommandSystem.Patch
         private static FormationColorSubLogicV2 _groundMarkerView;
         private static OrderTroopPlacer _orderTroopPlacer;
         private static MissionFormationTargetSelectionHandler _targetSelectionHandler;
-        private static MBReadOnlyList<Formation> _focusedFormationsCache;
+        private static Formation _focusedFormation;
         public static bool IsFreeCamera;
         private static MovementTargetHighlightStyle _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
         private static List<GameEntity> _originalOrderPositionEntities;
@@ -175,7 +175,7 @@ namespace RTSCamera.CommandSystem.Patch
             _groundMarkerView = null;
             _clickedFormation = null;
             _lastNewMouseOverFormation = null;
-            _focusedFormationsCache = null;
+            _focusedFormation = null;
             if (_targetSelectionHandler != null)
             {
                 _targetSelectionHandler.OnFormationFocused -= OnFormationFocused;
@@ -193,23 +193,11 @@ namespace RTSCamera.CommandSystem.Patch
             _beginDraggingOffset = 0f;
         }
 
-        private static void OnFormationFocused(MBReadOnlyList<Formation> focusedFormations)
-        {
-            _focusedFormationsCache = focusedFormations;
-        }
-
-        // Bannerlord 1.5.5 reports one formation; keep the list overload for earlier beta builds.
+        // Since v1.5.5 MissionFormationTargetSelectionHandler focuses a single formation,
+        // so the event is Action<Formation> instead of Action<MBReadOnlyList<Formation>>.
         private static void OnFormationFocused(Formation focusedFormation)
         {
-            if (focusedFormation == null)
-            {
-                _focusedFormationsCache = null;
-            }
-            else if (_focusedFormationsCache == null || _focusedFormationsCache.Count != 1 ||
-                _focusedFormationsCache[0] != focusedFormation)
-            {
-                _focusedFormationsCache = new MBReadOnlyList<Formation>(new[] { focusedFormation });
-            }
+            _focusedFormation = focusedFormation;
         }
 
         private static void OnToggleFreeCamera(bool isFreeCamera)
@@ -505,9 +493,9 @@ namespace RTSCamera.CommandSystem.Patch
         private static Formation GetMouseOverFormation(OrderTroopPlacer __instance, float collisionDistance, OrderController ___PlayerOrderController, ref Vec2 ____deltaMousePosition, bool ____formationDrawingMode)
         {
 
-            if (_focusedFormationsCache != null && _focusedFormationsCache.Count > 0)
+            if (_focusedFormation != null)
             {
-                return _focusedFormationsCache[0];
+                return _focusedFormation;
             }
             var agent = RayCastForAgent(__instance, collisionDistance, ref ____deltaMousePosition);
             if (agent != null && agent.IsMount)
@@ -725,9 +713,9 @@ namespace RTSCamera.CommandSystem.Patch
         {
             if (!____formationDrawingMode)
             {
-                if (_focusedFormationsCache != null && _focusedFormationsCache.Count > 0)
+                if (_focusedFormation != null)
                 {
-                    ____clickedFormation = _focusedFormationsCache.FirstOrDefault();
+                    ____clickedFormation = _focusedFormation;
                 }
                 if (____clickedFormation != null)
                 {

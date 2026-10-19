@@ -25,8 +25,9 @@ namespace RTSCamera.CommandSystem.Patch
 {
     public class Patch_GauntletOrderUIHandler
     {
-        private static FieldInfo _focusedFormationsCache = typeof(GauntletOrderUIHandler).GetField("_focusedFormationsCache", BindingFlags.Instance | BindingFlags.NonPublic);
-        private static FieldInfo _focusedFormation = typeof(GauntletOrderUIHandler).GetField("_focusedFormation", BindingFlags.Instance | BindingFlags.NonPublic);
+        // v1.5.5 replaced the focused formation cache with a single focused formation.
+        private static FieldInfo _focusedFormation = typeof(GauntletOrderUIHandler).GetField("_focusedFormation",
+            BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static FieldInfo _dataSource =
             typeof(GauntletOrderUIHandler).GetField(nameof(_dataSource),
@@ -175,16 +176,6 @@ namespace RTSCamera.CommandSystem.Patch
             return false;
         }
 
-        private static Formation GetFocusedFormation(GauntletOrderUIHandler instance)
-        {
-            // The beta changed from a list of focused formations to one formation.
-            if (_focusedFormation != null)
-                return _focusedFormation.GetValue(instance) as Formation;
-
-            var focusedFormations = _focusedFormationsCache?.GetValue(instance) as MBReadOnlyList<Formation>;
-            return focusedFormations?.FirstOrDefault();
-        }
-
         private static OrderInQueue GetOrderToAdd(GauntletOrderUIHandler __instance, MissionOrderVM dataSource, out bool skipNativeOrder)
         {
             var missionScreen = __instance.MissionScreen;
@@ -212,7 +203,7 @@ namespace RTSCamera.CommandSystem.Patch
             {
                 case MissionOrderVM.CursorStates.Move:
                     {
-                        var focusedFormation = GetFocusedFormation(__instance);
+                        var focusedFormation = _focusedFormation.GetValue(__instance) as Formation;
                         if (focusedFormation != null)
                         {
                             bool keepMovementOrder = CommandSystemGameKeyCategory.GetKey(GameKeyEnum.KeepMovementOrder).IsKeyDownInOrder(__instance.Input);

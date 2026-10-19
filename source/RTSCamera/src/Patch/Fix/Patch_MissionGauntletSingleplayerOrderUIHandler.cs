@@ -32,10 +32,6 @@ namespace RTSCamera.Patch.Fix
             typeof(GauntletOrderUIHandler).GetField(nameof(_movie),
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
-        private static readonly MethodInfo InitializeInADisgustingManner =
-            typeof(OrderTroopPlacer).GetMethod("InitializeInADisgustingManner",
-                BindingFlags.Instance | BindingFlags.NonPublic);
-
         private static bool _isInSwitchTeamEvent;
         private static bool _willEndDraggingMode;
         private static bool _earlyDraggingMode;
@@ -378,8 +374,6 @@ namespace RTSCamera.Patch.Fix
             _isInSwitchTeamEvent = true;
             _uiHandler.OnMissionScreenInitialize();
             _uiHandler.OnMissionScreenActivate();
-            InitializeInADisgustingManner?.Invoke(Mission.Current.GetMissionBehavior<OrderTroopPlacer>(),
-                new object[] { });
             _isInSwitchTeamEvent = false;
         }
     }
