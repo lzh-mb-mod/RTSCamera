@@ -14,6 +14,8 @@ namespace RTSCamera.CommandSystem.Patch
     public class Patch_MissionGauntletFormationMarker
     {
         private static bool _patched;
+        private static readonly FieldInfo _focusedFormation = typeof(MissionGauntletFormationMarker).GetField("_focusedFormation", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly FieldInfo _focusedFormationsCache = typeof(MissionGauntletFormationMarker).GetField("_focusedFormationsCache", BindingFlags.Instance | BindingFlags.NonPublic);
         public static bool Patch(Harmony harmony)
         {
             try
@@ -40,8 +42,7 @@ namespace RTSCamera.CommandSystem.Patch
 
             return true;
         }
-        public static bool Prefix_RefreshTargetProperties(MissionGauntletFormationMarker __instance, MissionFormationMarkerVM ____dataSource,
-            MBReadOnlyList<Formation> ____focusedFormationsCache)
+        public static bool Prefix_RefreshTargetProperties(MissionGauntletFormationMarker __instance, MissionFormationMarkerVM ____dataSource)
         {
             if (!____dataSource.IsFormationTargetRelevant)
             {
@@ -50,6 +51,8 @@ namespace RTSCamera.CommandSystem.Patch
             }
             else
             {
+                var focusedFormation = _focusedFormation?.GetValue(__instance) as Formation;
+                var focusedFormationsCache = _focusedFormationsCache?.GetValue(__instance) as MBReadOnlyList<Formation>;
                 List<Formation> targetedFormations = new List<Formation>();
                 MBReadOnlyList<Formation> selectedFormations = Agent.Main?.Team.PlayerOrderController?.SelectedFormations;
                 if (selectedFormations != null)
@@ -71,7 +74,9 @@ namespace RTSCamera.CommandSystem.Patch
                     if (target.TeamType == 2)
                     {
                         bool isTargeted = targetedFormations.Contains(target.Formation);
-                        bool isFocused = ____focusedFormationsCache?.Contains(target.Formation) ?? false;
+                        bool isFocused = focusedFormation != null
+                            ? focusedFormation == target.Formation
+                            : focusedFormationsCache?.Contains(target.Formation) ?? false;
                         target.SetTargetedState(isFocused, isTargeted);
                     }
                 }
