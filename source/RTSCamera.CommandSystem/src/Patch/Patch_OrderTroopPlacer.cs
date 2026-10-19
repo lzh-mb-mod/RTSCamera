@@ -198,6 +198,20 @@ namespace RTSCamera.CommandSystem.Patch
             _focusedFormationsCache = focusedFormations;
         }
 
+        // Bannerlord 1.5.5 reports one formation; keep the list overload for earlier beta builds.
+        private static void OnFormationFocused(Formation focusedFormation)
+        {
+            if (focusedFormation == null)
+            {
+                _focusedFormationsCache = null;
+            }
+            else if (_focusedFormationsCache == null || _focusedFormationsCache.Count != 1 ||
+                _focusedFormationsCache[0] != focusedFormation)
+            {
+                _focusedFormationsCache = new MBReadOnlyList<Formation>(new[] { focusedFormation });
+            }
+        }
+
         private static void OnToggleFreeCamera(bool isFreeCamera)
         {
             IsFreeCamera = isFreeCamera;
