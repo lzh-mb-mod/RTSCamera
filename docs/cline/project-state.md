@@ -59,8 +59,8 @@ Latest release tag per line:
 ## Reference material on disk
 
 - Decompiled game sources: `D:\develop\src\Bannerlord.Binaries\<version>` with `v1.2.12`,
-  `v1.3.4`, `v1.3.5`, `v1.3.15`, `v1.4.5`, `v1.4.6`, `v1.4.7`, `v1.4.8`, `v1.5.0`, `v1.5.1`
-  plus `ThirdPartyMods`.
+  `v1.3.4`, `v1.3.5`, `v1.3.15`, `v1.4.5`, `v1.4.6`, `v1.4.7`, `v1.4.8`, `v1.5.0`, `v1.5.1`,
+  `v1.5.5` plus `ThirdPartyMods`.
 - Decompiler script: `.github\scripts\Decompile-Bannerlord.ps1`.
 - In-game manual regression list: `manual_test_cases.md`.
 - Technical notes: `docs\*.md` (formation behavior, mission initialization, AI input).

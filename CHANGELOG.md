@@ -1,5 +1,16 @@
 # Changelog
 
+## [v5.5.1] - 2026-10-20
+### Fixed
+- Fix a crash when entering a battle caused by the formation focus event signature change in Bannerlord v1.5.5.
+
+- Fix a crash when issuing charge or advance orders to the focused formation from the order UI.
+
+- Fix ship targeting in naval battles no longer being handled by RTS Camera on Bannerlord v1.5.5.
+
+### Improved
+- Update compatibility for Bannerlord v1.5.5.
+
 ## [v5.5.0] - 2026-08-23
 ### Fixed
 - Fix AI-controlled ships using troop orders after returning from free camera with all ships selected.

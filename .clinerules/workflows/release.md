@@ -12,7 +12,7 @@ First ask the user (or confirm from their message) which line is being released:
 | Branch    | Bannerlord target   | Mod version line |
 |-----------|---------------------|------------------|
 | `master`  | v1.4.5 – v1.4.8     | `v5.4.x`         |
-| `beta`    | v1.5.1 (+ NavalDLC) | `v5.5.x`         |
+| `beta`    | v1.5.5 (+ NavalDLC) | `v5.5.x`         |
 | `v1.3.15` | v1.3.15             | `v5.3.x`         |
 
 ## Steps

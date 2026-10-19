@@ -61,7 +61,7 @@ dotnet build source\RTSCameraAgentComponent\RTSCameraAgentComponent.csproj --no-
 - Decompiled TaleWorlds/SandBox/NavalDLC sources are available at
   `D:\develop\src\Bannerlord.Binaries`, one folder per game version
   (`v1.2.12`, `v1.3.4`, `v1.3.5`, `v1.3.15`, `v1.4.5`, `v1.4.6`, `v1.4.7`, `v1.4.8`,
-  `v1.5.0`, `v1.5.1`).
+  `v1.5.0`, `v1.5.1`, `v1.5.5`).
 - Treat them as read-only reference code. They are not part of this repository.
 - Regenerate with `.github\scripts\Decompile-Bannerlord.ps1`:
   - `-InstallTool` installs `ilspycmd` as a global .NET tool.

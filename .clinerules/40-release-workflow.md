@@ -2,10 +2,10 @@
 
 ## Release lines
 
-| Branch     | Bannerlord target       | Mod version line | Latest tag (as of 2026-10-18)                 |
+| Branch     | Bannerlord target       | Mod version line | Latest tag (as of 2026-10-20)                 |
 |------------|-------------------------|------------------|-----------------------------------------------|
 | `master`   | v1.4.5 – v1.4.8         | `v5.4.x`         | `release-v5.4.16-for-bannerlord-v1.4.8`       |
-| `beta`     | v1.5.1 (+ NavalDLC)     | `v5.5.x`         | `release-v5.5.0-for-bannerlord-v1.5.1`        |
+| `beta`     | v1.5.5 (+ NavalDLC)     | `v5.5.x`         | `release-v5.5.0-for-bannerlord-v1.5.1`        |
 | `v1.3.15`  | v1.3.15                 | `v5.3.x`         | `release-v5.3.38-for-bannerlord-v1.3.15`      |
 
 Nothing is merged between these branches. Fixes are ported individually and validated
