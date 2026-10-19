@@ -123,6 +123,11 @@ jobs:
           dotnet md2html -i ..\..\CHANGELOG.md -o ..\package\net472\RTSCamera.CommandSystem\CHANGELOG.html;
         working-directory: .\source\RTSCamera\
 
+      - name: Copy license into packages
+        run: >-
+          Copy-Item .\LICENSE .\source\package\net472\RTSCamera\LICENSE -Force;
+          Copy-Item .\LICENSE .\source\package\net472\RTSCamera.CommandSystem\LICENSE -Force
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
