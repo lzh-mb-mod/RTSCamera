@@ -52,7 +52,7 @@ namespace RTSCamera.Patch
                 ____formationDrawingStartingTime = 0;
                 var missionOrderVM = Utility.GetMissionOrderVM(Mission.Current);
                 // Fix the issue that movement order message may not be shown in free camera, when order UI is kept open.
-                _displayedOrderMessageForLastOrder.SetValue(missionOrderVM, false);
+                _displayedOrderMessageForLastOrder?.SetValue(missionOrderVM, false);
             }
             return true;
         }
