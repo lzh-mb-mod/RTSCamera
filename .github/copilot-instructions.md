@@ -1,5 +1,11 @@
 # Copilot instructions for RTSCamera
 
+> **Migrated to Cline (2026-10-18).** The maintained agent rules now live in `.clinerules/`
+> (agent workflow, build/validation, architecture, conventions, release workflow, plus a
+> `/release` workflow). Project memory lives in `docs/cline/`. This file is kept only so
+> GitHub Copilot keeps working; when guidance changes, update `.clinerules/` first and
+> mirror the change here.
+
 ## Build, validation, and release commands
 
 ### Prerequisites
