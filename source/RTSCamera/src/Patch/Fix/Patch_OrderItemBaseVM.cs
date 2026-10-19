@@ -43,7 +43,7 @@ namespace RTSCamera.Patch.Fix
         public static void Prefix_ExecuteAction()
         {
             var missionOrderVM = Utility.GetMissionOrderVM(Mission.Current);
-            _displayOrderMessageForLastOrder.SetValue(missionOrderVM, false);
+            _displayOrderMessageForLastOrder?.SetValue(missionOrderVM, false);
         }
 
     }

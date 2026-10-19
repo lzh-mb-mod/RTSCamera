@@ -159,17 +159,17 @@ namespace RTSCamera.Patch.Fix
                 {
                     if (!__instance.TroopController.IsTransferActive)
                     {
-                        var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
+                        var displayedOrderMessageForLastOrder = (bool?)_displayOrderMessageForLastOrder?.GetValue(__instance) ?? false;
                         TryCloseToggleOrder(__instance);
                         Patch_MissionOrderVM.OpenToggleOrder(__instance, false);
-                        _displayOrderMessageForLastOrder.SetValue(__instance, displayedOrderMessageForLastOrder);
+                        _displayOrderMessageForLastOrder?.SetValue(__instance, displayedOrderMessageForLastOrder);
                     }
                 }
                 else
                 {
-                    var displayedOrderMessageForLastOrder = __instance.DisplayedOrderMessageForLastOrder;
+                    var displayedOrderMessageForLastOrder = (bool?)_displayOrderMessageForLastOrder?.GetValue(__instance) ?? false;
                     TryCloseToggleOrder(__instance);
-                    _displayOrderMessageForLastOrder.SetValue(__instance, displayedOrderMessageForLastOrder);
+                    _displayOrderMessageForLastOrder?.SetValue(__instance, displayedOrderMessageForLastOrder);
                 }
             }
 
