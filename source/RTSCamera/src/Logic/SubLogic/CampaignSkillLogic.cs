@@ -28,6 +28,11 @@ namespace RTSCamera.Logic.SubLogic
             RTSCameraSkillBehavior.UpdateCameraMaxDistance();
         }
 
+        public void OnRemoveBehaviour()
+        {
+            MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
+        }
+
         public void OnMissionModeChange(MissionMode oldMissionMode, bool atStart)
         {
             if (oldMissionMode == MissionMode.Deployment && _logic.Mission.Mode == MissionMode.Battle)
