@@ -26,6 +26,9 @@ namespace RTSCamera.CommandSystem.Orders.VisualOrders
           OrderController orderController,
           VisualOrderExecutionParameters executionParameters)
         {
+            if (Agent.Main == null)
+                return;
+
             bool queueCommand = OnBeforeExecuteOrder(orderController, executionParameters);
             var selectedFormations = orderController.SelectedFormations.ToList();
             if (selectedFormations.Count == 0)
