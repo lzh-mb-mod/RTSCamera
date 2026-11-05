@@ -2966,7 +2966,7 @@ namespace RTSCamera.CommandSystem.Patch
                 _simulationFormationUniqueIdentifier.SetValue(null, index);
                 if (arrangement is ColumnFormation columnFormation && arrangement.RankCount > 1)
                 {
-                    vec3 = (arrangement.GetUnit(columnFormation.VanguardFileIndex, 0) as Agent).Position;
+                    vec3 = ((columnFormation.Vanguard ?? arrangement.GetUnit(columnFormation.VanguardFileIndex, 0)) as Agent).Position;
                     Vec2 asVec2_1 = vec3.AsVec2;
                     vec3 = (arrangement.GetUnit(columnFormation.VanguardFileIndex, 1) as Agent).Position;
                     Vec2 asVec2_2 = vec3.AsVec2;
