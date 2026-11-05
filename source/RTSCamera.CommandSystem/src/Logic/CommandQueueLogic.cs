@@ -536,7 +536,7 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 if (GetNextOrderForFormation(formation) == null)
                 {
-                    LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(appliedFormations));
+                    LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(new[] { formation }));
                 }
             }
         }
@@ -553,7 +553,7 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 if (GetNextOrderForFormation(formation) == null)
                 {
-                    LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(order.SelectedFormations));
+                    LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(new[] { formation }));
                 }
             }
         }
