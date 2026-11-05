@@ -352,7 +352,7 @@ namespace RTSCamera.CommandSystem.Utilities
                 if (orderable != null)
                 {
                     var usable = orderable as UsableMachine;
-                    if (usable == null)
+                    if (usable == null || Agent.Main == null)
                         return prefix;
                     prefix = new TextObject(prefix.ToString() + " " + usable.GetDescriptionText(usable.GameEntity, Agent.Main));
                 }
