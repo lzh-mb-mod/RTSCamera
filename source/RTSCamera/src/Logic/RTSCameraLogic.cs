@@ -68,6 +68,7 @@ namespace RTSCamera.Logic
             FixScoreBoardAfterPlayerDeadLogic.OnRemoveBehaviour();
             MissionSpeedLogic.OnRemoveBehaviour();
             SwitchFreeCameraLogic.OnRemoveBehaviour();
+            CampaignSkillLogic.OnRemoveBehaviour();
             NavalLogic.OnRemoveBehaviour();
 
             Instance = null;
