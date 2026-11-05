@@ -282,11 +282,11 @@ namespace RTSCamera.CommandSystem.Config
                             MovementTargetHighlightStyleInRTSMode = MovementTargetHighlightStyle.AlwaysVisible;
                             break;
                     }
-                    break;
+                    goto case "1.3";
                 case "1.3":
-                    ConfigVersion = "1.3";
                     break;
             }
+            ConfigVersion = BinaryVersion.ToString(2);
         }
 
         [XmlIgnore]
