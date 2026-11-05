@@ -169,6 +169,13 @@ namespace RTSCamera.CommandSystem.Logic.SubLogic
 
         public void SetDefensiveHoldMode(Agent agent, DefensiveHoldMode defensiveHoldMode)
         {
+            if (!agent.IsAIControlled)
+            {
+                if (DefensiveHoldMode == DefensiveHoldMode.Disabled)
+                    return;
+                defensiveHoldMode = DefensiveHoldMode.Disabled;
+            }
+
             DefensiveHoldMode = defensiveHoldMode;
             if (DefensiveHoldMode == DefensiveHoldMode.Disabled)
             {
