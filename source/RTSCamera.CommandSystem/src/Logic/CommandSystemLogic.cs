@@ -3,6 +3,7 @@ using RTSCamera.CommandSystem.AgentComponents;
 using RTSCamera.CommandSystem.Config;
 using RTSCamera.CommandSystem.Config.HotKey;
 using RTSCamera.CommandSystem.Logic.SubLogic;
+using RTSCamera.CommandSystem.Orders;
 using RTSCamera.CommandSystem.Patch;
 using RTSCamera.CommandSystem.QuerySystem;
 using RTSCameraAgentComponent;
@@ -124,6 +125,8 @@ namespace RTSCamera.CommandSystem.Logic
         {
             base.OnBehaviorInitialize();
 
+            RTSCommandVisualOrder.ClearSelectTargetMode();
+            RTSCommandVisualOrder.IsFromClicking = false;
             Patch_MovementOrder.Patch();
             OutlineColorSubLogic.OnBehaviourInitialize();
             GroundMarkerColorSubLogic.OnBehaviourInitialize();
@@ -143,6 +146,8 @@ namespace RTSCamera.CommandSystem.Logic
 
         public override void OnRemoveBehavior()
         {
+            RTSCommandVisualOrder.ClearSelectTargetMode();
+            RTSCommandVisualOrder.IsFromClicking = false;
             foreach (var team in Mission.Current.Teams)
             {
                 if (team.FormationsIncludingSpecialAndEmpty == null)

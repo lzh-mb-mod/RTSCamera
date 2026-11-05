@@ -276,6 +276,7 @@ namespace RTSCamera.CommandSystem.View
         {
             base.OnMissionScreenInitialize();
 
+            FormationShapeEntity.Clear();
             _orderTroopPlacer = Mission.GetMissionBehavior<OrderTroopPlacer>();
             _agentPositionEntities = new List<GameEntity>();
             _orderPositionFlagEntities = new List<GameEntity>();
