@@ -193,7 +193,7 @@ namespace RTSCamera.Logic.SubLogic
                     return _flyCameraMissionView.MissionScreen?.LastFollowedAgent;
                 }
             }
-            else if (Mission.MainAgent?.IsActive() ?? false)
+            if (Mission.MainAgent?.IsActive() ?? false)
             {
                 return Mission.MainAgent;
             }
