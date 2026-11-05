@@ -376,11 +376,17 @@ namespace RTSCamera.Patch.Fix
         private static void OnPostSwitchTeam()
         {
             _isInSwitchTeamEvent = true;
-            _uiHandler.OnMissionScreenInitialize();
-            _uiHandler.OnMissionScreenActivate();
-            InitializeInADisgustingManner?.Invoke(Mission.Current.GetMissionBehavior<OrderTroopPlacer>(),
-                new object[] { });
-            _isInSwitchTeamEvent = false;
+            try
+            {
+                _uiHandler.OnMissionScreenInitialize();
+                _uiHandler.OnMissionScreenActivate();
+                InitializeInADisgustingManner?.Invoke(Mission.Current.GetMissionBehavior<OrderTroopPlacer>(),
+                    new object[] { });
+            }
+            finally
+            {
+                _isInSwitchTeamEvent = false;
+            }
         }
     }
 }
