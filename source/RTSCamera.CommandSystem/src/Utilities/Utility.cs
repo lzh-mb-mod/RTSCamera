@@ -539,6 +539,8 @@ namespace RTSCamera.CommandSystem.Utilities
                         }
                     case OrderType.FollowMe:
                         {
+                            if (formationChange.TargetAgent == null)
+                                return null;
                             return Patch_OrderController.GetFollowOrderPosition(formation, formationChange.TargetAgent);
                         }
                     case OrderType.FallBack:

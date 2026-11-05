@@ -721,6 +721,9 @@ namespace RTSCamera.CommandSystem.View
 
         private OrderPreviewData CollectOrderPreviewData(OrderInQueue order, Formation formation, bool virtualFacingDirection = true, bool isPendingOrder = false)
         {
+            if (order.IsInvalidFollowOrder)
+                return null;
+
             var facingOrder = Patch_OrderController.GetFormationVirtualFacingOrder(formation);
             switch (order.CustomOrderType)
             {

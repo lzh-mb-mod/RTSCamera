@@ -350,6 +350,7 @@ namespace RTSCamera.CommandSystem.Logic
         {
             base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, blow);
 
+            CommandQueueLogic.OnAgentRemoved(affectedAgent);
             OutlineColorSubLogic.OnAgentRemoved(affectedAgent);
             GroundMarkerColorSubLogic.OnAgentRemoved(affectedAgent);
         }
