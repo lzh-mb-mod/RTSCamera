@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -81,6 +82,10 @@ namespace RTSCamera.Logic.SubLogic
 
         public void OnBehaviourInitialize()
         {
+            if (Campaign.Current == null || MapEvent.PlayerMapEvent == null)
+            {
+                CommandBattleBehavior.CommandMode = false;
+            }
             _controlTroopLogic = _logic.ControlTroopLogic;
 
             Mission.OnMainAgentChanged += OnMainAgentChanged;
