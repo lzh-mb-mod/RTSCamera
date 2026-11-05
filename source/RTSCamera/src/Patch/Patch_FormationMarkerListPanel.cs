@@ -19,7 +19,11 @@ namespace RTSCamera.Patch
                 if (_patched)
                     return false;
                 _patched = true;
+                // Since v1.5.6 the close-distance fade formula lives in GetLegacyDistanceAlpha, which is used
+                // whenever the formation visibility is not evaluated (always in singleplayer).
                 harmony.Patch(
+                   typeof(FormationMarkerListPanel).GetMethod("GetLegacyDistanceAlpha",
+                       BindingFlags.Instance | BindingFlags.NonPublic) ??
                    typeof(FormationMarkerListPanel).GetMethod("GetDistanceRelatedAlphaTarget",
                        BindingFlags.Instance | BindingFlags.NonPublic),
                    prefix: new HarmonyMethod(typeof(Patch_FormationMarkerListPanel).GetMethod(
