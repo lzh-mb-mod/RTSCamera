@@ -35,8 +35,14 @@ namespace RTSCamera.CommandSystem.Orders
         {
             Patch_OrderTroopPlacer.Reset();
             RTSCommandVisualOrder.IsFromClicking = true;
-            ExecuteAction(new VisualOrderExecutionParameters(Agent.Main, null, null));
-            RTSCommandVisualOrder.IsFromClicking = false;
+            try
+            {
+                ExecuteAction(new VisualOrderExecutionParameters(Agent.Main, null, null));
+            }
+            finally
+            {
+                RTSCommandVisualOrder.IsFromClicking = false;
+            }
         }
 
         protected override void OnExecuteAction(VisualOrderExecutionParameters executionParameters)
