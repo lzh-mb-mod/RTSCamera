@@ -656,6 +656,11 @@ namespace RTSCamera.CommandSystem.Logic
                 // Disabled for naval battle for now.
                 if (Mission.Current.IsNavalBattle)
                     return;
+                if (formation.IsAIControlled)
+                {
+                    ClearOrdersForAIControlledFormation(formation);
+                    return;
+                }
                 TickVolley(formation);
                 if (_ticksToSkipByFormation.TryGetValue(formation, out var ticksToSkip))
                 {
@@ -710,6 +715,27 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 Utility.DisplayMessageForced(e.ToString());
             }
+        }
+
+        private static void ClearOrdersForAIControlledFormation(Formation formation)
+        {
+            // Queued orders record their formations in LatestOrderInQueueChanges.
+            if (!LatestOrderInQueueChanges.VirtualChanges.ContainsKey(formation) &&
+                !CurrentFormationChanges.VirtualChanges.ContainsKey(formation) &&
+                !PendingOrders.ContainsKey(formation) &&
+                !_ticksToSkipByFormation.ContainsKey(formation) &&
+                !ShouldSkipCurrentOrders.ContainsKey(formation))
+                return;
+
+            var formations = new[] { formation };
+            CancelPendingOrder(formations);
+            ClearOrderInQueue(formations);
+            ShouldSkipCurrentOrders.Remove(formation);
+            CurrentFormationChanges.VirtualChanges.Remove(formation);
+            LatestOrderInQueueChanges.VirtualChanges.Remove(formation);
+            Patch_OrderController.LivePreviewFormationChanges.VirtualChanges.Remove(formation);
+            Patch_OrderController.ClearFormationLivePositionForPreview(formation);
+            Patch_OrderController.SetFacingEnemyTargetFormation(formation, null);
         }
 
         private static void DiscardOrderForFormation(OrderInQueue order, Formation formation)
