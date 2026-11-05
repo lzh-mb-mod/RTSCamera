@@ -1,4 +1,8 @@
 * Rescue Prisoner
+* Command battle entry
+  * Confirm that normal field and siege command battles still enter command mode. Repeat for the lord's hall troop selection and naval raid troop/ship selection, confirming each selection to start its battle.
+  * Cancel each command battle selection, then enter a town or tournament and start an ordinary battle from the same encounter. Verify that command mode does not remain enabled and camera control works normally.
+  * In a debugger, make the command battle action return without opening a mission, or throw before/after creating one. Verify that command mode is cleared when the action fails or opens no mission, and that unrelated troop-selection callbacks remain unchanged.
 * Mission transitions
   * Draw order-position markers, leave the battle, and enter another battle. Verify that all marker styles and formation highlighting work in the new scene. In a debugger, repeat while skipping the previous battle's `Patch_OrderTroopPlacer.OnRemoveBehavior`; verify that no placer, entity or material from the previous battle is reused.
 * Siege
