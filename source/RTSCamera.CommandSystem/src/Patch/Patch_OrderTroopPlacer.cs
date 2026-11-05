@@ -148,9 +148,6 @@ namespace RTSCamera.CommandSystem.Patch
             _outlineView = __instance.Mission.GetMissionBehavior<CommandSystemLogic>().OutlineColorSubLogic;
             _groundMarkerView = __instance.Mission.GetMissionBehavior<CommandSystemLogic>().GroundMarkerColorSubLogic;
 
-            typeof(Input).GetProperty(nameof(Input.DebugInput), BindingFlags.Static | BindingFlags.Public)
-                .SetValue(null, __instance.Input);
-
             _cachedTimeOfDay = __instance.Mission.Scene.TimeOfDay;
             _isInitialized = true;
         }
