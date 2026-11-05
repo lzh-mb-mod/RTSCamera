@@ -74,6 +74,9 @@ namespace RTSCamera.CommandSystem.Logic
         public Formation TargetFormation { get; set; }
         public Agent TargetAgent { get; set; }
 
+        public bool IsInvalidFollowOrder => CustomOrderType == CustomOrderType.Original &&
+            OrderType == OrderType.FollowMe && TargetAgent == null;
+
         public IOrderable TargetEntity { get; set; }
 
         public bool IsStopUsing { get; set; }
@@ -598,6 +601,54 @@ namespace RTSCamera.CommandSystem.Logic
             CommandQueuePreview.IsPreviewOutdated = true;
         }
 
+        public static void OnAgentRemoved(Agent affectedAgent)
+        {
+            if (affectedAgent == null || OrderQueue == null)
+                return;
+
+            bool changed = false;
+            foreach (var order in OrderQueue)
+                changed |= ClearFollowTarget(order, affectedAgent);
+            foreach (var order in PendingOrders.Values)
+                changed |= ClearFollowTarget(order, affectedAgent);
+            changed |= ClearFollowTarget(CurrentFormationChanges.VirtualChanges, affectedAgent);
+            changed |= ClearFollowTarget(LatestOrderInQueueChanges.VirtualChanges, affectedAgent);
+            changed |= ClearFollowTarget(Patch_OrderController.LivePreviewFormationChanges.VirtualChanges, affectedAgent);
+            if (changed)
+                CommandQueuePreview.IsPreviewOutdated = true;
+        }
+
+        private static bool ClearFollowTarget(OrderInQueue order, Agent affectedAgent)
+        {
+            bool changed = ReferenceEquals(order.TargetAgent, affectedAgent);
+            if (changed)
+                order.TargetAgent = null;
+            return ClearFollowTarget(order.VirtualFormationChanges, affectedAgent) || changed;
+        }
+
+        private static bool ClearFollowTarget(Dictionary<Formation, FormationChange> changes, Agent affectedAgent)
+        {
+            List<Formation> formations = null;
+            foreach (var pair in changes)
+            {
+                if (ReferenceEquals(pair.Value.TargetAgent, affectedAgent))
+                {
+                    if (formations == null)
+                        formations = new List<Formation>();
+                    formations.Add(pair.Key);
+                }
+            }
+            if (formations == null)
+                return false;
+            foreach (var formation in formations)
+            {
+                var change = changes[formation];
+                change.TargetAgent = null;
+                changes[formation] = change;
+            }
+            return true;
+        }
+
         public static void UpdateFormation(Formation formation)
         {
             try
@@ -633,12 +684,19 @@ namespace RTSCamera.CommandSystem.Logic
                 {
                     try
                     {
-                        ExecuteOrderForFormation(order, formation);
-                        OnOrderExecutedForFormation(order, formation);
+                        if (order.IsInvalidFollowOrder)
+                        {
+                            DiscardOrderForFormation(order, formation);
+                        }
+                        else
+                        {
+                            ExecuteOrderForFormation(order, formation);
+                            OnOrderExecutedForFormation(order, formation);
+                        }
                     }
                     catch
                     {
-                        DiscardFailedOrderForFormation(order, formation);
+                        DiscardOrderForFormation(order, formation);
                         throw;
                     }
                     UpdatePendingOrder(formation);
@@ -654,7 +712,7 @@ namespace RTSCamera.CommandSystem.Logic
             }
         }
 
-        private static void DiscardFailedOrderForFormation(OrderInQueue order, Formation formation)
+        private static void DiscardOrderForFormation(OrderInQueue order, Formation formation)
         {
             order.SelectedFormations.Remove(formation);
             order.RemainingFormations.Remove(formation);
@@ -712,6 +770,12 @@ namespace RTSCamera.CommandSystem.Logic
         {
             if (PendingOrders.TryGetValue(formation, out var order))
             {
+                if (order.IsInvalidFollowOrder)
+                {
+                    PendingOrders.Remove(formation);
+                    _ticksToSkipByFormation.Remove(formation);
+                    return;
+                }
                 order.UpdateMovementSpeed();
                 if (order.ShouldAdjustFormationSpeed &&
                     !order.IsAdjustingSpeedMessageShown &&
@@ -875,6 +939,8 @@ namespace RTSCamera.CommandSystem.Logic
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
                                 break;
                             case OrderType.FollowMe:
+                                if (order.TargetAgent == null)
+                                    break;
                                 formation.SetMovementOrder(MovementOrder.MovementOrderFollow(order.TargetAgent));
                                 TryPendingOrder(new List<Formation> { formation }, order);
                                 CurrentFormationChanges.SetChanges(order.VirtualFormationChanges.Where(pair => pair.Key == formation));
