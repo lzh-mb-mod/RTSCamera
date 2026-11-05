@@ -354,7 +354,7 @@ namespace RTSCamera.CommandSystem.Utilities
                     var usable = orderable as UsableMachine;
                     if (usable == null)
                         return prefix;
-                    prefix = new TextObject(prefix.ToString() + " " + usable.GetDescriptionText(usable.GameEntity));
+                    prefix = new TextObject(prefix.ToString() + " " + usable.GetDescriptionText(usable.GameEntity, Agent.Main));
                 }
             }
             catch (Exception e)
