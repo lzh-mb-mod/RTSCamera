@@ -5,12 +5,15 @@ using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Encounters;
 using TaleWorlds.CampaignSystem.GameMenus;
+using TaleWorlds.CampaignSystem.GameState;
 using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.Siege;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
+using TaleWorlds.MountAndBlade;
 using Module = TaleWorlds.MountAndBlade.Module;
 
 namespace RTSCamera.CampaignGame.Behavior
@@ -49,6 +52,73 @@ namespace RTSCamera.CampaignGame.Behavior
             }
         }
 
+        private static void StartCommandBattle(MenuContext menuContext, Action startMission)
+        {
+            var previousMission = Mission.Current;
+            var originalHandler = menuContext?.Handler;
+            var temporaryHandler = originalHandler == null || originalHandler is CommandBattleMenuContextHandler
+                ? null
+                : new CommandBattleMenuContextHandler(menuContext, originalHandler);
+            var completed = false;
+            if (temporaryHandler != null)
+            {
+                menuContext.Handler = temporaryHandler;
+            }
+            CommandMode = true;
+            try
+            {
+                startMission();
+                completed = true;
+            }
+            finally
+            {
+                if (temporaryHandler != null && ReferenceEquals(menuContext.Handler, temporaryHandler))
+                {
+                    menuContext.Handler = originalHandler;
+                }
+                if (!completed || ReferenceEquals(Mission.Current, previousMission))
+                {
+                    CommandMode = false;
+                }
+            }
+        }
+
+        private sealed class CommandBattleMenuContextHandler : IMenuContextHandler
+        {
+            private readonly MenuContext _menuContext;
+            private readonly IMenuContextHandler _inner;
+
+            public CommandBattleMenuContextHandler(MenuContext menuContext, IMenuContextHandler inner)
+            {
+                _menuContext = menuContext;
+                _inner = inner;
+            }
+
+            public void OnOpenTroopSelection(TroopRoster fullRoster, TroopRoster initialSelections,
+                Func<CharacterObject, bool> canChangeStatusOfTroop, Action<TroopRoster> onDone,
+                int maxSelectableTroopCount, int minSelectableTroopCount)
+            {
+                if (onDone != null)
+                {
+                    var callback = onDone;
+                    onDone = troops => StartCommandBattle(_menuContext, () => callback(troops));
+                }
+                _inner.OnOpenTroopSelection(fullRoster, initialSelections, canChangeStatusOfTroop,
+                    onDone, maxSelectableTroopCount, minSelectableTroopCount);
+            }
+
+            public void OnBackgroundMeshNameSet(string name) => _inner.OnBackgroundMeshNameSet(name);
+            public void OnOpenTownManagement() => _inner.OnOpenTownManagement();
+            public void OnOpenRecruitVolunteers() => _inner.OnOpenRecruitVolunteers();
+            public void OnOpenTournamentLeaderboard() => _inner.OnOpenTournamentLeaderboard();
+            public void OnMenuCreate() => _inner.OnMenuCreate();
+            public void OnMenuActivate() => _inner.OnMenuActivate();
+            public void OnMenuRefresh() => _inner.OnMenuRefresh();
+            public void OnHourlyTick() => _inner.OnHourlyTick();
+            public void OnPanelSoundIDSet(string panelSoundID) => _inner.OnPanelSoundIDSet(panelSoundID);
+            public void OnAmbientSoundIDSet(string ambientSoundID) => _inner.OnAmbientSoundIDSet(ambientSoundID);
+        }
+
         public static void Postfix(CampaignGameStarter gameSystemInitializer)
         {
             AddMenuOption(gameSystemInitializer);
@@ -79,8 +149,7 @@ namespace RTSCamera.CampaignGame.Behavior
                     {
                         try
                         {
-                            CommandMode = true;
-                            MenuHelper.EncounterAttackConsequence(args);
+                            StartCommandBattle(args.MenuContext, () => MenuHelper.EncounterAttackConsequence(args));
                         }
                         catch (Exception e)
                         {
@@ -141,8 +210,7 @@ namespace RTSCamera.CampaignGame.Behavior
                     PlayerEncounter.LeaveEncounter = false;
                 else
                     EncounterManager.StartSettlementEncounter(MobileParty.MainParty, PlayerSiege.PlayerSiegeEvent.BesiegedSettlement);
-                CommandMode = true;
-                GameMenu.SwitchToMenu("assault_town");
+                StartCommandBattle(Campaign.Current.CurrentMenuContext, () => GameMenu.SwitchToMenu("assault_town"));
             }
             catch (Exception e)
             {
