@@ -372,9 +372,15 @@ namespace RTSCamera.Patch.Fix
         private static void OnPostSwitchTeam()
         {
             _isInSwitchTeamEvent = true;
-            _uiHandler.OnMissionScreenInitialize();
-            _uiHandler.OnMissionScreenActivate();
-            _isInSwitchTeamEvent = false;
+            try
+            {
+                _uiHandler.OnMissionScreenInitialize();
+                _uiHandler.OnMissionScreenActivate();
+            }
+            finally
+            {
+                _isInSwitchTeamEvent = false;
+            }
         }
     }
 }
