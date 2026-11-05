@@ -53,10 +53,17 @@ namespace RTSCamera.Logic.SubLogic
 
         public  void OnToggleFreeCamera(bool freeCamera)
         {
-            if (_config.SlowMotionOnRtsView && !CommandBattleBehavior.CommandMode)
+            if (freeCamera)
             {
-                SetSlowMotionMode(freeCamera);
-                _slowMotionByRTSView = freeCamera;
+                if (_config.SlowMotionOnRtsView && !CommandBattleBehavior.CommandMode && !_config.SlowMotionMode)
+                {
+                    SetSlowMotionMode(true);
+                    _slowMotionByRTSView = true;
+                }
+            }
+            else if (_slowMotionByRTSView)
+            {
+                SetSlowMotionMode(false);
             }
         }
 
@@ -145,6 +152,7 @@ namespace RTSCamera.Logic.SubLogic
 
         public void SetSlowMotionMode(bool slowMotionMode)
         {
+            _slowMotionByRTSView = false;
             if (_config.SlowMotionMode == slowMotionMode)
                 return;
 
@@ -214,6 +222,9 @@ namespace RTSCamera.Logic.SubLogic
 
         private void RemoveSlowMotionRequest()
         {
+            if (!_slowMotionRequestAdded)
+                return;
+
             // Implemented through patch
             //Mission.RemoveTimeSpeedRequest(RTSCameraSubModule.MissionTimeSpeedRequestId);
             Utility.DisplayLocalizedText("str_rts_camera_normal_mode_enabled");
