@@ -2429,7 +2429,7 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static void FillOrderLookingAtPosition(OrderInQueue order, OrderController orderController, WorldPosition position)
         {
-            var selectedFormations = orderController.SelectedFormations.Where(f => f.CountOfUnitsWithoutDetachedOnes > 0).ToList();
+            var selectedFormations = orderController.SelectedFormations.ToList();
             var formationsWithLocking = new List<Formation> { };
             var formationsWithoutLocking = new List<Formation> { };
             foreach (var formation in selectedFormations)

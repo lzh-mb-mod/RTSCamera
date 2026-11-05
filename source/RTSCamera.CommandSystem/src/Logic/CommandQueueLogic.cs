@@ -631,8 +631,16 @@ namespace RTSCamera.CommandSystem.Logic
                 while (!_ticksToSkipByFormation.ContainsKey(formation) && order != null &&
                     (!isApplicable || isPendingOrderCompleted) && isReadyToExecuteOrder)
                 {
-                    ExecuteOrderForFormation(order, formation);
-                    OnOrderExecutedForFormation(order, formation);
+                    try
+                    {
+                        ExecuteOrderForFormation(order, formation);
+                        OnOrderExecutedForFormation(order, formation);
+                    }
+                    catch
+                    {
+                        DiscardFailedOrderForFormation(order, formation);
+                        throw;
+                    }
                     UpdatePendingOrder(formation);
                     order = GetNextOrderForFormation(formation);
                     isApplicable = formation.GetReadonlyMovementOrderReference().IsApplicable(formation);
@@ -644,6 +652,26 @@ namespace RTSCamera.CommandSystem.Logic
             {
                 Utility.DisplayMessageForced(e.ToString());
             }
+        }
+
+        private static void DiscardFailedOrderForFormation(OrderInQueue order, Formation formation)
+        {
+            order.SelectedFormations.Remove(formation);
+            order.RemainingFormations.Remove(formation);
+            if (PendingOrders.TryGetValue(formation, out var pendingOrder) && pendingOrder == order)
+            {
+                PendingOrders.Remove(formation);
+                _ticksToSkipByFormation.Remove(formation);
+            }
+            if (order.RemainingFormations.Count == 0)
+            {
+                OrderQueue.Remove(order);
+            }
+            if (GetNextOrderForFormation(formation) == null)
+            {
+                LatestOrderInQueueChanges.SetChanges(CurrentFormationChanges.CollectChanges(new[] { formation }));
+            }
+            CommandQueuePreview.IsPreviewOutdated = true;
         }
 
         public static bool IsMovementOrderCompleted(Formation formation, OrderInQueue order)
