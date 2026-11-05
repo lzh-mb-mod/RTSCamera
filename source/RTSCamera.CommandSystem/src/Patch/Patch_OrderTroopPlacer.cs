@@ -136,24 +136,28 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static void Postfix_OnMissionTick(OrderTroopPlacer __instance, bool ____initialized)
         {
+            if (__instance != _orderTroopPlacer)
+            {
+                ResetTroopPlacerState();
+            }
             if (!____initialized)
                 return;
             if (_isInitialized)
                 return;
-            _isInitialized = true;
             _orderTroopPlacer = __instance;
-            _clickedFormation = null;
-            _outlineView = Mission.Current.GetMissionBehavior<CommandSystemLogic>().OutlineColorSubLogic;
-            _groundMarkerView = Mission.Current.GetMissionBehavior<CommandSystemLogic>().GroundMarkerColorSubLogic;
+            _outlineView = __instance.Mission.GetMissionBehavior<CommandSystemLogic>().OutlineColorSubLogic;
+            _groundMarkerView = __instance.Mission.GetMissionBehavior<CommandSystemLogic>().GroundMarkerColorSubLogic;
 
             typeof(Input).GetProperty(nameof(Input.DebugInput), BindingFlags.Static | BindingFlags.Public)
                 .SetValue(null, __instance.Input);
 
             _cachedTimeOfDay = __instance.Mission.Scene.TimeOfDay;
+            _isInitialized = true;
         }
 
         public static void OnBehaviorInitialize()
         {
+            ResetMissionState();
             _targetSelectionHandler = Mission.Current.GetMissionBehavior<MissionFormationTargetSelectionHandler>();
             if (_targetSelectionHandler != null)
             {
@@ -168,6 +172,11 @@ namespace RTSCamera.CommandSystem.Patch
 
         public static void OnRemoveBehavior()
         {
+            ResetMissionState();
+        }
+
+        private static void ResetTroopPlacerState()
+        {
             _cachedTimeOfDay = 0;
             _orderTroopPlacer = null;
             _isInitialized = false;
@@ -176,6 +185,20 @@ namespace RTSCamera.CommandSystem.Patch
             _clickedFormation = null;
             _lastNewMouseOverFormation = null;
             _focusedFormationsCache = null;
+            _currentCursorState = CursorState.Invisible;
+            _originalOrderPositionEntities = _newModelOrderPositionEntities = _alwaysVisibleOrderPositionEntities = null;
+            _currentMaterial = _originalMaterial = _newModelMaterial = _alwaysVisibleMaterial = null;
+            _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
+            _skipDrawingForDestinationForOneTick = false;
+            _isDrawingForDestinationInLastTick = false;
+            _wasDragCameraKeyDown = false;
+            _wasSelectFormationKeyDown = false;
+            _beginDraggingOffset = 0f;
+        }
+
+        private static void ResetMissionState()
+        {
+            ResetTroopPlacerState();
             if (_targetSelectionHandler != null)
             {
                 _targetSelectionHandler.OnFormationFocused -= OnFormationFocused;
@@ -183,14 +206,8 @@ namespace RTSCamera.CommandSystem.Patch
             _targetSelectionHandler = null;
             MissionEvent.ToggleFreeCamera -= OnToggleFreeCamera;
             IsFreeCamera = false;
-            _originalOrderPositionEntities = _newModelOrderPositionEntities = _alwaysVisibleOrderPositionEntities = null;
-            _currentMaterial = _originalMaterial = _newModelMaterial = _alwaysVisibleMaterial = null;
-            _previousMovementTargetHightlightStyle = MovementTargetHighlightStyle.Count;
             _clearMouseOverFormationTimer = null;
             _changeMouseOverFormationTimer = null;
-            _wasDragCameraKeyDown = false;
-            _wasSelectFormationKeyDown = false;
-            _beginDraggingOffset = 0f;
         }
 
         private static void OnFormationFocused(MBReadOnlyList<Formation> focusedFormations)
@@ -778,7 +795,7 @@ namespace RTSCamera.CommandSystem.Patch
                 return false;
 
             _activeCursorState.SetValue(__instance,
-                (CursorState)_getCursorState.Invoke(_orderTroopPlacer, new object[] { }));
+                (CursorState)_getCursorState.Invoke(__instance, new object[] { }));
             if (!CanUpdate(__instance, ____orderController))
             {
                 if (Mission.Current?.Mode == MissionMode.Deployment)

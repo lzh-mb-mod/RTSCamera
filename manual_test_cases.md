@@ -1,4 +1,6 @@
 * Rescue Prisoner
+* Mission transitions
+  * Draw order-position markers, leave the battle, and enter another battle. Verify that all marker styles and formation highlighting work in the new scene. In a debugger, repeat while skipping the previous battle's `Patch_OrderTroopPlacer.OnRemoveBehavior`; verify that no placer, entity or material from the previous battle is reused.
 * Siege
   * Switch to an AI that's moving to a siege weapon;
   * Switch to an AI that's using a siege weapon;
