@@ -1,5 +1,12 @@
 # Changelog
 
+## [v5.5.2] - 2026-11-05
+### Fixed
+- Fix siege weapon order descriptions after the interaction API change in Bannerlord v1.5.6.
+
+### Improved
+- Update compatibility for Bannerlord v1.5.6.
+
 ## [v5.5.1] - 2026-10-20
 ### Fixed
 - Fix a crash when entering a battle caused by the formation focus event signature change in Bannerlord v1.5.5.
