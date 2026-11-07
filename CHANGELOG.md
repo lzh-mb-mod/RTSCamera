@@ -1,11 +1,22 @@
 # Changelog
 
-## [v5.5.2] - 2026-11-05
+## [v5.5.3] - 2026-11-07
 ### Fixed
-- Fix siege weapon order descriptions after the interaction API change in Bannerlord v1.5.6.
+- Fix Bannerlord v1.5.6 compatibility issues with formation markers, siege weapon orders, the order cursor, and column formation previews.
 
-### Improved
-- Update compatibility for Bannerlord v1.5.6.
+- Fix command battles while wounded, including small battles that skip deployment. Canceling a launch no longer affects later battles.
+
+- Fix stalled order queues and incorrect formation previews. Skip Follow Me orders whose targets are gone and clear queued orders when AI takes control.
+
+- Keep Defensive Hold from restricting the player-controlled character.
+
+- Clear leftover order markers and target selection when starting another battle.
+
+- Keep manually enabled slow motion when leaving RTS view.
+
+- Prefer your own character when using Control Troop if the followed character cannot be controlled.
+
+- Keep existing bindings if you cancel after resetting hotkeys. Pressing the menu hotkey while binding keys no longer closes the options menu underneath.
 
 ## [v5.5.1] - 2026-10-20
 ### Fixed
