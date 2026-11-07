@@ -1,5 +1,21 @@
 # Changelog
 
+## [v5.4.17] - 2026-11-07
+### Fixed
+- Fix command battles while wounded, including small battles that skip deployment. Canceling a launch no longer affects later battles.
+
+- Fix stalled order queues and incorrect formation previews. Skip Follow Me orders whose targets are gone and clear queued orders when AI takes control.
+
+- Keep Defensive Hold from restricting the player-controlled character.
+
+- Clear leftover order markers and target selection when starting another battle.
+
+- Keep manually enabled slow motion when leaving RTS view.
+
+- Prefer your own character when using Control Troop if the followed character cannot be controlled.
+
+- Keep existing bindings if you cancel after resetting hotkeys. Pressing the menu hotkey while binding keys no longer closes the options menu underneath.
+
 ## [v5.4.16] - 2026-08-23
 ### Fixed
 - Fix AI-controlled ships using troop orders after returning from free camera with all ships selected.
