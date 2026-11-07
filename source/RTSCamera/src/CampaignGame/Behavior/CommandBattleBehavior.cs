@@ -54,7 +54,8 @@ namespace RTSCamera.CampaignGame.Behavior
 
         private static void StartCommandBattle(MenuContext menuContext, Action startMission)
         {
-            var previousMission = Mission.Current;
+            // Mission.Current is only assigned when the new mission starts loading.
+            var previousMission = MissionState.Current?.CurrentMission;
             var originalHandler = menuContext?.Handler;
             var temporaryHandler = originalHandler == null || originalHandler is CommandBattleMenuContextHandler
                 ? null
@@ -76,7 +77,8 @@ namespace RTSCamera.CampaignGame.Behavior
                 {
                     menuContext.Handler = originalHandler;
                 }
-                if (!completed || ReferenceEquals(Mission.Current, previousMission))
+                var currentMission = MissionState.Current?.CurrentMission;
+                if (!completed || currentMission == null || ReferenceEquals(currentMission, previousMission))
                 {
                     CommandMode = false;
                 }

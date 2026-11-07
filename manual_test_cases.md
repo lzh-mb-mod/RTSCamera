@@ -1,6 +1,7 @@
 * Rescue Prisoner
 * Command battle entry
-  * Confirm that normal field and siege command battles still enter command mode. Repeat for the lord's hall troop selection, confirming the selection to start its battle.
+  * With the player wounded and enough troops for deployment, start a field and a siege command battle. Verify that deployment completes with a substitute main agent, command mode stays active, and the substitute is alarmed when combat starts. Repeat for the lord's hall troop selection, confirming the selection to start its battle.
+  * Repeat with fewer than 20 player-controllable troops. Verify that the deployment screen is skipped and the substitute is alarmed when combat starts.
   * Cancel each command battle selection, then enter a town or tournament and start an ordinary battle from the same encounter. Verify that command mode does not remain enabled and camera control works normally.
   * In a debugger, make the command battle action return without opening a mission, or throw before/after creating one. Verify that command mode is cleared when the action fails or opens no mission, and that unrelated troop-selection callbacks remain unchanged.
 * Mission transitions
