@@ -1,4 +1,4 @@
-[b][color=Red]支持游戏本体v1.2.12，或v1.3.4-v1.3.15、v1.4.5-v1.4.8、v1.5.1及对应的战帆版本[/color]
+[b][color=Red]支持游戏本体v1.2.12，或v1.3.4-v1.3.15、v1.4.5-v1.4.8、v1.5.6及对应的战帆版本[/color]
 [color=Purple]作者：[/color][/b]LiZhenhuan1019
 
 [b][color=Blue]◆MOD介绍[/color][/b]
@@ -8,7 +8,7 @@ RTS自由视角[RTS Camera]Mod 为《骑马与砍杀2：霸主》的战斗场景
 本Mod不会读写存档数据，安装或卸载均不会影响现有存档。
 
 [b]游戏版本兼容性[/b]
-◆游戏本体v1.5.1：使用RTS Camera v5.5.x。
+◆游戏本体v1.5.6：使用RTS Camera v5.5.3。
 ◆游戏本体v1.4.5-v1.4.8：使用RTS Camera v5.4.x。
 ◆游戏本体v1.3.4-v1.3.15：使用RTS Camera v5.3.x。
 ◆游戏本体v1.2.12：使用RTS Camera v5.1.x。
