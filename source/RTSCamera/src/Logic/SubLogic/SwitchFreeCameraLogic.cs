@@ -570,6 +570,10 @@ namespace RTSCamera.Logic.SubLogic
                 }
                 if (!Utility.IsHideoutBattle() && !Utility.IsHideoutAmbush())
                     TrySetPlayerFormation(true);
+
+                // The substitute may have become AI-controlled after the native deployment alarm update.
+                if (CommandBattleBehavior.CommandMode && Mission.MainAgent is { IsAIControlled: true } mainAgent)
+                    mainAgent.SetAlarmState(AIStateFlag.Alarmed);
             }
             if (Utility.IsHideoutBattle())
             {
