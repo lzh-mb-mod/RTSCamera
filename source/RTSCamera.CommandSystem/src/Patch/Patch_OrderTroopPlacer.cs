@@ -419,7 +419,7 @@ namespace RTSCamera.CommandSystem.Patch
 
                     if (cursorState == CursorState.Invisible)
                     {
-                        if (__instance.MissionScreen.OrderFlag.FocusedOrderableObject != null)
+                        if (__instance.MissionScreen.OrderFlag?.FocusedOrderableObject != null)
                         {
                             if (____mouseOverFormation != null && _clearMouseOverFormationTimer.Check(MBCommon.GetApplicationTime()))
                             {
