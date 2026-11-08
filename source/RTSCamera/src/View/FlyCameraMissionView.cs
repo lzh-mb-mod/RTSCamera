@@ -25,14 +25,20 @@ namespace RTSCamera.View
 {
     public class FlyCameraMissionView : MissionView, ICameraModeLogic, ICameraController
     {
+        private const double ReferenceCameraFps = 120.0;
+        private const double ReferenceMovementRetention = 1.0 - 10.0 / ReferenceCameraFps;
+        private const double ReferenceCoastingTime = ReferenceMovementRetention / ((1.0 - ReferenceMovementRetention) * ReferenceCameraFps);
+        private const double RotationRetentionPerSecond = 0.000001;
+        private static readonly double ReferenceRotationRelease = 1.0 - Math.Pow(RotationRetentionPerSecond, 1.0 / ReferenceCameraFps);
+        private static readonly double TotalRotationPerInput = 1.0 / ReferenceRotationRelease;
+        private static readonly double PendingRotationScale = (1.0 - ReferenceRotationRelease) / ReferenceRotationRelease;
+
         private static readonly FieldInfo CameraAddedElevation =
             typeof(MissionScreen).GetField("_cameraAddedElevation", BindingFlags.Instance | BindingFlags.NonPublic);
         private static readonly MethodInfo SetLastFollowedAgent =
             typeof(MissionScreen).GetProperty("LastFollowedAgent")?.GetSetMethod(true);
-        private static readonly MethodInfo SetCameraBearing =
-            typeof(MissionScreen).GetProperty("CameraBearing")?.GetSetMethod(true);
-        private static readonly MethodInfo SetCameraElevation =
-            typeof(MissionScreen).GetProperty("CameraElevation")?.GetSetMethod(true);
+        private static readonly Action<MissionScreen, float> SetCameraBearing = CreateCameraAngleSetter("CameraBearing");
+        private static readonly Action<MissionScreen, float> SetCameraElevation = CreateCameraAngleSetter("CameraElevation");
 
         private static readonly FieldInfo CameraSpecialCurrentAddedElevation =
             typeof(MissionScreen).GetField("_cameraSpecialCurrentAddedElevation", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -438,6 +444,7 @@ namespace RTSCamera.View
         private void UpdateFlyCamera(float dt)
         {
             HandleRotateInput(dt);
+            double referenceFrames = dt * ReferenceCameraFps;
             MatrixFrame cameraFrame = MatrixFrame.Identity;
             cameraFrame.rotation.RotateAboutSide(1.57079637f);
             cameraFrame.rotation.RotateAboutForward(CameraBearing);
@@ -469,18 +476,23 @@ namespace RTSCamera.View
 
             float heightFactorForHorizontalMove;
             float heightFactorForVerticalMove;
-            var groundHeight = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin);
-            var terrainHeight = Mission.Scene.GetTerrainHeight(cameraFrame.origin.AsVec2);
-            var waterHeight = Mission.Scene.GetWaterLevel();
+            var scene = Mission.Scene;
             bool isNaval = Mission.IsNavalBattle;
+            bool isEditMode = MBEditor.IsEditModeOn;
+            bool constantSpeed = _config.ConstantSpeed;
+            bool ignoreTerrain = _config.IgnoreTerrain;
+            bool followsTerrain = _config.CameraHeightFollowsTerrain;
+            float terrainHeight = followsTerrain || (!constantSpeed && !isNaval && ignoreTerrain)
+                ? scene.GetTerrainHeight(cameraFrame.origin.AsVec2)
+                : 0f;
+            float waterHeight = isNaval && (!constantSpeed || !isEditMode) ? scene.GetWaterLevel() : 0f;
 
-            if (!_config.ConstantSpeed)
+            if (!constantSpeed)
             {
-                float heightAtPosition = isNaval ? waterHeight : _config.IgnoreTerrain ? terrainHeight : groundHeight;
-                heightFactorForHorizontalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
-                    1, 30);
-                heightFactorForVerticalMove = MathF.Clamp((float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2),
-                    1f, 20f);
+                float heightAtPosition = isNaval ? waterHeight : ignoreTerrain ? terrainHeight : scene.GetGroundHeightAtPosition(cameraFrame.origin);
+                float heightFactor = (float)(1.0 + (cameraFrame.origin.z - (double)heightAtPosition - 0.5) / 2);
+                heightFactorForHorizontalMove = MathF.Clamp(heightFactor, 1f, 30f);
+                heightFactorForVerticalMove = MathF.Clamp(heightFactor, 1f, 20f);
             }
             else
             {
@@ -494,7 +506,11 @@ namespace RTSCamera.View
                 _cameraSpeedMultiplier *= 0.8f;
             if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.ResetCameraSpeed).IsKeyPressedInOrder())
                 _cameraSpeedMultiplier = 1f;
-            _cameraSpeed *= (float)(1.0 - 10 * (double)dt);
+            Vec3 speedBeforeDecay = _cameraSpeed;
+            double movementRetention = _cameraSmoothMode && (speedBeforeDecay.x != 0f || speedBeforeDecay.y != 0f || speedBeforeDecay.z != 0f)
+                ? Math.Pow(ReferenceMovementRetention, referenceFrames)
+                : 1.0;
+            _cameraSpeed *= (float)movementRetention;
             //if (MissionScreen.InputManager.IsControlDown())
             //{
             //    float num = MissionScreen.SceneLayer.Input.GetDeltaMouseScroll() * 0.008333334f;
@@ -513,10 +529,11 @@ namespace RTSCamera.View
                 _cameraSpeed.z = 0.0f;
             }
 
-            bool hasVerticalInput = false;
+            Vec3 speedAfterDecay = _cameraSpeed;
+            Vec2 horizontalInput = Vec2.Zero;
+            float keyInputVertical = 0;
             //if (!MissionScreen.InputManager.IsControlDown() || !MissionScreen.InputManager.IsAltDown())
             {
-                float keyInputVertical = 0;
                 Vec2 keyInput = Vec2.Zero;
                 Vec2 mouseInput = Vec2.Zero;
                 if (RTSCameraGameKeyCategory.GetKey(GameKeyEnum.CameraMoveForward).IsKeyDown())
@@ -566,12 +583,12 @@ namespace RTSCamera.View
                 if (keyInput.LengthSquared > 0.0)
                     keyInput.Normalize();
 
-                hasVerticalInput = keyInputVertical != 0 || TaleWorlds.InputSystem.Input.DeltaMouseScroll != 0;
-                if (keyInput + mouseInput != Vec2.Zero || keyInputVertical != 0)
+                horizontalInput = keyInput + mouseInput;
+                if (horizontalInput != Vec2.Zero || keyInputVertical != 0)
                 {
                     FocusOnFormation(null);
                 }
-                _cameraSpeed += ((keyInput + mouseInput) * cameraBasicSpeed * heightFactorForHorizontalMove).ToVec3(keyInputVertical * cameraBasicSpeed * heightFactorForVerticalMove);
+                _cameraSpeed += (horizontalInput * cameraBasicSpeed * heightFactorForHorizontalMove).ToVec3(keyInputVertical * cameraBasicSpeed * heightFactorForVerticalMove);
             }
             float horizontalLimit = heightFactorForHorizontalMove * cameraBasicSpeed;
             float verticalLimit = heightFactorForVerticalMove * cameraBasicSpeed * VerticalMovementSpeedFactor;
@@ -579,8 +596,22 @@ namespace RTSCamera.View
             _cameraSpeed.y = MBMath.ClampFloat(_cameraSpeed.y, -horizontalLimit, horizontalLimit);
             _cameraSpeed.z = MBMath.ClampFloat(_cameraSpeed.z, -verticalLimit, verticalLimit);
 
-            if (_config.CameraHeightFollowsTerrain)
+            Vec3 speedDisplacement = _cameraSpeed * dt;
+            if (_cameraSmoothMode)
             {
+                // Integrate free coasting from the velocity lost this frame, using the 120 FPS stopping distance.
+                float coastingTime = (float)((1.0 - movementRetention) * ReferenceCoastingTime);
+                if (horizontalInput.x == 0f && _cameraSpeed.x == speedAfterDecay.x)
+                    speedDisplacement.x = speedBeforeDecay.x * coastingTime;
+                if (horizontalInput.y == 0f && _cameraSpeed.y == speedAfterDecay.y)
+                    speedDisplacement.y = speedBeforeDecay.y * coastingTime;
+                if (keyInputVertical == 0f && _cameraSpeed.z == speedAfterDecay.z)
+                    speedDisplacement.z = speedBeforeDecay.z * coastingTime;
+            }
+
+            if (followsTerrain)
+            {
+                bool hasVerticalInput = keyInputVertical != 0 || TaleWorlds.InputSystem.Input.DeltaMouseScroll != 0;
                 if (_previousHeightToTerrain.HasValue && !hasVerticalInput)
                 {
                     cameraFrame.origin.z = _previousHeightToTerrain.Value + terrainHeight;
@@ -598,14 +629,17 @@ namespace RTSCamera.View
                     controllerHeightInput = MissionScreen.SceneLayer.Input.GetGameKeyAxis("CameraAxisY");
                     if (MathF.Abs(controllerHeightInput) < 0.2f)
                         controllerHeightInput = 0.0f;
+                    // A held axis is a rate; the mouse wheel already reports a delta.
+                    controllerHeightInput *= (float)referenceFrames;
                 }
-                var diffRatio = MathF.Min(1f, dt * 5f);
+                float? heightBlend = null;
                 Vec3 cameraMovement = Vec3.Zero;
                 if (FocusedFormation != null)
                 {
                     _lookingDistanceToAdd -= (mouseScroll / 200.0f + controllerHeightInput) * cameraBasicSpeed * VerticalMovementSpeedFactor;
                     if (MathF.Abs(_lookingDistanceToAdd) > 1.0 / 1000.0)
                     {
+                        float diffRatio = GetHeightBlend(referenceFrames, ref heightBlend);
                         _lookingDistance += _lookingDistanceToAdd * diffRatio;
                         _lookingDistanceToAdd *= 1f - diffRatio;
                     }
@@ -619,7 +653,7 @@ namespace RTSCamera.View
                         var maxDistance = MathF.Min(RTSCameraSkillBehavior.CameraDistanceLimit, 50f);
                         if (_lookingDistance > maxDistance)
                         {
-                            _lookingDistance -= (_lookingDistance - maxDistance) * diffRatio;
+                            _lookingDistance -= (_lookingDistance - maxDistance) * GetHeightBlend(referenceFrames, ref heightBlend);
                         }
                     }
                     _lookingDistance = MathF.Max(_lookingDistance, 1f);
@@ -650,12 +684,13 @@ namespace RTSCamera.View
                     }
                     _cameraHeightToAdd = MathF.Clamp(_cameraHeightToAdd, -verticalLimit, verticalLimit);
                 }
-                cameraFrame.origin += (_cameraSpeed.x * dt + cameraMovement.x) * cameraFrame.rotation.s.AsVec2.ToVec3().NormalizedCopy();
-                Vec3 vec3_1 = (_cameraSpeed.y * dt + cameraMovement.y) * cameraFrame.rotation.u.AsVec2.ToVec3().NormalizedCopy();
+                cameraFrame.origin += (speedDisplacement.x + cameraMovement.x) * cameraFrame.rotation.s.AsVec2.ToVec3().NormalizedCopy();
+                Vec3 vec3_1 = (speedDisplacement.y + cameraMovement.y) * cameraFrame.rotation.u.AsVec2.ToVec3().NormalizedCopy();
                 cameraFrame.origin -= vec3_1;
-                cameraFrame.origin.z += _cameraSpeed.z * dt;
+                cameraFrame.origin.z += speedDisplacement.z;
                 if (MathF.Abs(_cameraHeightToAdd) > 1.0 / 1000.0)
                 {
+                    float diffRatio = GetHeightBlend(referenceFrames, ref heightBlend);
                     cameraFrame.origin.z += _cameraHeightToAdd * diffRatio;
                     _cameraHeightToAdd *= 1f - diffRatio;
                 }            
@@ -669,9 +704,9 @@ namespace RTSCamera.View
             }
             else
             {
-                cameraFrame.origin += _cameraSpeed.x * cameraFrame.rotation.s * dt;
-                cameraFrame.origin -= _cameraSpeed.y * cameraFrame.rotation.u * dt;
-                cameraFrame.origin += _cameraSpeed.z * cameraFrame.rotation.f * dt;
+                cameraFrame.origin += speedDisplacement.x * cameraFrame.rotation.s;
+                cameraFrame.origin -= speedDisplacement.y * cameraFrame.rotation.u;
+                cameraFrame.origin += speedDisplacement.z * cameraFrame.rotation.f;
             }
 
             if (FocusedFormation == null && RTSCameraSkillBehavior.ShouldLimitCameraDistance(Mission))
@@ -679,12 +714,12 @@ namespace RTSCamera.View
                 LimitCameraDistance(ref cameraFrame, dt, cameraBasicSpeed);
             }
 
-            if (_config.CameraHeightFollowsTerrain)
+            if (followsTerrain)
             {
                 _previousHeightToTerrain = cameraFrame.origin.z - terrainHeight;
             }
 
-            if (!MBEditor.IsEditModeOn)
+            if (!isEditMode)
             {
                 if (!_config.IgnoreBoundaries && !Mission.IsPositionInsideBoundaries(cameraFrame.origin.AsVec2))
                     cameraFrame.origin.AsVec2 = Mission.GetClosestBoundaryPosition(cameraFrame.origin.AsVec2);
@@ -702,7 +737,6 @@ namespace RTSCamera.View
                         }
                     }
                 }
-                float heightAtPosition = Mission.Scene.GetGroundHeightAtPosition(cameraFrame.origin + new Vec3(0.0f, 0.0f, 100f));
                 if (isNaval)
                 {
                     cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, waterHeight - 20f);
@@ -710,7 +744,8 @@ namespace RTSCamera.View
                 }
                 else
                 {
-                    if (!MissionScreen.IsCheatGhostMode && !_config.IgnoreTerrain && heightAtPosition < 9999.0)
+                    float heightAtPosition = scene.GetGroundHeightAtPosition(cameraFrame.origin + new Vec3(0.0f, 0.0f, 100f));
+                    if (!MissionScreen.IsCheatGhostMode && !ignoreTerrain && heightAtPosition < 9999.0)
                         cameraFrame.origin.z = Math.Max(cameraFrame.origin.z, heightAtPosition + 0.5f);
                     cameraFrame.origin.z = Math.Min(cameraFrame.origin.z, heightAtPosition + 80f);
                 }
@@ -766,8 +801,28 @@ namespace RTSCamera.View
             UpdateDof();
             UpdateViewAngle();
             Mission.SetCameraFrame(ref matrixFrame, Zoom);
-            SetCameraBearing?.Invoke(MissionScreen, new object[1] { CameraBearing });
-            SetCameraElevation?.Invoke(MissionScreen, new object[1] { CameraElevation });
+            SetCameraBearing?.Invoke(MissionScreen, CameraBearing);
+            SetCameraElevation?.Invoke(MissionScreen, CameraElevation);
+        }
+
+        private static Action<MissionScreen, float> CreateCameraAngleSetter(string propertyName)
+        {
+            var setter = typeof(MissionScreen).GetProperty(propertyName)?.GetSetMethod(true);
+            if (setter == null)
+                return null;
+
+            try
+            {
+                var typedSetter = (Action<MissionScreen, float>)Delegate.CreateDelegate(typeof(Action<MissionScreen, float>), setter, false);
+                if (typedSetter != null)
+                    return typedSetter;
+            }
+            catch (MethodAccessException)
+            {
+                // A runtime can deny delegate binding to a non-public setter.
+            }
+
+            return (screen, value) => setter.Invoke(screen, new object[] { value });
         }
 
         private void UpdateDof()
@@ -832,6 +887,9 @@ namespace RTSCamera.View
 
         private void HandleRotateInput(float dt)
         {
+            if (dt <= 0f)
+                return;
+
             float mouseSensitivity = MissionScreen.SceneLayer.Input.GetMouseSensitivity();
             float inputXRaw = 0.0f;
             float inputYRaw = 0.0f;
@@ -861,39 +919,77 @@ namespace RTSCamera.View
                     inputYRaw = MissionScreen.SceneLayer.Input.GetMouseMoveY();
                 }
             }
-            float num4 = 5.4E-05f;
-            float smoothFading;
-            if (SmoothRotationMode)
-            {
-                num4 *= 0.10f;
-                smoothFading = (float)Math.Pow(0.000001, dt);
-            }
-            else
-                smoothFading = 0.0f;
-            _cameraBearingDelta *= smoothFading;
-            _cameraElevationDelta *= smoothFading;
+            bool smooth = SmoothRotationMode;
+            float sensitivityFactor = smooth ? 5.4E-05f * 0.10f : 5.4E-05f;
             bool isSessionActive = GameNetwork.IsSessionActive;
-            float inputScale = num4 * mouseSensitivity * MissionScreen.CameraViewAngle;
+            float inputScale = sensitivityFactor * mouseSensitivity * MissionScreen.CameraViewAngle;
             float inputX = -inputXRaw * inputScale;
             float inputY = (NativeConfig.InvertMouse ? inputYRaw : -inputYRaw) * inputScale;
+            float maxDelta = isSessionActive ? 0.3f + 10f * dt : float.PositiveInfinity;
             if (isSessionActive)
             {
-                float maxValue = (float)(0.300000011920929 + 10.0 * dt);
-                inputX = MBMath.ClampFloat(inputX, -maxValue, maxValue);
-                inputY = MBMath.ClampFloat(inputY, -maxValue, maxValue);
-            }
-            _cameraBearingDelta += inputX;
-            _cameraElevationDelta += inputY;
-            if (isSessionActive)
-            {
-                float maxValue = (float)(0.300000011920929 + 10.0 * dt);
-                _cameraBearingDelta = MBMath.ClampFloat(_cameraBearingDelta, -maxValue, maxValue);
-                _cameraElevationDelta = MBMath.ClampFloat(_cameraElevationDelta, -maxValue, maxValue);
+                inputX = MBMath.ClampFloat(inputX, -maxDelta, maxDelta);
+                inputY = MBMath.ClampFloat(inputY, -maxDelta, maxDelta);
             }
 
-            CameraBearing += _cameraBearingDelta;
-            CameraElevation += _cameraElevationDelta;
+            if (smooth)
+            {
+                if (inputX != 0f || inputY != 0f || _cameraBearingDelta != 0f || _cameraElevationDelta != 0f)
+                {
+                    double fade = Math.Pow(RotationRetentionPerSecond, dt);
+                    double release = 1.0 - fade;
+                    double inputWeight = release / (ReferenceRotationRelease * dt * ReferenceCameraFps);
+                    if (isSessionActive)
+                    {
+                        CameraBearing += ApplyLimitedSmoothedRotation(ref _cameraBearingDelta, inputX, fade, inputWeight, maxDelta);
+                        CameraElevation += ApplyLimitedSmoothedRotation(ref _cameraElevationDelta, inputY, fade, inputWeight, maxDelta);
+                    }
+                    else
+                    {
+                        // Without clamping, the released rotation is linear in the pending delta and new input.
+                        double pendingToAngle = release * PendingRotationScale;
+                        double inputToAngle = TotalRotationPerInput - inputWeight * PendingRotationScale;
+                        CameraBearing += ApplySmoothedRotation(ref _cameraBearingDelta, inputX, fade, inputWeight, pendingToAngle, inputToAngle);
+                        CameraElevation += ApplySmoothedRotation(ref _cameraElevationDelta, inputY, fade, inputWeight, pendingToAngle, inputToAngle);
+                    }
+                }
+            }
+            else
+            {
+                _cameraBearingDelta = inputX;
+                _cameraElevationDelta = inputY;
+                CameraBearing += inputX;
+                CameraElevation += inputY;
+            }
             CameraElevation = MBMath.ClampFloat(CameraElevation, -1.36591f, 1.121997f);
+        }
+
+        private static float GetHeightBlend(double referenceFrames, ref float? blend)
+        {
+            if (!blend.HasValue)
+                blend = (float)(1.0 - Math.Pow(1.0 - 5.0 / ReferenceCameraFps, referenceFrames));
+            return blend.Value;
+        }
+
+        private static float ApplySmoothedRotation(ref float delta, float input, double fade, double inputWeight, double pendingToAngle, double inputToAngle)
+        {
+            double previousDelta = delta;
+            delta = (float)(previousDelta * fade + input * inputWeight);
+            return (float)(previousDelta * pendingToAngle + input * inputToAngle);
+        }
+
+        private static float ApplyLimitedSmoothedRotation(ref float delta, float input, double fade, double inputWeight, float maxDelta)
+        {
+            double previousDelta = Math.Max(-maxDelta, Math.Min(maxDelta, delta));
+            double decayedDelta = previousDelta * fade;
+            double nextDelta = Math.Max(-maxDelta, Math.Min(maxDelta, decayedDelta + input * inputWeight));
+            delta = (float)nextDelta;
+
+            // Apply the accepted input minus the change in rotation still pending after this frame.
+            // At 120 FPS this reduces to adding the new delta, as before.
+            double acceptedInput = (nextDelta - decayedDelta) / inputWeight;
+            double rotation = acceptedInput / ReferenceRotationRelease + (previousDelta - nextDelta) * PendingRotationScale;
+            return (float)Math.Max(-maxDelta, Math.Min(maxDelta, rotation));
         }
 
         public override void OnPreDisplayMissionTick(float dt)
