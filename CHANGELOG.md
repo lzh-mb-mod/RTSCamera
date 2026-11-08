@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.3.40] - 2026-11-08
+### Fixed
+- Fix a crash that could occur when entering another battle after finishing one in the same game session.
+
 ## [v5.3.39] - 2026-11-07
 ### Fixed
 - Fix command battles while wounded, including small battles that skip deployment. Canceling a launch no longer affects later battles.
