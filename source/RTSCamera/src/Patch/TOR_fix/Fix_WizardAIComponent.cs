@@ -40,6 +40,9 @@ namespace RTSCamera.Patch.TOR_fix
 
             abilityComponentType ??= AccessTools.TypeByName("AbilityComponent");
             var abilityComponent = Utilities.Utility.GetAgentComponent(agent, abilityComponentType);
+            if (abilityComponent == null)
+                return;
+
             knownAbilitySystemProperty = AccessTools.Property(abilityComponentType, "KnownAbilitySystem");
             var knownAbilitySystem = (IList)knownAbilitySystemProperty.GetValue(abilityComponent);
 
