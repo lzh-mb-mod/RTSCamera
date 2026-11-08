@@ -1,6 +1,7 @@
 ﻿using RTSCamera.Config;
 using RTSCamera.Logic.SubLogic;
 using RTSCamera.Patch.Naval.SubLogic;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
@@ -8,6 +9,9 @@ namespace RTSCamera.Logic
 {
     public class RTSCameraLogic : MissionLogic
     {
+        private static readonly FieldInfo SimulationFormationCache = typeof(Formation).GetField("_simulationFormationTemp", BindingFlags.Static | BindingFlags.NonPublic);
+        private static readonly FieldInfo SimulationFormationCacheIndex = typeof(Formation).GetField("_simulationFormationUniqueIdentifier", BindingFlags.Static | BindingFlags.NonPublic);
+
         public CommanderLogic CommanderLogic;
         public DisableDeathLogic DisableDeathLogic;
         public FixScoreBoardAfterPlayerDeadLogic FixScoreBoardAfterPlayerDeadLogic;
@@ -58,6 +62,15 @@ namespace RTSCamera.Logic
                 config.Serialize();
                 Utilities.Utility.PrintUsageHint();
             }
+        }
+
+        public override void OnMissionStateFinalized()
+        {
+            base.OnMissionStateFinalized();
+
+            // The static simulation formation can retain a navmesh from the scene being unloaded.
+            SimulationFormationCache?.SetValue(null, null);
+            SimulationFormationCacheIndex?.SetValue(null, -1);
         }
 
         public override void OnRemoveBehavior()

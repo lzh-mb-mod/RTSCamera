@@ -144,6 +144,13 @@ namespace RTSCamera.CommandSystem.Logic
             }
         }
 
+        public override void OnMissionStateFinalized()
+        {
+            base.OnMissionStateFinalized();
+
+            Patch_OrderController.ClearSimulationFormationCache();
+        }
+
         public override void OnRemoveBehavior()
         {
             RTSCommandVisualOrder.ClearSelectTargetMode();

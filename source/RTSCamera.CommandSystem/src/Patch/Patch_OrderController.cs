@@ -203,6 +203,13 @@ namespace RTSCamera.CommandSystem.Patch
             FacingEnemeyTarget = new Dictionary<Formation, Formation>();
         }
 
+        internal static void ClearSimulationFormationCache()
+        {
+            // The static simulation formation can retain a navmesh from the scene being unloaded.
+            _simulationFormationTemp?.SetValue(null, null);
+            _simulationFormationUniqueIdentifier?.SetValue(null, -1);
+        }
+
         public static void OnRemoveBehavior()
         {
             _naturalUnitSpacings = null;
