@@ -3,6 +3,7 @@
 ## [v5.3.41] - 2026-11-09
 ### Fixed
 - Keep RTS camera turning, coasting, and controller elevation consistent across frame rates.
+- Fix a crash when entering the hideout leader duel in The Old Realms.
 
 ## [v5.3.40] - 2026-11-08
 ### Fixed
