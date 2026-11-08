@@ -3,6 +3,7 @@
 ## [v5.5.4] - 2026-11-09
 ### Fixed
 - Keep RTS camera turning, coasting, and controller elevation consistent across frame rates.
+- Fix a crash when entering the hideout leader duel in The Old Realms.
 
 ### Changed
 - GitHub releases now offer a single ZIP containing both RTS Camera and Command System.
