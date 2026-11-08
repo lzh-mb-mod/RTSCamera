@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.3.41] - 2026-11-09
+### Fixed
+- Keep RTS camera turning, coasting, and controller elevation consistent across frame rates.
+
 ## [v5.3.40] - 2026-11-08
 ### Fixed
 - Fix a crash that could occur when entering another battle after finishing one in the same game session.
