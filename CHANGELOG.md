@@ -1,5 +1,12 @@
 # Changelog
 
+## [v5.5.4] - 2026-11-09
+### Fixed
+- Keep RTS camera turning, coasting, and controller elevation consistent across frame rates.
+
+### Changed
+- GitHub releases now offer a single ZIP containing both RTS Camera and Command System.
+
 ## [v5.5.3] - 2026-11-07
 ### Fixed
 - Fix Bannerlord v1.5.6 compatibility issues with formation markers, siege weapon orders, the order cursor, and column formation previews.
