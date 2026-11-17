@@ -39,6 +39,8 @@ namespace RTSCameraAgentComponent
 
         private bool _shouldClearColorOnRemove = false;
 
+        private bool _agentLeavingMission;
+
         public delegate void OnComponentRemovedDelegate(RTSCameraComponent component);
 
         public event OnComponentRemovedDelegate OnComponentRemovedEvent;
@@ -96,8 +98,7 @@ namespace RTSCameraAgentComponent
                 }
 
                 Agent.AgentVisuals?.SetContourColor(null);
-                if (Agent.HasMount)
-                    Agent.MountAgent.AgentVisuals?.SetContourColor(null);
+                SetMountContour(GetBoundMount(), null);
             }
             catch (Exception e)
             {
@@ -136,7 +137,7 @@ namespace RTSCameraAgentComponent
 
             try
             {
-                mount.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
+                SetMountContour(mount, CurrentColor, CurrentAlwaysVisible);
             }
             catch (Exception e)
             {
@@ -151,10 +152,9 @@ namespace RTSCameraAgentComponent
 
             try
             {
-                if (CurrentColor != null)
-                {
-                    mount.AgentVisuals?.SetContourColor(null);
-                }
+                var rider = mount?.RiderAgent;
+                if (CurrentColor != null && (rider == null || rider == Agent))
+                    SetMountContour(mount, null);
             }
             catch (Exception e)
             {
@@ -185,11 +185,13 @@ namespace RTSCameraAgentComponent
         [SecurityCritical]
         private void SetColor()
         {
+            if (_agentLeavingMission)
+                return;
+
             try
             {
                 Agent.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
-                if (Agent.HasMount)
-                    Agent.MountAgent.AgentVisuals?.SetContourColor(CurrentColor, CurrentAlwaysVisible);
+                SetMountContour(GetBoundMount(), CurrentColor, CurrentAlwaysVisible);
                 _shouldClearColorOnRemove = CurrentColor != null;
             }
             catch (Exception e)
@@ -198,9 +200,30 @@ namespace RTSCameraAgentComponent
             }
         }
 
+        private Agent GetBoundMount()
+        {
+            var mount = Agent.MountAgent;
+            return mount?.RiderAgent == Agent ? mount : null;
+        }
+
+        private static void SetMountContour(Agent mount, uint? color, bool alwaysVisible = true)
+        {
+            // Check the managed lifetime before asking the engine for the visuals.
+            var component = mount?.GetComponent<RTSCameraComponent>();
+            if (component == null || component._agentLeavingMission || !mount.HasBeenBuilt)
+                return;
+
+            var visuals = mount.AgentVisuals;
+            if (visuals?.IsValid() == true)
+                visuals.SetContourColor(color, alwaysVisible);
+        }
+
+        internal void MarkAgentLeavingMission() => _agentLeavingMission = true;
+
         public override void OnAgentRemoved()
         {
             base.OnAgentRemoved();
+            MarkAgentLeavingMission();
 
             if (_shouldClearColorOnRemove)
             {
