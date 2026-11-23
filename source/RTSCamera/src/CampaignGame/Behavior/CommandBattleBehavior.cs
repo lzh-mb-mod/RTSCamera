@@ -3,6 +3,8 @@ using Helpers;
 using MissionSharedLibrary.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Encounters;
 using TaleWorlds.CampaignSystem.GameMenus;
@@ -87,8 +89,14 @@ namespace RTSCamera.CampaignGame.Behavior
             }
         }
 
-        private sealed class CommandBattleMenuContextHandler : IMenuContextHandler
+        private class CommandBattleMenuContextHandler : IMenuContextHandler
         {
+            // The troop-selection interface changed in Bannerlord 1.4.7.
+            private static readonly MethodInfo OpenTroopSelectionMethod =
+                typeof(IMenuContextHandler).GetMethod(nameof(OnOpenTroopSelection));
+            private static readonly MethodInfo OpenNavalTroopSelectionMethod =
+                typeof(IMenuContextHandler).GetMethod(nameof(OnOpenNavalTroopSelection));
+
             private readonly MenuContext _menuContext;
             private readonly IMenuContextHandler _inner;
 
@@ -98,7 +106,8 @@ namespace RTSCamera.CampaignGame.Behavior
                 _inner = inner;
             }
 
-            public void OnOpenTroopSelection(TroopRoster fullRoster, TroopRoster initialSelections,
+            // Both signatures must stay virtual for interface mapping across game versions.
+            public virtual void OnOpenTroopSelection(TroopRoster fullRoster, TroopRoster initialSelections,
                 Func<CharacterObject, bool> canChangeStatusOfTroop, Action<TroopRoster> onDone,
                 int maxSelectableTroopCount, int minSelectableTroopCount)
             {
@@ -107,11 +116,27 @@ namespace RTSCamera.CampaignGame.Behavior
                     var callback = onDone;
                     onDone = troops => StartCommandBattle(_menuContext, () => callback(troops));
                 }
-                _inner.OnOpenTroopSelection(fullRoster, initialSelections, canChangeStatusOfTroop,
-                    onDone, maxSelectableTroopCount, minSelectableTroopCount);
+                InvokeHandler(OpenTroopSelectionMethod, new object[] { fullRoster, initialSelections,
+                    canChangeStatusOfTroop, onDone, maxSelectableTroopCount, minSelectableTroopCount });
             }
 
-            public void OnOpenNavalTroopSelection(TroopRoster fullRoster, TroopRoster initialTroopSelections,
+            // Keep the 1.4.5/1.4.6 signature so the type implements their interface too.
+            public virtual void OnOpenTroopSelection(TroopRoster fullRoster, TroopRoster initialSelections,
+                List<Ship> eligibleShips, Func<CharacterObject, bool> canChangeStatusOfTroop,
+                Action<TroopRoster> onDone, int maxSelectableTroopCount, int minSelectableTroopCount,
+                bool isNavalRaid)
+            {
+                if (onDone != null)
+                {
+                    var callback = onDone;
+                    onDone = troops => StartCommandBattle(_menuContext, () => callback(troops));
+                }
+                InvokeHandler(OpenTroopSelectionMethod, new object[] { fullRoster, initialSelections,
+                    eligibleShips, canChangeStatusOfTroop, onDone, maxSelectableTroopCount,
+                    minSelectableTroopCount, isNavalRaid });
+            }
+
+            public virtual void OnOpenNavalTroopSelection(TroopRoster fullRoster, TroopRoster initialTroopSelections,
                 List<Ship> eligibleShips, List<Ship> initialShipSelections,
                 Func<CharacterObject, bool> canChangeStatusOfTroop, Action<TroopRoster, List<Ship>> onDone,
                 int minSelectableTroopCount, int minSelectableShipCount, int maxSelectableShipCount,
@@ -122,10 +147,22 @@ namespace RTSCamera.CampaignGame.Behavior
                     var callback = onDone;
                     onDone = (troops, ships) => StartCommandBattle(_menuContext, () => callback(troops, ships));
                 }
-                _inner.OnOpenNavalTroopSelection(fullRoster, initialTroopSelections, eligibleShips, initialShipSelections,
-                    canChangeStatusOfTroop, onDone,
+                InvokeHandler(OpenNavalTroopSelectionMethod, new object[] { fullRoster, initialTroopSelections,
+                    eligibleShips, initialShipSelections, canChangeStatusOfTroop, onDone,
                     minSelectableTroopCount, minSelectableShipCount, maxSelectableShipCount,
-                    anyOtherPartiesOnPlayerSide);
+                    anyOtherPartiesOnPlayerSide });
+            }
+
+            private void InvokeHandler(MethodInfo method, object[] arguments)
+            {
+                try
+                {
+                    method.Invoke(_inner, arguments);
+                }
+                catch (TargetInvocationException e) when (e.InnerException != null)
+                {
+                    ExceptionDispatchInfo.Capture(e.InnerException).Throw();
+                }
             }
 
             public void OnBackgroundMeshNameSet(string name) => _inner.OnBackgroundMeshNameSet(name);

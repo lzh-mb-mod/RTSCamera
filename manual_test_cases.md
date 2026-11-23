@@ -1,11 +1,14 @@
 * Rescue Prisoner
 * Command battle entry
+  * Launch the same build on Bannerlord 1.4.5/1.4.6 and 1.4.7/1.4.8. Verify that RTS Camera loads without a dependency-conflict error, then confirm and cancel command battle troop selection (including naval raid selection) on each interface version.
   * With the player wounded and enough troops for deployment, start a field and a siege command battle. Verify that deployment completes with a substitute initial player agent, command mode stays active, and the substitute is alarmed when combat starts. Repeat for the lord's hall troop selection and naval raid troop/ship selection, confirming each selection to start its battle.
   * Repeat with fewer than 20 player-controllable troops. Verify that the deployment screen is skipped and the substitute is alarmed when combat starts.
   * Cancel each command battle selection, then enter a town or tournament and start an ordinary battle from the same encounter. Verify that command mode does not remain enabled and camera control works normally.
   * In a debugger, make the command battle action return without opening a mission, or throw before/after creating one. Verify that command mode is cleared when the action fails or opens no mission, and that unrelated troop-selection callbacks remain unchanged.
 * Mission transitions
   * Draw order-position markers, leave the battle, and enter another battle. Verify that all marker styles and formation highlighting work in the new scene. In a debugger, repeat while skipping the previous battle's `Patch_OrderTroopPlacer.OnRemoveBehavior`; verify that no placer, entity or material from the previous battle is reused.
+* Character selection
+  * Hover and select a mounted soldier. Both rider and mount should be outlined. Keep the pointer over the soldier while they dismount, remount, or lose their mount in combat. The old mount should lose its outline; a valid new mount should inherit it. Repeat with formation outlines enabled.
 * Siege
   * Switch to an AI that's moving to a siege weapon;
   * Switch to an AI that's using a siege weapon;
