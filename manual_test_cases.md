@@ -6,6 +6,8 @@
   * In a debugger, make the command battle action return without opening a mission, or throw before/after creating one. Verify that command mode is cleared when the action fails or opens no mission, and that unrelated troop-selection callbacks remain unchanged.
 * Mission transitions
   * Draw order-position markers, leave the battle, and enter another battle. Verify that all marker styles and formation highlighting work in the new scene. In a debugger, repeat while skipping the previous battle's `Patch_OrderTroopPlacer.OnRemoveBehavior`; verify that no placer, entity or material from the previous battle is reused.
+* Character selection
+  * Hover and select a mounted soldier. Both rider and mount should be outlined. Keep the pointer over the soldier while they dismount, remount, or lose their mount in combat. The old mount should lose its outline; a valid new mount should inherit it. Repeat with formation outlines enabled.
 * Siege
   * Switch to an AI that's moving to a siege weapon;
   * Switch to an AI that's using a siege weapon;
