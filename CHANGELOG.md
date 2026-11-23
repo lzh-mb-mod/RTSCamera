@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.5.5] - 2026-11-23
+### Fixed
+- Fix rider and mount highlights remaining on the wrong mount after a soldier changes mounts.
+
 ## [v5.5.4] - 2026-11-09
 ### Fixed
 - Keep RTS camera turning, coasting, and controller elevation consistent across frame rates.
