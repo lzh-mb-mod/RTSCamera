@@ -1,5 +1,10 @@
 # Changelog
 
+## [v5.4.20] - 2026-11-23
+### Fixed
+- Fix RTS Camera failing to load on Bannerlord 1.4.5 and 1.4.6.
+- Fix rider and mount highlights remaining on the wrong mount after a soldier changes mounts.
+
 ## [v5.4.19] - 2026-11-09
 ### Fixed
 - Keep RTS camera turning, coasting, and controller elevation consistent across frame rates.
